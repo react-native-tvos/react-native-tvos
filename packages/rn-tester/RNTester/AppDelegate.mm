@@ -17,6 +17,7 @@
 #endif
 
 #import <React/RCTJSIExecutorRuntimeInstaller.h>
+#import <React/RCTAsyncLocalStorage.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -30,6 +31,9 @@
 #import <React/RCTDataRequestHandler.h>
 #import <React/RCTFileRequestHandler.h>
 #import <React/RCTRootView.h>
+
+#import <React/RCTDevMenu.h>
+#import <React/CoreModulesPlugins.h>
 
 #import <cxxreact/JSExecutor.h>
 
@@ -229,6 +233,14 @@
       ];
     }];
   }
+
+  // Expo-specific
+  if (moduleClass == RCTAsyncLocalStorageCls()) {
+    NSString *documentDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *storageDirectory = [documentDirectory stringByAppendingPathComponent:@"RCTAsyncLocalStorage_V1"];
+    return [[moduleClass alloc] initWithStorageDirectory:storageDirectory];
+  }
+
   // No custom initializer here.
   return [moduleClass new];
 }
@@ -268,5 +280,23 @@
 }
 
 #endif
+
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(__unused RCTBridge *)bridge
+{
+  if (RCTTurboModuleEnabled()) {
+    return @[];
+  }
+
+  NSString *documentDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+  NSString *storageDirectory = [documentDirectory stringByAppendingPathComponent:@"RCTAsyncLocalStorage_V1"];
+  return @[
+    [[RCTAsyncLocalStorage alloc] initWithStorageDirectory:storageDirectory],
+
+    // RCTDevMenu was removed when integrating React with Expo client:
+    // https://github.com/expo/react-native/commit/7f2912e8005ea6e81c45935241081153b822b988
+    // Let's bring it back in RNTester.
+    (id<RCTBridgeModule>)[RCTDevMenu new],
+  ];
+}
 
 @end
