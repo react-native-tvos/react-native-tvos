@@ -96,6 +96,10 @@ class CatalystInstanceImpl : public jni::HybridClass<CatalystInstanceImpl> {
       const std::string &fileName,
       const std::string &sourceURL,
       bool loadSynchronously);
+  void jniLoadScriptFromString(
+      const std::string& fileName,
+      const std::string& sourceURL,
+      bool loadSynchronously);
   void jniCallJSFunction(
       std::string module,
       std::string method,
