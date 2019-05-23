@@ -124,6 +124,9 @@ module.exports = {
   get StatusBar() {
     return require('../Components/StatusBar/StatusBar');
   },
+  get TabBarIOS() {
+    return require('TabBarIOS');
+  },
   get Text() {
     return require('../Text/Text');
   },
