@@ -61,10 +61,12 @@ Pod::Spec.new do |s|
     ss.ios.exclude_files    = "React/**/RCTTV*.*"
     ss.tvos.exclude_files   = "React/Modules/RCTClipboard*",
                               "React/Views/RCTDatePicker*",
+                              "React/Views/RCTImagePicker*",
                               "React/Views/RCTPicker*",
                               "React/Views/RCTRefreshControl*",
                               "React/Views/RCTSlider*",
                               "React/Views/RCTSwitch*",
+                              "React/Views/RCTWKWebView*",
                               "React/Views/RCTWebView*"
     ss.compiler_flags       = folly_compiler_flags
     ss.header_dir           = "React"
