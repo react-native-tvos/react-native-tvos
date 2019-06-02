@@ -12,7 +12,7 @@
 
 const React = require('React');
 const StyleSheet = require('StyleSheet');
-const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
+const TouchableOpacity = require('TouchableOpacity');
 const View = require('View');
 const YellowBoxStyle = require('YellowBoxStyle');
 
@@ -64,13 +64,13 @@ class YellowBoxPressable extends React.Component<Props, State> {
     return this.props.onPress == null ? (
       content
     ) : (
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         hitSlop={this.props.hitSlop}
         onPress={this.props.onPress}
         onPressIn={this._handlePressIn}
         onPressOut={this._handlePressOut}>
         {content}
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 
