@@ -66,7 +66,7 @@ type Props = $ReadOnly<{|
   itemPositioning?: ?('fill' | 'center' | 'auto'),
 |}>;
 
-let showedDeprecationWarning = false;
+let showedDeprecationWarning = true;
 
 class TabBarIOS extends React.Component<Props> {
   static Item = TabBarItemIOS;
