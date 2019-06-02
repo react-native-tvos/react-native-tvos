@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :tvos, '11.0'
 
 target 'RNTester' do
   # Uncomment for Swift
@@ -11,18 +11,14 @@ target 'RNTester' do
     'Core',
     'CxxBridge',
     'DevSupport',
-    'RCTActionSheet',
     'RCTAnimation',
     'RCTBlob',
-    'RCTCameraRoll',
-    'RCTGeolocation',
     'RCTImage',
     'RCTLinkingIOS',
     'RCTNetwork',
     'RCTPushNotification',
     'RCTSettings',
     'RCTText',
-    'RCTVibration',
     'RCTWebSocket',
 
     # Below this line is Fabric (experimental) specific.
