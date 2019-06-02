@@ -103,7 +103,7 @@ type State = {|
   hasBeenSelected: boolean,
 |};
 
-let showedDeprecationWarning = false;
+let showedDeprecationWarning = true;
 
 class TabBarItemIOS extends React.Component<Props, State> {
   state = {
