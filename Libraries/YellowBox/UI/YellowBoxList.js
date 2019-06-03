@@ -120,16 +120,17 @@ class YellowBoxList extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   list: {
-    bottom: 0,
+    top: 0,
+    left: 0,
     position: 'absolute',
     width: '100%',
   },
   dismissAll: {
-    bottom: '100%',
+    top: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingBottom: 4,
-    paddingEnd: 4,
+    justifyContent: 'flex-start',
+    paddingTop: 4,
+    paddingStart: 4,
     position: 'absolute',
     width: '100%',
   },
