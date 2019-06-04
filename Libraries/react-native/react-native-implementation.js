@@ -296,6 +296,9 @@ module.exports = {
   get TVEventHandler() {
     return require('../Components/AppleTV/TVEventHandler');
   },
+  get TVMenuControl() {
+    return require('TVMenuControl');
+  },
   get UIManager() {
     return require('../ReactNative/UIManager');
   },

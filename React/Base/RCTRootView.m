@@ -34,6 +34,10 @@
 
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
 
+NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
+NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
+
+
 @interface RCTUIManager (RCTRootView)
 
 - (NSNumber *)allocateRootTag;
@@ -86,12 +90,24 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
                                              selector:@selector(hideLoadingView)
                                                  name:RCTContentDidAppearNotification
                                                object:self];
+      
 
 #if TARGET_OS_TV
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(enableTVMenuKey)
+                                                   name:RCTTVEnableMenuKeyNotification
+                                                 object:nil];
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(disableTVMenuKey)
+                                                   name:RCTTVDisableMenuKeyNotification
+                                                 object:nil];
+      
     self.tvRemoteHandler = [RCTTVRemoteHandler new];
     for (NSString *key in [self.tvRemoteHandler.tvRemoteGestureRecognizers allKeys]) {
       [self addGestureRecognizer:self.tvRemoteHandler.tvRemoteGestureRecognizers[key]];
     }
+    // [self addGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
 #endif
 
     [self showLoadingView];
@@ -105,6 +121,26 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 
   return self;
 }
+
+#if TARGET_OS_TV
+
+- (void)enableTVMenuKey {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[self gestureRecognizers] containsObject:self.tvRemoteHandler.tvMenuKeyRecognizer]) {
+            [self addGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
+        }
+    });
+}
+
+- (void)disableTVMenuKey {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([[self gestureRecognizers] containsObject:self.tvRemoteHandler.tvMenuKeyRecognizer]) {
+            [self removeGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
+        }
+    });
+}
+
+#endif
 
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
