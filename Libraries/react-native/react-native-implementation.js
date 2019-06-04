@@ -315,6 +315,9 @@ module.exports = {
   get TVEventHandler() {
     return require('TVEventHandler');
   },
+  get TVMenuControl() {
+    return require('TVMenuControl');
+  },
   get UIManager() {
     return require('UIManager');
   },
