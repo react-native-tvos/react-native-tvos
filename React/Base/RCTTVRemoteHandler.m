@@ -52,16 +52,14 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
     _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
 
     // Recognizers for Apple TV remote buttons
+    // Menu recognizer
+    self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
+    self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
 
     // Play/Pause
     [self addTapGestureRecognizerWithSelector:@selector(playPausePressed:)
                                     pressType:UIPressTypePlayPause
                                          name:RCTTVRemoteEventPlayPause];
-
-    // Menu
-    [self addTapGestureRecognizerWithSelector:@selector(menuPressed:)
-                                    pressType:UIPressTypeMenu
-                                         name:RCTTVRemoteEventMenu];
 
     // Select
     [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)

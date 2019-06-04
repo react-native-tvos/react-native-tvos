@@ -28,6 +28,7 @@ const {
   SnapshotViewIOS,
   StyleSheet,
   Text,
+  TVMenuControl,
   View,
   SafeAreaView,
 } = ReactNative;
@@ -101,6 +102,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
       return null;
     }
     if (this.state.openExample) {
+      TVMenuControl.enableTVMenuKey();
       const Component = RNTesterList.Modules[this.state.openExample];
       if (Component.external) {
         return <Component onExampleExit={this._handleBack} />;
@@ -113,6 +115,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
         );
       }
     }
+    TVMenuControl.disableTVMenuKey();
     return (
       <View style={styles.exampleContainer}>
         <Header title="RNTester" />
