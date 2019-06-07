@@ -10,7 +10,7 @@
 'use strict';
 
 const React = require('React');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {
   KeyboardAvoidingView,
   Modal,

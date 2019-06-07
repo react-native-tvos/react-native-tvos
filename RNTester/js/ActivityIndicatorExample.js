@@ -11,7 +11,7 @@
 'use strict';
 
 import React, {Component} from 'react';
-import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, View} from 'react-native-tvos';
 
 type State = {|animating: boolean|};
 type Props = $ReadOnly<{||}>;

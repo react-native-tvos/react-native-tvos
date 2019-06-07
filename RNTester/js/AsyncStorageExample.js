@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {AsyncStorage, PickerIOS, Text, View} = ReactNative;
 const PickerItemIOS = PickerIOS.Item;
 

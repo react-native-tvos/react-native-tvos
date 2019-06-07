@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {Slider, Text, StyleSheet, View} = ReactNative;
 
 class SliderExample extends React.Component<$FlowFixMeProps, $FlowFixMeState> {

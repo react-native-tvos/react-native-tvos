@@ -24,7 +24,7 @@ ReactEurope 2015, Paris - Spencer Ahrens - Facebook
 <br /><br />
 
 
-## var { Animated } = require('react-native');
+## var { Animated } = require('react-native-tvos');
 
 - New library soon to be released for React Native
 - 100% JS implementation -> X-Platform

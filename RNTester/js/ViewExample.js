@@ -13,7 +13,7 @@
 /* eslint-disable react-native/no-inline-styles */
 
 const React = require('react');
-const {StyleSheet, Text, View} = require('react-native');
+const {StyleSheet, Text, View} = require('react-native-tvos');
 const TouchableWithoutFeedback = require('TouchableWithoutFeedback');
 
 exports.title = '<View>';

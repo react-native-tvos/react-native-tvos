@@ -13,7 +13,7 @@
 const Button = require('Button');
 const InputAccessoryView = require('InputAccessoryView');
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {Text, TextInput, View, StyleSheet, Slider, Switch, Alert} = ReactNative;
 
 class WithLabel extends React.Component<$FlowFixMeProps> {

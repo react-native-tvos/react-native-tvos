@@ -14,7 +14,7 @@ import type {Item} from './ListExampleShared';
 
 const Alert = require('Alert');
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {Animated, StyleSheet, View} = ReactNative;
 
 const RNTesterPage = require('./RNTesterPage');
