@@ -50,7 +50,7 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'InputAccessoryViewExample',
     module: require('./InputAccessoryViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'KeyboardAvoidingViewExample',
@@ -60,21 +60,6 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'LayoutEventsExample',
     module: require('./LayoutEventsExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'ListViewExample',
-    module: require('./ListViewExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'ListViewGridLayoutExample',
-    module: require('./ListViewGridLayoutExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'ListViewPagingExample',
-    module: require('./ListViewPagingExample'),
     supportsTVOS: true,
   },
   {
@@ -120,7 +105,7 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'SafeAreaViewExample',
     module: require('./SafeAreaViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'ScrollViewExample',
@@ -150,11 +135,6 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'SwipeableFlatListExample',
     module: require('./SwipeableFlatListExample'),
-    supportsTVOS: false,
-  },
-  {
-    key: 'SwipeableListViewExample',
-    module: require('./SwipeableListViewExample'),
     supportsTVOS: false,
   },
   {
@@ -196,11 +176,6 @@ const ComponentExamples: Array<RNTesterExample> = [
     key: 'ViewExample',
     module: require('./ViewExample'),
     supportsTVOS: true,
-  },
-  {
-    key: 'WebViewExample',
-    module: require('./WebViewExample'),
-    supportsTVOS: false,
   },
 ];
 
@@ -254,11 +229,6 @@ const APIExamples: Array<RNTesterExample> = [
     key: 'BoxShadowExample',
     module: require('./BoxShadowExample'),
     supportsTVOS: true,
-  },
-  {
-    key: 'CameraRollExample',
-    module: require('./CameraRollExample'),
-    supportsTVOS: false,
   },
   {
     key: 'ClipboardExample',
