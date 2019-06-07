@@ -1,11 +1,11 @@
 {
-  "name": "react-native",
+  "name": "react-native-tvos",
   "version": "0.58.6",
   "description": "A framework for building native apps using React",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:facebook/react-native.git"
+    "url": "git@github.com:react-native-community/react-native-tvos.git"
   },
   "engines": {
     "node": ">=8.3"
@@ -40,7 +40,7 @@
       "defaultPlatform": "ios",
       "hasteImplModulePath": "<rootDir>/jest/hasteImpl.js",
       "providesModuleNodeModules": [
-        "react-native"
+        "react-native-tvos"
       ],
       "platforms": [
         "ios",
@@ -48,7 +48,7 @@
       ]
     },
     "modulePathIgnorePatterns": [
-      "/node_modules/(?!react|fbjs|react-native|react-transform-hmr|core-js|promise)/",
+      "/node_modules/(?!react|fbjs|react-native|react-native-tvos|react-transform-hmr|core-js|promise)/",
       "node_modules/react/node_modules/fbjs/",
       "node_modules/react/lib/ReactDOM.js",
       "node_modules/fbjs/lib/Map.js",
