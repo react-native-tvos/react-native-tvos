@@ -10,7 +10,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {Alert, Image, StyleSheet, Text, View} = ReactNative;
 
 class ScreenshotExample extends React.Component<{}, $FlowFixMeState> {

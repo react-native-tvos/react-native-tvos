@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {ART, Platform, View} = ReactNative;
 
 const {Surface, Path, Group, Shape} = ART;

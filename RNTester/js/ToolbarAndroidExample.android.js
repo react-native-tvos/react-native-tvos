@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 
 const nativeImageSource = require('nativeImageSource');
 const {StyleSheet, Text, View} = ReactNative;

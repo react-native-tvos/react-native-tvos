@@ -19,7 +19,7 @@ const {
   Text,
   View,
   Alert,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const RNTesterPage = require('./RNTesterPage');
 

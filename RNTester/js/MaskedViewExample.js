@@ -20,7 +20,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class MaskedViewExample extends React.Component<{}, $FlowFixMeState> {
   static title = '<MaskedViewIOS>';

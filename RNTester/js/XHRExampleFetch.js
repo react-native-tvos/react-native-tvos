@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {StyleSheet, Text, TextInput, View, Platform} = ReactNative;
 
 class XHRExampleFetch extends React.Component<any, any> {
