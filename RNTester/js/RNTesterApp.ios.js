@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
   },
   exampleContainer: {
     flex: 1,
+    marginBottom: 100,
   },
 });
 
