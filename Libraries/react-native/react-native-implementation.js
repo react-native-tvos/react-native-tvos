@@ -11,10 +11,12 @@
 'use strict';
 
 const invariant = require('fbjs/lib/invariant');
+const Platform = require('Platform');
 
 let showedListViewDeprecation = false;
 let showedSwipeableListViewDeprecation = false;
 let showedWebWiewDeprecation = false;
+let showedAsyncStorageWarning = false;
 
 // Export React, plus some native additions.
 module.exports = {
@@ -203,6 +205,12 @@ module.exports = {
     return require('AppState');
   },
   get AsyncStorage() {
+    if (Platform.isTVOS && !showedAsyncStorageWarning) {
+      console.warn(
+        'Persistent storage is not supported on tvOS, your data may be removed at any point.',
+      );
+      showedAsyncStorageWarning = true;
+    }
     return require('AsyncStorage');
   },
   get BackHandler() {
