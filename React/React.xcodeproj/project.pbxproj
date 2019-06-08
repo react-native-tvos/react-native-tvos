@@ -261,6 +261,8 @@
 		2D3B5EF11D9B09E700451313 /* UIView+React.m in Sources */ = {isa = PBXBuildFile; fileRef = 13E067541A70F44B002CDEE1 /* UIView+React.m */; };
 		2D74EAFA1DAE9590003B751B /* RCTMultipartDataTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 006FC4131D9B20820057AAAD /* RCTMultipartDataTask.m */; };
 		2D8C2E331DA40441000EE098 /* RCTMultipartStreamReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 001BFCCF1D8381DE008E587E /* RCTMultipartStreamReader.m */; };
+		2DBECB5822AB450E00B06D02 /* RCTTVMenuBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DBECB5622AB450D00B06D02 /* RCTTVMenuBridge.h */; };
+		2DBECB5922AB450E00B06D02 /* RCTTVMenuBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBECB5722AB450D00B06D02 /* RCTTVMenuBridge.m */; };
 		2DD0EFE11DA84F2800B0C975 /* RCTStatusBarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 13723B4F1A82FD3C00F88898 /* RCTStatusBarManager.m */; };
 		352DCFF01D19F4C20056D623 /* RCTI18nUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 352DCFEF1D19F4C20056D623 /* RCTI18nUtil.m */; };
 		391E86A41C623EC800009732 /* RCTTouchEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 391E86A21C623EC800009732 /* RCTTouchEvent.m */; };
@@ -2029,6 +2031,8 @@
 		199B8A6E1F44DB16005DEF67 /* RCTVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVersion.h; sourceTree = "<group>"; };
 		27B958731E57587D0096647A /* JSBigString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSBigString.cpp; sourceTree = "<group>"; };
 		2D2A28131D9B038B00D4039D /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DBECB5622AB450D00B06D02 /* RCTTVMenuBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTTVMenuBridge.h; sourceTree = "<group>"; };
+		2DBECB5722AB450D00B06D02 /* RCTTVMenuBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTVMenuBridge.m; sourceTree = "<group>"; };
 		352DCFEE1D19F4C20056D623 /* RCTI18nUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTI18nUtil.h; sourceTree = "<group>"; };
 		352DCFEF1D19F4C20056D623 /* RCTI18nUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTI18nUtil.m; sourceTree = "<group>"; };
 		391E86A21C623EC800009732 /* RCTTouchEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTTouchEvent.m; sourceTree = "<group>"; };
@@ -2558,6 +2562,8 @@
 				13723B4F1A82FD3C00F88898 /* RCTStatusBarManager.m */,
 				13B07FED1A69327A00A75B9A /* RCTTiming.h */,
 				13B07FEE1A69327A00A75B9A /* RCTTiming.m */,
+				2DBECB5622AB450D00B06D02 /* RCTTVMenuBridge.h */,
+				2DBECB5722AB450D00B06D02 /* RCTTVMenuBridge.m */,
 				3D0B842D1EC0B51200B2BD8E /* RCTTVNavigationEventEmitter.h */,
 				3D0B842E1EC0B51200B2BD8E /* RCTTVNavigationEventEmitter.m */,
 				13E067481A70F434002CDEE1 /* RCTUIManager.h */,
@@ -3253,6 +3259,7 @@
 				1384E20A1E806D5700545659 /* RCTNativeModule.h in Headers */,
 				3D302F7C1DF828F800D6DDAE /* RCTModalHostViewController.h in Headers */,
 				3D302F7D1DF828F800D6DDAE /* RCTModalHostViewManager.h in Headers */,
+				2DBECB5822AB450E00B06D02 /* RCTTVMenuBridge.h in Headers */,
 				594F0A331FD23228007FBE96 /* RCTSurfaceHostingView.h in Headers */,
 				130443DD1E401AF500D93A67 /* RCTConvert+Transform.h in Headers */,
 				134D63C41F1FEC65008872B5 /* RCTCxxBridgeDelegate.h in Headers */,
@@ -3993,6 +4000,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -4232,6 +4240,7 @@
 				2D3B5EA11D9B08B600451313 /* RCTModuleData.mm in Sources */,
 				2D3B5EEA1D9B09CD00451313 /* RCTTabBar.m in Sources */,
 				3DCE52F41FEAB10D00613583 /* RCTRedBoxExtraDataViewController.m in Sources */,
+				2DBECB5922AB450E00B06D02 /* RCTTVMenuBridge.m in Sources */,
 				590D7C001EBD458B00D8A370 /* RCTShadowView+Layout.m in Sources */,
 				2D3B5EAE1D9B08F800451313 /* RCTEventEmitter.m in Sources */,
 				2D3B5ECA1D9B095F00451313 /* RCTComponentData.m in Sources */,
