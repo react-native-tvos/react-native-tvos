@@ -228,7 +228,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 {
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
       UIView *rootview = self;
       while (![rootview isReactRootView] && rootview != nil) {
         rootview = [rootview superview];
@@ -237,6 +237,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
       rootview = [rootview superview];
 
+      [(RCTRootView *)rootview setReactPreferredFocusedView:self];
       [rootview setNeedsFocusUpdate];
       [rootview updateFocusIfNeeded];
     });
