@@ -15,16 +15,16 @@ const Platform = require('../../Utilities/Platform');
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {NativeComponent} from '../../Renderer/shims/ReactNative';
 
-type NativeProps = $ReadOnly<{|
+type FocusGuideProps = $ReadOnly<{|
   ...ViewProps,
 
   /**
    * The tags of the views the focus should go to
    */
-  destinationTags: array,
+  destinationTags?: ?number[],
 |}>;
 
-class FocusGuideView extends React.Component<Props> {
+class FocusGuideView extends React.Component<FocusGuideProps> {
   render() {
     if (Platform.isTVOS) {
       return <RNFocusGuide {...this.props} />;
@@ -33,6 +33,6 @@ class FocusGuideView extends React.Component<Props> {
   }
 }
 
-const RNFocusGuide = requireNativeComponent('RCTTVFocusGuideView', FocusGuide);
+const RNFocusGuide = requireNativeComponent('RCTTVFocusGuideView', RCTTVFocusGuideView);
 
 module.exports = FocusGuideView;
