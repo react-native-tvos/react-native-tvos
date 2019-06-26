@@ -1,6 +1,6 @@
 {
   "name": "react-native-tvos",
-  "version": "0.58.6",
+  "version": "0.58.6-rc.0",
   "description": "A framework for building native apps using React",
   "license": "MIT",
   "repository": {
@@ -138,9 +138,7 @@
     "test-android-all": "yarn run docker-build-android && yarn run test-android-run-unit && yarn run test-android-run-instrumentation && yarn run test-android-run-e2e",
     "test-android-instrumentation": "yarn run docker-build-android && yarn run test-android-run-instrumentation",
     "test-android-unit": "yarn run docker-build-android && yarn run test-android-run-unit",
-    "test-android-e2e": "yarn run docker-build-android && yarn run test-android-run-e2e",
-    "build-ios-e2e": "detox build -c ios.sim.release",
-    "test-ios-e2e": "detox test -c ios.sim.release --cleanup"
+    "test-android-e2e": "yarn run docker-build-android && yarn run test-android-run-e2e"
   },
   "bin": {
     "react-native": "local-cli/wrong-react-native.js"
@@ -209,7 +207,6 @@
     "async": "^2.4.0",
     "babel-eslint": "9.0.0",
     "babel-generator": "^6.26.0",
-    "detox": "9.0.4",
     "eslint": "5.1.0",
     "eslint-config-fb-strict": "22.1.0",
     "eslint-config-fbjs": "2.0.1",
@@ -227,24 +224,5 @@
     "react-native-dummy": "0.1.0",
     "react-test-renderer": "16.6.3",
     "shelljs": "^0.7.8"
-  },
-  "detox": {
-    "test-runner": "jest",
-    "runner-config": "RNTester/e2e/config.json",
-    "specs": "RNTester/e2e",
-    "configurations": {
-      "ios.sim.release": {
-        "binaryPath": "RNTester/build/Build/Products/Release-iphonesimulator/RNTester.app/",
-        "build": "xcodebuild -project RNTester/RNTester.xcodeproj -scheme RNTester -configuration Release -sdk iphonesimulator -derivedDataPath RNTester/build -UseModernBuildSystem=NO -quiet",
-        "type": "ios.simulator",
-        "name": "iPhone 8"
-      },
-      "ios.sim.debug": {
-        "binaryPath": "RNTester/build/Build/Products/Debug-iphonesimulator/RNTester.app/",
-        "build": "xcodebuild -project RNTester/RNTester.xcodeproj -scheme RNTester -configuration Debug -sdk iphonesimulator -derivedDataPath RNTester/build -UseModernBuildSystem=NO -quiet",
-        "type": "ios.simulator",
-        "name": "iPhone 8"
-      }
-    }
   }
 }
