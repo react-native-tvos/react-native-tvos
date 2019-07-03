@@ -14,7 +14,7 @@
 
 @implementation RCTTVFocusGuideViewManager
 
-RCT_EXPORT_MODULE(FocusGuide)
+RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(destinationTags, NSArray)
 
 #if (TARGET_OS_TV)
