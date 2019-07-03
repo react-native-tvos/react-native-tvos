@@ -331,6 +331,11 @@ const APIExamples: Array<RNTesterExample> = [
     supportsTVOS: true,
   },
   {
+    key: 'TVFocusGuideExample',
+    module: require('./TVFocusGuideExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'VibrationExample',
     module: require('../examples/Vibration/VibrationExample'),
     supportsTVOS: false,
