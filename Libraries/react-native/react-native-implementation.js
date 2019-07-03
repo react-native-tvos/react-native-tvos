@@ -305,6 +305,9 @@ module.exports = {
   get TVEventHandler() {
     return require('TVEventHandler');
   },
+  get TVFocusGuideView() {
+    return require('TVFocusGuideView');
+  },
   get TVMenuControl() {
     return require('TVMenuControl');
   },
