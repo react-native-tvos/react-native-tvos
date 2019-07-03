@@ -55,7 +55,7 @@
 
 - (void)addFocusGuide:(NSArray*)destinations {
   
-  UIView *origin = self;
+  UIView *origin = [self reactSuperview];
   if (self.focusGuide == nil) {
     self.focusGuide = [UIFocusGuide new];
     [self addLayoutGuide:self.focusGuide];
