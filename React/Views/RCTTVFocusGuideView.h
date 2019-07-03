@@ -12,7 +12,7 @@
 #import <React/RCTUIManagerObserverCoordinator.h>
 #import <yoga/Yoga.h>
 
-@interface RCTTVFocusGuideView : RCTView <RCTUIManagerObserver>
+@interface RCTTVFocusGuideView : RCTTVView <RCTUIManagerObserver>
 
 @property (nonatomic, strong) NSArray * destinationTags;
 @property (nonatomic, strong) UIFocusGuide * focusGuide;
