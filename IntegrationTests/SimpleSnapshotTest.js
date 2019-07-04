@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 /* $FlowFixMe(>=0.54.0 site=react_native_oss) This comment suppresses an error
  * found when Flow v0.54 was deployed. To see the error delete this comment and
  * run Flow. */

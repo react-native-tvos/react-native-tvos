@@ -12,7 +12,7 @@
 
 const requestAnimationFrame = require('fbjs/lib/requestAnimationFrame');
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {Text, View, StyleSheet} = ReactNative;
 const {TestModule} = ReactNative.NativeModules;
 
