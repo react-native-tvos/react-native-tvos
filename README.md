@@ -76,6 +76,10 @@ React Native apps may target iOS 9.0 and Android 4.1 (API 16) or newer. You may 
 
 Follow the [Getting Started guide](https://facebook.github.io/react-native/docs/getting-started.html). The recommended way to install React Native depends on your project. Here you can find short guides for the most common scenarios:
 
+(This repo is specifically for developers who wish to build React Native applications for Apple TV.  See [this file](./README-appletv.md) for tvOS-specific instructions.)
+
+Learn once, write anywhere: Build mobile apps with React.
+
 - [Trying out React Native][hello-world]
 - [Creating a New Application][new-app]
 - [Adding React Native to an Existing Application][existing]
