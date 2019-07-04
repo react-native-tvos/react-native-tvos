@@ -12,12 +12,12 @@
 
 const React = require('react');
 const ReactNative = require('react-native-tvos');
-const RCTNativeAppEventEmitter = require('react-native/Libraries/EventEmitter/RCTNativeAppEventEmitter');
+const RCTNativeAppEventEmitter = require('react-native-tvos/Libraries/EventEmitter/RCTNativeAppEventEmitter');
 
 const {View} = ReactNative;
 
 const {TestModule} = ReactNative.NativeModules;
-import type EmitterSubscription from 'react-native/Libraries/vendor/emitter/EmitterSubscription';
+import type EmitterSubscription from 'react-native-tvos/Libraries/vendor/emitter/EmitterSubscription';
 
 const reactViewWidth = 101;
 const reactViewHeight = 102;
