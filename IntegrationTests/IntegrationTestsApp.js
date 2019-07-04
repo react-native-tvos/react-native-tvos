@@ -12,7 +12,7 @@
 
 require('react-native/Libraries/Core/InitializeCore');
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {
   AppRegistry,
   ScrollView,
