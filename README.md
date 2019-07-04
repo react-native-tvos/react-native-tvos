@@ -44,6 +44,8 @@
   <a href="https://github.com/facebook/react-native/blob/master/.github/SUPPORT">Support</a>
 </h3>
 
+(This repo is specifically for developers who wish to build React Native applications for Apple TV.  See [this file](./README-appletv.md) for tvOS-specific instructions.)
+
 React Native brings [**React**'s][r] declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform.
 
 - **Declarative.** React makes it painless to create interactive UIs. Declarative views make your code more predictable and easier to debug.
