@@ -1,6 +1,6 @@
 {
   "name": "react-native-tvos",
-  "version": "0.59.8.0",
+  "version": "0.59.8-0",
   "description": "A framework for building native apps using React (with Apple TV support)",
   "license": "MIT",
   "repository": {
