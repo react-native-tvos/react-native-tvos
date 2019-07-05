@@ -1,10 +1,9 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ * <p>This source code is licensed under the MIT license found in the LICENSE file in the root
+ * directory of this source tree.
  */
-
 package com.facebook.react.views.switchview;
 
 import android.content.Context;
@@ -37,6 +36,11 @@ import javax.annotation.Nullable;
       mAllowChange = false;
       super.setChecked(checked);
       setTrackColor(checked);
+    } else {
+      // Even if mAllowChange is set to false or the checked value hasn't changed, we still must
+      // call the super method, since it will make sure the thumb is moved back to the correct edge.
+      // Without calling the super method, the thumb might stuck in the middle of the switch.
+      super.setChecked(isChecked());
     }
   }
 

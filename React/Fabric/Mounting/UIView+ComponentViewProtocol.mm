@@ -39,12 +39,12 @@ using namespace facebook::react;
   [childComponentView removeFromSuperview];
 }
 
-- (void)updateProps:(SharedProps)props oldProps:(SharedProps)oldProps
+- (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
 {
   // Default implementation does nothing.
 }
 
-- (void)updateEventEmitter:(SharedEventEmitter)eventEmitter
+- (void)updateEventEmitter:(EventEmitter::Shared const &)eventEmitter
 {
   // Default implementation does nothing.
 }
@@ -54,12 +54,14 @@ using namespace facebook::react;
   // Default implementation does nothing.
 }
 
-- (void)updateState:(facebook::react::State::Shared)state oldState:(facebook::react::State::Shared)oldState
+- (void)updateState:(facebook::react::State::Shared const &)state
+           oldState:(facebook::react::State::Shared const &)oldState
 {
   // Default implementation does nothing.
 }
 
-- (void)updateLayoutMetrics:(LayoutMetrics)layoutMetrics oldLayoutMetrics:(LayoutMetrics)oldLayoutMetrics
+- (void)updateLayoutMetrics:(LayoutMetrics const &)layoutMetrics
+           oldLayoutMetrics:(LayoutMetrics const &)oldLayoutMetrics
 {
   if (layoutMetrics.frame != oldLayoutMetrics.frame) {
     CGRect frame = RCTCGRectFromRect(layoutMetrics.frame);
@@ -79,7 +81,10 @@ using namespace facebook::react;
       return;
     }
 
-    self.frame = frame;
+    // Note: Changing `frame` when `layer.transform` is not the `identity transform` is undefined behavior.
+    // Therefore, we must use `center` and `bounds`.
+    self.center = CGPoint{CGRectGetMidX(frame), CGRectGetMidY(frame)};
+    self.bounds = CGRect{CGPointZero, frame.size};
   }
 
   if (layoutMetrics.layoutDirection != oldLayoutMetrics.layoutDirection) {

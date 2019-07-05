@@ -10,13 +10,18 @@
 
 #import "RNTesterTurboModuleProvider.h"
 
-#import <jsireact/RCTSampleTurboCxxModule.h>
-#import <jsireact/SampleTurboModule.h>
+#import <React/CoreModulesPlugins.h>
+#import <jsireact/SampleTurboCxxModule.h>
+#import <jsireact/RCTSampleTurboModule.h>
 
 // NOTE: This entire file should be codegen'ed.
 
 namespace facebook {
 namespace react {
+
+Class RNTesterTurboModuleClassProvider(const char *name) {
+  return RCTCoreModulesClassProvider(name);
+}
 
 std::shared_ptr<TurboModule> RNTesterTurboModuleProvider(const std::string &name, std::shared_ptr<JSCallInvoker> jsInvoker) {
   if (name == "SampleTurboCxxModule") {

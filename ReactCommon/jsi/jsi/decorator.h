@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
  * This source code is licensed under the MIT license found in the LICENSE
@@ -334,8 +334,11 @@ class RuntimeDecorator : public Base, private jsi::Instrumentation {
   }
 
   bool createSnapshotToFile(const std::string& path, bool compact) override {
-    return const_cast<Plain&>(plain()).instrumentation().createSnapshotToFile(
-        path, compact);
+    return plain().instrumentation().createSnapshotToFile(path, compact);
+  }
+
+  bool createSnapshotToStream(std::ostream& os, bool compact) override {
+    return plain().instrumentation().createSnapshotToStream(os, compact);
   }
 
   void writeBridgeTrafficTraceToFile(

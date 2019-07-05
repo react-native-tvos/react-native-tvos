@@ -1060,14 +1060,45 @@ RCT_EXPORT_METHOD(findSubviewIn:(nonnull NSNumber *)reactTag atPoint:(CGPoint)po
 }
 
 RCT_EXPORT_METHOD(dispatchViewManagerCommand:(nonnull NSNumber *)reactTag
-                  commandID:(NSInteger)commandID
+                  commandID:(id /*(NSString or NSNumber) */)commandID
                   commandArgs:(NSArray<id> *)commandArgs)
 {
   RCTShadowView *shadowView = _shadowViewRegistry[reactTag];
   RCTComponentData *componentData = _componentDataByName[shadowView.viewName];
+
+  // Achtung! Achtung!
+  // This is a remarkably hacky and ugly workaround.
+  // We need this only temporary for some testing. We need this hack until Fabric fully implements command-execution pipeline.
+  // This does not affect non-Fabric apps.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+  if (!componentData) {
+    __block UIView *view;
+    RCTUnsafeExecuteOnMainQueueSync(^{
+      view = self->_viewRegistry[reactTag];
+    });
+    if ([view respondsToSelector:@selector(componentViewName_DO_NOT_USE_THIS_IS_BROKEN)]) {
+      NSString *name = [view performSelector:@selector(componentViewName_DO_NOT_USE_THIS_IS_BROKEN)];
+      componentData = _componentDataByName[[NSString stringWithFormat:@"RCT%@", name]];
+    }
+  }
+#pragma clang diagnostic pop
+
   Class managerClass = componentData.managerClass;
   RCTModuleData *moduleData = [_bridge moduleDataForName:RCTBridgeModuleNameForClass(managerClass)];
-  id<RCTBridgeMethod> method = moduleData.methods[commandID];
+
+  id<RCTBridgeMethod> method;
+  if ([commandID isKindOfClass:[NSNumber class]]) {
+    method = moduleData.methods[[commandID intValue]];
+  } else if([commandID isKindOfClass:[NSString class]]) {
+    method = moduleData.methodsByName[commandID];
+    if (method == nil) {
+      RCTLogError(@"No command found with name \"%@\"", commandID);
+    }
+  } else {
+    RCTLogError(@"dispatchViewManagerCommand must be called with a string or integer command");
+    return;
+  }
 
   NSArray *args = [@[reactTag] arrayByAddingObjectsFromArray:commandArgs];
   [method invokeWithBridge:_bridge module:componentData.manager arguments:args];
@@ -1288,26 +1319,6 @@ RCT_EXPORT_METHOD(measureInWindow:(nonnull NSNumber *)reactTag
       @(windowFrame.size.height),
     ]);
   }];
-}
-
-/**
- * Returs if the shadow view provided has the `ancestor` shadow view as
- * an actual ancestor.
- */
-RCT_EXPORT_METHOD(viewIsDescendantOf:(nonnull NSNumber *)reactTag
-                  ancestor:(nonnull NSNumber *)ancestorReactTag
-                  callback:(RCTResponseSenderBlock)callback)
-{
-  RCTShadowView *shadowView = _shadowViewRegistry[reactTag];
-  RCTShadowView *ancestorShadowView = _shadowViewRegistry[ancestorReactTag];
-  if (!shadowView) {
-    return;
-  }
-  if (!ancestorShadowView) {
-    return;
-  }
-  BOOL viewIsAncestor = [shadowView viewIsDescendantOf:ancestorShadowView];
-  callback(@[@(viewIsAncestor)]);
 }
 
 static void RCTMeasureLayout(RCTShadowView *view,

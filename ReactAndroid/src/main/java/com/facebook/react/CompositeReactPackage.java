@@ -8,6 +8,8 @@ package com.facebook.react;
 
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.module.model.ReactModuleInfo;
+import com.facebook.react.module.model.ReactModuleInfoProvider;
 import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +48,25 @@ public class CompositeReactPackage implements ViewManagerOnDemandReactPackage, R
     // This is for backward compatibility.
     final Map<String, NativeModule> moduleMap = new HashMap<>();
     for (ReactPackage reactPackage : mChildReactPackages) {
+      /**
+       * For now, we eagerly initialize the NativeModules inside TurboReactPackages. Ultimately, we
+       * should turn CompositeReactPackage into a TurboReactPackage and remove this eager
+       * initialization.
+       *
+       * <p>TODO: T45627020
+       */
+      if (reactPackage instanceof TurboReactPackage) {
+        TurboReactPackage turboReactPackage = (TurboReactPackage) reactPackage;
+        ReactModuleInfoProvider moduleInfoProvider = turboReactPackage.getReactModuleInfoProvider();
+        Map<String, ReactModuleInfo> moduleInfos = moduleInfoProvider.getReactModuleInfos();
+
+        for (final String moduleName : moduleInfos.keySet()) {
+          moduleMap.put(moduleName, turboReactPackage.getModule(moduleName, reactContext));
+        }
+
+        continue;
+      }
+
       for (NativeModule nativeModule : reactPackage.createNativeModules(reactContext)) {
         moduleMap.put(nativeModule.getName(), nativeModule);
       }
