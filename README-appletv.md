@@ -1,14 +1,32 @@
-TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV and Android TV, with few or no changes needed in the JavaScript code for the applications.
+## react-native-tvos
+
+Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the (core repo)[https://github.com/facebook/react-native/].  This is a full fork of the main repository, with only the changes needed to support Apple TV.
+
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.59.8.0 release of this package will be derived from the 0.59.8 release of `react-native`.
+
+To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
+
+```js
+"react-native": "npm:react-native-tvos@0.59.8.0",
+```
+
+## General support for Apple TV
+
+TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV, with few or no changes needed in the JavaScript code for the applications.
 
 The RNTester app supports Apple TV.
-- In the `RNTester` project,  use the `RNTester-tvOS` build target to build for tvOS.
-- In this repo, `Podfile` and `RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
+- _Without cocoapods:_ In `RNTester/RNTester.xcodeproj`,  use the `RNTester-tvOS` build target to build for tvOS.
+- _With cocoapods:_ In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
 
 ## Build changes
 
 - _Native layer_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
 
-- _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.
+- _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.  To use this NPM package for creating a new project, you can reference it as in the following example:
+
+```sh
+react-native init TestApp --version=react-native@npm:react-native-tvos@0.59.8.0
+```
 
 - _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
 
@@ -81,6 +99,10 @@ class Game2048 extends React.Component {
 - _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button on the TV remote.
 
 - _TabBarIOS behavior_: The `TabBarIOS` component wraps the native `UITabBar` API, which works differently on Apple TV. To avoid jittery rerendering of the tab bar in tvOS (see [this issue](https://github.com/facebook/react-native/issues/15081)), the selected tab bar item can only be set from Javascript on initial render, and is controlled after that by the user through native code.
+
+- _TVMenuControl_: This module provides methods to enable and disable navigation using the menu key on the TV remote.  This is required in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses this new module to implement correct menu key behavior.
+
+- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  A new example is provided in `RNTester`.
 
 - _Known issues_:
 
