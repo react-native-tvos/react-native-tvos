@@ -1,6 +1,6 @@
 ## react-native-tvos
 
-Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the (core repo)[https://github.com/facebook/react-native/].  This is a full fork of the main repository, with only the changes needed to support Apple TV.
+Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.59.8-0 release of this package will be derived from the 0.59.8 release of `react-native`.
 
