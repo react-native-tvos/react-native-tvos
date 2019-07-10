@@ -30,7 +30,24 @@ PODS:
     - React-Core (= 0.60.4-0)
   - React-Core (0.60.4-0):
     - Folly (= 2018.10.22.00)
+    - glog
+    - React-Core/Default (= 0.60.4-0)
     - React-cxxreact (= 0.60.4-0)
+    - React-jsi (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+    - yoga (= 0.60.4-0.React)
+  - React-Core/CxxBridge (0.60.4-0):
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-cxxreact (= 0.60.4-0)
+    - React-jsi (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+    - yoga (= 0.60.4-0.React)
+  - React-Core/Default (0.60.4-0):
+    - Folly (= 2018.10.22.00)
+    - glog
+    - React-cxxreact (= 0.60.4-0)
+    - React-jsi (= 0.60.4-0)
     - React-jsiexecutor (= 0.60.4-0)
     - yoga (= 0.60.4-0.React)
   - React-cxxreact (0.60.4-0):
@@ -180,7 +197,7 @@ PODS:
     - React-RCTWebSocket (= 0.60.4-0)
   - React-RCTFabric (0.60.4-0):
     - Folly/Fabric (= 2018.10.22.00)
-    - React-Core (= 0.60.4-0)
+    - React-Core/CxxBridge (= 0.60.4-0)
     - React-Fabric (= 0.60.4-0)
     - React-RCTImage (= 0.60.4-0)
   - React-RCTImage (0.60.4-0):
@@ -201,18 +218,19 @@ PODS:
     - React-fishhook (= 0.60.4-0)
   - React-turbomodule-core (0.60.4-0):
     - Folly (= 2018.10.22.00)
-    - React-Core (= 0.60.4-0)
+    - React-Core/CxxBridge (= 0.60.4-0)
     - React-cxxreact (= 0.60.4-0)
     - React-jscallinvoker (= 0.60.4-0)
     - React-jsi (= 0.60.4-0)
     - React-turbomodule-core/core-ios (= 0.60.4-0)
   - React-turbomodule-core/core-ios (0.60.4-0):
     - Folly (= 2018.10.22.00)
-    - React-Core (= 0.60.4-0)
+    - React-Core/CxxBridge (= 0.60.4-0)
     - React-cxxreact (= 0.60.4-0)
     - React-jscallinvoker (= 0.60.4-0)
     - React-jsi (= 0.60.4-0)
   - React-turbomodule-samples (0.60.4-0):
+    - DoubleConversion
     - Folly (= 2018.10.22.00)
     - React-Core (= 0.60.4-0)
     - React-cxxreact (= 0.60.4-0)
@@ -220,6 +238,7 @@ PODS:
     - React-turbomodule-core (= 0.60.4-0)
     - React-turbomodule-samples/samples-ios (= 0.60.4-0)
   - React-turbomodule-samples/samples-ios (0.60.4-0):
+    - DoubleConversion
     - Folly (= 2018.10.22.00)
     - React-Core (= 0.60.4-0)
     - React-cxxreact (= 0.60.4-0)
@@ -328,19 +347,19 @@ SPEC CHECKSUMS:
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   React: f11cf862a7458311a6f87d3d611be732f991143c
   React-ART: 6d2425d624da51a94845b61ce38033017752ca96
-  React-Core: d47aab984f4b293360bcfa2dbef9d192e627ca12
-  React-cxxreact: db722b1d6a6db20e00ef788e679539c6e4d193a5
+  React-Core: b47bd0825085fa566b99b2b9b34c01e3364aa759
+  React-cxxreact: 5a057f100a4feefd16ec4c63405ed21d3c53efda
   React-DevSupport: c87653fe577b5aeada12122403c6793510912e8a
   React-Fabric: 26d57e8a2b8ecb36efb1947ae5e496257100dac4
   React-fishhook: f0ca17063ff71321dcbe45324c8732e7c7724157
   React-graphics: abd37cdc7e91760904d0be82e5881882f9bca9a2
-  React-jscallinvoker: 1b3233477c80a9aae587003437133afedb678d78
-  React-jsi: a10c64bff77ce63cca5435550ca91a91f2f7a4c4
-  React-jsiexecutor: 05b2a84ba37b62854186bc6d46a168dfb62f9e0c
+  React-jscallinvoker: 24dd054d9ec5d91abe1e5499e2abae6bc1430dbe
+  React-jsi: f55a8825f4c92226b080d6c7da2349859823b3f6
+  React-jsiexecutor: c74357b20fbb8ac8b10571e9eb543cfb73443991
   React-jsinspector: c1dc5137f73f1f4bb29564d8f8f2309026fccbfb
   React-RCTAnimation: 37aa8a9bdc330b1309e362efe885e1895b502f3f
   React-RCTBlob: cfefc301080705c077aee3306273dbc99dedec7c
-  React-RCTFabric: 6c2e56641ade89fbcb81d9a6144fd4746b9618f7
+  React-RCTFabric: 3eea836486870b5c1077177a2518e5e2ed9451bc
   React-RCTImage: 65245c0280410bd08ec8798dba239fc5c098c261
   React-RCTLinking: f255d208a72150ef7baa959fcb7cfb19e3f64033
   React-RCTNetwork: 3034324e9909ba5eaa5300e3f3465f5997321ebb
@@ -348,9 +367,9 @@ SPEC CHECKSUMS:
   React-RCTSettings: ffcbb034ab31500f2b9b6c1726f4b003e759b4f6
   React-RCTText: b1eb14d8761a4927b5742d7910ba9e762b6a6779
   React-RCTWebSocket: ab493edc7e846b7461fd422f4e543af319346d08
-  React-turbomodule-core: 4e8b6eb53e393b560f06d5132b957fbd585bad57
-  React-turbomodule-samples: 6153971f2125f110f9f928132e08c8fbd55c3f4b
-  yoga: a42a08e49b4746a3f9e2bccbfd7ef6ef33a7dda1
+  React-turbomodule-core: 262e18d056fc1293ed1f93bae1e6db58b910da04
+  React-turbomodule-samples: bd9e26741fa2d0a681338ecc4167ad2091ba1842
+  yoga: e5ba376a914a3fdfc69812cb9c273ac41e89ed7e
 
 PODFILE CHECKSUM: e1ce2a5cd89abee8b0567d3f9bae1dc3bb269a13
 
