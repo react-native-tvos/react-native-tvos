@@ -32,7 +32,7 @@ class Binding : public jni::HybridClass<Binding>, public SchedulerDelegate {
   std::shared_ptr<Scheduler> scheduler_;
   std::mutex schedulerMutex_;
 
-  std::mutex commitMutex_;
+  std::recursive_mutex commitMutex_;
 
   float pointScaleFactor_ = 1;
 
@@ -81,6 +81,11 @@ class Binding : public jni::HybridClass<Binding>, public SchedulerDelegate {
   void schedulerDidRequestPreliminaryViewAllocation(
       const SurfaceId surfaceId,
       const ShadowView &shadowView);
+
+  void schedulerDidDispatchCommand(
+    const ShadowView &shadowView,
+    std::string const &commandName,
+    folly::dynamic const args);
 
   void setPixelDensity(float pointScaleFactor);
 

@@ -34,6 +34,7 @@
 #import <react/uimanager/SchedulerToolbox.h>
 #import <react/utils/ContextContainer.h>
 #import <react/utils/ManagedObjectWrapper.h>
+#import <react/utils/RuntimeExecutor.h>
 
 #import "MainRunLoopEventBeat.h"
 #import "RCTConversions.h"
@@ -251,7 +252,7 @@ using namespace facebook::react;
   // * `RCTImageLoader` should be moved to `RNImageComponentView`.
   // * `ReactNativeConfig` should be set by outside product code.
   _contextContainer->insert("ReactNativeConfig", _reactNativeConfig);
-  _contextContainer->insert("RCTImageLoader", wrapManagedObject([_bridge imageLoader]));
+  _contextContainer->insert("RCTImageLoader", wrapManagedObject([_bridge moduleForClass:[RCTImageLoader class]]));
 
   return _contextContainer;
 }
@@ -319,6 +320,17 @@ using namespace facebook::react;
   [surface _setStage:RCTSurfaceStagePrepared];
 
   [_mountingManager scheduleTransaction:mountingCoordinator];
+}
+
+- (void)schedulerDidDispatchCommand:(facebook::react::ShadowView const &)shadowView
+                        commandName:(std::string const &)commandName
+                               args:(folly::dynamic const)args
+{
+  ReactTag tag = shadowView.tag;
+  NSString *commandStr = [[NSString alloc] initWithUTF8String:commandName.c_str()];
+  NSArray *argsArray = convertFollyDynamicToId(args);
+
+  [self->_mountingManager dispatchCommand:tag commandName:commandStr args:argsArray];
 }
 
 - (void)addObserver:(id<RCTSurfacePresenterObserver>)observer

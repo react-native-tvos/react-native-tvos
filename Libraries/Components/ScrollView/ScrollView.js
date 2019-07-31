@@ -532,7 +532,7 @@ export type Props = $ReadOnly<{|
    */
   snapToOffsets?: ?$ReadOnlyArray<number>,
   /**
-   * Use in conjuction with `snapToOffsets`. By default, the beginning
+   * Use in conjunction with `snapToOffsets`. By default, the beginning
    * of the list counts as a snap offset. Set `snapToStart` to false to disable
    * this behavior and allow the list to scroll freely between its start and
    * the first `snapToOffsets` offset.
@@ -540,7 +540,7 @@ export type Props = $ReadOnly<{|
    */
   snapToStart?: ?boolean,
   /**
-   * Use in conjuction with `snapToOffsets`. By default, the end
+   * Use in conjunction with `snapToOffsets`. By default, the end
    * of the list counts as a snap offset. Set `snapToEnd` to false to disable
    * this behavior and allow the list to scroll freely between its end and
    * the last `snapToOffsets` offset.
@@ -561,7 +561,7 @@ export type Props = $ReadOnly<{|
    *
    * See [RefreshControl](docs/refreshcontrol.html).
    */
-  // $FlowFixMe - how to handle generic type without existential opereator?
+  // $FlowFixMe - how to handle generic type without existential operator?
   refreshControl?: ?React.Element<any>,
   children?: React.Node,
 |}>;
@@ -585,9 +585,12 @@ function createScrollResponder(
   return scrollResponder;
 }
 
-type ContextType = {||} | null;
+type ContextType = {|horizontal: boolean|} | null;
 const Context = React.createContext<ContextType>(null);
-const standardContext: ContextType = Object.freeze({}); // not null with option value to add more info in the future
+const standardHorizontalContext: ContextType = Object.freeze({
+  horizontal: true,
+});
+const standardVerticalContext: ContextType = Object.freeze({horizontal: false});
 
 /**
  * Component that wraps platform ScrollView while providing
@@ -1022,7 +1025,14 @@ class ScrollView extends React.Component<Props, State> {
       });
     }
     children = (
-      <Context.Provider value={standardContext}>{children}</Context.Provider>
+      <Context.Provider
+        value={
+          this.props.horizontal === true
+            ? standardHorizontalContext
+            : standardVerticalContext
+        }>
+        {children}
+      </Context.Provider>
     );
 
     const hasStickyHeaders =

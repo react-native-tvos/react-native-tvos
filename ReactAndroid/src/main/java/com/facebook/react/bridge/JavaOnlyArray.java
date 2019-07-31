@@ -6,11 +6,11 @@
  */
 package com.facebook.react.bridge;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Java {@link ArrayList} backed implementation of {@link ReadableArray} and {@link WritableArray}
@@ -101,8 +101,8 @@ public class JavaOnlyArray implements ReadableArray, WritableArray {
   }
 
   @Override
-  public JavaOnlyArray getArray(int index) {
-    return (JavaOnlyArray) mBackingList.get(index);
+  public ReadableArray getArray(int index) {
+    return (ReadableArray) mBackingList.get(index);
   }
 
   @Override
@@ -111,17 +111,17 @@ public class JavaOnlyArray implements ReadableArray, WritableArray {
   }
 
   @Override
-  public JavaOnlyMap getMap(int index) {
-    return (JavaOnlyMap) mBackingList.get(index);
+  public ReadableMap getMap(int index) {
+    return (ReadableMap) mBackingList.get(index);
   }
 
   @Override
-  public @Nonnull Dynamic getDynamic(int index) {
+  public @NonNull Dynamic getDynamic(int index) {
     return DynamicFromArray.create(this, index);
   }
 
   @Override
-  public @Nonnull ReadableType getType(int index) {
+  public @NonNull ReadableType getType(int index) {
     Object object = mBackingList.get(index);
 
     if (object == null) {
@@ -161,12 +161,12 @@ public class JavaOnlyArray implements ReadableArray, WritableArray {
   }
 
   @Override
-  public void pushArray(@Nullable WritableArray array) {
+  public void pushArray(@Nullable ReadableArray array) {
     mBackingList.add(array);
   }
 
   @Override
-  public void pushMap(@Nullable WritableMap map) {
+  public void pushMap(@Nullable ReadableMap map) {
     mBackingList.add(map);
   }
 
@@ -176,7 +176,7 @@ public class JavaOnlyArray implements ReadableArray, WritableArray {
   }
 
   @Override
-  public @Nonnull ArrayList<Object> toArrayList() {
+  public @NonNull ArrayList<Object> toArrayList() {
     return new ArrayList<Object>(mBackingList);
   }
 

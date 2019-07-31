@@ -12,13 +12,13 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import androidx.annotation.Nullable;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.queue.MessageQueueThread;
 import com.facebook.react.bridge.queue.ReactQueueConfiguration;
 import com.facebook.react.common.LifecycleState;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.CopyOnWriteArraySet;
-import javax.annotation.Nullable;
 
 /**
  * Abstract ContextWrapper for Android application or activity {@link Context} and {@link
@@ -46,6 +46,7 @@ public class ReactContext extends ContextWrapper {
   private @Nullable MessageQueueThread mNativeModulesMessageQueueThread;
   private @Nullable MessageQueueThread mJSMessageQueueThread;
   private @Nullable NativeModuleCallExceptionHandler mNativeModuleCallExceptionHandler;
+  private @Nullable NativeModuleCallExceptionHandler mExceptionHandlerWrapper;
   private @Nullable WeakReference<Activity> mCurrentActivity;
 
   public ReactContext(Context base) {
@@ -342,6 +343,20 @@ public class ReactContext extends ContextWrapper {
     } else {
       throw new RuntimeException(e);
     }
+  }
+
+  public class ExceptionHandlerWrapper implements NativeModuleCallExceptionHandler {
+    @Override
+    public void handleException(Exception e) {
+      ReactContext.this.handleException(e);
+    }
+  }
+
+  public NativeModuleCallExceptionHandler getExceptionHandler() {
+    if (mExceptionHandlerWrapper == null) {
+      mExceptionHandlerWrapper = new ExceptionHandlerWrapper();
+    }
+    return mExceptionHandlerWrapper;
   }
 
   public boolean hasCurrentActivity() {

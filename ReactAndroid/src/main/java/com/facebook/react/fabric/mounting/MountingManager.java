@@ -17,7 +17,6 @@ import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableNativeMap;
-import com.facebook.react.bridge.SoftAssertions;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.fabric.FabricUIManager;
 import com.facebook.react.fabric.events.EventEmitterWrapper;
@@ -99,20 +98,6 @@ public class MountingManager {
     }
   }
 
-  /** Releases all references to react root tag. */
-  @UiThread
-  public void removeRootView(int reactRootTag) {
-    UiThreadUtil.assertOnUiThread();
-    ViewState viewState = mTagToViewState.get(reactRootTag);
-    if (viewState == null || !viewState.mIsRoot) {
-      SoftAssertions.assertUnreachable(
-          "View with tag " + reactRootTag + " is not registered as a root view");
-    }
-    if (viewState.mView != null) {
-      dropView(viewState.mView);
-    }
-  }
-
   @UiThread
   public void addViewAt(int parentTag, int tag, int index) {
     UiThreadUtil.assertOnUiThread();
@@ -121,7 +106,8 @@ public class MountingManager {
     ViewState viewState = getViewState(tag);
     final View view = viewState.mView;
     if (view == null) {
-      throw new IllegalStateException("Unable to find view for viewState " + viewState);
+      throw new IllegalStateException(
+          "Unable to find view for viewState " + viewState + " and tag " + tag);
     }
     getViewGroupManager(parentViewState).addView(parentView, view, index);
   }
@@ -129,7 +115,7 @@ public class MountingManager {
   private ViewState getViewState(int tag) {
     ViewState viewState = mTagToViewState.get(tag);
     if (viewState == null) {
-      throw new IllegalStateException("Unable to find viewState view " + viewState);
+      throw new IllegalStateException("Unable to find viewState view for tag " + tag);
     }
     return viewState;
   }
@@ -205,13 +191,11 @@ public class MountingManager {
 
     if (isLayoutable) {
       viewManager = mViewManagerRegistry.get(componentName);
+      // View Managers are responsible for dealing with initial state and props.
       view =
           mViewFactory.getOrCreateView(
               componentName, propsDiffMap, stateWrapper, themedReactContext);
       view.setId(reactTag);
-      if (stateWrapper != null) {
-        viewManager.updateState(view, stateWrapper);
-      }
     }
 
     ViewState viewState = new ViewState(reactTag, view, viewManager);
@@ -325,7 +309,11 @@ public class MountingManager {
     if (viewManager == null) {
       throw new IllegalStateException("Unable to find ViewManager for tag: " + reactTag);
     }
-    viewManager.updateState(viewState.mView, stateWrapper);
+    Object extraData =
+        viewManager.updateState(viewState.mView, viewState.mCurrentProps, stateWrapper);
+    if (extraData != null) {
+      viewManager.updateExtraData(viewState.mView, extraData);
+    }
   }
 
   @UiThread

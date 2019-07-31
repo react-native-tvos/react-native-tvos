@@ -6,10 +6,10 @@
  */
 package com.facebook.react.turbomodule.core.interfaces;
 
+import androidx.annotation.Nullable;
 import java.util.Collection;
-import javax.annotation.Nullable;
 
-/** Interface to allow for creating and retrieving TurboModuels. */
+/** Interface to allow for creating and retrieving TurboModules. */
 public interface TurboModuleRegistry {
 
   /**

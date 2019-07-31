@@ -7,16 +7,13 @@
 package com.facebook.react.bridge;
 
 import android.view.View;
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface UIManager extends JSIModule, PerformanceCounter {
 
   /** Registers a new root view. */
   <T extends View> int addRootView(
       final T rootView, WritableMap initialProps, @Nullable String initialUITemplate);
-
-  /** Unregisters a new root view. */
-  void removeRootView(int reactRootTag);
 
   /**
    * Updates the layout specs of the RootShadowNode based on the Measure specs received by

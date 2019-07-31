@@ -39,6 +39,7 @@ import android.os.Bundle;
 import android.os.Process;
 import android.util.Log;
 import android.view.View;
+import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import com.facebook.common.logging.FLog;
 import com.facebook.debug.holder.PrinterHolder;
@@ -102,7 +103,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /**
  * This class is managing instances of {@link CatalystInstance}. It exposes a way to configure
@@ -292,7 +292,16 @@ public class ReactInstanceManager {
       public @Nullable Activity getCurrentActivity() {
         return ReactInstanceManager.this.mCurrentActivity;
       }
+
+      @Override
+      public JavaScriptExecutorFactory getJavaScriptExecutorFactory() {
+        return ReactInstanceManager.this.getJSExecutorFactory();
+      }
     };
+  }
+
+  private JavaScriptExecutorFactory getJSExecutorFactory() {
+    return mJavaScriptExecutorFactory;
   }
 
   public DevSupportManager getDevSupportManager() {
@@ -328,6 +337,8 @@ public class ReactInstanceManager {
   @ThreadConfined(UI)
   public void createReactContextInBackground() {
     Log.d(ReactConstants.TAG, "ReactInstanceManager.createReactContextInBackground()");
+    UiThreadUtil
+        .assertOnUiThread(); // Assert before setting mHasStartedCreatingInitialContext = true
     if (!mHasStartedCreatingInitialContext) {
       mHasStartedCreatingInitialContext = true;
       recreateReactContextInBackgroundInner();
@@ -360,15 +371,6 @@ public class ReactInstanceManager {
     if (mUseDeveloperSupport && mJSMainModulePath != null) {
       final DeveloperSettings devSettings = mDevSupportManager.getDevSettings();
 
-      // If remote JS debugging is enabled, load from dev server.
-      if (mDevSupportManager.hasUpToDateJSBundleInCache()
-          && !devSettings.isRemoteJSDebugEnabled()) {
-        // If there is a up-to-date bundle downloaded from server,
-        // with remote JS debugging disabled, always use that.
-        onJSBundleLoadedFromServer(null);
-        return;
-      }
-
       if (!Systrace.isTracing(TRACE_TAG_REACT_APPS | TRACE_TAG_REACT_JS_VM_CALLS)) {
         if (mBundleLoader == null) {
           mDevSupportManager.handleReloadJS();
@@ -383,6 +385,11 @@ public class ReactInstanceManager {
                         public void run() {
                           if (packagerIsRunning) {
                             mDevSupportManager.handleReloadJS();
+                          } else if (mDevSupportManager.hasUpToDateJSBundleInCache()
+                              && !devSettings.isRemoteJSDebugEnabled()) {
+                            // If there is a up-to-date bundle downloaded from server,
+                            // with remote JS debugging disabled, always use that.
+                            onJSBundleLoadedFromServer(null);
                           } else {
                             // If dev server is down, disable the remote JS debugging.
                             devSettings.setRemoteJSDebugEnabled(false);

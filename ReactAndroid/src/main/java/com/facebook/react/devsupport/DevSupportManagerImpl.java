@@ -29,6 +29,7 @@ import com.facebook.react.R;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.DefaultNativeModuleCallExceptionHandler;
 import com.facebook.react.bridge.JavaJSExecutor;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.bridge.NativeDeltaClient;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactMarker;
@@ -95,6 +96,9 @@ public class DevSupportManagerImpl
   private static final int JSEXCEPTION_ERROR_COOKIE = -1;
   private static final String JS_BUNDLE_FILE_NAME = "ReactNativeDevBundle.js";
   private static final String RELOAD_APP_ACTION_SUFFIX = ".RELOAD_APP_ACTION";
+  private static final String ENABLE_SAMPLING_PROFILER = ".ENABLE_SAMPLING_PROFILER";
+  private static final String DISABLE_SAMPLING_PROFILER = ".DISABLE_SAMPLING_PROFILER";
+  private boolean mIsSamplingProfilerEnabled = false;
 
   private enum ErrorType {
     JS,
@@ -503,19 +507,9 @@ public class DevSupportManagerImpl
             mReactInstanceManagerHelper.toggleElementInspector();
           }
         });
-
     // "Live reload" which refreshes on every edit was removed in favor of "Fast Refresh".
     // While native code for "Live reload" is still there, please don't add the option back.
-    //
-    // If for some reason you really need a full reload on every edit,
-    // you can put this into your application entry point as an escape hatch:
-    //
-    // if (__DEV__) {
-    //   require.Refresh.forceFullRefresh = true;
-    // }
-    //
     // See D15958697 for more context.
-
     options.put(
         mDevSettings.isHotModuleReplacementEnabled()
             ? mApplicationContext.getString(R.string.catalyst_hot_reloading_stop)
@@ -543,6 +537,59 @@ public class DevSupportManagerImpl
             }
           }
         });
+    options.put(
+        mIsSamplingProfilerEnabled
+            ? mApplicationContext.getString(R.string.catalyst_sample_profiler_disable)
+            : mApplicationContext.getString(R.string.catalyst_sample_profiler_enable),
+        new DevOptionHandler() {
+          @Override
+          public void onOptionSelected() {
+            JavaScriptExecutorFactory javaScriptExecutorFactory =
+                mReactInstanceManagerHelper.getJavaScriptExecutorFactory();
+            if (!mIsSamplingProfilerEnabled) {
+              try {
+                javaScriptExecutorFactory.startSamplingProfiler();
+                Toast.makeText(
+                        mApplicationContext, "Starting Sampling Profiler", Toast.LENGTH_SHORT)
+                    .show();
+              } catch (UnsupportedOperationException e) {
+                Toast.makeText(
+                        mApplicationContext,
+                        javaScriptExecutorFactory.toString()
+                            + " does not support Sampling Profiler",
+                        Toast.LENGTH_LONG)
+                    .show();
+              }
+            } else {
+              try {
+                final String outputPath =
+                    File.createTempFile(
+                            "sampling-profiler-trace",
+                            ".cpuprofile",
+                            mApplicationContext.getCacheDir())
+                        .getPath();
+                javaScriptExecutorFactory.stopSamplingProfiler(outputPath);
+                Toast.makeText(
+                        mApplicationContext,
+                        "Saved results from Profiler to " + outputPath,
+                        Toast.LENGTH_LONG)
+                    .show();
+              } catch (IOException e) {
+                FLog.e(
+                    ReactConstants.TAG,
+                    "Could not create temporary file for saving results from Sampling Profiler");
+              } catch (UnsupportedOperationException e) {
+                Toast.makeText(
+                        mApplicationContext,
+                        javaScriptExecutorFactory.toString() + "does not support Sampling Profiler",
+                        Toast.LENGTH_LONG)
+                    .show();
+              }
+            }
+            mIsSamplingProfilerEnabled = !mIsSamplingProfilerEnabled;
+          }
+        });
+
     options.put(
         mDevSettings.isFpsDebugEnabled()
             ? mApplicationContext.getString(R.string.catalyst_perf_monitor_stop)

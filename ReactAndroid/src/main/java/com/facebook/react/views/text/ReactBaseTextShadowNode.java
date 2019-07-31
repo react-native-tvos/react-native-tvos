@@ -14,6 +14,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.Gravity;
+import androidx.annotation.Nullable;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReadableMap;
@@ -31,12 +32,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 /**
  * {@link ReactShadowNode} abstract class for spannable text nodes.
  *
- * <p>This class handles all text attributes assosiated with {@code <Text>}-ish node. A concrete
+ * <p>This class handles all text attributes associated with {@code <Text>}-ish node. A concrete
  * node can be an anchor {@code <Text>} node, an anchor {@code <TextInput>} node or virtual {@code
  * <Text>} node inside {@code <Text>} or {@code <TextInput>} node. Or even something else.
  *
@@ -241,7 +241,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
     // TODO(5837930): Investigate whether it's worth optimizing this part and do it if so
 
     // The {@link SpannableStringBuilder} implementation require setSpan operation to be called
-    // up-to-bottom, otherwise all the spannables that are withing the region for which one may set
+    // up-to-bottom, otherwise all the spannables that are within the region for which one may set
     // a new spannable will be wiped out
     List<SetSpanOperation> ops = new ArrayList<>();
     Map<Integer, ReactShadowNode> inlineViews =

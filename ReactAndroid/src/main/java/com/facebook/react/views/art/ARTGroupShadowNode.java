@@ -9,11 +9,10 @@ package com.facebook.react.views.art;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Region;
+import androidx.annotation.Nullable;
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import javax.annotation.Nullable;
 
 /** Shadow node for virtual ARTGroup view */
 public class ARTGroupShadowNode extends ARTVirtualNode {
@@ -46,8 +45,7 @@ public class ARTGroupShadowNode extends ARTVirtualNode {
             mClipping.left * mScale,
             mClipping.top * mScale,
             mClipping.right * mScale,
-            mClipping.bottom * mScale,
-            Region.Op.REPLACE);
+            mClipping.bottom * mScale);
       }
 
       for (int i = 0; i < getChildCount(); i++) {
