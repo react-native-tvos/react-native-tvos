@@ -17,7 +17,7 @@ const {
   PanResponder,
   StyleSheet,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const AnExSet = require('./AnExSet');
 

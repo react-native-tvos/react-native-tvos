@@ -11,8 +11,8 @@
 'use strict';
 
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import openURLInBrowser from 'react-native/Libraries/Core/Devtools/openURLInBrowser';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native-tvos';
+import openURLInBrowser from 'react-native-tvos/Libraries/Core/Devtools/openURLInBrowser';
 import Colors from './Colors';
 
 const links = [

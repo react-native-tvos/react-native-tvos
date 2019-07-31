@@ -11,7 +11,7 @@
 'use strict';
 
 import React from 'react';
-import {NativeModules, Button} from 'react-native';
+import {NativeModules, Button} from 'react-native-tvos';
 
 const {CrashyCrash} = NativeModules;
 

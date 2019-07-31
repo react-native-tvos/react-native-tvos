@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Image, Text, TouchableHighlight, View} = require('react-native');
+const {Image, Text, TouchableHighlight, View} = require('react-native-tvos');
 
 function Basic() {
   return (
