@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {requireNativeComponent} = require('react-native');
+const {requireNativeComponent} = require('react-native-tvos');
 
 import type {SyntheticEvent} from '../../Libraries/Types/CoreEventTypes';
 import type {ViewProps} from '../../Libraries/Components/View/ViewPropTypes';
