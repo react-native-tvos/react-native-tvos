@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {View} = require('react-native');
+const {View} = require('react-native-tvos');
 
 // Not applicable to iOS.
 module.exports = View;

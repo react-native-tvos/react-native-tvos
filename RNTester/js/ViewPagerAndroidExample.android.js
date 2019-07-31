@@ -18,7 +18,7 @@ const {
   TouchableOpacity,
   View,
   ViewPagerAndroid,
-} = require('react-native');
+} = require('react-native-tvos');
 
 import type {ViewPagerScrollState} from '../../Libraries/Components/ViewPager/ViewPagerAndroid';
 

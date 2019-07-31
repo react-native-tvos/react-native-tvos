@@ -19,7 +19,7 @@ const {
   Switch,
   Text,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class SafeAreaViewExample extends React.Component<
   {},

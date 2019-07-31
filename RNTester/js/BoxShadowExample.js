@@ -10,7 +10,7 @@
 'use strict';
 
 const React = require('react');
-const {Image, StyleSheet, View} = require('react-native');
+const {Image, StyleSheet, View} = require('react-native-tvos');
 
 const styles = StyleSheet.create({
   box: {

@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {AsyncStorage, PickerIOS, Text, View} = require('react-native');
+const {AsyncStorage, PickerIOS, Text, View} = require('react-native-tvos');
 const PickerItemIOS = PickerIOS.Item;
 
 const STORAGE_KEY = '@AsyncStorageExample:key';

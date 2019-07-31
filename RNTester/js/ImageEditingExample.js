@@ -20,7 +20,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const PAGE_SIZE = 20;
 

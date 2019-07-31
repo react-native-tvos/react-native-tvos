@@ -16,7 +16,7 @@ const {
   Text,
   ToastAndroid,
   TouchableWithoutFeedback,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const RNTesterBlock = require('./RNTesterBlock');
 const RNTesterPage = require('./RNTesterPage');

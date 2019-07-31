@@ -21,7 +21,7 @@ const {
   Slider,
   Switch,
   Alert,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class WithLabel extends React.Component<$FlowFixMeProps> {
   render() {

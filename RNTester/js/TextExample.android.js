@@ -13,7 +13,7 @@
 'use strict';
 
 const React = require('react');
-const {Image, StyleSheet, Text, View} = require('react-native');
+const {Image, StyleSheet, Text, View} = require('react-native-tvos');
 const RNTesterBlock = require('./RNTesterBlock');
 const RNTesterPage = require('./RNTesterPage');
 const TextInlineView = require('./Shared/TextInlineView');

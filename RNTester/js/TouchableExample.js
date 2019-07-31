@@ -23,7 +23,7 @@ const {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const forceTouchAvailable =
   (NativeModules.PlatformConstants &&

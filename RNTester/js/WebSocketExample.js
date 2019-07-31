@@ -20,7 +20,7 @@ const {
   TextInput,
   TouchableOpacity,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const DEFAULT_WS_URL = 'ws://localhost:5555/';
 const DEFAULT_HTTP_URL = 'http://localhost:5556/';

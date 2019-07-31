@@ -17,7 +17,7 @@ const {
   Text,
   TouchableHighlight,
   Share,
-} = require('react-native');
+} = require('react-native-tvos');
 
 type Props = $ReadOnly<{||}>;
 type State = {|result: string|};

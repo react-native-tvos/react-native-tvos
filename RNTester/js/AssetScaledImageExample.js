@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Image, StyleSheet, View, ScrollView} = require('react-native');
+const {Image, StyleSheet, View, ScrollView} = require('react-native-tvos');
 
 import type {PhotoIdentifier} from '../../Libraries/CameraRoll/CameraRoll';
 

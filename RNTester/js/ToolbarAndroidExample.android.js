@@ -17,7 +17,7 @@ const {
   Text,
   ToolbarAndroid,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const nativeImageSource = require('../../Libraries/Image/nativeImageSource');
 

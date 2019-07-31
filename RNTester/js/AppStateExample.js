@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {AppState, Text, View} = require('react-native');
+const {AppState, Text, View} = require('react-native-tvos');
 
 class AppStateSubscription extends React.Component<
   $FlowFixMeProps,

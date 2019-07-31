@@ -23,7 +23,7 @@ const {
   ToolbarAndroid,
   UIManager,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterExampleContainer = require('./RNTesterExampleContainer');
 const RNTesterExampleList = require('./RNTesterExampleList');

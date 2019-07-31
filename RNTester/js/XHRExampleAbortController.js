@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Alert, Button, View} = require('react-native');
+const {Alert, Button, View} = require('react-native-tvos');
 
 class XHRExampleAbortController extends React.Component<{}, {}> {
   _timeout: any;

@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {StyleSheet, Text, View} = require('react-native');
+const {StyleSheet, Text, View} = require('react-native-tvos');
 
 class ExampleBox extends React.Component<$FlowFixMeProps, $FlowFixMeState> {
   state = {

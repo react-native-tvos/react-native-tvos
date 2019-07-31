@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {ProgressBarAndroid: ProgressBar} = require('react-native');
+const {ProgressBarAndroid: ProgressBar} = require('react-native-tvos');
 const RNTesterBlock = require('./RNTesterBlock');
 const RNTesterPage = require('./RNTesterPage');
 

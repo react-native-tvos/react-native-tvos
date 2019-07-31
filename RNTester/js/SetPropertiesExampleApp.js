@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Text, View} = require('react-native');
+const {Text, View} = require('react-native-tvos');
 
 class SetPropertiesExampleApp extends React.Component<$FlowFixMeProps> {
   render() {

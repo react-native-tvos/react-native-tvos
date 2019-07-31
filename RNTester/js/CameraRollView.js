@@ -21,7 +21,7 @@ const {
   Platform,
   StyleSheet,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const groupByEveryN = require('../../Libraries/Utilities/groupByEveryN');
 const logError = require('../../Libraries/Utilities/logError');

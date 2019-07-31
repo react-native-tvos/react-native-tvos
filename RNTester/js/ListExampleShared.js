@@ -21,7 +21,7 @@ const {
   Text,
   TextInput,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 export type Item = {
   title: string,
