@@ -268,6 +268,8 @@
 		2D8C2E331DA40441000EE098 /* RCTMultipartStreamReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 001BFCCF1D8381DE008E587E /* RCTMultipartStreamReader.m */; };
 		2DBECB5822AB450E00B06D02 /* RCTTVMenuBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DBECB5622AB450D00B06D02 /* RCTTVMenuBridge.h */; };
 		2DBECB5922AB450E00B06D02 /* RCTTVMenuBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBECB5722AB450D00B06D02 /* RCTTVMenuBridge.m */; };
+		2DC3C86A22F2A80D00AE6EBF /* JSCExecutorFactory.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 8507BBBD21EDACC200AEAFCA /* JSCExecutorFactory.h */; };
+		2DC3C86B22F2B1E000AE6EBF /* RCTCxxBridgeDelegate.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 134D63C21F1FEC4B008872B5 /* RCTCxxBridgeDelegate.h */; };
 		2DD0EFE11DA84F2800B0C975 /* RCTStatusBarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 13723B4F1A82FD3C00F88898 /* RCTStatusBarManager.m */; };
 		352DCFF01D19F4C20056D623 /* RCTI18nUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 352DCFEF1D19F4C20056D623 /* RCTI18nUtil.m */; };
 		391E86A41C623EC800009732 /* RCTTouchEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 391E86A21C623EC800009732 /* RCTTouchEvent.m */; };
@@ -1370,6 +1372,8 @@
 			dstPath = include/React;
 			dstSubfolderSpec = 16;
 			files = (
+				2DC3C86B22F2B1E000AE6EBF /* RCTCxxBridgeDelegate.h in Copy Headers */,
+				2DC3C86A22F2A80D00AE6EBF /* JSCExecutorFactory.h in Copy Headers */,
 				0EA924D02237686F004AB895 /* RCTSurfacePresenterStub.h in Copy Headers */,
 				591F78DF202ADB97004A668C /* RCTLayout.h in Copy Headers */,
 				59EDBCC31FDF4E55003573DE /* RCTScrollableProtocol.h in Copy Headers */,

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		19461666225DC3B300E4E008 /* RCTTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 19461664225DC3B300E4E008 /* RCTTextRenderer.m */; };
+		2DC3C83D22F2A6A100AE6EBF /* RCTTextRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 19461664225DC3B300E4E008 /* RCTTextRenderer.m */; };
 		5956B130200FEBAA008D9D16 /* RCTRawTextShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5956B0FD200FEBA9008D9D16 /* RCTRawTextShadowView.m */; };
 		5956B131200FEBAA008D9D16 /* RCTRawTextViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5956B0FE200FEBA9008D9D16 /* RCTRawTextViewManager.m */; };
 		5956B132200FEBAA008D9D16 /* RCTSinglelineTextInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5956B101200FEBA9008D9D16 /* RCTSinglelineTextInputView.m */; };
@@ -472,6 +473,7 @@
 				5956B198200FF35C008D9D16 /* NSTextStorage+FontScaling.m in Sources */,
 				5956B199200FF35C008D9D16 /* RCTTextShadowView.m in Sources */,
 				5956B19A200FF35C008D9D16 /* RCTTextView.m in Sources */,
+				2DC3C83D22F2A6A100AE6EBF /* RCTTextRenderer.m in Sources */,
 				5956B19B200FF35C008D9D16 /* RCTTextViewManager.m in Sources */,
 				5956B19C200FF35C008D9D16 /* RCTMultilineTextInputView.m in Sources */,
 				5956B19D200FF35C008D9D16 /* RCTMultilineTextInputViewManager.m in Sources */,

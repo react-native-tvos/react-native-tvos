@@ -78,6 +78,7 @@
 		2D66FF8F1ECA406D00F0A767 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D66FF651ECA405900F0A767 /* libART.a */; };
 		2D66FF901ECA407E00F0A767 /* libART-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D66FF671ECA405900F0A767 /* libART-tvOS.a */; };
 		2D8C2E321DA40403000EE098 /* RCTMultipartStreamReaderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 001BFCE31D838343008E587E /* RCTMultipartStreamReaderTests.m */; };
+		2DC3C83E22F2A6BE00AE6EBF /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5C60EB582264416A0018C04F /* AppDelegate.mm */; };
 		2DD323DC1DA2DDBF000FE1B8 /* FlexibleSizeExampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F441E81BEBE5030039B79C /* FlexibleSizeExampleView.m */; };
 		2DD323DD1DA2DDBF000FE1B8 /* UpdatePropertiesExampleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 272E6B3C1BEA849E001FCF37 /* UpdatePropertiesExampleView.m */; };
 		2DD323E01DA2DDBF000FE1B8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -1804,6 +1805,7 @@
 			files = (
 				2DD323DC1DA2DDBF000FE1B8 /* FlexibleSizeExampleView.m in Sources */,
 				2DD323DD1DA2DDBF000FE1B8 /* UpdatePropertiesExampleView.m in Sources */,
+				2DC3C83E22F2A6BE00AE6EBF /* AppDelegate.mm in Sources */,
 				2DD323E01DA2DDBF000FE1B8 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2055,6 +2057,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../third-party/boost_1_63_0",
+					"$(SRCROOT)/../third-party/folly-2018.10.22.00",
+					"$(SRCROOT)/../third-party/glog-0.3.5/src",
+				);
 				INFOPLIST_FILE = "RNTester-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.RNTester-tvOS";
@@ -2075,6 +2082,11 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../third-party/boost_1_63_0",
+					"$(SRCROOT)/../third-party/folly-2018.10.22.00",
+					"$(SRCROOT)/../third-party/glog-0.3.5/src",
+				);
 				INFOPLIST_FILE = "RNTester-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.RNTester-tvOS";
