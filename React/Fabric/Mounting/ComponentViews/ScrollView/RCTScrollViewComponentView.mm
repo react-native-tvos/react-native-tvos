@@ -102,9 +102,13 @@ using namespace facebook::react;
   MAP_SCROLL_VIEW_PROP(maximumZoomScale);
   MAP_SCROLL_VIEW_PROP(minimumZoomScale);
   MAP_SCROLL_VIEW_PROP(scrollEnabled);
+#if !TARGET_OS_TV
   MAP_SCROLL_VIEW_PROP(pagingEnabled);
+#endif
   MAP_SCROLL_VIEW_PROP(pinchGestureEnabled);
+#if !TARGET_OS_TV
   MAP_SCROLL_VIEW_PROP(scrollsToTop);
+#endif
   MAP_SCROLL_VIEW_PROP(showsHorizontalScrollIndicator);
   MAP_SCROLL_VIEW_PROP(showsVerticalScrollIndicator);
   MAP_VIEW_PROP(scrollEventThrottle);
