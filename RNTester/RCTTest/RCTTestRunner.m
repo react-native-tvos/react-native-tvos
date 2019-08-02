@@ -88,7 +88,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 {
   if (getenv("CI_USE_PACKAGER") || _useBundler) {
     NSString *bundlePrefix = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"RN_BUNDLE_PREFIX"];
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@%@.bundle?platform=ios&dev=true", bundlePrefix, _appPath]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@%@.bundle?platform=ios&dev=true", (bundlePrefix ? bundlePrefix : @""), _appPath]];
   } else {
     return [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
   }

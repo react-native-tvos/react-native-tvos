@@ -32,7 +32,7 @@
   if (getenv("CI_USE_PACKAGER")) {
     NSString *bundlePrefix = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"RN_BUNDLE_PREFIX"];
     NSString *app = @"IntegrationTests/IntegrationTestsApp";
-    scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@%@.bundle?platform=ios&dev=true", bundlePrefix, app]];
+    scriptURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://localhost:8081/%@%@.bundle?platform=ios&dev=true", (bundlePrefix ? bundlePrefix : @""), app]];
   } else {
     scriptURL = [[NSBundle bundleForClass:[RCTBridge class]] URLForResource:@"main" withExtension:@"jsbundle"];
   }
