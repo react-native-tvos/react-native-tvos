@@ -10,6 +10,10 @@ PODS:
     - boost-for-react-native
     - DoubleConversion
     - glog
+  - Folly/Fabric (2018.10.22.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - glog
   - glog (0.3.5)
   - React (0.60.4-0):
     - React-Core (= 0.60.4-0)
@@ -38,7 +42,110 @@ PODS:
   - React-DevSupport (0.60.4-0):
     - React-Core (= 0.60.4-0)
     - React-RCTWebSocket (= 0.60.4-0)
+  - React-Fabric (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-Fabric/attributedstring (= 0.60.4-0)
+    - React-Fabric/better (= 0.60.4-0)
+    - React-Fabric/components (= 0.60.4-0)
+    - React-Fabric/config (= 0.60.4-0)
+    - React-Fabric/core (= 0.60.4-0)
+    - React-Fabric/debug (= 0.60.4-0)
+    - React-Fabric/imagemanager (= 0.60.4-0)
+    - React-Fabric/mounting (= 0.60.4-0)
+    - React-Fabric/textlayoutmanager (= 0.60.4-0)
+    - React-Fabric/uimanager (= 0.60.4-0)
+    - React-Fabric/utils (= 0.60.4-0)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/attributedstring (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/better (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-Fabric/components/activityindicator (= 0.60.4-0)
+    - React-Fabric/components/image (= 0.60.4-0)
+    - React-Fabric/components/rncore (= 0.60.4-0)
+    - React-Fabric/components/root (= 0.60.4-0)
+    - React-Fabric/components/scrollview (= 0.60.4-0)
+    - React-Fabric/components/slider (= 0.60.4-0)
+    - React-Fabric/components/text (= 0.60.4-0)
+    - React-Fabric/components/view (= 0.60.4-0)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/activityindicator (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/image (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/rncore (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/root (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/scrollview (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/slider (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/text (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/components/view (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+    - yoga (= 0.60.4-0.React)
+  - React-Fabric/config (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/core (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/debug (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/imagemanager (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+    - React-RCTImage (= 0.60.4-0)
+  - React-Fabric/mounting (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/textlayoutmanager (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/uimanager (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
+  - React-Fabric/utils (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-graphics (= 0.60.4-0)
+    - React-jsiexecutor (= 0.60.4-0)
   - React-fishhook (0.60.4-0)
+  - React-graphics (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
   - React-jscallinvoker (0.60.4-0):
     - Folly (= 2018.10.22.00)
     - React-cxxreact (= 0.60.4-0)
@@ -49,6 +156,11 @@ PODS:
     - glog
     - React-jsi/Default (= 0.60.4-0)
   - React-jsi/Default (0.60.4-0):
+    - boost-for-react-native (= 1.63.0)
+    - DoubleConversion
+    - Folly (= 2018.10.22.00)
+    - glog
+  - React-jsi/Fabric (0.60.4-0):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
@@ -66,6 +178,11 @@ PODS:
     - React-Core (= 0.60.4-0)
     - React-RCTNetwork (= 0.60.4-0)
     - React-RCTWebSocket (= 0.60.4-0)
+  - React-RCTFabric (0.60.4-0):
+    - Folly/Fabric (= 2018.10.22.00)
+    - React-Core (= 0.60.4-0)
+    - React-Fabric (= 0.60.4-0)
+    - React-RCTImage (= 0.60.4-0)
   - React-RCTImage (0.60.4-0):
     - React-Core (= 0.60.4-0)
     - React-RCTNetwork (= 0.60.4-0)
@@ -113,19 +230,24 @@ PODS:
 DEPENDENCIES:
   - DoubleConversion (from `../third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../third-party-podspecs/Folly.podspec`)
+  - Folly/Fabric (from `../third-party-podspecs/Folly.podspec`)
   - glog (from `../third-party-podspecs/glog.podspec`)
   - React (from `../`)
   - React-ART (from `../Libraries/ART`)
   - React-Core (from `../React`)
   - React-cxxreact (from `../ReactCommon/cxxreact`)
   - React-DevSupport (from `../React`)
+  - React-Fabric (from `../ReactCommon`)
   - React-fishhook (from `../Libraries/fishhook`)
+  - React-graphics (from `../ReactCommon/fabric/graphics`)
   - React-jscallinvoker (from `../ReactCommon/jscallinvoker`)
   - React-jsi (from `../ReactCommon/jsi`)
+  - React-jsi/Fabric (from `../ReactCommon/jsi`)
   - React-jsiexecutor (from `../ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../ReactCommon/jsinspector`)
   - React-RCTAnimation (from `../Libraries/NativeAnimation`)
   - React-RCTBlob (from `../Libraries/Blob`)
+  - React-RCTFabric (from `../React`)
   - React-RCTImage (from `../Libraries/Image`)
   - React-RCTLinking (from `../Libraries/LinkingIOS`)
   - React-RCTNetwork (from `../Libraries/Network`)
@@ -158,8 +280,12 @@ EXTERNAL SOURCES:
     :path: "../ReactCommon/cxxreact"
   React-DevSupport:
     :path: "../React"
+  React-Fabric:
+    :path: "../ReactCommon"
   React-fishhook:
     :path: "../Libraries/fishhook"
+  React-graphics:
+    :path: "../ReactCommon/fabric/graphics"
   React-jscallinvoker:
     :path: "../ReactCommon/jscallinvoker"
   React-jsi:
@@ -172,6 +298,8 @@ EXTERNAL SOURCES:
     :path: "../Libraries/NativeAnimation"
   React-RCTBlob:
     :path: "../Libraries/Blob"
+  React-RCTFabric:
+    :path: "../React"
   React-RCTImage:
     :path: "../Libraries/Image"
   React-RCTLinking:
@@ -203,13 +331,16 @@ SPEC CHECKSUMS:
   React-Core: d47aab984f4b293360bcfa2dbef9d192e627ca12
   React-cxxreact: db722b1d6a6db20e00ef788e679539c6e4d193a5
   React-DevSupport: c87653fe577b5aeada12122403c6793510912e8a
+  React-Fabric: 26d57e8a2b8ecb36efb1947ae5e496257100dac4
   React-fishhook: f0ca17063ff71321dcbe45324c8732e7c7724157
+  React-graphics: abd37cdc7e91760904d0be82e5881882f9bca9a2
   React-jscallinvoker: 1b3233477c80a9aae587003437133afedb678d78
   React-jsi: a10c64bff77ce63cca5435550ca91a91f2f7a4c4
   React-jsiexecutor: 05b2a84ba37b62854186bc6d46a168dfb62f9e0c
   React-jsinspector: c1dc5137f73f1f4bb29564d8f8f2309026fccbfb
   React-RCTAnimation: 37aa8a9bdc330b1309e362efe885e1895b502f3f
   React-RCTBlob: cfefc301080705c077aee3306273dbc99dedec7c
+  React-RCTFabric: 6c2e56641ade89fbcb81d9a6144fd4746b9618f7
   React-RCTImage: 65245c0280410bd08ec8798dba239fc5c098c261
   React-RCTLinking: f255d208a72150ef7baa959fcb7cfb19e3f64033
   React-RCTNetwork: 3034324e9909ba5eaa5300e3f3465f5997321ebb
@@ -221,6 +352,6 @@ SPEC CHECKSUMS:
   React-turbomodule-samples: 6153971f2125f110f9f928132e08c8fbd55c3f4b
   yoga: a42a08e49b4746a3f9e2bccbfd7ef6ef33a7dda1
 
-PODFILE CHECKSUM: f67e9d6166835ccf2c1352d94be74a1d19ed6c34
+PODFILE CHECKSUM: e1ce2a5cd89abee8b0567d3f9bae1dc3bb269a13
 
 COCOAPODS: 1.7.5
