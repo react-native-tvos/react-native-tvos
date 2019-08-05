@@ -132,7 +132,7 @@ inline YGFlexDirection YGResolveFlexDirection(
     }
   }
 
-  return flexDirection;
+    return (YGFlexDirection)(flexDirection >= 0 ? flexDirection : -flexDirection);
 }
 
 inline YGFloatOptional YGResolveValueMargin(
