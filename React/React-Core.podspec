@@ -50,7 +50,7 @@ Pod::Spec.new do |s|
   s.default_subspec         = "Default"
 
   s.subspec "Default" do |ss|
-    # no-op
+    ss.public_header_files   = "**/*.{h}"
   end
 
   s.subspec "CxxBridge" do |ss|
