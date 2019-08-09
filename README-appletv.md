@@ -2,12 +2,12 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-0 release of this package will be derived from the 0.60.4 release of `react-native`.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-1 release of this package will be derived from the 0.60.4 release of `react-native`.
 
 To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
 ```js
-"react-native": "npm:react-native-tvos@0.60.4-0",
+"react-native": "npm:react-native-tvos@0.60.4-1",
 ```
 
 ## General support for Apple TV
