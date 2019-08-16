@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Dimensions, Text, View} = require('react-native');
+const {Dimensions, Text, View} = require('react-native-tvos');
 
 class DimensionsSubscription extends React.Component<
   {dim: string},

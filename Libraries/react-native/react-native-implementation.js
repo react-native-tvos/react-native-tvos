@@ -12,6 +12,7 @@
 
 const invariant = require('invariant');
 const warnOnce = require('warnOnce');
+const Platform = require('Platform');
 
 // Export React, plus some native additions.
 module.exports = {
@@ -131,6 +132,9 @@ module.exports = {
   get StatusBar() {
     return require('StatusBar');
   },
+  get TabBarIOS() {
+    return require('TabBarIOS');
+  },
   get Text() {
     return require('Text');
   },
@@ -197,6 +201,12 @@ module.exports = {
         "It can now be installed and imported from '@react-native-community/async-storage' instead of 'react-native'. " +
         'See https://github.com/react-native-community/react-native-async-storage',
     );
+    if (Platform.isTVOS) {
+      warnOnce(
+        'async-storage-tvos',
+        'Persistent storage is not supported on tvOS, your data may be removed at any point.',
+      );
+    }
     return require('AsyncStorage');
   },
   get BackHandler() {
@@ -294,6 +304,12 @@ module.exports = {
   },
   get TVEventHandler() {
     return require('TVEventHandler');
+  },
+  get TVFocusGuideView() {
+    return require('TVFocusGuideView');
+  },
+  get TVMenuControl() {
+    return require('TVMenuControl');
   },
   get UIManager() {
     return require('UIManager');

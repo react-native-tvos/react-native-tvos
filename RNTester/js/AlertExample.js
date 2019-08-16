@@ -16,7 +16,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const RNTesterBlock = require('./RNTesterBlock');
 

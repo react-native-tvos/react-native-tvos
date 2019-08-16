@@ -11,11 +11,11 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const {AsyncStorage, Text, View, StyleSheet} = ReactNative;
 const {TestModule} = ReactNative.NativeModules;
 
-const deepDiffer = require('react-native/Libraries/Utilities/differ/deepDiffer');
+const deepDiffer = require('react-native-tvos/Libraries/Utilities/differ/deepDiffer');
 
 const DEBUG = false;
 

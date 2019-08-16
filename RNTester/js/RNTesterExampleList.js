@@ -18,7 +18,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterExampleFilter = require('./RNTesterExampleFilter');
 

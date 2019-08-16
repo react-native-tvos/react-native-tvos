@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {StyleSheet, Switch, Text, View} = require('react-native');
+const {StyleSheet, Switch, Text, View} = require('react-native-tvos');
 const RNTesterStatePersister = require('./RNTesterStatePersister');
 
 class RNTesterSettingSwitchRow extends React.Component<

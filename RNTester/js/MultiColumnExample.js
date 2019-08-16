@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {FlatList, StyleSheet, Text, View, Alert} = require('react-native');
+const {FlatList, StyleSheet, Text, View, Alert} = require('react-native-tvos');
 
 const RNTesterPage = require('./RNTesterPage');
 

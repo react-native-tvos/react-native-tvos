@@ -20,7 +20,7 @@ const {
   Text,
   TextInput,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 type MessageProps = $ReadOnly<{||}>;
 class Message extends React.PureComponent<MessageProps> {

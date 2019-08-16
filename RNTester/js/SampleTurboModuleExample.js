@@ -10,7 +10,7 @@
 
 'use strict';
 
-import NativeSampleTurboModule from 'react-native/Libraries/TurboModule/samples/NativeSampleTurboModule';
+import NativeSampleTurboModule from 'react-native-tvos/Libraries/TurboModule/samples/NativeSampleTurboModule';
 import {
   StyleSheet,
   Text,
@@ -18,7 +18,7 @@ import {
   FlatList,
   Platform,
   TouchableOpacity,
-} from 'react-native';
+} from 'react-native-tvos';
 import * as React from 'react';
 
 type State = {|

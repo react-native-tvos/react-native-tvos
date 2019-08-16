@@ -19,7 +19,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class Button extends React.Component<$FlowFixMeProps> {
   render() {

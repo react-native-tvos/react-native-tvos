@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Slider, Text, StyleSheet, View} = require('react-native');
+const {Slider, Text, StyleSheet, View} = require('react-native-tvos');
 
 class SliderExample extends React.Component<$FlowFixMeProps, $FlowFixMeState> {
   static defaultProps = {

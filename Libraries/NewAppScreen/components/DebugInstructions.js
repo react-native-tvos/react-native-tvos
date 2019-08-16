@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import {Platform, StyleSheet, Text} from 'react-native';
+import {Platform, StyleSheet, Text} from 'react-native-tvos';
 
 const styles = StyleSheet.create({
   highlight: {

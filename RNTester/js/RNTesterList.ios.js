@@ -46,7 +46,7 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'InputAccessoryViewExample',
     module: require('./InputAccessoryViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'KeyboardAvoidingViewExample',
@@ -106,7 +106,7 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'SafeAreaViewExample',
     module: require('./SafeAreaViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'ScrollViewExample',
@@ -136,6 +136,16 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'SwitchExample',
     module: require('./SwitchExample'),
+    supportsTVOS: false,
+  },
+  {
+    key: 'TabBarIOSExample',
+    module: require('./TabBarIOSExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TabBarIOSBarStyleExample',
+    module: require('./TabBarIOSBarStyleExample'),
     supportsTVOS: false,
   },
   {
@@ -215,11 +225,6 @@ const APIExamples: Array<RNTesterExample> = [
     key: 'BoxShadowExample',
     module: require('./BoxShadowExample'),
     supportsTVOS: true,
-  },
-  {
-    key: 'CameraRollExample',
-    module: require('./CameraRollExample'),
-    supportsTVOS: false,
   },
   {
     key: 'ClipboardExample',
@@ -314,11 +319,16 @@ const APIExamples: Array<RNTesterExample> = [
   {
     key: 'TurboModuleExample',
     module: require('./TurboModuleExample'),
-    supportsTVOS: false,
+    supportsTVOS: true,
   },
   {
     key: 'TVEventHandlerExample',
     module: require('./TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    module: require('./TVFocusGuideExample'),
     supportsTVOS: true,
   },
   {

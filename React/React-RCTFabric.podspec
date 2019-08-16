@@ -34,6 +34,9 @@ Pod::Spec.new do |s|
   s.source_files           = "Fabric/**/*.{c,h,m,mm,S,cpp}"
   s.exclude_files          = "**/tests/*",
                              "**/android/*",
+  s.tvos.exclude_files     = "Fabric/Mounting/ComponentViews/Switch/*",
+                             "Fabric/Mounting/ComponentViews/Slider/*",
+                             "Fabric/Mounting/ComponentViews/ScrollView/*PullToRefresh*"
   s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
@@ -42,7 +45,7 @@ Pod::Spec.new do |s|
   s.xcconfig               = { "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/glog\" \"$(PODS_ROOT)/Folly\"", 
                                "OTHER_CFLAGS" => "$(inherited) -DRN_FABRIC_ENABLED" + " " + folly_flags  }
 
-  s.dependency "React-Core", version
+  s.dependency "React-Core/CxxBridge", version
   s.dependency "React-Fabric", version
   s.dependency "React-RCTImage", version
   s.dependency "Folly/Fabric", folly_version

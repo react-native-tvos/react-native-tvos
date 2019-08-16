@@ -18,7 +18,7 @@ const {
   Text,
   TextInput,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 const TextAncestor = require('TextAncestor');
 const TextInlineView = require('./Shared/TextInlineView');
 const TextLegend = require('./Shared/TextLegend');

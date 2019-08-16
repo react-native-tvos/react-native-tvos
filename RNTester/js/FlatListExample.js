@@ -13,7 +13,7 @@
 import type {Item} from './ListExampleShared';
 
 const React = require('react');
-const {Alert, Animated, StyleSheet, View} = require('react-native');
+const {Alert, Animated, StyleSheet, View} = require('react-native-tvos');
 
 const RNTesterPage = require('./RNTesterPage');
 

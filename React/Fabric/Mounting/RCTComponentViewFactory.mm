@@ -19,11 +19,15 @@
 #import "RCTParagraphComponentView.h"
 #import "RCTRootComponentView.h"
 #import "RCTScrollViewComponentView.h"
+#if !TARGET_OS_TV
 #import "RCTSliderComponentView.h"
 #import "RCTSwitchComponentView.h"
+#endif
 #import "RCTUnimplementedNativeComponentView.h"
 #import "RCTViewComponentView.h"
+#if !TARGET_OS_TV
 #import "RNPullToRefreshViewComponentView.h"
+#endif
 
 using namespace facebook::react;
 
@@ -40,12 +44,16 @@ using namespace facebook::react;
   [componentViewFactory registerComponentViewClass:[RCTViewComponentView class]];
   [componentViewFactory registerComponentViewClass:[RCTRootComponentView class]];
   [componentViewFactory registerComponentViewClass:[RCTScrollViewComponentView class]];
+#if !TARGET_OS_TV
   [componentViewFactory registerComponentViewClass:[RNPullToRefreshViewComponentView class]];
+#endif
   [componentViewFactory registerComponentViewClass:[RCTImageComponentView class]];
   [componentViewFactory registerComponentViewClass:[RCTParagraphComponentView class]];
   [componentViewFactory registerComponentViewClass:[RCTActivityIndicatorViewComponentView class]];
+#if !TARGET_OS_TV
   [componentViewFactory registerComponentViewClass:[RCTSliderComponentView class]];
   [componentViewFactory registerComponentViewClass:[RCTSwitchComponentView class]];
+#endif
   [componentViewFactory registerComponentViewClass:[RCTUnimplementedNativeComponentView class]];
 
   return componentViewFactory;

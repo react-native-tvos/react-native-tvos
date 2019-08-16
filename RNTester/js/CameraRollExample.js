@@ -19,7 +19,7 @@ const {
   Text,
   View,
   TouchableOpacity,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const invariant = require('invariant');
 

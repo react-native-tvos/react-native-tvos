@@ -15,7 +15,8 @@ def use_react_native! (options={})
   # The Pods which should be included in all projects
   pod 'React', :path => "#{prefix}/"
   pod 'React-Core', :path => "#{prefix}/React"
-  pod 'React-RCTActionSheet', :path => "#{prefix}/Libraries/ActionSheetIOS"
+  # Not for tvOS
+  # pod 'React-RCTActionSheet', :path => "#{prefix}/Libraries/ActionSheetIOS"
   pod 'React-RCTAnimation', :path => "#{prefix}/Libraries/NativeAnimation"
   pod 'React-RCTBlob', :path => "#{prefix}/Libraries/Blob"
   pod 'React-RCTImage', :path => "#{prefix}/Libraries/Image"
@@ -23,7 +24,8 @@ def use_react_native! (options={})
   pod 'React-RCTNetwork', :path => "#{prefix}/Libraries/Network"
   pod 'React-RCTSettings', :path => "#{prefix}/Libraries/Settings"
   pod 'React-RCTText', :path => "#{prefix}/Libraries/Text"
-  pod 'React-RCTVibration', :path => "#{prefix}/Libraries/Vibration"
+  # Not for tvOS
+  # pod 'React-RCTVibration', :path => "#{prefix}/Libraries/Vibration"
   pod 'React-RCTWebSocket', :path => "#{prefix}/Libraries/WebSocket"
 
   unless production

@@ -18,7 +18,7 @@ const {
   TouchableHighlight,
   View,
   Modal,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const colors = ['#ff0000', '#00ff00', '#0000ff', 'rgba(0, 0, 0, 0.4)'];
 

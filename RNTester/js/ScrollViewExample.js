@@ -17,7 +17,7 @@ const {
   Text,
   TouchableOpacity,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 import type {ViewStyleProp} from '../../Libraries/StyleSheet/StyleSheet';
 
