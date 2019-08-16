@@ -1,154 +1,112 @@
-<h1 align="center">
-  <a href="https://facebook.github.io/react-native/">
-    React Native
-  </a>
-</h1>
+## react-native-tvos
 
-<p align="center">
-  <strong>Learn once, write anywhere:</strong><br>
-  Build mobile apps with React.
-</p>
+Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-<p align="center">
-  <a href="https://github.com/facebook/react-native/blob/master/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="React Native is released under the MIT license." />
-  </a>
-  <a href="https://circleci.com/gh/facebook/react-native">
-    <img src="https://circleci.com/gh/facebook/react-native.svg?style=shield" alt="Current CircleCI build status." />
-  </a>
-  <a href="https://ci.appveyor.com/project/facebook/react-native/branch/master">
-    <img src="https://ci.appveyor.com/api/projects/status/g8d58ipi3auqdtrk/branch/master?svg=true" alt="Current Appveyor build status." />
-  </a>
-  <a href="https://www.npmjs.org/package/react-native">
-    <img src="https://badge.fury.io/js/react-native.svg" alt="Current npm package version." />
-  </a>
-  <a href="https://facebook.github.io/react-native/docs/contributing">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome!" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=reactnative">
-    <img src="https://img.shields.io/twitter/follow/reactnative.svg?label=Follow%20@reactnative" alt="Follow @reactnative" />
-  </a>
-</p>
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-1 release of this package will be derived from the 0.60.4 release of `react-native`.
 
-<h3 align="center">
-  <a href="https://facebook.github.io/react-native/docs/getting-started">Getting Started</a>
-  <span> · </span>
-  <a href="https://facebook.github.io/react-native/docs/tutorial">Learn the Basics</a>
-  <span> · </span>
-  <a href="https://facebook.github.io/react-native/showcase.html">Showcase</a>
-  <span> · </span>
-  <a href="https://facebook.github.io/react-native/docs/contributing">Contribute</a>
-  <span> · </span>
-  <a href="https://facebook.github.io/react-native/en/help">Community</a>
-  <span> · </span>
-  <a href="https://github.com/facebook/react-native/blob/master/.github/SUPPORT">Support</a>
-</h3>
+To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
-React Native brings [**React**'s][r] declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform.
+```js
+"react-native": "npm:react-native-tvos@0.60.4-1",
+```
 
-- **Declarative.** React makes it painless to create interactive UIs. Declarative views make your code more predictable and easier to debug.
-- **Component-Based.** Build encapsulated components that manage their own state, then compose them to make complex UIs.
-- **Developer Velocity.** See local changes in seconds. Changes to JavaScript code can be live reloaded without rebuilding the native app.
-- **Portability.** Reuse code across iOS, Android, and [other platforms][p].
+## General support for Apple TV
 
-React Native is developed and supported by many companies and individual core contributors. Find out more in our [ecosystem overview][e].
+TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV, with few or no changes needed in the JavaScript code for the applications.
 
-[r]: https://reactjs.org/
-[p]: https://facebook.github.io/react-native/docs/out-of-tree-platforms
-[e]: https://github.com/facebook/react-native/blob/master/ECOSYSTEM.md
+The RNTester app supports Apple TV.
+- _Without cocoapods:_ In `RNTester/RNTester.xcodeproj`,  use the `RNTester-tvOS` build target to build for tvOS.
+- _With cocoapods:_ In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
 
-## Contents
+## Build changes
 
-- [Requirements](#-requirements)
-- [Building your first React Native app](#-building-your-first-react-native-app)
-- [Documentation](#-documentation)
-- [Upgrading](#-upgrading)
-- [How to Contribute](#-how-to-contribute)
-- [Code of Conduct](#code-of-conduct)
-- [License](#-license)
+- _Native layer_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
 
+- _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.  To use this NPM package for creating a new project, you can reference it as in the following example:
 
-## 📋 Requirements
+```sh
+react-native init TestApp --version=react-native@npm:react-native-tvos@0.60.4-0
+```
 
-React Native apps may target iOS 9.0 and Android 4.1 (API 16) or newer. You may use Windows, macOS, or Linux as your development operating system, though building and running iOS apps is limited to macOS. Tools like [Expo](https://expo.io) can be used to work around this.
+- _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
 
-## 🎉 Building your first React Native app
+```javascript
+var Platform = require('Platform');
+var running_on_tv = Platform.isTV;
 
-Follow the [Getting Started guide](https://facebook.github.io/react-native/docs/getting-started.html). The recommended way to install React Native depends on your project. Here you can find short guides for the most common scenarios:
+// If you want to be more specific and only detect devices running tvOS
+// (but no Android TV devices) you can use:
+var running_on_apple_tv = Platform.isTVOS;
+```
 
-(This repo is specifically for developers who wish to build React Native applications for Apple TV.  See [this file](./README-appletv.md) for tvOS-specific instructions.)
+## Code changes
 
-Learn once, write anywhere: Build mobile apps with React.
+- _General support for tvOS_: Apple TV specific changes in native code are all wrapped by the TARGET_OS_TV define. These include changes to suppress APIs that are not supported on tvOS (e.g. web views, sliders, switches, status bar, etc.), and changes to support user input from the TV remote or keyboard.
 
-- [Trying out React Native][hello-world]
-- [Creating a New Application][new-app]
-- [Adding React Native to an Existing Application][existing]
+- _Common codebase_: Since tvOS and iOS share most Objective-C and JavaScript code in common, most documentation for iOS applies equally to tvOS.
 
-[hello-world]: https://snack.expo.io/@hramos/hello,-world!
-[new-app]: https://facebook.github.io/react-native/docs/getting-started.html
-[existing]: https://facebook.github.io/react-native/docs/integration-with-existing-apps.html
+- _Access to touchable controls_: When running on Apple TV, the native view class is `RCTTVView`, which has additional methods to make use of the tvOS focus engine. The `Touchable` mixin has code added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `TouchableWithoutFeedback`, `TouchableHighlight` and `TouchableOpacity` will "just work". In particular:
 
-## 📖 Documentation
+  - `onFocus` will be executed when the touchable view goes into focus
+  - `onBlur` will be executed when the touchable view goes out of focus
+  - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote.
 
-The full documentation for React Native can be found on our [website][docs].
+- _TV remote/keyboard input_: A new native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events, as in the following code:
 
-The React Native documentation discusses components, APIs, and topics that are specific to React Native. For further documentation on the React API that is shared between React Native and React DOM, refer to the [React documentation][r-docs].
+```javascript
+var TVEventHandler = require('TVEventHandler');
 
-The source for the React Native documentation and website is hosted on a separate repo, [**@facebook/react-native-website**][repo-website].
+class Game2048 extends React.Component {
+  _tvEventHandler: any;
 
-[docs]: https://facebook.github.io/react-native/docs/getting-started.html
-[r-docs]: https://reactjs.org/docs/getting-started.html
-[repo-website]: https://github.com/facebook/react-native-website
+  _enableTVEventHandler() {
+    this._tvEventHandler = new TVEventHandler();
+    this._tvEventHandler.enable(this, function(cmp, evt) {
+      if (evt && evt.eventType === 'right') {
+        cmp.setState({board: cmp.state.board.move(2)});
+      } else if(evt && evt.eventType === 'up') {
+        cmp.setState({board: cmp.state.board.move(1)});
+      } else if(evt && evt.eventType === 'left') {
+        cmp.setState({board: cmp.state.board.move(0)});
+      } else if(evt && evt.eventType === 'down') {
+        cmp.setState({board: cmp.state.board.move(3)});
+      } else if(evt && evt.eventType === 'playPause') {
+        cmp.restartGame();
+      }
+    });
+  }
 
-## 🚀 Upgrading
+  _disableTVEventHandler() {
+    if (this._tvEventHandler) {
+      this._tvEventHandler.disable();
+      delete this._tvEventHandler;
+    }
+  }
 
-Upgrading to new versions of React Native may give you access to more APIs, views, developer tools and other goodies. See the [Upgrading Guide][u] for instructions.
+  componentDidMount() {
+    this._enableTVEventHandler();
+  }
 
-React Native releases are discussed in the React Native Community, [**@react-native-community/react-native-releases**][repo-releases].
+  componentWillUnmount() {
+    this._disableTVEventHandler();
+  }
+```
 
-[u]: https://facebook.github.io/react-native/docs/upgrading
-[repo-releases]: https://github.com/react-native-community/react-native-releases
+- _Turbomodules_: Working as of the 0.60.4-0 release.
 
-## 👏 How to Contribute
+- _Dev Menu support_: On the simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) )
 
-The main purpose of this repository is to continue evolving React Native core. We want to make contributing to this project as easy and transparent as possible, and we are grateful to the community for contributing bugfixes and improvements. Read below to learn how you can take part in improving React Native.
+- _TV remote animations_: `RCTTVView` native code implements Apple-recommended parallax animations to help guide the eye as the user navigates through views. The animations can be disabled or adjusted with new optional view properties.
 
-### [Code of Conduct][code]
+- _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button on the TV remote.
 
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to.
-Please read the [full text][code] so that you can understand what actions will and will not be tolerated.
+- _TabBarIOS behavior_: The `TabBarIOS` component wraps the native `UITabBar` API, which works differently on Apple TV. To avoid jittery rerendering of the tab bar in tvOS (see [this issue](https://github.com/facebook/react-native/issues/15081)), the selected tab bar item can only be set from Javascript on initial render, and is controlled after that by the user through native code.
 
-[code]: https://code.fb.com/codeofconduct/
+- _TVMenuControl_: This module provides methods to enable and disable navigation using the menu key on the TV remote.  This is required in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses this new module to implement correct menu key behavior.
 
-### [Contributing Guide][contribute]
+- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  A new example is provided in `RNTester`.
 
-Read our [**Contributing Guide**][contribute] to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to React Native.
+- _Known issues_:
 
-[contribute]: https://facebook.github.io/react-native/docs/contributing
+  - As of the 0.60.4-0 release, Fabric code compiles.  Does not yet run in RNTester (Yoga errors) -- the issue is under investigation.
 
-### [Open Source Roadmap][roadmap]
-
-You can learn more about our vision for React Native in the [**Roadmap**][roadmap].
-
-[roadmap]: https://github.com/facebook/react-native/wiki/Roadmap
-
-### Good First Issues
-
-We have a list of [good first issues][gfi] that contain bugs which have a relatively limited scope. This is a great place to get started, gain experience, and get familiar with our contribution process.
-
-[gfi]: https://github.com/facebook/react-native/labels/good%20first%20issue
-
-### Discussions
-
-Larger discussions and proposals are discussed in [**@react-native-community/discussions-and-proposals**][repo-meta].
-
-[repo-meta]: https://github.com/react-native-community/discussions-and-proposals
-
-## 📄 License
-
-React Native is MIT licensed, as found in the [LICENSE][l] file.
-
-React Native documentation is Creative Commons licensed, as found in the [LICENSE-docs][ld] file.
-
-[l]: https://github.com/facebook/react-native/blob/master/LICENSE
-[ld]: https://github.com/facebook/react-native/blob/master/LICENSE-docs
