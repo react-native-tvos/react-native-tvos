@@ -11,123 +11,121 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - React (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-    - React-DevSupport (= 0.60.4-1)
-    - React-RCTAnimation (= 0.60.4-1)
-    - React-RCTBlob (= 0.60.4-1)
-    - React-RCTImage (= 0.60.4-1)
-    - React-RCTLinking (= 0.60.4-1)
-    - React-RCTNetwork (= 0.60.4-1)
-    - React-RCTSettings (= 0.60.4-1)
-    - React-RCTText (= 0.60.4-1)
-    - React-RCTWebSocket (= 0.60.4-1)
-  - React-ART (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-Core (0.60.4-1):
+  - React (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-DevSupport (= 0.60.5)
+    - React-RCTAnimation (= 0.60.5)
+    - React-RCTBlob (= 0.60.5)
+    - React-RCTImage (= 0.60.5)
+    - React-RCTLinking (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+    - React-RCTSettings (= 0.60.5)
+    - React-RCTText (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-ART (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-Core (0.60.5):
     - Folly (= 2018.10.22.00)
     - glog
-    - React-Core/Default (= 0.60.4-1)
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-jsiexecutor (= 0.60.4-1)
-    - yoga (= 0.60.4-1.React)
-  - React-Core/CxxBridge (0.60.4-1):
+    - React-Core/Default (= 0.60.5)
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-jsiexecutor (= 0.60.5)
+    - yoga (= 0.60.5.React)
+  - React-Core/CxxBridge (0.60.5):
     - Folly (= 2018.10.22.00)
     - glog
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-jsiexecutor (= 0.60.4-1)
-    - yoga (= 0.60.4-1.React)
-  - React-Core/Default (0.60.4-1):
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-jsiexecutor (= 0.60.5)
+    - yoga (= 0.60.5.React)
+  - React-Core/Default (0.60.5):
     - Folly (= 2018.10.22.00)
     - glog
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-jsiexecutor (= 0.60.4-1)
-    - yoga (= 0.60.4-1.React)
-  - React-cxxreact (0.60.4-1):
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-jsiexecutor (= 0.60.5)
+    - yoga (= 0.60.5.React)
+  - React-cxxreact (0.60.5):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-    - React-jsinspector (= 0.60.4-1)
-  - React-DevSupport (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-    - React-RCTWebSocket (= 0.60.4-1)
-  - React-fishhook (0.60.4-1)
-  - React-jscallinvoker (0.60.4-1):
+    - React-jsinspector (= 0.60.5)
+  - React-DevSupport (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-jscallinvoker (0.60.5):
     - Folly (= 2018.10.22.00)
-    - React-cxxreact (= 0.60.4-1)
-  - React-jsi (0.60.4-1):
+    - React-cxxreact (= 0.60.5)
+  - React-jsi (0.60.5):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-    - React-jsi/Default (= 0.60.4-1)
-  - React-jsi/Default (0.60.4-1):
+    - React-jsi/Default (= 0.60.5)
+  - React-jsi/Default (0.60.5):
     - boost-for-react-native (= 1.63.0)
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-  - React-jsiexecutor (0.60.4-1):
+  - React-jsiexecutor (0.60.5):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
     - glog
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-  - React-jsinspector (0.60.4-1)
-  - React-RCTAnimation (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTBlob (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-    - React-RCTNetwork (= 0.60.4-1)
-    - React-RCTWebSocket (= 0.60.4-1)
-  - React-RCTImage (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-    - React-RCTNetwork (= 0.60.4-1)
-  - React-RCTLinking (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTNetwork (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTPushNotification (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTSettings (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTText (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-  - React-RCTWebSocket (0.60.4-1):
-    - React-Core (= 0.60.4-1)
-    - React-fishhook (= 0.60.4-1)
-  - React-turbomodule-core (0.60.4-1):
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+  - React-jsinspector (0.60.5)
+  - React-RCTAnimation (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTBlob (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+    - React-RCTWebSocket (= 0.60.5)
+  - React-RCTImage (0.60.5):
+    - React-Core (= 0.60.5)
+    - React-RCTNetwork (= 0.60.5)
+  - React-RCTLinking (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTNetwork (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTPushNotification (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTSettings (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTText (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-RCTWebSocket (0.60.5):
+    - React-Core (= 0.60.5)
+  - React-turbomodule-core (0.60.5):
     - Folly (= 2018.10.22.00)
-    - React-Core/CxxBridge (= 0.60.4-1)
-    - React-cxxreact (= 0.60.4-1)
-    - React-jscallinvoker (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-turbomodule-core/core-ios (= 0.60.4-1)
-  - React-turbomodule-core/core-ios (0.60.4-1):
+    - React-Core/CxxBridge (= 0.60.5)
+    - React-cxxreact (= 0.60.5)
+    - React-jscallinvoker (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-turbomodule-core/core-ios (= 0.60.5)
+  - React-turbomodule-core/core-ios (0.60.5):
     - Folly (= 2018.10.22.00)
-    - React-Core/CxxBridge (= 0.60.4-1)
-    - React-cxxreact (= 0.60.4-1)
-    - React-jscallinvoker (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-  - React-turbomodule-samples (0.60.4-1):
+    - React-Core/CxxBridge (= 0.60.5)
+    - React-cxxreact (= 0.60.5)
+    - React-jscallinvoker (= 0.60.5)
+    - React-jsi (= 0.60.5)
+  - React-turbomodule-samples (0.60.5):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
-    - React-Core (= 0.60.4-1)
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-turbomodule-core (= 0.60.4-1)
-    - React-turbomodule-samples/samples-ios (= 0.60.4-1)
-  - React-turbomodule-samples/samples-ios (0.60.4-1):
+    - React-Core (= 0.60.5)
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-turbomodule-core (= 0.60.5)
+    - React-turbomodule-samples/samples-ios (= 0.60.5)
+  - React-turbomodule-samples/samples-ios (0.60.5):
     - DoubleConversion
     - Folly (= 2018.10.22.00)
-    - React-Core (= 0.60.4-1)
-    - React-cxxreact (= 0.60.4-1)
-    - React-jsi (= 0.60.4-1)
-    - React-turbomodule-core (= 0.60.4-1)
-  - yoga (0.60.4-1.React)
+    - React-Core (= 0.60.5)
+    - React-cxxreact (= 0.60.5)
+    - React-jsi (= 0.60.5)
+    - React-turbomodule-core (= 0.60.5)
+  - yoga (0.60.5.React)
 
 DEPENDENCIES:
   - DoubleConversion (from `../third-party-podspecs/DoubleConversion.podspec`)
@@ -138,7 +136,6 @@ DEPENDENCIES:
   - React-Core (from `../React`)
   - React-cxxreact (from `../ReactCommon/cxxreact`)
   - React-DevSupport (from `../React`)
-  - React-fishhook (from `../Libraries/fishhook`)
   - React-jscallinvoker (from `../ReactCommon/jscallinvoker`)
   - React-jsi (from `../ReactCommon/jsi`)
   - React-jsiexecutor (from `../ReactCommon/jsiexecutor`)
@@ -177,8 +174,6 @@ EXTERNAL SOURCES:
     :path: "../ReactCommon/cxxreact"
   React-DevSupport:
     :path: "../React"
-  React-fishhook:
-    :path: "../Libraries/fishhook"
   React-jscallinvoker:
     :path: "../ReactCommon/jscallinvoker"
   React-jsi:
@@ -217,28 +212,27 @@ SPEC CHECKSUMS:
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  React: 7f6b942a67cee9184bb87f56768859645d55791a
-  React-ART: 02855874e8274ca611e2ddcf899f22995527722c
-  React-Core: bde6332eb4128c2f7be8dfcd8cc6150340ac6601
-  React-cxxreact: e9dd463abdaafe1aa5b287a7aae4e7c3c0535359
-  React-DevSupport: ad0e9a54b1a65672b2c9bceb164d237170459ecd
-  React-fishhook: 3680cd51e096d70ea29e70cfb929d20e4dc7a3d2
-  React-jscallinvoker: f5cc0736345d1b6a362061f7fbc8fe15ba8f76e1
-  React-jsi: b26f52a8384ef79486137f8fc88a9c6d2abac771
-  React-jsiexecutor: 072f39da293a2f001ee3dd03491bba2a55857576
-  React-jsinspector: 6d1ff8511b32bfe35b0a24e91934da8c172f6147
-  React-RCTAnimation: b8363f4551c15ef1313792cb84c347fe9db9cf04
-  React-RCTBlob: 01d3ac8a492e43074a147dfc5d0344cc37e28098
-  React-RCTImage: 4e39929edeca6c171da7382e3837da60661b0711
-  React-RCTLinking: d40617ce8988550188aa143f51e78aeaca43dfea
-  React-RCTNetwork: dc29358ded58edfbbf31367afa3eadf66fe66a5a
-  React-RCTPushNotification: ef4c8dfc634a2fda6d3c5a750920ac7957e305d2
-  React-RCTSettings: 16e9a6447fd2c743e5eb6af3e8874878da240c41
-  React-RCTText: b62f44fdb9a372dfb6dd6ef90fbdcee8a8479a56
-  React-RCTWebSocket: 1c4a3ac167c489726a83d191425d56526d1e8381
-  React-turbomodule-core: 8edf9d98c13f2f82a5aeab6a8f25212b5fecb857
-  React-turbomodule-samples: e62dc3c28c40ad7591d4145b685dbd36a783a3da
-  yoga: c940af4cc0b3dea0a1a9528dc792630b2587c8e0
+  React: 8954ae65f578d2d7b6fe9bd4cdb7edb1b180c434
+  React-ART: 662252e1a2f87f7d4e56150403040b4cd725c0f9
+  React-Core: 85b3254a99b33603d213a48d1fba61091d33e31d
+  React-cxxreact: 0c67587cf84cdab4273c69fb79c2cc05facf19ab
+  React-DevSupport: 197fb409737cff2c4f9986e77c220d7452cb9f9f
+  React-jscallinvoker: 762ca43232e10b95bebf91b5ce5162e5e0e1515d
+  React-jsi: 5f5d05335f24235357873dd02e4ed493324dbf60
+  React-jsiexecutor: 39b19e58879e5d222c6743cc99ca105ebba021a5
+  React-jsinspector: e08662d1bf5b129a3d556eb9ea343a3f40353ae4
+  React-RCTAnimation: 359ba1b5690b1e87cc173558a78e82d35919333e
+  React-RCTBlob: 5e2b55f76e9a1c7ae52b826923502ddc3238df24
+  React-RCTImage: f5f1c50922164e89bdda67bcd0153952a5cfe719
+  React-RCTLinking: d0ecbd791e9ddddc41fa1f66b0255de90e8ee1e9
+  React-RCTNetwork: e26946300b0ab7bb6c4a6348090e93fa21f33a9d
+  React-RCTPushNotification: 2ae0eaa3e6ac639aae536e3608b0fc184a034645
+  React-RCTSettings: d0d37cb521b7470c998595a44f05847777cc3f42
+  React-RCTText: b074d89033583d4f2eb5faf7ea2db3a13c7553a2
+  React-RCTWebSocket: cd932a16b7214898b6b7f788c8bddb3637246ac4
+  React-turbomodule-core: 395c331fd8d1c6fb08d728279f9c43c15c1d71db
+  React-turbomodule-samples: 3e0a045706d0b64f46f03239d4650682ba5a01ed
+  yoga: 4298a598eed989092f859d469c070b33225824c8
 
 PODFILE CHECKSUM: f67e9d6166835ccf2c1352d94be74a1d19ed6c34
 
