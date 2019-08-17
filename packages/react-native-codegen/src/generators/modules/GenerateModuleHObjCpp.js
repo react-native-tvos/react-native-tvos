@@ -12,9 +12,15 @@
 
 import type {
   SchemaType,
-  FunctionTypeAnnotationParamTypeAnnotation,
+  FunctionTypeAnnotationParam,
   FunctionTypeAnnotationReturn,
+  ObjectParamTypeAnnotation,
 } from '../../CodegenSchema';
+
+const {
+  translateObjectsForStructs,
+  capitalizeFirstLetter,
+} = require('./ObjCppUtils/GenerateStructs');
 
 type FilesOutput = Map<string, string>;
 
@@ -24,7 +30,9 @@ public:
   Native::_MODULE_NAME_::SpecJSI(id<RCTTurboModule> instance, std::shared_ptr<JSCallInvoker> jsInvoker);
 };`;
 
-const protolocTemplate = `
+const protocolTemplate = `
+::_STRUCTS_::
+
 @protocol Native::_MODULE_NAME_::Spec <RCTBridgeModule, RCTTurboModule>
 ::_MODULE_PROPERTIES_::
 @end
@@ -56,6 +64,11 @@ const template = `
 #import <React/RCTBridgeModule.h>
 
 #import <ReactCommon/RCTTurboModule.h>
+#import <RCTRequired/RCTRequired.h>
+#import <RCTTypeSafety/RCTTypedModuleConstants.h>
+#import <React/RCTCxxConvert.h>
+#import <React/RCTManagedPointer.h>
+#import <RCTTypeSafety/RCTConvertHelpers.h>
 
 ::_PROTOCOLS_::
 
@@ -67,32 +80,71 @@ namespace react {
 } // namespace facebook
 `;
 
+type ObjectForGeneratingStructs = $ReadOnly<{|
+  name: string,
+  object: $ReadOnly<{|
+    type: 'ObjectTypeAnnotation',
+    properties: $ReadOnlyArray<ObjectParamTypeAnnotation>,
+  |}>,
+|}>;
+
+const constants = `- (facebook::react::ModuleConstants<JS::Native::_MODULE_NAME_::::Constants::Builder>)constantsToExport;
+- (facebook::react::ModuleConstants<JS::Native::_MODULE_NAME_::::Constants::Builder>)getConstants;`;
+
 function translatePrimitiveJSTypeToObjCType(
-  type:
-    | FunctionTypeAnnotationParamTypeAnnotation
-    | FunctionTypeAnnotationReturn,
+  param: FunctionTypeAnnotationParam,
   error: string,
 ) {
+  function wrapIntoNullableIfNeeded(generatedType: string) {
+    return param.nullable ? `${generatedType} _Nullable` : generatedType;
+  }
+  switch (param.typeAnnotation.type) {
+    case 'StringTypeAnnotation':
+      return wrapIntoNullableIfNeeded('NSString *');
+    case 'NumberTypeAnnotation':
+    case 'FloatTypeAnnotation':
+    case 'Int32TypeAnnotation':
+      return param.nullable ? 'NSNumber *' : 'double';
+    case 'BooleanTypeAnnotation':
+      return param.nullable ? 'NSNumber * _Nullable' : 'BOOL';
+    case 'GenericObjectTypeAnnotation':
+      return wrapIntoNullableIfNeeded('NSDictionary *');
+    case 'ArrayTypeAnnotation':
+      return wrapIntoNullableIfNeeded('NSArray *');
+    case 'FunctionTypeAnnotation':
+      return 'RCTResponseSenderBlock';
+    case 'ObjectTypeAnnotation':
+      return wrapIntoNullableIfNeeded('NSDictionary *');
+    default:
+      throw new Error(error);
+  }
+}
+
+function translatePrimitiveJSTypeToObjCTypeForReturn(
+  type: FunctionTypeAnnotationReturn,
+  error: string,
+) {
+  function wrapIntoNullableIfNeeded(generatedType: string) {
+    return type.nullable ? `${generatedType} _Nullable` : generatedType;
+  }
   switch (type.type) {
     case 'VoidTypeAnnotation':
     case 'GenericPromiseTypeAnnotation':
       return 'void';
     case 'StringTypeAnnotation':
-      return 'NSString *';
+      return wrapIntoNullableIfNeeded('NSString *');
     case 'NumberTypeAnnotation':
     case 'FloatTypeAnnotation':
     case 'Int32TypeAnnotation':
-      return 'NSNumber *';
+      return wrapIntoNullableIfNeeded('NSNumber *');
     case 'BooleanTypeAnnotation':
-      return 'BOOL';
+      return type.nullable ? 'NSNumber * _Nullable' : 'BOOL';
     case 'GenericObjectTypeAnnotation':
-    case 'ObjectTypeAnnotation':
-      return 'NSDictionary *';
+      return wrapIntoNullableIfNeeded('NSDictionary *');
     case 'ArrayTypeAnnotation':
-      return 'NSArray<id<NSObject>> *';
-    case 'FunctionTypeAnnotation':
-      return 'RCTResponseSenderBlock';
-
+      return wrapIntoNullableIfNeeded('NSArray<id<NSObject>> *');
+    case 'ObjectTypeAnnotation':
+      return wrapIntoNullableIfNeeded('NSDictionary *');
     default:
       throw new Error(error);
   }
@@ -101,7 +153,11 @@ const methodImplementationTemplate =
   '- (::_RETURN_VALUE_::) ::_PROPERTY_NAME_::::_ARGS_::;';
 
 module.exports = {
-  generate(libraryName: string, schema: SchemaType): FilesOutput {
+  generate(
+    libraryName: string,
+    schema: SchemaType,
+    moduleSpecName: string,
+  ): FilesOutput {
     const nativeModules = Object.keys(schema.modules)
       .map(moduleName => {
         const modules = schema.modules[moduleName].nativeModules;
@@ -120,29 +176,62 @@ module.exports = {
 
     const protocols = Object.keys(nativeModules)
       .map(name => {
+        const objectForGeneratingStructs: Array<ObjectForGeneratingStructs> = [];
         const {properties} = nativeModules[name];
         const implementations = properties
           .map(prop => {
             const nativeArgs = prop.typeAnnotation.params
               .map((param, i) => {
-                const paramObjCType = translatePrimitiveJSTypeToObjCType(
-                  param.typeAnnotation,
-                  `Unspopported type for param "${param.name}" in ${
-                    prop.name
-                  }. Found: ${param.typeAnnotation.type}`,
-                );
+                let paramObjCType;
+                if (
+                  param.typeAnnotation.type === 'ObjectTypeAnnotation' &&
+                  param.typeAnnotation.properties
+                ) {
+                  const variableName =
+                    capitalizeFirstLetter(prop.name) +
+                    capitalizeFirstLetter(param.name);
+                  objectForGeneratingStructs.push({
+                    name: variableName,
+                    object: {
+                      type: 'ObjectTypeAnnotation',
+                      properties: param.typeAnnotation.properties,
+                    },
+                  });
+                  paramObjCType = `JS::Native::_MODULE_NAME_::::Spec${variableName}&`;
+                } else {
+                  paramObjCType = translatePrimitiveJSTypeToObjCType(
+                    param,
+                    `Unspopported type for param "${param.name}" in ${
+                      prop.name
+                    }. Found: ${param.typeAnnotation.type}`,
+                  );
+                }
                 return `${i === 0 ? '' : param.name}:(${paramObjCType})${
                   param.name
                 }`;
               })
               .join('\n   ')
               .concat(callbackArgs(prop));
+            const {returnTypeAnnotation} = prop.typeAnnotation;
+            if (
+              returnTypeAnnotation.type === 'ObjectTypeAnnotation' &&
+              returnTypeAnnotation.properties
+            ) {
+              objectForGeneratingStructs.push({
+                name: capitalizeFirstLetter(prop.name) + 'ReturnType',
+
+                object: {
+                  type: 'ObjectTypeAnnotation',
+                  properties: returnTypeAnnotation.properties,
+                },
+              });
+            }
             const implementation = methodImplementationTemplate
               .replace('::_PROPERTY_NAME_::', prop.name)
               .replace(
                 '::_RETURN_VALUE_::',
-                translatePrimitiveJSTypeToObjCType(
-                  prop.typeAnnotation.returnTypeAnnotation,
+                translatePrimitiveJSTypeToObjCTypeForReturn(
+                  returnTypeAnnotation,
                   `Unspopported return type for ${prop.name}. Found: ${
                     prop.typeAnnotation.returnTypeAnnotation.type
                   }`,
@@ -150,23 +239,29 @@ module.exports = {
               )
               .replace('::_ARGS_::', nativeArgs);
             if (prop.name === 'getConstants') {
-              return (
-                implementation +
-                '\n' +
-                implementation.replace('getConstants', 'constantsToExport')
-              );
+              if (
+                prop.typeAnnotation.returnTypeAnnotation.properties &&
+                prop.typeAnnotation.returnTypeAnnotation.properties.length === 0
+              ) {
+                return '';
+              }
+              return constants.replace(/::_MODULE_NAME_::/, name);
             }
             return implementation;
           })
           .join('\n');
-        return protolocTemplate
+        return protocolTemplate
+          .replace(
+            /::_STRUCTS_::/g,
+            translateObjectsForStructs(objectForGeneratingStructs),
+          )
           .replace(/::_MODULE_PROPERTIES_::/g, implementations)
           .replace(/::_MODULE_NAME_::/g, name)
           .replace('::_PROPERTIES_MAP_::', '');
       })
       .join('\n');
 
-    const fileName = 'RCTNativeModules.h';
+    const fileName = `${moduleSpecName}.h`;
     const replacedTemplate = template
       .replace(/::_MODULES_::/g, modules)
       .replace(/::_PROTOCOLS_::/g, protocols);

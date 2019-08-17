@@ -58,7 +58,13 @@
   }
 
 #ifdef RN_FABRIC_ENABLED
-  _surfacePresenter = [[RCTSurfacePresenter alloc] initWithBridge:_bridge config:nil];
+  _surfacePresenter = [[RCTSurfacePresenter alloc] initWithBridge:_bridge
+                                                           config:nil
+                                                      imageLoader:RCTTurboModuleEnabled() ?
+                                                                  [_bridge moduleForName:@"RCTImageLoader"
+                                                                  lazilyLoadIfNecessary:YES] : nil
+                                                  runtimeExecutor:nullptr];
+
   _bridge.surfacePresenter = _surfacePresenter;
 
   UIView *rootView = [[RCTFabricSurfaceHostingProxyRootView alloc] initWithBridge:_bridge moduleName:@"RNTesterApp" initialProperties:initProps];

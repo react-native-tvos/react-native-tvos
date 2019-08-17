@@ -30,9 +30,10 @@ function getCommandOptions(
   try {
     foundOptions = commandOptionsExpression.properties.reduce(
       (options, prop) => {
-        options[prop.key.name] = (prop?.value?.elements || []).map(
-          element => element?.value,
-        );
+        options[prop.key.name] = (
+          (prop && prop.value && prop.value.elements) ||
+          []
+        ).map(element => element && element.value);
         return options;
       },
       {},

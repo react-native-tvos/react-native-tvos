@@ -26,13 +26,17 @@ package com.facebook.react.viewmanagers;
 
 ::_IMPORTS_::
 
-public class ::_CLASSNAME_::<T extends ::_EXTEND_CLASSES_::> {
+public class ::_CLASSNAME_::<T extends ::_EXTEND_CLASSES_::, U extends BaseViewManager<T, ? extends LayoutShadowNode> & ::_INTERFACE_CLASSNAME_::<T>> extends BaseViewManagerDelegate<T, U> {
+  public ::_CLASSNAME_::(U viewManager) {
+    super(viewManager);
+  }
   ::_METHODS_::
 }
 `;
 
 const propSetterTemplate = `
-  public void setProperty(::_INTERFACE_CLASSNAME_::<T> viewManager, T view, String propName, Object value) {
+  @Override
+  public void setProperty(T view, String propName, @Nullable Object value) {
     ::_PROP_CASES_::
   }
 `;
@@ -62,6 +66,14 @@ function getJavaValueForProp(
       return `value == null ? ${
         typeAnnotation.default
       } : ((Double) value).intValue()`;
+    case 'DoubleTypeAnnotation':
+      if (prop.optional) {
+        return `value == null ? ${
+          typeAnnotation.default
+        }f : ((Double) value).doubleValue()`;
+      } else {
+        return 'value == null ? Double.NaN : ((Double) value).doubleValue()';
+      }
     case 'FloatTypeAnnotation':
       if (prop.optional) {
         return `value == null ? ${
@@ -85,6 +97,9 @@ function getJavaValueForProp(
     case 'ArrayTypeAnnotation': {
       return '(ReadableArray) value';
     }
+    case 'ObjectTypeAnnotation': {
+      return '(ReadableMap) value';
+    }
     case 'StringEnumTypeAnnotation':
       return '(String) value';
     default:
@@ -98,13 +113,13 @@ function generatePropCasesString(
   componentName: string,
 ) {
   if (component.props.length === 0) {
-    return '// No props';
+    return 'super.setProperty(view, propName, value);';
   }
 
   const cases = component.props
     .map(prop => {
       return `case "${prop.name}":
-        viewManager.set${toSafeJavaString(
+        mViewManager.set${toSafeJavaString(
           prop.name,
         )}(view, ${getJavaValueForProp(prop, componentName)});
         break;`;
@@ -113,6 +128,8 @@ function generatePropCasesString(
 
   return `switch (propName) {
       ${cases}
+      default:
+        super.setProperty(view, propName, value);
     }`;
 }
 
@@ -120,6 +137,10 @@ function getCommandArgJavaType(param) {
   switch (param.typeAnnotation.type) {
     case 'BooleanTypeAnnotation':
       return 'getBoolean';
+    case 'DoubleTypeAnnotation':
+      return 'getDouble';
+    case 'FloatTypeAnnotation':
+      return 'getFloat';
     case 'Int32TypeAnnotation':
       return 'getInt';
     case 'StringTypeAnnotation':
@@ -192,6 +213,10 @@ function getDelegateImports(component) {
   if (component.commands.length > 0) {
     imports.add('import com.facebook.react.bridge.ReadableArray;');
   }
+  imports.add('import androidx.annotation.Nullable;');
+  imports.add('import com.facebook.react.uimanager.BaseViewManager;');
+  imports.add('import com.facebook.react.uimanager.BaseViewManagerDelegate;');
+  imports.add('import com.facebook.react.uimanager.LayoutShadowNode;');
 
   return imports;
 }
@@ -208,7 +233,11 @@ function generateMethods(propsString, commandsString): string {
 }
 
 module.exports = {
-  generate(libraryName: string, schema: SchemaType): FilesOutput {
+  generate(
+    libraryName: string,
+    schema: SchemaType,
+    moduleSpecName: string,
+  ): FilesOutput {
     const files = new Map();
     Object.keys(schema.modules).forEach(moduleName => {
       const components = schema.modules[moduleName].components;
@@ -219,8 +248,8 @@ module.exports = {
 
       return Object.keys(components).forEach(componentName => {
         const component = components[componentName];
-        const className = `${componentName}ViewManagerDelegate`;
-        const interfaceClassName = `${componentName}ViewManagerInterface`;
+        const className = `${componentName}ManagerDelegate`;
+        const interfaceClassName = `${componentName}ManagerInterface`;
         const fileName = `${className}.java`;
 
         const imports = getDelegateImports(component);

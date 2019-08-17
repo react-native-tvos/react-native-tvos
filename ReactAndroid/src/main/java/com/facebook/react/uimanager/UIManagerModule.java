@@ -650,13 +650,11 @@ public class UIManagerModule extends ReactContextBaseJavaModule
     mUIImplementation.viewIsDescendantOf(reactTag, ancestorReactTag, callback);
   }
 
-  @Override
   @ReactMethod
   public void setJSResponder(int reactTag, boolean blockNativeResponder) {
     mUIImplementation.setJSResponder(reactTag, blockNativeResponder);
   }
 
-  @Override
   @ReactMethod
   public void clearJSResponder() {
     mUIImplementation.clearJSResponder();
@@ -692,7 +690,9 @@ public class UIManagerModule extends ReactContextBaseJavaModule
     mUIImplementation.dispatchViewManagerCommand(reactTag, commandId, commandArgs);
   }
 
+  /** @deprecated use {@link SoundManager#playTouchSound()} instead. */
   @ReactMethod
+  @Deprecated
   public void playTouchSound() {
     AudioManager audioManager =
         (AudioManager) getReactApplicationContext().getSystemService(Context.AUDIO_SERVICE);

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GenerateModuleHObjCpp can generate fixture EMPTY_NATIVE_MODULES 1`] = `
+exports[`GenerateModuleHObjCpp can generate fixture COMPLEX_OBJECTS 1`] = `
 Map {
-  "RCTNativeModules.mm" => "
+  "SampleSpec-generated.mm" => "
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -10,7 +10,57 @@ Map {
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/modules/EMPTY_NATIVE_MODULES/RCTNativeModules.h>
+#include <SampleSpec/SampleSpec.h>
+@implementation RCTCxxConvert (NativeSampleTurboModule_SpecDifficultReturnType)
++ (RCTManagedPointer *)JS_NativeSampleTurboModule_SpecDifficultReturnType:(id)json
+{
+  return facebook::react::managedPointer<JS::NativeSampleTurboModule::SpecDifficultReturnType>(json);
+}
+@end
+@implementation RCTCxxConvert (NativeSampleTurboModule_SpecDifficultA)
++ (RCTManagedPointer *)JS_NativeSampleTurboModule_SpecDifficultA:(id)json
+{
+  return facebook::react::managedPointer<JS::NativeSampleTurboModule::SpecDifficultA>(json);
+}
+@end
+@implementation RCTCxxConvert (NativeSampleTurboModule_SpecDifficultAE)
++ (RCTManagedPointer *)JS_NativeSampleTurboModule_SpecDifficultAE:(id)json
+{
+  return facebook::react::managedPointer<JS::NativeSampleTurboModule::SpecDifficultAE>(json);
+}
+@end
+namespace facebook {
+namespace react {
+
+static facebook::jsi::Value __hostFunction_NativeSampleTurboModuleSpecJSI_difficult(facebook::jsi::Runtime& rt, TurboModule &turboModule, const facebook::jsi::Value* args, size_t count) {
+  return static_cast<ObjCTurboModule &>(turboModule)
+         .invokeObjCMethod(rt, ObjectKind, \\"difficult\\", @selector(difficult:), args, count);
+}
+
+NativeSampleTurboModuleSpecJSI::NativeSampleTurboModuleSpecJSI(id<RCTTurboModule> instance, std::shared_ptr<JSCallInvoker> jsInvoker)
+  : ObjCTurboModule(\\"SampleTurboModule\\", instance, jsInvoker) {
+  methodMap_[\\"difficult\\"] = MethodMetadata {1, __hostFunction_NativeSampleTurboModuleSpecJSI_difficult};
+  setMethodArgConversionSelector(@\\"difficult\\", 0, @\\"JS_NativeSampleTurboModule_SpecDifficultA:\\");
+}
+
+
+} // namespace react
+} // namespace facebook
+",
+}
+`;
+
+exports[`GenerateModuleHObjCpp can generate fixture EMPTY_NATIVE_MODULES 1`] = `
+Map {
+  "SampleSpec-generated.mm" => "
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+#include <SampleSpec/SampleSpec.h>
 
 namespace facebook {
 namespace react {
@@ -31,7 +81,7 @@ NativeSampleTurboModuleSpecJSI::NativeSampleTurboModuleSpecJSI(id<RCTTurboModule
 
 exports[`GenerateModuleHObjCpp can generate fixture SIMPLE_NATIVE_MODULES 1`] = `
 Map {
-  "RCTNativeModules.mm" => "
+  "SampleSpec-generated.mm" => "
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -39,7 +89,7 @@ Map {
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/modules/SIMPLE_NATIVE_MODULES/RCTNativeModules.h>
+#include <SampleSpec/SampleSpec.h>
 
 namespace facebook {
 namespace react {
@@ -108,7 +158,7 @@ NativeSampleTurboModuleSpecJSI::NativeSampleTurboModuleSpecJSI(id<RCTTurboModule
 
 exports[`GenerateModuleHObjCpp can generate fixture TWO_MODULES_DIFFERENT_FILES 1`] = `
 Map {
-  "RCTNativeModules.mm" => "
+  "SampleSpec-generated.mm" => "
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -116,7 +166,8 @@ Map {
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/modules/TWO_MODULES_DIFFERENT_FILES/RCTNativeModules.h>
+#include <SampleSpec/SampleSpec.h>
+
 
 namespace facebook {
 namespace react {
@@ -130,6 +181,7 @@ NativeSampleTurboModuleSpecJSI::NativeSampleTurboModuleSpecJSI(id<RCTTurboModule
   : ObjCTurboModule(\\"SampleTurboModule\\", instance, jsInvoker) {
   methodMap_[\\"voidFunc\\"] = MethodMetadata {0, __hostFunction_NativeSampleTurboModuleSpecJSI_voidFunc};
 }
+
 static facebook::jsi::Value __hostFunction_NativeSample2TurboModuleSpecJSI_voidFunc(facebook::jsi::Runtime& rt, TurboModule &turboModule, const facebook::jsi::Value* args, size_t count) {
   return static_cast<ObjCTurboModule &>(turboModule)
          .invokeObjCMethod(rt, VoidKind, \\"voidFunc\\", @selector(voidFunc), args, count);
@@ -137,6 +189,7 @@ static facebook::jsi::Value __hostFunction_NativeSample2TurboModuleSpecJSI_voidF
 
 NativeSample2TurboModuleSpecJSI::NativeSample2TurboModuleSpecJSI(id<RCTTurboModule> instance, std::shared_ptr<JSCallInvoker> jsInvoker)
   : ObjCTurboModule(\\"Sample2TurboModule\\", instance, jsInvoker) {
+
   methodMap_[\\"voidFunc\\"] = MethodMetadata {0, __hostFunction_NativeSample2TurboModuleSpecJSI_voidFunc};
 }
 
@@ -149,7 +202,7 @@ NativeSample2TurboModuleSpecJSI::NativeSample2TurboModuleSpecJSI(id<RCTTurboModu
 
 exports[`GenerateModuleHObjCpp can generate fixture TWO_MODULES_SAME_FILE 1`] = `
 Map {
-  "RCTNativeModules.mm" => "
+  "SampleSpec-generated.mm" => "
 /**
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -157,7 +210,8 @@ Map {
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/modules/TWO_MODULES_SAME_FILE/RCTNativeModules.h>
+#include <SampleSpec/SampleSpec.h>
+
 
 namespace facebook {
 namespace react {
