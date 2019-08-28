@@ -37,16 +37,16 @@ const YellowBoxButton = (props: Props): React.Node => (
 
 const styles = StyleSheet.create({
   root: {
-    borderRadius: 14,
-    height: 28,
+    borderRadius: 14 * YellowBoxStyle.fontScale,
+    height: 28 * YellowBoxStyle.fontScale,
     justifyContent: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 12 * YellowBoxStyle.fontScale,
   },
   label: {
     color: YellowBoxStyle.getTextColor(1),
-    fontSize: 12,
+    fontSize: 12 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 16,
+    lineHeight: 16 * YellowBoxStyle.fontScale,
   },
 });
 

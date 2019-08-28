@@ -10,6 +10,8 @@
 
 'use strict';
 
+const Platform = require('../../Utilities/Platform');
+
 const YellowBoxStyle = {
   getBackgroundColor(opacity: number): string {
     return `rgba(250, 186, 48, ${opacity})`;
@@ -26,6 +28,8 @@ const YellowBoxStyle = {
   getTextColor(opacity: number): string {
     return `rgba(255, 255, 255, ${opacity})`;
   },
+
+  fontScale: Platform.isTV ? 1.5 : 1.0,
 };
 
 module.exports = YellowBoxStyle;
