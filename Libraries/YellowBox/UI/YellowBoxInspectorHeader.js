@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     height: Platform.select({
-      android: 48,
-      ios: 44,
+      android: 48 * YellowBoxStyle.fontScale,
+      ios: 44 * YellowBoxStyle.fontScale,
     }),
   },
   headerButton: {
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
   },
   headerTitleText: {
     color: YellowBoxStyle.getTextColor(1),
-    fontSize: 16,
+    fontSize: 16 * YellowBoxStyle.fontScale,
     fontWeight: '600',
     includeFontPadding: false,
-    lineHeight: 20,
+    lineHeight: 20 * YellowBoxStyle.fontScale,
   },
 });
 

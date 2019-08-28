@@ -60,21 +60,21 @@ const getFrameLocation = (uri: string): string => {
 
 const styles = StyleSheet.create({
   frame: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingHorizontal: 12 * YellowBoxStyle.fontScale,
+    paddingVertical: 4 * YellowBoxStyle.fontScale,
   },
   frameName: {
     color: YellowBoxStyle.getTextColor(1),
-    fontSize: 14,
+    fontSize: 14 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 18,
+    lineHeight: 18 * YellowBoxStyle.fontScale,
   },
   frameLocation: {
     color: YellowBoxStyle.getTextColor(0.7),
-    fontSize: 12,
+    fontSize: 12 * YellowBoxStyle.fontScale,
     fontWeight: '300',
     includeFontPadding: false,
-    lineHeight: 16,
+    lineHeight: 16 * YellowBoxStyle.fontScale,
   },
 });
 

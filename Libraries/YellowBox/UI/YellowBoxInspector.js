@@ -171,34 +171,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bodyContent: {
-    paddingVertical: 12,
+    paddingVertical: 12 * YellowBoxStyle.fontScale,
   },
   bodyHeading: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginBottom: 6,
-    paddingHorizontal: 12,
+    marginBottom: 6 * YellowBoxStyle.fontScale,
+    paddingHorizontal: 12 * YellowBoxStyle.fontScale,
   },
   bodyHeadingText: {
     color: YellowBoxStyle.getTextColor(1),
     flex: 1,
-    fontSize: 20,
+    fontSize: 20 * YellowBoxStyle.fontScale,
     fontWeight: '600',
     includeFontPadding: false,
-    lineHeight: 28,
+    lineHeight: 28 * YellowBoxStyle.fontScale,
   },
   bodyText: {
     color: YellowBoxStyle.getTextColor(1),
-    fontSize: 14,
+    fontSize: 14 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 18,
-    paddingHorizontal: 12,
+    lineHeight: 18 * YellowBoxStyle.fontScale,
+    paddingHorizontal: 12 * YellowBoxStyle.fontScale,
   },
   substitutionText: {
     color: YellowBoxStyle.getTextColor(0.6),
   },
   bodySection: {
-    marginTop: 20,
+    marginTop: 20 * YellowBoxStyle.fontScale,
   },
 });
 

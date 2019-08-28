@@ -11,6 +11,7 @@
 'use strict';
 
 const Dimensions = require('../../Utilities/Dimensions');
+const Platform = require('../../Utilities/Platform');
 const React = require('react');
 const FlatList = require('../../Lists/FlatList');
 const SafeAreaView = require('../../Components/SafeAreaView/SafeAreaView');
@@ -76,8 +77,8 @@ class YellowBoxList extends React.Component<Props, State> {
     };
 
     return items.length === 0 ? null : (
-      <View style={styles.list}>
-        <View pointerEvents="box-none" style={styles.dismissAll}>
+      <View style={Platform.isTV ? styles.list_tv : styles.list}>
+        <View pointerEvents="box-none" style={Platform.isTV ? styles.dismissAll_tv : styles.dismissAll}>
           <YellowBoxButton
             hitSlop={{bottom: 4, left: 4, right: 4, top: 4}}
             label="Dismiss All"
@@ -120,17 +121,31 @@ class YellowBoxList extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   list: {
+    bottom: 0,
+    position: 'absolute',
+    width: '100%',
+  },
+  list_tv: {
     top: 0,
     left: 0,
     position: 'absolute',
     width: '100%',
   },
   dismissAll: {
+    bottom: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingBottom: 4,
+    paddingEnd: 4,
+    position: 'absolute',
+    width: '100%',
+  },
+  dismissAll_tv: {
     top: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    paddingTop: 4,
-    paddingStart: 4,
+    paddingTop: 8,
+    paddingStart: 8,
     position: 'absolute',
     width: '100%',
   },

@@ -29,7 +29,7 @@ type Props = $ReadOnly<{|
 
 class YellowBoxListRow extends React.Component<Props> {
   static GUTTER = StyleSheet.hairlineWidth;
-  static HEIGHT = 70;
+  static HEIGHT = 70 * YellowBoxStyle.fontScale;
 
   shouldComponentUpdate(nextProps: Props): boolean {
     const prevProps = this.props;
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     height: YellowBoxListRow.HEIGHT,
     justifyContent: 'center',
     marginTop: YellowBoxListRow.GUTTER,
-    paddingHorizontal: 12,
+    paddingHorizontal: 6 * YellowBoxStyle.fontScale,
   },
   content: {
     alignItems: 'flex-start',
@@ -82,15 +82,15 @@ const styles = StyleSheet.create({
   bodyText: {
     color: YellowBoxStyle.getTextColor(1),
     flex: 1,
-    fontSize: 24,
+    fontSize: 12 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 30,
+    lineHeight: 15 * YellowBoxStyle.fontScale,
   },
   metaText: {
     color: YellowBoxStyle.getTextColor(0.5),
-    fontSize: 24,
+    fontSize: 12 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 30,
+    lineHeight: 15 * YellowBoxStyle.fontScale,
   },
   substitutionText: {
     color: YellowBoxStyle.getTextColor(0.6),
