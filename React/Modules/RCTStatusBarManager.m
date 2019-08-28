@@ -58,6 +58,8 @@ RCT_ENUM_CONVERTER(
 
 @implementation RCTStatusBarManager
 
+#if !TARGET_OS_TV
+
 static BOOL RCTViewControllerBasedStatusBarAppearance()
 {
   static BOOL value;
@@ -70,6 +72,8 @@ static BOOL RCTViewControllerBasedStatusBarAppearance()
 
   return value;
 }
+
+#endif
 
 RCT_EXPORT_MODULE()
 
@@ -127,15 +131,22 @@ RCT_EXPORT_MODULE()
   [self emitEvent:@"statusBarFrameWillChange" forNotification:notification];
 }
 
+#endif
+
 RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
 {
   callback(@[ @{
-    @"height" : @(RCTSharedApplication().statusBarFrame.size.height),
+#if TARGET_OS_TV
+    @"height": @(0),
+#else
+    @"height": @(RCTSharedApplication().statusBarFrame.size.height),
+#endif
   } ]);
 }
 
-RCT_EXPORT_METHOD(setStyle : (UIStatusBarStyle)statusBarStyle animated : (BOOL)animated)
+RCT_EXPORT_METHOD(setStyle : (NSInteger)statusBarStyle animated : (BOOL)animated)
 {
+#if !TARGET_OS_TV
   if (RCTViewControllerBasedStatusBarAppearance()) {
     RCTLogError(@"RCTStatusBarManager module requires that the \
                 UIViewControllerBasedStatusBarAppearance key in the Info.plist is set to NO");
@@ -145,10 +156,12 @@ RCT_EXPORT_METHOD(setStyle : (UIStatusBarStyle)statusBarStyle animated : (BOOL)a
     [RCTSharedApplication() setStatusBarStyle:statusBarStyle animated:animated];
   }
 #pragma clang diagnostic pop
+#endif
 }
 
-RCT_EXPORT_METHOD(setHidden : (BOOL)hidden withAnimation : (UIStatusBarAnimation)animation)
+RCT_EXPORT_METHOD(setHidden : (BOOL)hidden withAnimation : (NSInteger)animation)
 {
+#if !TARGET_OS_TV
   if (RCTViewControllerBasedStatusBarAppearance()) {
     RCTLogError(@"RCTStatusBarManager module requires that the \
                 UIViewControllerBasedStatusBarAppearance key in the Info.plist is set to NO");
@@ -158,13 +171,14 @@ RCT_EXPORT_METHOD(setHidden : (BOOL)hidden withAnimation : (UIStatusBarAnimation
     [RCTSharedApplication() setStatusBarHidden:hidden withAnimation:animation];
 #pragma clang diagnostic pop
   }
+#endif
 }
 
 RCT_EXPORT_METHOD(setNetworkActivityIndicatorVisible : (BOOL)visible)
 {
+#if !TARGET_OS_TV
   RCTSharedApplication().networkActivityIndicatorVisible = visible;
+#endif
 }
-
-#endif // TARGET_OS_TV
 
 @end
