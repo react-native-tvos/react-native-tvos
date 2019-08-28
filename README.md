@@ -2,12 +2,12 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-1 release of this package will be derived from the 0.60.4 release of `react-native`.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-3 release of this package will be derived from the 0.60.4 release of `react-native`.
 
 To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
 ```js
-"react-native": "npm:react-native-tvos@0.60.4-1",
+"react-native": "npm:react-native-tvos@0.60.4-3",
 ```
 
 ## General support for Apple TV
@@ -25,8 +25,11 @@ The RNTester app supports Apple TV.
 - _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.  To use this NPM package for creating a new project, you can reference it as in the following example:
 
 ```sh
-react-native init TestApp --version=react-native@npm:react-native-tvos@0.60.4-0
+react-native init TestApp --version=react-native@npm:react-native-tvos@0.60.4-3
+open TestApp/ios/TestApp.xcworkspace
 ```
+
+The workspace will have both iOS and tvOS targets that you can build and run.
 
 - _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
 
