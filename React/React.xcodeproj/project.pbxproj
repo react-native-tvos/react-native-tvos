@@ -1102,7 +1102,6 @@
 		B5C6CA4522B0F17000E518CC /* RCTTVFocusGuideViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = B5C6CA4022B0F16F00E518CC /* RCTTVFocusGuideViewManager.h */; };
 		B5C6CA4622B0F17000E518CC /* RCTTVFocusGuideViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CA4122B0F16F00E518CC /* RCTTVFocusGuideViewManager.m */; };
 		B5C6CA4722B0F17000E518CC /* RCTTVFocusGuideViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CA4122B0F16F00E518CC /* RCTTVFocusGuideViewManager.m */; };
-		B5C6CA4822B0F17000E518CC /* RCTTVFocusGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CA4222B0F17000E518CC /* RCTTVFocusGuideView.m */; };
 		B5C6CA4922B0F17000E518CC /* RCTTVFocusGuideView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5C6CA4222B0F17000E518CC /* RCTTVFocusGuideView.m */; };
 		B5C6CA4B22B0F17000E518CC /* RCTTVFocusGuideView.h in Headers */ = {isa = PBXBuildFile; fileRef = B5C6CA4322B0F17000E518CC /* RCTTVFocusGuideView.h */; };
 		B95154321D1B34B200FE7B80 /* RCTActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B95154311D1B34B200FE7B80 /* RCTActivityIndicatorView.m */; };
@@ -4566,7 +4565,6 @@
 				3D37B5821D522B190042D5B5 /* RCTFont.mm in Sources */,
 				137327EA1AA5CF210034F82E /* RCTTabBarManager.m in Sources */,
 				59EDBCB71FDF4E0C003573DE /* RCTScrollView.m in Sources */,
-				B5C6CA4822B0F17000E518CC /* RCTTVFocusGuideView.m in Sources */,
 				59EDBCBB1FDF4E0C003573DE /* RCTScrollViewManager.m in Sources */,
 				599FAA441FB274980058CCF6 /* RCTSurfaceRootView.mm in Sources */,
 				C60669361F3CCF1B00E67165 /* RCTManagedPointer.mm in Sources */,
