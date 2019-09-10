@@ -4,6 +4,8 @@ Going forward, Apple TV support for React Native will be maintained here and in 
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-3 release of this package will be derived from the 0.60.4 release of `react-native`.
 
+You will find the relevant tvOS support and maintence within the branches marked `tvos`;
+
 To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
 ```js
