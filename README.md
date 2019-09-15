@@ -4,12 +4,14 @@ Going forward, Apple TV support for React Native will be maintained here and in 
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-5 release of this package will be derived from the 0.60.4 release of `react-native`.
 
+Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
+
 You will find the relevant tvOS support and maintence within the branches marked `tvos`;
 
 To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
 ```js
-"react-native": "npm:react-native-tvos@0.60.4-5",
+"react-native": "npm:react-native-tvos@latest",
 ```
 
 ## General support for Apple TV
@@ -27,8 +29,10 @@ The RNTester app supports Apple TV.
 - _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.  To use this NPM package for creating a new project, you can reference it as in the following example:
 
 ```sh
-react-native init TestApp --version=react-native@npm:react-native-tvos@0.60.4-5
-open TestApp/ios/TestApp.xcworkspace
+# Init an app called 'TestApp', note that you must not be in a node module (directory with node_modules sub-directory) for this to work
+react-native init TestApp --version=react-native@npm:react-native-tvos@latest
+# Now start the app in the tvOS Simulator - this will only work on a macOS machine
+cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
 ```
 
 The workspace will have both iOS and tvOS targets that you can build and run.
