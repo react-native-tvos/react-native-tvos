@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Animated, StyleSheet, Text, View} = require('react-native');
+const {Animated, StyleSheet, Text, View} = require('react-native-tvos');
 
 class Flip extends React.Component<{}, $FlowFixMeState> {
   state = {

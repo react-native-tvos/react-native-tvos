@@ -18,7 +18,7 @@ const {
   StyleSheet,
   Slider,
   Switch,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class TextEventsExample extends React.Component<{}, $FlowFixMeState> {
   state = {

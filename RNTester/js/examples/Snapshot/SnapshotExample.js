@@ -17,7 +17,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 const ScreenshotManager = NativeModules.ScreenshotManager;
 
 class ScreenshotExample extends React.Component<{}, $FlowFixMeState> {

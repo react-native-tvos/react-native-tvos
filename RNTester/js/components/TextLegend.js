@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Picker, Text, View} = require('react-native');
+const {Picker, Text, View} = require('react-native-tvos');
 
 class TextLegend extends React.Component<*, *> {
   state: $TEMPORARY$object<{|

@@ -29,7 +29,7 @@ const {
   pressItem,
   renderSmallSwitchOption,
 } = require('../../components/ListExampleShared');
-const {Alert, Animated, StyleSheet, View} = require('react-native');
+const {Alert, Animated, StyleSheet, View} = require('react-native-tvos');
 
 import type {Item} from '../../components/ListExampleShared';
 
