@@ -15,9 +15,9 @@ const ReactNative = require('react-native-tvos');
 const {Image, LayoutAnimation, StyleSheet, Text, View} = ReactNative;
 const {TestModule} = ReactNative.NativeModules;
 
-import type {ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
+import type {ViewStyleProp} from 'react-native-tvos/Libraries/StyleSheet/StyleSheet';
 
-const deepDiffer = require('react-native/Libraries/Utilities/differ/deepDiffer');
+const deepDiffer = require('react-native-tvos/Libraries/Utilities/differ/deepDiffer');
 
 function debug(...args) {
   // console.log.apply(null, arguments);
@@ -26,7 +26,7 @@ function debug(...args) {
 import type {
   Layout,
   LayoutEvent,
-} from 'react-native/Libraries/Types/CoreEventTypes';
+} from 'react-native-tvos/Libraries/Types/CoreEventTypes';
 
 type Props = $ReadOnly<{||}>;
 
