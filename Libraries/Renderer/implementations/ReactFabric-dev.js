@@ -16,8 +16,8 @@ if (__DEV__) {
   (function() {
 "use strict";
 
-require("react-native/Libraries/ReactPrivate/ReactNativePrivateInitializeCore");
-var ReactNativePrivateInterface = require("react-native/Libraries/ReactPrivate/ReactNativePrivateInterface");
+require("react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInitializeCore");
+var ReactNativePrivateInterface = require("react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInterface");
 var React = require("react");
 var Scheduler = require("scheduler");
 var checkPropTypes = require("prop-types/checkPropTypes");

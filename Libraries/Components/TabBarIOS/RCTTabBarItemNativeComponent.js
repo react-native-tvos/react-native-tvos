@@ -10,13 +10,13 @@
 
 'use strict';
 
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 
-import type {ViewProps} from 'ViewPropTypes';
-import type {ColorValue} from 'StyleSheetTypes';
-import type {SyntheticEvent} from 'CoreEventTypes';
-import type {NativeComponent} from 'ReactNative';
-import type {ImageSource} from 'ImageSource';
+import type {ViewProps} from '../View/ViewPropTypes';
+import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
+import type {SyntheticEvent} from '../../Types/CoreEventTypes';
+import type {NativeComponent} from '../ReactNative';
+import type {ImageSource} from '../../Image/ImageSource';
 
 type TabBarItemEvent = SyntheticEvent<null>;
 

@@ -5,7 +5,7 @@
 
 'use strict';
 
-const TVMenuBridge = require('NativeModules').TVMenuBridge;
+const TVMenuBridge = require('../../BatchedBridge/NativeModules').TVMenuBridge;
 
 module.exports = {
   enableTVMenuKey: () => {
