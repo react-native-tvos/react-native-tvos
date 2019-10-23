@@ -17,7 +17,7 @@ const {
   Text,
   View,
   TouchableOpacity,
-} = require('react-native');
+} = require('react-native-tvos');
 
 class AddRemoveExample extends React.Component<{}, $FlowFixMeState> {
   state = {

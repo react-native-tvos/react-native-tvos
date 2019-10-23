@@ -25,7 +25,7 @@ const {
   TouchableWithoutFeedback,
   UIManager,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 const RNTesterActions = require('./utils/RNTesterActions');
 const RNTesterExampleContainer = require('./components/RNTesterExampleContainer');
 const RNTesterExampleList = require('./components/RNTesterExampleList');

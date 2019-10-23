@@ -13,7 +13,7 @@
 const RNTesterTitle = require('./RNTesterTitle');
 const React = require('react');
 
-const {ScrollView, StyleSheet, View} = require('react-native');
+const {ScrollView, StyleSheet, View} = require('react-native-tvos');
 
 type Props = $ReadOnly<{|
   children?: React.Node,

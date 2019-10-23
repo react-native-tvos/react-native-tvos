@@ -17,7 +17,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const AnExBobble = require('./AnExBobble');
 const AnExChained = require('./AnExChained');

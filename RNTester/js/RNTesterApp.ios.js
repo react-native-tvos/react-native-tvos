@@ -28,9 +28,10 @@ const {
   SafeAreaView,
   StyleSheet,
   Text,
+  TVMenuControl,
   View,
   YellowBox,
-} = require('react-native');
+} = require('react-native-tvos');
 
 import type {RNTesterExample} from './types/RNTesterTypes';
 import type {RNTesterAction} from './utils/RNTesterActions';
@@ -115,6 +116,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
       return null;
     }
     if (this.state.openExample) {
+      TVMenuControl.enableTVMenuKey();
       const Component = RNTesterList.Modules[this.state.openExample];
       if (Component && Component.external) {
         return <Component onExampleExit={this._handleBack} />;
@@ -127,6 +129,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
         );
       }
     }
+    TVMenuControl.disableTVMenuKey();
     return (
       <View style={styles.exampleContainer}>
         <Header title="RNTester" />
@@ -165,6 +168,7 @@ const styles = StyleSheet.create({
   },
   exampleContainer: {
     flex: 1,
+    marginBottom: 100,
   },
 });
 

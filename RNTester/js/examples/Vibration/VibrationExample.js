@@ -19,7 +19,7 @@ const {
   TouchableHighlight,
   Vibration,
   Platform,
-} = require('react-native');
+} = require('react-native-tvos');
 
 exports.framework = 'React';
 exports.title = 'Vibration';

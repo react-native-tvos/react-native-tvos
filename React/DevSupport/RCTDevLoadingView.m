@@ -73,7 +73,7 @@ RCT_EXPORT_METHOD(showMessage:(NSString *)message color:(UIColor *)color backgro
     if (!self->_window && !RCTRunningInTestEnvironment()) {
       CGSize screenSize = [UIScreen mainScreen].bounds.size;
 
-      if (@available(iOS 11.0, *)) {
+      if (@available(iOS 11.0, tvOS 12.0, *)) {
         UIWindow *window = UIApplication.sharedApplication.keyWindow;
         self->_window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, screenSize.width, window.safeAreaInsets.top + 30)];
         self->_label = [[UILabel alloc] initWithFrame:CGRectMake(0, window.safeAreaInsets.top, screenSize.width, 30)];

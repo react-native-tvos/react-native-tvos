@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Clipboard, View, Text, StyleSheet} = require('react-native');
+const {Clipboard, View, Text, StyleSheet} = require('react-native-tvos');
 
 type Props = $ReadOnly<{||}>;
 type State = {|

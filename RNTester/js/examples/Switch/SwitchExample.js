@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Switch, Text, View} = require('react-native');
+const {Switch, Text, View} = require('react-native-tvos');
 
 type OnOffIndicatorProps = $ReadOnly<{|on: boolean, testID: string|}>;
 function OnOffIndicator({on, testID}: OnOffIndicatorProps) {

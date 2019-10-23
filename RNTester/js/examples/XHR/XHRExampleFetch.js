@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, Text, TextInput, View, Platform} = require('react-native');
+const {StyleSheet, Text, TextInput, View, Platform} = require('react-native-tvos');
 
 class XHRExampleFetch extends React.Component<any, any> {
   responseURL: ?string;
