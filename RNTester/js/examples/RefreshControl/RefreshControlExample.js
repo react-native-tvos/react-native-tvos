@@ -17,7 +17,7 @@ const {
   Text,
   TouchableWithoutFeedback,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const styles = StyleSheet.create({
   row: {

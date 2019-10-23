@@ -21,7 +21,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 import type {ViewStyleProp} from '../../../Libraries/StyleSheet/StyleSheet';
 import type {RNTesterExample} from '../types/RNTesterTypes';

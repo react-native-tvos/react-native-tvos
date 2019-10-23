@@ -17,7 +17,7 @@ const {
   StyleSheet,
   Text,
   TouchableOpacity,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const NUM_ITEMS = 20;
 

@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {Dimensions, Text, useWindowDimensions} from 'react-native';
+import {Dimensions, Text, useWindowDimensions} from 'react-native-tvos';
 import * as React from 'react';
 
 class DimensionsSubscription extends React.Component<

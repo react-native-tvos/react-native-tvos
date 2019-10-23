@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Alert, Button, View, StyleSheet} = require('react-native');
+const {Alert, Button, View, StyleSheet} = require('react-native-tvos');
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
 function onButtonPress(buttonName) {

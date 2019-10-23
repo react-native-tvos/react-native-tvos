@@ -20,7 +20,10 @@ const {
   TouchableWithoutFeedback,
   Alert,
   StyleSheet,
-} = require('react-native');
+  UIManager,
+  findNodeHandle,
+  Platform,
+} = require('react-native-tvos');
 
 const RNTesterBlock = require('../../components/RNTesterBlock');
 

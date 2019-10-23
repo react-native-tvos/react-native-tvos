@@ -10,7 +10,7 @@
 
 'use strict';
 
-const ReactNative = require('react-native');
+const ReactNative = require('react-native-tvos');
 const RNTesterActions = require('./RNTesterActions');
 const RNTesterList = require('./RNTesterList');
 

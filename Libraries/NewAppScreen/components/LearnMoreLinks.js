@@ -12,7 +12,7 @@
 import Colors from './Colors';
 import type {Node} from 'react';
 import openURLInBrowser from 'react-native/Libraries/Core/Devtools/openURLInBrowser';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native-tvos';
 import React from 'react';
 
 const links = [

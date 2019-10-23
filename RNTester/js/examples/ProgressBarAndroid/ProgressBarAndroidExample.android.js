@@ -14,7 +14,7 @@ const RNTesterBlock = require('../../components/RNTesterBlock');
 const RNTesterPage = require('../../components/RNTesterPage');
 const React = require('react');
 
-const {ProgressBarAndroid: ProgressBar} = require('react-native');
+const {ProgressBarAndroid: ProgressBar} = require('react-native-tvos');
 
 import type {ProgressBarAndroidProps} from '../../../../Libraries/Components/ProgressBarAndroid/ProgressBarAndroid';
 

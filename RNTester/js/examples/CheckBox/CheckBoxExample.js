@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {CheckBox, Text, View, StyleSheet} = require('react-native');
+const {CheckBox, Text, View, StyleSheet} = require('react-native-tvos');
 
 type BasicState = {|
   trueCheckBoxIsOn: boolean,
