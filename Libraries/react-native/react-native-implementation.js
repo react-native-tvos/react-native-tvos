@@ -126,7 +126,7 @@ module.exports = {
     return require('../Components/StatusBar/StatusBar');
   },
   get TabBarIOS() {
-    return require('TabBarIOS');
+    return require('../Components/TabBarIOS/TabBarIOS');
   },
   get Text() {
     return require('../Text/Text');
@@ -304,7 +304,7 @@ module.exports = {
     return require('../Components/AppleTV/TVEventHandler');
   },
   get TVMenuControl() {
-    return require('TVMenuControl');
+    return require('../Components/AppleTV/TVMenuControl');
   },
   get UIManager() {
     return require('../ReactNative/UIManager');
