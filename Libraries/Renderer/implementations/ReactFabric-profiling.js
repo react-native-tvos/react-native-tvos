@@ -11,8 +11,8 @@
  */
 
 "use strict";
-require("react-native/Libraries/ReactPrivate/ReactNativePrivateInitializeCore");
-var ReactNativePrivateInterface = require("react-native/Libraries/ReactPrivate/ReactNativePrivateInterface"),
+require("react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInitializeCore");
+var ReactNativePrivateInterface = require("react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInterface"),
   React = require("react"),
   Scheduler = require("scheduler"),
   tracing = require("scheduler/tracing"),

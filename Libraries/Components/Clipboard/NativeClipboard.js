@@ -13,10 +13,17 @@
 import type {TurboModule} from '../../TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../../TurboModule/TurboModuleRegistry';
 
+import Platform from '../../Utilities/Platform';
+
 export interface Spec extends TurboModule {
   +getConstants: () => {||};
   +getString: () => Promise<string>;
   +setString: (content: string) => void;
 }
 
-export default (TurboModuleRegistry.getEnforcing<Spec>('Clipboard'): Spec);
+const Placeholder = {
+  getString: () => new Promise((resolve, reject) => resolve('')),
+  setString: (content: string) => {}
+};
+
+export default Platform.isTVOS ? Placeholder : (TurboModuleRegistry.getEnforcing<Spec>('Clipboard'): Spec);

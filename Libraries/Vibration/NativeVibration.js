@@ -12,6 +12,7 @@
 
 import type {TurboModule} from '../TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../TurboModule/TurboModuleRegistry';
+import Platform from '../Utilities/Platform';
 
 export interface Spec extends TurboModule {
   +getConstants: () => {||};
@@ -22,4 +23,9 @@ export interface Spec extends TurboModule {
   +cancel: () => void;
 }
 
-export default (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);
+const Placeholder = {
+  getConstants: () => { return []; },
+  vibrate: (pattern?: number) => {}
+};
+
+export default Platform.isTVOS ? Placeholder: (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);

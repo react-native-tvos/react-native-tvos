@@ -10,6 +10,7 @@
 
 'use strict';
 import ReactNativeViewViewConfigAndroid from './ReactNativeViewViewConfigAndroid';
+import ReactNativeViewViewConfigAppleTV from './ReactNativeViewViewConfigAppleTV';
 
 const ReactNativeViewConfig = {
   uiViewClassName: 'RCTView',
@@ -114,6 +115,7 @@ const ReactNativeViewConfig = {
   },
   validAttributes: {
     ...ReactNativeViewViewConfigAndroid.validAttributes,
+    ...ReactNativeViewViewConfigAppleTV.validAttributes,
     accessibilityActions: true,
     accessibilityElementsHidden: true,
     accessibilityHint: true,
