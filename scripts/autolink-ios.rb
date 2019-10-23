@@ -21,7 +21,8 @@ def use_react_native! (options={})
   pod 'React', :path => "#{prefix}/"
   pod 'React-Core', :path => "#{prefix}/"
   pod 'React-CoreModules', :path => "#{prefix}/React/CoreModules"
-  pod 'React-RCTActionSheet', :path => "#{prefix}/Libraries/ActionSheetIOS"
+  # Not for tvOS
+  # pod 'React-RCTActionSheet', :path => "#{prefix}/Libraries/ActionSheetIOS"
   pod 'React-RCTAnimation', :path => "#{prefix}/Libraries/NativeAnimation"
   pod 'React-RCTBlob', :path => "#{prefix}/Libraries/Blob"
   pod 'React-RCTImage', :path => "#{prefix}/Libraries/Image"
@@ -29,8 +30,9 @@ def use_react_native! (options={})
   pod 'React-RCTNetwork', :path => "#{prefix}/Libraries/Network"
   pod 'React-RCTSettings', :path => "#{prefix}/Libraries/Settings"
   pod 'React-RCTText', :path => "#{prefix}/Libraries/Text"
-  pod 'React-RCTVibration', :path => "#{prefix}/Libraries/Vibration"
   pod 'React-Core/RCTWebSocket', :path => "#{prefix}/"
+  # Not for tvOS
+  # pod 'React-RCTVibration', :path => "#{prefix}/Libraries/Vibration"
 
   unless production
     pod 'React-Core/DevSupport', :path => "#{prefix}/"

@@ -21,7 +21,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native');
+} = require('react-native-tvos');
 
 const Item = Picker.Item;
 

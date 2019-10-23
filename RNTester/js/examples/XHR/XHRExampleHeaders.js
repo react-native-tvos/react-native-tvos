@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {StyleSheet, Text, TouchableHighlight, View} = require('react-native');
+const {StyleSheet, Text, TouchableHighlight, View} = require('react-native-tvos');
 
 class XHRExampleHeaders extends React.Component {
   xhr: XMLHttpRequest;

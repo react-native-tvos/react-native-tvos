@@ -18,7 +18,7 @@ const ReactTestRenderer = require('react-test-renderer');
 const ShallowRenderer = require('react-test-renderer/shallow');
 const shallowRenderer = new ShallowRenderer();
 
-const {Switch, Text, TextInput, VirtualizedList} = require('react-native');
+const {Switch, Text, TextInput, VirtualizedList} = require('react-native-tvos');
 
 import type {
   ReactTestInstance,

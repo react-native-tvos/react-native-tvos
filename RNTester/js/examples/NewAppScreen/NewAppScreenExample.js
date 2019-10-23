@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {View} = require('react-native');
+const {View} = require('react-native-tvos');
 const {
   Header,
   LearnMoreLinks,

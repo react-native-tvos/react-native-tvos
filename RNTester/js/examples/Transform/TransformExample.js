@@ -11,7 +11,7 @@
 'use strict';
 
 import React, {useEffect, useState} from 'react';
-import {Animated, StyleSheet, Text, View} from 'react-native';
+import {Animated, StyleSheet, Text, View} from 'react-native-tvos';
 
 import type {Node, Element} from 'react';
 

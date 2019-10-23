@@ -12,7 +12,10 @@
 
 const React = require('react');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
-const TouchableWithoutFeedback = require('../../Components/Touchable/TouchableWithoutFeedback');
+const TouchableOpacity = require('../../Components/Touchable/TouchableOpacity');
+const TouchableWithoutFeedback = Platform.isTVOS ?
+                                   require('../../Components/Touchable/TouchableHighlight') :
+                                   require('../../Components/Touchable/TouchableWithoutFeedback');
 const View = require('../../Components/View/View');
 const YellowBoxStyle = require('./YellowBoxStyle');
 

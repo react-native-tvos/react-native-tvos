@@ -12,7 +12,7 @@
 
 const RNTesterTitle = require('./RNTesterTitle');
 const React = require('react');
-const {ScrollView, StyleSheet, View} = require('react-native');
+const {ScrollView, StyleSheet, View} = require('react-native-tvos');
 import {RNTesterThemeContext} from './RNTesterTheme';
 
 type Props = $ReadOnly<{|
