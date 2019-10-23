@@ -10,10 +10,10 @@
 
 'use strict';
 
-const React = require('React');
-const StyleSheet = require('StyleSheet');
-const TabBarItemIOS = require('TabBarItemIOS');
-const View = require('View');
+import React from 'react';
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const TabBarItemIOS = require('./TabBarItemIOS');
+const View = require('../View/View');
 
 let showedDeprecationWarning = false;
 
