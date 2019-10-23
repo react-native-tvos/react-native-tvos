@@ -13,9 +13,9 @@
 const React = require('react');
 const ReactNative = require('react-native-tvos');
 const {View} = ReactNative;
-const RCTDeviceEventEmitter = require('react-native/Libraries/EventEmitter/RCTDeviceEventEmitter');
+const RCTDeviceEventEmitter = require('react-native-tvos/Libraries/EventEmitter/RCTDeviceEventEmitter');
 const {TestModule} = ReactNative.NativeModules;
-import NativeAccessibilityManager from 'react-native/Libraries/Components/AccessibilityInfo/NativeAccessibilityManager';
+import NativeAccessibilityManager from 'react-native-tvos/Libraries/Components/AccessibilityInfo/NativeAccessibilityManager';
 import invariant from 'invariant';
 
 class AccessibilityManagerTest extends React.Component<{}> {
