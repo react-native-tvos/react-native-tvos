@@ -15,7 +15,7 @@ const ReactNative = require('react-native-tvos');
 const {NativeAppEventEmitter, StyleSheet, Text, View} = ReactNative;
 const {TestModule} = ReactNative.NativeModules;
 
-const deepDiffer = require('react-native/Libraries/Utilities/differ/deepDiffer');
+const deepDiffer = require('react-native-tvos/Libraries/Utilities/differ/deepDiffer');
 
 const TEST_PAYLOAD = {foo: 'bar'};
 

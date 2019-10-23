@@ -10,7 +10,7 @@
 
 'use strict';
 
-require('react-native/Libraries/Core/InitializeCore');
+require('react-native-tvos/Libraries/Core/InitializeCore');
 const React = require('react');
 const ReactNative = require('react-native-tvos');
 const {
