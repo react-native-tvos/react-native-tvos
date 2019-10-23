@@ -75,8 +75,8 @@ class TabBarExample extends React.Component<Props, State> {
           {this._renderContent('#783E33', 'Red Tab', this.state.notifCount)}
         </TabBarIOS.Item>
         <TabBarIOS.Item
-          icon={require('./flux.png')}
-          selectedIcon={require('./relay.png')}
+          icon={require('../../assets/flux.png')}
+          selectedIcon={require('../../assets//relay.png')}
           renderAsOriginal
           title="More"
           selected={this.state.selectedTab === 'greenTab'}
