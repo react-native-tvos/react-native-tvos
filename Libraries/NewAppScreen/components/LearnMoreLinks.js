@@ -11,7 +11,7 @@
 'use strict';
 import Colors from './Colors';
 import type {Node} from 'react';
-import openURLInBrowser from 'react-native/Libraries/Core/Devtools/openURLInBrowser';
+import openURLInBrowser from '../../Core/Devtools/openURLInBrowser';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native-tvos';
 import React from 'react';
 

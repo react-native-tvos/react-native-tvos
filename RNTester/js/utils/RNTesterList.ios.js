@@ -149,12 +149,12 @@ const ComponentExamples: Array<RNTesterExample> = [
   },
   {
     key: 'TabBarIOSExample',
-    module: require('./TabBarIOSExample'),
+    module: require('../examples/TabBarIOS/TabBarIOSExample'),
     supportsTVOS: true,
   },
   {
     key: 'TabBarIOSBarStyleExample',
-    module: require('./TabBarIOSBarStyleExample'),
+    module: require('../examples/TabBarIOS/TabBarIOSBarStyleExample'),
     supportsTVOS: false,
   },
   {
