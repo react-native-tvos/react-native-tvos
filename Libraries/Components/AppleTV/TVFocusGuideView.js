@@ -8,11 +8,11 @@
  * @format
  */
 
-const requireNativeComponent = require('requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 const React = require('react');
-const ReactNative = require('ReactNative');
-const Platform = require('Platform');
-import type {ViewProps} from 'ViewPropTypes';
+const ReactNative = require('react-native-tvos');
+const Platform = require('../../Utilities/Platform');
+import type {ViewProps} from '../View/ViewPropTypes';
 
 type FocusGuideProps = $ReadOnly<{
   ...ViewProps,

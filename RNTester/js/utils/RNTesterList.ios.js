@@ -332,7 +332,7 @@ const APIExamples: Array<RNTesterExample> = [
   },
   {
     key: 'TVFocusGuideExample',
-    module: require('./TVFocusGuideExample'),
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
     supportsTVOS: true,
   },
   {
