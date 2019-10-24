@@ -303,6 +303,9 @@ module.exports = {
   get TVEventHandler() {
     return require('../Components/AppleTV/TVEventHandler');
   },
+  get TVFocusGuideView() {
+    return require('../Components/AppleTV/TVFocusGuideView');
+  },
   get TVMenuControl() {
     return require('../Components/AppleTV/TVMenuControl');
   },
