@@ -10,7 +10,7 @@
 
 const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 const React = require('react');
-const ReactNative = require('react-native-tvos');
+const ReactNative = require('../../react-native/react-native-implementation');
 const Platform = require('../../Utilities/Platform');
 import type {ViewProps} from '../View/ViewPropTypes';
 
