@@ -11,7 +11,7 @@
 'use strict';
 import Colors from './Colors';
 import type {Node} from 'react';
-import {Text, StyleSheet, ImageBackground} from 'react-native-tvos';
+import {Text, StyleSheet, ImageBackground} from '../../react-native/react-native-implementation';
 import React from 'react';
 
 const Header = (): Node => (

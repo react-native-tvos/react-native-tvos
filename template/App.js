@@ -13,7 +13,6 @@ import {
   ScrollView,
   View,
   Text,
-  StatusBar,
 } from 'react-native';
 
 import {
@@ -27,7 +26,6 @@ import {
 const App: () => React$Node = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"

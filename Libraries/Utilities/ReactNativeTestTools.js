@@ -15,7 +15,7 @@
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
 
-const {Switch, Text, TextInput, VirtualizedList} = require('react-native-tvos');
+const {Switch, Text, TextInput, VirtualizedList} = require('../react-native/react-native-implementation');
 
 import type {
   ReactTestInstance,

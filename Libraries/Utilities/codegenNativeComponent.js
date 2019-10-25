@@ -13,7 +13,7 @@
 
 import type {NativeComponent} from '../../Libraries/Renderer/shims/ReactNative';
 import requireNativeComponent from '../../Libraries/ReactNative/requireNativeComponent';
-import {UIManager} from 'react-native-tvos';
+import {UIManager} from '../../Libraries/react-native/react-native-implementation';
 
 // TODO: import from CodegenSchema once workspaces are enabled
 type Options = $ReadOnly<{|

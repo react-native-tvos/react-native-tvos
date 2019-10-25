@@ -9,7 +9,7 @@
  */
 
 import type {Node} from 'react';
-import {Platform, StyleSheet, Text} from 'react-native-tvos';
+import {Platform, StyleSheet, Text} from '../../react-native/react-native-implementation';
 import React from 'react';
 
 const styles = StyleSheet.create({

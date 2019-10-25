@@ -133,23 +133,23 @@ class YellowBoxInspectorSourceMapStatus extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: 12 * YellowBoxStyle.fontScale,
     flexDirection: 'row',
-    height: 24,
-    paddingHorizontal: 8,
+    height: 24 * YellowBoxStyle.fontScale,
+    paddingHorizontal: 8 * YellowBoxStyle.fontScale,
   },
   pending: {
     backgroundColor: YellowBoxStyle.getTextColor(0.6),
   },
   image: {
-    marginEnd: 4,
+    marginEnd: 4 * YellowBoxStyle.fontScale,
     tintColor: YellowBoxStyle.getBackgroundColor(1),
   },
   text: {
     color: YellowBoxStyle.getBackgroundColor(1),
-    fontSize: 12,
+    fontSize: 12 * YellowBoxStyle.fontScale,
     includeFontPadding: false,
-    lineHeight: 16,
+    lineHeight: 16 * YellowBoxStyle.fontScale,
   },
 });
 

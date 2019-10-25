@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {BatchedBridge} from 'react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInterface';
+import {BatchedBridge} from '../../../Libraries/ReactPrivate/ReactNativePrivateInterface';
 
 // TODO @sema: Adjust types
 import type {ReactNativeType} from './ReactNativeTypes';
