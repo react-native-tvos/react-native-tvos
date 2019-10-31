@@ -58,14 +58,14 @@ public class BaseViewManagerTest {
   @Test
   public void testAccessibilityRoleNone() {
     mViewManager.setAccessibilityRole(mView, "none");
-    assertThat(mView.getTag(R.id.accessibility_role)).isEqualTo(AccessibilityRole.NONE);
+    assertThat(mView.getTag(R.id.reactandroid_accessibility_role)).isEqualTo(AccessibilityRole.NONE);
   }
 
   @Test
   public void testAccessibilityRoleTurkish() {
     Locale.setDefault(Locale.forLanguageTag("tr-TR"));
     mViewManager.setAccessibilityRole(mView, "image");
-    assertThat(mView.getTag(R.id.accessibility_role)).isEqualTo(AccessibilityRole.IMAGE);
+    assertThat(mView.getTag(R.id.reactandroid_accessibility_role)).isEqualTo(AccessibilityRole.IMAGE);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class BaseViewManagerTest {
     WritableMap accessibilityState = Arguments.createMap();
     accessibilityState.putBoolean("selected", true);
     mViewManager.setViewState(mView, accessibilityState);
-    assertThat(mView.getTag(R.id.accessibility_state)).isEqualTo(accessibilityState);
+    assertThat(mView.getTag(R.id.reactandroid_accessibility_state)).isEqualTo(accessibilityState);
     assertThat(mView.isSelected()).isEqualTo(true);
   }
 }

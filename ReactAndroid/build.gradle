@@ -301,6 +301,8 @@ android {
         ndkVersion rootProject.ext.ndkVersion
     }
 
+    resourcePrefix 'reactandroid_'
+
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(31)

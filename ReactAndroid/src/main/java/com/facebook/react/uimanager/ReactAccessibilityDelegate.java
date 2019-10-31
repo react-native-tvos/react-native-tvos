@@ -198,12 +198,12 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
   public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfoCompat info) {
     super.onInitializeAccessibilityNodeInfo(host, info);
     final AccessibilityRole accessibilityRole =
-        (AccessibilityRole) host.getTag(R.id.accessibility_role);
+        (AccessibilityRole) host.getTag(R.id.reactandroid_accessibility_role);
     if (accessibilityRole != null) {
       setRole(info, accessibilityRole, host.getContext());
     }
 
-    final Object accessibilityLabelledBy = host.getTag(R.id.labelled_by);
+    final Object accessibilityLabelledBy = host.getTag(R.id.reactandroid_labelled_by);
     if (accessibilityLabelledBy != null) {
       mAccessibilityLabelledBy =
           ReactFindViewUtil.findView(host.getRootView(), (String) accessibilityLabelledBy);
@@ -213,12 +213,12 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
     }
 
     // state is changeable.
-    final ReadableMap accessibilityState = (ReadableMap) host.getTag(R.id.accessibility_state);
+    final ReadableMap accessibilityState = (ReadableMap) host.getTag(R.id.reactandroid_accessibility_state);
     if (accessibilityState != null) {
       setState(info, accessibilityState, host.getContext());
     }
     final ReadableArray accessibilityActions =
-        (ReadableArray) host.getTag(R.id.accessibility_actions);
+        (ReadableArray) host.getTag(R.id.reactandroid_accessibility_actions);
     if (accessibilityActions != null) {
       for (int i = 0; i < accessibilityActions.size(); i++) {
         final ReadableMap action = accessibilityActions.getMap(i);
@@ -241,7 +241,7 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
 
     // Process accessibilityValue
 
-    final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.accessibility_value);
+    final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.reactandroid_accessibility_value);
     if (accessibilityValue != null
         && accessibilityValue.hasKey("min")
         && accessibilityValue.hasKey("now")
@@ -268,7 +268,7 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
     // frameworks, which interact with the UI through the accessibility framework, do not have
     // access to view tags. This allows developers/testers to avoid polluting the
     // content-description with test identifiers.
-    final String testId = (String) host.getTag(R.id.react_test_id);
+    final String testId = (String) host.getTag(R.id.reactandroid_react_test_id);
     if (testId != null) {
       info.setViewIdResourceName(testId);
     }
@@ -279,7 +279,7 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
     super.onInitializeAccessibilityEvent(host, event);
     // Set item count and current item index on accessibility events for adjustable
     // in order to make Talkback announce the value of the adjustable
-    final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.accessibility_value);
+    final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.reactandroid_accessibility_value);
     if (accessibilityValue != null
         && accessibilityValue.hasKey("min")
         && accessibilityValue.hasKey("now")
@@ -338,8 +338,8 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
       // In order to make Talkback announce the change of the adjustable's value,
       // schedule to send a TYPE_VIEW_SELECTED event after performing the scroll actions.
       final AccessibilityRole accessibilityRole =
-          (AccessibilityRole) host.getTag(R.id.accessibility_role);
-      final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.accessibility_value);
+          (AccessibilityRole) host.getTag(R.id.reactandroid_accessibility_role);
+      final ReadableMap accessibilityValue = (ReadableMap) host.getTag(R.id.reactandroid_accessibility_value);
       if (accessibilityRole == AccessibilityRole.ADJUSTABLE
           && (action == AccessibilityActionCompat.ACTION_SCROLL_FORWARD.getId()
               || action == AccessibilityActionCompat.ACTION_SCROLL_BACKWARD.getId())) {
@@ -370,7 +370,7 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
         if (info.getClassName().equals(AccessibilityRole.getValue(AccessibilityRole.SWITCH))) {
           info.setText(
               context.getString(
-                  boolValue ? R.string.state_on_description : R.string.state_off_description));
+                  boolValue ? R.string.reactandroid_state_on_description : R.string.reactandroid_state_off_description));
         }
       }
     }
@@ -387,7 +387,7 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
     }
     nodeInfo.setClassName(AccessibilityRole.getValue(role));
     if (role.equals(AccessibilityRole.LINK)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.link_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_link_description));
 
       if (nodeInfo.getContentDescription() != null) {
         SpannableString spannable = new SpannableString(nodeInfo.getContentDescription());
@@ -401,9 +401,9 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
         nodeInfo.setText(spannable);
       }
     } else if (role.equals(AccessibilityRole.IMAGE)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.image_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_image_description));
     } else if (role.equals(AccessibilityRole.IMAGEBUTTON)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.imagebutton_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_imagebutton_description));
       nodeInfo.setClickable(true);
     } else if (role.equals(AccessibilityRole.BUTTON)) {
       nodeInfo.setClickable(true);
@@ -411,37 +411,37 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
       nodeInfo.setClickable(true);
       nodeInfo.setCheckable(true);
     } else if (role.equals(AccessibilityRole.SUMMARY)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.summary_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_summary_description));
     } else if (role.equals(AccessibilityRole.HEADER)) {
       final AccessibilityNodeInfoCompat.CollectionItemInfoCompat itemInfo =
           AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(0, 1, 0, 1, true);
       nodeInfo.setCollectionItemInfo(itemInfo);
     } else if (role.equals(AccessibilityRole.ALERT)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.alert_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_alert_description));
     } else if (role.equals(AccessibilityRole.COMBOBOX)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.combobox_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_combobox_description));
     } else if (role.equals(AccessibilityRole.MENU)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.menu_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_menu_description));
     } else if (role.equals(AccessibilityRole.MENUBAR)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.menubar_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_menubar_description));
     } else if (role.equals(AccessibilityRole.MENUITEM)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.menuitem_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_menuitem_description));
     } else if (role.equals(AccessibilityRole.PROGRESSBAR)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.progressbar_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_progressbar_description));
     } else if (role.equals(AccessibilityRole.RADIOGROUP)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.radiogroup_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_radiogroup_description));
     } else if (role.equals(AccessibilityRole.SCROLLBAR)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.scrollbar_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_scrollbar_description));
     } else if (role.equals(AccessibilityRole.SPINBUTTON)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.spinbutton_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_spinbutton_description));
     } else if (role.equals(AccessibilityRole.TAB)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.rn_tab_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_rn_tab_description));
     } else if (role.equals(AccessibilityRole.TABLIST)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.tablist_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_tablist_description));
     } else if (role.equals(AccessibilityRole.TIMER)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.timer_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_timer_description));
     } else if (role.equals(AccessibilityRole.TOOLBAR)) {
-      nodeInfo.setRoleDescription(context.getString(R.string.toolbar_description));
+      nodeInfo.setRoleDescription(context.getString(R.string.reactandroid_toolbar_description));
     }
   }
 
@@ -450,10 +450,10 @@ public class ReactAccessibilityDelegate extends AccessibilityDelegateCompat {
     // problems,
     // so leave it alone.
     if (!ViewCompat.hasAccessibilityDelegate(view)
-        && (view.getTag(R.id.accessibility_role) != null
-            || view.getTag(R.id.accessibility_state) != null
-            || view.getTag(R.id.accessibility_actions) != null
-            || view.getTag(R.id.react_test_id) != null)) {
+        && (view.getTag(R.id.reactandroid_accessibility_role) != null
+            || view.getTag(R.id.reactandroid_accessibility_state) != null
+            || view.getTag(R.id.reactandroid_accessibility_actions) != null
+            || view.getTag(R.id.reactandroid_react_test_id) != null)) {
       ViewCompat.setAccessibilityDelegate(view, new ReactAccessibilityDelegate());
     }
   }

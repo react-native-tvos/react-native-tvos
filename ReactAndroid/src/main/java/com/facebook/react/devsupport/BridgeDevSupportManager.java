@@ -112,8 +112,8 @@ public final class BridgeDevSupportManager extends DevSupportManagerBase {
       // Note that this requires async communication, which will not work for Turbo Modules.
       addCustomDevOption(
           getDevSettings().isRemoteJSDebugEnabled()
-              ? applicationContext.getString(com.facebook.react.R.string.catalyst_debug_stop)
-              : applicationContext.getString(com.facebook.react.R.string.catalyst_debug),
+              ? applicationContext.getString(com.facebook.react.R.string.reactandroid_catalyst_debug_stop)
+              : applicationContext.getString(com.facebook.react.R.string.reactandroid_catalyst_debug),
           new DevOptionHandler() {
             @Override
             public void onOptionSelected() {
@@ -166,7 +166,7 @@ public final class BridgeDevSupportManager extends DevSupportManagerBase {
         FLog.e(ReactConstants.TAG, "Failed to connect to debugger!", cause);
         future.setException(
             new IOException(
-                getApplicationContext().getString(com.facebook.react.R.string.catalyst_debug_error),
+                getApplicationContext().getString(com.facebook.react.R.string.reactandroid_catalyst_debug_error),
                 cause));
       }
     };
