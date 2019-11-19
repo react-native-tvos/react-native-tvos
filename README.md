@@ -22,6 +22,14 @@ The RNTester app supports Apple TV.
 - _Without cocoapods:_ In `RNTester/RNTester.xcodeproj`,  use the `RNTester-tvOS` build target to build for tvOS.
 - _With cocoapods:_ In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
 
+## Pitfall
+
+Make sure you do not globally install `react-native` or `react-native-tvos`. You should only install `react-native-cli` to use the commands below. If you have done this the wrong way, you may get error messages like:
+
+```
+ld: library not found for -lPods-TestApp-tvOS
+```
+
 ## Build changes
 
 - _Native layer_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
