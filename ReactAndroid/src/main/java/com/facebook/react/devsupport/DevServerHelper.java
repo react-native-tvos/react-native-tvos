@@ -14,6 +14,8 @@ import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.ReactConstants;
+import com.facebook.react.R;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
 import com.facebook.react.devsupport.interfaces.PackagerStatusCallback;
 import com.facebook.react.devsupport.interfaces.StackFrame;
@@ -114,6 +116,7 @@ public class DevServerHelper {
   private final BundleDownloader mBundleDownloader;
   private final String mPackageName;
 
+  private boolean mPackagerConnectionLock = false;
   private @Nullable JSPackagerClient mPackagerClient;
   private @Nullable InspectorPackagerConnection mInspectorPackagerConnection;
   private InspectorPackagerConnection.BundleStatusProvider mBundlerStatusProvider;
@@ -137,13 +140,14 @@ public class DevServerHelper {
 
   public void openPackagerConnection(
       final String clientId, final PackagerCommandListener commandListener) {
-    if (mPackagerClient != null) {
+    if (mPackagerClient != null || mPackagerConnectionLock) {
       FLog.w(ReactConstants.TAG, "Packager connection already open, nooping.");
       return;
     }
-    new AsyncTask<Void, Void, Void>() {
+    mPackagerConnectionLock = true;
+    new AsyncTask<Void, Void, JSPackagerClient>() {
       @Override
-      protected Void doInBackground(Void... backgroundParams) {
+      protected JSPackagerClient doInBackground(Void... backgroundParams) {
         Map<String, RequestHandler> handlers = new HashMap<>();
         handlers.put(
             "reload",
@@ -188,30 +192,49 @@ public class DevServerHelper {
               }
             };
 
-        mPackagerClient =
+        JSPackagerClient packagerClient =
             new JSPackagerClient(
                 clientId,
                 mSettings.getPackagerConnectionSettings(),
                 handlers,
                 onPackagerConnectedCallback);
-        mPackagerClient.init();
+        packagerClient.init();
 
-        return null;
+        return packagerClient;
+      }
+
+      @Override
+      protected void onPostExecute(JSPackagerClient packagerClient) {
+        UiThreadUtil.assertOnUiThread();
+        mPackagerClient = packagerClient;
+        mPackagerConnectionLock = false;
       }
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
 
   public void closePackagerConnection() {
-    new AsyncTask<Void, Void, Void>() {
+    if (mPackagerConnectionLock) {
+      FLog.w(ReactConstants.TAG, "Packager connection lock acquired, cannot close current connection.");
+      return;
+    }
+    mPackagerConnectionLock = true;
+    new AsyncTask<JSPackagerClient, Void, Void>() {
       @Override
-      protected Void doInBackground(Void... params) {
-        if (mPackagerClient != null) {
-          mPackagerClient.close();
-          mPackagerClient = null;
+      protected Void doInBackground(JSPackagerClient... params) {
+        if (params.length > 0 && params[0] != null) {
+          JSPackagerClient packagerClient = params[0];
+          packagerClient.close();
         }
         return null;
       }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+      @Override
+      protected void onPostExecute(Void result) {
+        UiThreadUtil.assertOnUiThread();
+        mPackagerClient = null;
+        mPackagerConnectionLock = false;
+      }
+    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mPackagerClient);
   }
 
   public void openInspectorConnection() {
