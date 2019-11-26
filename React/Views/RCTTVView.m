@@ -193,10 +193,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
   float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
 
-  [UIView animateWithDuration:0.2
-                   animations:^{
-                     self.transform = CGAffineTransformMakeScale(magnification, magnification);
-                   }];
+  [UIView animateWithDuration:0.2 animations:^{
+    self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
+  }];
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
@@ -216,21 +215,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
                       completion:^(void){
                       }];
   } else {
-    [coordinator
-        addCoordinatedAnimations:^(void) {
-          [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
-                                                              object:@{@"eventType" : @"blur", @"tag" : self.reactTag}];
-          [UIView animateWithDuration:0.2
-                           animations:^{
-                             self.transform = CGAffineTransformMakeScale(1, 1);
-                           }];
-
-          for (UIMotionEffect *effect in [self.motionEffects copy]) {
-            [self removeMotionEffect:effect];
+    [coordinator addCoordinatedAnimations:^(void){
+      [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+                                                          object:@{@"eventType":@"blur",@"tag":self.reactTag}];
+      [UIView animateWithDuration:0.2 animations:^{
+          float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
+          BOOL enabled = [self.tvParallaxProperties[@"enabled"] boolValue];
+          if (enabled && magnification) {
+            self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
           }
-        }
-                      completion:^(void){
-                      }];
+      }];
+
+      for (UIMotionEffect *effect in [self.motionEffects copy]){
+        [self removeMotionEffect:effect];
+      }
+    } completion:^(void){}];
     [self resignFirstResponder];
   }
 }
