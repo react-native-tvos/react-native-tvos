@@ -193,7 +193,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
 
   [UIView animateWithDuration:0.2 animations:^{
-    self.transform = CGAffineTransformMakeScale(magnification, magnification);
+    self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
   }];
 }
 
@@ -213,7 +213,11 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
       [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
                                                           object:@{@"eventType":@"blur",@"tag":self.reactTag}];
       [UIView animateWithDuration:0.2 animations:^{
-        self.transform = CGAffineTransformMakeScale(1, 1);
+          float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
+          BOOL enabled = [self.tvParallaxProperties[@"enabled"] boolValue];
+          if (enabled && magnification) {
+            self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
+          }
       }];
 
       for (UIMotionEffect *effect in [self.motionEffects copy]){
