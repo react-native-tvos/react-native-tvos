@@ -21,7 +21,7 @@ class XHRExampleAbortController extends React.Component<{}, {}> {
     clearTimeout(this._timeout);
     // eslint-disable-next-line no-undef
     const abortController = new AbortController();
-    fetch('https://facebook.github.io/react-native/', {
+    fetch('https://reactnative.dev/', {
       signal: abortController.signal,
     })
       .then(res => res.text())

@@ -21,8 +21,8 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTPushNotification"
   s.version                = version
   s.summary                = "A library for handling push notifications for your app, including permission handling and icon badge number." 
-  s.homepage               = "http://facebook.github.io/react-native/"
-  s.documentation_url      = "https://facebook.github.io/react-native/docs/pushnotificationios"
+  s.homepage               = "http://reactnative.dev/"
+  s.documentation_url      = "https://reactnative.dev/docs/pushnotificationios"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"
   s.platforms              = { :ios => "9.0", :tvos => "9.2" }

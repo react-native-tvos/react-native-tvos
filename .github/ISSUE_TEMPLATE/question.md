@@ -31,4 +31,4 @@ If you want to participate in casual discussions about the use of React Native, 
 If you'd like to discuss topics related to the future of React Native, or would like to propose a new feature or change before sending a pull request, please check out the discussions and proposals repo:
 - https://github.com/react-native-community/discussions-and-proposals
 
-> For a full list of community resources, check out React Native's Community page at https://facebook.github.io/react-native/help.
+> For a full list of community resources, check out React Native's Community page at https://reactnative.dev/help.

@@ -312,18 +312,17 @@ class MultipleSourcesExample extends React.Component<
             style={{flex: 1}}
             source={[
               {
-                uri: 'https://facebook.github.io/react-native/img/favicon.png',
+                uri: 'https://reactnative.dev/img/favicon.png',
                 width: 38,
                 height: 38,
               },
               {
-                uri: 'https://facebook.github.io/react-native/img/favicon.png',
+                uri: 'https://reactnative.dev/img/favicon.png',
                 width: 76,
                 height: 76,
               },
               {
-                uri:
-                  'https://facebook.github.io/react-native/img/opengraph.png',
+                uri: 'https://reactnative.dev/img/opengraph.png',
                 width: 400,
                 height: 400,
               },
@@ -336,10 +335,10 @@ class MultipleSourcesExample extends React.Component<
 }
 
 const fullImage = {
-  uri: 'https://facebook.github.io/react-native/img/opengraph.png',
+  uri: 'https://reactnative.dev/img/opengraph.png',
 };
 const smallImage = {
-  uri: 'https://facebook.github.io/react-native/img/favicon.png',
+  uri: 'https://reactnative.dev/img/favicon.png',
 };
 
 const styles = StyleSheet.create({

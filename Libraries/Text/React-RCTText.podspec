@@ -21,8 +21,8 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTText"
   s.version                = version
   s.summary                = "A React component for displaying text." 
-  s.homepage               = "http://facebook.github.io/react-native/"
-  s.documentation_url      = "https://facebook.github.io/react-native/docs/text"
+  s.homepage               = "http://reactnative.dev/"
+  s.documentation_url      = "https://reactnative.dev/docs/text"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"
   s.platforms              = { :ios => "9.0", :tvos => "9.2" }

@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.name                   = "FBLazyVector"
   s.version                = version
   s.summary                = "-"  # TODO
-  s.homepage               = "http://facebook.github.io/react-native/"
+  s.homepage               = "http://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"
   s.platforms              = { :ios => "9.0", :tvos => "9.2" }

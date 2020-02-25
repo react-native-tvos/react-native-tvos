@@ -64,7 +64,7 @@ class AnimatedNode {
    * animations.  This is useful because there is no way to
    * synchronously read the value because it might be driven natively.
    *
-   * See http://facebook.github.io/react-native/docs/animatedvalue.html#addlistener
+   * See http://reactnative.dev/docs/animatedvalue.html#addlistener
    */
   addListener(callback: (value: any) => mixed): string {
     const id = String(_uniqueId++);
@@ -79,7 +79,7 @@ class AnimatedNode {
    * Unregister a listener. The `id` param shall match the identifier
    * previously returned by `addListener()`.
    *
-   * See http://facebook.github.io/react-native/docs/animatedvalue.html#removelistener
+   * See http://reactnative.dev/docs/animatedvalue.html#removelistener
    */
   removeListener(id: string): void {
     delete this._listeners[id];
@@ -91,7 +91,7 @@ class AnimatedNode {
   /**
    * Remove all registered listeners.
    *
-   * See http://facebook.github.io/react-native/docs/animatedvalue.html#removealllisteners
+   * See http://reactnative.dev/docs/animatedvalue.html#removealllisteners
    */
   removeAllListeners(): void {
     this._listeners = {};

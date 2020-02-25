@@ -20,7 +20,7 @@ export type Props = ViewProps;
  * supports layout with flexbox, style, some touch handling, and accessibility
  * controls.
  *
- * @see http://facebook.github.io/react-native/docs/view.html
+ * @see http://reactnative.dev/docs/view.html
  */
 module.exports = (require('./ViewNativeComponent')
   .default: ViewNativeComponentType);
