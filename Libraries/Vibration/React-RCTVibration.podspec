@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTVibration"
   s.version                = version
   s.summary                = "An API for controlling the vibration hardware of the device." 
-  s.homepage               = "http://reactnative.dev/"
+  s.homepage               = "https://reactnative.dev/"
   s.documentation_url      = "https://reactnative.dev/docs/vibration"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"

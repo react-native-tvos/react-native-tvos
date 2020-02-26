@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTActionSheet"
   s.version                = version
   s.summary                = "An API for displaying iOS action sheets and share sheets."
-  s.homepage               = "http://reactnative.dev/"
+  s.homepage               = "https://reactnative.dev/"
   s.documentation_url      = "https://reactnative.dev/docs/actionsheetios"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"

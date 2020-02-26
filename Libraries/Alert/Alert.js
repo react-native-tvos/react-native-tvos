@@ -36,7 +36,7 @@ type Options = {
 /**
  * Launches an alert dialog with the specified title and message.
  *
- * See http://reactnative.dev/docs/alert.html
+ * See https://reactnative.dev/docs/alert.html
  */
 class Alert {
   static alert(

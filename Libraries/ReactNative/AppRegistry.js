@@ -67,7 +67,7 @@ let showArchitectureIndicator = false;
 /**
  * `AppRegistry` is the JavaScript entry point to running all React Native apps.
  *
- * See http://reactnative.dev/docs/appregistry.html
+ * See https://reactnative.dev/docs/appregistry.html
  */
 const AppRegistry = {
   setWrapperComponentProvider(provider: WrapperComponentProvider) {
@@ -101,7 +101,7 @@ const AppRegistry = {
   /**
    * Registers an app's root component.
    *
-   * See http://reactnative.dev/docs/appregistry.html#registercomponent
+   * See https://reactnative.dev/docs/appregistry.html#registercomponent
    */
   registerComponent(
     appKey: string,
@@ -175,7 +175,7 @@ const AppRegistry = {
   /**
    * Loads the JavaScript bundle and runs the app.
    *
-   * See http://reactnative.dev/docs/appregistry.html#runapplication
+   * See https://reactnative.dev/docs/appregistry.html#runapplication
    */
   runApplication(appKey: string, appParameters: any): void {
     const msg =
@@ -200,7 +200,7 @@ const AppRegistry = {
   /**
    * Stops an application when a view should be destroyed.
    *
-   * See http://reactnative.dev/docs/appregistry.html#unmountapplicationcomponentatroottag
+   * See https://reactnative.dev/docs/appregistry.html#unmountapplicationcomponentatroottag
    */
   unmountApplicationComponentAtRootTag(rootTag: number): void {
     ReactNative.unmountComponentAtNodeAndRemoveContainer(rootTag);
@@ -209,7 +209,7 @@ const AppRegistry = {
   /**
    * Register a headless task. A headless task is a bit of code that runs without a UI.
    *
-   * See http://reactnative.dev/docs/appregistry.html#registerheadlesstask
+   * See https://reactnative.dev/docs/appregistry.html#registerheadlesstask
    */
   registerHeadlessTask(taskKey: string, taskProvider: TaskProvider): void {
     this.registerCancellableHeadlessTask(taskKey, taskProvider, () => () => {
@@ -220,7 +220,7 @@ const AppRegistry = {
   /**
    * Register a cancellable headless task. A headless task is a bit of code that runs without a UI.
    *
-   * See http://reactnative.dev/docs/appregistry.html#registercancellableheadlesstask
+   * See https://reactnative.dev/docs/appregistry.html#registercancellableheadlesstask
    */
   registerCancellableHeadlessTask(
     taskKey: string,
@@ -239,7 +239,7 @@ const AppRegistry = {
   /**
    * Only called from native code. Starts a headless task.
    *
-   * See http://reactnative.dev/docs/appregistry.html#startheadlesstask
+   * See https://reactnative.dev/docs/appregistry.html#startheadlesstask
    */
   startHeadlessTask(taskId: number, taskKey: string, data: any): void {
     const taskProvider = taskProviders.get(taskKey);
@@ -277,7 +277,7 @@ const AppRegistry = {
   /**
    * Only called from native code. Cancels a headless task.
    *
-   * See http://reactnative.dev/docs/appregistry.html#cancelheadlesstask
+   * See https://reactnative.dev/docs/appregistry.html#cancelheadlesstask
    */
   cancelHeadlessTask(taskId: number, taskKey: string): void {
     const taskCancelProvider = taskCancelProviders.get(taskKey);

@@ -21,7 +21,7 @@ const invariant = require('invariant');
  * `AppState` can tell you if the app is in the foreground or background,
  * and notify you when the state changes.
  *
- * See http://reactnative.dev/docs/appstate.html
+ * See https://reactnative.dev/docs/appstate.html
  */
 class AppState extends NativeEventEmitter {
   _eventHandlers: Object;
@@ -72,7 +72,7 @@ class AppState extends NativeEventEmitter {
    * Add a handler to AppState changes by listening to the `change` event type
    * and providing the handler.
    *
-   * See http://reactnative.dev/docs/appstate.html#addeventlistener
+   * See https://reactnative.dev/docs/appstate.html#addeventlistener
    */
   addEventListener(type: string, handler: Function) {
     invariant(
@@ -119,7 +119,7 @@ class AppState extends NativeEventEmitter {
   /**
    * Remove a handler by passing the `change` event type and the handler.
    *
-   * See http://reactnative.dev/docs/appstate.html#removeeventlistener
+   * See https://reactnative.dev/docs/appstate.html#removeeventlistener
    */
   removeEventListener(type: string, handler: Function) {
     invariant(

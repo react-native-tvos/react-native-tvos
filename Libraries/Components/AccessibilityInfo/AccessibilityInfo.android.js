@@ -33,7 +33,7 @@ const _subscriptions = new Map();
  * well as to register to be notified when the state of the screen reader
  * changes.
  *
- * See http://reactnative.dev/docs/accessibilityinfo.html
+ * See https://reactnative.dev/docs/accessibilityinfo.html
  */
 
 const AccessibilityInfo = {
@@ -137,7 +137,7 @@ const AccessibilityInfo = {
   /**
    * Set accessibility focus to a react component.
    *
-   * See http://reactnative.dev/docs/accessibilityinfo.html#setaccessibilityfocus
+   * See https://reactnative.dev/docs/accessibilityinfo.html#setaccessibilityfocus
    */
   setAccessibilityFocus: function(reactTag: number): void {
     UIManager.sendAccessibilityEvent(
@@ -149,7 +149,7 @@ const AccessibilityInfo = {
   /**
    * Post a string to be announced by the screen reader.
    *
-   * See http://reactnative.dev/docs/accessibilityinfo.html#announceforaccessibility
+   * See https://reactnative.dev/docs/accessibilityinfo.html#announceforaccessibility
    */
   announceForAccessibility: function(announcement: string): void {
     if (NativeAccessibilityInfo) {

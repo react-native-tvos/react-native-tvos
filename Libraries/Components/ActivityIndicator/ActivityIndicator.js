@@ -31,7 +31,7 @@ type IOSProps = $ReadOnly<{|
   /**
    * Whether the indicator should hide when not animating (true by default).
    *
-   * See http://reactnative.dev/docs/activityindicator.html#hideswhenstopped
+   * See https://reactnative.dev/docs/activityindicator.html#hideswhenstopped
    */
   hidesWhenStopped?: ?boolean,
 |}>;
@@ -42,14 +42,14 @@ type Props = $ReadOnly<{|
   /**
    * Whether to show the indicator (true, the default) or hide it (false).
    *
-   * See http://reactnative.dev/docs/activityindicator.html#animating
+   * See https://reactnative.dev/docs/activityindicator.html#animating
    */
   animating?: ?boolean,
 
   /**
    * The foreground color of the spinner (default is gray).
    *
-   * See http://reactnative.dev/docs/activityindicator.html#color
+   * See https://reactnative.dev/docs/activityindicator.html#color
    */
   color?: ?string,
 
@@ -57,7 +57,7 @@ type Props = $ReadOnly<{|
    * Size of the indicator (default is 'small').
    * Passing a number to the size prop is only supported on Android.
    *
-   * See http://reactnative.dev/docs/activityindicator.html#size
+   * See https://reactnative.dev/docs/activityindicator.html#size
    */
   size?: ?IndicatorSize,
 |}>;
@@ -65,7 +65,7 @@ type Props = $ReadOnly<{|
 /**
  * Displays a circular loading indicator.
  *
- * See http://reactnative.dev/docs/activityindicator.html
+ * See https://reactnative.dev/docs/activityindicator.html
  */
 const ActivityIndicator = (props: Props, forwardedRef?: any) => {
   const {onLayout, style, size, ...restProps} = props;

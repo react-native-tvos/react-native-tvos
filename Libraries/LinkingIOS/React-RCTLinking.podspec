@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTLinking"
   s.version                = version
   s.summary                = "A general interface to interact with both incoming and outgoing app links."
-  s.homepage               = "http://reactnative.dev/"
+  s.homepage               = "https://reactnative.dev/"
   s.documentation_url      = "https://reactnative.dev/docs/linking"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"

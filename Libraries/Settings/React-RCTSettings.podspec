@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.name                   = "React-RCTSettings"
   s.version                = version
   s.summary                = "A wrapper for NSUserDefaults, a persistent key-value store available only on iOS." 
-  s.homepage               = "http://reactnative.dev/"
+  s.homepage               = "https://reactnative.dev/"
   s.documentation_url      = "https://reactnative.dev/docs/settings"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"

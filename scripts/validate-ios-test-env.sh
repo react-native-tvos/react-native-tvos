@@ -17,7 +17,7 @@ function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$
 # Check that node is installed.
 if [ -z "$(which node)" ]; then
   echo "Could not find Node binary. Please check your nodejs install."
-  echo "See http://reactnative.dev/docs/getting-started.html for instructions."
+  echo "See https://reactnative.dev/docs/getting-started.html for instructions."
   exit 1
 fi
 
