@@ -417,7 +417,7 @@ const TouchableHighlight = ((createReactClass({
         )}
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
-        isTVSelectable={true}
+        isTVSelectable={this.props.isTVSelectable}
         tvParallaxProperties={this.props.tvParallaxProperties}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus}
         nextFocusDown={this.props.nextFocusDown}
