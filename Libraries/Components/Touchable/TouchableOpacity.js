@@ -192,6 +192,7 @@ const TouchableOpacity = ((createReactClass({
   getDefaultProps: function() {
     return {
       activeOpacity: 0.2,
+      isTVFocused: true,
     };
   },
 
