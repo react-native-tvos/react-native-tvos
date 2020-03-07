@@ -34,7 +34,7 @@ const DEFAULT_PROPS = {
   activeOpacity: 0.85,
   delayPressOut: 100,
   underlayColor: 'black',
-  isTVFocused: true,
+  isTVSelectable: true,
 };
 
 const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
