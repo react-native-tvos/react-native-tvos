@@ -199,6 +199,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
+  if (context.previouslyFocusedView == context.nextFocusedView) {
+    return;
+  }
   if (context.nextFocusedView == self && self.isTVSelectable ) {
     [self becomeFirstResponder];
     [coordinator addCoordinatedAnimations:^(void){
