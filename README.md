@@ -6,7 +6,7 @@ Releases of `react-native-tvos` will be based on a public release of `react-nati
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
-You will find the relevant tvOS support and maintence within the branches marked `tvos`;   
+You will find the relevant tvOS support and maintenance within the branches marked `tvos`;   
 
 To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
 
