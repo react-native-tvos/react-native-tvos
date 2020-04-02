@@ -192,6 +192,7 @@ const TouchableOpacity = ((createReactClass({
   getDefaultProps: function() {
     return {
       activeOpacity: 0.2,
+      isTVSelectable: true,
     };
   },
 
@@ -318,7 +319,7 @@ const TouchableOpacity = ((createReactClass({
         nativeID={this.props.nativeID}
         testID={this.props.testID}
         onLayout={this.props.onLayout}
-        isTVSelectable={true}
+        isTVSelectable={this.props.isTVSelectable}
         nextFocusDown={this.props.nextFocusDown}
         nextFocusForward={this.props.nextFocusForward}
         nextFocusLeft={this.props.nextFocusLeft}
