@@ -22,6 +22,7 @@
 @implementation RCTTVView
 {
   UITapGestureRecognizer *_selectRecognizer;
+  BOOL motionEffectsAdded;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -40,6 +41,7 @@
       };
     });
     self.tvParallaxProperties = defaultTVParallaxProperties;
+    motionEffectsAdded = NO;
   }
 
   return self;
@@ -136,6 +138,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
     return;
   }
 
+  if(motionEffectsAdded == YES) {
+    return;
+  }
+
   // Size of shift movements
   CGFloat const shiftDistanceX = [self.tvParallaxProperties[@"shiftDistanceX"] floatValue];
   CGFloat const shiftDistanceY = [self.tvParallaxProperties[@"shiftDistanceY"] floatValue];
@@ -203,10 +209,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   [UIView animateWithDuration:0.2 animations:^{
     self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
   }];
+
+  motionEffectsAdded = YES;
 }
 
 - (void)removeParallaxMotionEffects
 {
+  if(motionEffectsAdded == NO) {
+    return;
+  }
+
   [UIView animateWithDuration:0.2 animations:^{
     float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
     BOOL enabled = [self.tvParallaxProperties[@"enabled"] boolValue];
@@ -218,6 +230,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:unused)
   for (UIMotionEffect *effect in [self.motionEffects copy]){
     [self removeMotionEffect:effect];
   }
+
+  motionEffectsAdded = NO;
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
