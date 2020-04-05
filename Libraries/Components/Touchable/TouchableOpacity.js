@@ -31,6 +31,7 @@ import type {PressEvent} from '../../Types/CoreEventTypes';
 const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
 type TVProps = $ReadOnly<{|
+  isTVSelectable?: boolean,
   hasTVPreferredFocus?: ?boolean,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,

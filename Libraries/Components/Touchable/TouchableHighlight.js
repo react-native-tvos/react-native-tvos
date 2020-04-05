@@ -41,6 +41,7 @@ const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
 type IOSProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: boolean,
   tvParallaxProperties?: ?TVParallaxPropertiesType,
 |}>;
 
