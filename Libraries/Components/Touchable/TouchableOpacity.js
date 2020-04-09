@@ -31,6 +31,7 @@ import type {PressEvent} from '../../Types/CoreEventTypes';
 const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
 type TVProps = $ReadOnly<{|
+  isTVSelectable?: boolean,
   hasTVPreferredFocus?: ?boolean,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
@@ -192,6 +193,7 @@ const TouchableOpacity = ((createReactClass({
   getDefaultProps: function() {
     return {
       activeOpacity: 0.2,
+      isTVSelectable: true,
     };
   },
 
@@ -318,7 +320,7 @@ const TouchableOpacity = ((createReactClass({
         nativeID={this.props.nativeID}
         testID={this.props.testID}
         onLayout={this.props.onLayout}
-        isTVSelectable={true}
+        isTVSelectable={this.props.isTVSelectable}
         nextFocusDown={this.props.nextFocusDown}
         nextFocusForward={this.props.nextFocusForward}
         nextFocusLeft={this.props.nextFocusLeft}

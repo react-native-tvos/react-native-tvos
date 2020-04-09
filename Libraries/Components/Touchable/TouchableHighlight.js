@@ -34,12 +34,14 @@ const DEFAULT_PROPS = {
   activeOpacity: 0.85,
   delayPressOut: 100,
   underlayColor: 'black',
+  isTVSelectable: true,
 };
 
 const PRESS_RETENTION_OFFSET = {top: 20, left: 20, right: 20, bottom: 30};
 
 type IOSProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: boolean,
   tvParallaxProperties?: ?TVParallaxPropertiesType,
 |}>;
 
@@ -417,7 +419,7 @@ const TouchableHighlight = ((createReactClass({
         )}
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
-        isTVSelectable={true}
+        isTVSelectable={this.props.isTVSelectable}
         tvParallaxProperties={this.props.tvParallaxProperties}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus}
         nextFocusDown={this.props.nextFocusDown}
