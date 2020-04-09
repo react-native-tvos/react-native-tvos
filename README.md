@@ -2,17 +2,19 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.61.2-0 release of this package will be derived from the 0.61.2 release of `react-native`.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.61.5-1 release of this package will be derived from the 0.61.5 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
-You will find the relevant tvOS support and maintenance within the branches marked `tvos`;   
+You will find the relevant tvOS support and maintenance within the branches marked `tvos-v0.xx.x`;   
 
-To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used.
+To build your project for Apple TV, you should change your `package.json` imports to import `react-native` as follows, so that this package is used instead of the core react-native package.
 
 ```js
 "react-native": "npm:react-native-tvos@latest",
 ```
+
+You cannot use this package and the core react-native package simultaneously in a project.
 
 ## General support for Apple TV
 
@@ -30,18 +32,37 @@ Make sure you do not globally install `react-native` or `react-native-tvos`. You
 ld: library not found for -lPods-TestApp-tvOS
 ```
 
+You should also install `yarn` globally, as it should be used instead of npm for working in React Native projects.
+
 ## Build changes
 
 - _Native layer_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
 
-- _react-native init_: New React Native projects created with `react-native init` will have Apple TV target automatically created in their XCode projects.  To use this NPM package for creating a new project, you can reference it as in the following example:
+- _react-native init_: Creating a new project that uses this package is done using the react-native CLI.  New projects created this way will automatically have properly configured Apple TV targets created in their XCode projects.
+
+To use this NPM package in a new project, you can reference it as in the following example using the older `react-native-cli` package:
 
 ```sh
+# Make sure you have the CLI installed globally (this only needs to be done once on your system)
+npm install -g react-native-cli
 # Init an app called 'TestApp', note that you must not be in a node module (directory with node_modules sub-directory) for this to work
 react-native init TestApp --version=react-native@npm:react-native-tvos@latest
 # Now start the app in the tvOS Simulator - this will only work on a macOS machine
 cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
 ```
+
+If you are using the newer `@react-native-community/cli` package, the syntax is slightly different:
+
+```sh
+# Make sure you have the CLI installed globally (this only needs to be done once on your system)
+npm install -g @react-native-community/cli
+# Init an app called 'TestApp', note that you must not be in a node module (directory with node_modules sub-directory) for this to work
+react-native init TestApp --template=react-native-tvos@latest
+# Now start the app in the tvOS Simulator - this will only work on a macOS machine
+cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
+```
+
+
 
 - _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
 
