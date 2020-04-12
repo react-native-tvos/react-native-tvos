@@ -19,10 +19,14 @@ import Easing from 'react-native/Libraries/Animated/src/Easing';
 import type {ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
 import flattenStyle from 'react-native/Libraries/StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+
 import * as React from 'react';
 
 type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
   nextFocusLeft?: ?number,
@@ -254,6 +258,8 @@ class TouchableOpacity extends React.Component<Props, State> {
         nextFocusRight={this.props.nextFocusRight}
         nextFocusUp={this.props.nextFocusUp}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        isTVSelectable={this.props.isTVSelectable !== false}
+        tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
           this.props.focusable !== false && this.props.onPress !== undefined

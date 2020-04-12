@@ -18,6 +18,7 @@ import TVTouchable from './TVTouchable.js';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback.js';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -30,6 +31,8 @@ type AndroidProps = $ReadOnly<{|
 
 type IOSProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
 |}>;
 
 type Props = $ReadOnly<{|
@@ -314,6 +317,8 @@ class TouchableHighlight extends React.Component<Props, State> {
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        isTVSelectable={this.props.isTVSelectable !== false}
+        tvParallaxProperties={this.props.tvParallaxProperties}
         nextFocusDown={this.props.nextFocusDown}
         nextFocusForward={this.props.nextFocusForward}
         nextFocusLeft={this.props.nextFocusLeft}
