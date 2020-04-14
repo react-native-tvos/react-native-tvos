@@ -63,7 +63,7 @@ Pod::Spec.new do |s|
     ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
                                 "React/Views/RCTDatePicker*",
                                 "React/Views/RCTPicker*",
-                                "React/Views/RCTRefreshControl*",
+                                "React/Views/RefreshControl/*",
                                 "React/Views/RCTSlider*",
                                 "React/Views/RCTSwitch*"
     ss.private_header_files   = "React/Cxx*/*.h"

@@ -38,7 +38,11 @@
 - (instancetype)initWithFrame:(CGRect)frame bridge:(RCTBridge *)bridge
 {
   if ((self = [super initWithFrame:frame])) {
+#if TARGET_OS_TV
+    self.windowLevel = UIWindowLevelNormal + 1;
+#else
     self.windowLevel = UIWindowLevelStatusBar - 1;
+#endif
     self.backgroundColor = [UIColor clearColor];
 
     _surface = [[RCTSurface alloc] initWithBridge:bridge moduleName:@"LogBox" initialProperties:@{}];
