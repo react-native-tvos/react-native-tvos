@@ -13,14 +13,14 @@
 import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {SyntheticEvent} from '../../Types/CoreEventTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
-import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
+import codegenNativeCommands from '../../Utilities/codegenNativeCommands';
+import codegenNativeComponent from '../../Utilities/codegenNativeComponent';
 import * as React from 'react';
 import type {
   Float,
   WithDefault,
   BubblingEventHandler,
-} from 'react-native/Libraries/Types/CodegenTypes';
+} from '../../Types/CodegenTypes';
 
 type Event = $ReadOnly<{|
   timestamp: Float,

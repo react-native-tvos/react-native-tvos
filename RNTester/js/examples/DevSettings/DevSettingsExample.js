@@ -11,7 +11,7 @@
 'use strict';
 
 import * as React from 'react';
-import {Alert, Button, DevSettings} from 'react-native';
+import {Alert, Button, DevSettings} from 'react-native-tvos';
 
 exports.title = 'DevSettings';
 exports.description = 'Customize the development settings';

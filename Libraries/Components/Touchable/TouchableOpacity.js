@@ -14,10 +14,10 @@ import Pressability from '../../Pressability/Pressability.js';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug.js';
 import TVTouchable from './TVTouchable.js';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback.js';
-import Animated from 'react-native/Libraries/Animated/src/Animated';
-import Easing from 'react-native/Libraries/Animated/src/Easing';
-import type {ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
-import flattenStyle from 'react-native/Libraries/StyleSheet/flattenStyle';
+import Animated from '../../Animated/src/Animated';
+import Easing from '../../Animated/src/Easing';
+import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
 import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
 
