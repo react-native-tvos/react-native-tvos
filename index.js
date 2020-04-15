@@ -103,13 +103,14 @@ import typeof DeprecatedEdgeInsetsPropType from './Libraries/DeprecatedPropTypes
 import typeof DeprecatedPointPropType from './Libraries/DeprecatedPropTypes/DeprecatedPointPropType';
 import typeof DeprecatedViewPropTypes from './Libraries/DeprecatedPropTypes/DeprecatedViewPropTypes';
 
+import CheckPlatform from './Libraries/Utilities/Platform';
+
 import type {HostComponent as _HostComponentInternal} from './Libraries/Renderer/shims/ReactNativeTypes';
 
 export type HostComponent<T> = _HostComponentInternal<T>;
 
 const invariant = require('invariant');
 const warnOnce = require('./Libraries/Utilities/warnOnce');
-const Platform = require('./Libraries/Utilities/Platform');
 
 module.exports = {
   // Components
@@ -305,7 +306,7 @@ module.exports = {
         "It can now be installed and imported from '@react-native-community/async-storage' instead of 'react-native'. " +
         'See https://github.com/react-native-community/async-storage',
     );
-    if (Platform.isTVOS) {
+    if (CheckPlatform.isTVOS) {
       warnOnce(
         'async-storage-tvos',
         'Persistent storage is not supported on tvOS, your data may be removed at any point.',
