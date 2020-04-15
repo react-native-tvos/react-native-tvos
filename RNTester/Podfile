@@ -29,7 +29,7 @@ end
 
   
 def flipper_pods()
-  flipperkit_version = '0.37.0'
+  flipperkit_version = '0.30.2'
   pod 'FlipperKit', '~>' + flipperkit_version, :configuration => 'Debug'
   pod 'FlipperKit/FlipperKitLayoutPlugin', '~>' + flipperkit_version, :configuration => 'Debug'
   pod 'FlipperKit/SKIOSNetworkPlugin', '~>' + flipperkit_version, :configuration => 'Debug'

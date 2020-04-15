@@ -60,12 +60,12 @@ def use_react_native! (options={})
 end
 
 def add_flipper_pods!(versions = {})
-  versions['Flipper'] ||= '~> 0.37.0'
+  versions['Flipper'] ||= '~> 0.30.2'
   versions['DoubleConversion'] ||= '1.1.7'
-  versions['Flipper-Folly'] ||= '~> 2.1'
+  versions['Flipper-Folly'] ||= '2.1.1'
   versions['Flipper-Glog'] ||= '0.3.6'
-  versions['Flipper-PeerTalk'] ||= '~> 0.0.4'
-  versions['Flipper-RSocket'] ||= '~> 1.0'
+  versions['Flipper-PeerTalk'] ||= '0.0.4'
+  versions['Flipper-RSocket'] ||= '1.0.0'
 
   pod 'FlipperKit', versions['Flipper'], :configuration => 'Debug'
   pod 'FlipperKit/FlipperKitLayoutPlugin', versions['Flipper'], :configuration => 'Debug'
