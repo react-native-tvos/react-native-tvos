@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {ReactNativeViewConfigRegistry} from 'react-native-tvos/Libraries/ReactPrivate/ReactNativePrivateInterface';
+import {ReactNativeViewConfigRegistry} from 'react-native/Libraries/ReactPrivate/ReactNativePrivateInterface';
 
 import type {ViewConfigGetter} from './ReactNativeTypes';
 
