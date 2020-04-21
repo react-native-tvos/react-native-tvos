@@ -18,9 +18,9 @@ PODS:
   - Flipper-Folly (2.1.1):
     - boost-for-react-native
     - CocoaLibEvent (= 1.0.0)
-    - Flipper-DoubleConversion
-    - Flipper-Glog
-    - OpenSSL-Universal (= 1.0.2.19)
+    - Flipper-DoubleConversion (= 1.1.7)
+    - Flipper-Glog (= 0.3.6)
+    - OpenSSL-Universal (= 1.0.2.9)
   - Flipper-Glog (0.3.6)
   - Flipper-PeerTalk (0.0.4)
   - Flipper-RSocket (1.0.0):
@@ -67,9 +67,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - OpenSSL-Universal (1.0.2.19):
-    - OpenSSL-Universal/Static (= 1.0.2.19)
-  - OpenSSL-Universal/Static (1.0.2.19)
+  - OpenSSL-Universal (1.0.2.9):
+    - OpenSSL-Universal/Static (= 1.0.2.9)
+  - OpenSSL-Universal/Static (1.0.2.9)
   - RCTRequired (0.62.2)
   - RCTTypeSafety (0.62.2):
     - FBLazyVector (= 0.62.2)
@@ -416,20 +416,20 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
-  CocoaLibEvent: 8d3e336f79f0f67da34ea9fe703d122d7644b01c
+  CocoaLibEvent: 80507925cc2857ace161e25ac1000745c145ac19
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   FBLazyVector: 4aab18c93cd9546e4bfed752b4084585eca8b245
   FBReactNativeSpec: 5465d51ccfeecb7faa12f9ae0024f2044ce4044e
   Flipper: b96fca3f1d3cfcb78df7d8eaed51ea9a71b69e92
   Flipper-DoubleConversion: 1349df2e033b72bffcb6e54db199cab53b9dcebd
-  Flipper-Folly: b8e278bb295ae5a20c9bc4abe707f2c7d6836034
+  Flipper-Folly: abac1a67bc5390a09770454b9314af6c1a29ced8
   Flipper-Glog: 0b29817e93a3d49a47962c94b54f6a2cf90a7849
   Flipper-PeerTalk: c41cddbfcfa98abeebd9c8503eb94d204a145c01
   Flipper-RSocket: d4c7baf814323f8f0911559944b87bbbd3c63da4
   FlipperKit: 31028f4bd9b85b8f2a98aa4d7f169b394d009439
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  OpenSSL-Universal: 45ae66b277dd4a7a05d5df1c83fb028b8a08137e
+  OpenSSL-Universal: 7cbe4bc3c032ace1c0ce897d6b5d58a3b9f6b8e2
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
   React: a1142d4dfe537674c8a64801eeea77c94bf9fad5
