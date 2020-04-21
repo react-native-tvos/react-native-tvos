@@ -719,7 +719,11 @@
 					"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)",
 				);
 				"LIBRARY_SEARCH_PATHS[arch=*]" = "$(inherited)";
-				OTHER_CFLAGS = "$(inherited)";
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+					" ",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
