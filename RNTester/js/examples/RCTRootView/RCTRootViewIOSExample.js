@@ -16,7 +16,7 @@ const {
   Text,
   View,
   requireNativeComponent,
-} = require('react-native-tvos');
+} = require('react-native');
 
 class AppPropertiesUpdateExample extends React.Component<{...}> {
   render() {

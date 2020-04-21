@@ -22,7 +22,7 @@ const {
   Text,
   TextInput,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 export type Item = {
   title: string,

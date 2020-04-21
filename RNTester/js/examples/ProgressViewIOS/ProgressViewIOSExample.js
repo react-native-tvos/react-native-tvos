@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {ProgressViewIOS, StyleSheet, View} = require('react-native-tvos');
+const {ProgressViewIOS, StyleSheet, View} = require('react-native');
 
 type Props = {||};
 type State = {|

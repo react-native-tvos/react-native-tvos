@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Text, View, Alert} = require('react-native-tvos');
+const {Text, View, Alert} = require('react-native');
 
 const RNTesterBlock = require('../../components/RNTesterBlock');
 

@@ -13,7 +13,7 @@
 const RNTesterStatePersister = require('../utils/RNTesterStatePersister');
 const React = require('react');
 
-const {StyleSheet, Switch, Text, View} = require('react-native-tvos');
+const {StyleSheet, Switch, Text, View} = require('react-native');
 
 class RNTesterSettingSwitchRow extends React.Component<
   $FlowFixMeProps,

@@ -11,7 +11,7 @@
 'use strict';
 
 import React from 'react';
-const ReactNative = require('react-native-tvos');
+const ReactNative = require('react-native');
 
 const {
   Platform,

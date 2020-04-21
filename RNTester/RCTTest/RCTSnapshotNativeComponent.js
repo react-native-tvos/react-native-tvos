@@ -10,7 +10,7 @@
 
 'use strict';
 
-const {requireNativeComponent} = require('react-native-tvos');
+const {requireNativeComponent} = require('react-native');
 
 import type {HostComponent} from '../../Libraries/Renderer/shims/ReactNativeTypes';
 import type {SyntheticEvent} from '../../Libraries/Types/CoreEventTypes';

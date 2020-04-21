@@ -19,7 +19,7 @@ const {
   Text,
   ToastAndroid,
   TouchableWithoutFeedback,
-} = require('react-native-tvos');
+} = require('react-native');
 
 type Props = $ReadOnly<{||}>;
 class ToastExample extends React.Component<Props> {

@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, TextInput, View} = require('react-native-tvos');
+const {StyleSheet, TextInput, View} = require('react-native');
 import {RNTesterThemeContext} from './RNTesterTheme';
 
 type Props = {

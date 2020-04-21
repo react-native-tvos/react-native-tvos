@@ -22,7 +22,7 @@ const {
   Text,
   TextInput,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 // TODO: Is there a cleaner way to flip the TextAncestor value to false? I
 //   suspect apps won't even be able to leverage this workaround because

@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {AsyncStorage} = require('react-native-tvos');
+const {AsyncStorage} = require('react-native');
 
 export type PassProps<State> = {
   state: State,

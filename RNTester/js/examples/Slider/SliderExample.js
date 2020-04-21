@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Slider, Text, StyleSheet, View} = require('react-native-tvos');
+const {Slider, Text, StyleSheet, View} = require('react-native');
 
 function SliderExample(props: React.ElementConfig<typeof Slider>) {
   const [value, setValue] = React.useState(0);

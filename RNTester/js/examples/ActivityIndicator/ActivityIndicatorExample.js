@@ -10,7 +10,7 @@
 
 'use strict';
 import type {Node} from 'React';
-import {ActivityIndicator, StyleSheet, View} from 'react-native-tvos';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import React, {Component} from 'react';
 
 type State = {|animating: boolean|};

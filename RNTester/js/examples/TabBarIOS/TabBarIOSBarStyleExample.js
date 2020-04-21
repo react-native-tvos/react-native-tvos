@@ -23,7 +23,7 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native-tvos');
+const ReactNative = require('react-native');
 const {StyleSheet, TabBarIOS, Text, View} = ReactNative;
 
 const base64Icon =

@@ -23,7 +23,7 @@ const {
   TouchableNativeFeedback,
   TouchableWithoutFeedback,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 import {useEffect, useRef, useState} from 'react';
 

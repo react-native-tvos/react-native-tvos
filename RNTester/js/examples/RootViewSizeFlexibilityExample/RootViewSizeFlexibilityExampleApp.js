@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, Text, TouchableHighlight, View} = require('react-native-tvos');
+const {StyleSheet, Text, TouchableHighlight, View} = require('react-native');
 
 class RootViewSizeFlexibilityExampleApp extends React.Component<
   {toggled: boolean, ...},

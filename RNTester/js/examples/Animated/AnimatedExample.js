@@ -13,7 +13,7 @@
 const React = require('react');
 
 const RNTesterButton = require('../../components/RNTesterButton');
-const {Animated, Easing, StyleSheet, Text, View} = require('react-native-tvos');
+const {Animated, Easing, StyleSheet, Text, View} = require('react-native');
 
 const styles = StyleSheet.create({
   content: {

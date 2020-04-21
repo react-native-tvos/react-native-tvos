@@ -19,7 +19,7 @@ const {
   StyleSheet,
   Slider,
   Switch,
-} = require('react-native-tvos');
+} = require('react-native');
 
 const TextInputSharedExamples = require('./TextInputSharedExamples.js');
 

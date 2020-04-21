@@ -19,7 +19,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 class AnExScroll extends React.Component<$FlowFixMeProps, any> {
   state: any = {scrollX: new Animated.Value(0)};

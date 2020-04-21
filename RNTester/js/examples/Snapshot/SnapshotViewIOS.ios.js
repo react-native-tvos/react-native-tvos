@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {NativeModules, StyleSheet, UIManager, View} = require('react-native-tvos');
+const {NativeModules, StyleSheet, UIManager, View} = require('react-native');
 
 const {TestModule} = NativeModules;
 

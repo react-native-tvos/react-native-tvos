@@ -19,7 +19,7 @@ const {
   Text,
   TouchableOpacity,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 const nullthrows = require('nullthrows');
 

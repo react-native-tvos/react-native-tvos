@@ -22,7 +22,7 @@ const {
   Text,
   TouchableHighlight,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 /**
  * Convert number of bytes to MB and round to the nearest 0.1 MB.

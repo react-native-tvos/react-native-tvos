@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Image, Text, TouchableHighlight, View} = require('react-native-tvos');
+const {Image, Text, TouchableHighlight, View} = require('react-native');
 
 function Basic(): React.Node {
   return (

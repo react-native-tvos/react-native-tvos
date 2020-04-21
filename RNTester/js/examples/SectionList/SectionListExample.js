@@ -33,7 +33,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 import type {Item} from '../../components/ListExampleShared';
 
