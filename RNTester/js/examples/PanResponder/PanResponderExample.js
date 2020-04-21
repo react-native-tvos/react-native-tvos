@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {PanResponder, StyleSheet, View} = require('react-native-tvos');
+const {PanResponder, StyleSheet, View} = require('react-native');
 const RNTesterPage = require('../../components/RNTesterPage');
 
 import type {

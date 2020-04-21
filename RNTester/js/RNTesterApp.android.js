@@ -35,7 +35,7 @@ const {
   UIManager,
   useColorScheme,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 const RNTesterActions = require('./utils/RNTesterActions');
 const RNTesterExampleContainer = require('./components/RNTesterExampleContainer');
 const RNTesterExampleList = require('./components/RNTesterExampleList');

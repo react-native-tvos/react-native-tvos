@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, Text, TouchableHighlight} = require('react-native-tvos');
+const {StyleSheet, Text, TouchableHighlight} = require('react-native');
 
 import type {PressEvent} from '../../../Libraries/Types/CoreEventTypes';
 

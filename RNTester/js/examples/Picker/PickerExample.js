@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Picker, StyleSheet, Text} = require('react-native-tvos');
+const {Picker, StyleSheet, Text} = require('react-native');
 
 const Item = Picker.Item;
 

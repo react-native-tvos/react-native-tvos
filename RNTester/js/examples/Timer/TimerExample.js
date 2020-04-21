@@ -15,7 +15,7 @@ const React = require('react');
 
 const performanceNow = require('fbjs/lib/performanceNow');
 
-const {Alert, Platform, ToastAndroid, Text, View} = require('react-native-tvos');
+const {Alert, Platform, ToastAndroid, Text, View} = require('react-native');
 
 function burnCPU(milliseconds) {
   const start = performanceNow();

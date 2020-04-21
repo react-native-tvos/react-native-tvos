@@ -12,9 +12,9 @@
 
 const React = require('react');
 
-const {Text, View, StyleSheet} = require('react-native-tvos');
+const {Text, View, StyleSheet} = require('react-native');
 
-import {PanResponder, ScrollView} from 'react-native-tvos';
+import {PanResponder, ScrollView} from 'react-native';
 
 exports.displayName = 'JSResponderHandlerExample';
 exports.framework = 'React';

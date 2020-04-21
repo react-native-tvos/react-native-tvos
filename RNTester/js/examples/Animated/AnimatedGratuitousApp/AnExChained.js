@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {Animated, PanResponder, StyleSheet, View} = require('react-native-tvos');
+const {Animated, PanResponder, StyleSheet, View} = require('react-native');
 
 class AnExChained extends React.Component<Object, any> {
   constructor(props: Object) {

@@ -10,7 +10,7 @@
 'use strict';
 
 const React = require('react');
-const {Platform} = require('react-native-tvos');
+const {Platform} = require('react-native');
 const RNTesterBlock = require('./RNTesterBlock');
 const RNTesterExampleFilter = require('./RNTesterExampleFilter');
 const RNTesterPage = require('./RNTesterPage');

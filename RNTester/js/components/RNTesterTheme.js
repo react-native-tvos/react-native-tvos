@@ -11,7 +11,7 @@
 'use strict';
 
 import * as React from 'react';
-import {Appearance} from 'react-native-tvos';
+import {Appearance} from 'react-native';
 
 export type RNTesterTheme = {
   LabelColor: string,

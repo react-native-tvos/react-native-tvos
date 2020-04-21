@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Animated, PanResponder, StyleSheet, View} = require('react-native-tvos');
+const {Animated, PanResponder, StyleSheet, View} = require('react-native');
 
 const NUM_BOBBLES = 5;
 const RAD_EACH = Math.PI / 2 / (NUM_BOBBLES - 2);

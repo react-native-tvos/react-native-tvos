@@ -19,7 +19,7 @@ const {
   StyleSheet,
   TouchableWithoutFeedback,
   Slider,
-} = require('react-native-tvos');
+} = require('react-native');
 
 const AnimatedSlider = Animated.createAnimatedComponent(Slider);
 

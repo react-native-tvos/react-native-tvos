@@ -19,7 +19,7 @@ const {
   TextInput,
   View,
   StyleSheet,
-} = require('react-native-tvos');
+} = require('react-native');
 
 import type {RNTesterExampleModuleItem} from '../../types/RNTesterTypes';
 

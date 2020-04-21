@@ -25,7 +25,7 @@ const {
   pressItem,
   renderSmallSwitchOption,
 } = require('../../components/ListExampleShared');
-const {FlatList, StyleSheet, Text, View, Alert} = require('react-native-tvos');
+const {FlatList, StyleSheet, Text, View, Alert} = require('react-native');
 
 import type {Item} from '../../components/ListExampleShared';
 

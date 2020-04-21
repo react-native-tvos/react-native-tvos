@@ -18,7 +18,7 @@ import {
   FlatList,
   Platform,
   TouchableOpacity,
-} from 'react-native-tvos';
+} from 'react-native';
 import * as React from 'react';
 
 type State = {|

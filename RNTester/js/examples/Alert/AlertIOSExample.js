@@ -19,7 +19,7 @@ const {
   Text,
   TouchableHighlight,
   Alert,
-} = require('react-native-tvos');
+} = require('react-native');
 
 type Props = $ReadOnly<{||}>;
 type State = {|promptValue: ?string|};

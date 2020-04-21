@@ -17,7 +17,7 @@ const {
   Text,
   TouchableWithoutFeedback,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 exports.title = '<View>';
 exports.description = ('Basic building block of all UI, examples that ' +

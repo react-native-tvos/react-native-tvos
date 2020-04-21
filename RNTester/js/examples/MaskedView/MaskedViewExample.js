@@ -19,7 +19,7 @@ const {
   StyleSheet,
   Text,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 type Props = $ReadOnly<{||}>;
 type ChangingChildrenState = {|

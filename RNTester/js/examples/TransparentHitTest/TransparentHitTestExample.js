@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {Text, View, TouchableOpacity, Alert} = require('react-native-tvos');
+const {Text, View, TouchableOpacity, Alert} = require('react-native');
 
 class TransparentHitTestExample extends React.Component<{...}> {
   render() {

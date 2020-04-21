@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, Text, View} = require('react-native-tvos');
+const {StyleSheet, Text, View} = require('react-native');
 
 class ExampleBox extends React.Component<$FlowFixMeProps, $FlowFixMeState> {
   state = {

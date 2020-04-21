@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {DeviceEventEmitter, Text, View} = require('react-native-tvos');
+const {DeviceEventEmitter, Text, View} = require('react-native');
 
 import type EmitterSubscription from '../../../../Libraries/vendor/emitter/EmitterSubscription';
 

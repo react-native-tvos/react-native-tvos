@@ -25,7 +25,7 @@ const {
   Switch,
   View,
   Button,
-} = require('react-native-tvos');
+} = require('react-native');
 
 type State = {
   toggleStatus: any,

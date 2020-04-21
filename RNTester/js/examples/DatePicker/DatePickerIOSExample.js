@@ -11,7 +11,7 @@
 'use strict';
 
 const React = require('react');
-const {DatePickerIOS, StyleSheet, Text, View} = require('react-native-tvos');
+const {DatePickerIOS, StyleSheet, Text, View} = require('react-native');
 
 type State = {|
   date: Date,

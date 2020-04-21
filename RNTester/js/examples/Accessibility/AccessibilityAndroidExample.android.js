@@ -15,7 +15,7 @@ const {
   Text,
   View,
   TouchableWithoutFeedback,
-} = require('react-native-tvos');
+} = require('react-native');
 
 const RNTesterBlock = require('../../components/RNTesterBlock');
 const RNTesterPage = require('../../components/RNTesterPage');

@@ -19,7 +19,7 @@ const {
   StyleSheet,
   UIManager,
   View,
-} = require('react-native-tvos');
+} = require('react-native');
 
 const AnExSet = require('./AnExSet');
 

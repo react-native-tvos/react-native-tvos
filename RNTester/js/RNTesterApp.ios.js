@@ -33,7 +33,7 @@ const {
   TVMenuControl,
   View,
   YellowBox,
-} = require('react-native-tvos');
+} = require('react-native');
 
 import type {RNTesterExample} from './types/RNTesterTypes';
 import type {RNTesterAction} from './utils/RNTesterActions';

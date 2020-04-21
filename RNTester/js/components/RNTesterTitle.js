@@ -12,7 +12,7 @@
 
 const React = require('react');
 
-const {StyleSheet, Text, View} = require('react-native-tvos');
+const {StyleSheet, Text, View} = require('react-native');
 import {RNTesterThemeContext} from './RNTesterTheme';
 
 class RNTesterTitle extends React.Component<$FlowFixMeProps> {
