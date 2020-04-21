@@ -11,8 +11,8 @@
 'use strict';
 
 const React = require('react');
-const ReactNative = require('react-native-tvos');
-const parseErrorStack = require('react-native-tvos/Libraries/Core/Devtools/parseErrorStack');
+const ReactNative = require('react-native');
+const parseErrorStack = require('react-native/Libraries/Core/Devtools/parseErrorStack');
 const {View} = ReactNative;
 
 const {TestModule} = ReactNative.NativeModules;
