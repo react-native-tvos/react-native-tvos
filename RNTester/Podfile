@@ -1,4 +1,4 @@
-source 'https://github.com/dlowder-salesforce/RNTVOS-Podspecs.git'
+source 'https://github.com/react-native-community/react-native-tvos-podspecs.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
 platform :tvos, '12.0'
