@@ -350,11 +350,17 @@ class TouchableHighlight extends React.Component<Props, State> {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
         onBlur: event => {
+          if (Platform.isTV) {
+            this._hideUnderlay();
+          }
           if (this.props.onBlur != null) {
             this.props.onBlur(event);
           }
         },
         onFocus: event => {
+          if (Platform.isTV) {
+            this._showUnderlay();
+          }
           if (this.props.onFocus != null) {
             this.props.onFocus(event);
           }

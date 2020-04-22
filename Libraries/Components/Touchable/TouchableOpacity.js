@@ -279,11 +279,13 @@ class TouchableOpacity extends React.Component<Props, State> {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
         onBlur: event => {
+          this._opacityInactive(250);
           if (this.props.onBlur != null) {
             this.props.onBlur(event);
           }
         },
         onFocus: event => {
+          this._opacityActive(150);
           if (this.props.onFocus != null) {
             this.props.onFocus(event);
           }
