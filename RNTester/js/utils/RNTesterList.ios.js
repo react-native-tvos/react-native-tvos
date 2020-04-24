@@ -143,16 +143,6 @@ const ComponentExamples: Array<RNTesterExample> = [
     supportsTVOS: false,
   },
   {
-    key: 'TabBarIOSExample',
-    module: require('../examples/TabBarIOS/TabBarIOSExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TabBarIOSBarStyleExample',
-    module: require('../examples/TabBarIOS/TabBarIOSBarStyleExample'),
-    supportsTVOS: false,
-  },
-  {
     key: 'TextExample',
     module: require('../examples/Text/TextExample.ios'),
     supportsTVOS: true,
