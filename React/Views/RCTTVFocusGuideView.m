@@ -17,41 +17,29 @@
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge {
   if ((self = [super init])) {
-    _needsUpdateView = YES;
     _bridge = bridge;
-    [_bridge.uiManager.observerCoordinator addObserver:self];
   }
   return self;
 }
 
 - (void)invalidate {
-  [_bridge.uiManager.observerCoordinator removeObserver:self];
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps {
-  _needsUpdateView = YES;
-  [super didSetProps:changedProps];
-}
-
-#pragma mark - RCTUIManagerObserver
-
-- (void)uiManagerWillPerformMounting:(__unused RCTUIManager *)uiManager {
-  if (!_needsUpdateView) {
-    return;
-  }
-  _needsUpdateView = NO;
-  
-  [_bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+- (void)setDestinationTags:(NSArray *)destinationTags {
+    NSArray *destinationTagsValue = destinationTags ? destinationTags : @[];
+    NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
     NSMutableArray* destinations = [NSMutableArray array];
-    for (NSNumber *  tag in self.destinationTags) {
-      RCTTVView *destination = (RCTTVView*)viewRegistry[tag];
+    for (NSNumber *  tag in destinationTagsValue) {
+      RCTTVView *destination = (RCTTVView*)views[tag];
       if (destination != nil) {
         [destinations addObject:destination];
       }
     }
     [self addFocusGuide:destinations];
-  }];
+    self->_destinationTags = destinationTagsValue;
+
 }
+
 
 - (void)addFocusGuide:(NSArray*)destinations {
   
