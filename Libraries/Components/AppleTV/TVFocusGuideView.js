@@ -44,6 +44,7 @@ class TVFocusGuideView extends React.Component<FocusGuideProps> {
         // Container view must have nonzero size
         <ReactNative.View style={[{minHeight: 1, minWidth: 1}, this.props.style]}>
           <RNFocusGuide
+            style={this.props.style}
             ref={ref => (this._focusGuideRef = ref)}
             destinationTags={this._destinationTags}
           >
