@@ -10,7 +10,7 @@
 
 'use strict';
 
-import React from 'react';
+const React = require('react');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
 const TabBarItemIOS = require('./TabBarItemIOS');
 
@@ -69,7 +69,7 @@ type Props = $ReadOnly<{|
 let showedDeprecationWarning = true;
 
 class TabBarIOS extends React.Component<Props> {
-  static Item = TabBarItemIOS;
+  static Item: React.Node = TabBarItemIOS;
 
   componentDidMount() {
     if (!showedDeprecationWarning) {
@@ -82,7 +82,7 @@ class TabBarIOS extends React.Component<Props> {
     }
   }
 
-  render() {
+  render(): React.Node {
     return (
       <RCTTabBar
         style={[styles.tabGroup, this.props.style]}

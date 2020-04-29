@@ -10,7 +10,7 @@
 
 'use strict';
 
-import React from 'react';
+const React = require('react');
 const ReactNative = require('react-native');
 
 const {
@@ -28,7 +28,7 @@ exports.description = 'tvOS focus guide API';
 exports.examples = [
   {
     title: 'TVFocusGuide',
-    render() {
+    render(): React.Node {
       return <TVFocusGuideExample />;
     },
   },

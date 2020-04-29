@@ -15,7 +15,7 @@ import * as TurboModuleRegistry from '../TurboModule/TurboModuleRegistry';
 import Platform from '../Utilities/Platform';
 
 export interface Spec extends TurboModule {
-  +getConstants: () => {||};
+  +getConstants: () => {...};
   +vibrate: (pattern: number) => void;
 
   // Android only
@@ -24,8 +24,16 @@ export interface Spec extends TurboModule {
 }
 
 const Placeholder = {
-  getConstants: () => { return []; },
-  vibrate: (pattern?: number) => {}
+  getConstants: () => {
+    return {};
+  },
+  vibrate: (pattern: number) => {},
+  vibrateByPattern: (pattern: Array<number>, repeat: number) => {},
+  cancel: () => {},
 };
 
-export default Platform.isTVOS ? Placeholder: (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);
+const NativeVibration: Spec = Platform.isTVOS
+  ? (Placeholder: Spec)
+  : (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);
+
+export default NativeVibration;

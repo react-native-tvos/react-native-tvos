@@ -15,8 +15,6 @@ const requireNativeComponent = require('../../ReactNative/requireNativeComponent
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
 
-import type {NativeComponent} from 'ReactNative';
-
 type NativeProps = $ReadOnly<{|
   ...ViewProps,
   unselectedTintColor?: ColorValue,
@@ -28,8 +26,6 @@ type NativeProps = $ReadOnly<{|
   itemPositioning?: ?('fill' | 'center' | 'auto'),
 |}>;
 
-type RCTTabBarNativeType = Class<NativeComponent<NativeProps>>;
+// type RCTTabBarNativeType = Class<NativeComponent<NativeProps>>;
 
-module.exports = ((requireNativeComponent(
-  'RCTTabBar',
-): any): RCTTabBarNativeType);
+module.exports = (requireNativeComponent<NativeProps>('RCTTabBar'): any);

@@ -15,7 +15,6 @@ const requireNativeComponent = require('../../ReactNative/requireNativeComponent
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
 import type {SyntheticEvent} from '../../Types/CoreEventTypes';
-import type {NativeComponent} from '../ReactNative';
 import type {ImageSource} from '../../Image/ImageSource';
 
 type TabBarItemEvent = SyntheticEvent<null>;
@@ -97,8 +96,6 @@ type NativeProps = $ReadOnly<{|
   isTVSelectable?: ?boolean,
 |}>;
 
-type RCTTabBarItemNativeType = Class<NativeComponent<NativeProps>>;
-
-module.exports = ((requireNativeComponent(
-  'RCTTabBarItem',
-): any): RCTTabBarItemNativeType);
+module.exports = ((requireNativeComponent <
+  NativeProps >
+  'RCTTabBarItem': any): RCTTabBarItemNativeType);

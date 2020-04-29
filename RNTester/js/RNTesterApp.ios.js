@@ -194,7 +194,7 @@ class RNTesterApp extends React.Component<Props, RNTesterNavigationState> {
     }
     if (this.state.openExample) {
       TVMenuControl.enableTVMenuKey();
-      const Component = RNTesterList.Modules[this.state.openExample];
+      const Component = RNTesterList.Modules[this.state.openExample || 0];
       if (Component && Component.external) {
         return <Component onExampleExit={this._handleBack} />;
       } else {
