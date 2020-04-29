@@ -16,14 +16,21 @@ import * as TurboModuleRegistry from '../../TurboModule/TurboModuleRegistry';
 import Platform from '../../Utilities/Platform';
 
 export interface Spec extends TurboModule {
-  +getConstants: () => {||};
+  +getConstants: () => {...};
   +getString: () => Promise<string>;
   +setString: (content: string) => void;
 }
 
 const Placeholder = {
-  getString: () => new Promise((resolve, reject) => resolve('')),
-  setString: (content: string) => {}
+  getConstants: () => {
+    return {};
+  },
+  getString: () => new Promise<string>((resolve, reject) => resolve('')),
+  setString: (content: string) => {},
 };
 
-export default Platform.isTVOS ? Placeholder : (TurboModuleRegistry.getEnforcing<Spec>('Clipboard'): Spec);
+const NativeClipboard: Spec = Platform.isTVOS
+  ? (Placeholder: Spec)
+  : (TurboModuleRegistry.getEnforcing<Spec>('Clipboard'): Spec);
+
+export default NativeClipboard;

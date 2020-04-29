@@ -38,7 +38,7 @@ class TVFocusGuideView extends React.Component<FocusGuideProps> {
       });
   }
 
-  render() {
+  render(): React.Node {
     if (Platform.isTVOS) {
       return (
         // Container view must have nonzero size

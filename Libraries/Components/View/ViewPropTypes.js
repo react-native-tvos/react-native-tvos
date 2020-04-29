@@ -21,6 +21,7 @@ import type {
 import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
 import type {Node} from 'react';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import type {TVViewProps} from '../AppleTV/TVViewPropTypes';
 import type {
   AccessibilityRole,
   AccessibilityState,
@@ -293,13 +294,6 @@ type AndroidViewProps = $ReadOnly<{|
   importantForAccessibility?: ?('auto' | 'yes' | 'no' | 'no-hide-descendants'),
 
   /**
-   * Whether to force the Android TV focus engine to move focus to this view.
-   *
-   * @platform android
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
    * TV next focus down (see documentation for the View component).
    *
    * @platform android
@@ -396,6 +390,7 @@ export type ViewProps = $ReadOnly<{|
   ...TouchEventProps,
   ...AndroidViewProps,
   ...IOSViewProps,
+  ...TVViewProps,
 
   children?: Node,
   style?: ?ViewStyleProp,
