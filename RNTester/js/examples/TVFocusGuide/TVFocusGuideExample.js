@@ -57,6 +57,8 @@ class TVFocusGuideExample extends React.Component<
 
   buttonBottomLeft: ?Object;
 
+  rightButtonInFocusViewContainer: ?Object;
+
   _setDestination(destination: ?Object, destinationText: string) {
     this.setState({
       destination,
@@ -102,9 +104,36 @@ class TVFocusGuideExample extends React.Component<
               height,
             }}>
             <Text style={styles.buttonText}>
-              Focus guide points to {this.state.destinationText}
+              Pink focus guide points to {this.state.destinationText}
             </Text>
           </View>
+          <TVFocusGuideView style={styles.containerFocusGuide} destinations={[this.rightButtonInFocusViewContainer]}>
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                width,
+                height,
+              }}>
+              <Text style={styles.buttonText}>Wrapped button 1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {}}
+              style={{
+                width,
+                height,
+              }}>
+              <Text style={styles.buttonText}>Wrapped button 2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              ref={component => (this.rightButtonInFocusViewContainer = component)}
+              onPress={() => {}}
+              style={{
+                width,
+                height,
+              }}>
+              <Text style={styles.buttonText}>Wrapped button 3</Text>
+            </TouchableOpacity>
+          </TVFocusGuideView>
         </View>
         <View style={styles.rowContainer}>
           <TouchableOpacity
@@ -119,9 +148,23 @@ class TVFocusGuideExample extends React.Component<
             }}>
             <Text style={styles.buttonText}>Left Bottom</Text>
           </TouchableOpacity>
-          <View style={styles.focusGuide}>
+          <TVFocusGuideView style={styles.focusGuide} destinations={destinations}>
             <Text style={styles.buttonText}>Focus guide</Text>
-            <TVFocusGuideView destinations={destinations} />
+          </TVFocusGuideView>
+          <View
+            style={{
+              width,
+              height,
+            }}>
+          </View>
+          <View
+            style={{
+              width: width*3,
+              height,
+            }}>
+            <Text style={styles.buttonText}>
+              Blue focus guide container above always points to button 3 if navigating from outside
+            </Text>
           </View>
         </View>
       </View>
@@ -146,5 +189,11 @@ const styles = StyleSheet.create({
     height,
     backgroundColor: 'pink',
     opacity: 0.3,
+  },
+  containerFocusGuide: {
+    backgroundColor: 'transparent',
+    borderColor: 'blue',
+    borderWidth: 2,
+    flexDirection: 'row',
   },
 });
