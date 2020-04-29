@@ -107,7 +107,9 @@ class TVFocusGuideExample extends React.Component<
               Pink focus guide points to {this.state.destinationText}
             </Text>
           </View>
-          <TVFocusGuideView style={styles.containerFocusGuide} destinations={[this.rightButtonInFocusViewContainer]}>
+          <TVFocusGuideView
+            style={styles.containerFocusGuide}
+            destinations={[this.rightButtonInFocusViewContainer]}>
             <TouchableOpacity
               onPress={() => {}}
               style={{
@@ -125,7 +127,9 @@ class TVFocusGuideExample extends React.Component<
               <Text style={styles.buttonText}>Wrapped button 2</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              ref={component => (this.rightButtonInFocusViewContainer = component)}
+              ref={component =>
+                (this.rightButtonInFocusViewContainer = component)
+              }
               onPress={() => {}}
               style={{
                 width,
@@ -148,22 +152,25 @@ class TVFocusGuideExample extends React.Component<
             }}>
             <Text style={styles.buttonText}>Left Bottom</Text>
           </TouchableOpacity>
-          <TVFocusGuideView style={styles.focusGuide} destinations={destinations}>
+          <TVFocusGuideView
+            style={styles.focusGuide}
+            destinations={destinations}>
             <Text style={styles.buttonText}>Focus guide</Text>
           </TVFocusGuideView>
           <View
             style={{
               width,
               height,
-            }}>
-          </View>
+            }}
+          />
           <View
             style={{
-              width: width*3,
+              width: width * 3,
               height,
             }}>
             <Text style={styles.buttonText}>
-              Blue focus guide container above always points to button 3 if navigating from outside
+              Blue focus guide container above always points to button 3 if
+              navigating from outside
             </Text>
           </View>
         </View>

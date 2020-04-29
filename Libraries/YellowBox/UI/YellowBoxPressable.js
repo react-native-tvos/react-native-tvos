@@ -13,10 +13,9 @@
 const React = require('react');
 const Platform = require('../../Utilities/Platform');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
-const TouchableOpacity = require('../../Components/Touchable/TouchableOpacity');
-const TouchableWithoutFeedback = Platform.isTVOS ?
-                                   require('../../Components/Touchable/TouchableHighlight') :
-                                   require('../../Components/Touchable/TouchableWithoutFeedback');
+const TouchableWithoutFeedback = Platform.isTVOS
+  ? require('../../Components/Touchable/TouchableHighlight')
+  : require('../../Components/Touchable/TouchableWithoutFeedback');
 const View = require('../../Components/View/View');
 const YellowBoxStyle = require('./YellowBoxStyle');
 
