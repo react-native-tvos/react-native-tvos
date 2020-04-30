@@ -2,7 +2,7 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.60.4-5 release of this package will be derived from the 0.60.4 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.62.2-0 release of this package will be derived from the 0.62.2 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -20,9 +20,7 @@ You cannot use this package and the core react-native package simultaneously in 
 
 TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV, with few or no changes needed in the JavaScript code for the applications.
 
-The RNTester app supports Apple TV.
-- _Without cocoapods:_ In `RNTester/RNTester.xcodeproj`,  use the `RNTester-tvOS` build target to build for tvOS.
-- _With cocoapods:_ In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
+The RNTester app supports Apple TV.  In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
 
 ## Pitfall
 
@@ -128,7 +126,9 @@ class Game2048 extends React.Component {
   }
 ```
 
-- _Turbomodules_: Working as of the 0.60.4-0 release.
+- _Turbomodules_: Working as of the 0.61.2-0 release.
+
+- _Flipper_: Working as of the 0.62.2-0 release.  See the template Podfile and AppDelegate for an example of how to include Flipper support in your tvOS app.  New projects generated with `react-native init` will now include this support.
 
 - _Dev Menu support_: On the simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) )
 
@@ -136,13 +136,12 @@ class Game2048 extends React.Component {
 
 - _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button on the TV remote.
 
-- _TabBarIOS behavior_: The `TabBarIOS` component wraps the native `UITabBar` API, which works differently on Apple TV. To avoid jittery rerendering of the tab bar in tvOS (see [this issue](https://github.com/facebook/react-native/issues/15081)), the selected tab bar item can only be set from Javascript on initial render, and is controlled after that by the user through native code.
-
 - _TVMenuControl_: This module provides methods to enable and disable navigation using the menu key on the TV remote.  This is required in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses this new module to implement correct menu key behavior.
 
-- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  A new example is provided in `RNTester`.
+- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  An example is provided in `RNTester` that shows two different ways of using this component.
 
 - _Known issues_:
 
-  - As of the 0.60.4-0 release, Fabric code compiles.  Does not yet run in RNTester (Yoga errors) -- the issue is under investigation.
+  - As of the 0.61.2-0 release, Fabric code does not compile or run.  Issue is under investigation.
+  - There are known issues with the TabBarIOS component, due to changes that Apple made in UITabBar for tvOS 13.
 
