@@ -30,6 +30,11 @@ public class ReactHorizontalScrollContainerView extends ReactViewGroup {
 
   @Override
   protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    // This is to fix the overflowing (scaled) item being cropped
+    HorizontalScrollView parent = (HorizontalScrollView) getParent();
+    parent.setClipChildren(false);
+    this.setClipChildren(false);
+
     if (mLayoutDirection == LAYOUT_DIRECTION_RTL) {
       // When the layout direction is RTL, we expect Yoga to give us a layout
       // that extends off the screen to the left so we re-center it with left=0
@@ -40,10 +45,10 @@ public class ReactHorizontalScrollContainerView extends ReactViewGroup {
       setRight(newRight);
 
       // Call with the present values in order to re-layout if necessary
-      HorizontalScrollView parent = (HorizontalScrollView) getParent();
+      HorizontalScrollView parentScrollView = (HorizontalScrollView) getParent();
       // Fix the ScrollX position when using RTL language
-      int offsetX = parent.getScrollX() + getWidth() - mCurrentWidth;
-      parent.scrollTo(offsetX, parent.getScrollY());
+      int offsetX = parentScrollView.getScrollX() + getWidth() - mCurrentWidth;
+      parentScrollView.scrollTo(offsetX, parentScrollView.getScrollY());
     }
     mCurrentWidth = getWidth();
   }
