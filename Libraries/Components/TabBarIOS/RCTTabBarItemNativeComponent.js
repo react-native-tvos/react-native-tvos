@@ -19,7 +19,7 @@ import type {ImageSource} from '../../Image/ImageSource';
 
 type TabBarItemEvent = SyntheticEvent<null>;
 
-type NativeProps = $ReadOnly<{|
+export type NativeProps = $ReadOnly< {|
   ...ViewProps,
 
   /**
@@ -94,8 +94,6 @@ type NativeProps = $ReadOnly<{|
    * @platform ios
    */
   isTVSelectable?: ?boolean,
-|}>;
+|} >;
 
-module.exports = ((requireNativeComponent <
-  NativeProps >
-  'RCTTabBarItem': any): RCTTabBarItemNativeType);
+module.exports = requireNativeComponent('RCTTabBarItem');
