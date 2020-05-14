@@ -128,6 +128,9 @@ public class DisabledDevSupportManager implements DevSupportManager {
   public void handleReloadJS() {}
 
   @Override
+  public void reloadExpoApp() {}
+
+  @Override
   public void reloadJSFromServer(String bundleURL) {}
 
   @Override
