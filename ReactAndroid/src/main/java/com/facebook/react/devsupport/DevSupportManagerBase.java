@@ -81,8 +81,8 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
   private static final String EXOPACKAGE_LOCATION_FORMAT =
       "/data/local/tmp/exopackage/%s//secondary-dex";
 
-  public static final String EMOJI_HUNDRED_POINTS_SYMBOL = " \uD83D\uDCAF";
-  public static final String EMOJI_FACE_WITH_NO_GOOD_GESTURE = " \uD83D\uDE45";
+  public static String EMOJI_HUNDRED_POINTS_SYMBOL = " 💯";
+  public static String EMOJI_FACE_WITH_NO_GOOD_GESTURE = " 🙅";
 
   private final Context mApplicationContext;
   private final ShakeDetector mShakeDetector;
@@ -388,6 +388,25 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
         });
   }
 
+  private int getExponentActivityId() {
+    return -1;
+  }
+
+  @Override
+  public void reloadExpoApp() {
+    try {
+      Class.forName("host.exp.exponent.ReactNativeStaticHelpers").getMethod("reloadFromManifest", int.class).invoke(null, getExponentActivityId());
+    } catch (Exception expoHandleErrorException) {
+      expoHandleErrorException.printStackTrace();
+
+      // reloadExpoApp replaces handleReloadJS in some places
+      // where in Expo we would like to reload from manifest.
+      // If so, if anything goes wrong here, we can fall back
+      // to plain JS reload.
+      handleReloadJS();
+    }
+  }
+
   @Override
   public void showDevOptionsDialog() {
     if (mDevOptionsDialog != null || !mIsDevSupportEnabled || ActivityManager.isUserAMonkey()) {
@@ -409,7 +428,10 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
                   .show();
               mDevSettings.setHotModuleReplacementEnabled(false);
             }
-            handleReloadJS();
+            
+            // NOTE(brentvatne): rather than reload just JS we need to reload the entire project from manifest
+            // handleReloadJS();
+            reloadExpoApp();
           }
         });
 
@@ -447,7 +469,8 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
           });
     }
 
-    options.put(
+    // NOTE(brentvatne): This option does not make sense for Expo
+    expo_transformer_remove: options.put(
         mApplicationContext.getString(R.string.reactandroid_catalyst_change_bundle_location),
         new DevOptionHandler() {
           @Override
@@ -511,7 +534,7 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
                 mCurrentContext.getJSModule(HMRClient.class).disable();
               }
             }
-            if (nextEnabled && !mDevSettings.isJSDevModeEnabled()) {
+            expo_transformer_remove: if (nextEnabled && !mDevSettings.isJSDevModeEnabled()) {
               Toast.makeText(
                       mApplicationContext,
                       mApplicationContext.getString(R.string.reactandroid_catalyst_hot_reloading_auto_enable),
@@ -542,7 +565,7 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
             mDevSettings.setFpsDebugEnabled(!mDevSettings.isFpsDebugEnabled());
           }
         });
-    options.put(
+    expo_transformer_remove: options.put(
         mApplicationContext.getString(R.string.reactandroid_catalyst_settings),
         new DevOptionHandler() {
           @Override
@@ -1086,6 +1109,7 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
         });
   }
 
+  // NOTE(brentvatne): this is confusingly called the first time the app loads!
   private void reload() {
     UiThreadUtil.assertOnUiThread();
 
@@ -1137,7 +1161,9 @@ public abstract class DevSupportManagerBase implements DevSupportManager {
                   new Runnable() {
                     @Override
                     public void run() {
-                      handleReloadJS();
+                      // NOTE(brentvatne): rather than reload just JS we need to reload the entire project from manifest
+                      // handleReloadJS();
+                      reloadExpoApp();
                     }
                   });
             }
