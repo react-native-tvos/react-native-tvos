@@ -14,9 +14,11 @@ import androidx.annotation.Nullable;
 import com.facebook.fbreact.specs.NativeLogBoxSpec;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.UiThreadUtil;
+import com.facebook.react.common.ReactConstants;
 import com.facebook.react.devsupport.interfaces.DevSupportManager;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.util.RNLog;
+import com.facebook.common.logging.FLog;
 
 @ReactModule(name = LogBoxModule.NAME)
 public class LogBoxModule extends NativeLogBoxSpec {
@@ -37,8 +39,14 @@ public class LogBoxModule extends NativeLogBoxSpec {
           @Override
           public void run() {
             if (mReactRootView == null && mDevSupportManager != null) {
-              mReactRootView = mDevSupportManager.createRootView("LogBox");
-              if (mReactRootView == null) {
+              try {
+                mReactRootView = mDevSupportManager.createRootView("LogBox");
+                if (mReactRootView == null) {
+                  FLog.e(
+                      ReactConstants.TAG,
+                      "Unable to launch logbox because react was unable to create the root view");
+                }
+              } catch (RuntimeException e) {
                 RNLog.e("Unable to launch logbox because react was unable to create the root view");
               }
             }
