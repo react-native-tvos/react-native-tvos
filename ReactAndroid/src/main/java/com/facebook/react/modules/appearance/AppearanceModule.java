@@ -17,6 +17,9 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 /** Module that exposes the user's preferred color scheme. */
 @ReactModule(name = AppearanceModule.NAME)
 public class AppearanceModule extends NativeAppearanceSpec {
@@ -51,9 +54,22 @@ public class AppearanceModule extends NativeAppearanceSpec {
     mColorScheme = colorSchemeForCurrentConfiguration(reactContext);
   }
 
+  // NOTE(brentvatne): this was static previously, but it wasn't necessary and we need it to not be
+  // in order to use getCurrentActivity
   private String colorSchemeForCurrentConfiguration(Context context) {
     if (mOverrideColorScheme != null) {
       return mOverrideColorScheme.getScheme();
+    }
+    // NOTE(brentvatne): Same code (roughly) that we use in ExpoAppearanceModule to get the config
+    // as set by ExperienceActivityUtils to force the dark/light mode config on the activity
+    if (getCurrentActivity() instanceof AppCompatActivity) {
+      int mode = ((AppCompatActivity) getCurrentActivity()).getDelegate().getLocalNightMode();
+      switch (mode) {
+        case AppCompatDelegate.MODE_NIGHT_YES:
+          return "dark";
+        case AppCompatDelegate.MODE_NIGHT_NO:
+          return "light";
+      }
     }
     int currentNightMode =
         context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
