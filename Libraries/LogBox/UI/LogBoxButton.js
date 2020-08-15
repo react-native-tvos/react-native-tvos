@@ -12,12 +12,18 @@
 
 import * as React from 'react';
 import StyleSheet from '../../StyleSheet/StyleSheet';
+import Platform from '../../Utilities/Platform';
 import TouchableWithoutFeedback from '../../Components/Touchable/TouchableWithoutFeedback';
+import TouchableHighlight from '../../Components/Touchable/TouchableHighlight';
 import View from '../../Components/View/View';
 import * as LogBoxStyle from './LogBoxStyle';
 import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {PressEvent} from '../../Types/CoreEventTypes';
+
+const LogBoxTouchable = Platform.isTVOS ?
+                            TouchableHighlight :
+                            TouchableWithoutFeedback;
 
 type Props = $ReadOnly<{|
   backgroundColor: $ReadOnly<{|
@@ -58,13 +64,13 @@ function LogBoxButton(props: Props): React.Node {
   return props.onPress == null ? (
     content
   ) : (
-    <TouchableWithoutFeedback
+    <LogBoxTouchable
       hitSlop={props.hitSlop}
       onPress={props.onPress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}>
       {content}
-    </TouchableWithoutFeedback>
+    </LogBoxTouchable>
   );
 }
 
