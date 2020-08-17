@@ -21,6 +21,7 @@
 
 @implementation RCTTVView {
   UITapGestureRecognizer *_selectRecognizer;
+  BOOL motionEffectsAdded;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -39,6 +40,7 @@
       };
     });
     self.tvParallaxProperties = defaultTVParallaxProperties;
+    motionEffectsAdded = NO;
   }
 
   return self;
@@ -94,27 +96,30 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     float pressDelay = [self.tvParallaxProperties[@"pressDelay"] floatValue];
 
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:pressDelay]];
+    
+    [UIView animateWithDuration:(pressDuration/2)
+      animations:^{
+        self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
+      }
+      completion:^(__unused BOOL finished1){
+        [UIView animateWithDuration:(pressDuration/2)
+          animations:^{
+            self.transform = CGAffineTransformMakeScale(magnification, magnification);
+          }
+          completion:^(__unused BOOL finished2) {
+            [self sendSelectNotification:r];
+          }];
+       }];
+    
+	} else {
+		[self sendSelectNotification:r];
+	}
+}
 
-    [UIView animateWithDuration:(pressDuration / 2)
-        animations:^{
-          self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
-        }
-        completion:^(__unused BOOL finished1) {
-          [UIView animateWithDuration:(pressDuration / 2)
-              animations:^{
-                self.transform = CGAffineTransformMakeScale(magnification, magnification);
-              }
-              completion:^(__unused BOOL finished2) {
-                [[NSNotificationCenter defaultCenter]
-                    postNotificationName:RCTTVNavigationEventNotification
-                                  object:@{@"eventType" : @"select", @"tag" : self.reactTag}];
-              }];
-        }];
-
-  } else {
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
-                                                        object:@{@"eventType" : @"select", @"tag" : self.reactTag}];
-  }
+- (void)sendSelectNotification:(__unused UIGestureRecognizer *)recognizer
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  object:@{@"eventType":@"select",@"tag":self.reactTag}];
 }
 
 - (BOOL)isUserInteractionEnabled
@@ -129,6 +134,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)addParallaxMotionEffects
 {
+  if(![self.tvParallaxProperties[@"enabled"] boolValue]) {
+    return;
+  }
+
+  if(motionEffectsAdded == YES) {
+    return;
+  }
+
   // Size of shift movements
   CGFloat const shiftDistanceX = [self.tvParallaxProperties[@"shiftDistanceX"] floatValue];
   CGFloat const shiftDistanceY = [self.tvParallaxProperties[@"shiftDistanceY"] floatValue];
@@ -193,53 +206,72 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
   float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
 
-  [UIView animateWithDuration:0.2
-                   animations:^{
-                     self.transform = CGAffineTransformMakeScale(magnification, magnification);
-                   }];
+  [UIView animateWithDuration:0.2 animations:^{
+    self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
+  }];
+
+  motionEffectsAdded = YES;
+}
+
+- (void)removeParallaxMotionEffects
+{
+  if(motionEffectsAdded == NO) {
+    return;
+  }
+
+  [UIView animateWithDuration:0.2 animations:^{
+    float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
+    BOOL enabled = [self.tvParallaxProperties[@"enabled"] boolValue];
+    if (enabled && magnification) {
+      self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
+    }
+  }];
+
+  for (UIMotionEffect *effect in [self.motionEffects copy]){
+    [self removeMotionEffect:effect];
+  }
+
+  motionEffectsAdded = NO;
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-  if (context.nextFocusedView == self && self.isTVSelectable) {
+  if (context.previouslyFocusedView == context.nextFocusedView) {
+    return;
+  }
+  if (context.nextFocusedView == self && self.isTVSelectable ) {
     [self becomeFirstResponder];
-    [coordinator
-        addCoordinatedAnimations:^(void) {
-          if ([self.tvParallaxProperties[@"enabled"] boolValue]) {
-            [self addParallaxMotionEffects];
-          }
-          [[NSNotificationCenter defaultCenter]
-              postNotificationName:RCTTVNavigationEventNotification
-                            object:@{@"eventType" : @"focus", @"tag" : self.reactTag}];
-        }
-                      completion:^(void){
-                      }];
+    [coordinator addCoordinatedAnimations:^(void){
+      [self addParallaxMotionEffects];
+      [self sendFocusNotification:context];
+    } completion:^(void){}];
   } else {
-    [coordinator
-        addCoordinatedAnimations:^(void) {
-          [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
-                                                              object:@{@"eventType" : @"blur", @"tag" : self.reactTag}];
-          [UIView animateWithDuration:0.2
-                           animations:^{
-                             self.transform = CGAffineTransformMakeScale(1, 1);
-                           }];
-
-          for (UIMotionEffect *effect in [self.motionEffects copy]) {
-            [self removeMotionEffect:effect];
-          }
-        }
-                      completion:^(void){
-                      }];
+    [coordinator addCoordinatedAnimations:^(void){
+      [self sendBlurNotification:context];
+      [self removeParallaxMotionEffects];
+    } completion:^(void){}];
     [self resignFirstResponder];
   }
+}
+
+- (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  object:@{@"eventType":@"focus",@"tag":self.reactTag}];
+}
+
+- (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  object:@{@"eventType":@"blur",@"tag":self.reactTag}];
 }
 
 - (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus
 {
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
       UIView *rootview = self;
       while (![rootview isReactRootView] && rootview != nil) {
         rootview = [rootview superview];
@@ -249,6 +281,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
       rootview = [rootview superview];
 
+      [(RCTRootView *)rootview setReactPreferredFocusedView:self];
       [rootview setNeedsFocusUpdate];
       [rootview updateFocusIfNeeded];
     });

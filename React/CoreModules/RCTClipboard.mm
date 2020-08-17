@@ -28,14 +28,20 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(setString : (NSString *)content)
 {
+#if !TARGET_OS_TV
   UIPasteboard *clipboard = [UIPasteboard generalPasteboard];
-  clipboard.string = (content ?: @"");
+  clipboard.string = (content ? : @"");
+#endif
 }
 
 RCT_EXPORT_METHOD(getString : (RCTPromiseResolveBlock)resolve reject : (__unused RCTPromiseRejectBlock)reject)
 {
+#if TARGET_OS_TV
+    resolve(@"");
+#else
   UIPasteboard *clipboard = [UIPasteboard generalPasteboard];
-  resolve((clipboard.string ?: @""));
+  resolve((clipboard.string ? : @""));
+#endif
 }
 
 - (std::shared_ptr<TurboModule>)getTurboModuleWithJsInvoker:(std::shared_ptr<CallInvoker>)jsInvoker
