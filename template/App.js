@@ -8,7 +8,7 @@
 
 import React from 'react';
 import type {Node} from 'react';
-import {
+import ReactNative, {
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -25,6 +25,8 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+const StatusBar = Platform.isTV ? View : ReactNative.StatusBar;
 
 const Section = ({children, title}): Node => {
   const isDarkMode = useColorScheme() === 'dark';
