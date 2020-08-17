@@ -1,10 +1,13 @@
 {
-  "name": "react-native",
+  "name": "react-native-tvos",
   "version": "0.64.2",
   "bin": "./cli.js",
   "description": "A framework for building native apps using React",
   "license": "MIT",
-  "repository": "github:facebook/react-native",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-native-community/react-native-tvos.git"
+  },
   "engines": {
     "node": ">=12"
   },
