@@ -13,6 +13,7 @@ import Platform from '../../Utilities/Platform';
 import * as React from 'react';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import useMergeRefs from '../../Utilities/useMergeRefs';
+import UnimplementedView from '../UnimplementedViews/UnimplementedView';
 
 import AndroidSwitchNativeComponent, {
   Commands as AndroidSwitchCommands,
@@ -182,6 +183,12 @@ const SwitchWithForwardedRef: React.AbstractComponent<
       }
     }
   }, [value, native]);
+
+  if (Platform.isTVOS) {
+    return (
+      <UnimplementedView />
+    );
+  }
 
   if (Platform.OS === 'android') {
     const platformProps = {

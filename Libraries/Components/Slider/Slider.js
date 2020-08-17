@@ -15,6 +15,7 @@ import StyleSheet, {
   type ViewStyleProp,
   type ColorValue,
 } from '../../StyleSheet/StyleSheet';
+import UnimplementedView from '../UnimplementedViews/UnimplementedView');
 
 import type {ImageSource} from '../../Image/ImageSource';
 import type {ViewProps} from '../View/ViewPropTypes';
@@ -240,6 +241,12 @@ const Slider = (
   const accessibilityState = disabled
     ? {...props.accessibilityState, disabled: true}
     : props.accessibilityState;
+
+  if (Platform.isTVOS) {
+    return (
+      <UnimplementedView />
+    );
+  }
 
   return (
     <SliderNativeComponent
