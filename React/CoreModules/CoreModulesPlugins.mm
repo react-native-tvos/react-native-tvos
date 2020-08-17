@@ -26,7 +26,9 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"Clipboard", RCTClipboardCls},
     {"I18nManager", RCTI18nManagerCls},
     {"SourceCode", RCTSourceCodeCls},
+#if !TARGET_OS_TV
     {"ActionSheetManager", RCTActionSheetManagerCls},
+#endif
     {"AlertManager", RCTAlertManagerCls},
     {"AsyncLocalStorage", RCTAsyncLocalStorageCls},
     {"Timing", RCTTimingCls},
