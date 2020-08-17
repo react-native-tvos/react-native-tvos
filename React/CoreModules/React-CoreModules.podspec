@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
   s.compiler_flags         = folly_compiler_flags + ' -Wno-nullability-completeness'
   s.source                 = source
   s.source_files           = "**/*.{c,m,mm,cpp}"
+  s.tvos.exclude_files     = "**/RCTActionSheet*.*"
   s.header_dir             = "CoreModules"
   s.pod_target_xcconfig    = {
                                "USE_HEADERMAP" => "YES",

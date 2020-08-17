@@ -94,7 +94,16 @@ RCT_EXPORT_MODULE()
   return @[ @"statusBarFrameDidChange", @"statusBarFrameWillChange" ];
 }
 
-#if !TARGET_OS_TV
+#if TARGET_OS_TV
+
+RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
+{
+  callback(@[ @{
+    @"height" : @(0),
+  } ]);
+}
+
+#else
 
 - (void)startObserving
 {
