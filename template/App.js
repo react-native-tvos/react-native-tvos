@@ -7,13 +7,13 @@
  */
 
 import React from 'react';
-import {
+import ReactNative, {
   SafeAreaView,
   StyleSheet,
   ScrollView,
+  Platform,
   View,
   Text,
-  StatusBar,
 } from 'react-native';
 
 import {
@@ -23,6 +23,8 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+const StatusBar = Platform.isTV ? View : ReactNative.StatusBar;
 
 const App: () => React$Node = () => {
   return (
