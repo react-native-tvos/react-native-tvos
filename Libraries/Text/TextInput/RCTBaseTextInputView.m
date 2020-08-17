@@ -121,6 +121,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithFrame:(CGRect)frame)
     self.backedTextInputView.isSecureTextEntry ||
     fontHasBeenUpdatedBySystem;
 
+#if TARGET_OS_TV
+  shouldFallbackToBareTextComparison = YES;
+#endif
+
   if (shouldFallbackToBareTextComparison) {
     return ([newText.string isEqualToString:oldText.string]);
   } else {

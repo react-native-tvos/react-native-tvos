@@ -16,15 +16,19 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import TVTouchable from './TVTouchable';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
-import Animated from 'react-native/Libraries/Animated/src/Animated';
-import Easing from 'react-native/Libraries/Animated/src/Easing';
-import type {ViewStyleProp} from 'react-native/Libraries/StyleSheet/StyleSheet';
-import flattenStyle from 'react-native/Libraries/StyleSheet/flattenStyle';
+import Animated from '../../Animated/src/Animated';
+import Easing from '../../Animated/src/Easing';
+import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+
 import * as React from 'react';
 
 type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
   nextFocusLeft?: ?number,
@@ -242,7 +246,9 @@ class TouchableOpacity extends React.Component<Props, State> {
         nextFocusLeft={this.props.nextFocusLeft}
         nextFocusRight={this.props.nextFocusRight}
         nextFocusUp={this.props.nextFocusUp}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={this.props.isTVSelectable !== false}
+        tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
           this.props.focusable !== false && this.props.onPress !== undefined
@@ -262,11 +268,13 @@ class TouchableOpacity extends React.Component<Props, State> {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
         onBlur: event => {
+          this._opacityInactive(250);
           if (this.props.onBlur != null) {
             this.props.onBlur(event);
           }
         },
         onFocus: event => {
+          this._opacityActive(150);
           if (this.props.onFocus != null) {
             this.props.onFocus(event);
           }

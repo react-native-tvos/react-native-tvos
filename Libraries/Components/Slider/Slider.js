@@ -14,6 +14,7 @@ const Platform = require('../../Utilities/Platform');
 import SliderNativeComponent from './SliderNativeComponent';
 const React = require('react');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
+const UnimplementedView = require('../UnimplementedViews/UnimplementedView');
 
 import type {ImageSource} from '../../Image/ImageSource';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
@@ -233,6 +234,12 @@ const Slider = (
         onSlidingComplete(event.nativeEvent.value);
       }
     : null;
+
+  if (Platform.isTVOS) {
+    return (
+      <UnimplementedView />
+    );
+  }
 
   return (
     <SliderNativeComponent
