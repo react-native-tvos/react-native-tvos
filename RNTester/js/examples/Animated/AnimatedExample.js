@@ -10,9 +10,9 @@
 
 'use strict';
 
-const RNTesterButton = require('../../components/RNTesterButton');
 const React = require('react');
 
+const RNTesterButton = require('../../components/RNTesterButton');
 const {Animated, Easing, StyleSheet, Text, View} = require('react-native');
 
 const styles = StyleSheet.create({

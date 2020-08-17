@@ -15,6 +15,7 @@ const React = require('react');
 const {
   Button,
   InputAccessoryView,
+  Platform,
   Text,
   TextInput,
   View,
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontWeight: 'bold',
     fontSize: 18,
-    fontFamily: 'Cochin',
+    fontFamily: Platform.isTVOS ? 'Helvetica' : 'Cochin',
     height: 60,
   },
   singlelinePlaceholderStyles: {
