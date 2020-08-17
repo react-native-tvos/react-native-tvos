@@ -101,7 +101,7 @@ afterEvaluate { project ->
 
     artifacts {
         archives(androidSourcesJar)
-        archives(androidJavadocJar)
+        // archives(androidJavadocJar)
     }
 
     version = VERSION_NAME
