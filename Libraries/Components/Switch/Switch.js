@@ -14,6 +14,7 @@
 import Platform from '../../Utilities/Platform';
 import * as React from 'react';
 import StyleSheet from '../../StyleSheet/StyleSheet';
+import UnimplementedView from '../UnimplementedViews/UnimplementedView';
 
 import AndroidSwitchNativeComponent, {
   Commands as AndroidSwitchCommands,
@@ -150,6 +151,12 @@ class Switch extends React.Component<Props> {
 
     const trackColorForFalse = trackColor?.false;
     const trackColorForTrue = trackColor?.true;
+
+    if (Platform.isTVOS) {
+      return (
+        <UnimplementedView />
+      );
+    }
 
     if (Platform.OS === 'android') {
       const platformProps = {

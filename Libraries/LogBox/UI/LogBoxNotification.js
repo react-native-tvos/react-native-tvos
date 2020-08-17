@@ -12,6 +12,7 @@
 
 import * as React from 'react';
 import Image from '../../Image/Image';
+import Platform from '../../Utilities/Platform';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import Text from '../../Text/Text';
 import View from '../../Components/View/View';
@@ -33,9 +34,12 @@ function LogBoxLogNotification(props: Props): React.Node {
   const {totalLogCount, level, log} = props;
 
   // Eagerly symbolicate so the stack is available when pressing to inspect.
-  React.useEffect(() => {
-    LogBoxData.symbolicateLogLazy(log);
-  }, [log]);
+  React.useEffect(
+    () => {
+      LogBoxData.symbolicateLogLazy(log);
+    },
+    [log],
+  );
 
   return (
     <View style={toastStyles.container}>
@@ -49,9 +53,25 @@ function LogBoxLogNotification(props: Props): React.Node {
         <View style={toastStyles.content}>
           <CountBadge count={totalLogCount} level={level} />
           <Message message={log.message} />
-          <DismissButton onPress={props.onPressDismiss} />
+          {Platform.isTV ? null : (
+            <DismissButton onPress={props.onPressDismiss} />
+          )}
         </View>
       </LogBoxButton>
+      {Platform.isTV ? (
+        <LogBoxButton
+          onPress={props.onPressDismiss}
+          style={toastStyles.press}
+          backgroundColor={{
+            default: LogBoxStyle.getBackgroundColor(1),
+            pressed: LogBoxStyle.getBackgroundColor(0.9),
+          }}>
+          <View
+            style={toastStyles.tvDismissContainer}>
+            <Message message={{content: 'Dismiss'}} />
+          </View>
+        </LogBoxButton>
+      ) : null}
     </View>
   );
 }
@@ -149,6 +169,7 @@ const countStyles = StyleSheet.create({
 const messageStyles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    alignItems: 'center',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: 'auto',
@@ -193,7 +214,7 @@ const dismissStyles = StyleSheet.create({
 
 const toastStyles = StyleSheet.create({
   container: {
-    height: 48,
+    height: (Platform.isTV ? 96 : 48),
     position: 'relative',
     width: '100%',
     justifyContent: 'center',
@@ -216,6 +237,16 @@ const toastStyles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: 'auto',
   },
+  tvDismissContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderRadius: 8,
+    flexGrow: 0,
+    flexShrink: 0,
+    flexBasis: 'auto',
+    height: 30,
+    justifyContent: 'center',
+  }
 });
 
 export default LogBoxLogNotification;

@@ -12,9 +12,10 @@
 
 import type {TurboModule} from '../TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../TurboModule/TurboModuleRegistry';
+import Platform from '../Utilities/Platform';
 
 export interface Spec extends TurboModule {
-  +getConstants: () => {||};
+  +getConstants: () => {...};
   +vibrate: (pattern: number) => void;
 
   // Android only
@@ -22,4 +23,17 @@ export interface Spec extends TurboModule {
   +cancel: () => void;
 }
 
-export default (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);
+const Placeholder = {
+  getConstants: () => {
+    return {};
+  },
+  vibrate: (pattern: number) => {},
+  vibrateByPattern: (pattern: Array<number>, repeat: number) => {},
+  cancel: () => {},
+};
+
+const NativeVibration: Spec = Platform.isTVOS
+  ? (Placeholder: Spec)
+  : (TurboModuleRegistry.getEnforcing<Spec>('Vibration'): Spec);
+
+export default NativeVibration;
