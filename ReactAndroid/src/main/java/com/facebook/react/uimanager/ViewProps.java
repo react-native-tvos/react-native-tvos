@@ -201,6 +201,7 @@ public class ViewProps {
               FLEX_SHRINK,
               FLEX_WRAP,
               JUSTIFY_CONTENT,
+              OVERFLOW,
               ALIGN_CONTENT,
               DISPLAY,
 
