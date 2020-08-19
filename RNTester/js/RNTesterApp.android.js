@@ -36,14 +36,6 @@ const {
   useColorScheme,
   View,
 } = require('react-native');
-const RNTesterActions = require('./utils/RNTesterActions');
-const RNTesterExampleContainer = require('./components/RNTesterExampleContainer');
-const RNTesterExampleList = require('./components/RNTesterExampleList');
-const RNTesterList = require('./utils/RNTesterList');
-const RNTesterNavigationReducer = require('./utils/RNTesterNavigationReducer');
-const URIActionMap = require('./utils/URIActionMap');
-
-const nativeImageSource = require('../../Libraries/Image/nativeImageSource');
 
 import type {RNTesterExample} from './types/RNTesterTypes';
 import type {RNTesterNavigationState} from './utils/RNTesterNavigationReducer';
