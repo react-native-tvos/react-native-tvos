@@ -392,7 +392,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   // Prepare executor factory (shared_ptr for copy into block)
   std::shared_ptr<JSExecutorFactory> executorFactory;
   if (!self.executorClass) {
-    if ([self.delegate conformsToProtocol:@protocol(RCTCxxBridgeDelegate)]) {
+    if ([self.delegate respondsToSelector:@selector(jsExecutorFactoryForBridge:)]) {
       id<RCTCxxBridgeDelegate> cxxDelegate = (id<RCTCxxBridgeDelegate>)self.delegate;
       executorFactory = std::make_shared<JSCExecutorFactory>(*reinterpret_cast<JSCExecutorFactory *>([cxxDelegate jsExecutorFactoryForBridge:self]));
     }
