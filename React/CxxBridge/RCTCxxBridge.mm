@@ -394,7 +394,7 @@ struct RCTInstanceCallback : public InstanceCallback {
   if (!self.executorClass) {
     if ([self.delegate conformsToProtocol:@protocol(RCTCxxBridgeDelegate)]) {
       id<RCTCxxBridgeDelegate> cxxDelegate = (id<RCTCxxBridgeDelegate>)self.delegate;
-      executorFactory = [cxxDelegate jsExecutorFactoryForBridge:self];
+      executorFactory = std::make_shared<JSCExecutorFactory>(*reinterpret_cast<JSCExecutorFactory *>([cxxDelegate jsExecutorFactoryForBridge:self]));
     }
     if (!executorFactory) {
       auto installBindings = RCTJSIExecutorRuntimeInstaller(nullptr);
