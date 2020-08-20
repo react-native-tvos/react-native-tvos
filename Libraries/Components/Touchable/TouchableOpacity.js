@@ -247,7 +247,7 @@ class TouchableOpacity extends React.Component<Props, State> {
         nextFocusRight={this.props.nextFocusRight}
         nextFocusUp={this.props.nextFocusUp}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
-        isTVSelectable={this.props.isTVSelectable !== false && this.props.disabled !== true}
+        isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
         tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
