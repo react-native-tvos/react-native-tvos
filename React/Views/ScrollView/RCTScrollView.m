@@ -339,6 +339,15 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
   // Does nothing
 }
 
+- (void)setIsTVSelectable:(BOOL)isTVSelectable {
+    [super setIsTVSelectable:isTVSelectable];
+    if (isTVSelectable) {
+        self->_scrollView.panGestureRecognizer.allowedTouchTypes = @[@(UITouchTypeIndirect)];
+    } else {
+        self->_scrollView.panGestureRecognizer.allowedTouchTypes = @[];
+    }
+}
+
 - (void)insertReactSubview:(UIView *)view atIndex:(NSInteger)atIndex
 {
   [super insertReactSubview:view atIndex:atIndex];
