@@ -898,7 +898,7 @@ static NSString *RCTSemanticColorNames()
       UIColor *highContrastDarkColor = [RCTConvert UIColor:highContrastDark];
       if (lightColor != nil && darkColor != nil) {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
-        if (@available(iOS 13.0, *)) {
+        if (@available(iOS 13.0, tvOS 13.0, *)) {
           UIColor *color = [UIColor colorWithDynamicProvider:^UIColor *_Nonnull(
                                         UITraitCollection *_Nonnull collection) {
             if (collection.userInterfaceStyle == UIUserInterfaceStyleDark) {
