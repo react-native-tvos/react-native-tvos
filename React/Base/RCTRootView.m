@@ -34,6 +34,11 @@
 #import "RCTTVRemoteHandler.h"
 #endif
 
+#if __has_include("RCTDevMenu.h")
+#import "RCTDevMenu.h"
+#endif
+
+
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
 
 NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
@@ -92,18 +97,24 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
                                              selector:@selector(hideLoadingView)
                                                  name:RCTContentDidAppearNotification
                                                object:self];
-      
 
 #if TARGET_OS_TV
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(enableTVMenuKey)
                                                    name:RCTTVEnableMenuKeyNotification
                                                  object:nil];
-      
+
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(disableTVMenuKey)
                                                    name:RCTTVDisableMenuKeyNotification
                                                  object:nil];
+
+#if __has_include("RCTDevMenu.h")
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(showDevMenu) 
+                                                   name:RCTShowDevMenuNotification
+                                                 object:nil];
+#endif
       
     self.tvRemoteHandler = [RCTTVRemoteHandler new];
     for (NSString *key in [self.tvRemoteHandler.tvRemoteGestureRecognizers allKeys]) {
@@ -142,7 +153,15 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
     });
 }
 
+#if __has_include("RCTDevMenu.h")
+- (void)showDevMenu {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_bridge.devMenu show];
+    });
+}
 #endif
+
+#endif // TARGET_OS_TV
 
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
