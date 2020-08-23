@@ -292,7 +292,7 @@
     // doesn't do weird things to UIScrollView insets automatically
     // and keeps it as an opt-in behavior.
     if ([_scrollView respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
-      if (@available(iOS 11.0, *)) {
+      if (@available(iOS 11.0, tvOS 11.0,  *)) {
         _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
       }
     }
