@@ -19,6 +19,8 @@
 #import "UIView+Private.h"
 #import "UIView+React.h"
 
+#import "RCTTVRemoteHandler.h"
+
 #if !TARGET_OS_TV
 #import "RCTRefreshControl.h"
 #endif
@@ -272,6 +274,7 @@
   uint16_t _coalescingKey;
   NSString *_lastEmittedEventName;
   NSHashTable *_scrollListeners;
+  NSMutableDictionary *_swipeGestureRecognizers;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -310,6 +313,8 @@
 
     _scrollListeners = [NSHashTable weakObjectsHashTable];
 
+    _swipeGestureRecognizers = [NSMutableDictionary new];
+
     [self addSubview:_scrollView];
   }
   return self;
@@ -339,14 +344,90 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
   // Does nothing
 }
 
-- (void)setIsTVSelectable:(BOOL)isTVSelectable {
-    [super setIsTVSelectable:isTVSelectable];
-    if (isTVSelectable) {
-        self->_scrollView.panGestureRecognizer.allowedTouchTypes = @[@(UITouchTypeIndirect)];
+#pragma mark -
+#pragma mark Apple TV swipe handling
+
+#if TARGET_OS_TV
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+    if (context.previouslyFocusedView == context.nextFocusedView || !self.isTVSelectable) {
+        return;
+    }
+    if (context.nextFocusedView == self) {
+        NSLog(@"Scroll view focus");
+        [self addSwipeGestureRecognizers];
+        [self becomeFirstResponder];
     } else {
-        self->_scrollView.panGestureRecognizer.allowedTouchTypes = @[];
+        [self removeSwipeGestureRecognizers];
+        [self resignFirstResponder];
+        NSLog(@"Scroll view blur");
     }
 }
+
+- (void)swipedUp
+{
+    NSLog(@"Swiped up to %d", (int)(self.scrollView.contentOffset.y - 300));
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:.25 animations:^{
+            self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y - 300);
+
+        }];
+    });
+
+}
+
+- (void)swipedDown
+{
+    NSLog(@"Swiped down to %d", (int)(self.scrollView.contentOffset.y + 300));
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:.25 animations:^{
+            self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + 300);
+
+        }];
+    });
+}
+
+- (void)swipedLeft
+{
+
+}
+
+- (void)swipedRight
+{
+
+}
+
+- (void)addSwipeGestureRecognizers
+{
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp) direction:UISwipeGestureRecognizerDirectionUp name:RCTTVRemoteEventUp];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown) direction:UISwipeGestureRecognizerDirectionDown name:RCTTVRemoteEventDown];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft) direction:UISwipeGestureRecognizerDirectionLeft name:RCTTVRemoteEventLeft];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight) direction:UISwipeGestureRecognizerDirectionRight name:RCTTVRemoteEventRight];
+}
+
+- (void)addSwipeGestureRecognizerWithSelector:(nonnull SEL)selector
+                                    direction:(UISwipeGestureRecognizerDirection)direction
+                                         name:(NSString *)name
+{
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
+    recognizer.direction = direction;
+
+    _swipeGestureRecognizers[name] = recognizer;
+    [self addGestureRecognizer:recognizer];
+}
+
+- (void)removeSwipeGestureRecognizers
+{
+    NSArray *names = [self->_swipeGestureRecognizers allKeys];
+    for (NSString *name in names) {
+        UIGestureRecognizer *r = self->_swipeGestureRecognizers[name];
+        [self removeGestureRecognizer:r];
+        [self->_swipeGestureRecognizers removeObjectForKey:name];
+    }
+}
+
+#endif // TARGET_OS_TV
 
 - (void)insertReactSubview:(UIView *)view atIndex:(NSInteger)atIndex
 {
