@@ -206,7 +206,7 @@
   if (CGSizeEqualToSize(contentSize, CGSizeZero)) {
     self.contentOffset = originalOffset;
   } else {
-    if (@available(iOS 11.0, *)) {
+      if (@available(iOS 11.0, *, tvOS 11.0)) {
       if (!UIEdgeInsetsEqualToEdgeInsets(UIEdgeInsetsZero, self.adjustedContentInset)) {
         contentInset = self.adjustedContentInset;
       }
@@ -274,7 +274,7 @@
   uint16_t _coalescingKey;
   NSString *_lastEmittedEventName;
   NSHashTable *_scrollListeners;
-  NSMutableDictionary *_swipeGestureRecognizers;
+  NSMutableDictionary *_tvRemoteGestureRecognizers;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher
@@ -313,7 +313,7 @@
 
     _scrollListeners = [NSHashTable weakObjectsHashTable];
 
-    _swipeGestureRecognizers = [NSMutableDictionary new];
+    _tvRemoteGestureRecognizers = [NSMutableDictionary new];
 
     [self addSubview:_scrollView];
   }
@@ -355,55 +355,77 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
         return;
     }
     if (context.nextFocusedView == self) {
-        NSLog(@"Scroll view focus");
-        [self addSwipeGestureRecognizers];
         [self becomeFirstResponder];
-    } else {
+        [self addSwipeGestureRecognizers];
+    } else if (context.previouslyFocusedView == self) {
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
-        NSLog(@"Scroll view blur");
+        // if we leave the scroll view and go up, then scroll to top; if going down,
+        // scroll to bottom
+        if (context.focusHeading == UIFocusHeadingUp) {
+            [self swipeScrollToOffset:0.0];
+        } else {
+            [self swipeScrollToOffset:self.scrollView.contentSize.height];
+        }
+
     }
+}
+
+- (NSInteger)swipeInterval
+{
+    if (self.snapToInterval) {
+        return self.snapToInterval;
+    }
+    return self.scrollView.visibleSize.height / 2;
+}
+
+- (void)swipeScrollToOffset:(CGFloat)yOffset
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat limitedOffset = yOffset;
+        limitedOffset = MAX(limitedOffset, 0.0);
+        limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.height - self.scrollView.visibleSize.height);
+        [UIView animateWithDuration:.25 animations:^{
+            self.scrollView.contentOffset =
+              CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+        }];
+    });
 }
 
 - (void)swipedUp
 {
-    NSLog(@"Swiped up to %d", (int)(self.scrollView.contentOffset.y - 300));
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:.25 animations:^{
-            self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y - 300);
-
-        }];
-    });
-
+    CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeInterval];
+    NSLog(@"Swiped up to %f", newOffset);
+    [self swipeScrollToOffset:newOffset];
 }
 
 - (void)swipedDown
 {
-    NSLog(@"Swiped down to %d", (int)(self.scrollView.contentOffset.y + 300));
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:.25 animations:^{
-            self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y + 300);
-
-        }];
-    });
+    CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeInterval];
+    NSLog(@"Swiped down to %f", newOffset);
+    [self swipeScrollToOffset:newOffset];
 }
 
 - (void)swipedLeft
 {
-
+  // TODO: horizontal scrolling
 }
 
 - (void)swipedRight
 {
-
+  // TODO: horizontal scrolling
 }
 
 - (void)addSwipeGestureRecognizers
 {
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp) direction:UISwipeGestureRecognizerDirectionUp name:RCTTVRemoteEventUp];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown) direction:UISwipeGestureRecognizerDirectionDown name:RCTTVRemoteEventDown];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft) direction:UISwipeGestureRecognizerDirectionLeft name:RCTTVRemoteEventLeft];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight) direction:UISwipeGestureRecognizerDirectionRight name:RCTTVRemoteEventRight];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp) direction:UISwipeGestureRecognizerDirectionUp name:RCTTVRemoteEventSwipeUp];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown) direction:UISwipeGestureRecognizerDirectionDown name:RCTTVRemoteEventSwipeDown];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft) direction:UISwipeGestureRecognizerDirectionLeft name:RCTTVRemoteEventSwipeLeft];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight) direction:UISwipeGestureRecognizerDirectionRight name:RCTTVRemoteEventSwipeRight];
+    [self addTapGestureRecognizerWithSelector:@selector(swipedUp) pressType:UIPressTypeUpArrow name:RCTTVRemoteEventUp];
+    [self addTapGestureRecognizerWithSelector:@selector(swipedDown) pressType:UIPressTypeDownArrow name:RCTTVRemoteEventDown];
+    [self addTapGestureRecognizerWithSelector:@selector(swipedLeft) pressType:UIPressTypeLeftArrow name:RCTTVRemoteEventLeft];
+    [self addTapGestureRecognizerWithSelector:@selector(swipedRight) pressType:UIPressTypeRightArrow name:RCTTVRemoteEventRight];
 }
 
 - (void)addSwipeGestureRecognizerWithSelector:(nonnull SEL)selector
@@ -413,17 +435,28 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
     UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
     recognizer.direction = direction;
 
-    _swipeGestureRecognizers[name] = recognizer;
-    [self addGestureRecognizer:recognizer];
+    _tvRemoteGestureRecognizers[name] = recognizer;
+    [self.scrollView addGestureRecognizer:recognizer];
 }
+
+- (void)addTapGestureRecognizerWithSelector:(nonnull SEL)selector
+                                  pressType:(UIPressType)pressType
+                                       name:(NSString *)name
+{
+  UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:selector];
+  recognizer.allowedPressTypes = @[ @(pressType) ];
+
+  _tvRemoteGestureRecognizers[name] = recognizer;
+}
+
 
 - (void)removeSwipeGestureRecognizers
 {
-    NSArray *names = [self->_swipeGestureRecognizers allKeys];
+    NSArray *names = [self->_tvRemoteGestureRecognizers allKeys];
     for (NSString *name in names) {
-        UIGestureRecognizer *r = self->_swipeGestureRecognizers[name];
-        [self removeGestureRecognizer:r];
-        [self->_swipeGestureRecognizers removeObjectForKey:name];
+        UIGestureRecognizer *r = self->_tvRemoteGestureRecognizers[name];
+        [self.scrollView removeGestureRecognizer:r];
+        [self->_tvRemoteGestureRecognizers removeObjectForKey:name];
     }
 }
 
