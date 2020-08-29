@@ -7,8 +7,6 @@
 
 #import <React/RCTEventEmitter.h>
 
-RCT_EXTERN NSString *const RCTTVNavigationEventNotification;
-
 @interface RCTTVNavigationEventEmitter : RCTEventEmitter
 
 @end

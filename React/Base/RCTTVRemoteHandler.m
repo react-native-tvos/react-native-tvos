@@ -20,10 +20,6 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
-#if __has_include("RCTDevMenu.h")
-#import "RCTDevMenu.h"
-#endif
-
 NSString *const RCTTVRemoteEventMenu = @"menu";
 NSString *const RCTTVRemoteEventPlayPause = @"playPause";
 NSString *const RCTTVRemoteEventSelect = @"select";
@@ -141,9 +137,9 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 {
   [self sendAppleTVEvent:RCTTVRemoteEventLongPlayPause toView:r.view];
 
-#if __has_include("RCTDevMenu.h") && RCT_DEV
+#if RCT_DEV
   // If shake to show is enabled on device, use long play/pause event to show dev menu
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTShowDevMenuNotification object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTShowDevMenuNotification" object:nil];
 #endif
 }
 
@@ -224,7 +220,7 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 
 - (void)sendAppleTVEvent:(NSString *)eventType toView:(__unused UIView *)v
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
                                                       object:@{@"eventType" : eventType}];
 }
 

@@ -33,7 +33,7 @@
 #import "RCTTVRemoteHandler.h"
 #endif
 
-#if __has_include("RCTDevMenu.h")
+#if RCT_DEV
 #import "RCTDevMenu.h"
 #endif
 
@@ -108,10 +108,10 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
                                                    name:RCTTVDisableMenuKeyNotification
                                                  object:nil];
 
-#if __has_include("RCTDevMenu.h")
+#if RCT_DEV
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(showDevMenu) 
-                                                   name:RCTShowDevMenuNotification
+                                                   name:@"RCTShowDevMenuNotification"
                                                  object:nil];
 #endif
       
@@ -152,10 +152,10 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
     });
 }
 
-#if __has_include("RCTDevMenu.h")
+#if RCT_DEV
 - (void)showDevMenu {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->_bridge.devMenu show];
+        [[self->_bridge devMenu] show];
     });
 }
 #endif
@@ -176,12 +176,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #if TARGET_OS_TV
-- (UIView *)preferredFocusedView
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
 {
   if (self.reactPreferredFocusedView) {
-    return self.reactPreferredFocusedView;
+    return @[self.reactPreferredFocusedView];
   }
-  return [super preferredFocusedView];
+  return [super preferredFocusEnvironments];
 }
 #endif
 
