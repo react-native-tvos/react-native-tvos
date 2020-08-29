@@ -10,8 +10,6 @@
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 #import "CoreModulesPlugins.h"
 
-NSString *const RCTTVNavigationEventNotification = @"RCTTVNavigationEventNotification";
-
 static NSString *const TVNavigationEventName = @"onHWKeyEvent";
 
 @interface RCTTVNavigationEventEmitter () <NativeTVNavigationEventEmitterSpec>
@@ -31,7 +29,7 @@ RCT_EXPORT_MODULE()
   if (self = [super init]) {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleTVNavigationEventNotification:)
-                                                 name:RCTTVNavigationEventNotification
+                                                 name:@"RCTTVNavigationEventNotification"
                                                object:nil];
   }
   return self;

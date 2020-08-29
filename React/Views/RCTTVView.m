@@ -14,7 +14,6 @@
 #import "RCTEventDispatcher.h"
 #import "RCTLog.h"
 #import "RCTRootViewInternal.h"
-#import "RCTTVNavigationEventEmitter.h"
 #import "RCTUtils.h"
 #import "RCTView.h"
 #import "UIView+React.h"
@@ -118,7 +117,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)sendSelectNotification:(__unused UIGestureRecognizer *)recognizer
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
   object:@{@"eventType":@"select",@"tag":self.reactTag}];
 }
 
@@ -257,13 +256,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
   object:@{@"eventType":@"focus",@"tag":self.reactTag}];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVNavigationEventNotification
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
   object:@{@"eventType":@"blur",@"tag":self.reactTag}];
 }
 
