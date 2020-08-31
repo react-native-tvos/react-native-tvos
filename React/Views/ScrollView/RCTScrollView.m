@@ -25,6 +25,8 @@
 #import "RCTRefreshControl.h"
 #endif
 
+#define TV_DEFAULT_SWIPE_DURATION 0.3
+
 /**
  * Include a custom scroll view subclass because we want to limit certain
  * default UIKit behaviors such as textFields automatically scrolling
@@ -379,13 +381,22 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
     return self.scrollView.visibleSize.height / 2;
 }
 
+- (NSTimeInterval)swipeDuration
+{
+    float duration = [self.tvParallaxProperties[@"pressDuration"] floatValue];
+    if (duration == 0.0) {
+        duration = TV_DEFAULT_SWIPE_DURATION;
+    }
+    return duration;
+}
+
 - (void)swipeScrollToOffset:(CGFloat)yOffset
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat limitedOffset = yOffset;
         limitedOffset = MAX(limitedOffset, 0.0);
         limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.height - self.scrollView.visibleSize.height);
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:[self swipeDuration] animations:^{
             self.scrollView.contentOffset =
               CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
         }];
