@@ -364,9 +364,9 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
         [self resignFirstResponder];
         // if we leave the scroll view and go up, then scroll to top; if going down,
         // scroll to bottom
-        if (context.focusHeading == UIFocusHeadingUp) {
+        if (context.focusHeading == UIFocusHeadingUp && self.snapToStart) {
             [self swipeScrollToOffset:0.0];
-        } else {
+        } else if(context.focusHeading == UIFocusHeadingDown && self.snapToEnd) {
             [self swipeScrollToOffset:self.scrollView.contentSize.height];
         }
 
