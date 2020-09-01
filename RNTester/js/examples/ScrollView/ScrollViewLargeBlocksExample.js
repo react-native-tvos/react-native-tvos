@@ -13,15 +13,12 @@
 const React = require('react');
 
 const {
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } = require('react-native');
-
-const nullthrows = require('nullthrows');
 
 import type {ViewStyleProp} from '../../../../Libraries/StyleSheet/StyleSheet';
 
@@ -32,107 +29,160 @@ exports.description =
 exports.examples = [
   {
     title: '<ScrollView> with long text on TV platforms\n',
-    description: 'Ensure that TV platforms can scroll through a single block of text that is greater than the screen height',
+    description:
+      'Ensure that TV platforms can scroll through a single block of text that is greater than the screen height',
     render: function(): React.Node {
-      class BigTextBlock extends React.Component<{...}, {
-        scrollDuration: number,
-        pageSize: number 
-      }> {
+      class BigTextBlock extends React.Component<
+        {},
+        {
+          scrollDurationIndex: number,
+          pageSizeIndex: number,
+          snapToStart: boolean,
+          snapToEnd: boolean,
+        },
+      > {
         constructor(props: Object) {
           super(props);
           this.state = {
-            scrollDuration: 0.0,
-            pageSize: 0.0
+            scrollDurationIndex: 0,
+            pageSizeIndex: 0,
+            snapToStart: false,
+            snapToEnd: false,
           };
         }
 
         render() {
           return (
             <View>
-              <View style={{flexDirection: 'row' }}>
-                <Button
-                  label="Swipe duration default (0.3)"
-                  onPress={() => {
-                    this.setState({
-                      scrollDuration: 0.0
-                    });
-                  }}
-                />
-                <Button
-                  label="Swipe duration 1.0"
-                  onPress={() => {
-                    this.setState({
-                      scrollDuration: 1.0
-                    });
-                  }}
-                />
-                <Button
-                  label="Swipe duration 2.0"
-                  onPress={() => {
-                    this.setState({
-                      scrollDuration: 2.0
-                    });
-                  }}
-                />
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.rowLabel}>Scroll duration:</Text>
+                {scrollDurations.map((s, i) => {
+                  return (
+                    <Button
+                      selected={this.state.scrollDurationIndex === i}
+                      label={scrollDurationLabels[i]}
+                      onPress={() => {
+                        this.setState({
+                          scrollDurationIndex: i,
+                        });
+                      }}
+                    />
+                  );
+                })}
               </View>
-              <View style={{flexDirection: 'row' }}>
-                <Button
-                  label="Page size default (half visible height)"
-                  onPress={() => {
-                    this.setState({
-                      pageSize: 0
-                    });
-                  }}
-                />
-                <Button
-                  label="Page size 200"
-                  onPress={() => {
-                    this.setState({
-                      pageSize: 200
-                    });
-                  }}
-                />
-                <Button
-                  label="Page size 1000"
-                  onPress={() => {
-                    this.setState({
-                      pageSize: 1000 
-                    });
-                  }}
-                />
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.rowLabel}>
+                  Page size (scroll distance per swipe):
+                </Text>
+                {pageSizes.map((s, i) => {
+                  return (
+                    <Button
+                      selected={this.state.pageSizeIndex === i}
+                      label={pageSizeLabels[i]}
+                      onPress={() => {
+                        this.setState({
+                          pageSizeIndex: i,
+                        });
+                      }}
+                    />
+                  );
+                })}
               </View>
               <ScrollView
                 isTVSelectable={true}
                 tvParallaxProperties={{
-                  pressDuration: this.state.scrollDuration
+                  pressDuration:
+                    scrollDurations[this.state.scrollDurationIndex],
                 }}
-                snapToInterval={this.state.pageSize}
+                snapToInterval={pageSizes[this.state.pageSizeIndex]}
+                snapToStart={this.state.snapToStart}
+                snapToEnd={this.state.snapToEnd}
                 removeClippedSubviews={false}
                 automaticallyAdjustContentInsets={false}
                 style={styles.bigScrollView}>
-                <Text style={{ fontSize: 50 }}>
-Begin.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Two.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Three.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Four.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Five.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Six.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-End.
+                <Text style={{fontSize: 50}}>
+                  Begin. Lorem ipsum dolor sit amet, consectetur adipiscing
+                  elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua. Ut enim ad minim veniam, quis nostrud
+                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                  consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+                  sint occaecat cupidatat non proident, sunt in culpa qui
+                  officia deserunt mollit anim id est laborum. Two. Lorem ipsum
+                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                  minim veniam, quis nostrud exercitation ullamco laboris nisi
+                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                  nulla pariatur. Excepteur sint occaecat cupidatat non
+                  proident, sunt in culpa qui officia deserunt mollit anim id
+                  est laborum. Three. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                  consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+                  sint occaecat cupidatat non proident, sunt in culpa qui
+                  officia deserunt mollit anim id est laborum. Four. Lorem ipsum
+                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                  minim veniam, quis nostrud exercitation ullamco laboris nisi
+                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                  nulla pariatur. Excepteur sint occaecat cupidatat non
+                  proident, sunt in culpa qui officia deserunt mollit anim id
+                  est laborum. Five. Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                  consequat. Duis aute irure dolor in reprehenderit in voluptate
+                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
+                  sint occaecat cupidatat non proident, sunt in culpa qui
+                  officia deserunt mollit anim id est laborum. Six. Lorem ipsum
+                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                  minim veniam, quis nostrud exercitation ullamco laboris nisi
+                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                  nulla pariatur. Excepteur sint occaecat cupidatat non
+                  proident, sunt in culpa qui officia deserunt mollit anim id
+                  est laborum. End.
                 </Text>
               </ScrollView>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.rowLabel}>
+                  Snap to start or end when leaving focus:
+                </Text>
+                <Button
+                  selected={this.state.snapToStart}
+                  label="Snap to start"
+                  onPress={() => {
+                    this.setState(prevState => {
+                      return {
+                        snapToStart: !prevState.snapToStart,
+                      };
+                    });
+                  }}
+                />
+                <Button
+                  selected={this.state.snapToEnd}
+                  label="Snap to end"
+                  onPress={() => {
+                    this.setState(prevState => {
+                      return {
+                        snapToEnd: !prevState.snapToEnd,
+                      };
+                    });
+                  }}
+                />
+              </View>
             </View>
           );
         }
       }
       return <BigTextBlock />;
     },
-  }
+  },
 ];
 
 class Item extends React.PureComponent<{|
@@ -148,12 +198,24 @@ class Item extends React.PureComponent<{|
   }
 }
 
+const scrollDurations = [0.0, 0.2, 0.6, 1.0];
+
+const scrollDurationLabels = ['default (0.3)', '0.2', '0.6', '1.0'];
+
+const pageSizes = [0, 200, 600, 1000];
+
+const pageSizeLabels = ['default (half view height)', '200', '600', '1000'];
+
 let ITEMS = [...Array(12)].map((_, i) => `Item ${i}`);
 
 const createItemRow = (msg, index) => <Item key={index} msg={msg} />;
 
-const Button = ({label, onPress}) => (
-  <TouchableOpacity style={styles.button} activeOpacity={0.5} tvParallaxProperties={{ pressedMagnification: 1.1 }} onPress={onPress}>
+const Button = ({label, onPress, selected}) => (
+  <TouchableOpacity
+    style={selected ? styles.buttonSelected : styles.button}
+    activeOpacity={0.5}
+    tvParallaxProperties={{pressedMagnification: 1.1}}
+    onPress={onPress}>
     <Text>{label}</Text>
   </TouchableOpacity>
 );
@@ -166,7 +228,7 @@ const styles = StyleSheet.create({
   bigScrollView: {
     backgroundColor: '#eeeeee',
     height: 850,
-  }, 
+  },
   horizontalScrollView: {
     height: 106,
   },
@@ -175,11 +237,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 5,
   },
+  rowLabel: {
+    margin: 5,
+    padding: 5,
+    alignItems: 'center',
+  },
   button: {
     margin: 5,
     padding: 5,
     alignItems: 'center',
     backgroundColor: '#cccccc',
+    borderRadius: 3,
+  },
+  buttonSelected: {
+    margin: 5,
+    padding: 5,
+    alignItems: 'center',
+    backgroundColor: '#ccccff',
     borderRadius: 3,
   },
   row: {
