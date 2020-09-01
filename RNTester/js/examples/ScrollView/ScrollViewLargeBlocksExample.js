@@ -13,7 +13,7 @@
 const React = require('react');
 
 const {
-  ScrollView,
+  TVTextScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,13 +22,13 @@ const {
 
 import type {ViewStyleProp} from '../../../../Libraries/StyleSheet/StyleSheet';
 
-exports.displayName = 'ScrollViewLargeBlocksExample';
-exports.title = '<ScrollView> with large text blocks';
+exports.displayName = 'TVTextScrollView';
+exports.title = '<TVTextScrollView> with large text blocks';
 exports.description =
   'Scroll view for focus navigation on Apple TV and Android TV';
 exports.examples = [
   {
-    title: '<ScrollView> with long text on TV platforms\n',
+    title: '<TVTextScrollView> with long text on TV platforms\n',
     description:
       'Ensure that TV platforms can scroll through a single block of text that is greater than the screen height',
     render: function(): React.Node {
@@ -88,18 +88,12 @@ exports.examples = [
                   );
                 })}
               </View>
-              <ScrollView
-                isTVSelectable={true}
+              <TVTextScrollView
+                scrollDuration={scrollDurations[this.state.scrollDurationIndex]}
+                pageSize={pageSizes[this.state.pageSizeIndex]}
                 horizontal={true}
-                tvParallaxProperties={{
-                  pressDuration:
-                    scrollDurations[this.state.scrollDurationIndex],
-                }}
-                snapToInterval={pageSizes[this.state.pageSizeIndex]}
                 snapToStart={this.state.snapToStart}
                 snapToEnd={this.state.snapToEnd}
-                removeClippedSubviews={false}
-                automaticallyAdjustContentInsets={false}
                 style={styles.bigScrollView}>
                 <Text style={{fontSize: 40, width: 300}}>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
@@ -167,18 +161,12 @@ exports.examples = [
                   Ut enim ad minim veniam, quis nostrud exercitation ullamco
                   laboris nisi ut aliquip ex ea commodo consequat.
                 </Text>
-              </ScrollView>
-              <ScrollView
-                isTVSelectable={true}
-                tvParallaxProperties={{
-                  pressDuration:
-                    scrollDurations[this.state.scrollDurationIndex],
-                }}
-                snapToInterval={pageSizes[this.state.pageSizeIndex]}
+              </TVTextScrollView>
+              <TVTextScrollView
+                scrollDuration={scrollDurations[this.state.scrollDurationIndex]}
+                pageSize={pageSizes[this.state.pageSizeIndex]}
                 snapToStart={this.state.snapToStart}
                 snapToEnd={this.state.snapToEnd}
-                removeClippedSubviews={false}
-                automaticallyAdjustContentInsets={false}
                 style={styles.bigScrollView}>
                 <Text style={{fontSize: 50}}>
                   Begin. Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -228,7 +216,7 @@ exports.examples = [
                   proident, sunt in culpa qui officia deserunt mollit anim id
                   est laborum. End.
                 </Text>
-              </ScrollView>
+              </TVTextScrollView>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.rowLabel}>
                   Snap to start or end when leaving focus:

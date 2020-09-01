@@ -85,6 +85,7 @@ import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/AppleTV/TVEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/AppleTV/TVFocusGuideView';
 import typeof TVMenuControl from './Libraries/Components/AppleTV/TVMenuControl';
+import typeof TVTextScrollView from './Libraries/Components/AppleTV/TVTextScrollView';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
 import typeof useWindowDimensions from './Libraries/Utilities/useWindowDimensions';
@@ -443,6 +444,9 @@ module.exports = {
   },
   get TVMenuControl(): TVMenuControl {
     return require('./Libraries/Components/AppleTV/TVMenuControl');
+  },
+  get TVTextScrollView(): TVTextScrollView {
+    return require('./Libraries/Components/AppleTV/TVTextScrollView');
   },
   get UIManager(): UIManager {
     return require('./Libraries/ReactNative/UIManager');
