@@ -39,6 +39,8 @@ exports.examples = [
           pageSizeIndex: number,
           snapToStart: boolean,
           snapToEnd: boolean,
+          horizontalScrollerFocused: boolean,
+          verticalScrollerFocused: boolean,
         },
       > {
         constructor(props: Object) {
@@ -48,6 +50,8 @@ exports.examples = [
             pageSizeIndex: 0,
             snapToStart: false,
             snapToEnd: false,
+            horizontalScrollerFocused: false,
+            verticalScrollerFocused: false,
           };
         }
 
@@ -94,128 +98,44 @@ exports.examples = [
                 horizontal={true}
                 snapToStart={this.state.snapToStart}
                 snapToEnd={this.state.snapToEnd}
-                style={styles.bigScrollView}>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
-                <Text style={{fontSize: 40, width: 300}}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
+                onFocus={() => {
+                  this.setState({
+                    horizontalScrollerFocused: true,
+                  });
+                }}
+                onBlur={() => {
+                  this.setState({
+                    horizontalScrollerFocused: false,
+                  });
+                }}
+                style={
+                  this.state.horizontalScrollerFocused
+                    ? styles.bigScrollViewFocused
+                    : styles.bigScrollView
+                }>
+                {ITEMCOMPONENTS}
               </TVTextScrollView>
               <TVTextScrollView
                 scrollDuration={scrollDurations[this.state.scrollDurationIndex]}
                 pageSize={pageSizes[this.state.pageSizeIndex]}
                 snapToStart={this.state.snapToStart}
                 snapToEnd={this.state.snapToEnd}
-                style={styles.bigScrollView}>
-                <Text style={{fontSize: 50}}>
-                  Begin. Lorem ipsum dolor sit amet, consectetur adipiscing
-                  elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                  consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                  sint occaecat cupidatat non proident, sunt in culpa qui
-                  officia deserunt mollit anim id est laborum. Two. Lorem ipsum
-                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi
-                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                  nulla pariatur. Excepteur sint occaecat cupidatat non
-                  proident, sunt in culpa qui officia deserunt mollit anim id
-                  est laborum. Three. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                  consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                  sint occaecat cupidatat non proident, sunt in culpa qui
-                  officia deserunt mollit anim id est laborum. Four. Lorem ipsum
-                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi
-                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                  nulla pariatur. Excepteur sint occaecat cupidatat non
-                  proident, sunt in culpa qui officia deserunt mollit anim id
-                  est laborum. Five. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                  consequat. Duis aute irure dolor in reprehenderit in voluptate
-                  velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                  sint occaecat cupidatat non proident, sunt in culpa qui
-                  officia deserunt mollit anim id est laborum. Six. Lorem ipsum
-                  dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi
-                  ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                  reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                  nulla pariatur. Excepteur sint occaecat cupidatat non
-                  proident, sunt in culpa qui officia deserunt mollit anim id
-                  est laborum. End.
-                </Text>
+                onFocus={() => {
+                  this.setState({
+                    verticalScrollerFocused: true,
+                  });
+                }}
+                onBlur={() => {
+                  this.setState({
+                    verticalScrollerFocused: false,
+                  });
+                }}
+                style={
+                  this.state.verticalScrollerFocused
+                    ? styles.bigScrollViewFocused
+                    : styles.bigScrollView
+                }>
+                <Text style={{fontSize: 50}}>{ITEMS.join('\n')}</Text>
               </TVTextScrollView>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.rowLabel}>
@@ -260,7 +180,7 @@ class Item extends React.PureComponent<{|
   render() {
     return (
       <View style={[styles.item, this.props.style]}>
-        <Text>{this.props.msg}</Text>
+        <Text style={styles.itemText}>{this.props.msg}</Text>
       </View>
     );
   }
@@ -274,9 +194,17 @@ const pageSizes = [0, 200, 600, 1000];
 
 const pageSizeLabels = ['default (half view height)', '200', '600', '1000'];
 
-let ITEMS = [...Array(12)].map((_, i) => `Item ${i}`);
+const ITEMS = [...Array(12)].map(
+  (
+    _,
+    i,
+  ) => `Item ${i}: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.`,
+);
 
-const createItemRow = (msg, index) => <Item key={index} msg={msg} />;
+const ITEMCOMPONENTS = ITEMS.map((m, i) => <Item key={i} msg={m} />);
 
 const Button = ({label, onPress, selected}) => (
   <TouchableOpacity
@@ -295,7 +223,11 @@ const styles = StyleSheet.create({
   },
   bigScrollView: {
     backgroundColor: '#eeeeee',
-    height: 850,
+    height: 600,
+  },
+  bigScrollViewFocused: {
+    backgroundColor: '#ccffcc',
+    height: 600,
   },
   horizontalScrollView: {
     height: 106,
@@ -333,6 +265,9 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: '#cccccc',
     borderRadius: 3,
-    minWidth: 96,
+    width: 300,
+  },
+  itemText: {
+    fontSize: 30,
   },
 });
