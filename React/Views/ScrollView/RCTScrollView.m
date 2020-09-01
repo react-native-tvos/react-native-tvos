@@ -359,7 +359,9 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
     if (context.nextFocusedView == self) {
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
+        [self sendFocusNotification];
     } else if (context.previouslyFocusedView == self) {
+        [self sendBlurNotification];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
         // if we leave the scroll view and go up, then scroll to top; if going down,
@@ -376,6 +378,18 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
         }
 
     }
+}
+
+- (void)sendFocusNotification
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
+  object:@{@"eventType":@"focus",@"tag":self.reactTag}];
+}
+
+- (void)sendBlurNotification
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
+  object:@{@"eventType":@"blur",@"tag":self.reactTag}];
 }
 
 - (NSInteger)swipeVerticalInterval
