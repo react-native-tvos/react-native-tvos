@@ -85,7 +85,7 @@ var running_on_apple_tv = Platform.isTVOS;
   - `onBlur` will be executed when the touchable view goes out of focus
   - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote.
 
-- _TV remote/keyboard input_: A new native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  In 0.63.1-1, we have added `useTVEventHandler`, which wraps `useEffect` to make this more convenient and simpler for use with functional components.
+- _TV remote/keyboard input_: A native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  In 0.63.1-1, we have added `useTVEventHandler`, which wraps `useEffect` to make this more convenient and simpler for use with functional components.
 
 ```javascript
 
@@ -96,17 +96,15 @@ import { TVEventHandler, useTVEventHandler } from 'react-native';
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
 
-  const ref = React.useRef(null);
-
   const myTVEventHandler = evt => {
     setLastEventType(evt.eventType);
   };
 
-  useTVEventHandler(ref, myTVEventHandler);
+  useTVEventHandler(myTVEventHandler);
 
   return (
     <View>
-      <TouchableOpacity ref={ref} onPress={() => {}}>
+      <TouchableOpacity onPress={() => {}}>
         <Text>
           This example enables an instance of TVEventHandler to show the last
           event detected from the Apple TV Siri remote or from a keyboard.

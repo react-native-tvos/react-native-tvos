@@ -18,17 +18,15 @@ const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
 
-  const ref = React.useRef(null);
-
   const myTVEventHandler = evt => {
     setLastEventType(evt.eventType);
   };
 
   if (Platform.isTV) {
-    useTVEventHandler(ref, myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
+    useTVEventHandler(myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
     return (
       <View>
-        <TouchableOpacity ref={ref} onPress={() => {}}>
+        <TouchableOpacity onPress={() => {}}>
           <Text>
             This example enables an instance of TVEventHandler to show the last
             event detected from the Apple TV Siri remote or from a keyboard.
