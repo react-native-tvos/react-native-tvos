@@ -88,6 +88,7 @@ import typeof TVMenuControl from './Libraries/Components/AppleTV/TVMenuControl';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
 import typeof useWindowDimensions from './Libraries/Utilities/useWindowDimensions';
+import typeof useTVEventHandler from './Libraries/Components/AppleTV/useTVEventHandler';
 import typeof UTFSequence from './Libraries/UTFSequence';
 import typeof Vibration from './Libraries/Vibration/Vibration';
 import typeof YellowBox from './Libraries/YellowBox/YellowBoxDeprecated';
@@ -458,6 +459,9 @@ module.exports = {
   },
   get useWindowDimensions(): useWindowDimensions {
     return require('./Libraries/Utilities/useWindowDimensions').default;
+  },
+  get useTVEventHandler(): useTVEventHandler {
+    return require('./Libraries/Components/AppleTV/useTVEventHandler');
   },
   get UTFSequence(): UTFSequence {
     return require('./Libraries/UTFSequence');

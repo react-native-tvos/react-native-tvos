@@ -13,67 +13,38 @@
 const React = require('react');
 const ReactNative = require('react-native');
 
-const {Platform, View, Text, TouchableOpacity, TVEventHandler} = ReactNative;
+const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
 
-type Props = $ReadOnly<{||}>;
-type State = {|lastEventType: string|};
-class TVEventHandlerView extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      lastEventType: '',
-    };
+const TVEventHandlerView: () => React.Node = () => {
+  const [lastEventType, setLastEventType] = React.useState('');
+
+  const ref = React.useRef(null);
+
+  const myTVEventHandler = evt => {
+    setLastEventType(evt.eventType);
+  };
+
+  if (Platform.isTV) {
+    useTVEventHandler(ref, myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
+    return (
+      <View>
+        <TouchableOpacity ref={ref} onPress={() => {}}>
+          <Text>
+            This example enables an instance of TVEventHandler to show the last
+            event detected from the Apple TV Siri remote or from a keyboard.
+          </Text>
+        </TouchableOpacity>
+        <Text style={{color: 'blue'}}>{lastEventType}</Text>
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text>This example is intended to be run on Apple TV.</Text>
+      </View>
+    );
   }
-
-  _tvEventHandler: any;
-
-  _enableTVEventHandler() {
-    this._tvEventHandler = new TVEventHandler();
-    this._tvEventHandler.enable(this, function(cmp, evt) {
-      cmp.setState({
-        lastEventType: evt.eventType,
-      });
-    });
-  }
-
-  _disableTVEventHandler() {
-    if (this._tvEventHandler) {
-      this._tvEventHandler.disable();
-      delete this._tvEventHandler;
-    }
-  }
-
-  componentDidMount() {
-    this._enableTVEventHandler();
-  }
-
-  componentWillUnmount() {
-    this._disableTVEventHandler();
-  }
-
-  render() {
-    if (Platform.isTV) {
-      return (
-        <View>
-          <TouchableOpacity onPress={() => {}}>
-            <Text>
-              This example enables an instance of TVEventHandler to show the
-              last event detected from the Apple TV Siri remote or from a
-              keyboard.
-            </Text>
-          </TouchableOpacity>
-          <Text style={{color: 'blue'}}>{this.state.lastEventType}</Text>
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <Text>This example is intended to be run on Apple TV.</Text>
-        </View>
-      );
-    }
-  }
-}
+};
 
 exports.framework = 'React';
 exports.title = 'TVEventHandler example';
