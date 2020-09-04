@@ -123,6 +123,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     supportsTVOS: true,
   },
   {
+    key: 'TVTextScrollViewExample',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'SectionListExample',
     module: require('../examples/SectionList/SectionListExample'),
     supportsTVOS: true,

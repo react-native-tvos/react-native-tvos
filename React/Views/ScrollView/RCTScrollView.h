@@ -10,11 +10,19 @@
 #import <React/RCTAutoInsetsProtocol.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTScrollableProtocol.h>
+#if TARGET_OS_TV
+#import <React/RCTTVView.h>
+#else
 #import <React/RCTView.h>
+#endif
 
 @protocol UIScrollViewDelegate;
 
+#if TARGET_OS_TV
+@interface RCTScrollView : RCTTVView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
+#else
 @interface RCTScrollView : RCTView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
+#endif
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
