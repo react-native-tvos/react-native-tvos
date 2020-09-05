@@ -1,5 +1,6 @@
 require_relative '../scripts/react_native_pods'
 
+source 'https://github.com/react-native-community/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
 platform :tvos, '12.0'
 
@@ -27,6 +28,7 @@ end
 
 target 'RNTester' do
   pods()
+  use_flipper!
 end
 
 target 'RNTesterUnitTests' do
@@ -37,5 +39,27 @@ end
 target 'RNTesterIntegrationTests' do
   pods()
   pod 'React-RCTTest', :path => "./RCTTest"
+end
+
+if ENV['USE_FRAMEWORKS'] == '1'
+  static_frameworks = ['FlipperKit', 'Flipper', 'Flipper-Folly',
+      'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
+      'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket',
+      'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
+
+  pre_install do |installer|
+    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+    installer.pod_targets.each do |pod|
+        if static_frameworks.include?(pod.name)
+          def pod.build_type
+            Pod::Target::BuildType.static_library
+          end
+        end
+      end
+  end
+end
+
+post_install do |installer|
+  flipper_post_install(installer)
 end
 
