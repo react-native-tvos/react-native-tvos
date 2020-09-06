@@ -1,6 +1,8 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+source 'https://github.com/react-native-community/react-native-tvos-podspecs.git'
+source 'https://cdn.cocoapods.org/'
 
 target 'HelloWorld' do
 
@@ -9,6 +11,8 @@ target 'HelloWorld' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
+
+  use_flipper!
 
   target 'HelloWorldTests' do
     inherit! :complete
@@ -25,9 +29,15 @@ target 'HelloWorld-tvOS' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  use_flipper!
+
   target 'HelloWorld-tvOSTests' do
     inherit! :complete
     # Pods for testing
   end
 
+end
+
+post_install do |installer|
+  flipper_post_install(installer)
 end
