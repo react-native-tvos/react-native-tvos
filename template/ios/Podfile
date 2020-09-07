@@ -12,7 +12,7 @@ target 'HelloWorld' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  use_flipper!
+  use_flipper_tvos!
 
   target 'HelloWorldTests' do
     inherit! :complete
@@ -29,7 +29,7 @@ target 'HelloWorld-tvOS' do
 
   use_react_native!(:path => config["reactNativePath"])
 
-  use_flipper!
+  use_flipper_tvos!
 
   target 'HelloWorld-tvOSTests' do
     inherit! :complete

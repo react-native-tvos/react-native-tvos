@@ -28,7 +28,7 @@ end
 
 target 'RNTester' do
   pods()
-  use_flipper!
+  use_flipper_tvos!
 end
 
 target 'RNTesterUnitTests' do
