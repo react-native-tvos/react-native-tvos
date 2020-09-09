@@ -15,6 +15,7 @@
     "outputDirectory": "reports/junit",
     "outputName": "js-test-results.xml"
   },
+  "types": "index.d.ts",
   "files": [
     "!template/node_modules",
     "!template/package-lock.json",
@@ -86,7 +87,8 @@
     "test-ios": "./scripts/objc-test.sh test"
   },
   "peerDependencies": {
-    "react": "16.13.1"
+    "react": "16.13.1",
+    "@types/react-native": "^0.63.17"
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
