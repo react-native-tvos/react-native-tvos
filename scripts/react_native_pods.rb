@@ -58,3 +58,72 @@ def use_react_native! (options={})
     pod 'Folly/Fabric', :podspec => "#{prefix}/third-party-podspecs/Folly.podspec"
   end
 end
+
+def use_flipper!(versions = {})
+  versions['Flipper'] ||= '~> 0.41.1'
+  versions['Flipper-DoubleConversion'] ||= '1.1.7'
+  versions['Flipper-Folly'] ||= '~> 2.2'
+  versions['Flipper-Glog'] ||= '0.3.6'
+  versions['Flipper-PeerTalk'] ||= '~> 0.0.4'
+  versions['Flipper-RSocket'] ||= '~> 1.1'
+  pod 'FlipperKit', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitLayoutPlugin', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/SKIOSNetworkPlugin', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitUserDefaultsPlugin', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitReactPlugin', versions['Flipper'], :configuration => 'Debug'
+  # List all transitive dependencies for FlipperKit pods
+  # to avoid them being linked in Release builds
+  pod 'Flipper', versions['Flipper'], :configuration => 'Debug'
+  pod 'Flipper-DoubleConversion', versions['Flipper-DoubleConversion'], :configuration => 'Debug'
+  pod 'Flipper-Folly', versions['Flipper-Folly'], :configuration => 'Debug'
+  pod 'Flipper-Glog', versions['Flipper-Glog'], :configuration => 'Debug'
+  pod 'Flipper-PeerTalk', versions['Flipper-PeerTalk'], :configuration => 'Debug'
+  pod 'Flipper-RSocket', versions['Flipper-RSocket'], :configuration => 'Debug'
+  pod 'FlipperKit/Core', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/CppBridge', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FBCxxFollyDynamicConvert', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FBDefines', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FKPortForwarding', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitHighlightOverlay', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitLayoutTextSearchable', versions['Flipper'], :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitNetworkPlugin', versions['Flipper'], :configuration => 'Debug'
+end
+
+# Adds the Flipper pods from RN 0.62, which have been ported to work on tvOS.
+# Recommended for projects that have both iOS and tvOS targets
+def use_flipper_tvos!(versions = {})
+  flipperkit_version = '0.30.2'
+  pod 'FlipperKit', '~>' + flipperkit_version, :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitLayoutPlugin', '~>' + flipperkit_version, :configuration => 'Debug'
+  pod 'FlipperKit/SKIOSNetworkPlugin', '~>' + flipperkit_version, :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitUserDefaultsPlugin', '~>' + flipperkit_version, :configuration => 'Debug'
+  pod 'FlipperKit/FlipperKitReactPlugin', '~>' + flipperkit_version, :configuration => 'Debug'
+  if ENV['USE_FRAMEWORKS'] == '1'
+    $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
+        'CocoaAsyncSocket', 'ComponentKit', 'Flipper-DoubleConversion',
+        'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket',
+        'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
+    pre_install do |installer|
+      Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+      installer.pod_targets.each do |pod|
+          if $static_framework.include?(pod.name)
+            def pod.build_type;
+              Pod::Target::BuildType.static_library
+            end
+          end
+        end
+    end
+  end
+end
+
+
+# Post Install processing for Flipper
+def flipper_post_install(installer)
+  installer.pods_project.targets.each do |target|
+    if target.name == 'YogaKit'
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '4.1'
+      end
+    end
+  end
+end

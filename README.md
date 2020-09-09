@@ -156,7 +156,7 @@ class Game2048 extends React.Component {
 
 - _Turbomodules_: Working as of the 0.61.2-0 release.
 
-- _Flipper_: ~~Working in the 0.62.2-x releases.  See the template Podfile and AppDelegate for an example of how to include Flipper support in your tvOS app.  New projects generated with `react-native init` will now include this support.~~ Flipper requires tvOS support from a significant number of external pods.  Due to the large number of changes in Flipper support between RN core 0.62 and 0.63, this 0.63.1-0 release has no Flipper support. It will be added back as soon as possible.
+- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.1-1 and later releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets.
 
 - _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected in tvOS, after a few adjustments to make the controls accessible to the focus engine.
 
