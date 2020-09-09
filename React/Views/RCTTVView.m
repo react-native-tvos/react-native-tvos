@@ -17,15 +17,17 @@
 #import "RCTUtils.h"
 #import "RCTView.h"
 #import "UIView+React.h"
+#import <React/RCTUIManager.h>
 
 @implementation RCTTVView {
+  __weak RCTBridge *_bridge;
   UITapGestureRecognizer *_selectRecognizer;
   BOOL motionEffectsAdded;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
-  if (self = [super initWithFrame:frame]) {
+- (instancetype)initWithBridge:(RCTBridge *)bridge {
+  if (self = [super init]) {
+    _bridge = bridge;
     dispatch_once(&onceToken, ^{
       defaultTVParallaxProperties = @{
         @"enabled" : @YES,
@@ -95,7 +97,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     float pressDelay = [self.tvParallaxProperties[@"pressDelay"] floatValue];
 
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:pressDelay]];
-    
+
     [UIView animateWithDuration:(pressDuration/2)
       animations:^{
         self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
@@ -109,7 +111,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
             [self sendSelectNotification:r];
           }];
        }];
-    
+
 	} else {
 		[self sendSelectNotification:r];
 	}
@@ -254,6 +256,34 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
+- (BOOL) shouldUpdateFocusInContext:(UIFocusUpdateContext *)context {
+  if (_nextFocusUp != nil && context.focusHeading == UIFocusHeadingUp) {
+    self->_nextFocusActiveTarget = _nextFocusUp;
+    [self setNeedsFocusUpdate];
+    return false;
+  }
+  if (_nextFocusDown != nil && context.focusHeading == UIFocusHeadingDown) {
+    self->_nextFocusActiveTarget = _nextFocusDown;
+    [self setNeedsFocusUpdate];
+    return false;
+  }
+  if (_nextFocusLeft != nil && context.focusHeading == UIFocusHeadingLeft) {
+    self->_nextFocusActiveTarget = _nextFocusLeft;
+    [self setNeedsFocusUpdate];
+    return false;
+  }
+  if (_nextFocusRight != nil && context.focusHeading == UIFocusHeadingRight) {
+    self->_nextFocusActiveTarget = _nextFocusRight;
+    [self setNeedsFocusUpdate];
+    return false;
+  }
+  return true;
+}
+
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
+  return _nextFocusActiveTarget != nil ? @[_nextFocusActiveTarget] : [super preferredFocusEnvironments];
+}
+
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
@@ -264,6 +294,55 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
   object:@{@"eventType":@"blur",@"tag":self.reactTag}];
+}
+
+- (void)setNextFocusUp:(NSNumber *)nextFocusUp {
+  if (nextFocusUp == nil) return;
+  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
+  RCTTVView *destination = (RCTTVView*)views[nextFocusUp];
+    self->_nextFocusUp = destination;
+}
+
+- (void)setNextFocusDown:(NSNumber *)nextFocusDown {
+  if (nextFocusDown == nil) return;
+  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
+  RCTTVView *destination = (RCTTVView*)views[nextFocusDown];
+    self->_nextFocusDown = destination;
+}
+
+- (void)setNextFocusLeft:(NSNumber *)nextFocusLeft {
+  if (nextFocusLeft == nil) return;
+  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
+  RCTTVView *destination = (RCTTVView*)views[nextFocusLeft];
+    self->_nextFocusLeft = destination;
+}
+
+- (void)setNextFocusRight:(NSNumber *)nextFocusRight {
+    if (nextFocusRight == nil) return;
+  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
+  RCTTVView *destination = (RCTTVView*)views[nextFocusRight];
+
+    self->_nextFocusRight = destination;
+}
+
+- (void)setPreferredFocus:(BOOL)hasTVPreferredFocus
+{
+  _hasTVPreferredFocus = hasTVPreferredFocus;
+  if (hasTVPreferredFocus) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      UIView *rootview = self;
+      while (![rootview isReactRootView] && rootview != nil) {
+        rootview = [rootview superview];
+      }
+      if (rootview == nil) return;
+
+      rootview = [rootview superview];
+
+      [(RCTRootView *)rootview setReactPreferredFocusedView:self];
+      [rootview setNeedsFocusUpdate];
+      [rootview updateFocusIfNeeded];
+    });
+  }
 }
 
 - (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus
