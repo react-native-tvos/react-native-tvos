@@ -111,7 +111,7 @@ class RNTesterExampleList extends React.Component<Props, $FlowFixMeState> {
   render(): React.Node {
     const filter = ({example, filterRegex}) =>
       filterRegex.test(example.module.title) &&
-      (!Platform.isTV || example.supportsTVOS);
+      (!Platform.isTVOS || example.supportsTVOS);
 
     const sections = [
       {
