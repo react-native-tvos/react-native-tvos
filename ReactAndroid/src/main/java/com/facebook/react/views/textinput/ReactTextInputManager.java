@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -1065,8 +1066,37 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
                   new ReactTextInputSubmitEditingEvent(
                       editText.getId(), editText.getText().toString()));
 
-              if (blurOnSubmit) {
-                editText.clearFocus();
+              switch (actionId) {
+                case EditorInfo.IME_ACTION_PREVIOUS: {
+                  @SuppressLint("WrongConstant") View view = editText.focusSearch(View.FOCUS_BACKWARD);
+                  editText.hideKeyboard();
+                }
+                break;
+                case EditorInfo.IME_ACTION_NEXT:
+                case EditorInfo.IME_ACTION_DONE: {
+                  @SuppressLint("WrongConstant") View view = editText.focusSearch(View.FOCUS_FORWARD);
+                  if (view instanceof ReactEditText && editText.getId() != view.getId()) {
+                    view.requestFocus();
+                    ((ReactEditText) view).showKeyboard();
+                  } else {
+                    if (view != null) {
+                      view.requestFocus();
+                    }
+
+                    // manually triggering onFocusChanged when having only one input field on
+                    // the screen and no other focusable elements
+                    if (editText.getId() == view.getId()) {
+                      editText.onFocusChanged(false, View.FOCUSABLES_ALL, null);
+                    }
+                    editText.hideKeyboard();
+                  }
+                }
+                break;
+                default:
+                  if (blurOnSubmit) {
+                    editText.clearFocus();
+                  }
+                  break;
               }
 
               // Prevent default behavior except when we want it to insert a newline.
