@@ -296,33 +296,26 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   object:@{@"eventType":@"blur",@"tag":self.reactTag}];
 }
 
-- (void)setNextFocusUp:(NSNumber *)nextFocusUp {
-  if (nextFocusUp == nil) return;
+- (RCTTVView *)getViewById:(NSNumber *)viewId {
+  if (viewId == nil) return nil;
   NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
-  RCTTVView *destination = (RCTTVView*)views[nextFocusUp];
-    self->_nextFocusUp = destination;
+  return (RCTTVView*)views[viewId];
+}
+
+- (void)setNextFocusUp:(NSNumber *)nextFocusUp {
+  self->_nextFocusUp = [self getViewById: nextFocusUp];
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
-  if (nextFocusDown == nil) return;
-  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
-  RCTTVView *destination = (RCTTVView*)views[nextFocusDown];
-    self->_nextFocusDown = destination;
+    self->_nextFocusDown = [self getViewById: nextFocusDown];
 }
 
 - (void)setNextFocusLeft:(NSNumber *)nextFocusLeft {
-  if (nextFocusLeft == nil) return;
-  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
-  RCTTVView *destination = (RCTTVView*)views[nextFocusLeft];
-    self->_nextFocusLeft = destination;
+    self->_nextFocusLeft = [self getViewById: nextFocusLeft];
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
-    if (nextFocusRight == nil) return;
-  NSDictionary<NSNumber *, UIView *> *views = [_bridge.uiManager valueForKey:@"viewRegistry"];
-  RCTTVView *destination = (RCTTVView*)views[nextFocusRight];
-
-    self->_nextFocusRight = destination;
+    self->_nextFocusRight = [self getViewById: nextFocusRight];
 }
 
 - (void)setPreferredFocus:(BOOL)hasTVPreferredFocus
