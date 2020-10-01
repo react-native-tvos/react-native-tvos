@@ -24,6 +24,8 @@ const invariant = require('invariant');
 const nullthrows = require('nullthrows');
 const setAndForwardRef = require('../../Utilities/setAndForwardRef');
 
+const warnOnce = require('../../Utilities/warnOnce');
+
 import type {TextStyleProp, ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
@@ -1059,16 +1061,25 @@ function InternalTextInput(props: Props): React.Node {
   |} = {...null};
 
   if (Platform.OS === 'ios') {
-    const RCTTextInputView = props.multiline
-      ? RCTMultilineTextInputView
-      : RCTSinglelineTextInputView;
+    const RCTTextInputView =
+      props.multiline && !Platform.isTVOS
+        ? RCTMultilineTextInputView
+        : RCTSinglelineTextInputView;
 
-    const style = props.multiline
-      ? [styles.multilineInput, props.style]
-      : props.style;
+    const style =
+      props.multiline && !Platform.isTVOS
+        ? [styles.multilineInput, props.style]
+        : props.style;
 
     additionalTouchableProps.rejectResponderTermination =
       props.rejectResponderTermination;
+
+    if (props.multiline && Platform.isTVOS) {
+      warnOnce(
+        'text-input-multiline-tvos',
+        'Multiline TextInput not supported on Apple TV.  See https://github.com/react-native-community/react-native-tvos/issues/109',
+      );
+    }
 
     textInput = (
       <RCTTextInputView
