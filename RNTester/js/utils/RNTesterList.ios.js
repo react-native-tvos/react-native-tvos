@@ -340,6 +340,11 @@ const APIExamples: Array<RNTesterExample> = [
     supportsTVOS: true,
   },
   {
+    key: 'DirectionalNextFocusExample',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'TVFocusGuideExample',
     module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
     supportsTVOS: true,
