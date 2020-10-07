@@ -21,7 +21,7 @@ You cannot use this package and the core react-native package simultaneously in 
 Due to the nature of the typing resolution, the current solution to include types is to:
 
 - install `@types/react-native` as a dev dependency
-- put `import 'react-native/tvos-types'` in any of your `.ts` files (root suggested)
+- put `import 'react-native/tvos-types.d'` in any of your `.ts` files (root suggested)
 
 ## General support for Apple TV
 
