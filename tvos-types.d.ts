@@ -1,10 +1,7 @@
-import '@types/react-native';
+import React from 'react';
+import { ViewProps, ScrollViewProps } from 'react-native';
 
 declare module 'react-native' {
-  import React from 'react';
-
-  import { ViewProps, ScrollViewProps } from '@types/react-native';
-
   export const useTVEventHandler: (handleEvent: (event: HWKeyEvent) => void) => void;
 
   export const TVMenuControl: {
