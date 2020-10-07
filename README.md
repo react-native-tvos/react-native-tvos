@@ -16,6 +16,13 @@ To build your project for Apple TV, you should change your `package.json` import
 
 You cannot use this package and the core react-native package simultaneously in a project.
 
+### Typescript
+
+Due to the nature of the typing resolution, the current solution to include types is to:
+
+- install `@types/react-native` as a dev dependency
+- put `import 'react-native/tvos-types.d'` in any of your `.ts` files (root suggested)
+
 ## General support for Apple TV
 
 TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV, with few or no changes needed in the JavaScript code for the applications.

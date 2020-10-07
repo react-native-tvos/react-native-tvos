@@ -15,7 +15,6 @@
     "outputDirectory": "reports/junit",
     "outputName": "js-test-results.xml"
   },
-  "types": "index.d.ts",
   "files": [
     "!template/node_modules",
     "!template/package-lock.json",
