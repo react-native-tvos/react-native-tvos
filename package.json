@@ -52,7 +52,8 @@
     "scripts/react-native-xcode.sh",
     "template.config.js",
     "template",
-    "third-party-podspecs"
+    "third-party-podspecs",
+    "tvos-types.d"
   ],
   "scripts": {
     "start": "react-native start",
