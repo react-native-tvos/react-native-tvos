@@ -2,6 +2,35 @@ import React from 'react';
 import { ViewProps, ScrollViewProps } from 'react-native';
 
 declare module 'react-native' {
+  interface ViewProps {
+  /**
+   * TV next focus down (see documentation for the View component).
+   */
+  nextFocusDown?: number,
+
+  /**
+   * TV next focus forward (see documentation for the View component).
+   * 
+   * @platform android
+   */
+  nextFocusForward?: number,
+
+  /**
+   * TV next focus left (see documentation for the View component).
+   */
+  nextFocusLeft?: number,
+
+  /**
+   * TV next focus right (see documentation for the View component).
+   */
+  nextFocusRight?: number,
+
+  /**
+   * TV next focus up (see documentation for the View component).
+   */
+  nextFocusUp?: number,
+  }
+
   export const useTVEventHandler: (handleEvent: (event: HWKeyEvent) => void) => void;
 
   export const TVMenuControl: {
