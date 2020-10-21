@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import <React/RCTView.h>
+#import <React/RCTBridge.h>
 
 //  A RCTView with additional properties and methods for user interaction using the Apple TV focus engine.
 @interface RCTTVView : RCTView
@@ -29,6 +30,17 @@
 @property (nonatomic, assign) BOOL hasTVPreferredFocus;
 
 /**
+ * Focus direction tags
+ */
+@property (nonatomic, strong) RCTTVView * nextFocusUp;
+@property (nonatomic, strong) RCTTVView * nextFocusDown;
+@property (nonatomic, strong) RCTTVView * nextFocusLeft;
+@property (nonatomic, strong) RCTTVView * nextFocusRight;
+@property (nonatomic, strong) RCTTVView * nextFocusActiveTarget;
+
+- (instancetype)initWithBridge:(RCTBridge *)bridge;
+
+/**
  * Send Focus Notifications to listeners
  */
 - (void)sendFocusNotification:(UIFocusUpdateContext *)context;
@@ -45,7 +57,7 @@
 
 /**
  * Adds Parallax Motion Effects if tvParallaxProperty is enabled
- */ 
+ */
 - (void)addParallaxMotionEffects;
 
 /**
