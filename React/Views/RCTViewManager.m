@@ -93,7 +93,7 @@ RCT_EXPORT_MODULE()
 - (UIView *)view
 {
 #if TARGET_OS_TV
-  return [RCTTVView new];
+  return [[RCTTVView alloc] initWithBridge:self.bridge];
 #else
   return [RCTView new];
 #endif
@@ -132,6 +132,10 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(isTVSelectable, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(hasTVPreferredFocus, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(tvParallaxProperties, NSDictionary)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusUp, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusDown, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusLeft, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusRight, NSNumber)
 #endif
 
 // Accessibility related properties

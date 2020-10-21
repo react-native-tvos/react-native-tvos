@@ -39,21 +39,20 @@ class TVFocusGuideView extends React.Component<FocusGuideProps> {
   }
 
   render(): React.Node {
-    if (Platform.isTVOS) {
-      return (
-        // Container view must have nonzero size
-        <ReactNative.View style={[{minHeight: 1, minWidth: 1}, this.props.style]}>
+    return (
+      // Container view must have nonzero size
+      <ReactNative.View style={[{minHeight: 1, minWidth: 1}, this.props.style]}>
+        {Platform.isTVOS ? (
           <RNFocusGuide
             style={this.props.style}
             ref={ref => (this._focusGuideRef = ref)}
-            destinationTags={this._destinationTags}
-          >
+            destinationTags={this._destinationTags}>
             {this.props.children}
           </RNFocusGuide>
-        </ReactNative.View>
-      );
-    }
-    return <React.Fragment />;
+        ) : (
+          this.props.children
+        )}
+      </ReactNative.View>)
   }
 }
 
