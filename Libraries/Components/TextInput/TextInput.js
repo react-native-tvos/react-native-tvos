@@ -1077,7 +1077,7 @@ function InternalTextInput(props: Props): React.Node {
     if (props.multiline && Platform.isTVOS) {
       warnOnce(
         'text-input-multiline-tvos',
-        'Multiline TextInput not supported on Apple TV.  See https://github.com/react-native-community/react-native-tvos/issues/109',
+        'Multiline TextInput not supported on Apple TV.  See https://github.com/react-native-tvos/react-native-tvos/issues/109',
       );
     }
 

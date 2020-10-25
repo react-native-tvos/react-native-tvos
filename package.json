@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-native-community/react-native-tvos.git"
+    "url": "git@github.com:react-native-tvos/react-native-tvos.git"
   },
   "engines": {
     "node": ">=10"
