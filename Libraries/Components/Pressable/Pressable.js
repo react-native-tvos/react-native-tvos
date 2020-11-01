@@ -28,11 +28,24 @@ import {normalizeRect, type RectOrSize} from '../../StyleSheet/Rect';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
 import type {LayoutEvent, PressEvent} from '../../Types/CoreEventTypes';
 import View from '../View/View';
+import Platform from '../../Utilities/Platform';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
 export type StateCallbackType = $ReadOnly<{|
   pressed: boolean,
+|}>;
+
+type TVProps = $ReadOnly<{|
+  hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
 |}>;
 
 type Props = $ReadOnly<{|
@@ -131,6 +144,10 @@ type Props = $ReadOnly<{|
    * Used only for documentation or testing (e.g. snapshot testing).
    */
   testOnly_pressed?: ?boolean,
+  /**
+   * Props needed for Apple TV and Android TV
+   */
+  ...TVProps,
 |}>;
 
 /**
@@ -146,6 +163,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     delayLongPress,
     disabled,
     focusable,
+    isTVSelectable,
     onLongPress,
     onPress,
     onPressIn,
@@ -217,6 +235,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
       {...android_rippleConfig?.viewProps}
       accessible={accessible !== false}
       focusable={focusable !== false}
+      isTVSelectable={isTVSelectable !== false && accessible !== false}
       hitSlop={hitSlop}
       ref={viewRef}
       style={typeof style === 'function' ? style({pressed}) : style}>
