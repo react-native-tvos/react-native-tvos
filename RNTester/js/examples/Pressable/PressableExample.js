@@ -54,6 +54,34 @@ function ContentPress() {
   );
 }
 
+function TVFocusContentPress() {
+  const [timesPressed, setTimesPressed] = useState(0);
+
+  let textLog = '';
+  if (timesPressed > 1) {
+    textLog = timesPressed + 'x onPress';
+  } else if (timesPressed > 0) {
+    textLog = 'onPress';
+  }
+
+  return (
+    <>
+      <View style={styles.row}>
+        <Pressable
+          onPress={() => {
+            setTimesPressed(current => current + 1);
+          }}>
+          {({focused}) => (
+            <Text style={styles.text}>{focused ? 'Focused!' : 'Press Me'}</Text>
+          )}
+        </Pressable>
+      </View>
+      <View style={styles.logBox}>
+        <Text testID="focusable_press_console">{textLog}</Text>
+      </View>
+    </>
+  );
+}
 function TextOnPressBox() {
   const [timesPressed, setTimesPressed] = useState(0);
 
@@ -322,6 +350,12 @@ exports.examples = [
     title: 'Change content based on Press',
     render(): React.Node {
       return <ContentPress />;
+    },
+  },
+  {
+    title: 'Change content based on focus',
+    render(): React.Node {
+      return <TVFocusContentPress />;
     },
   },
   {

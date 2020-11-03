@@ -36,6 +36,7 @@ type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
 export type StateCallbackType = $ReadOnly<{|
   pressed: boolean,
+  focused: boolean,
 |}>;
 
 type TVProps = $ReadOnly<{|
@@ -251,8 +252,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
           onPressOut && onPressOut(evt);
-          setPressed(false);
           setFocused(false);
+          setPressed(false);
         }
       }
       if (focused && evt.eventType === 'select') {
@@ -275,8 +276,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
       isTVSelectable={isTVSelectable !== false && accessible !== false}
       hitSlop={hitSlop}
       ref={viewRef}
-      style={typeof style === 'function' ? style({pressed}) : style}>
-      {typeof children === 'function' ? children({pressed}) : children}
+      style={typeof style === 'function' ? style({pressed, focused}) : style}>
+      {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );
