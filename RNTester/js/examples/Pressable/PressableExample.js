@@ -267,6 +267,10 @@ function PressableDisabled() {
 
       <Pressable
         disabled={false}
+        tvParallaxProperties={{
+          enabled: true,
+          pressMagnification: 1.1,
+        }}
         style={({pressed}) => [
           {opacity: pressed ? 0.5 : 1},
           styles.row,
@@ -364,6 +368,10 @@ exports.examples = [
       return (
         <View style={styles.row}>
           <Pressable
+            tvParallaxProperties={{
+              enabled: true,
+              pressMagnification: 1.1,
+            }}
             style={({pressed}) => [
               {
                 backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
