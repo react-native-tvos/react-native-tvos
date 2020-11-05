@@ -233,6 +233,19 @@ const APIExamples: Array<RNTesterExample> = [
     module: require('../examples/Transform/TransformExample'),
   },
   {
+    key: 'TVEventHandlerExample',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+  },
+  {
+    key: 'DirectionalNextFocusExample',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+  },
+  {
+    key: 'TVFocusGuideExample',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+  },
+
+  {
     key: 'VibrationExample',
     module: require('../examples/Vibration/VibrationExample'),
   },
