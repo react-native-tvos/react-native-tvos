@@ -11,7 +11,6 @@
 'use strict';
 
 import * as React from 'react';
-import {findNodeHandle} from '../../Renderer/shims/ReactNative';
 import {useMemo, useState, useRef, useImperativeHandle} from 'react';
 import useAndroidRippleForView, {
   type RippleConfig,
@@ -26,11 +25,11 @@ import type {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import usePressability from '../../Pressability/usePressability';
 import {normalizeRect, type RectOrSize} from '../../StyleSheet/Rect';
-import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
 import type {LayoutEvent, PressEvent} from '../../Types/CoreEventTypes';
 import View from '../View/View';
 import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
 import useTVEventHandler from '../AppleTV/useTVEventHandler';
+import Platform from '../../Utilities/Platform';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
@@ -242,25 +241,28 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const pressableTVEventHandler = (evt: Event) => {
     if (props.isTVSelectable !== false || props.focusable !== false) {
-      const tag = findNodeHandle(viewRef.current);
-      if (tag === evt.tag) {
+      if (viewRef.current._nativeTag === evt.target) {
         if (evt?.eventType === 'focus') {
-          setPressed(true);
           setFocused(true);
+          setPressed(true);
           onPressIn && onPressIn(evt);
           onFocus && onFocus(evt);
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
           onPressOut && onPressOut(evt);
-          setFocused(false);
           setPressed(false);
+          setFocused(false);
         }
       }
-      if (focused && evt.eventType === 'select') {
-        onPress && onPress(evt);
-      }
-      if (focused && evt.eventType === 'longSelect') {
-        onLongPress && onLongPress(evt);
+      // Use these on tvOS only.  Android press events go to onClick() so we don't
+      // need to call onPress() again here
+      if (Platform.isTVOS) {
+        if (focused && evt.eventType === 'select') {
+          onPress && onPress(evt);
+        }
+        if (focused && evt.eventType === 'longSelect') {
+          onLongPress && onLongPress(evt);
+        }
       }
     }
   };
