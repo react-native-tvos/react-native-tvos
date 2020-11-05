@@ -244,13 +244,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
       if (viewRef.current._nativeTag === evt.target) {
         if (evt?.eventType === 'focus') {
           setFocused(true);
-          setPressed(true);
-          onPressIn && onPressIn(evt);
           onFocus && onFocus(evt);
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
-          onPressOut && onPressOut(evt);
-          setPressed(false);
           setFocused(false);
         }
       }

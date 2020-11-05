@@ -365,7 +365,7 @@ exports.examples = [
     },
   },
   {
-    title: 'Change style based on Press',
+    title: 'Change style based on Press and Focus',
     render(): React.Node {
       return (
         <View style={styles.row}>
@@ -374,9 +374,13 @@ exports.examples = [
               enabled: true,
               pressMagnification: 1.1,
             }}
-            style={({pressed}) => [
+            style={({pressed, focused}) => [
               {
-                backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                backgroundColor: pressed
+                  ? 'rgb(210, 230, 255)'
+                  : focused
+                  ? 'rgb(255, 230, 210)'
+                  : 'white',
               },
               styles.wrapperCustom,
             ]}>

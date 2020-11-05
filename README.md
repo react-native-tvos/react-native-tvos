@@ -167,7 +167,7 @@ class Game2048 extends React.Component {
 
 - _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected in tvOS, after a few adjustments to make the controls accessible to the focus engine.
 
-- _Pressable_: The new `Pressable` API for React Native 0.63 works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. The existing `onPressIn` and `onPressOut` will also fire when entering or leaving focus, and the `pressed` and `focused` states will be true while focused.  `PressableExample` in RNTester has been modified appropriately.
+- _Pressable_: The new `Pressable` API for React Native 0.63 works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately.
 
 - _Dev Menu support_: On the simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) )
 
