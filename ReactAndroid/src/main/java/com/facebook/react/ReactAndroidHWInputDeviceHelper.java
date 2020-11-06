@@ -51,7 +51,7 @@ public class ReactAndroidHWInputDeviceHelper {
   public void handleKeyEvent(KeyEvent ev) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
-    if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
+    if (eventKeyAction == KeyEvent.ACTION_UP
         && KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)) {
       dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction);
     }
@@ -87,6 +87,7 @@ public class ReactAndroidHWInputDeviceHelper {
     event.putInt("eventKeyAction", eventKeyAction);
     if (targetViewId != View.NO_ID) {
       event.putInt("tag", targetViewId);
+      event.putInt("target", targetViewId);
     }
     mReactRootView.sendEvent("onHWKeyEvent", event);
   }
