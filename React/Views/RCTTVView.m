@@ -117,12 +117,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)sendSelectNotification:(__unused UIGestureRecognizer *)recognizer
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{@"eventType":@"select",@"tag":self.reactTag}];
-}
-
 - (BOOL)isUserInteractionEnabled
 {
   return YES;
@@ -295,14 +289,27 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{@"eventType":@"focus",@"tag":self.reactTag}];
+    [self sendNotificationWithEventType:@"focus"];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
+    [self sendNotificationWithEventType:@"blur"];
+}
+
+- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
+{
+    [self sendNotificationWithEventType:@"select"];
+}
+
+- (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
+{
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{@"eventType":@"blur",@"tag":self.reactTag}];
+                                                      object:@{
+                                                          @"eventType":eventType,
+                                                          @"tag":self.reactTag,
+                                                          @"target":self.reactTag
+                                                      }];
 }
 
 - (RCTTVView *)getViewById:(NSNumber *)viewId {

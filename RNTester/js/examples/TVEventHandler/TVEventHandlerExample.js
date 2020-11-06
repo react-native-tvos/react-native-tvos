@@ -17,9 +17,17 @@ const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
 
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
+  const [eventLog, setEventLog] = React.useState([]);
+
+  function appendEvent(eventName) {
+    const limit = 6;
+    const newEventLog = eventLog.slice(0, limit - 1);
+    newEventLog.unshift(eventName);
+    setEventLog(newEventLog);
+  }
 
   const myTVEventHandler = evt => {
-    setLastEventType(evt.eventType);
+    appendEvent(evt.eventType);
   };
 
   if (Platform.isTV) {
@@ -32,7 +40,11 @@ const TVEventHandlerView: () => React.Node = () => {
             event detected from the Apple TV Siri remote or from a keyboard.
           </Text>
         </TouchableOpacity>
-        <Text style={{color: 'blue'}}>{lastEventType}</Text>
+        {eventLog.map((e, ii) => (
+          <Text style={{color: 'blue'}} key={ii}>
+            {e}
+          </Text>
+        ))}
       </View>
     );
   } else {
