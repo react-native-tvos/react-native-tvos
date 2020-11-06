@@ -53,7 +53,7 @@
     "template.config.js",
     "template",
     "third-party-podspecs",
-    "tvos-types.d"
+    "tvos-types.d.ts"
   ],
   "scripts": {
     "start": "react-native start",
