@@ -20,11 +20,20 @@ const styles = StyleSheet.create({
 
 const DebugInstructions: () => Node = Platform.select({
   ios: () => (
-    <Text>
-      Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
-      <Text style={styles.highlight}>Shake</Text> your device to open the React
-      Native debug menu.
-    </Text>
+    Platform.isTVOS ? (
+      <Text>
+        Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
+        <Text style={styles.highlight}>long press the play/pause button</Text> on
+        the Apple TV remote to open the React
+        Native debug menu.
+      </Text>
+    ) : (
+      <Text>
+        Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
+        <Text style={styles.highlight}>Shake</Text> your device to open the React
+        Native debug menu.
+      </Text>
+    )
   ),
   default: () => (
     <Text>
