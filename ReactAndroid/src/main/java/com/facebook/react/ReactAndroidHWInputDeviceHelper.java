@@ -51,7 +51,7 @@ public class ReactAndroidHWInputDeviceHelper {
   public void handleKeyEvent(KeyEvent ev) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
-    if (eventKeyAction == KeyEvent.ACTION_UP
+    if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
         && KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)) {
       dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction);
     }
