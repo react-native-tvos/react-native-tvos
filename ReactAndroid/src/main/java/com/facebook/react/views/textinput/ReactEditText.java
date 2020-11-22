@@ -155,10 +155,12 @@ public class ReactEditText extends AppCompatEditText {
         });
   }
 
-  private boolean isTVDevice() {
-    UiModeManager uiModeManager = (UiModeManager) getContext().getSystemService(Context.UI_MODE_SERVICE);
-    return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
-  }
+  // Not currently used, but leaving in as a comment in case it's needed later
+
+  // private boolean isTVDevice() {
+  //   UiModeManager uiModeManager = (UiModeManager) getContext().getSystemService(Context.UI_MODE_SERVICE);
+  //   return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+  // }
 
   public void showKeyboard() {
     isKeyboardOpened = true;
@@ -273,7 +275,7 @@ public class ReactEditText extends AppCompatEditText {
   private boolean requestFocusInternal() {
     setFocusableInTouchMode(true);
     boolean focused = super.requestFocus(View.FOCUS_DOWN, null);
-    if (getShowSoftInputOnFocus() && !isTVDevice()) {
+    if (getShowSoftInputOnFocus()) {
       showSoftKeyboard();
     } else {
       if (isKeyboardOpened) {
