@@ -13,6 +13,8 @@
 const React = require('react');
 const ReactNative = require('react-native');
 
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
+
 const {
   Platform,
   View,
@@ -37,6 +39,47 @@ exports.examples = [
 const padding = 100;
 const width = 200;
 const height = 120;
+
+class Button extends React.Component<$FlowFixMeProps> {
+  render() {
+    return (
+      <RNTesterThemeContext.Consumer>
+        {theme => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={this.props.onPress}
+              onFocus={this.props.onFocus}
+              style={this.props.style}
+              ref={this.props.ref}>
+              <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
+                {this.props.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      </RNTesterThemeContext.Consumer>
+    );
+  }
+}
+
+class ThemedView extends React.Component<$FlowFixMeProps> {
+  render() {
+    return (
+      <RNTesterThemeContext.Consumer>
+        {theme => {
+          return (
+            <View style={this.props.style}>
+              <Text style={[{color: theme.LabelColor}, styles.buttonText]}>
+                {this.props.label}
+              </Text>
+            </View>
+          );
+        }}
+      </RNTesterThemeContext.Consumer>
+    );
+  }
+}
 
 class TVFocusGuideExample extends React.Component<
   $FlowFixMeProps,
@@ -76,98 +119,122 @@ class TVFocusGuideExample extends React.Component<
     }
     const destinations = this.state.destination ? [this.state.destination] : [];
     return (
-      <View style={styles.container}>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              width,
-              height,
-            }}>
-            <Text style={styles.buttonText}>Left Top</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            onFocus={() =>
-              this._setDestination(this.buttonBottomLeft, 'bottom left')
-            }
-            ref={component => (this.buttonTopRight = component)}
-            style={{
-              width,
-              height,
-            }}>
-            <Text style={styles.buttonText}>Right Top</Text>
-          </TouchableOpacity>
-          <View
-            style={{
-              width,
-              height,
-            }}>
-            <Text style={styles.buttonText}>
-              Pink focus guide points to {this.state.destinationText}
-            </Text>
-          </View>
-          <TVFocusGuideView style={styles.containerFocusGuide} destinations={[this.rightButtonInFocusViewContainer]}>
-            <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>Wrapped button 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {}}
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>Wrapped button 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              ref={component => (this.rightButtonInFocusViewContainer = component)}
-              onPress={() => {}}
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>Wrapped button 3</Text>
-            </TouchableOpacity>
-          </TVFocusGuideView>
-        </View>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            onPress={() => {}}
-            onFocus={() =>
-              this._setDestination(this.buttonTopRight, 'top right')
-            }
-            ref={component => (this.buttonBottomLeft = component)}
-            style={{
-              width,
-              height,
-            }}>
-            <Text style={styles.buttonText}>Left Bottom</Text>
-          </TouchableOpacity>
-          <TVFocusGuideView style={styles.focusGuide} destinations={destinations}>
-            <Text style={styles.buttonText}>Focus guide</Text>
-          </TVFocusGuideView>
-          <View
-            style={{
-              width,
-              height,
-            }}>
-          </View>
-          <View
-            style={{
-              width: width*3,
-              height,
-            }}>
-            <Text style={styles.buttonText}>
-              Blue focus guide container above always points to button 3 if navigating from outside
-            </Text>
-          </View>
-        </View>
-      </View>
+      <RNTesterThemeContext.Consumer>
+        {theme => {
+          return (
+            <View style={styles.container}>
+              <View style={styles.rowContainer}>
+                <Button
+                  onPress={() => {}}
+                  style={{
+                    width,
+                    height,
+                  }}
+                  label="Left Top"
+                />
+                <Button
+                  onPress={() => {}}
+                  onFocus={() =>
+                    this._setDestination(this.buttonBottomLeft, 'bottom left')
+                  }
+                  ref={component => (this.buttonTopRight = component)}
+                  style={{
+                    width,
+                    height,
+                  }}
+                  label="Right Top"
+                />
+                <ThemedView
+                  style={{
+                    width,
+                    height,
+                  }}
+                  label={`Focus guide points to ${this.state.destinationText}`}
+                />
+                <TVFocusGuideView
+                  style={styles.containerFocusGuide}
+                  destinations={[this.rightButtonInFocusViewContainer]}>
+                  <Button
+                    onPress={() => {}}
+                    style={{
+                      width,
+                      height,
+                    }}
+                    label="Wrapped button 1"
+                  />
+                  <Button
+                    onPress={() => {}}
+                    style={{
+                      width,
+                      height,
+                    }}
+                    label="Wrapped button 2"
+                  />
+                  <Button
+                    ref={component =>
+                      (this.rightButtonInFocusViewContainer = component)
+                    }
+                    onPress={() => {}}
+                    style={{
+                      width,
+                      height,
+                    }}
+                    label="Wrapped button 3"
+                  />
+                </TVFocusGuideView>
+              </View>
+              <View style={styles.rowContainer}>
+                <Button
+                  onPress={() => {}}
+                  onFocus={() =>
+                    this._setDestination(this.buttonTopRight, 'top right')
+                  }
+                  ref={component => (this.buttonBottomLeft = component)}
+                  style={{
+                    width,
+                    height,
+                  }}
+                  label="Left Bottom"
+                />
+                <RNTesterThemeContext.Consumer>
+                  {theme => {
+                    return (
+                      <TVFocusGuideView
+                        style={[
+                          {backgroundColor: theme.TertiarySystemFillColor},
+                          styles.focusGuide,
+                        ]}
+                        destinations={destinations}>
+                        <Text
+                          style={[
+                            {color: theme.LabelColor},
+                            styles.buttonText,
+                          ]}>
+                          Focus guide
+                        </Text>
+                      </TVFocusGuideView>
+                    );
+                  }}
+                </RNTesterThemeContext.Consumer>
+                <View
+                  style={{
+                    width,
+                    height,
+                  }}
+                />
+                <ThemedView
+                  style={{
+                    width: width * 3,
+                    height,
+                  }}
+                  label="Blue focus guide container above always points to button 3
+                    if navigating from outside"
+                />
+              </View>
+            </View>
+          );
+        }}
+      </RNTesterThemeContext.Consumer>
     );
   }
 }
@@ -175,7 +242,6 @@ class TVFocusGuideExample extends React.Component<
 const styles = StyleSheet.create({
   container: {
     marginTop: -20,
-    backgroundColor: 'transparent',
   },
   rowContainer: {
     flexDirection: 'row',
@@ -187,8 +253,6 @@ const styles = StyleSheet.create({
   focusGuide: {
     width,
     height,
-    backgroundColor: 'pink',
-    opacity: 0.3,
   },
   containerFocusGuide: {
     backgroundColor: 'transparent',
