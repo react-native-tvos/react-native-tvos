@@ -13,6 +13,8 @@
 const React = require('react');
 const ReactNative = require('react-native');
 
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
+
 const {View, StyleSheet, TouchableOpacity, Text, findNodeHandle} = ReactNative;
 
 exports.framework = 'React';
@@ -30,6 +32,51 @@ exports.examples = [
 const padding = 100;
 const width = 200;
 const height = 120;
+
+class Button extends React.Component<$FlowFixMeProps> {
+  render() {
+    return (
+      <RNTesterThemeContext.Consumer>
+        {theme => {
+          return (
+            <TouchableOpacity
+              nextFocusUp={this.props.nextFocusUp}
+              nextFocusDown={this.props.nextFocusDown}
+              nextFocusLeft={this.props.nextFocusLeft}
+              nextFocusRight={this.props.nextFocusRight}
+              activeOpacity={0.7}
+              onPress={this.props.onPress}
+              onFocus={this.props.onFocus}
+              style={this.props.style}
+              ref={this.props.ref}>
+              <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
+                {this.props.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      </RNTesterThemeContext.Consumer>
+    );
+  }
+}
+
+class ThemedView extends React.Component<$FlowFixMeProps> {
+  render() {
+    return (
+      <RNTesterThemeContext.Consumer>
+        {theme => {
+          return (
+            <View style={this.props.style}>
+              <Text style={[{color: theme.LabelColor}, styles.buttonText]}>
+                {this.props.label}
+              </Text>
+            </View>
+          );
+        }}
+      </RNTesterThemeContext.Consumer>
+    );
+  }
+}
 
 class DirectionalNextFocusExample extends React.Component<
   $FlowFixMeProps,
@@ -59,7 +106,7 @@ class DirectionalNextFocusExample extends React.Component<
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-          <TouchableOpacity
+          <Button
             nextFocusUp={destinations.up}
             nextFocusDown={destinations.down}
             nextFocusLeft={destinations.left}
@@ -67,97 +114,102 @@ class DirectionalNextFocusExample extends React.Component<
             style={{
               width,
               height,
-            }}>
-            <Text style={styles.buttonText}>Starting point</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            ref={component =>
-              this.setState(prevState => ({
-                destinations: {
-                  ...prevState.destinations,
-                  up: findNodeHandle(component),
-                },
-              }))
-            }
-            style={{
-              width,
-              height,
-            }}>
-            <Text style={styles.buttonText}>nextUp destination</Text>
-          </TouchableOpacity>
-          <View style={styles.containerFocusGuide}>
-            <TouchableOpacity
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>Wrapped button 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              ref={component =>
+            }}
+            label="Starting point"
+          />
+          <Button
+            ref={component => {
+              if (!this.state.destinations.up) {
                 this.setState(prevState => ({
                   destinations: {
                     ...prevState.destinations,
-                    down: findNodeHandle(component),
+                    up: findNodeHandle(component),
                   },
-                }))
+                }));
               }
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>nextDown destination</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width,
-                height,
-              }}>
-              <Text style={styles.buttonText}>Wrapped button 3</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.rowContainer}>
-          <TouchableOpacity
-            ref={component =>
-              this.setState(prevState => ({
-                destinations: {
-                  ...prevState.destinations,
-                  right: findNodeHandle(component),
-                },
-              }))
-            }
+            }}
             style={{
               width,
               height,
-            }}>
-            <Text style={styles.buttonText}>nextRight destination</Text>
-          </TouchableOpacity>
+            }}
+            label="nextUp destination"
+          />
+          <View style={styles.containerFocusGuide}>
+            <Button
+              style={{
+                width,
+                height,
+              }}
+              label="Wrapped button 1"
+            />
+            <Button
+              ref={component => {
+                if (!this.state.destinations.down) {
+                  this.setState(prevState => ({
+                    destinations: {
+                      ...prevState.destinations,
+                      down: findNodeHandle(component),
+                    },
+                  }));
+                }
+              }}
+              style={{
+                width,
+                height,
+              }}
+              label="nextDown destination"
+            />
+            <Button
+              style={{
+                width,
+                height,
+              }}
+              label="Wrapped button 3"
+            />
+          </View>
+        </View>
+        <View style={styles.rowContainer}>
+          <Button
+            ref={component => {
+              if (!this.state.destinations.right) {
+                this.setState(prevState => ({
+                  destinations: {
+                    ...prevState.destinations,
+                    right: findNodeHandle(component),
+                  },
+                }));
+              }
+            }}
+            style={{
+              width,
+              height,
+            }}
+            label="nextRight destination"
+          />
           <View
             style={{
               width,
               height,
             }}
           />
-          <TouchableOpacity
-            ref={component =>
-              this.setState(prevState => ({
-                destinations: {
-                  ...prevState.destinations,
-                  left: findNodeHandle(component),
-                },
-              }))
-            }
+          <Button
+            ref={component => {
+              if (!this.state.destinations.left) {
+                this.setState(prevState => ({
+                  destinations: {
+                    ...prevState.destinations,
+                    left: findNodeHandle(component),
+                  },
+                }));
+              }
+            }}
             style={{
               width: width * 3,
               height,
-            }}>
-            <Text style={styles.buttonText}>nextLeft destination</Text>
-            <Text style={styles.buttonText}>
-              does not work because there is no "real" focusable in the
-              direction
-            </Text>
-          </TouchableOpacity>
+            }}
+            label="nextLeft destination does not work because there is no actual focusable in the
+              direction"
+          />
         </View>
       </View>
     );
