@@ -302,7 +302,10 @@ using namespace facebook::react;
 {
   if (!_backedTextInputView.textWasPasted) {
     if (_eventEmitter) {
-      std::static_pointer_cast<TextInputEventEmitter const>(_eventEmitter)->onKeyPress([self _textInputMetrics]);
+      KeyPressMetrics keyPressMetrics;
+      keyPressMetrics.text = RCTStringFromNSString(text);
+      keyPressMetrics.eventCount = _mostRecentEventCount;
+      std::static_pointer_cast<TextInputEventEmitter const>(_eventEmitter)->onKeyPress(keyPressMetrics);
     }
   }
 
@@ -402,11 +405,6 @@ using namespace facebook::react;
 - (void)blur
 {
   [_backedTextInputView resignFirstResponder];
-}
-
-- (void)setMostRecentEventCount:(NSInteger)eventCount
-{
-  _mostRecentEventCount = eventCount;
 }
 
 - (void)setTextAndSelection:(NSInteger)eventCount

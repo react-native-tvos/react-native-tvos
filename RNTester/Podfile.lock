@@ -444,7 +444,7 @@ SPEC CHECKSUMS:
   React: 5acddf5e840bde535ce49bbbbf0c5b4606ed46ee
   React-ART: 7956eddfa07f2c4519ac38727231d5be98925e0a
   React-callinvoker: 6f69ad481418d68da993e220c33a99a6743cd7f4
-  React-Core: 05bbec5a32fa33086f3660018433dda6b1836725
+  React-Core: aa514ca2b30d80dfd0e8c3d01657bf3b6677e202
   React-CoreModules: 956ee27d788338864c4a74eec919fdefc1840288
   React-cxxreact: 3777530ab3a967196b8909c0a090b800c24b674e
   React-jsi: 476e2c86124e6900e42ba66b2fb717cf7e4bc2d9
