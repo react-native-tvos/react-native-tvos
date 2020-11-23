@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    color: '#808080',
   },
   block: {
     padding: 10,
