@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 import com.facebook.react.uimanager.PixelUtil;
@@ -329,6 +330,17 @@ public class ReactHorizontalScrollViewManager extends ViewGroupManager<ReactHori
     } else {
       view.setHorizontalFadingEdgeEnabled(false);
       view.setFadingEdgeLength(0);
+    }
+  }
+
+  @ReactProp(name = "contentOffset")
+  public void setContentOffset(ReactHorizontalScrollView view, ReadableMap value) {
+    if (value != null) {
+      double x = value.hasKey("x") ? value.getDouble("x") : 0;
+      double y = value.hasKey("y") ? value.getDouble("y") : 0;
+      view.reactScrollTo((int) PixelUtil.toPixelFromDIP(x), (int) PixelUtil.toPixelFromDIP(y));
+    } else {
+      view.reactScrollTo(0, 0);
     }
   }
 }
