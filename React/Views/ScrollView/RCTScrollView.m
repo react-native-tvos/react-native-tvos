@@ -19,7 +19,9 @@
 #import "UIView+Private.h"
 #import "UIView+React.h"
 
+#if TARGET_OS_TV
 #import "RCTTVRemoteHandler.h"
+#endif
 
 #if !TARGET_OS_TV
 #import "RCTRefreshControl.h"
