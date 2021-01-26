@@ -606,7 +606,7 @@ jobs:
         default: false
     environment:
       - ANDROID_HOME: "C:\\Android\\android-sdk"
-      - ANDROID_NDK: "C:\\Android\\android-sdk\\ndk\\19.2.5345600"
+      - ANDROID_NDK_HOME: "C:\\Android\\android-sdk\\ndk\\19.2.5345600"
       - ANDROID_BUILD_VERSION: 28
       - ANDROID_TOOLS_VERSION: 29.0.3
       - GRADLE_OPTS: -Dorg.gradle.daemon=false
