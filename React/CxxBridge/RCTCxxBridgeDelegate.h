@@ -31,3 +31,12 @@ class JSExecutorFactory;
 - (void *)jsExecutorFactoryForBridge:(RCTBridge *)bridge;
 
 @end
+
+@protocol RCTCxxBridgeTurboModuleDelegate <RCTBridgeDelegate>
+
+/**
+ * The RCTCxxBridgeDelegate used outside of the Expo Go.
+ */
+- (std::unique_ptr<facebook::react::JSExecutorFactory>)jsExecutorFactoryForBridge:(RCTBridge *)bridge;
+
+@end
