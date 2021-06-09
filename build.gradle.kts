@@ -9,6 +9,7 @@ buildscript {
     repositories {
         mavenLocal()
         google()
+        mavenCentral()
         jcenter()
     }
     dependencies {
@@ -32,6 +33,7 @@ allprojects {
         }
         mavenLocal()
         google()
+        mavenCentral()
         jcenter()
     }
 }
