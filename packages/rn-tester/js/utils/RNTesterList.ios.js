@@ -319,6 +319,11 @@ const APIs: Array<RNTesterModuleInfo> = [
     supportsTVOS: false,
   },
   {
+    key: 'TVEventHandlerExample',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'VibrationExample',
     module: require('../examples/Vibration/VibrationExample'),
     supportsTVOS: false,

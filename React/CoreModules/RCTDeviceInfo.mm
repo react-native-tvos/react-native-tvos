@@ -23,8 +23,10 @@ using namespace facebook::react;
 @end
 
 @implementation RCTDeviceInfo {
+#if !TARGET_OS_TV
   UIInterfaceOrientation _currentInterfaceOrientation;
   NSDictionary *_currentInterfaceDimensions;
+#endif
 }
 
 @synthesize moduleRegistry = _moduleRegistry;
@@ -48,7 +50,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(didReceiveNewContentSizeMultiplier)
                                                name:RCTAccessibilityManagerDidUpdateMultiplierNotification
                                              object:[moduleRegistry moduleForName:"AccessibilityManager"]];
-
+#if !TARGET_OS_TV
   _currentInterfaceOrientation = [RCTSharedApplication() statusBarOrientation];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -67,6 +69,8 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:RCTUserInterfaceStyleDidChangeNotification
                                              object:nil];
+
+#endif
 }
 
 static BOOL RCTIsIPhoneX()
@@ -158,6 +162,8 @@ static NSDictionary *RCTExportedDimensions(RCTModuleRegistry *moduleRegistry)
   });
 }
 
+#if !TARGET_OS_TV
+
 - (void)interfaceOrientationDidChange
 {
   __weak __typeof(self) weakSelf = self;
@@ -207,6 +213,8 @@ static NSDictionary *RCTExportedDimensions(RCTModuleRegistry *moduleRegistry)
 
   _currentInterfaceDimensions = nextInterfaceDimensions;
 }
+
+#endif // TARGET_OS_TV
 
 - (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
 {

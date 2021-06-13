@@ -47,6 +47,7 @@
   [_touchHandler attachToView:self.view];
 }
 
+#if !TARGET_OS_TV
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
   return [RCTSharedApplication() statusBarStyle];
@@ -81,5 +82,6 @@
   return _supportedInterfaceOrientations;
 }
 #endif // RCT_DEV
+#endif // !TARGET_OS_TV
 
 @end

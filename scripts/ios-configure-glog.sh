@@ -31,10 +31,20 @@ fi
 ./configure --host arm-apple-darwin
 
 cat << EOF >> src/config.h
+# Fix build for tvOS
+cat << EOF >> src/config.h
+
 /* Add in so we have Apple Target Conditionals */
 #ifdef __APPLE__
 #include <TargetConditionals.h>
 #include <Availability.h>
+#endif
+
+/* Special configuration for AppleTVOS */
+#if TARGET_OS_TV
+#undef HAVE_SYSCALL_H
+#undef HAVE_SYS_SYSCALL_H
+#undef OS_MACOSX
 #endif
 
 /* Special configuration for ucontext */

@@ -67,6 +67,11 @@ while :; do
       shift
       ;;
 
+    --tvos)
+      RUN_IOS=1
+      shift
+      ;;
+
     *)
       break
   esac
