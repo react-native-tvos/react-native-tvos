@@ -18,11 +18,11 @@
 {
   if ((self = [super initWithFrame:frame])) {
 #if TARGET_OS_TV
-    self.windowLevel = UIWindowLevelNormal;
+      self.windowLevel = UIWindowLevelNormal;
 #else
-    self.windowLevel = UIWindowLevelStatusBar - 1;
+      self.windowLevel = UIWindowLevelStatusBar - 1;
 #endif
-    self.backgroundColor = [UIColor clearColor];
+      self.backgroundColor = [UIColor clearColor];
   }
   return self;
 }
