@@ -30,7 +30,6 @@ fi
 
 ./configure --host arm-apple-darwin
 
-cat << EOF >> src/config.h
 # Fix build for tvOS
 cat << EOF >> src/config.h
 

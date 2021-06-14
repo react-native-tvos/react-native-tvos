@@ -1801,6 +1801,24 @@ namespace facebook {
   } // namespace react
 } // namespace facebook
 
+@protocol NativeTVNavigationEventEmitterSpec <RCTBridgeModule, RCTTurboModule>
+
+- (void)addListener:(NSString *)eventName;
+- (void)removeListeners:(double)count;
+
+@end
+namespace facebook {
+  namespace react {
+    /**
+     * ObjC++ class for module 'NativeTVNavigationEventEmitter'
+     */
+    class JSI_EXPORT NativeTVNavigationEventEmitterSpecJSI : public ObjCTurboModule {
+    public:
+      NativeTVNavigationEventEmitterSpecJSI(const ObjCTurboModule::InitParams &params);
+    };
+  } // namespace react
+} // namespace facebook
+
 @protocol NativeTimingSpec <RCTBridgeModule, RCTTurboModule>
 
 - (void)createTimer:(double)callbackID
@@ -2534,6 +2552,7 @@ inline JS::NativeStatusBarManagerIOS::Constants::Builder::Builder(const Input i)
 inline JS::NativeStatusBarManagerIOS::Constants::Builder::Builder(Constants i) : _factory(^{
   return i.unsafeRawValue();
 }) {}
+
 
 
 inline id<NSObject> _Nullable JS::NativeWebSocketModule::SpecConnectOptions::headers() const

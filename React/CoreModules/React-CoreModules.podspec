@@ -31,6 +31,7 @@ Pod::Spec.new do |s|
   s.source                 = source
   s.source_files           = "**/*.{c,m,mm,cpp}"
   s.tvos.exclude_files     = "**/RCTActionSheet*.*"
+  s.tvos.source_files     = "**/RCTTV*.*"
   s.header_dir             = "CoreModules"
   s.pod_target_xcconfig    = {
                                "USE_HEADERMAP" => "YES",

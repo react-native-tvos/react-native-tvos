@@ -40,7 +40,7 @@ end
 
 target 'RNTester' do
   pods()
-  use_flipper_tvos!
+  # use_flipper_tvos!
 end
 
 target 'RNTesterUnitTests' do
@@ -72,6 +72,6 @@ if ENV['USE_FRAMEWORKS'] == '1'
 end
 
 post_install do |installer|
-  flipper_post_install(installer)
+  # flipper_post_install(installer)
 end
 
