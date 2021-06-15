@@ -216,14 +216,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tvNavBar: {
+    top: 148,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    height: navBarHeight,
+  },
+  bottomNavbar: {
     bottom: 0,
     left: 20,
     width: '30%',
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',
-  },
-  bottomNavbar: {
     height: navBarHeight,
   },
   hidden: {
