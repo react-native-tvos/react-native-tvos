@@ -52,20 +52,22 @@ const ExampleCard = ({
         style={[styles.row, {backgroundColor: theme.SystemBackgroundColor}]}>
         <View style={styles.topRowStyle}>
           <RNTesterComponentTitle>{item.module.title}</RNTesterComponentTitle>
-          <TouchableHighlight
-            style={styles.imageViewStyle}
-            onPress={() =>
-              toggleBookmark({exampleType: item.exampleType, key: item.key})
-            }>
-            <Image
-              style={styles.imageStyle}
-              source={
-                item.isBookmarked
-                  ? require('../assets/bookmark-outline-blue.png')
-                  : require('../assets/bookmark-outline-gray.png')
-              }
-            />
-          </TouchableHighlight>
+          {Platform.isTV ? null : (
+            <TouchableHighlight
+              style={styles.imageViewStyle}
+              onPress={() =>
+                toggleBookmark({exampleType: item.exampleType, key: item.key})
+              }>
+              <Image
+                style={styles.imageStyle}
+                source={
+                  item.isBookmarked
+                    ? require('../assets/bookmark-outline-blue.png')
+                    : require('../assets/bookmark-outline-gray.png')
+                }
+              />
+            </TouchableHighlight>
+          )}
         </View>
         <Text
           style={[

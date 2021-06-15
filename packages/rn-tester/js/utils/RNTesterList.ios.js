@@ -300,16 +300,19 @@ const APIExamples: Array<RNTesterExample> = [
   },
   {
     key: 'TVEventHandlerExample',
+    category: 'TV',
     module: require('../examples/TVEventHandler/TVEventHandlerExample'),
     supportsTVOS: true,
   },
   {
     key: 'DirectionalNextFocusExample',
+    category: 'TV',
     module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
     supportsTVOS: true,
   },
   {
     key: 'TVFocusGuideExample',
+    category: 'TV',
     module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
     supportsTVOS: true,
   },

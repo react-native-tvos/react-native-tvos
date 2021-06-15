@@ -14,6 +14,8 @@ import {
   BackHandler,
   StyleSheet,
   useColorScheme,
+  Platform,
+  TVMenuControl,
   View,
   LogBox,
 } from 'react-native';
@@ -133,6 +135,7 @@ const RNTesterApp = (): React.Node => {
 
   const handleBackPress = React.useCallback(() => {
     if (openExample) {
+      TVMenuControl.enableTVMenuKey();
       dispatch({type: RNTesterActionsType.BACK_BUTTON_PRESS});
     }
   }, [dispatch, openExample]);
@@ -142,6 +145,7 @@ const RNTesterApp = (): React.Node => {
     const handleHardwareBackPress = () => {
       if (openExample) {
         handleBackPress();
+        TVMenuControl.disableTVMenuKey();
         return true;
       }
       return false;
@@ -223,7 +227,7 @@ const RNTesterApp = (): React.Node => {
         handleExampleCardPress={handleExampleCardPress}
         toggleBookmark={toggleBookmark}
       />
-      <View style={styles.bottomNavbar}>
+      <View style={Platform.isTV ? styles.tvNavBar : styles.bottomNavbar}>
         <RNTesterNavBar
           screen={screen || Screens.COMPONENTS}
           isExamplePageOpen={!!ExampleModule}
@@ -239,6 +243,14 @@ export default RNTesterApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  tvNavBar: {
+    top: 148,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
   },
   bottomNavbar: {
     bottom: 0,
