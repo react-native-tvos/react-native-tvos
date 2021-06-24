@@ -72,7 +72,7 @@ declare module 'react-native' {
    * to help ensure that focusable controls can be navigated to,
    * even if they are not directly in line with other controls.
    * An example is provided in `RNTester` that shows two different ways of using this component.
-   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.63.1/RNTester/js/TVFocusGuideExample.js
+   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.63.4/RNTester/js/examples/TVFocusGuide/TVFocusGuideExample.js
    */
   export class TVFocusGuideView extends React.Component<FocusGuideProps> {}
 
