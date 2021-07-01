@@ -28,6 +28,7 @@ target 'HelloWorld-tvOS' do
 
   config = use_native_modules!
 
+  # Hermes not yet available on tvOS
   use_react_native!(:path => config["reactNativePath"])
 
   target 'HelloWorld-tvOSTests' do
