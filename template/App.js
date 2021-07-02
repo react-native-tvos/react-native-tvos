@@ -9,9 +9,9 @@
 import React from 'react';
 import type {Node} from 'react';
 import ReactNative, {
+  Platform,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
