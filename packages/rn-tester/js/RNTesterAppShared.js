@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tvNavBar: {
-    top: 148,
+    bottom: 0,
     left: 20,
     width: '30%',
     display: 'flex',

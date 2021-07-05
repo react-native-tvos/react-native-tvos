@@ -86,16 +86,16 @@ class RNTesterExampleContainer extends React.Component {
         ios={!module.platform || module.platform === 'ios'}
         documentationURL={module.documentationURL}
         category={module.category}>
-        <RNTesterExampleFilter
-          testID="example_search"
-          page="examples_page"
-          hideFilterPills={true}
-          sections={sections}
-          filter={filter}
-          render={({filteredSections}) =>
-            filteredSections[0].data.map(this.renderExample)
-          }
-        />
+          <RNTesterExampleFilter
+            testID="example_search"
+            page="examples_page"
+            hideFilterPills={true}
+            sections={sections}
+            filter={filter}
+            render={({filteredSections}) =>
+              filteredSections[0].data.map(this.renderExample)
+            }
+          />
       </ExamplePage>
     );
   }

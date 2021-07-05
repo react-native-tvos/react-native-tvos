@@ -13,6 +13,7 @@
 const React = require('react');
 const RNTesterListFilters = require('./RNTesterListFilters');
 const {
+  Platform,
   StyleSheet,
   TextInput,
   View,
@@ -102,6 +103,9 @@ class RNTesterExampleFilter extends React.Component<Props, State> {
 
   _renderTextInput(): ?React.Element<any> {
     if (this.props.disableSearch) {
+      return null;
+    }
+    if (Platform.isTV) {
       return null;
     }
     return (
