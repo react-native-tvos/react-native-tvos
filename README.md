@@ -2,7 +2,7 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.63.1-0 release of this package will be derived from the 0.63.1 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.64.2-0 release of this package will be derived from the 0.64.2 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -163,7 +163,9 @@ class Game2048 extends React.Component {
 
 - _Turbomodules_: Working as of the 0.61.2-0 release.
 
-- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.1-1 and later releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets.
+- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.x releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets. In 0.64.x, Flipper support has been temporarily removed until issues can be resolved with newer Xcode versions.
+
+- _Hermes for tvOS_: RN core added support for the Hermes JS engine on iOS in 0.64. tvOS does not yet have this, as it will require significant additions to the Hermes build structure.
 
 - _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected in tvOS, after a few adjustments to make the controls accessible to the focus engine.
 
