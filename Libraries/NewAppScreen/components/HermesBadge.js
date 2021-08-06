@@ -10,24 +10,51 @@
 
 import React from 'react';
 import type {Node} from 'react';
-import {StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  useTVEventHandler,
+  View,
+} from 'react-native';
 import Colors from './Colors';
 
 const HermesBadge = (): Node => {
+  const [lastEventType, setLastEventType] = React.useState('');
+  const myTVEventHandler = evt => {
+    setLastEventType(evt.eventType);
+  };
+  if (Platform.isTV) {
+    useTVEventHandler(myTVEventHandler);
+  }
   const isDarkMode = useColorScheme() === 'dark';
-  return global.HermesInternal ? (
+  return (
     <View style={styles.badge}>
-      <Text
-        style={[
-          styles.badgeText,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        Engine: Hermes
-      </Text>
+      {Platform.isTV ? (
+        <Text
+          style={[
+            styles.badgeText,
+            {
+              color: isDarkMode ? Colors.light : Colors.dark,
+            },
+          ]}>
+          TVEvent: {lastEventType}
+        </Text>
+      ) : null}
+      {global.HermesInternal ? (
+        <Text
+          style={[
+            styles.badgeText,
+            {
+              color: isDarkMode ? Colors.light : Colors.dark,
+            },
+          ]}>
+          Engine: Hermes
+        </Text>
+      ) : null}
     </View>
-  ) : null;
+  );
 };
 
 const styles = StyleSheet.create({
