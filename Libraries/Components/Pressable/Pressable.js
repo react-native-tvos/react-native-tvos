@@ -201,6 +201,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     ...android_rippleConfig?.viewProps,
     accessible: accessible !== false,
     focusable: focusable !== false,
+    isTVSelectable: isTVSelectable !== false && accessible !== false,
     hitSlop,
   };
 
@@ -257,7 +258,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const pressableTVEventHandler = (evt: Event) => {
     if (props.isTVSelectable !== false || props.focusable !== false) {
-      if (viewRef.current._nativeTag === evt.target) {
+      if (viewRef.current && viewRef.current._nativeTag === evt.target) {
         if (evt?.eventType === 'focus') {
           setFocused(true);
           onFocus && onFocus(evt);
@@ -285,10 +286,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
       {...restPropsWithDefaults}
       {...eventHandlers}
       ref={viewRef}
-      isTVSelectable={isTVSelectable !== false && accessible !== false}
-      style={typeof style === 'function' ? style({pressed}) : style}
+      style={typeof style === 'function' ? style({pressed, focused}) : style}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed}) : children}
+      {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );
