@@ -212,6 +212,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     accessible: accessible !== false,
     accessibilityState,
     focusable: focusable !== false,
+    isTVSelectable: isTVSelectable !== false && accessible !== false,
     hitSlop,
   };
 
