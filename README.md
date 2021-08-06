@@ -2,7 +2,7 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.64.2-0 release of this package will be derived from the 0.64.2 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.64.2-2 release of this package will be derived from the 0.64.2 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -92,7 +92,7 @@ var running_on_apple_tv = Platform.isTVOS;
   - `onBlur` will be executed when the touchable view goes out of focus
   - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote.
 
-- _TV remote/keyboard input_: A native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  In 0.63.1-1, we have added `useTVEventHandler`, which wraps `useEffect` to make this more convenient and simpler for use with functional components.
+- _TV remote/keyboard input_: A native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  In 0.63.1-1, we have added `useTVEventHandler`, which wraps `useEffect` to make this more convenient and simpler for use with functional components. In 0.64.2-2, we added a TV event display to the new app template using `useTVEventHandler`.
 
 ```javascript
 
