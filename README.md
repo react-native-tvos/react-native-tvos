@@ -23,6 +23,8 @@ Due to the nature of the typing resolution, the current solution to include type
 - install `@types/react-native` as a dev dependency
 - put `import 'react-native/tvos-types.d'` in any of your `.ts` files (root suggested)
 
+See the "Build Changes" section below for how to start a new project that will automatically use Typescript.
+
 ## General support for Apple TV
 
 TV devices support has been implemented with the intention of making existing React Native applications "just work" on Apple TV, with few or no changes needed in the JavaScript code for the applications.
@@ -67,7 +69,11 @@ react-native init TestApp --template=react-native-tvos@latest
 cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
 ```
 
+A minimal Typescript starter template can be used to start a new project using the community react-native CLI.  The process is the same as above except for the template:
 
+```sh
+react-native init TestApp --template=react-native-template-typescript-tv
+```
 
 - _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
 
