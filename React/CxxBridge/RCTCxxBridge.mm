@@ -408,7 +408,7 @@ struct RCTInstanceCallback : public InstanceCallback {
       if(strcmp(returnType, @encode(void *)) == 0) {
         // `jsExecutorFactoryForBridge` returns `void *`
         id<RCTCxxBridgeDelegate> cxxDelegate = (id<RCTCxxBridgeDelegate>)self.delegate;
-        executorFactory = std::make_shared<JSCExecutorFactory>(*reinterpret_cast<JSCExecutorFactory *>([cxxDelegate jsExecutorFactoryForBridge:self]));
+        executorFactory.reset(reinterpret_cast<JSExecutorFactory *>([cxxDelegate jsExecutorFactoryForBridge:self]));
       } else {
         // `jsExecutorFactoryForBridge` returns `std::unique_ptr<JSExecutorFactory>`
         id<RCTCxxBridgeTurboModuleDelegate> cxxDelegate = (id<RCTCxxBridgeTurboModuleDelegate>)self.delegate;
