@@ -15,18 +15,13 @@ const ReactNative = require('react-native');
 
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
-const {
-  Platform,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  TVFocusGuideView,
-} = ReactNative;
+const {Platform, View, StyleSheet, TouchableOpacity, Text, TVFocusGuideView} =
+  ReactNative;
 
 exports.framework = 'React';
 exports.title = 'TVFocusGuide example';
 exports.description = 'tvOS focus guide API';
+exports.displayName = 'TVFocusGuideExample';
 exports.examples = [
   {
     title: 'TVFocusGuide',
@@ -51,7 +46,7 @@ class Button extends React.Component<$FlowFixMeProps> {
               onPress={this.props.onPress}
               onFocus={this.props.onFocus}
               style={this.props.style}
-              ref={this.props.ref}>
+              ref={this.props.focusableRef}>
               <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
                 {this.props.label}
               </Text>
@@ -129,6 +124,10 @@ class TVFocusGuideExample extends React.Component<
                   style={{
                     width,
                     height,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                    marginBottom: 20,
                   }}
                   label="Left Top"
                 />
@@ -137,10 +136,14 @@ class TVFocusGuideExample extends React.Component<
                   onFocus={() =>
                     this._setDestination(this.buttonBottomLeft, 'bottom left')
                   }
-                  ref={component => (this.buttonTopRight = component)}
+                  focusableRef={component => (this.buttonTopRight = component)}
                   style={{
                     width,
                     height,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                    marginBottom: 20,
                   }}
                   label="Right Top"
                 />
@@ -148,6 +151,10 @@ class TVFocusGuideExample extends React.Component<
                   style={{
                     width,
                     height,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                    marginBottom: 20,
                   }}
                   label={`Focus guide points to ${this.state.destinationText}`}
                 />
@@ -159,6 +166,10 @@ class TVFocusGuideExample extends React.Component<
                     style={{
                       width,
                       height,
+                      marginLeft: 20,
+                      marginRight: 20,
+                      marginTop: 20,
+                      marginBottom: 20,
                     }}
                     label="Wrapped button 1"
                   />
@@ -167,6 +178,10 @@ class TVFocusGuideExample extends React.Component<
                     style={{
                       width,
                       height,
+                      marginLeft: 20,
+                      marginRight: 20,
+                      marginTop: 20,
+                      marginBottom: 20,
                     }}
                     label="Wrapped button 2"
                   />
@@ -178,6 +193,10 @@ class TVFocusGuideExample extends React.Component<
                     style={{
                       width,
                       height,
+                      marginLeft: 20,
+                      marginRight: 20,
+                      marginTop: 20,
+                      marginBottom: 20,
                     }}
                     label="Wrapped button 3"
                   />
@@ -193,6 +212,10 @@ class TVFocusGuideExample extends React.Component<
                   style={{
                     width,
                     height,
+                    marginLeft: 20,
+                    marginRight: 20,
+                    marginTop: 20,
+                    marginBottom: 20,
                   }}
                   label="Left Bottom"
                 />
@@ -253,6 +276,10 @@ const styles = StyleSheet.create({
   focusGuide: {
     width,
     height,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   containerFocusGuide: {
     backgroundColor: 'transparent',
