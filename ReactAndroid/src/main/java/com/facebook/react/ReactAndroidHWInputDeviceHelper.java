@@ -9,9 +9,13 @@ package com.facebook.react;
 
 import android.view.KeyEvent;
 import android.view.View;
+
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
 import java.util.Map;
 
 /** Responsible for dispatching events specific for hardware inputs. */
@@ -46,9 +50,16 @@ public class ReactAndroidHWInputDeviceHelper {
   private int mLastFocusedViewId = View.NO_ID;
 
   private final ReactRootView mReactRootView;
+  private final ReactContext mReactContext;
 
   ReactAndroidHWInputDeviceHelper(ReactRootView mReactRootView) {
     this.mReactRootView = mReactRootView;
+    this.mReactContext = null;
+  }
+
+  public ReactAndroidHWInputDeviceHelper(ReactContext mReactContext) {
+    this.mReactRootView = null;
+    this.mReactContext = mReactContext;
   }
 
   /** Called from {@link ReactRootView}. This is the main place the key events are handled. */
@@ -93,6 +104,11 @@ public class ReactAndroidHWInputDeviceHelper {
       event.putInt("tag", targetViewId);
       event.putInt("target", targetViewId);
     }
-    mReactRootView.sendEvent("onHWKeyEvent", event);
+    if (mReactRootView != null) {
+      mReactRootView.sendEvent("onHWKeyEvent", event);
+    } else {
+      mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit("onHWKeyEvent", event);
+    }
   }
 }
