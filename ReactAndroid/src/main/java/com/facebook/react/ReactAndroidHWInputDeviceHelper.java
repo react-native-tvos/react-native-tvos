@@ -52,11 +52,13 @@ public class ReactAndroidHWInputDeviceHelper {
   private final ReactRootView mReactRootView;
   private final ReactContext mReactContext;
 
+  // Constructor used by ReactRootView
   ReactAndroidHWInputDeviceHelper(ReactRootView mReactRootView) {
     this.mReactRootView = mReactRootView;
     this.mReactContext = null;
   }
 
+  // Constructor used by ReactModalHostView.DialogRootViewGroup
   public ReactAndroidHWInputDeviceHelper(ReactContext mReactContext) {
     this.mReactRootView = null;
     this.mReactContext = mReactContext;
@@ -105,8 +107,10 @@ public class ReactAndroidHWInputDeviceHelper {
       event.putInt("target", targetViewId);
     }
     if (mReactRootView != null) {
+      // Sending event from root view
       mReactRootView.sendEvent("onHWKeyEvent", event);
     } else {
+      // Sending event from modal
       mReactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit("onHWKeyEvent", event);
     }
