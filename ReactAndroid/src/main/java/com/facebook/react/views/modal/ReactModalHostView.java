@@ -404,9 +404,12 @@ public class ReactModalHostView extends ViewGroup
 
     private final ReactAndroidHWInputDeviceHelper mAndroidHWInputDeviceHelper;
 
+    private final ReactContext mReactContext;
+
     public DialogRootViewGroup(Context context) {
       super(context);
-      mAndroidHWInputDeviceHelper = new ReactAndroidHWInputDeviceHelper((ReactContext) context);
+      mReactContext = (ReactContext)context;
+      mAndroidHWInputDeviceHelper = new ReactAndroidHWInputDeviceHelper();
     }
 
     @Override
@@ -419,13 +422,13 @@ public class ReactModalHostView extends ViewGroup
 
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-      mAndroidHWInputDeviceHelper.clearFocus();
+      mAndroidHWInputDeviceHelper.clearFocus(mReactContext);
       super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     }
 
     @Override
     public void requestChildFocus(View child, View focused) {
-      mAndroidHWInputDeviceHelper.onFocusChanged(focused);
+      mAndroidHWInputDeviceHelper.onFocusChanged(focused, mReactContext);
       super.requestChildFocus(child, focused);
     }
 
