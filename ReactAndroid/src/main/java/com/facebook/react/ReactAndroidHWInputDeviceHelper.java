@@ -97,8 +97,10 @@ public class ReactAndroidHWInputDeviceHelper {
   }
 
   public void emitNamedEvent(String eventName, WritableMap event, ReactContext context) {
-    context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-           .emit(eventName, event);
+    if (context != null) {
+      context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit(eventName, event);
+    }
   }
 
 }
