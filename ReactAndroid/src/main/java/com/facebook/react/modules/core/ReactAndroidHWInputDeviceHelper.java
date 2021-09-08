@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.react;
+package com.facebook.react.modules.core;
 
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,7 +14,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.Map;
 
@@ -51,7 +50,7 @@ public class ReactAndroidHWInputDeviceHelper {
 
   public ReactAndroidHWInputDeviceHelper() {}
 
-  /** Called from {@link ReactRootView}. This is the main place the key events are handled. */
+  /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
@@ -61,7 +60,7 @@ public class ReactAndroidHWInputDeviceHelper {
     }
   }
 
-  /** Called from {@link ReactRootView} when focused view changes. */
+  /** Called from {@link com.facebook.react.ReactRootView} when focused view changes. */
   public void onFocusChanged(View newFocusedView, ReactContext context) {
     if (mLastFocusedViewId == newFocusedView.getId()) {
       return;
@@ -73,7 +72,7 @@ public class ReactAndroidHWInputDeviceHelper {
     dispatchEvent("focus", newFocusedView.getId(), context);
   }
 
-  /** Called from {@link ReactRootView} when the whole view hierarchy looses focus. */
+  /** Called from {@link com.facebook.react.ReactRootView} when the whole view hierarchy looses focus. */
   public void clearFocus(ReactContext context) {
     if (mLastFocusedViewId != View.NO_ID) {
       dispatchEvent("blur", mLastFocusedViewId, context);

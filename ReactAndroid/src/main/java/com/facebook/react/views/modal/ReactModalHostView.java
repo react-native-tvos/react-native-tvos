@@ -25,10 +25,9 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.R;
-import com.facebook.react.ReactAndroidHWInputDeviceHelper;
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper;
 import com.facebook.react.bridge.GuardedRunnable;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
