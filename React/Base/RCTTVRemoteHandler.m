@@ -41,6 +41,41 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
   NSMutableDictionary<NSString *, UIGestureRecognizer *> *_tvRemoteGestureRecognizers;
 }
 
+static RCTTVRemoteHandler * _instance = nil;
+
++ (RCTTVRemoteHandler *)instance
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    // Set up JS thread
+      _instance = [[RCTTVRemoteHandler alloc] init];
+  });
+  return _instance;
+}
+
++ (void)addTVRemoteHandlerToView:(UIView *)view
+{
+    for (NSString *key in [[RCTTVRemoteHandler instance].tvRemoteGestureRecognizers allKeys]) {
+      [view addGestureRecognizer:[RCTTVRemoteHandler instance].tvRemoteGestureRecognizers[key]];
+    }
+    if ([RCTTVRemoteHandler instance].useMenuKey) {
+        [view enableTVMenuKey];
+    } else {
+        [view disableTVMenuKey];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:view
+                                             selector:@selector(enableTVMenuKey)
+                                                 name:RCTTVEnableMenuKeyNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:view
+                                             selector:@selector(disableTVMenuKey)
+                                                 name:RCTTVDisableMenuKeyNotification
+                                               object:nil];
+}
+
+
 - (instancetype)init
 {
   if ((self = [super init])) {

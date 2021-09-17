@@ -28,5 +28,10 @@ extern NSString *const RCTTVRemoteEventSwipeDown;
 
 @property (nonatomic, copy, readonly) NSDictionary *tvRemoteGestureRecognizers;
 @property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
+@property (nonatomic, assign) BOOL useMenuKey;
+
++ (RCTTVRemoteHandler *)instance;
+
++ (void)addTVRemoteHandlerToView:( UIView * _Nonnull )view;
 
 @end

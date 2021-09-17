@@ -98,15 +98,8 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
                                                object:self];
 
 #if TARGET_OS_TV
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(enableTVMenuKey)
-                                                   name:RCTTVEnableMenuKeyNotification
-                                                 object:nil];
 
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(disableTVMenuKey)
-                                                   name:RCTTVDisableMenuKeyNotification
-                                                 object:nil];
+      [RCTTVRemoteHandler addTVRemoteHandlerToView:self];
 
 #if RCT_DEV
       [[NSNotificationCenter defaultCenter] addObserver:self
@@ -115,11 +108,6 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
                                                  object:nil];
 #endif
       
-    self.tvRemoteHandler = [RCTTVRemoteHandler new];
-    for (NSString *key in [self.tvRemoteHandler.tvRemoteGestureRecognizers allKeys]) {
-      [self addGestureRecognizer:self.tvRemoteHandler.tvRemoteGestureRecognizers[key]];
-    }
-    // [self addGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
 #endif
 
     [self showLoadingView];
@@ -135,22 +123,6 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
 }
 
 #if TARGET_OS_TV
-
-- (void)enableTVMenuKey {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[self gestureRecognizers] containsObject:self.tvRemoteHandler.tvMenuKeyRecognizer]) {
-            [self addGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
-        }
-    });
-}
-
-- (void)disableTVMenuKey {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[self gestureRecognizers] containsObject:self.tvRemoteHandler.tvMenuKeyRecognizer]) {
-            [self removeGestureRecognizer:self.tvRemoteHandler.tvMenuKeyRecognizer];
-        }
-    });
-}
 
 #if RCT_DEV
 - (void)showDevMenu {

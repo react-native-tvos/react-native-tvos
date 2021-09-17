@@ -127,4 +127,11 @@
  */
 - (NSString *)react_recursiveDescription;
 
+#if TARGET_OS_TV
+
+- (void)enableTVMenuKey;
+- (void)disableTVMenuKey;
+
+#endif
+
 @end

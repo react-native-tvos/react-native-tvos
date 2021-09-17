@@ -13,6 +13,10 @@
 #import "RCTLog.h"
 #import "RCTShadowView.h"
 
+#if TARGET_OS_TV
+#import "RCTTVRemoteHandler.h"
+#endif
+
 @implementation UIView (React)
 
 - (NSNumber *)reactTag
@@ -375,5 +379,25 @@
   [self react_addRecursiveDescriptionToString:description atLevel:0];
   return description;
 }
+
+#if TARGET_OS_TV
+
+- (void)enableTVMenuKey {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[self gestureRecognizers] containsObject:[RCTTVRemoteHandler instance].tvMenuKeyRecognizer]) {
+            [self addGestureRecognizer:[RCTTVRemoteHandler instance].tvMenuKeyRecognizer];
+        }
+    });
+}
+
+- (void)disableTVMenuKey {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([[self gestureRecognizers] containsObject:[RCTTVRemoteHandler instance].tvMenuKeyRecognizer]) {
+            [self removeGestureRecognizer:[RCTTVRemoteHandler instance].tvMenuKeyRecognizer];
+        }
+    });
+}
+
+#endif
 
 @end
