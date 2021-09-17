@@ -93,6 +93,7 @@ RCT_EXPORT_METHOD(test:(__unused NSString *)a
     XCTAssertNotNil(weakBridge, @"RCTBridge should have been created");
     (void)view;
   }
+  [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
 
   XCTAssertNil(weakBridge, @"RCTBridge should have been deallocated");
 }
