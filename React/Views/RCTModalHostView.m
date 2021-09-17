@@ -49,7 +49,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
     _menuButtonGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                            action:@selector(menuButtonPressed:)];
     _menuButtonGestureRecognizer.allowedPressTypes = @[ @(UIPressTypeMenu) ];
-    self.tvRemoteHandler = [RCTTVRemoteHandler new];
+    self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:self];
 #endif
     _isPresented = NO;
 
@@ -63,6 +63,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 }
 
 #if TARGET_OS_TV
+- (void)dealloc
+{
+    self.tvRemoteHandler = nil;
+}
+
 - (void)menuButtonPressed:(__unused UIGestureRecognizer *)gestureRecognizer
 {
   if (_onRequestClose) {
@@ -119,11 +124,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   [super insertReactSubview:subview atIndex:atIndex];
   [_touchHandler attachToView:subview];
 #if TARGET_OS_TV
-  for (NSString *key in [self.tvRemoteHandler.tvRemoteGestureRecognizers allKeys]) {
-    if (![key isEqualToString:RCTTVRemoteEventMenu]) {
-      [subview addGestureRecognizer:self.tvRemoteHandler.tvRemoteGestureRecognizers[key]];
-    }
-  }
   if (_onRequestClose) {
     [subview addGestureRecognizer:_menuButtonGestureRecognizer];
   }
@@ -142,9 +142,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 #if TARGET_OS_TV
   if (_menuButtonGestureRecognizer) {
     [subview removeGestureRecognizer:_menuButtonGestureRecognizer];
-  }
-  for (UIGestureRecognizer *gr in self.tvRemoteHandler.tvRemoteGestureRecognizers) {
-    [subview removeGestureRecognizer:gr];
   }
 #endif
   _reactSubview = nil;
