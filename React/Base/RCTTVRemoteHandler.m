@@ -37,86 +37,188 @@ NSString *const RCTTVRemoteEventSwipeRight = @"swipeRight";
 NSString *const RCTTVRemoteEventSwipeUp = @"swipeUp";
 NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 
+@interface RCTTVRemoteHandler()
+
+@property (nonatomic, copy, readonly) NSDictionary *tvRemoteGestureRecognizers;
+@property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
+@property (nonatomic, weak) UIView *view;
+
+@end
+
 @implementation RCTTVRemoteHandler {
   NSMutableDictionary<NSString *, UIGestureRecognizer *> *_tvRemoteGestureRecognizers;
 }
 
-- (instancetype)init
+#pragma mark -
+#pragma mark Static setting for using menu key
+
+static __volatile BOOL __useMenuKey = NO;
+
++ (BOOL)useMenuKey
+{
+    return __useMenuKey;
+}
+
++ (void)setUseMenuKey:(BOOL)useMenuKey
+{
+    __useMenuKey = useMenuKey;
+}
+
+#pragma mark -
+#pragma mark Public methods
+
+- (instancetype)initWithView:(UIView *)view
 {
   if ((self = [super init])) {
-    _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
-
-    // Recognizers for Apple TV remote buttons
-    // Menu recognizer
-    self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
-    self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
-
-    // Play/Pause
-    [self addTapGestureRecognizerWithSelector:@selector(playPausePressed:)
-                                    pressType:UIPressTypePlayPause
-                                         name:RCTTVRemoteEventPlayPause];
-
-    // Select
-    [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)
-                                    pressType:UIPressTypeSelect
-                                         name:RCTTVRemoteEventSelect];
-
-    // Up
-    [self addTapGestureRecognizerWithSelector:@selector(tappedUp:)
-                                    pressType:UIPressTypeUpArrow
-                                         name:RCTTVRemoteEventUp];
-
-    // Down
-    [self addTapGestureRecognizerWithSelector:@selector(tappedDown:)
-                                    pressType:UIPressTypeDownArrow
-                                         name:RCTTVRemoteEventDown];
-
-    // Left
-    [self addTapGestureRecognizerWithSelector:@selector(tappedLeft:)
-                                    pressType:UIPressTypeLeftArrow
-                                         name:RCTTVRemoteEventLeft];
-
-    // Right
-    [self addTapGestureRecognizerWithSelector:@selector(tappedRight:)
-                                    pressType:UIPressTypeRightArrow
-                                         name:RCTTVRemoteEventRight];
-
-    // Recognizers for long button presses
-    // We don't intercept long menu press -- that's used by the system to go to the home screen
-
-    [self addLongPressGestureRecognizerWithSelector:@selector(longPlayPausePressed:)
-                                          pressType:UIPressTypePlayPause
-                                               name:RCTTVRemoteEventLongPlayPause];
-
-    [self addLongPressGestureRecognizerWithSelector:@selector(longSelectPressed:)
-                                          pressType:UIPressTypeSelect
-                                               name:RCTTVRemoteEventLongSelect];
-
-    // Recognizers for Apple TV remote trackpad swipes
-
-    // Up
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp:)
-                                      direction:UISwipeGestureRecognizerDirectionUp
-                                           name:RCTTVRemoteEventSwipeUp];
-
-    // Down
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown:)
-                                      direction:UISwipeGestureRecognizerDirectionDown
-                                           name:RCTTVRemoteEventSwipeDown];
-
-    // Left
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft:)
-                                      direction:UISwipeGestureRecognizerDirectionLeft
-                                           name:RCTTVRemoteEventSwipeLeft];
-
-    // Right
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight:)
-                                      direction:UISwipeGestureRecognizerDirectionRight
-                                           name:RCTTVRemoteEventSwipeRight];
+      _view = view;
+      [self setUpGestureRecognizers];
+      [self attachToView];
   }
-
   return self;
 }
+
+- (void)dealloc
+{
+    [self detachFromView];
+}
+
+#pragma mark -
+#pragma mark Private methods
+
+- (void)setUpGestureRecognizers
+{
+    _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
+  // Recognizers for Apple TV remote buttons
+  // Menu recognizer
+  self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
+  self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
+
+  // Play/Pause
+  [self addTapGestureRecognizerWithSelector:@selector(playPausePressed:)
+                                  pressType:UIPressTypePlayPause
+                                       name:RCTTVRemoteEventPlayPause];
+
+  // Select
+  [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)
+                                  pressType:UIPressTypeSelect
+                                       name:RCTTVRemoteEventSelect];
+
+  // Up
+  [self addTapGestureRecognizerWithSelector:@selector(tappedUp:)
+                                  pressType:UIPressTypeUpArrow
+                                       name:RCTTVRemoteEventUp];
+
+  // Down
+  [self addTapGestureRecognizerWithSelector:@selector(tappedDown:)
+                                  pressType:UIPressTypeDownArrow
+                                       name:RCTTVRemoteEventDown];
+
+  // Left
+  [self addTapGestureRecognizerWithSelector:@selector(tappedLeft:)
+                                  pressType:UIPressTypeLeftArrow
+                                       name:RCTTVRemoteEventLeft];
+
+  // Right
+  [self addTapGestureRecognizerWithSelector:@selector(tappedRight:)
+                                  pressType:UIPressTypeRightArrow
+                                       name:RCTTVRemoteEventRight];
+
+  // Recognizers for long button presses
+  // We don't intercept long menu press -- that's used by the system to go to the home screen
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longPlayPausePressed:)
+                                        pressType:UIPressTypePlayPause
+                                             name:RCTTVRemoteEventLongPlayPause];
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longSelectPressed:)
+                                        pressType:UIPressTypeSelect
+                                             name:RCTTVRemoteEventLongSelect];
+
+  // Recognizers for Apple TV remote trackpad swipes
+
+  // Up
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp:)
+                                    direction:UISwipeGestureRecognizerDirectionUp
+                                         name:RCTTVRemoteEventSwipeUp];
+
+  // Down
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown:)
+                                    direction:UISwipeGestureRecognizerDirectionDown
+                                         name:RCTTVRemoteEventSwipeDown];
+
+  // Left
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft:)
+                                    direction:UISwipeGestureRecognizerDirectionLeft
+                                         name:RCTTVRemoteEventSwipeLeft];
+
+  // Right
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight:)
+                                    direction:UISwipeGestureRecognizerDirectionRight
+                                         name:RCTTVRemoteEventSwipeRight];
+
+}
+
+- (void)attachToView
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(enableTVMenuKey)
+                                                 name:RCTTVEnableMenuKeyNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(disableTVMenuKey)
+                                                 name:RCTTVDisableMenuKeyNotification
+                                               object:nil];
+    for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
+      [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
+    }
+    if ([RCTTVRemoteHandler useMenuKey]) {
+        [self enableTVMenuKey];
+    } else {
+        [self disableTVMenuKey];
+    }
+}
+
+- (void)detachFromView
+{
+    if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+        [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+    }
+    for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
+      [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
+    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVEnableMenuKeyNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVDisableMenuKeyNotification
+                                                  object:nil];
+    
+}
+
+# pragma mark -
+# pragma mark Notification handlers
+
+- (void)enableTVMenuKey
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+            [self.view addGestureRecognizer:self.tvMenuKeyRecognizer];
+        }
+    });
+}
+
+- (void)disableTVMenuKey
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+            [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+        }
+    });
+}
+
+# pragma mark -
+# pragma mark Gesture handlers
 
 - (void)playPausePressed:(UIGestureRecognizer *)r
 {
@@ -189,6 +291,7 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 }
 
 #pragma mark -
+#pragma mark Convenience methods for adding gesture recognizers
 
 - (void)addLongPressGestureRecognizerWithSelector:(nonnull SEL)selector
                                         pressType:(UIPressType)pressType
