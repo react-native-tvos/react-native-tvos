@@ -26,7 +26,10 @@ extern NSString *const RCTTVRemoteEventSwipeDown;
 
 @interface RCTTVRemoteHandler : NSObject
 
-@property (nonatomic, copy, readonly) NSDictionary *tvRemoteGestureRecognizers;
-@property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
+- (instancetype _Nonnull )initWithView:(UIView * _Nonnull)view;
+- (instancetype _Nonnull )init __attribute__((unavailable("init not available, use initWithView:")));
+
++ (BOOL)useMenuKey;
++ (void)setUseMenuKey:(BOOL)useMenuKey;
 
 @end
