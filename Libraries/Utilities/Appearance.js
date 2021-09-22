@@ -34,47 +34,10 @@ if (NativeAppearance) {
           colorScheme == null,
         "Unrecognized color scheme. Did you mean 'dark' or 'light'?",
       );
-      // Update cached value
-      preferences.colorScheme = colorScheme;
       eventEmitter.emit('change', {colorScheme});
     },
   );
 }
-
-function getInitialColorScheme(): ?ColorSchemeName {
-  if (__DEV__) {
-    if (isAsyncDebugging) {
-      // Hard code light theme when using the async debugger as
-      // sync calls aren't supported
-      return 'light';
-    }
-  }
-
-  // TODO: (hramos) T52919652 Use ?ColorSchemeName once codegen supports union
-  const nativeColorScheme: ?string =
-    NativeAppearance == null ? null : NativeAppearance.getColorScheme() || null;
-  invariant(
-    nativeColorScheme === 'dark' ||
-      nativeColorScheme === 'light' ||
-      nativeColorScheme == null,
-    "Unrecognized color scheme. Did you mean 'dark' or 'light'?",
-  );
-  return nativeColorScheme;
-}
-
-function getColorScheme(): ?ColorSchemeName {
-  if (!preferences.colorScheme) {
-    const initialColorScheme = getInitialColorScheme();
-    preferences.colorScheme = initialColorScheme;
-    return preferences.colorScheme;
-  }
-
-  return preferences.colorScheme;
-}
-
-const preferences = {
-  colorScheme: null,
-};
 
 module.exports = {
   /**
@@ -87,7 +50,28 @@ module.exports = {
    *
    * @returns {?ColorSchemeName} Value for the color scheme preference.
    */
-  getColorScheme,
+  getColorScheme(): ?ColorSchemeName {
+    if (__DEV__) {
+      if (isAsyncDebugging) {
+        // Hard code light theme when using the async debugger as
+        // sync calls aren't supported
+        return 'light';
+      }
+    }
+
+    // TODO: (hramos) T52919652 Use ?ColorSchemeName once codegen supports union
+    const nativeColorScheme: ?string =
+      NativeAppearance == null
+        ? null
+        : NativeAppearance.getColorScheme() || null;
+    invariant(
+      nativeColorScheme === 'dark' ||
+        nativeColorScheme === 'light' ||
+        nativeColorScheme == null,
+      "Unrecognized color scheme. Did you mean 'dark' or 'light'?",
+    );
+    return nativeColorScheme;
+  },
   /**
    * Add an event handler that is fired when appearance preferences change.
    */

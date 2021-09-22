@@ -190,24 +190,13 @@ const AppRegistry = {
         () => msg,
       );
     }
-
-    // NOTE(brentvatne): the original error message here, commented out below,
-    // is not useful to developers in the Expo managed workflow. It also will
-    // prevent any red box error that has occurred while loading the bundle from
-    // being visible to the user. So, we instead warn and give a more tailored
-    // message to help users with debugging the issue.
-    if (!runnables[appKey] || !runnables[appKey].run) {
-      console.warn(`Unable to start your application. Please refer to https://expo.fyi/no-registered-application for more information.`);
-      return;
-    }
-
-    // invariant(
-    //   runnables[appKey] && runnables[appKey].run,
-    //   `"${appKey}" has not been registered. This can happen if:\n` +
-    //     '* Metro (the local dev server) is run from the wrong folder. ' +
-    //     'Check if Metro is running, stop it and restart it in the current project.\n' +
-    //     "* A module failed to load due to an error and `AppRegistry.registerComponent` wasn't called.",
-    // );
+    invariant(
+      runnables[appKey] && runnables[appKey].run,
+      `"${appKey}" has not been registered. This can happen if:\n` +
+        '* Metro (the local dev server) is run from the wrong folder. ' +
+        'Check if Metro is running, stop it and restart it in the current project.\n' +
+        "* A module failed to load due to an error and `AppRegistry.registerComponent` wasn't called.",
+    );
 
     SceneTracker.setActiveScene({name: appKey});
     runnables[appKey].run(appParameters);
