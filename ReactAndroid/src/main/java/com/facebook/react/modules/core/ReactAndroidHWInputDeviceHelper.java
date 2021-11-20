@@ -54,7 +54,9 @@ public class ReactAndroidHWInputDeviceHelper {
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
-    if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
+    // We only need the up event for Android TV
+    // if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
+    if ((eventKeyAction == KeyEvent.ACTION_UP)
         && KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)) {
       dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
     }
