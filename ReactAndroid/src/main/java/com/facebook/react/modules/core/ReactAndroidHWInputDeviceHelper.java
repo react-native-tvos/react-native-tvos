@@ -14,6 +14,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.common.SystemClock;
 
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class ReactAndroidHWInputDeviceHelper {
       MapBuilder.<Integer, String>builder()
           .put(KeyEvent.KEYCODE_DPAD_CENTER, "select")
           .put(KeyEvent.KEYCODE_ENTER, "select")
+          .put(KeyEvent.KEYCODE_NUMPAD_ENTER, "select")
+          .put(KeyEvent.KEYCODE_BUTTON_SELECT, "select")
           .put(KeyEvent.KEYCODE_SPACE, "select")
           .put(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, "playPause")
           .put(KeyEvent.KEYCODE_MEDIA_PLAY, "play")
@@ -53,17 +56,40 @@ public class ReactAndroidHWInputDeviceHelper {
    */
   private int mLastFocusedViewId = View.NO_ID;
 
+  private long mLastKeyDownTime = 0;
+  private long mPressedDelta = 1000;
+
   public ReactAndroidHWInputDeviceHelper() {}
+
+  private boolean isSelectEvent(int eventKeyCode) {
+    return eventKeyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
+      eventKeyCode == KeyEvent.KEYCODE_BUTTON_SELECT ||
+      eventKeyCode == KeyEvent.KEYCODE_NUMPAD_ENTER ||
+      eventKeyCode == KeyEvent.KEYCODE_ENTER;
+  }
 
   /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
+    long time = SystemClock.uptimeMillis();
+
+    // Simple implementation of long press detection
+    if ((eventKeyAction == KeyEvent.ACTION_DOWN)
+      && isSelectEvent(eventKeyCode) && mLastKeyDownTime == 0) {
+      mLastKeyDownTime = time;
+    }
     // We only need the up event for Android TV
     // if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
     if ((eventKeyAction == KeyEvent.ACTION_UP)
         && KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)) {
-      dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
+      long delta = time - mLastKeyDownTime;
+      if (isSelectEvent(eventKeyCode) && (delta > mPressedDelta)) {
+        dispatchEvent("longSelect", mLastFocusedViewId, eventKeyAction, context);
+      } else {
+        dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
+      }
+      mLastKeyDownTime = 0;
     }
   }
 
