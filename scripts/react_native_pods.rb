@@ -56,6 +56,7 @@ def use_react_native! (options={})
   pod 'glog', :podspec => "#{prefix}/third-party-podspecs/glog.podspec"
   pod 'boost', :podspec => "#{prefix}/third-party-podspecs/boost.podspec"
   pod 'RCT-Folly', :podspec => "#{prefix}/third-party-podspecs/RCT-Folly.podspec"
+  pod 'fmt', :podspec => "#{prefix}/third-party-podspecs/fmt.podspec"
 
   if fabric_enabled
     pod 'React-Fabric', :path => "#{prefix}/ReactCommon"
