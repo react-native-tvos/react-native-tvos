@@ -12,6 +12,8 @@ import {
   BackHandler,
   StyleSheet,
   useColorScheme,
+  Platform,
+  TVMenuControl,
   View,
   LogBox,
 } from 'react-native';
@@ -131,6 +133,7 @@ const RNTesterApp = (): React.Node => {
   );
 
   const handleNavBarPress = React.useCallback(
+      TVMenuControl.enableTVMenuKey();
     args => {
       dispatch({
         type: RNTesterActionsType.NAVBAR_PRESS,
@@ -140,6 +143,7 @@ const RNTesterApp = (): React.Node => {
     [dispatch],
   );
 
+        TVMenuControl.disableTVMenuKey();
   const theme = colorScheme === 'dark' ? themes.dark : themes.light;
 
   if (examplesList === null) {
@@ -194,7 +198,7 @@ const RNTesterApp = (): React.Node => {
           />
         )}
       </View>
-      <View style={styles.bottomNavbar}>
+      <View style={Platform.isTV ? styles.tvNavBar : styles.bottomNavbar}>
         <RNTesterNavBar
           screen={screen || Screens.COMPONENTS}
           isExamplePageOpen={!!activeModule}
@@ -210,6 +214,14 @@ export default RNTesterApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  tvNavBar: {
+    bottom: 0,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
   },
   bottomNavbar: {
     height: navBarHeight,

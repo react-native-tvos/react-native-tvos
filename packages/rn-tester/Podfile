@@ -2,7 +2,7 @@ require_relative '../../scripts/react_native_pods'
 
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :ios, '11.0'
+platform :tvos, '11.0'
 
 USE_FRAMEWORKS = ENV['USE_FRAMEWORKS'] == '1'
 
@@ -42,9 +42,9 @@ end
 
 target 'RNTester' do
   pods()
-  if !USE_FRAMEWORKS
-    use_flipper!
-  end
+  #if !USE_FRAMEWORKS
+  #  use_flipper!
+  #end
 end
 
 target 'RNTesterUnitTests' do
