@@ -126,7 +126,11 @@ RCT_EXPORT_MODULE()
       }
       [self->_window addSubview:self->_label];
 
+#if TARGET_OS_TV
+      self->_window.windowLevel = UIWindowLevelNormal;
+#else
       self->_window.windowLevel = UIWindowLevelStatusBar + 1;
+#endif
       // set a root VC so rotation is supported
       self->_window.rootViewController = [UIViewController new];
 

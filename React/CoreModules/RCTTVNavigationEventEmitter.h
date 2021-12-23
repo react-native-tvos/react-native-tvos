@@ -7,6 +7,13 @@
 
 #import <React/RCTEventEmitter.h>
 
+@protocol NativeTVNavigationEventEmitterSpec <RCTBridgeModule, RCTTurboModule>
+
+- (void)addListener:(NSString *)eventName;
+- (void)removeListeners:(double)count;
+
+@end
+
 @interface RCTTVNavigationEventEmitter : RCTEventEmitter
 
 @end

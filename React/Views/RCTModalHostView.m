@@ -70,10 +70,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
     _onRequestClose(nil);
   }
 }
+#endif
 
 - (void)setOnRequestClose:(RCTDirectEventBlock)onRequestClose
 {
   _onRequestClose = onRequestClose;
+#if TARGET_OS_TV
   if (_reactSubview) {
     if (_onRequestClose && _menuButtonGestureRecognizer) {
       [_reactSubview addGestureRecognizer:_menuButtonGestureRecognizer];
@@ -81,8 +83,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
       [_reactSubview removeGestureRecognizer:_menuButtonGestureRecognizer];
     }
   }
-}
 #endif
+}
 
 - (void)notifyForBoundsChange:(CGRect)newBounds
 {
@@ -90,11 +92,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
     [_bridge.uiManager setSize:newBounds.size forView:_reactSubview];
     [self notifyForOrientationChange];
   }
-}
-
-- (void)setOnRequestClose:(RCTDirectEventBlock)onRequestClose
-{
-  _onRequestClose = onRequestClose;
 }
 
 - (void)presentationControllerDidAttemptToDismiss:(UIPresentationController *)controller

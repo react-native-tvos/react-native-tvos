@@ -128,8 +128,4 @@ RCT_EXPORT_VIEW_PROPERTY(onRequestClose, RCTDirectEventBlock)
 // Fabric only
 RCT_EXPORT_VIEW_PROPERTY(onDismiss, RCTDirectEventBlock)
 
-#if TARGET_OS_TV
-RCT_EXPORT_VIEW_PROPERTY(onRequestClose, RCTDirectEventBlock)
-#endif
-
 @end

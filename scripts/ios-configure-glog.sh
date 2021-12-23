@@ -32,7 +32,6 @@ fi
 
 cat << EOF >> src/config.h
 # Fix build for tvOS
-cat << EOF >> src/config.h
 
 /* Add in so we have Apple Target Conditionals */
 #ifdef __APPLE__
