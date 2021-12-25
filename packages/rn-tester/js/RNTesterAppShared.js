@@ -78,6 +78,7 @@ const RNTesterApp = (): React.Node => {
 
   const handleBackPress = React.useCallback(() => {
     if (activeModuleKey != null) {
+      TVMenuControl.enableTVMenuKey();
       dispatch({type: RNTesterActionsType.BACK_BUTTON_PRESS});
     }
   }, [dispatch, activeModuleKey]);
@@ -87,6 +88,7 @@ const RNTesterApp = (): React.Node => {
     const handleHardwareBackPress = () => {
       if (activeModuleKey) {
         handleBackPress();
+        TVMenuControl.disableTVMenuKey();
         return true;
       }
       return false;

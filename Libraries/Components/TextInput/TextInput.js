@@ -1137,9 +1137,6 @@ function InternalTextInput(props: Props): React.Node {
         ? [styles.multilineInput, props.style]
         : props.style;
 
-    additionalTouchableProps.rejectResponderTermination =
-      props.rejectResponderTermination;
-
     if (props.multiline && Platform.isTVOS) {
       warnOnce(
         'text-input-multiline-tvos',

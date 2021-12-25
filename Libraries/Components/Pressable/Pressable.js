@@ -270,7 +270,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const pressableTVEventHandler = (evt: Event) => {
     if (props.isTVSelectable !== false || props.focusable !== false) {
-      if (viewRef.current._nativeTag === evt.target) {
+      if (viewRef?.current?._nativeTag === evt.target) {
         if (evt?.eventType === 'focus') {
           setFocused(true);
           onFocus && onFocus(evt);
