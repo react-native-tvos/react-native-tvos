@@ -134,17 +134,6 @@ const Components: Array<RNTesterModuleInfo> = [
     supportsTVOS: true,
   },
   {
-    key: 'TVTextScrollViewExample',
-    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'SectionListExample',
-    module: require('../examples/SectionList/SectionListExample'),
-    category: 'ListView',
-    supportsTVOS: true,
-  },
-  {
     key: 'StatusBarExample',
     module: require('../examples/StatusBar/StatusBarExample'),
     supportsTVOS: false,

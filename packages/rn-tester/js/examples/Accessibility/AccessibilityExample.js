@@ -26,7 +26,6 @@ const {
   Alert,
   StyleSheet,
   Slider,
-  Platform,
 } = require('react-native');
 import type {EventSubscription} from 'react-native/Libraries/vendor/emitter/EventEmitter';
 

@@ -15,7 +15,7 @@ import StyleSheet, {
   type ViewStyleProp,
   type ColorValue,
 } from '../../StyleSheet/StyleSheet';
-import UnimplementedView from '../UnimplementedViews/UnimplementedView');
+import UnimplementedView from '../UnimplementedViews/UnimplementedView';
 
 import type {ImageSource} from '../../Image/ImageSource';
 import type {ViewProps} from '../View/ViewPropTypes';

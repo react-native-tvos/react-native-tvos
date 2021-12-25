@@ -133,7 +133,6 @@ const RNTesterApp = (): React.Node => {
   );
 
   const handleNavBarPress = React.useCallback(
-      TVMenuControl.enableTVMenuKey();
     args => {
       dispatch({
         type: RNTesterActionsType.NAVBAR_PRESS,
@@ -143,7 +142,6 @@ const RNTesterApp = (): React.Node => {
     [dispatch],
   );
 
-        TVMenuControl.disableTVMenuKey();
   const theme = colorScheme === 'dark' ? themes.dark : themes.light;
 
   if (examplesList === null) {
