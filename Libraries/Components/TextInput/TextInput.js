@@ -26,6 +26,7 @@ import nullthrows from 'nullthrows';
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
 
 import usePressability from '../../Pressability/usePressability';
+import warnOnce from '../../Utilities/warnOnce';
 
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {
