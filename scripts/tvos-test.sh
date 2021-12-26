@@ -4,12 +4,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 #
-# Script used to run iOS tests.
-# If no arguments are passed to the script, it will only compile
-# the RNTester.
-# If the script is called with a single argument "test", we'll
-# run the RNTester unit and integration tests
-# ./objc-test.sh test
+# Script used to run tvOS tests.
 
 SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 ROOT=$(dirname "$SCRIPTS")
@@ -53,12 +48,12 @@ runTests() {
   # shellcheck disable=SC1091
   source "./scripts/.tests.tvos.env"
   xcodebuild build test \
-    -workspace RNTester/RNTesterPods.xcworkspace \
+    -workspace packages/rn-tester/RNTesterPods.xcworkspace \
     -scheme RNTesterUnitTests \
     -sdk $IOS_SDK \
     -destination "platform=$IOS_PLATFORM,name=$IOS_DEVICE,OS=$IOS_TARGET_OS"
   xcodebuild build test \
-    -workspace RNTester/RNTesterPods.xcworkspace \
+    -workspace packages/rn-tester/RNTesterPods.xcworkspace \
     -scheme RNTesterIntegrationTests \
     -sdk $IOS_SDK \
     -destination "platform=$IOS_PLATFORM,name=$IOS_DEVICE,OS=$IOS_TARGET_OS"
@@ -67,7 +62,7 @@ runTests() {
 buildProject() {
   source "./scripts/.tests.tvos.env"
   xcodebuild build \
-    -workspace RNTester/RNTesterPods.xcworkspace \
+    -workspace packages/rn-tester/RNTesterPods.xcworkspace \
     -scheme RNTester \
     -sdk $IOS_SDK
 }
@@ -88,8 +83,8 @@ xcprettyFormat() {
 
 preloadBundles() {
   # Preload the RNTesterApp bundle for better performance in integration tests
-  curl -s 'http://localhost:8081/RNTester/js/RNTesterApp.ios.bundle?platform=ios&dev=true' -o /dev/null
-  curl -s 'http://localhost:8081/RNTester/js/RNTesterApp.ios.bundle?platform=ios&dev=true&minify=false' -o /dev/null
+  curl -s 'http://localhost:8081/packages/rn-tester/js/RNTesterApp.ios.bundle?platform=ios&dev=true' -o /dev/null
+  curl -s 'http://localhost:8081/packages/rn-tester/js/RNTesterApp.ios.bundle?platform=ios&dev=true&minify=false' -o /dev/null
   curl -s 'http://localhost:8081/IntegrationTests/IntegrationTestsApp.bundle?platform=ios&dev=true' -o /dev/null
   curl -s 'http://localhost:8081/IntegrationTests/RCTRootViewIntegrationTestApp.bundle?platform=ios&dev=true' -o /dev/null
 }
@@ -99,30 +94,21 @@ main() {
 
   # If first argument is "test", actually start the packager and run tests.
   # Otherwise, just build RNTester and exit
-  if [ "$1" = "test" ]; then
 
-    # Start the packager
-    # yarn start --max-workers=1 || echo "Can't start packager automatically" &
-    # Start the WebSocket test server
-    open "./IntegrationTests/launchWebSocketServer.command" || echo "Can't start web socket server automatically"
+  # Start the packager
+  # yarn start --max-workers=1 || echo "Can't start packager automatically" &
+  # Start the WebSocket test server
+  open "./IntegrationTests/launchWebSocketServer.command" || echo "Can't start web socket server automatically"
 
-    # waitForPackager
-    # preloadBundles
+  # waitForPackager
+  # preloadBundles
 
-    # Build and run tests.
-    if [ -x "$(command -v xcpretty)" ]; then
-      runTests | xcprettyFormat && exit "${PIPESTATUS[0]}"
-    else
-      echo 'Warning: xcpretty is not installed. Install xcpretty to generate JUnit reports.'
-      runTests
-    fi
+  # Build and run tests.
+  if [ -x "$(command -v xcpretty)" ]; then
+    runTests | xcprettyFormat && exit "${PIPESTATUS[0]}"
   else
-    # Build without running tests.
-    if [ -x "$(command -v xcpretty)" ]; then
-      buildProject | xcprettyFormat && exit "${PIPESTATUS[0]}"
-    else
-      buildProject
-    fi
+    echo 'Warning: xcpretty is not installed. Install xcpretty to generate JUnit reports.'
+    runTests
   fi
 }
 

@@ -27,6 +27,7 @@ const {
 exports.framework = 'React';
 exports.title = 'TVFocusGuide example';
 exports.description = 'tvOS focus guide API';
+exports.displayName = 'TVFocusGuideExample';
 exports.examples = [
   {
     title: 'TVFocusGuide',

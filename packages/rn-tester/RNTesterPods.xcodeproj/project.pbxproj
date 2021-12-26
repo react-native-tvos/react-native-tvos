@@ -1010,6 +1010,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_NOT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.RNTesterUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
@@ -1046,6 +1047,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_NOT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.RNTesterUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
@@ -1083,6 +1085,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_NOT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.RNTesterIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RNTester.app/RNTester";
 				TVOS_DEPLOYMENT_TARGET = 12.4;
@@ -1117,6 +1120,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_NOT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.facebook.RNTesterIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RNTester.app/RNTester";
 				TVOS_DEPLOYMENT_TARGET = 12.4;
