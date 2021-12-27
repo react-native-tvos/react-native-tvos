@@ -299,9 +299,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
       {...eventHandlers}
       ref={viewRef}
       isTVSelectable={isTVSelectable !== false && accessible !== false}
-      style={typeof style === 'function' ? style({pressed}) : style}
+      style={typeof style === 'function' ? style({pressed, focused}) : style}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed}) : children}
+      {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );
