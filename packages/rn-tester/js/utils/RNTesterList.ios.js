@@ -325,7 +325,7 @@ const APIs: Array<RNTesterModuleInfo> = [
     supportsTVOS: true,
   },
   {
-    key: 'DirectionalNextFocusExample',
+    key: 'TVDirectionalNextFocusExample',
     category: 'TV',
     module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
     supportsTVOS: true,
@@ -340,21 +340,6 @@ const APIs: Array<RNTesterModuleInfo> = [
     key: 'TurboModuleExample',
     module: require('../examples/TurboModule/TurboModuleExample'),
     supportsTVOS: false,
-  },
-  {
-    key: 'TVEventHandlerExample',
-    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'DirectionalNextFocusExample',
-    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVFocusGuideExample',
-    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
-    supportsTVOS: true,
   },
   {
     key: 'VibrationExample',
