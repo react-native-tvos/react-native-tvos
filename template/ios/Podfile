@@ -6,7 +6,7 @@ source 'https://cdn.cocoapods.org/'
 
 target 'HelloWorld' do
 
-  platform :ios, '10.0'
+  platform :ios, '12.0'
 
   config = use_native_modules!
 
@@ -19,11 +19,6 @@ target 'HelloWorld' do
   target 'HelloWorldTests' do
     inherit! :complete
     # Pods for testing
-  end
-
-  post_install do |installer|
-    react_native_post_install(installer)
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
 
@@ -39,9 +34,9 @@ target 'HelloWorld-tvOS' do
     inherit! :complete
     # Pods for testing
   end
+end
 
-  post_install do |installer|
-    react_native_post_install(installer)
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
-  end
+post_install do |installer|
+  react_native_post_install(installer)
+  __apply_Xcode_12_5_M1_post_install_workaround(installer)
 end
