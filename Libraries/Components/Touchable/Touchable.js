@@ -9,6 +9,7 @@
  */
 
 import * as React from 'react';
+import ReactNative from '../../Renderer/shims/ReactNative';
 import BoundingDimensions from './BoundingDimensions';
 import Platform from '../../Utilities/Platform';
 import Position from './Position';
