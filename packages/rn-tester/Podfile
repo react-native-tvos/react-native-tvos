@@ -56,10 +56,7 @@ target 'RNTesterIntegrationTests' do
 end
 
 post_install do |installer|
-<<<<<<< HEAD
   react_native_post_install(installer)
   __apply_Xcode_12_5_M1_post_install_workaround(installer)
-=======
   # flipper_post_install(installer)
->>>>>>> 050b0ca606 (Fix 0.64 tvOS errors and merge issues; RNTester compiles; no Flipper for now)
 end

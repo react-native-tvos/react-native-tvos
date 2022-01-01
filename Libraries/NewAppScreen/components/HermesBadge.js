@@ -44,6 +44,7 @@ const HermesBadge = (): Node => {
           ]}>
           {`Engine: Hermes ${version}`}
         </Text>
+      ) : null}
       {Platform.isTV ? (
         <Text
           style={[
