@@ -44,7 +44,6 @@ static void InitializeFlipper(UIApplication *application) {
   {
       rootView.backgroundColor = [UIColor whiteColor];
   }
-#endif
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
