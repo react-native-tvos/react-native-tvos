@@ -79,9 +79,17 @@ static UIModalPresentationStyle presentationConfiguration(ModalHostViewProps con
     case ModalHostViewPresentationStyle::FullScreen:
       return UIModalPresentationFullScreen;
     case ModalHostViewPresentationStyle::PageSheet:
+#if TARGET_OS_TV
+      return UIModalPresentationOverFullScreen;
+#else
       return UIModalPresentationPageSheet;
+#endif
     case ModalHostViewPresentationStyle::FormSheet:
+#if TARGET_OS_TV
+      return UIModalPresentationOverFullScreen;
+#else
       return UIModalPresentationFormSheet;
+#endif
     case ModalHostViewPresentationStyle::OverFullScreen:
       return UIModalPresentationOverFullScreen;
   }

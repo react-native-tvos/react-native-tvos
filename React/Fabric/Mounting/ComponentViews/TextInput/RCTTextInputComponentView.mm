@@ -464,6 +464,7 @@ using namespace facebook::react;
     return;
   }
 
+#if !TARGET_OS_TV
   if (shouldHaveInputAccesoryView) {
     UIToolbar *toolbarView = [[UIToolbar alloc] init];
     [toolbarView sizeToFit];
@@ -475,7 +476,9 @@ using namespace facebook::react;
                                                       action:@selector(handleInputAccessoryDoneButton)];
     toolbarView.items = @[ flexibleSpace, doneButton ];
     _backedTextInputView.inputAccessoryView = toolbarView;
-  } else {
+  } else
+#endif
+  {
     _backedTextInputView.inputAccessoryView = nil;
   }
 

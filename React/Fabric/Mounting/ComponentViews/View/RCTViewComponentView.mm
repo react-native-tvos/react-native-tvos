@@ -35,7 +35,9 @@ using namespace facebook::react;
     static auto const defaultProps = std::make_shared<ViewProps const>();
     _props = defaultProps;
     _reactSubviews = [NSMutableArray new];
+#if !TARGET_OS_TV
     self.multipleTouchEnabled = YES;
+#endif
   }
   return self;
 }
