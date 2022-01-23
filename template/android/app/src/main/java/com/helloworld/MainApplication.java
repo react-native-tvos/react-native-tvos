@@ -7,6 +7,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -44,6 +45,10 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    // Normally we only send key up events in ReactAndroidHWInputDeviceHelper
+    // Change enableKeyDownEvents to true to send both key down and key up events
+    ReactFeatureFlags.enableKeyDownEvents = false;
+
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 

@@ -89,4 +89,9 @@ public class ReactFeatureFlags {
   public static boolean enableLockFreeEventDispatcher = false;
 
   public static boolean enableAggressiveEventEmitterCleanup = false;
+
+  /**
+   * Send key down events as well as key up events
+   */
+  public static boolean enableKeyDownEvents = false;
 }
