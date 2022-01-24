@@ -48,4 +48,4 @@ class TVFocusEventHandler {
   }
 }
 
-module.exports = TVFocusEventHandler;
+export const tvFocusEventHandler: TVFocusEventHandler | null = Platform.isTV ? new TVFocusEventHandler() : null;

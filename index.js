@@ -83,7 +83,6 @@ import typeof ToastAndroid from './Libraries/Components/ToastAndroid/ToastAndroi
 import typeof * as TurboModuleRegistry from './Libraries/TurboModule/TurboModuleRegistry';
 import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/AppleTV/TVEventHandler';
-import typeof TVFocusEventHandler from './Libraries/Components/AppleTV/TVFocusEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/AppleTV/TVFocusGuideView';
 import typeof TVMenuControl from './Libraries/Components/AppleTV/TVMenuControl';
 import typeof TVTextScrollView from './Libraries/Components/AppleTV/TVTextScrollView';
@@ -416,9 +415,6 @@ module.exports = {
   },
   get TVEventHandler(): TVEventHandler {
     return require('./Libraries/Components/AppleTV/TVEventHandler');
-  },
-  get TVFocusEventHandler(): TVFocusEventHandler {
-    return require('./Libraries/Components/AppleTV/TVFocusEventHandler');
   },
   get TVFocusGuideView(): TVFocusGuideView {
     return require('./Libraries/Components/AppleTV/TVFocusGuideView');

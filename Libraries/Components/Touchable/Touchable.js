@@ -15,7 +15,7 @@ import Platform from '../../Utilities/Platform';
 import Position from './Position';
 import UIManager from '../../ReactNative/UIManager';
 import SoundManager from '../Sound/SoundManager';
-import TVFocusEventHandler from '../AppleTV/TVFocusEventHandler';
+import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
 
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 
@@ -296,7 +296,6 @@ const LONG_PRESS_DELAY_MS = LONG_PRESS_THRESHOLD - HIGHLIGHT_DELAY_MS;
 
 const LONG_PRESS_ALLOWED_MOVEMENT = 10;
 
-const tvFocusEventHandler = Platform.isTV ? new TVFocusEventHandler() : null;
 // Default amount "active" region protrudes beyond box
 
 /**
