@@ -15,7 +15,7 @@ import Platform from '../../Utilities/Platform';
 import Position from './Position';
 import UIManager from '../../ReactNative/UIManager';
 import SoundManager from '../Sound/SoundManager';
-import TVEventHandler from '../AppleTV/TVEventHandler';
+import TVFocusEventHandler from '../AppleTV/TVFocusEventHandler';
 
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 
@@ -296,6 +296,7 @@ const LONG_PRESS_DELAY_MS = LONG_PRESS_THRESHOLD - HIGHLIGHT_DELAY_MS;
 
 const LONG_PRESS_ALLOWED_MOVEMENT = 10;
 
+const tvFocusEventHandler = Platform.isTV ? new TVFocusEventHandler() : null;
 // Default amount "active" region protrudes beyond box
 
 /**
@@ -364,24 +365,21 @@ const LONG_PRESS_ALLOWED_MOVEMENT = 10;
  */
 const TouchableMixin = {
   componentDidMount: function() {
-    if (!Platform.isTV) {
+    if (!tvFocusEventHandler) {
       return;
     }
 
-    this._tvEventHandler = new TVEventHandler();
-    this._tvEventHandler.enable(this, function(cmp, evt) {
-      const myTag = ReactNative.findNodeHandle(cmp);
+    this._componentTag = ReactNative.findNodeHandle(this);
+    tvFocusEventHandler.register(this._componentTag, evt => {
       evt.dispatchConfig = {};
-      if (myTag === evt.tag) {
-        if (evt.eventType === 'focus') {
-          cmp.touchableHandleFocus(evt);
-        } else if (evt.eventType === 'blur') {
-          cmp.touchableHandleBlur(evt);
-        } else if (evt.eventType === 'select' && Platform.OS !== 'android') {
-          cmp.touchableHandlePress &&
-            !cmp.props.disabled &&
-            cmp.touchableHandlePress(evt);
-        }
+      if (evt.eventType === 'focus') {
+        this.touchableHandleFocus(evt);
+      } else if (evt.eventType === 'blur') {
+        this.touchableHandleBlur(evt);
+      } else if (evt.eventType === 'select' && Platform.OS !== 'android') {
+        this.touchableHandlePress &&
+          !this.props.disabled &&
+          this.touchableHandlePress(evt);
       }
     });
   },
@@ -390,9 +388,8 @@ const TouchableMixin = {
    * Clear all timeouts on unmount
    */
   componentWillUnmount: function() {
-    if (this._tvEventHandler) {
-      this._tvEventHandler.disable();
-      delete this._tvEventHandler;
+    if (tvFocusEventHandler) {
+      tvFocusEventHandler.unregister(this._componentTag);
     }
     this.touchableDelayTimeout && clearTimeout(this.touchableDelayTimeout);
     this.longPressDelayTimeout && clearTimeout(this.longPressDelayTimeout);
