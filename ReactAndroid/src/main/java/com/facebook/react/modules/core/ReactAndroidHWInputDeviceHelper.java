@@ -15,6 +15,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.SystemClock;
+import com.facebook.react.config.ReactFeatureFlags;
 
 import java.util.Map;
 
@@ -79,10 +80,7 @@ public class ReactAndroidHWInputDeviceHelper {
       && isSelectEvent(eventKeyCode) && mLastKeyDownTime == 0) {
       mLastKeyDownTime = time;
     }
-    // We only need the up event for Android TV
-    // if ((eventKeyAction == KeyEvent.ACTION_UP || eventKeyAction == KeyEvent.ACTION_DOWN)
-    if ((eventKeyAction == KeyEvent.ACTION_UP)
-        && KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)) {
+    if (shouldDispatchEvent(eventKeyCode, eventKeyAction)) {
       long delta = time - mLastKeyDownTime;
       if (isSelectEvent(eventKeyCode) && (delta > mPressedDelta)) {
         dispatchEvent("longSelect", mLastFocusedViewId, eventKeyAction, context);
@@ -91,6 +89,14 @@ public class ReactAndroidHWInputDeviceHelper {
       }
       mLastKeyDownTime = 0;
     }
+  }
+
+  // Android TV: Only send key up actions, unless key down events are enabled
+  private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction) {
+    return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
+      (eventKeyAction == KeyEvent.ACTION_UP) ||
+      (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents)
+    );
   }
 
   /** Called from {@link com.facebook.react.ReactRootView} when focused view changes. */

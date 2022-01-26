@@ -17,17 +17,24 @@ const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
 
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
+  const [lastEventAction, setLastEventAction] = React.useState('');
   const [eventLog, setEventLog] = React.useState([]);
 
-  function appendEvent(eventName) {
+  const isAndroid = Platform.OS === 'android';
+
+  function appendEvent(eventType, eventAction) {
     const limit = 6;
     const newEventLog = eventLog.slice(0, limit - 1);
-    newEventLog.unshift(eventName);
+    if (isAndroid) {
+      newEventLog.unshift(`type=${eventType}, action=${eventAction}`);
+    } else {
+      newEventLog.unshift(`type=${eventType}`);
+    }
     setEventLog(newEventLog);
   }
 
   const myTVEventHandler = evt => {
-    appendEvent(evt.eventType);
+    appendEvent(evt.eventType, evt.eventKeyAction);
   };
 
   if (Platform.isTV) {
