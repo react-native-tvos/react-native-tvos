@@ -9,7 +9,14 @@
  */
 
 import * as React from 'react';
-import {useMemo, useState, useRef, useImperativeHandle} from 'react';
+import {
+  useMemo,
+  useState,
+  useRef,
+  useImperativeHandle,
+  useCallback,
+  useEffect,
+} from 'react';
 import useAndroidRippleForView, {
   type RippleConfig,
 } from './useAndroidRippleForView';
@@ -26,8 +33,8 @@ import {normalizeRect, type RectOrSize} from '../../StyleSheet/Rect';
 import type {LayoutEvent, PressEvent} from '../../Types/CoreEventTypes';
 import View from '../View/View';
 import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
-import useTVEventHandler from '../AppleTV/useTVEventHandler';
 import Platform from '../../Utilities/Platform';
+import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
@@ -269,9 +276,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
   );
   const eventHandlers = usePressability(config);
 
-  const pressableTVEventHandler = (evt: Event) => {
-    if (props.isTVSelectable !== false || props.focusable !== false) {
-      if (viewRef?.current?._nativeTag === evt.target) {
+  const pressableTVFocusEventHandler = useCallback(
+    (evt: Event) => {
+      if (isTVSelectable !== false || focusable !== false) {
         if (evt?.eventType === 'focus') {
           setFocused(true);
           onFocus && onFocus(evt);
@@ -280,7 +287,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
           setFocused(false);
         }
       }
-      // Use these on tvOS only.  Android press events go to onClick() so we don't
+      // Use these on tvOS only. Android press events go to onClick() so we don't
       // need to call onPress() again here
       if (Platform.isTVOS) {
         if (focused && evt.eventType === 'select') {
@@ -290,9 +297,20 @@ function Pressable(props: Props, forwardedRef): React.Node {
           onLongPress && onLongPress(evt);
         }
       }
+    },
+    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
+  );
+
+  useEffect(() => {
+    if (!tvFocusEventHandler) {
+      return;
     }
-  };
-  useTVEventHandler(pressableTVEventHandler);
+    const viewTag = viewRef?.current?._nativeTag;
+    tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
+    return () => {
+      tvFocusEventHandler.unregister(viewTag);
+    };
+  }, [pressableTVFocusEventHandler]);
 
   return (
     <View
