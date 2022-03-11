@@ -32,6 +32,9 @@ NSString *const RCTTVRemoteEventRight = @"right";
 NSString *const RCTTVRemoteEventUp = @"up";
 NSString *const RCTTVRemoteEventDown = @"down";
 
+NSString *const RCTTVRemoteEventPageUp = @"pageUp";
+NSString *const RCTTVRemoteEventPageDown = @"pageDown";
+
 NSString *const RCTTVRemoteEventSwipeLeft = @"swipeLeft";
 NSString *const RCTTVRemoteEventSwipeRight = @"swipeRight";
 NSString *const RCTTVRemoteEventSwipeUp = @"swipeUp";
@@ -102,6 +105,17 @@ static __volatile BOOL __useMenuKey = NO;
   [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)
                                   pressType:UIPressTypeSelect
                                        name:RCTTVRemoteEventSelect];
+    
+  // Page Up/Down
+  if (@available(tvOS 14.3, *)) {
+      [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
+                                      pressType:UIPressTypePageUp
+                                           name:RCTTVRemoteEventPageUp];
+        
+      [self addTapGestureRecognizerWithSelector:@selector(tappedPageDown:)
+                                      pressType:UIPressTypePageDown
+                                           name:RCTTVRemoteEventPageDown];
+  }
 
   // Up
   [self addTapGestureRecognizerWithSelector:@selector(tappedUp:)
@@ -278,6 +292,16 @@ static __volatile BOOL __useMenuKey = NO;
 - (void)tappedDown:(UIGestureRecognizer *)r
 {
   [self sendAppleTVEvent:RCTTVRemoteEventDown toView:r.view];
+}
+
+- (void)tappedPageUp:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventPageUp toView:r.view];
+}
+
+- (void)tappedPageDown:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventPageDown toView:r.view];
 }
 
 - (void)tappedLeft:(UIGestureRecognizer *)r
