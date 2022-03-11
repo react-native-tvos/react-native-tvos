@@ -19,6 +19,9 @@ extern NSString *const RCTTVRemoteEventRight;
 extern NSString *const RCTTVRemoteEventUp;
 extern NSString *const RCTTVRemoteEventDown;
 
+extern NSString *const RCTTVRemoteEventPageUp;
+extern NSString *const RCTTVRemoteEventPageDown;
+
 extern NSString *const RCTTVRemoteEventSwipeLeft;
 extern NSString *const RCTTVRemoteEventSwipeRight;
 extern NSString *const RCTTVRemoteEventSwipeUp;
