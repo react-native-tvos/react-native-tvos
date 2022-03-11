@@ -108,7 +108,7 @@ static __volatile BOOL __useMenuKey = NO;
     
   // Page Up/Down
   if (@available(tvOS 14.3, *)) {
-      [self addTapGestureRecognizerWithSelector:@selector(tappePagedUp:)
+      [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
                                       pressType:UIPressTypePageUp
                                            name:RCTTVRemoteEventPageUp];
         
@@ -294,7 +294,7 @@ static __volatile BOOL __useMenuKey = NO;
   [self sendAppleTVEvent:RCTTVRemoteEventDown toView:r.view];
 }
 
-- (void)tappePagedUp:(UIGestureRecognizer *)r
+- (void)tappedPageUp:(UIGestureRecognizer *)r
 {
   [self sendAppleTVEvent:RCTTVRemoteEventPageUp toView:r.view];
 }
