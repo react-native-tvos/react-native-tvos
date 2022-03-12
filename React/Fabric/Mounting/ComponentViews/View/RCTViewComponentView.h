@@ -69,6 +69,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) UIEdgeInsets hitTestEdgeInsets;
 
+#if TARGET_OS_TV
+@property(nonatomic, nullable) UIFocusGuide *focusGuide;
+#endif
+
 /**
  * Enforcing `call super` semantic for overridden methods from `RCTComponentViewProtocol`.
  * The methods update the instance variables.

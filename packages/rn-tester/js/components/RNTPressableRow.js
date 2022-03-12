@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   pressed: {
-    backgroundColor: 'rgb(242,242,242)',
+    backgroundColor: 'rgb(128,128,128)',
     elevation: 3,
   },
   topRowStyle: {

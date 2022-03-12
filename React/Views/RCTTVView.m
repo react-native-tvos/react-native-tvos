@@ -375,4 +375,20 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
+- (void)addFocusGuide:(NSArray*)destinations {
+  
+  UIView *origin = [self reactSuperview];
+  if (self.focusGuide == nil && origin != nil) {
+    self.focusGuide = [UIFocusGuide new];
+    [self addLayoutGuide:self.focusGuide];
+    
+    [self.focusGuide.widthAnchor constraintEqualToAnchor:origin.widthAnchor].active = YES;
+    [self.focusGuide.heightAnchor constraintEqualToAnchor:origin.heightAnchor].active = YES;
+    [self.focusGuide.topAnchor constraintEqualToAnchor:origin.topAnchor].active = YES;
+    [self.focusGuide.leftAnchor constraintEqualToAnchor:origin.leftAnchor].active = YES;
+  }
+  
+  self.focusGuide.preferredFocusEnvironments = destinations;
+}
+
 @end

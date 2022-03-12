@@ -8,10 +8,11 @@
  * @format
  */
 
-const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
 const React = require('react');
 const ReactNative = require('react-native');
+import ReactNativeShims from '../../Renderer/shims/ReactNative';
 const Platform = require('../../Utilities/Platform');
+import {Commands} from '../../Components/View/ViewNativeComponent';
 import type {ViewProps} from '../View/ViewPropTypes';
 
 type FocusGuideProps = $ReadOnly<{
@@ -23,26 +24,21 @@ type FocusGuideProps = $ReadOnly<{
   destinations: ?(Object[]),
 }>;
 
-class TVFocusGuideView extends React.Component<FocusGuideProps> {
-  _focusGuideRef: ?Object;
-  _destinationTags: ?(number[]);
+const TVFocusGuideView = (props: FocusGuideProps) => {
+  const focusGuideRef = React.useRef(null);
 
-  componentDidUpdate() {
-    const destinations = this.props.destinations || [];
-    this._destinationTags = destinations.map(
-      c => ReactNative.findNodeHandle(c) || 0,
-    );
-    this._focusGuideRef &&
-      this._focusGuideRef.setNativeProps({
-        destinationTags: this._destinationTags,
-      });
-  }
+  React.useEffect(() => {
+    const nativeDestinations = (props.destinations || [])
+                                 .map(d => ReactNative.findNodeHandle(d))
+                                 .filter(c => c !== 0 && c !== null && c !== undefined);
+    const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(focusGuideRef?.current);
+    hostComponentRef && Commands.setDestinations(hostComponentRef, nativeDestinations);
+  }, [props.destinations]);
 
-  render(): React.Node {
-    return (
-      // Container view must have nonzero size
-      <ReactNative.View style={[{minHeight: 1, minWidth: 1}, this.props.style]}>
-        {
+  return (
+    // Container view must have nonzero size
+    <ReactNative.View style={[{minHeight: 1, minWidth: 1}, props.style]}>
+      {
           /**
            * The client specified layout(using 'style' prop) should be applied the container view ReactNative.View.
            * And the focusGuide's layout shoule be overrided to wrap it fully inside the container view.
@@ -51,20 +47,21 @@ class TVFocusGuideView extends React.Component<FocusGuideProps> {
            * and so, the left margin is getting added twice and UI becomes incorrect. 
            * The same is applicable for other layout properties.
            */
-        }
-        {Platform.isTVOS ? (
-          <RNFocusGuide
-            style={[this.props.style, styles.focusGuideLayout]}
-            ref={ref => (this._focusGuideRef = ref)}
-            destinationTags={this._destinationTags}>
-            {this.props.children}
-          </RNFocusGuide>
-        ) : (
-          this.props.children
-        )}
-      </ReactNative.View>)
-  }
-}
+      }
+      {Platform.isTVOS ? (
+        <ReactNative.View
+          style={[props.style, styles.focusGuideLayout]}
+          ref={focusGuideRef}
+        >
+          {props.children}
+        </ReactNative.View>
+      ) : (
+          props.children
+      )}
+    </ReactNative.View>
+  );
+
+};
 
 const styles = ReactNative.StyleSheet.create({
   focusGuideLayout: {
@@ -78,7 +75,5 @@ const styles = ReactNative.StyleSheet.create({
     marginBottom: 0,
   },
 });
-
-const RNFocusGuide = requireNativeComponent('RCTTVFocusGuideView');
 
 module.exports = TVFocusGuideView;

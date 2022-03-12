@@ -463,5 +463,71 @@ static inline CascadedRectangleEdges<T> convertRawProp(
   return result;
 }
 
+#if TARGET_OS_TV
+inline void fromRawValue(
+    const PropsParserContext &,
+    const RawValue &value,
+    TVParallaxProperties &result) {
+  auto map = (better::map<std::string, RawValue>)value;
+
+  auto enabled = map.find("enabled");
+  if (enabled != map.end()) {
+    if (enabled->second.hasType<bool>()) {
+      result.enabled = (bool)enabled->second;
+    }
+  }
+
+  auto shiftDistanceX = map.find("shiftDistanceX");
+  if (shiftDistanceX != map.end()) {
+    if (shiftDistanceX->second.hasType<float>()) {
+      result.shiftDistanceX = (float)shiftDistanceX->second;
+    }
+  }
+
+  auto shiftDistanceY = map.find("shiftDistanceY");
+  if (shiftDistanceY != map.end()) {
+    if (shiftDistanceY->second.hasType<float>()) {
+      result.shiftDistanceY = (float)shiftDistanceY->second;
+    }
+  }
+
+  auto tiltAngle = map.find("tiltAngle");
+  if (tiltAngle != map.end()) {
+    if (tiltAngle->second.hasType<float>()) {
+      result.tiltAngle = (float)tiltAngle->second;
+    }
+  }
+
+  auto magnification = map.find("magnification");
+  if (magnification != map.end()) {
+    if (magnification->second.hasType<float>()) {
+      result.magnification = (float)magnification->second;
+    }
+  }
+
+  auto pressMagnification = map.find("pressMagnification");
+  if (pressMagnification != map.end()) {
+    if (pressMagnification->second.hasType<float>()) {
+      result.pressMagnification = (float)pressMagnification->second;
+    }
+  }
+
+  auto pressDuration = map.find("pressDuration");
+  if (pressDuration != map.end()) {
+    if (pressDuration->second.hasType<float>()) {
+      result.pressDuration = (float)pressDuration->second;
+    }
+  }
+
+  auto pressDelay = map.find("pressDelay");
+  if (pressDelay != map.end()) {
+    if (pressDelay->second.hasType<float>()) {
+      result.pressDelay = (float)pressDelay->second;
+    }
+  }
+
+}
+#endif
+
 } // namespace react
 } // namespace facebook

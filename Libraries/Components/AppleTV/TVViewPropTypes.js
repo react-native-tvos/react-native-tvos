@@ -78,31 +78,4 @@ export type TVViewProps = $ReadOnly<{|
    */
   tvParallaxProperties?: TVParallaxPropertiesType,
 
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
-   */
-  tvParallaxShiftDistanceX?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
-   */
-  tvParallaxShiftDistanceY?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 0.05.
-   *
-   * @platform ios
-   */
-  tvParallaxTiltAngle?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 1.0.
-   *
-   * @platform ios
-   */
-  tvParallaxMagnification?: number,
 |}>;

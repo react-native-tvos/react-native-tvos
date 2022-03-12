@@ -193,6 +193,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     pressRetentionOffset,
     style,
     testOnly_pressed,
+    tvParallaxProperties,
     unstable_pressDelay,
     ...restProps
   } = props;
@@ -319,6 +320,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
       ref={viewRef}
       isTVSelectable={isTVSelectable !== false && accessible !== false}
       style={typeof style === 'function' ? style({pressed, focused}) : style}
+      tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
       {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}

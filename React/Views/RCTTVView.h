@@ -65,4 +65,9 @@
  */
 - (void)removeParallaxMotionEffects;
 
+
+- (void)addFocusGuide:(NSArray*)destinations;
+
+@property (nonatomic, strong) UIFocusGuide * focusGuide;
+
 @end

@@ -30,6 +30,7 @@
 #import "RCTFabricComponentsPlugins.h"
 #import "RCTImageComponentView.h"
 #import "RCTLegacyViewManagerInteropComponentView.h"
+#import "RCTModalHostViewComponentView.h"
 #import "RCTMountingTransactionObserving.h"
 #import "RCTParagraphComponentView.h"
 #import "RCTRootComponentView.h"
@@ -73,6 +74,7 @@ static Class<RCTComponentViewProtocol> RCTComponentViewClassWithName(const char 
     [componentViewFactory registerComponentViewClass:[RCTViewComponentView class]];
     [componentViewFactory registerComponentViewClass:[RCTParagraphComponentView class]];
     [componentViewFactory registerComponentViewClass:[RCTTextInputComponentView class]];
+    [componentViewFactory registerComponentViewClass:[RCTModalHostViewComponentView class]];
 
     Class<RCTComponentViewProtocol> imageClass = RCTComponentViewClassWithName("Image");
     [componentViewFactory registerComponentViewClass:imageClass];
