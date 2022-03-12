@@ -34,10 +34,15 @@ interface NativeCommands {
     viewRef: React.ElementRef<HostComponent<mixed>>,
     pressed: boolean,
   ) => void;
+  // Apple TV focus guide API
+  +setDestinations: (
+    viewRef: React.ElementRef<HostComponent<mixed>>,
+    destinations: Array<React.ElementRef<HostComponent<mixed>>>,
+  ) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['hotspotUpdate', 'setPressed'],
+  supportedCommands: ['hotspotUpdate', 'setPressed', 'setDestinations'],
 });
 
 export default ViewNativeComponent;

@@ -40,6 +40,7 @@ class Button extends React.Component<$FlowFixMeProps> {
         {theme => {
           return (
             <TouchableOpacity
+              hasTVPreferredFocus={this.props.hasTVPreferredFocus || false}
               nextFocusUp={this.props.nextFocusUp}
               nextFocusDown={this.props.nextFocusDown}
               nextFocusLeft={this.props.nextFocusLeft}
@@ -48,7 +49,7 @@ class Button extends React.Component<$FlowFixMeProps> {
               onPress={this.props.onPress}
               onFocus={this.props.onFocus}
               style={this.props.style}
-              ref={this.props.ref}>
+              ref={this.props.buttonRef}>
               <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
                 {this.props.label}
               </Text>
@@ -118,7 +119,7 @@ class DirectionalNextFocusExample extends React.Component<
             label="Starting point"
           />
           <Button
-            ref={component => {
+            buttonRef={component => {
               if (!this.state.destinations.up) {
                 this.setState(prevState => ({
                   destinations: {
@@ -143,7 +144,7 @@ class DirectionalNextFocusExample extends React.Component<
               label="Wrapped button 1"
             />
             <Button
-              ref={component => {
+              buttonRef={component => {
                 if (!this.state.destinations.down) {
                   this.setState(prevState => ({
                     destinations: {
@@ -170,7 +171,7 @@ class DirectionalNextFocusExample extends React.Component<
         </View>
         <View style={styles.rowContainer}>
           <Button
-            ref={component => {
+            buttonRef={component => {
               if (!this.state.destinations.right) {
                 this.setState(prevState => ({
                   destinations: {
@@ -193,7 +194,8 @@ class DirectionalNextFocusExample extends React.Component<
             }}
           />
           <Button
-            ref={component => {
+            hasTVPreferredFocus={true}
+            buttonRef={component => {
               if (!this.state.destinations.left) {
                 this.setState(prevState => ({
                   destinations: {

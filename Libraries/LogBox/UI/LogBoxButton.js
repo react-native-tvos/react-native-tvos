@@ -63,6 +63,7 @@ function LogBoxButton(props: Props): React.Node {
     content
   ) : (
     <LogBoxTouchable
+      tvParallaxProperties={{enabled: false}}
       hitSlop={props.hitSlop}
       onPress={props.onPress}
       onPressIn={() => setPressed(true)}

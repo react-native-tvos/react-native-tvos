@@ -435,4 +435,21 @@ RCT_EXPORT_SHADOW_PROPERTY(onLayout, RCTDirectEventBlock)
 
 RCT_EXPORT_SHADOW_PROPERTY(direction, YGDirection)
 
+#if TARGET_OS_TV
+RCT_EXPORT_METHOD(setDestinations : (nonnull NSNumber *)viewTag reactTags : (NSArray<NSNumber *> *)destinationTags)
+{
+  [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+    RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
+    NSMutableArray* destinations = [NSMutableArray array];
+    for (NSNumber *  tag in destinationTags) {
+      RCTTVView *destination = (RCTTVView*)viewRegistry[tag];
+      if (destination != nil) {
+        [destinations addObject:destination];
+      }
+    }
+    [view addFocusGuide:destinations];
+  }];  
+}
+#endif
+
 @end
