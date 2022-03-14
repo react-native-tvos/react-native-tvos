@@ -12,7 +12,7 @@ const {exec} = require('shelljs');
 const VERSION_REGEX = /^v?((\d+)\.(\d+)\.(\d+)(?:-(.+))?)$/;
 
 function parseVersion(versionStr) {
-  const match = versionStr.match(VERSION_REGEX);
+  const match = versionStr.match(/^v?((\d+)\.(\d+)\.(\d+)(?:-(.+))?)$/);
   if (!match) {
     throw new Error(
       `You must pass a correctly formatted version; couldn't parse ${versionStr}`,

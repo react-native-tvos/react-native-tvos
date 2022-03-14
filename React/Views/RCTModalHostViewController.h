@@ -11,6 +11,8 @@
 
 @property (nonatomic, copy) void (^boundsDidChangeBlock)(CGRect newBounds);
 
+#if !TARGET_OS_TV
 @property (nonatomic, assign) UIInterfaceOrientationMask supportedInterfaceOrientations;
+#endif
 
 @end

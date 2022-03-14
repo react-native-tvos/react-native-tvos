@@ -1,10 +1,13 @@
 {
-  "name": "react-native",
-  "version": "0.68.0-rc.2",
+  "name": "react-native-tvos",
+  "version": "0.68.0",
   "bin": "./cli.js",
   "description": "A framework for building native apps using React",
   "license": "MIT",
-  "repository": "github:facebook/react-native",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-native-tvos/react-native-tvos.git"
+  },
   "engines": {
     "node": ">=14"
   },
@@ -53,7 +56,8 @@
     "scripts/react-native-xcode.sh",
     "template.config.js",
     "template",
-    "third-party-podspecs"
+    "third-party-podspecs",
+    "tvos-types.d.ts"
   ],
   "scripts": {
     "start": "react-native start",
@@ -72,6 +76,10 @@
     "format-check": "prettier --list-different \"./**/*.{js,md,yml}\"",
     "update-lock": "npx yarn-deduplicate",
     "docker-setup-android": "docker pull reactnativecommunity/react-native-android:5.2",
+    "bundle_ios_dev": "react-native bundle --entry-file packages/rn-tester/js/RNTesterApp.ios.js --platform ios --dev true --bundle-output RNTester.ios.jsbundle",
+    "bundle_ios": "react-native bundle --entry-file packages/rn-tester/js/RNTesterApp.ios.js --platform ios --dev false --bundle-output RNTester.ios.jsbundle",
+    "bundle_android_dev": "react-native bundle --entry-file packages/rn-tester/js/RNTesterApp.android.js --platform android --dev true --bundle-output RNTester.android.jsbundle",
+    "bundle_android": "react-native bundle --entry-file packages/rn-tester/js/RNTesterApp.android.js --platform android --dev false --bundle-output RNTester.android.jsbundle",
     "docker-build-android": "docker build -t reactnativeci/android -f .circleci/Dockerfiles/Dockerfile.android .",
     "test-android-run-instrumentation": "docker run --cap-add=SYS_ADMIN -it reactnativeci/android bash .circleci/Dockerfiles/scripts/run-android-docker-instrumentation-tests.sh",
     "test-android-run-unit": "docker run --cap-add=SYS_ADMIN -it reactnativeci/android bash .circleci/Dockerfiles/scripts/run-android-docker-unit-tests.sh",
@@ -83,6 +91,7 @@
     "test-ios": "./scripts/objc-test.sh test"
   },
   "peerDependencies": {
+    "@types/react-native": "^0.63.17",
     "react": "17.0.2"
   },
   "dependencies": {
@@ -107,6 +116,7 @@
     "nullthrows": "^1.1.1",
     "pretty-format": "^26.5.2",
     "promise": "^8.0.3",
+    "prop-types": "^15.7.2",
     "react-devtools-core": "^4.23.0",
     "react-native-gradle-plugin": "^0.0.5",
     "react-refresh": "^0.4.0",

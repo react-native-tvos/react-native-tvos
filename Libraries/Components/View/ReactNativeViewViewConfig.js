@@ -10,6 +10,7 @@
 
 import type {ViewConfig} from '../../Renderer/shims/ReactNativeTypes';
 import ReactNativeViewViewConfigAndroid from './ReactNativeViewViewConfigAndroid';
+import ReactNativeViewViewConfigAppleTV from './ReactNativeViewViewConfigAppleTV';
 import {Platform} from 'react-native';
 
 const ReactNativeViewConfig: ViewConfig = {
@@ -124,6 +125,7 @@ const ReactNativeViewConfig: ViewConfig = {
   },
   validAttributes: {
     ...ReactNativeViewViewConfigAndroid.validAttributes,
+    ...ReactNativeViewViewConfigAppleTV.validAttributes,
     accessibilityActions: true,
     accessibilityElementsHidden: true,
     accessibilityHint: true,

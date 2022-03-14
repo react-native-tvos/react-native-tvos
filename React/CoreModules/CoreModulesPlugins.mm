@@ -27,7 +27,9 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"Clipboard", RCTClipboardCls},
     {"I18nManager", RCTI18nManagerCls},
     {"SourceCode", RCTSourceCodeCls},
+#if !TARGET_OS_TV
     {"ActionSheetManager", RCTActionSheetManagerCls},
+#endif
     {"AlertManager", RCTAlertManagerCls},
     {"AsyncLocalStorage", RCTAsyncLocalStorageCls},
     {"Timing", RCTTimingCls},
@@ -39,6 +41,7 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"DevSettings", RCTDevSettingsCls},
     {"RedBox", RCTRedBoxCls},
     {"LogBox", RCTLogBoxCls},
+    {"TVNavigationEventEmitter", RCTTVNavigationEventEmitterCls},
     {"WebSocketExecutor", RCTWebSocketExecutorCls},
     {"WebSocketModule", RCTWebSocketModuleCls},
     {"DevLoadingView", RCTDevLoadingViewCls},

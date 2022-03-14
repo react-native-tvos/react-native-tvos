@@ -1,7 +1,8 @@
 require_relative '../../scripts/react_native_pods'
 
+source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :ios, '11.0'
+platform :tvos, '11.0'
 
 # Temporary solution to suppress duplicated GUID error.
 # Can be removed once we move to generate files outside pod install.
@@ -51,9 +52,7 @@ end
 
 target 'RNTester' do
   pods()
-  if !USE_FRAMEWORKS
-    use_flipper!
-  end
+  # use_flipper_tvos!
 end
 
 target 'RNTesterUnitTests' do

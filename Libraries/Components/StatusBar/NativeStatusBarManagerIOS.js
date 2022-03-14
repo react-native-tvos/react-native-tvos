@@ -11,6 +11,8 @@
 import type {TurboModule} from '../../TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../../TurboModule/TurboModuleRegistry';
 
+const Platform = require('../../Utilities/Platform');
+
 export interface Spec extends TurboModule {
   +getConstants: () => {|
     +HEIGHT: number,
@@ -36,7 +38,9 @@ export interface Spec extends TurboModule {
   +setHidden: (hidden: boolean, withAnimation: string) => void;
 }
 
-const NativeModule = TurboModuleRegistry.getEnforcing<Spec>('StatusBarManager');
+const NativeModule = Platform.isTVOS
+  ? null
+  : TurboModuleRegistry.getEnforcing<Spec>('StatusBarManager');
 let constants = null;
 
 const NativeStatusBarManager = {
@@ -45,26 +49,28 @@ const NativeStatusBarManager = {
     +DEFAULT_BACKGROUND_COLOR?: number,
   |} {
     if (constants == null) {
-      constants = NativeModule.getConstants();
+      constants = NativeModule
+        ? NativeModule.getConstants()
+        : {HEIGHT: 0, DEFAULT_BACKGROUND_COLOR: 0};
     }
     return constants;
   },
 
   // TODO(T47754272) Can we remove this method?
   getHeight(callback: (result: {|height: number|}) => void): void {
-    NativeModule.getHeight(callback);
+    NativeModule ? NativeModule.getHeight(callback) : callback({height: 0});
   },
 
   setNetworkActivityIndicatorVisible(visible: boolean): void {
-    NativeModule.setNetworkActivityIndicatorVisible(visible);
+    NativeModule && NativeModule.setNetworkActivityIndicatorVisible(visible);
   },
 
   addListener(eventType: string): void {
-    NativeModule.addListener(eventType);
+    NativeModule && NativeModule.addListener(eventType);
   },
 
   removeListeners(count: number): void {
-    NativeModule.removeListeners(count);
+    NativeModule && NativeModule.removeListeners(count);
   },
 
   /**
@@ -74,14 +80,14 @@ const NativeStatusBarManager = {
    *    - 'light-content'
    */
   setStyle(statusBarStyle?: ?string, animated: boolean): void {
-    NativeModule.setStyle(statusBarStyle, animated);
+    NativeModule && NativeModule.setStyle(statusBarStyle, animated);
   },
 
   /**
    *  - withAnimation can be: 'none' | 'fade' | 'slide'
    */
   setHidden(hidden: boolean, withAnimation: string): void {
-    NativeModule.setHidden(hidden, withAnimation);
+    NativeModule && NativeModule.setHidden(hidden, withAnimation);
   },
 };
 

@@ -69,6 +69,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) UIEdgeInsets hitTestEdgeInsets;
 
+#if TARGET_OS_TV
+@property(nonatomic, nullable) UIFocusGuide *focusGuide;
+#endif
+
 /**
  * Flag indicating if subview clipping is enabled for the view.
  * If subview clipping is enabled, subviews that are outside of the viewport may be removed from the view hierachy.

@@ -9,11 +9,13 @@
  */
 
 import * as React from 'react';
+import ReactNative from '../../Renderer/shims/ReactNative';
 import BoundingDimensions from './BoundingDimensions';
 import Platform from '../../Utilities/Platform';
 import Position from './Position';
 import UIManager from '../../ReactNative/UIManager';
 import SoundManager from '../Sound/SoundManager';
+import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
 
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 
@@ -365,12 +367,32 @@ const TouchableMixin = {
     if (!Platform.isTV) {
       return;
     }
+    if (!tvFocusEventHandler) {
+      return;
+    }
+
+    this._componentTag = ReactNative.findNodeHandle(this);
+    tvFocusEventHandler.register(this._componentTag, evt => {
+      evt.dispatchConfig = {};
+      if (evt.eventType === 'focus') {
+        this.touchableHandleFocus(evt);
+      } else if (evt.eventType === 'blur') {
+        this.touchableHandleBlur(evt);
+      } else if (evt.eventType === 'select' && Platform.OS !== 'android') {
+        this.touchableHandlePress &&
+          !this.props.disabled &&
+          this.touchableHandlePress(evt);
+      }
+    });
   },
 
   /**
    * Clear all timeouts on unmount
    */
   componentWillUnmount: function () {
+    if (tvFocusEventHandler) {
+      tvFocusEventHandler.unregister(this._componentTag);
+    }
     this.touchableDelayTimeout && clearTimeout(this.touchableDelayTimeout);
     this.longPressDelayTimeout && clearTimeout(this.longPressDelayTimeout);
     this.pressOutDelayTimeout && clearTimeout(this.pressOutDelayTimeout);

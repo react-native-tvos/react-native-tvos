@@ -9,7 +9,14 @@
  */
 
 import * as React from 'react';
-import {useMemo, useState, useRef, useImperativeHandle} from 'react';
+import {
+  useMemo,
+  useState,
+  useRef,
+  useImperativeHandle,
+  useCallback,
+  useEffect,
+} from 'react';
 import useAndroidRippleForView, {
   type RippleConfig,
 } from './useAndroidRippleForView';
@@ -29,11 +36,28 @@ import type {
   PressEvent,
 } from '../../Types/CoreEventTypes';
 import View from '../View/View';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+import Platform from '../../Utilities/Platform';
+import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
 export type StateCallbackType = $ReadOnly<{|
   pressed: boolean,
+  focused: boolean,
+|}>;
+
+type TVProps = $ReadOnly<{|
+  hasTVPreferredFocus?: boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
+  onFocus?: ?(event: FocusEvent) => mixed,
+  onBlur?: ?(event: FocusEvent) => mixed,
 |}>;
 
 type Props = $ReadOnly<{|
@@ -163,6 +187,10 @@ type Props = $ReadOnly<{|
    * Duration to wait after press down before calling `onPressIn`.
    */
   unstable_pressDelay?: ?number,
+  /**
+   * Props needed for Apple TV and Android TV
+   */
+  ...TVProps,
 |}>;
 
 /**
@@ -183,6 +211,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
     focusable,
     onHoverIn,
     onHoverOut,
+    isTVSelectable,
+    onBlur,
+    onFocus,
     onLongPress,
     onPress,
     onPressIn,
@@ -190,6 +221,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     pressRetentionOffset,
     style,
     testOnly_pressed,
+    tvParallaxProperties,
     unstable_pressDelay,
     ...restProps
   } = props;
@@ -200,6 +232,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
   const android_rippleConfig = useAndroidRippleForView(android_ripple, viewRef);
 
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
+
+  const [focused, setFocused] = useState(false);
 
   const hitSlop = normalizeRect(props.hitSlop);
 
@@ -214,6 +248,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     accessible: accessible !== false,
     accessibilityState,
     focusable: focusable !== false,
+    isTVSelectable: isTVSelectable !== false && accessible !== false,
     hitSlop,
   };
 
@@ -230,6 +265,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
       delayPressIn: unstable_pressDelay,
       onHoverIn,
       onHoverOut,
+      onBlur,
+      onFocus,
       onLongPress,
       onPress,
       onPressIn(event: PressEvent): void {
@@ -263,6 +300,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
       hitSlop,
       onHoverIn,
       onHoverOut,
+      onBlur,
+      onFocus,
       onLongPress,
       onPress,
       onPressIn,
@@ -274,14 +313,52 @@ function Pressable(props: Props, forwardedRef): React.Node {
   );
   const eventHandlers = usePressability(config);
 
+  const pressableTVFocusEventHandler = useCallback(
+    (evt: Event) => {
+      if (isTVSelectable !== false || focusable !== false) {
+        if (evt?.eventType === 'focus') {
+          setFocused(true);
+          onFocus && onFocus(evt);
+        } else if (evt.eventType === 'blur') {
+          onBlur && onBlur(evt);
+          setFocused(false);
+        }
+      }
+      // Use these on tvOS only. Android press events go to onClick() so we don't
+      // need to call onPress() again here
+      if (Platform.isTVOS) {
+        if (focused && evt.eventType === 'select') {
+          onPress && onPress(evt);
+        }
+        if (focused && evt.eventType === 'longSelect') {
+          onLongPress && onLongPress(evt);
+        }
+      }
+    },
+    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
+  );
+
+  useEffect(() => {
+    if (!tvFocusEventHandler) {
+      return;
+    }
+    const viewTag = viewRef?.current?._nativeTag;
+    tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
+    return () => {
+      tvFocusEventHandler.unregister(viewTag);
+    };
+  }, [pressableTVFocusEventHandler]);
+
   return (
     <View
       {...restPropsWithDefaults}
       {...eventHandlers}
       ref={viewRef}
-      style={typeof style === 'function' ? style({pressed}) : style}
+      isTVSelectable={isTVSelectable !== false && accessible !== false}
+      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed}) : children}
+      {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );

@@ -76,6 +76,10 @@ const Components: Array<RNTesterModuleInfo> = [
     module: require('../examples/ScrollView/ScrollViewAnimatedExample'),
   },
   {
+    key: 'TVTextScrollViewExample',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
+  },
+  {
     key: 'SectionListExample',
     category: 'ListView',
     module: require('../examples/SectionList/SectionListIndex'),
@@ -257,6 +261,19 @@ const APIs: Array<RNTesterModuleInfo> = [
     category: 'UI',
     module: require('../examples/Transform/TransformExample'),
   },
+  {
+    key: 'TVEventHandlerExample',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+  },
+  {
+    key: 'DirectionalNextFocusExample',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+  },
+  {
+    key: 'TVFocusGuideExample',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+  },
+
   {
     key: 'VibrationExample',
     category: 'Basic',

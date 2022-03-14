@@ -28,11 +28,14 @@ Pod::Spec.new do |s|
   s.homepage               = "https://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Facebook, Inc. and its affiliates"
-  s.platforms              = { :ios => "11.0" }
+  s.platforms              = { :ios => "11.0", :tvos => "11.0" }
   s.source                 = source
   s.source_files           = "Fabric/**/*.{c,h,m,mm,S,cpp}"
   s.exclude_files          = "**/tests/*",
                              "**/android/*",
+  s.tvos.exclude_files     = "Fabric/**/RCTPullToRefreshViewComponentView*",
+                             "Fabric/**/RCTSwitchComponentView*",
+                             "Fabric/**/RCTSliderComponentView*" 
   s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"

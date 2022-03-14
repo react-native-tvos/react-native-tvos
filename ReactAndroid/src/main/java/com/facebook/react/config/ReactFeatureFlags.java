@@ -102,6 +102,11 @@ public class ReactFeatureFlags {
 
   public static boolean insertZReorderBarriersOnViewGroupChildren = true;
 
+  /**
+   * Send key down events as well as key up events
+   */
+  public static boolean enableKeyDownEvents = false;
+
   /** TODO: T103427072 Delete ReactFeatureFlags.enableNestedTextOnPressEventFix */
   public static boolean enableNestedTextOnPressEventFix = true;
 

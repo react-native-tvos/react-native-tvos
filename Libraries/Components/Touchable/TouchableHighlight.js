@@ -14,9 +14,11 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
+import TVTouchable from './TVTouchable';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
+import type {ViewProps} from '../../Components/View/ViewPropTypes';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -27,14 +29,10 @@ type AndroidProps = $ReadOnly<{|
   nextFocusUp?: ?number,
 |}>;
 
-type IOSProps = $ReadOnly<{|
-  hasTVPreferredFocus?: ?boolean,
-|}>;
-
 type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
-  ...IOSProps,
+  ...ViewProps,
 
   activeOpacity?: ?number,
   underlayColor?: ?ColorValue,
@@ -155,6 +153,7 @@ type State = $ReadOnly<{|
 class TouchableHighlight extends React.Component<Props, State> {
   _hideTimeout: ?TimeoutID;
   _isMounted: boolean = false;
+  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -311,7 +310,9 @@ class TouchableHighlight extends React.Component<Props, State> {
         )}
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
+        tvParallaxProperties={this.props.tvParallaxProperties}
         nextFocusDown={this.props.nextFocusDown}
         nextFocusForward={this.props.nextFocusForward}
         nextFocusLeft={this.props.nextFocusLeft}
@@ -339,6 +340,32 @@ class TouchableHighlight extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this._isMounted = true;
+    if (Platform.isTV) {
+      this._tvTouchable = new TVTouchable(this, {
+        getDisabled: () => this.props.disabled === true,
+        onBlur: event => {
+          if (Platform.isTV) {
+            this._hideUnderlay();
+          }
+          if (this.props.onBlur != null) {
+            this.props.onBlur(event);
+          }
+        },
+        onFocus: event => {
+          if (Platform.isTV) {
+            this._showUnderlay();
+          }
+          if (this.props.onFocus != null) {
+            this.props.onFocus(event);
+          }
+        },
+        onPress: event => {
+          if (this.props.onPress != null && Platform.OS !== 'android') {
+            this.props.onPress(event);
+          }
+        },
+      });
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -349,6 +376,11 @@ class TouchableHighlight extends React.Component<Props, State> {
     this._isMounted = false;
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
+    }
+    if (Platform.isTV) {
+      if (this._tvTouchable != null) {
+        this._tvTouchable.destroy();
+      }
     }
     this.state.pressability.reset();
   }

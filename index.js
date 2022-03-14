@@ -80,9 +80,15 @@ import typeof StyleSheet from './Libraries/StyleSheet/StyleSheet';
 import typeof Systrace from './Libraries/Performance/Systrace';
 import typeof ToastAndroid from './Libraries/Components/ToastAndroid/ToastAndroid';
 import typeof * as TurboModuleRegistry from './Libraries/TurboModule/TurboModuleRegistry';
+import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
+import typeof TVEventHandler from './Libraries/Components/AppleTV/TVEventHandler';
+import typeof TVFocusGuideView from './Libraries/Components/AppleTV/TVFocusGuideView';
+import typeof TVMenuControl from './Libraries/Components/AppleTV/TVMenuControl';
+import typeof TVTextScrollView from './Libraries/Components/AppleTV/TVTextScrollView';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
 import typeof useWindowDimensions from './Libraries/Utilities/useWindowDimensions';
+import typeof useTVEventHandler from './Libraries/Components/AppleTV/useTVEventHandler';
 import typeof UTFSequence from './Libraries/UTFSequence';
 import typeof Vibration from './Libraries/Vibration/Vibration';
 import typeof YellowBox from './Libraries/YellowBox/YellowBoxDeprecated';
@@ -96,6 +102,14 @@ import typeof processColor from './Libraries/StyleSheet/processColor';
 import typeof RCTDeviceEventEmitter from './Libraries/EventEmitter/RCTDeviceEventEmitter';
 import typeof RCTNativeAppEventEmitter from './Libraries/EventEmitter/RCTNativeAppEventEmitter';
 import typeof {RootTagContext} from './Libraries/ReactNative/RootTag';
+
+// Prop Types
+import typeof DeprecatedColorPropType from './Libraries/DeprecatedPropTypes/DeprecatedColorPropType';
+import typeof DeprecatedEdgeInsetsPropType from './Libraries/DeprecatedPropTypes/DeprecatedEdgeInsetsPropType';
+import typeof DeprecatedPointPropType from './Libraries/DeprecatedPropTypes/DeprecatedPointPropType';
+import typeof DeprecatedViewPropTypes from './Libraries/DeprecatedPropTypes/DeprecatedViewPropTypes';
+
+import CheckPlatform from './Libraries/Utilities/Platform';
 
 import type {HostComponent as _HostComponentInternal} from './Libraries/Renderer/shims/ReactNativeTypes';
 
@@ -218,6 +232,9 @@ module.exports = {
   get Switch(): Switch {
     return require('./Libraries/Components/Switch/Switch').default;
   },
+  get TabBarIOS(): TabBarIOS {
+    return require('./Libraries/Components/TabBarIOS/TabBarIOS');
+  },
   get Text(): Text {
     return require('./Libraries/Text/Text');
   },
@@ -276,6 +293,12 @@ module.exports = {
         "It can now be installed and imported from '@react-native-async-storage/async-storage' instead of 'react-native'. " +
         'See https://github.com/react-native-async-storage/async-storage',
     );
+    if (CheckPlatform.isTVOS) {
+      warnOnce(
+        'async-storage-tvos',
+        'Persistent storage is not supported on tvOS, your data may be removed at any point.',
+      );
+    }
     return require('./Libraries/Storage/AsyncStorage');
   },
   get BackHandler(): BackHandler {
@@ -380,6 +403,18 @@ module.exports = {
   get TurboModuleRegistry(): TurboModuleRegistry {
     return require('./Libraries/TurboModule/TurboModuleRegistry');
   },
+  get TVEventHandler(): TVEventHandler {
+    return require('./Libraries/Components/AppleTV/TVEventHandler');
+  },
+  get TVFocusGuideView(): TVFocusGuideView {
+    return require('./Libraries/Components/AppleTV/TVFocusGuideView');
+  },
+  get TVMenuControl(): TVMenuControl {
+    return require('./Libraries/Components/AppleTV/TVMenuControl');
+  },
+  get TVTextScrollView(): TVTextScrollView {
+    return require('./Libraries/Components/AppleTV/TVTextScrollView');
+  },
   get UIManager(): UIManager {
     return require('./Libraries/ReactNative/UIManager');
   },
@@ -395,6 +430,9 @@ module.exports = {
   },
   get useWindowDimensions(): useWindowDimensions {
     return require('./Libraries/Utilities/useWindowDimensions').default;
+  },
+  get useTVEventHandler(): useTVEventHandler {
+    return require('./Libraries/Components/AppleTV/useTVEventHandler');
   },
   get UTFSequence(): UTFSequence {
     return require('./Libraries/UTFSequence');

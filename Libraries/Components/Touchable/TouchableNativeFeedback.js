@@ -12,10 +12,11 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
+import TVTouchable from './TVTouchable';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
-import {Commands} from 'react-native/Libraries/Components/View/ViewNativeComponent';
-import ReactNative from 'react-native/Libraries/Renderer/shims/ReactNative';
-import type {PressEvent} from 'react-native/Libraries/Types/CoreEventTypes';
+import {Commands} from '../../Components/View/ViewNativeComponent';
+import ReactNative from '../../Renderer/shims/ReactNative';
+import type {PressEvent} from '../../Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import processColor from '../../StyleSheet/processColor';
@@ -156,6 +157,8 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
    */
   static canUseNativeForeground: () => boolean = () =>
     Platform.OS === 'android' && Platform.Version >= 23;
+
+  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -300,11 +303,39 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
     );
   }
 
+  componentDidMount(): void {
+    if (Platform.isTV) {
+      this._tvTouchable = new TVTouchable(this, {
+        getDisabled: () => this.props.disabled === true,
+        onBlur: event => {
+          if (this.props.onBlur != null) {
+            this.props.onBlur(event);
+          }
+        },
+        onFocus: event => {
+          if (this.props.onFocus != null) {
+            this.props.onFocus(event);
+          }
+        },
+        onPress: event => {
+          if (this.props.onPress != null) {
+            this.props.onPress(event);
+          }
+        },
+      });
+    }
+  }
+
   componentDidUpdate(prevProps: Props, prevState: State) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentWillUnmount(): void {
+    if (Platform.isTV) {
+      if (this._tvTouchable != null) {
+        this._tvTouchable.destroy();
+      }
+    }
     this.state.pressability.reset();
   }
 }

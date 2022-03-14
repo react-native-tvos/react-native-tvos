@@ -44,7 +44,7 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'InputAccessoryViewExample',
     module: require('../examples/InputAccessoryView/InputAccessoryViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'KeyboardAvoidingViewExample',
@@ -85,7 +85,7 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'SafeAreaViewExample',
     module: require('../examples/SafeAreaView/SafeAreaViewExample'),
-    supportsTVOS: true,
+    supportsTVOS: false,
   },
   {
     key: 'ScrollViewExample',
@@ -101,11 +101,16 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'ScrollViewIndicatorInsetsExample',
     module: require('../examples/ScrollView/ScrollViewIndicatorInsetsExample'),
+    supportsTVOS: true,
   },
   {
     key: 'SectionListIndex',
     module: require('../examples/SectionList/SectionListIndex'),
-    category: 'ListView',
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVTextScrollViewExample',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
     supportsTVOS: true,
   },
   {
@@ -297,6 +302,24 @@ const APIs: Array<RNTesterModuleInfo> = [
   {
     key: 'TransformExample',
     module: require('../examples/Transform/TransformExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVEventHandlerExample',
+    category: 'TV',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
     supportsTVOS: true,
   },
   {

@@ -121,7 +121,7 @@ const RNTesterModuleList: React$AbstractComponent<any, void> = React.memo(
     const filter = ({example, filterRegex, category}: any) =>
       filterRegex.test(example.module.title) &&
       (!category || example.category === category) &&
-      (!Platform.isTV || example.supportsTVOS);
+      (!Platform.isTVOS || example.supportsTVOS);
 
     const renderListItem = ({item, section, separators}) => {
       return (

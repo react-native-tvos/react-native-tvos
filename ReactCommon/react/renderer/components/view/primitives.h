@@ -178,5 +178,39 @@ struct BorderMetrics {
   }
 };
 
+#if TARGET_OS_TV
+
+struct TVParallaxProperties {
+  better::optional<bool> enabled{};
+  better::optional<float> shiftDistanceX{};
+  better::optional<float> shiftDistanceY{};
+  better::optional<float> tiltAngle{};
+  better::optional<float> magnification{};
+  better::optional<float> pressMagnification{};
+  better::optional<float> pressDuration{};
+  better::optional<float> pressDelay{};
+};
+
+constexpr bool operator==(
+    TVParallaxProperties const &lhs,
+    TVParallaxProperties const &rhs) {
+  return lhs.enabled == rhs.enabled &&
+    lhs.shiftDistanceX == rhs.shiftDistanceX &&
+    lhs.shiftDistanceY == rhs.shiftDistanceY &&
+    lhs.tiltAngle == rhs.tiltAngle &&
+    lhs.magnification == rhs.magnification &&
+    lhs.pressMagnification == rhs.pressMagnification &&
+    lhs.pressDuration == rhs.pressDuration &&
+    lhs.pressDelay == rhs.pressDelay;
+}
+
+constexpr bool operator!=(
+    TVParallaxProperties const &lhs,
+    TVParallaxProperties const &rhs) {
+  return !(rhs == lhs);
+}
+
+#endif
+
 } // namespace react
 } // namespace facebook

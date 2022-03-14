@@ -12,6 +12,8 @@ import {
   BackHandler,
   StyleSheet,
   useColorScheme,
+  Platform,
+  TVMenuControl,
   View,
   LogBox,
 } from 'react-native';
@@ -76,6 +78,7 @@ const RNTesterApp = (): React.Node => {
 
   const handleBackPress = React.useCallback(() => {
     if (activeModuleKey != null) {
+      TVMenuControl.enableTVMenuKey();
       dispatch({type: RNTesterActionsType.BACK_BUTTON_PRESS});
     }
   }, [dispatch, activeModuleKey]);
@@ -85,6 +88,7 @@ const RNTesterApp = (): React.Node => {
     const handleHardwareBackPress = () => {
       if (activeModuleKey) {
         handleBackPress();
+        TVMenuControl.disableTVMenuKey();
         return true;
       }
       return false;
@@ -197,7 +201,7 @@ const RNTesterApp = (): React.Node => {
           />
         )}
       </View>
-      <View style={styles.bottomNavbar}>
+      <View style={Platform.isTV ? styles.tvNavBar : styles.bottomNavbar}>
         <RNTesterNavBar
           screen={screen || Screens.COMPONENTS}
           isExamplePageOpen={!!activeModule}
@@ -214,7 +218,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  tvNavBar: {
+    bottom: 0,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
+    height: navBarHeight,
+  },
   bottomNavbar: {
+    bottom: 0,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
     height: navBarHeight,
   },
   hidden: {

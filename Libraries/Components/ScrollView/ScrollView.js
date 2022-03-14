@@ -1771,9 +1771,10 @@ class ScrollView extends React.Component<Props, State> {
     if (refreshControl) {
       if (Platform.OS === 'ios') {
         // On iOS the RefreshControl is a child of the ScrollView.
+        // tvOS lacks native support for RefreshControl, so don't include it in that case
         return (
           <NativeDirectionalScrollView {...props} ref={this._setNativeRef}>
-            {refreshControl}
+            {Platform.isTV ? null : refreshControl}
             {contentContainer}
           </NativeDirectionalScrollView>
         );

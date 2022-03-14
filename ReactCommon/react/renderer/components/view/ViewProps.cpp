@@ -24,6 +24,34 @@ ViewProps::ViewProps(
     RawProps const &rawProps)
     : YogaStylableProps(context, sourceProps, rawProps),
       AccessibilityProps(context, sourceProps, rawProps),
+#if TARGET_OS_TV
+      isTVSelectable(convertRawProp(
+          context,
+          rawProps,
+          "isTVSelectable",
+          sourceProps.isTVSelectable,
+          (Boolean)false)),
+      hasTVPreferredFocus(convertRawProp(
+          context,
+          rawProps,
+          "hasTVPreferredFocus",
+          sourceProps.hasTVPreferredFocus,
+          (Boolean)false)),
+      tvParallaxProperties(convertRawProp(
+          context,
+          rawProps,
+          "tvParallaxProperties",
+          sourceProps.tvParallaxProperties,
+          {})),
+      nextFocusUp(
+          convertRawProp(context, rawProps, "nextFocusUp", sourceProps.nextFocusUp, {})),
+      nextFocusDown(
+          convertRawProp(context, rawProps, "nextFocusDown", sourceProps.nextFocusDown, {})),
+      nextFocusLeft(
+          convertRawProp(context, rawProps, "nextFocusLeft", sourceProps.nextFocusLeft, {})),
+      nextFocusRight(
+          convertRawProp(context, rawProps, "nextFocusRight", sourceProps.nextFocusRight, {})),
+#endif
       opacity(convertRawProp(
           context,
           rawProps,

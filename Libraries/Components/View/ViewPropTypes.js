@@ -21,6 +21,7 @@ import type {
 import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
 import type {Node} from 'react';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import type {TVViewProps} from '../AppleTV/TVViewPropTypes';
 import type {
   AccessibilityRole,
   AccessibilityState,
@@ -281,46 +282,11 @@ type AndroidViewProps = $ReadOnly<{|
   importantForAccessibility?: ?('auto' | 'yes' | 'no' | 'no-hide-descendants'),
 
   /**
-   * Whether to force the Android TV focus engine to move focus to this view.
-   *
-   * @platform android
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
-   * TV next focus down (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusDown?: ?number,
-
-  /**
    * TV next focus forward (see documentation for the View component).
    *
    * @platform android
    */
   nextFocusForward?: ?number,
-
-  /**
-   * TV next focus left (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * TV next focus right (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * TV next focus up (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusUp?: ?number,
 
   /**
    * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
@@ -376,6 +342,32 @@ type IOSViewProps = $ReadOnly<{|
   shouldRasterizeIOS?: ?boolean,
 |}>;
 
+type NextFocusProps = $ReadOnly<{|
+  /**
+   * TV next focus down (see documentation for the View component).
+   *
+   */
+  nextFocusDown?: ?number,
+
+  /**
+   * TV next focus left (see documentation for the View component).
+   *
+   */
+  nextFocusLeft?: ?number,
+
+  /**
+   * TV next focus right (see documentation for the View component).
+   *
+   */
+  nextFocusRight?: ?number,
+
+  /**
+   * TV next focus up (see documentation for the View component).
+   *
+   */
+  nextFocusUp?: ?number,
+|}>;
+
 export type ViewProps = $ReadOnly<{|
   ...BubblingEventProps,
   ...DirectEventProps,
@@ -384,6 +376,8 @@ export type ViewProps = $ReadOnly<{|
   ...TouchEventProps,
   ...AndroidViewProps,
   ...IOSViewProps,
+  ...TVViewProps,
+  ...NextFocusProps,
 
   children?: Node,
   style?: ?ViewStyleProp,

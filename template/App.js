@@ -8,7 +8,8 @@
 
 import React from 'react';
 import type {Node} from 'react';
-import {
+import ReactNative, {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,

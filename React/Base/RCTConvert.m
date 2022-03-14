@@ -416,6 +416,7 @@ RCT_ENUM_CONVERTER(
   return type;
 }
 
+#if !TARGET_OS_TV
 RCT_MULTI_ENUM_CONVERTER(
     UIDataDetectorTypes,
     (@{
@@ -444,6 +445,8 @@ RCT_MULTI_ENUM_CONVERTER(
     }),
     WKDataDetectorTypePhoneNumber,
     unsignedLongLongValue)
+
+#endif // !TARGET_OS_TV
 
 RCT_ENUM_CONVERTER(
     UIKeyboardAppearance,
@@ -497,6 +500,7 @@ RCT_ENUM_CONVERTER(
     UIViewContentModeScaleAspectFill,
     integerValue)
 
+#if !TARGET_OS_TV
 RCT_ENUM_CONVERTER(
     UIBarStyle,
     (@{
@@ -507,6 +511,7 @@ RCT_ENUM_CONVERTER(
     }),
     UIBarStyleDefault,
     integerValue)
+#endif
 
 static void convertCGStruct(const char *type, NSArray *fields, CGFloat *result, id json)
 {
@@ -910,7 +915,7 @@ static NSString *RCTSemanticColorNames()
       UIColor *highContrastDarkColor = [RCTConvert UIColor:highContrastDark];
       if (lightColor != nil && darkColor != nil) {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
-        if (@available(iOS 13.0, *)) {
+        if (@available(iOS 13.0, tvOS 13.0, *)) {
           UIColor *color = [UIColor colorWithDynamicProvider:^UIColor *_Nonnull(
                                         UITraitCollection *_Nonnull collection) {
             if (collection.userInterfaceStyle == UIUserInterfaceStyleDark) {
