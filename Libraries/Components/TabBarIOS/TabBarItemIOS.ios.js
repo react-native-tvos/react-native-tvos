@@ -11,7 +11,7 @@
 'use strict';
 
 import React from 'react';
-const StaticContainer = require('../StaticContainer.react');
+// const StaticContainer = require('../StaticContainer.react');
 const StyleSheet = require('../../StyleSheet/StyleSheet');
 const View = require('../View/View');
 const RCTTabBarItemNativeComponent = require('./RCTTabBarItemNativeComponent');
@@ -135,6 +135,7 @@ class TabBarItemIOS extends React.Component<Props, State> {
   render() {
     const {style, children, ...props} = this.props;
 
+    /*
     // if the tab has already been shown once, always continue to show it so we
     // preserve state between tab transitions
     let tabContents;
@@ -151,6 +152,13 @@ class TabBarItemIOS extends React.Component<Props, State> {
     return (
       <RCTTabBarItemNativeComponent {...props} style={[styles.tab, style]}>
         {tabContents}
+      </RCTTabBarItemNativeComponent>
+    );
+     */
+    // TODO: properly replace StaticContainer
+    return (
+      <RCTTabBarItemNativeComponent {...props} style={[styles.tab, style]}>
+        {children}
       </RCTTabBarItemNativeComponent>
     );
   }
