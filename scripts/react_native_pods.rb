@@ -356,7 +356,8 @@ def get_react_codegen_spec(options={})
     'source' => { :git => '' },
     'header_mappings_dir' => './',
     'platforms' => {
-      'ios' => '11.0',
+      'ios' => '12.0',
+      'tvos' => '12.0',
     },
     'source_files' => "**/*.{h,mm,cpp}",
     'pod_target_xcconfig' => { "HEADER_SEARCH_PATHS" =>
