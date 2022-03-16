@@ -181,14 +181,14 @@ struct BorderMetrics {
 #if TARGET_OS_TV
 
 struct TVParallaxProperties {
-  better::optional<bool> enabled{};
-  better::optional<float> shiftDistanceX{};
-  better::optional<float> shiftDistanceY{};
-  better::optional<float> tiltAngle{};
-  better::optional<float> magnification{};
-  better::optional<float> pressMagnification{};
-  better::optional<float> pressDuration{};
-  better::optional<float> pressDelay{};
+  butter::optional<bool> enabled{};
+  butter::optional<float> shiftDistanceX{};
+  butter::optional<float> shiftDistanceY{};
+  butter::optional<float> tiltAngle{};
+  butter::optional<float> magnification{};
+  butter::optional<float> pressMagnification{};
+  butter::optional<float> pressDuration{};
+  butter::optional<float> pressDelay{};
 };
 
 constexpr bool operator==(

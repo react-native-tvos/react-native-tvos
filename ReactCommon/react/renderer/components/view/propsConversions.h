@@ -468,7 +468,7 @@ inline void fromRawValue(
     const PropsParserContext &,
     const RawValue &value,
     TVParallaxProperties &result) {
-  auto map = (better::map<std::string, RawValue>)value;
+  auto map = (butter::map<std::string, RawValue>)value;
 
   auto enabled = map.find("enabled");
   if (enabled != map.end()) {

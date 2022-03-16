@@ -292,15 +292,19 @@
 
 - (void)_registerKeyboardListener
 {
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(_keyboardWillChangeFrame:)
                                                name:UIKeyboardWillChangeFrameNotification
                                              object:nil];
+#endif
 }
 
 - (void)_unregisterKeyboardListener
 {
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+#endif
 }
 
 static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCurve curve)
@@ -312,6 +316,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
       @"Unexpected implementation of UIViewAnimationCurve");
   return curve << 16;
 }
+
+#if !TARGET_OS_TV
 
 - (void)_keyboardWillChangeFrame:(NSNotification *)notification
 {
@@ -358,6 +364,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                    completion:nil];
 }
 
+#endif // TARGET_OS_TV
+
 - (instancetype)initWithEventDispatcher:(id<RCTEventDispatcherProtocol>)eventDispatcher
 {
   RCTAssertParam(eventDispatcher);
@@ -377,7 +385,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if ([_scrollView respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
       _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
-#endif
 
     _automaticallyAdjustContentInsets = YES;
     _contentInset = UIEdgeInsetsZero;

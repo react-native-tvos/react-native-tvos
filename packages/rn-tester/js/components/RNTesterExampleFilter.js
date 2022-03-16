@@ -17,7 +17,6 @@ const {
   View,
   ScrollView,
   Image,
-  Platform,
 } = require('react-native');
 import {RNTesterThemeContext} from './RNTesterTheme';
 
