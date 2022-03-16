@@ -136,10 +136,6 @@ static BOOL CGColorsAreEqual(CGColorRef color1, CGColorRef color2)
     // https://developer.apple.com/documentation/uikit/uicolor/ui_element_colors
     // Label Colors
     @"labelColor" : @(0xFF000000),
-    @"secondaryLabelColor" : @(0x993c3c43),
-    @"tertiaryLabelColor" : @(0x4c3c3c43),
-    @"quaternaryLabelColor" : @(0x2d3c3c43),
-    @"labelColor": @(0xFF000000),
 #if !TARGET_OS_TV
     @"secondaryLabelColor" : @(0x993c3c43),
     @"tertiaryLabelColor" : @(0x4c3c3c43),
