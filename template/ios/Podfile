@@ -41,7 +41,7 @@ target 'HelloWorld-tvOS' do
   use_react_native!(
     :path => config[:reactNativePath],
     # Hermes not yet available on tvOS
-    :hermes_enabled => flags[:hermes_enabled],
+    :hermes_enabled => false,
     :fabric_enabled => flags[:fabric_enabled],
     # An abosolute path to your application root.
     :app_path => "#{Dir.pwd}/.."
