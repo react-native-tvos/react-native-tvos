@@ -19,6 +19,7 @@ end
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 folly_version = '2021.06.28.00-v2'
 boost_compiler_flags = '-Wno-documentation'
+tvos_no_hermes_flags = '-DRCT_USE_HERMES=0'
 
 header_subspecs = {
   'CoreModulesHeaders'          => 'React/CoreModules/**/*.h',
@@ -44,7 +45,8 @@ Pod::Spec.new do |s|
   s.platforms              = { :ios => "11.0", :tvos => "11.0" }
   s.source                 = source
   s.resource_bundle        = { "AccessibilityResources" => ["React/AccessibilityResources/*.lproj"]}
-  s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.ios.compiler_flags     = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags + ' ' + tvos_no_hermes_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
   s.pod_target_xcconfig    = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\" \"${PODS_ROOT}/Headers/Public/FlipperKit\" \"$(PODS_ROOT)/Headers/Public/ReactCommon\" \"$(PODS_ROOT)/Headers/Public/React-RCTFabric\"", "DEFINES_MODULE" => "YES" }
