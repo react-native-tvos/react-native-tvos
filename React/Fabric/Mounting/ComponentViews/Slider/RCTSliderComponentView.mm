@@ -19,6 +19,14 @@
 
 using namespace facebook::react;
 
+#if TARGET_OS_TV
+
+@implementation RCTSliderComponentView
+
+@end
+
+#else
+
 @interface RCTSliderComponentView () <RCTImageResponseDelegate>
 @end
 
@@ -345,6 +353,8 @@ using namespace facebook::react;
 }
 
 @end
+
+#endif // TARGET_OS_TV
 
 Class<RCTComponentViewProtocol> RCTSliderCls(void)
 {

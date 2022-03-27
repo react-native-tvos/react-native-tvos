@@ -13,12 +13,23 @@
 #import <react/renderer/components/rncore/RCTComponentViewHelpers.h>
 
 #import <React/RCTConversions.h>
+#if !TARGET_OS_TV
 #import <React/RCTRefreshableProtocol.h>
+#endif
 #import <React/RCTScrollViewComponentView.h>
 
 #import "RCTFabricComponentsPlugins.h"
 
 using namespace facebook::react;
+
+
+#if TARGET_OS_TV
+
+@implementation RCTPullToRefreshViewComponentView
+
+@end
+
+#else
 
 @interface RCTPullToRefreshViewComponentView () <RCTPullToRefreshViewViewProtocol, RCTRefreshableProtocol>
 @end
@@ -183,6 +194,8 @@ using namespace facebook::react;
 }
 
 @end
+
+#endif // TARGET_OS_TV
 
 Class<RCTComponentViewProtocol> RCTPullToRefreshViewCls(void)
 {
