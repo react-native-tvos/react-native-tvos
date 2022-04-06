@@ -168,7 +168,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #if TARGET_OS_TV
 - (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
 {
-  if (self.reactPreferredFocusedView) {
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
     return @[self.reactPreferredFocusedView];
   }
   return [super preferredFocusEnvironments];
