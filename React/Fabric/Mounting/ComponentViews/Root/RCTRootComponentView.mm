@@ -35,7 +35,7 @@ using namespace facebook::react;
 }
 
 - (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
-  if (self.reactPreferredFocusedView) {
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
     return @[self.reactPreferredFocusedView];
   }
   return [super preferredFocusEnvironments];
