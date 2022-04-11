@@ -22,19 +22,23 @@ const TVEventHandlerView: () => React.Node = () => {
 
   const isAndroid = Platform.OS === 'android';
 
-  function appendEvent(eventType, eventAction) {
+  function appendEvent(eventType, eventAction, body) {
     const limit = 6;
     const newEventLog = eventLog.slice(0, limit - 1);
     if (isAndroid) {
       newEventLog.unshift(`type=${eventType}, action=${eventAction}`);
     } else {
-      newEventLog.unshift(`type=${eventType}`);
+      if (eventType === 'pan') {
+        newEventLog.unshift(`type=${eventType}, body=${JSON.stringify(body)}`);
+      } else {
+        newEventLog.unshift(`type=${eventType}`);
+      }
     }
     setEventLog(newEventLog);
   }
 
   const myTVEventHandler = evt => {
-    appendEvent(evt.eventType, evt.eventKeyAction);
+    appendEvent(evt.eventType, evt.eventKeyAction, evt.body);
   };
 
   if (Platform.isTV) {

@@ -27,6 +27,8 @@ extern NSString *const RCTTVRemoteEventSwipeRight;
 extern NSString *const RCTTVRemoteEventSwipeUp;
 extern NSString *const RCTTVRemoteEventSwipeDown;
 
+extern NSString *const RCTTVRemoteEventPan;
+
 @interface RCTTVRemoteHandler : NSObject
 
 - (instancetype _Nonnull )initWithView:(UIView * _Nonnull)view;
