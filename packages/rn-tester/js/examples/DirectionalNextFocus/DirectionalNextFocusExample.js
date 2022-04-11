@@ -86,9 +86,9 @@ const DirectionalNextFocusExample = () => {
       <View style={styles.rowContainer}>
         <Button
           nextFocusUp={tagForDestination(upDestination)}
-          nextFocusDown={tagForDestination(downDestination)}
+          nextFocusDown={downDestination}
           nextFocusLeft={tagForDestination(leftDestination)}
-          nextFocusRight={tagForDestination(rightDestination)}
+          nextFocusRight={rightDestination}
           label="Starting point"
         />
         <Button
@@ -114,8 +114,7 @@ const DirectionalNextFocusExample = () => {
           ref={component => setLeftDestination(component)}
           hasTVPreferredFocus={true}
           style={{width: width * 3}}
-          label="nextLeft destination does not work because there is no actual focusable in the
-            direction"
+          label="nextLeft destination does not work on tvOS because there is no actual focusable in the direction"
         />
       </View>
     </View>
