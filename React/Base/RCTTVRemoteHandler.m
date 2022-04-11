@@ -20,6 +20,12 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
+NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
+NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
+
+NSString *const RCTTVEnablePanGestureNotification = @"RCTTVEnablePanGestureNotification";
+NSString *const RCTTVDisablePanGestureNotification = @"RCTTVDisablePanGestureNotification";
+
 NSString *const RCTTVRemoteEventMenu = @"menu";
 NSString *const RCTTVRemoteEventPlayPause = @"playPause";
 NSString *const RCTTVRemoteEventSelect = @"select";
@@ -46,6 +52,7 @@ NSString *const RCTTVRemoteEventPan = @"pan";
 
 @property (nonatomic, copy, readonly) NSDictionary *tvRemoteGestureRecognizers;
 @property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *tvPanGestureRecognizer;
 @property (nonatomic, weak) UIView *view;
 
 @end
@@ -55,9 +62,10 @@ NSString *const RCTTVRemoteEventPan = @"pan";
 }
 
 #pragma mark -
-#pragma mark Static setting for using menu key
+#pragma mark Static settings for menu key and pan gesture
 
 static __volatile BOOL __useMenuKey = NO;
+static __volatile BOOL __usePanGesture = NO;
 
 + (BOOL)useMenuKey
 {
@@ -67,6 +75,16 @@ static __volatile BOOL __useMenuKey = NO;
 + (void)setUseMenuKey:(BOOL)useMenuKey
 {
     __useMenuKey = useMenuKey;
+}
+
++ (BOOL)usePanGesture
+{
+    return __usePanGesture;
+}
+
++ (void)setUsePanGesture:(BOOL)usePanGesture
+{
+    __usePanGesture = usePanGesture;
 }
 
 #pragma mark -
@@ -94,9 +112,13 @@ static __volatile BOOL __useMenuKey = NO;
 {
     _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
   // Recognizers for Apple TV remote buttons
+
   // Menu recognizer
   self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
   self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
+
+  // Pan gesture recognizer
+  self.tvPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
 
   // Play/Pause
   [self addTapGestureRecognizerWithSelector:@selector(playPausePressed:)
@@ -171,9 +193,6 @@ static __volatile BOOL __useMenuKey = NO;
   [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight:)
                                     direction:UISwipeGestureRecognizerDirectionRight
                                          name:RCTTVRemoteEventSwipeRight];
-
-  // Pan gesture
-  [self addPanGestureRecognizerWithSelector:@selector(panned:) name:RCTTVRemoteEventPan];
 }
 
 - (void)attachToView
@@ -187,6 +206,17 @@ static __volatile BOOL __useMenuKey = NO;
                                              selector:@selector(disableTVMenuKey)
                                                  name:RCTTVDisableMenuKeyNotification
                                                object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(enableTVPanGesture)
+                                                 name:RCTTVEnablePanGestureNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(disableTVPanGesture)
+                                                 name:RCTTVDisablePanGestureNotification
+                                               object:nil];
+
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
     }
@@ -195,12 +225,20 @@ static __volatile BOOL __useMenuKey = NO;
     } else {
         [self disableTVMenuKey];
     }
+    if ([RCTTVRemoteHandler usePanGesture]) {
+        [self enableTVPanGesture];
+    } else {
+        [self disableTVPanGesture];
+    }
 }
 
 - (void)detachFromView
 {
     if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
         [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+    }
+    if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+        [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
     }
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
@@ -211,7 +249,13 @@ static __volatile BOOL __useMenuKey = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:RCTTVDisableMenuKeyNotification
                                                   object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVEnablePanGestureNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVDisablePanGestureNotification
+                                                  object:nil];
+
 }
 
 # pragma mark -
@@ -231,6 +275,24 @@ static __volatile BOOL __useMenuKey = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
             [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+        }
+    });
+}
+
+- (void)enableTVPanGesture
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+            [self.view addGestureRecognizer:self.tvPanGestureRecognizer];
+        }
+    });
+}
+
+- (void)disableTVPanGesture
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+            [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
         }
     });
 }
@@ -363,14 +425,6 @@ static __volatile BOOL __useMenuKey = NO;
   recognizer.direction = direction;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
-}
-
-- (void)addPanGestureRecognizerWithSelector:(nonnull SEL)selector
-                                       name:(NSString *)name
-{
-    UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:selector];
-
-    _tvRemoteGestureRecognizers[name] = recognizer;
 }
 
 #pragma mark -

@@ -14,4 +14,10 @@ module.exports = {
   disableTVMenuKey: () => {
     TVMenuBridge && TVMenuBridge.disableTVMenuKey();
   },
+  enableTVPanGesture: () => {
+    TVMenuBridge && TVMenuBridge.enableTVPanGesture();
+  },
+  disableTVPanGesture: () => {
+    TVMenuBridge && TVMenuBridge.disableTVPanGesture();
+  },
 };

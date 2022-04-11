@@ -24,4 +24,16 @@ RCT_EXPORT_METHOD(disableTVMenuKey)
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableMenuKeyNotification object:nil];
 }
 
+RCT_EXPORT_METHOD(enableTVPanGesture)
+{
+    [RCTTVRemoteHandler setUsePanGesture:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnablePanGestureNotification object:nil];
+}
+
+RCT_EXPORT_METHOD(disableTVPanGesture)
+{
+    [RCTTVRemoteHandler setUsePanGesture:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisablePanGestureNotification object:nil];
+}
+
 @end

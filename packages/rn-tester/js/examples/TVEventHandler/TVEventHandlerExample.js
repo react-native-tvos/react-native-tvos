@@ -13,7 +13,7 @@
 const React = require('react');
 const ReactNative = require('react-native');
 
-const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
+const {Platform, View, Text, TouchableOpacity, TVMenuControl, useTVEventHandler} = ReactNative;
 
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
@@ -42,6 +42,13 @@ const TVEventHandlerView: () => React.Node = () => {
   };
 
   if (Platform.isTV) {
+    // Uncomment this code to see pan gestures logged
+    /*
+    React.useEffect(() => {
+      TVMenuControl.enableTVPanGesture();
+      return () => TVMenuControl.disableTVPanGesture();
+    }, []);
+     */
     useTVEventHandler(myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
     return (
       <View>

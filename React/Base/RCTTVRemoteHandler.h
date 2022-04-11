@@ -7,27 +7,33 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString *const RCTTVRemoteEventMenu;
-extern NSString *const RCTTVRemoteEventPlayPause;
-extern NSString *const RCTTVRemoteEventSelect;
+extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
+extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
 
-extern NSString *const RCTTVRemoteEventLongPlayPause;
-extern NSString *const RCTTVRemoteEventLongSelect;
+extern NSString * _Nonnull const RCTTVEnablePanGestureNotification;
+extern NSString * _Nonnull const RCTTVDisablePanGestureNotification;
 
-extern NSString *const RCTTVRemoteEventLeft;
-extern NSString *const RCTTVRemoteEventRight;
-extern NSString *const RCTTVRemoteEventUp;
-extern NSString *const RCTTVRemoteEventDown;
+extern NSString * _Nonnull const RCTTVRemoteEventMenu;
+extern NSString * _Nonnull const RCTTVRemoteEventPlayPause;
+extern NSString * _Nonnull const RCTTVRemoteEventSelect;
 
-extern NSString *const RCTTVRemoteEventPageUp;
-extern NSString *const RCTTVRemoteEventPageDown;
+extern NSString * _Nonnull const RCTTVRemoteEventLongPlayPause;
+extern NSString * _Nonnull const RCTTVRemoteEventLongSelect;
 
-extern NSString *const RCTTVRemoteEventSwipeLeft;
-extern NSString *const RCTTVRemoteEventSwipeRight;
-extern NSString *const RCTTVRemoteEventSwipeUp;
-extern NSString *const RCTTVRemoteEventSwipeDown;
+extern NSString * _Nonnull const RCTTVRemoteEventLeft;
+extern NSString * _Nonnull const RCTTVRemoteEventRight;
+extern NSString * _Nonnull const RCTTVRemoteEventUp;
+extern NSString * _Nonnull const RCTTVRemoteEventDown;
 
-extern NSString *const RCTTVRemoteEventPan;
+extern NSString * _Nonnull const RCTTVRemoteEventPageUp;
+extern NSString * _Nonnull const RCTTVRemoteEventPageDown;
+
+extern NSString * _Nonnull const RCTTVRemoteEventSwipeLeft;
+extern NSString * _Nonnull const RCTTVRemoteEventSwipeRight;
+extern NSString * _Nonnull const RCTTVRemoteEventSwipeUp;
+extern NSString * _Nonnull const RCTTVRemoteEventSwipeDown;
+
+extern NSString * _Nonnull const RCTTVRemoteEventPan;
 
 @interface RCTTVRemoteHandler : NSObject
 
@@ -36,5 +42,8 @@ extern NSString *const RCTTVRemoteEventPan;
 
 + (BOOL)useMenuKey;
 + (void)setUseMenuKey:(BOOL)useMenuKey;
+
++ (BOOL)usePanGesture;
++ (void)setUsePanGesture:(BOOL)usePanGesture;
 
 @end
