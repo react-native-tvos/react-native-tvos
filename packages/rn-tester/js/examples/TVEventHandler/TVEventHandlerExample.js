@@ -42,13 +42,11 @@ const TVEventHandlerView: () => React.Node = () => {
   };
 
   if (Platform.isTV) {
-    // Uncomment this code to see pan gestures logged
-    /*
+    // Apple TV: enable detection of pan gesture events (and disable on unmount)
     React.useEffect(() => {
       TVEventControl.enableTVPanGesture();
       return () => TVEventControl.disableTVPanGesture();
     }, []);
-     */
     useTVEventHandler(myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
     return (
       <View>
