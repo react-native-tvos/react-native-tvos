@@ -83,7 +83,7 @@ import typeof * as TurboModuleRegistry from './Libraries/TurboModule/TurboModule
 import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/AppleTV/TVEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/AppleTV/TVFocusGuideView';
-import typeof TVMenuControl from './Libraries/Components/AppleTV/TVMenuControl';
+import typeof TVEventControl from './Libraries/Components/AppleTV/TVEventControl';
 import typeof TVTextScrollView from './Libraries/Components/AppleTV/TVTextScrollView';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
@@ -403,6 +403,9 @@ module.exports = {
   get TurboModuleRegistry(): TurboModuleRegistry {
     return require('./Libraries/TurboModule/TurboModuleRegistry');
   },
+  get TVEventControl(): TVEventControl {
+    return require('./Libraries/Components/AppleTV/TVEventControl');
+  },
   get TVEventHandler(): TVEventHandler {
     return require('./Libraries/Components/AppleTV/TVEventHandler');
   },
@@ -410,7 +413,11 @@ module.exports = {
     return require('./Libraries/Components/AppleTV/TVFocusGuideView');
   },
   get TVMenuControl(): TVMenuControl {
-    return require('./Libraries/Components/AppleTV/TVMenuControl');
+    warnOnce(
+      'TVMenuControl-moved',
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.'
+    );
+    return require('./Libraries/Components/AppleTV/TVEventControl');
   },
   get TVTextScrollView(): TVTextScrollView {
     return require('./Libraries/Components/AppleTV/TVTextScrollView');

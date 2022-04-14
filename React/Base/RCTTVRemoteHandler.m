@@ -20,6 +20,12 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
+NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
+NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
+
+NSString *const RCTTVEnablePanGestureNotification = @"RCTTVEnablePanGestureNotification";
+NSString *const RCTTVDisablePanGestureNotification = @"RCTTVDisablePanGestureNotification";
+
 NSString *const RCTTVRemoteEventMenu = @"menu";
 NSString *const RCTTVRemoteEventPlayPause = @"playPause";
 NSString *const RCTTVRemoteEventSelect = @"select";
@@ -40,10 +46,13 @@ NSString *const RCTTVRemoteEventSwipeRight = @"swipeRight";
 NSString *const RCTTVRemoteEventSwipeUp = @"swipeUp";
 NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 
+NSString *const RCTTVRemoteEventPan = @"pan";
+
 @interface RCTTVRemoteHandler()
 
 @property (nonatomic, copy, readonly) NSDictionary *tvRemoteGestureRecognizers;
 @property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *tvPanGestureRecognizer;
 @property (nonatomic, weak) UIView *view;
 
 @end
@@ -53,9 +62,10 @@ NSString *const RCTTVRemoteEventSwipeDown = @"swipeDown";
 }
 
 #pragma mark -
-#pragma mark Static setting for using menu key
+#pragma mark Static settings for menu key and pan gesture
 
 static __volatile BOOL __useMenuKey = NO;
+static __volatile BOOL __usePanGesture = NO;
 
 + (BOOL)useMenuKey
 {
@@ -65,6 +75,16 @@ static __volatile BOOL __useMenuKey = NO;
 + (void)setUseMenuKey:(BOOL)useMenuKey
 {
     __useMenuKey = useMenuKey;
+}
+
++ (BOOL)usePanGesture
+{
+    return __usePanGesture;
+}
+
++ (void)setUsePanGesture:(BOOL)usePanGesture
+{
+    __usePanGesture = usePanGesture;
 }
 
 #pragma mark -
@@ -92,9 +112,13 @@ static __volatile BOOL __useMenuKey = NO;
 {
     _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
   // Recognizers for Apple TV remote buttons
+
   // Menu recognizer
   self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
   self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
+
+  // Pan gesture recognizer
+  self.tvPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
 
   // Play/Pause
   [self addTapGestureRecognizerWithSelector:@selector(playPausePressed:)
@@ -169,7 +193,6 @@ static __volatile BOOL __useMenuKey = NO;
   [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight:)
                                     direction:UISwipeGestureRecognizerDirectionRight
                                          name:RCTTVRemoteEventSwipeRight];
-
 }
 
 - (void)attachToView
@@ -183,6 +206,17 @@ static __volatile BOOL __useMenuKey = NO;
                                              selector:@selector(disableTVMenuKey)
                                                  name:RCTTVDisableMenuKeyNotification
                                                object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(enableTVPanGesture)
+                                                 name:RCTTVEnablePanGestureNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(disableTVPanGesture)
+                                                 name:RCTTVDisablePanGestureNotification
+                                               object:nil];
+
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
     }
@@ -191,12 +225,20 @@ static __volatile BOOL __useMenuKey = NO;
     } else {
         [self disableTVMenuKey];
     }
+    if ([RCTTVRemoteHandler usePanGesture]) {
+        [self enableTVPanGesture];
+    } else {
+        [self disableTVPanGesture];
+    }
 }
 
 - (void)detachFromView
 {
     if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
         [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+    }
+    if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+        [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
     }
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
@@ -207,7 +249,13 @@ static __volatile BOOL __useMenuKey = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:RCTTVDisableMenuKeyNotification
                                                   object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVEnablePanGestureNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVDisablePanGestureNotification
+                                                  object:nil];
+
 }
 
 # pragma mark -
@@ -231,27 +279,45 @@ static __volatile BOOL __useMenuKey = NO;
     });
 }
 
+- (void)enableTVPanGesture
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (![[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+            [self.view addGestureRecognizer:self.tvPanGestureRecognizer];
+        }
+    });
+}
+
+- (void)disableTVPanGesture
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+            [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
+        }
+    });
+}
+
 # pragma mark -
 # pragma mark Gesture handlers
 
 - (void)playPausePressed:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventPlayPause toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventPlayPause];
 }
 
 - (void)menuPressed:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventMenu toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventMenu];
 }
 
 - (void)selectPressed:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventSelect toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventSelect];
 }
 
 - (void)longPlayPausePressed:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventLongPlayPause toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventLongPlayPause];
 
 #if RCT_DEV
   // If shake to show is enabled on device, use long play/pause event to show dev menu
@@ -261,57 +327,73 @@ static __volatile BOOL __useMenuKey = NO;
 
 - (void)longSelectPressed:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventLongSelect toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventLongSelect];
 }
 
 - (void)swipedUp:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventSwipeUp toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventSwipeUp];
 }
 
 - (void)swipedDown:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventSwipeDown toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventSwipeDown];
 }
 
 - (void)swipedLeft:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventSwipeLeft toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventSwipeLeft];
 }
 
 - (void)swipedRight:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventSwipeRight toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventSwipeRight];
 }
 
 - (void)tappedUp:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventUp toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventUp];
 }
 
 - (void)tappedDown:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventDown toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventDown];
 }
 
 - (void)tappedPageUp:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventPageUp toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventPageUp];
 }
 
 - (void)tappedPageDown:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventPageDown toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventPageDown];
 }
 
 - (void)tappedLeft:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventLeft toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventLeft];
 }
 
 - (void)tappedRight:(UIGestureRecognizer *)r
 {
-  [self sendAppleTVEvent:RCTTVRemoteEventRight toView:r.view];
+  [self sendAppleTVEvent:RCTTVRemoteEventRight];
+}
+
+- (void)panned:(UIPanGestureRecognizer *)gesture {
+    UIView *rootView = [self view];
+    NSString *gestureState = [self recognizerStateToString:gesture.state];
+    CGPoint translation = [gesture translationInView:rootView];
+    CGPoint velocity = [gesture velocityInView:rootView];
+
+    if (gestureState) {
+        [self sendAppleTVEvent:RCTTVRemoteEventPan withBody:@{@"state": gestureState,
+                                                              @"x": [NSNumber numberWithInt:translation.x],
+                                                              @"y": [NSNumber numberWithInt:translation.y],
+                                                              @"velocityX": [NSNumber numberWithFloat:velocity.x],
+                                                              @"velocityY": [NSNumber numberWithFloat:velocity.y],
+                                                            }];
+    }
 }
 
 #pragma mark -
@@ -345,10 +427,36 @@ static __volatile BOOL __useMenuKey = NO;
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
 
-- (void)sendAppleTVEvent:(NSString *)eventType toView:(__unused UIView *)v
+#pragma mark -
+#pragma mark Helper methods
+
+- (void)sendAppleTVEvent:(NSString *)eventType
 {
+    [self sendAppleTVEvent:eventType withBody: nil];
+}
+
+- (void)sendAppleTVEvent:(NSString *)eventType
+                withBody:(NSDictionary * __nullable)body
+{
+    NSDictionary *payload = (body != nil) ?
+                                @{@"eventType" : eventType, @"body": body} :
+                                @{@"eventType" : eventType};
+
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{@"eventType" : eventType}];
+                                                      object:payload];
+}
+
+- (NSString *)recognizerStateToString:(UIGestureRecognizerState)state {
+    switch (state) {
+        case UIGestureRecognizerStateBegan:
+            return @"Began";
+        case UIGestureRecognizerStateChanged:
+            return @"Changed";
+        case UIGestureRecognizerStateEnded:
+            return @"Ended";
+        default:
+            return nil;
+    }
 }
 
 @end

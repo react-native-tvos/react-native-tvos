@@ -13,7 +13,7 @@
 const React = require('react');
 const ReactNative = require('react-native');
 
-const {Platform, View, Text, TouchableOpacity, useTVEventHandler} = ReactNative;
+const {Platform, View, Text, TouchableOpacity, TVEventControl, useTVEventHandler} = ReactNative;
 
 const TVEventHandlerView: () => React.Node = () => {
   const [lastEventType, setLastEventType] = React.useState('');
@@ -22,22 +22,31 @@ const TVEventHandlerView: () => React.Node = () => {
 
   const isAndroid = Platform.OS === 'android';
 
-  function appendEvent(eventType, eventAction) {
+  function appendEvent(eventType, eventAction, body) {
     const limit = 6;
     const newEventLog = eventLog.slice(0, limit - 1);
     if (isAndroid) {
       newEventLog.unshift(`type=${eventType}, action=${eventAction}`);
     } else {
-      newEventLog.unshift(`type=${eventType}`);
+      if (eventType === 'pan') {
+        newEventLog.unshift(`type=${eventType}, body=${JSON.stringify(body)}`);
+      } else {
+        newEventLog.unshift(`type=${eventType}`);
+      }
     }
     setEventLog(newEventLog);
   }
 
   const myTVEventHandler = evt => {
-    appendEvent(evt.eventType, evt.eventKeyAction);
+    appendEvent(evt.eventType, evt.eventKeyAction, evt.body);
   };
 
   if (Platform.isTV) {
+    // Apple TV: enable detection of pan gesture events (and disable on unmount)
+    React.useEffect(() => {
+      TVEventControl.enableTVPanGesture();
+      return () => TVEventControl.disableTVPanGesture();
+    }, []);
     useTVEventHandler(myTVEventHandler); // eslint-disable-line react-hooks/rules-of-hooks
     return (
       <View>

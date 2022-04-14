@@ -40,8 +40,7 @@
 
 NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotification";
 
-NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
-NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
+
 
 
 @interface RCTUIManager (RCTRootView)

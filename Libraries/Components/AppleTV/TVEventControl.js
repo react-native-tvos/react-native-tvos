@@ -1,4 +1,6 @@
 /**
+ * Methods to enable and disable listening for Apple TV remote events (menu key, pan gesture)
+ *
  * @format
  * @flow
  */
@@ -13,5 +15,11 @@ module.exports = {
   },
   disableTVMenuKey: () => {
     TVMenuBridge && TVMenuBridge.disableTVMenuKey();
+  },
+  enableTVPanGesture: () => {
+    TVMenuBridge && TVMenuBridge.enableTVPanGesture();
+  },
+  disableTVPanGesture: () => {
+    TVMenuBridge && TVMenuBridge.disableTVPanGesture();
   },
 };

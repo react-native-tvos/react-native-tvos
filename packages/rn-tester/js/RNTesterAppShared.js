@@ -13,7 +13,7 @@ import {
   StyleSheet,
   useColorScheme,
   Platform,
-  TVMenuControl,
+  TVEventControl,
   View,
   LogBox,
 } from 'react-native';
@@ -78,17 +78,20 @@ const RNTesterApp = (): React.Node => {
 
   const handleBackPress = React.useCallback(() => {
     if (activeModuleKey != null) {
-      TVMenuControl.enableTVMenuKey();
       dispatch({type: RNTesterActionsType.BACK_BUTTON_PRESS});
     }
   }, [dispatch, activeModuleKey]);
 
   // Setup hardware back button press listener
   React.useEffect(() => {
+    if (activeModuleKey) {
+      TVEventControl.enableTVMenuKey();
+    } else {
+      TVEventControl.disableTVMenuKey();
+    }
     const handleHardwareBackPress = () => {
       if (activeModuleKey) {
         handleBackPress();
-        TVMenuControl.disableTVMenuKey();
         return true;
       }
       return false;
