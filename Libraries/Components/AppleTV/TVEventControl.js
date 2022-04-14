@@ -1,4 +1,6 @@
 /**
+ * Methods to enable and disable listening for Apple TV remote events (menu key, pan gesture)
+ *
  * @format
  * @flow
  */
