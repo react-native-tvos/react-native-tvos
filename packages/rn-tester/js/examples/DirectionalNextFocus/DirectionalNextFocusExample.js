@@ -29,194 +29,97 @@ exports.examples = [
   },
 ];
 
-const padding = 100;
 const width = 200;
 const height = 120;
 
-class Button extends React.Component<$FlowFixMeProps> {
-  render() {
-    return (
-      <RNTesterThemeContext.Consumer>
-        {theme => {
-          return (
-            <TouchableOpacity
-              hasTVPreferredFocus={this.props.hasTVPreferredFocus || false}
-              nextFocusUp={this.props.nextFocusUp}
-              nextFocusDown={this.props.nextFocusDown}
-              nextFocusLeft={this.props.nextFocusLeft}
-              nextFocusRight={this.props.nextFocusRight}
-              activeOpacity={0.7}
-              onPress={this.props.onPress}
-              onFocus={this.props.onFocus}
-              style={this.props.style}
-              ref={this.props.buttonRef}>
-              <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
-                {this.props.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      </RNTesterThemeContext.Consumer>
-    );
-  }
-}
+const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
+  return (
+    <RNTesterThemeContext.Consumer>
+      {theme => {
+        return (
+          <TouchableOpacity
+            hasTVPreferredFocus={props.hasTVPreferredFocus || false}
+            nextFocusUp={props.nextFocusUp}
+            nextFocusDown={props.nextFocusDown}
+            nextFocusLeft={props.nextFocusLeft}
+            nextFocusRight={props.nextFocusRight}
+            activeOpacity={0.7}
+            onPress={props.onPress}
+            onFocus={props.onFocus}
+            style={[styles.buttonStyle, props.style]}
+            ref={ref}>
+            <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
+              {props.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      }}
+    </RNTesterThemeContext.Consumer>
+  );
+});
 
-class ThemedView extends React.Component<$FlowFixMeProps> {
-  render() {
-    return (
-      <RNTesterThemeContext.Consumer>
-        {theme => {
-          return (
-            <View style={this.props.style}>
-              <Text style={[{color: theme.LabelColor}, styles.buttonText]}>
-                {this.props.label}
-              </Text>
-            </View>
-          );
-        }}
-      </RNTesterThemeContext.Consumer>
-    );
-  }
-}
-
-class DirectionalNextFocusExample extends React.Component<
-  $FlowFixMeProps,
-  {
-    destinations: {
-      up: ?Object,
-      down: ?Object,
-      left: ?Object,
-      right: ?Object,
-    },
-  },
-> {
-  constructor(props: Object) {
-    super(props);
-    this.state = {
-      destinations: {
-        up: undefined,
-        down: undefined,
-        left: undefined,
-        right: undefined,
-      },
-    };
-  }
-
-  render() {
-    const {destinations} = this.state;
-    return (
-      <View style={styles.container}>
-        <View style={styles.rowContainer}>
-          <Button
-            nextFocusUp={destinations.up}
-            nextFocusDown={destinations.down}
-            nextFocusLeft={destinations.left}
-            nextFocusRight={destinations.right}
-            style={{
-              width,
-              height,
-            }}
-            label="Starting point"
-          />
-          <Button
-            buttonRef={component => {
-              if (!this.state.destinations.up) {
-                this.setState(prevState => ({
-                  destinations: {
-                    ...prevState.destinations,
-                    up: findNodeHandle(component),
-                  },
-                }));
-              }
-            }}
-            style={{
-              width,
-              height,
-            }}
-            label="nextUp destination"
-          />
-          <View style={styles.containerFocusGuide}>
-            <Button
-              style={{
-                width,
-                height,
-              }}
-              label="Wrapped button 1"
-            />
-            <Button
-              buttonRef={component => {
-                if (!this.state.destinations.down) {
-                  this.setState(prevState => ({
-                    destinations: {
-                      ...prevState.destinations,
-                      down: findNodeHandle(component),
-                    },
-                  }));
-                }
-              }}
-              style={{
-                width,
-                height,
-              }}
-              label="nextDown destination"
-            />
-            <Button
-              style={{
-                width,
-                height,
-              }}
-              label="Wrapped button 3"
-            />
-          </View>
+const ThemedView = (props: $FlowFixMeProps) => (
+  <RNTesterThemeContext.Consumer>
+    {theme => {
+      return (
+        <View style={[styles.buttonStyle, props.style]}>
+          <Text style={[{color: theme.LabelColor}, styles.buttonText]}>
+            {props.label}
+          </Text>
         </View>
-        <View style={styles.rowContainer}>
+      );
+    }}
+  </RNTesterThemeContext.Consumer>
+);
+
+const DirectionalNextFocusExample = () => {
+  const [upDestination, setUpDestination] = React.useState(null);
+  const [downDestination, setDownDestination] = React.useState(null);
+  const [leftDestination, setLeftDestination] = React.useState(null);
+  const [rightDestination, setRightDestination] = React.useState(null);
+
+  const tagForDestination = (destination: ?React.Node) =>
+    destination ? findNodeHandle(destination) : undefined;
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.rowContainer}>
+        <Button
+          nextFocusUp={tagForDestination(upDestination)}
+          nextFocusDown={downDestination}
+          nextFocusLeft={tagForDestination(leftDestination)}
+          nextFocusRight={rightDestination}
+          label="Starting point"
+        />
+        <Button
+          ref={component => setUpDestination(component)}
+          label="nextUp destination"
+        />
+        <View style={styles.containerFocusGuide}>
+          <Button label="Wrapped button 1" />
           <Button
-            buttonRef={component => {
-              if (!this.state.destinations.right) {
-                this.setState(prevState => ({
-                  destinations: {
-                    ...prevState.destinations,
-                    right: findNodeHandle(component),
-                  },
-                }));
-              }
-            }}
-            style={{
-              width,
-              height,
-            }}
-            label="nextRight destination"
+            ref={component => setDownDestination(component)}
+            label="nextDown destination"
           />
-          <View
-            style={{
-              width,
-              height,
-            }}
-          />
-          <Button
-            hasTVPreferredFocus={true}
-            buttonRef={component => {
-              if (!this.state.destinations.left) {
-                this.setState(prevState => ({
-                  destinations: {
-                    ...prevState.destinations,
-                    left: findNodeHandle(component),
-                  },
-                }));
-              }
-            }}
-            style={{
-              width: width * 3,
-              height,
-            }}
-            label="nextLeft destination does not work because there is no actual focusable in the
-              direction"
-          />
+          <Button label="Wrapped button 3" />
         </View>
       </View>
-    );
-  }
-}
+      <View style={styles.rowContainer}>
+        <Button
+          ref={component => setRightDestination(component)}
+          label="nextRight destination"
+        />
+        <ThemedView label="" />
+        <Button
+          ref={component => setLeftDestination(component)}
+          hasTVPreferredFocus={true}
+          style={{width: width * 3}}
+          label="nextLeft destination does not work on tvOS because there is no actual focusable in the direction"
+        />
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -225,10 +128,18 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    padding,
+    padding: 100,
   },
   buttonText: {
     fontSize: 30,
+  },
+  buttonStyle: {
+    width,
+    height,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   focusGuide: {
     width,

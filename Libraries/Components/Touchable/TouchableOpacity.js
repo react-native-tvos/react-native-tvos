@@ -20,6 +20,7 @@ import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
 import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
 
 import * as React from 'react';
 
@@ -245,13 +246,15 @@ class TouchableOpacity extends React.Component<Props, State> {
         nativeID={this.props.nativeID}
         testID={this.props.testID}
         onLayout={this.props.onLayout}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
-        isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
+        isTVSelectable={
+          this.props.isTVSelectable !== false && this.props.accessible !== false
+        }
         tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
@@ -284,7 +287,7 @@ class TouchableOpacity extends React.Component<Props, State> {
           }
         },
         onPress: event => {
-          if (this.props.onPress != null && Platform.OS !== "android") {
+          if (this.props.onPress != null && Platform.OS !== 'android') {
             this.props.onPress(event);
           }
         },
