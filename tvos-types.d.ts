@@ -111,4 +111,8 @@ declare module 'react-native' {
   }
 
   export class TVTextScrollView extends React.Component<TVTextScrollViewProps> {}
+  
+  export interface PressableStateCallbackType {
+    readonly focused: boolean;
+  }
 }
