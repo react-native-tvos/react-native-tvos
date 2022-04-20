@@ -31,31 +31,32 @@ declare module 'react-native' {
   nextFocusUp?: number,
   }
 
-  export const useTVEventHandler: (handleEvent: (event: HWKeyEvent) => void) => void;
+  export const useTVEventHandler: (handleEvent: (event: HWEvent) => void) => void;
 
-  export const TVMenuControl: {
+  export const TVEventControl: {
     enableTVMenuKey(): void;
     disableTVMenuKey(): void;
+    enableTVPanGesture(): void;
+    disableTVPanGesture(): void;
   };
 
-  interface HWFocusEvent {
-    eventType: 'blur' | 'focus';
-    eventKeyAction: -1;
-    tag: number;
-  }
-
-  export type HWKeyEvent =
-    | HWFocusEvent
-    | {
-        eventType: 'up' | 'down' | 'right' | 'left' | string;
-        eventKeyAction: -1 | 1 | 0 | number;
-        tag?: number;
-      };
+  export type HWEvent = {
+    eventType: 'up' | 'down' | 'right' | 'left' | 'blur' | 'focus' | 'pan' | string;
+    eventKeyAction?: -1 | 1 | 0 | number;
+    tag?: number;
+    body?: {
+      state: "Began" | "Changed" | "Ended",
+      x: number,
+      y: number,
+      velocityx: number,
+      velocityy: number
+    } 
+  };
 
   export class TVEventHandler {
     enable<T extends React.Component<unknown>>(
       component?: T,
-      callback?: (component: T, data: HWKeyEvent) => void
+      callback?: (component: T, data: HWEvent) => void
     ): void;
     disable(): void;
   }
@@ -103,11 +104,11 @@ declare module 'react-native' {
     /**
      * Called when the scroller comes into focus (e.g. for highlighting)
      */
-    onFocus?(evt: HWKeyEvent): void;
+    onFocus?(evt: HWEvent): void;
     /**
      * Called when the scroller goes out of focus
      */
-    onBlur?(evt: HWKeyEvent): void;
+    onBlur?(evt: HWEvent): void;
   }
 
   export class TVTextScrollView extends React.Component<TVTextScrollViewProps> {}
