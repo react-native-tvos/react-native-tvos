@@ -42,10 +42,10 @@ declare module 'react-native' {
 
   export type HWEvent = {
     eventType: 'up' | 'down' | 'right' | 'left' | 'blur' | 'focus' | 'pan' | string;
-    eventKeyAction: -1 | 1 | 0 | number;
+    eventKeyAction?: -1 | 1 | 0 | number;
     tag?: number;
     body?: {
-      state: "began" | "changed" | "ended",
+      state: "Began" | "Changed" | "Ended",
       x: number,
       y: number,
       velocityx: number,
