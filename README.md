@@ -28,6 +28,7 @@ Notes:
 - _Apple TV_: `pod install` will pick up the additional pods needed for the new architecture.
 - _Android TV_: Enabling the new architecture will cause your app to be built from React Native sources, including C++ sources, so you will need the NDK and the build will take much longer.
 - _Third party libraries_: As of this moment, third party libraries have not all enabled support for the new architecture.
+- _Bugs_: There are some issues with interactions between Apple TV parallax properties implementation and the new renderer. TabBarIOS has not been reimplemented in the new architecture so it will show up as an "unimplemented component".
 
 ### Typescript
 
@@ -182,7 +183,7 @@ class Game2048 extends React.Component {
 
 - _Turbomodules_: Working as of the 0.61.2-0 release.
 
-- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.x releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets. In 0.64.x, Flipper support has been temporarily removed until issues can be resolved with newer Xcode versions.
+- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.x releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets. In 0.64.x and later, Flipper support is removed until issues can be resolved with newer Xcode versions.
 
 - _Hermes for tvOS_: RN core added support for the Hermes JS engine on iOS in 0.64. tvOS does not yet have this, as it will require significant additions to the Hermes build structure.
 
