@@ -113,7 +113,7 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
 
     @AnyThread
     boolean isEmpty() {
-      return mQueue.isEmpty();
+      return mQueue.isEmpty() && mPeekedOperation != null;
     }
 
     void setSynchronizedAccess(boolean isSynchronizedAccess) {
