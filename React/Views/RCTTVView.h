@@ -32,11 +32,15 @@
 /**
  * Focus direction tags
  */
-@property (nonatomic, strong) RCTTVView * nextFocusUp;
-@property (nonatomic, strong) RCTTVView * nextFocusDown;
-@property (nonatomic, strong) RCTTVView * nextFocusLeft;
-@property (nonatomic, strong) RCTTVView * nextFocusRight;
-@property (nonatomic, strong) RCTTVView * nextFocusActiveTarget;
+@property (nonatomic, weak) RCTTVView * nextFocusUp;
+@property (nonatomic, weak) RCTTVView * nextFocusDown;
+@property (nonatomic, weak) RCTTVView * nextFocusLeft;
+@property (nonatomic, weak) RCTTVView * nextFocusRight;
+
+@property (nonatomic, strong) UIFocusGuide * focusGuideUp;
+@property (nonatomic, strong) UIFocusGuide * focusGuideDown;
+@property (nonatomic, strong) UIFocusGuide * focusGuideLeft;
+@property (nonatomic, strong) UIFocusGuide * focusGuideRight;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 

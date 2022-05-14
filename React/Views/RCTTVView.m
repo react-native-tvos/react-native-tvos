@@ -127,6 +127,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return (self.isTVSelectable);
 }
 
+- (RCTRootView *)rootView
+{
+  UIView *rootview = self;
+  while (![rootview isReactRootView] && rootview != nil) {
+    rootview = [rootview superview];
+  }
+  if (rootview == nil) return nil;
+
+  rootview = [rootview superview];
+  return (RCTRootView *)rootview;
+}
+
 - (void)addParallaxMotionEffects
 {
   if(![self.tvParallaxProperties[@"enabled"] boolValue]) {
@@ -237,11 +249,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
   if (context.nextFocusedView == self && self.isTVSelectable ) {
     [self becomeFirstResponder];
+    [self enableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
       [self addParallaxMotionEffects];
       [self sendFocusNotification:context];
     } completion:^(void){}];
   } else {
+    [self disableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
       [self sendBlurNotification:context];
       [self removeParallaxMotionEffects];
@@ -250,41 +264,93 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (BOOL) shouldUpdateFocusInContext:(UIFocusUpdateContext *)context {
-  if (self.isFocused) {
-    if (_nextFocusUp != nil && context.focusHeading == UIFocusHeadingUp) {
-      self->_nextFocusActiveTarget = _nextFocusUp;
-      [self setNeedsFocusUpdate];
-      return false;
+// In tvOS, to support directional focus APIs, we add a UIFocusGuide for each
+// side of the view where a nextFocus has been set. Set layout constraints to
+// make the guide 1 px thick, and set the destination to the nextFocus object.
+//
+// This is only done once the view is focused.
+//
+- (void)enableDirectionalFocusGuides
+{
+  if (self->_nextFocusUp != nil) {
+    if (self.focusGuideUp == nil) {
+      self.focusGuideUp = [UIFocusGuide new];
+      [[self rootView]  addLayoutGuide:self.focusGuideUp];
+
+      [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+      [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+      [self.focusGuideUp.heightAnchor constraintEqualToConstant:1.0].active = YES;
+      [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
-    if (_nextFocusDown != nil && context.focusHeading == UIFocusHeadingDown) {
-      self->_nextFocusActiveTarget = _nextFocusDown;
-      [self setNeedsFocusUpdate];
-      return false;
-    }
-    if (_nextFocusLeft != nil && context.focusHeading == UIFocusHeadingLeft) {
-      self->_nextFocusActiveTarget = _nextFocusLeft;
-      [self setNeedsFocusUpdate];
-      return false;
-    }
-    if (_nextFocusRight != nil && context.focusHeading == UIFocusHeadingRight) {
-      self->_nextFocusActiveTarget = _nextFocusRight;
-      [self setNeedsFocusUpdate];
-      return false;
-    }
-    self->_nextFocusActiveTarget = nil;
-    return true;
+
+    self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
   }
-  self->_nextFocusActiveTarget = nil;
-  return true;
+
+  if (self->_nextFocusDown != nil) {
+    if (self.focusGuideDown == nil) {
+      self.focusGuideDown = [UIFocusGuide new];
+      [[self rootView]  addLayoutGuide:self.focusGuideDown];
+
+      [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+      [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+      [self.focusGuideDown.heightAnchor constraintEqualToConstant:1.0].active = YES;
+      [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+    }
+
+    self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
+  }
+
+  if (self->_nextFocusLeft != nil) {
+    if (self.focusGuideLeft == nil) {
+      self.focusGuideLeft = [UIFocusGuide new];
+      [[self rootView]  addLayoutGuide:self.focusGuideLeft];
+
+      [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+      [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
+      [self.focusGuideLeft.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+      [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+    }
+
+    self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
+  }
+
+  if (self->_nextFocusRight != nil) {
+    if (self.focusGuideRight == nil) {
+      self.focusGuideRight = [UIFocusGuide new];
+      [[self rootView] addLayoutGuide:self.focusGuideRight];
+
+      [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+      [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
+      [self.focusGuideRight.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+      [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
+    }
+
+    self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
+  }
 }
 
-- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
-  if (_nextFocusActiveTarget == nil) return [super preferredFocusEnvironments];
-  RCTTVView * nextFocusActiveTarget = _nextFocusActiveTarget;
-  _nextFocusActiveTarget = nil;
-  NSArray<id<UIFocusEnvironment>> * focusEnvironment = @[nextFocusActiveTarget];
-  return focusEnvironment;
+// Called when focus leaves this view -- disable the directional focus guides
+// (if they exist) so that they don't interfere with focus navigation from
+// other views
+//
+- (void)disableDirectionalFocusGuides
+{
+  if (self.focusGuideUp != nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideUp];
+    self.focusGuideUp = nil;
+  }
+  if (self.focusGuideDown != nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideDown];
+    self.focusGuideDown = nil;
+  }
+  if (self.focusGuideLeft != nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideLeft];
+    self.focusGuideLeft = nil;
+  }
+  if (self.focusGuideRight != nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideRight];
+    self.focusGuideRight = nil;
+  }
 }
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
@@ -339,15 +405,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      UIView *rootview = self;
-      while (![rootview isReactRootView] && rootview != nil) {
-        rootview = [rootview superview];
-      }
+      RCTRootView *rootview = [self rootView];
+      
       if (rootview == nil) return;
       
-      rootview = [rootview superview];
-      
-      [(RCTRootView *)rootview setReactPreferredFocusedView:self];
+      [rootview setReactPreferredFocusedView:self];
       [rootview setNeedsFocusUpdate];
       [rootview updateFocusIfNeeded];
     });
@@ -356,23 +418,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus
 {
-  _hasTVPreferredFocus = hasTVPreferredFocus;
-  if (hasTVPreferredFocus) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      UIView *rootview = self;
-      while (![rootview isReactRootView] && rootview != nil) {
-        rootview = [rootview superview];
-      }
-      if (rootview == nil)
-        return;
-      
-      rootview = [rootview superview];
-      
-      [(RCTRootView *)rootview setReactPreferredFocusedView:self];
-      [rootview setNeedsFocusUpdate];
-      [rootview updateFocusIfNeeded];
-    });
-  }
+  [self setPreferredFocus:hasTVPreferredFocus];
 }
 
 - (void)addFocusGuide:(NSArray*)destinations {
