@@ -71,6 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if TARGET_OS_TV
 @property(nonatomic, nullable) UIFocusGuide *focusGuide;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideUp;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideDown;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideLeft;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideRight;
 #endif
 
 /**

@@ -19,6 +19,8 @@ import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import type {ViewProps} from '../../Components/View/ViewPropTypes';
+import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -29,9 +31,21 @@ type AndroidProps = $ReadOnly<{|
   nextFocusUp?: ?number,
 |}>;
 
+type TVProps = $ReadOnly<{|
+  hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
+|}>;
+
 type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
+  ...TVProps,
   ...ViewProps,
 
   activeOpacity?: ?number,
@@ -313,11 +327,11 @@ class TouchableHighlight extends React.Component<Props, State> {
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
         isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
         tvParallaxProperties={this.props.tvParallaxProperties}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         focusable={
           this.props.focusable !== false && this.props.onPress !== undefined
         }

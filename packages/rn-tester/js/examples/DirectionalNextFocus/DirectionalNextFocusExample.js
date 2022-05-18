@@ -15,7 +15,7 @@ const ReactNative = require('react-native');
 
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
-const {View, StyleSheet, TouchableOpacity, Text, findNodeHandle} = ReactNative;
+const {Platform, View, StyleSheet, TouchableOpacity, Text, findNodeHandle} = ReactNative;
 
 exports.framework = 'React';
 exports.title = 'DirectionalNextFocus example';
@@ -29,8 +29,10 @@ exports.examples = [
   },
 ];
 
-const width = 200;
-const height = 120;
+const scale = Platform.OS === 'android' ? 0.5 : 1.0;
+
+const width = 200*scale;
+const height = 120*scale;
 
 const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
   return (
@@ -114,7 +116,7 @@ const DirectionalNextFocusExample = () => {
           ref={component => setLeftDestination(component)}
           hasTVPreferredFocus={true}
           style={{width: width * 3}}
-          label="nextLeft destination does not work on tvOS because there is no actual focusable in the direction"
+          label="nextLeft destination"
         />
       </View>
     </View>
@@ -123,23 +125,19 @@ const DirectionalNextFocusExample = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: -20,
     backgroundColor: 'transparent',
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 100,
+    padding: 0.5*width,
   },
   buttonText: {
-    fontSize: 30,
+    fontSize: 30*scale,
   },
   buttonStyle: {
     width,
     height,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    margin: 20*scale,
   },
   focusGuide: {
     width,
