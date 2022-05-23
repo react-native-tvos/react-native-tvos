@@ -20,6 +20,7 @@ import type {PressEvent} from '../../Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import processColor from '../../StyleSheet/processColor';
+import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
 import * as React from 'react';
 import invariant from 'invariant';
 
@@ -291,11 +292,11 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
           this.props.onPress !== undefined &&
           !this.props.disabled,
         nativeID: this.props.nativeID,
-        nextFocusDown: this.props.nextFocusDown,
-        nextFocusForward: this.props.nextFocusForward,
-        nextFocusLeft: this.props.nextFocusLeft,
-        nextFocusRight: this.props.nextFocusRight,
-        nextFocusUp: this.props.nextFocusUp,
+        nextFocusDown: tagForComponentOrHandle(this.props.nextFocusDown),
+        nextFocusForward: tagForComponentOrHandle(this.props.nextFocusForward),
+        nextFocusLeft: tagForComponentOrHandle(this.props.nextFocusLeft),
+        nextFocusRight: tagForComponentOrHandle(this.props.nextFocusRight),
+        nextFocusUp: tagForComponentOrHandle(this.props.nextFocusUp),
         onLayout: this.props.onLayout,
         testID: this.props.testID,
       },
