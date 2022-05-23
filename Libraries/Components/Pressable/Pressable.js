@@ -39,6 +39,7 @@ import View from '../View/View';
 import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
 import Platform from '../../Utilities/Platform';
 import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
+import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 
@@ -212,6 +213,11 @@ function Pressable(props: Props, forwardedRef): React.Node {
     onHoverIn,
     onHoverOut,
     isTVSelectable,
+    nextFocusDown,
+    nextFocusForward,
+    nextFocusLeft,
+    nextFocusRight,
+    nextFocusUp,
     onBlur,
     onFocus,
     onLongPress,
@@ -354,6 +360,11 @@ function Pressable(props: Props, forwardedRef): React.Node {
       {...restPropsWithDefaults}
       {...eventHandlers}
       ref={viewRef}
+      nextFocusDown={tagForComponentOrHandle(props.nextFocusDown)}
+      nextFocusForward={tagForComponentOrHandle(props.nextFocusForward)}
+      nextFocusLeft={tagForComponentOrHandle(props.nextFocusLeft)}
+      nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
+      nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
       isTVSelectable={isTVSelectable !== false && accessible !== false}
       style={typeof style === 'function' ? style({pressed, focused}) : style}
       tvParallaxProperties={tvParallaxProperties}
