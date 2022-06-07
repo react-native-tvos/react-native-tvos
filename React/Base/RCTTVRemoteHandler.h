@@ -9,6 +9,9 @@
 
 extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
 extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
+extern NSString * _Nonnull const RCTSetPanStepFactorNotification;
+extern NSString * _Nonnull const RCTReinitializeTVRemoteNotification;
+
 
 extern NSString * _Nonnull const RCTTVEnablePanGestureNotification;
 extern NSString * _Nonnull const RCTTVDisablePanGestureNotification;
@@ -45,5 +48,5 @@ extern NSString * _Nonnull const RCTTVRemoteEventPan;
 
 + (BOOL)usePanGesture;
 + (void)setUsePanGesture:(BOOL)usePanGesture;
-
+- (void)setPanStepFactor:(CGFloat)x yFactor:(CGFloat)y;
 @end

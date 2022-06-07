@@ -22,6 +22,8 @@
 
 NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
 NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
+NSString *const RCTReinitializeTVRemoteNotification = @"RCTReinitializeTVRemoteNotification";
+NSString *const RCTSetPanStepFactorNotification = @"RCTSetPanStepFactorNotification";
 
 NSString *const RCTTVEnablePanGestureNotification = @"RCTTVEnablePanGestureNotification";
 NSString *const RCTTVDisablePanGestureNotification = @"RCTTVDisablePanGestureNotification";
@@ -59,6 +61,10 @@ NSString *const RCTTVRemoteEventPan = @"pan";
 
 @implementation RCTTVRemoteHandler {
   NSMutableDictionary<NSString *, UIGestureRecognizer *> *_tvRemoteGestureRecognizers;
+  int _panXSteps;
+  int _panYSteps;
+  CGFloat _panXFactor;
+  CGFloat _panYFactor;
 }
 
 #pragma mark -
@@ -94,6 +100,10 @@ static __volatile BOOL __usePanGesture = NO;
 {
   if ((self = [super init])) {
       _view = view;
+      _panXSteps = 0;
+      _panYSteps = 0;
+      _panXFactor = 0.2;
+      _panYFactor = 0.2;
       [self setUpGestureRecognizers];
       [self attachToView];
   }
@@ -129,13 +139,13 @@ static __volatile BOOL __usePanGesture = NO;
   [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)
                                   pressType:UIPressTypeSelect
                                        name:RCTTVRemoteEventSelect];
-    
+
   // Page Up/Down
   if (@available(tvOS 14.3, *)) {
       [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
                                       pressType:UIPressTypePageUp
                                            name:RCTTVRemoteEventPageUp];
-        
+
       [self addTapGestureRecognizerWithSelector:@selector(tappedPageDown:)
                                       pressType:UIPressTypePageDown
                                            name:RCTTVRemoteEventPageDown];
@@ -193,6 +203,8 @@ static __volatile BOOL __usePanGesture = NO;
   [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight:)
                                     direction:UISwipeGestureRecognizerDirectionRight
                                          name:RCTTVRemoteEventSwipeRight];
+  [self addPanGestureRecognizerWithSelector:@selector(pan:)
+                                            name:@"pan"];
 }
 
 - (void)attachToView
@@ -216,6 +228,16 @@ static __volatile BOOL __usePanGesture = NO;
                                              selector:@selector(disableTVPanGesture)
                                                  name:RCTTVDisablePanGestureNotification
                                                object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                              selector:@selector(reinitializeTVRemote:)
+                                                  name:RCTReinitializeTVRemoteNotification
+                                                object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                              selector:@selector(setPanStepFactor:)
+                                                  name:RCTSetPanStepFactorNotification
+                                                object:nil];
 
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
@@ -279,6 +301,23 @@ static __volatile BOOL __usePanGesture = NO;
     });
 }
 
+-(void) reinitializeTVRemote:(NSNotification*)notification
+{
+    NSDictionary* userInfo = notification.userInfo;
+    NSNumber* withGesture = (NSNumber*)userInfo[@"withGesture"];
+    if ([withGesture intValue] == 0) {
+        [self detachFromView];
+    } else {
+        [self attachToView];
+    }
+}
+-(void) setPanStepFactor:(NSNotification*)notification
+{
+    NSDictionary* userInfo = notification.userInfo;
+    CGFloat x = [userInfo[@"x"] floatValue];
+    CGFloat y = [userInfo[@"y"] floatValue];
+    [self setPanStepFactorForRemote:x yFactor:y];
+}
 - (void)enableTVPanGesture
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -395,6 +434,32 @@ static __volatile BOOL __usePanGesture = NO;
                                                             }];
     }
 }
+- (void)pan:(UIPanGestureRecognizer *)r
+{
+    if (r.state == UIGestureRecognizerStateChanged) {
+        CGPoint translatedPoint = [r translationInView:r.view];
+        CGSize padSize = r.view.bounds.size;
+        int xSteps = translatedPoint.x / (padSize.width * _panXFactor);
+        int ySteps = translatedPoint.y / (padSize.height * _panYFactor);
+
+        if (xSteps > _panXSteps) {
+            [self swipedRight:r];
+            _panXSteps = xSteps;
+        } else if (xSteps < _panXSteps){
+            [self swipedLeft:r];
+            _panXSteps = xSteps;
+        } else if (ySteps < _panYSteps){
+           [self swipedUp:r];
+            _panYSteps = ySteps;
+        } else if (ySteps > _panYSteps){
+           [self swipedDown:r];
+            _panYSteps = ySteps;
+        }
+    } else if (r.state == UIGestureRecognizerStateBegan) {
+        _panXSteps = 0;
+        _panYSteps = 0;
+    }
+}
 
 #pragma mark -
 #pragma mark Convenience methods for adding gesture recognizers
@@ -408,7 +473,11 @@ static __volatile BOOL __usePanGesture = NO;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
-
+- (void)addPanGestureRecognizerWithSelector:(nonnull SEL)selector name:(NSString *)name
+{
+  UIPanGestureRecognizer *recognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:selector];
+  _tvRemoteGestureRecognizers[name] = recognizer;
+}
 - (void)addTapGestureRecognizerWithSelector:(nonnull SEL)selector pressType:(UIPressType)pressType name:(NSString *)name
 {
   UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:selector];
@@ -445,7 +514,15 @@ static __volatile BOOL __usePanGesture = NO;
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
                                                       object:payload];
 }
+- (void) setPanStepFactorForRemote:(CGFloat)x yFactor:(CGFloat)y
+{
+    _panXFactor = x;
+    _panYFactor = y;
+    _panXSteps = 0;
+    _panYSteps = 0;
 
+//    NSLog(@"Saffar setPanStepFactor = %f , %f", x , y);
+}
 - (NSString *)recognizerStateToString:(UIGestureRecognizerState)state {
     switch (state) {
         case UIGestureRecognizerStateBegan:

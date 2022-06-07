@@ -22,4 +22,13 @@ module.exports = {
   disableTVPanGesture: () => {
     TVMenuBridge && TVMenuBridge.disableTVPanGesture();
   },
+  addGestureRecognizers: () => {
+    TVMenuBridge && TVMenuBridge.reinitializeTVRemote(1);
+  },
+  removeGestureRecognizers: () => {
+    TVMenuBridge && TVMenuBridge.reinitializeTVRemote(0);
+  },
+  setPanStepFactor: (x, y) => {
+    TVMenuBridge && TVMenuBridge.setPanStepFactor(x+"", y+"");
+  }
 };

@@ -35,5 +35,16 @@ RCT_EXPORT_METHOD(disableTVPanGesture)
     [RCTTVRemoteHandler setUsePanGesture:NO];
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisablePanGestureNotification object:nil];
 }
+RCT_EXPORT_METHOD(reinitializeTVRemote:(nonnull NSNumber *)withGesture)
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTReinitializeTVRemoteNotification
+                                                        object:nil
+                                                      userInfo:@{@"withGesture": withGesture}];
+}
+RCT_EXPORT_METHOD(setPanStepFactor:(NSString*)x yFactor:(NSString*)y){
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTSetPanStepFactorNotification
+                                                        object:nil
+                                                      userInfo:@{@"x": x , @"y": y}];
+}
 @end
