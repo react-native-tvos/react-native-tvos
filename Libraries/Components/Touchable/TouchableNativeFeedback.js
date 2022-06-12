@@ -319,7 +319,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
           }
         },
         onPress: event => {
-          if (this.props.onPress != null) {
+          if (this.props.onPress != null && Platform.OS !== 'android') {
             this.props.onPress(event);
           }
         },
