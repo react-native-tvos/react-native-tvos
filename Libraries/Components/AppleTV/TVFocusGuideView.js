@@ -22,6 +22,12 @@ type FocusGuideProps = $ReadOnly<{
    * The views the focus should go to
    */
   destinations: ?(Object[]),
+
+  /**
+   * Option to disable the default "padding: 1;" added to the focus guide view
+   * to make sure it will always be focused before its children
+   */
+  disableSafePadding: ?(boolean)
 }>;
 
 const TVFocusGuideView = (props: FocusGuideProps) => {
@@ -50,7 +56,7 @@ const TVFocusGuideView = (props: FocusGuideProps) => {
       }
       {Platform.isTVOS ? (
         <ReactNative.View
-          style={[props.style, styles.focusGuideLayout]}
+          style={[!props.disableSafePadding && styles.safePadding, props.style, styles.focusGuideLayout]}
           ref={focusGuideRef}
         >
           {props.children}
@@ -74,6 +80,9 @@ const styles = ReactNative.StyleSheet.create({
     marginRight: 0,
     marginBottom: 0,
   },
+  safePadding: {
+    padding: 1,
+  }
 });
 
 module.exports = TVFocusGuideView;
