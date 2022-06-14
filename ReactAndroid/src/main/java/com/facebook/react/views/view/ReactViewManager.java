@@ -10,7 +10,6 @@ package com.facebook.react.views.view;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -363,7 +362,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @ReactProp(name = "destinations")
   public void setDestinations(final ReactViewGroup view, final ReadableArray destinations) {
-    Log.i("RVM", "Destinations: " + destinations.size());
     int[] fd = new int[destinations.size()];
     for (int i = 0; i < fd.length; i++) {
       fd[i] = destinations.getInt(i);

@@ -20,7 +20,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1020,8 +1019,6 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    Log.i("RVM", getId() + " reqFocus from " + direction + " focusDestinations: " + focusDestinations.length);
-
     if (focusDestinations.length == 0) {
       return super.requestFocus(direction, previouslyFocusedRect);
     }
@@ -1029,13 +1026,11 @@ public class ReactViewGroup extends ViewGroup
     View destination = findDestinationView();
 
     if (destination != null && requestFocusViewOrAncestor(destination)) {
-      Toast.makeText(getContext(), "Refocused " + destination.getId(), Toast.LENGTH_SHORT).show();
       return true;
     }
 
     for (int i = 0; i < getChildCount(); i++) {
       if (getChildAt(i).requestFocus()) {
-        Toast.makeText(getContext(), "Refocused to child " + i, Toast.LENGTH_SHORT).show();
         return true;
       }
     }
@@ -1044,7 +1039,6 @@ public class ReactViewGroup extends ViewGroup
   }
 
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
-    Log.v("RVG", getId() + " focusDestinations " + focusDestinations.length);
     this.focusDestinations = focusDestinations;
   }
 }
