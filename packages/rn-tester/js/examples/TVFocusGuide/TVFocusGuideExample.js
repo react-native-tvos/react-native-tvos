@@ -19,7 +19,7 @@ const {Platform, View, StyleSheet, TouchableOpacity, Text, TVFocusGuideView} =
   ReactNative;
 
 exports.framework = 'React';
-exports.title = 'TVFocusGuide example';
+exports.title = 'TVFocusGuide example Android & tvOS';
 exports.description = 'tvOS focus guide API';
 exports.displayName = 'TVFocusGuideExample';
 exports.examples = [
@@ -31,8 +31,8 @@ exports.examples = [
   },
 ];
 
-const width = 200;
-const height = 120;
+const width = 100;
+const height = 60;
 
 const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
   return (
@@ -86,14 +86,6 @@ const TVFocusGuideExample = () => {
     setDestination(o);
     setDestinationText(text);
   };
-
-  if (!Platform.isTVOS) {
-    return (
-      <View>
-        <Text>This example is intended to be run on Apple TV.</Text>
-      </View>
-    );
-  }
 
   return (
     <RNTesterThemeContext.Consumer>
@@ -167,10 +159,10 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 100,
+    padding: 50,
   },
   buttonText: {
-    fontSize: 30,
+    fontSize: 15,
   },
   buttonStyle: {
     width,
