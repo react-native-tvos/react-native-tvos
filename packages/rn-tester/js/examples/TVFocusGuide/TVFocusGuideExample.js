@@ -19,7 +19,7 @@ const {Platform, View, StyleSheet, TouchableOpacity, Text, TVFocusGuideView} =
   ReactNative;
 
 exports.framework = 'React';
-exports.title = 'TVFocusGuide example Android & tvOS';
+exports.title = 'TVFocusGuide example';
 exports.description = 'tvOS focus guide API';
 exports.displayName = 'TVFocusGuideExample';
 exports.examples = [
@@ -31,8 +31,10 @@ exports.examples = [
   },
 ];
 
-const width = 100;
-const height = 60;
+const screenHeight = ReactNative.Dimensions.get('window').height;
+const scale = screenHeight / 1080;
+const width = 200 * scale;
+const height = 120 * scale;
 
 const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
   return (
@@ -153,32 +155,33 @@ const TVFocusGuideExample = () => {
   );
 };
 
+const marginSize = 20 * scale;
 const styles = StyleSheet.create({
   container: {
-    marginTop: -20,
+    marginTop: -marginSize,
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 50,
+    padding: 100 * scale,
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: 30 * scale,
   },
   buttonStyle: {
     width,
     height,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginLeft: marginSize,
+    marginRight: marginSize,
+    marginTop: marginSize,
+    marginBottom: marginSize,
   },
   focusGuide: {
     width,
     height,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginLeft: marginSize,
+    marginRight: marginSize,
+    marginTop: marginSize,
+    marginBottom: marginSize,
   },
   containerFocusGuide: {
     backgroundColor: 'transparent',
