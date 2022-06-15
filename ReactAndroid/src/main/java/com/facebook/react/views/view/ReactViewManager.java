@@ -31,6 +31,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.yoga.YogaConstants;
+
 import java.util.Map;
 
 /** View manager for AndroidViews (plain React Views). */
@@ -263,6 +264,14 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     }
   }
 
+  @ReactProp(name = "tvFocusable")
+  public void setTvFocusable(final ReactViewGroup view, boolean focusable) {
+    setFocusable(view, focusable);
+    if (!focusable) {
+      view.setFocusable(false);
+    }
+  }
+
   @ReactProp(name = ViewProps.OVERFLOW)
   public void setOverflow(ReactViewGroup view, String overflow) {
     view.setOverflow(overflow);
@@ -349,4 +358,15 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     float y = PixelUtil.toPixelFromDIP(args.getDouble(1));
     root.drawableHotspotChanged(x, y);
   }
+
+
+  @ReactProp(name = "destinations")
+  public void setDestinations(final ReactViewGroup view, final ReadableArray destinations) {
+    int[] fd = new int[destinations.size()];
+    for (int i = 0; i < fd.length; i++) {
+      fd[i] = destinations.getInt(i);
+    }
+    view.setFocusDestinations(fd);
+  }
+
 }

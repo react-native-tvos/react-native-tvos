@@ -31,8 +31,10 @@ exports.examples = [
   },
 ];
 
-const width = 200;
-const height = 120;
+const screenHeight = ReactNative.Dimensions.get('window').height;
+const scale = screenHeight / 1080;
+const width = 200 * scale;
+const height = 120 * scale;
 
 const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
   return (
@@ -86,14 +88,6 @@ const TVFocusGuideExample = () => {
     setDestination(o);
     setDestinationText(text);
   };
-
-  if (!Platform.isTVOS) {
-    return (
-      <View>
-        <Text>This example is intended to be run on Apple TV.</Text>
-      </View>
-    );
-  }
 
   return (
     <RNTesterThemeContext.Consumer>
@@ -161,32 +155,33 @@ const TVFocusGuideExample = () => {
   );
 };
 
+const marginSize = 20 * scale;
 const styles = StyleSheet.create({
   container: {
-    marginTop: -20,
+    marginTop: -marginSize,
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 100,
+    padding: 100 * scale,
   },
   buttonText: {
-    fontSize: 30,
+    fontSize: 30 * scale,
   },
   buttonStyle: {
     width,
     height,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginLeft: marginSize,
+    marginRight: marginSize,
+    marginTop: marginSize,
+    marginBottom: marginSize,
   },
   focusGuide: {
     width,
     height,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 20,
-    marginBottom: 20,
+    marginLeft: marginSize,
+    marginRight: marginSize,
+    marginTop: marginSize,
+    marginBottom: marginSize,
   },
   containerFocusGuide: {
     backgroundColor: 'transparent',
