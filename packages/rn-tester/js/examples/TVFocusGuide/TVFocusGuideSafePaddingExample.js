@@ -60,7 +60,7 @@ const Button = ({
   const ref = useRef(null);
   const pressed = pressedItemId === findNodeHandle(ref.current);
   const handleOnPress = () => {
-    if(onPress) onPress(findNodeHandle(ref.current));
+    if (onPress) onPress(findNodeHandle(ref.current));
   };
   useEffect(() => {
     if (triggerOnPressOnMount) {
@@ -104,10 +104,7 @@ const Example = ({description, focusGuideStyle, disableSafePadding}) => {
     <View style={styles.exampleContainer}>
       <Text style={styles.exampleDescription}>{description}</Text>
       <View style={styles.exampleContent}>
-        <Button
-          style={styles.exampleButton}
-          text="Button 1"
-        />
+        <Button style={styles.exampleButton} text="Button 1" />
         <TVFocusGuideView
           style={[styles.exampleFocusGuide, focusGuideStyle]}
           destinations={destinations}
@@ -160,12 +157,19 @@ export const TVFocusGuideSafePaddingExample = () => {
     <View style={{flex: 1, flexDirection: 'column'}}>
       <View style={[sectionStyle, {flex: 0, borderColor: 'grey'}]}>
         <Text>- TVFocusGuideView's backgroundColor is "cyan"</Text>
-        <Text>- TVFocusGuideView's default destination is "Button 3" (button in green is the destination)</Text>
-        <Text>- You can press on a button inside TVFocusGuideView to change the destination</Text>
+        <Text>
+          - TVFocusGuideView's default destination is "Button 3" (button in
+          green is the destination)
+        </Text>
+        <Text>
+          - You can press on a button inside TVFocusGuideView to change the
+          destination
+        </Text>
       </View>
       <View style={sectionStyle}>
         <Text style={styles.title}>
-          When there aren't padding/margin between focusable views:
+          When there aren't padding/margin between TVFocusGuide's view and its
+          children:
         </Text>
         <Example description="With `disableSafePadding = false` (default), it makes sure TVFocusGuideView will always get the focus by adding `padding: 1;` to its view." />
         <Example
@@ -175,7 +179,8 @@ export const TVFocusGuideSafePaddingExample = () => {
       </View>
       <View style={sectionStyle}>
         <Text style={styles.title}>
-          When focusable views have some padding/margin between them:
+          When there are padding/margin between TVFocusGuide's view and its
+          children:
         </Text>
         <Example
           description="With `disableSafePadding = true` and some padding/margin inside the focus guide view, it removes the unnecessary padding added to the focus guide view."
