@@ -273,7 +273,10 @@ const APIs: Array<RNTesterModuleInfo> = [
     key: 'TVFocusGuideExample',
     module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
   },
-
+  {
+    key: 'TVFocusGuideSafePaddingExample',
+    module: require('../examples/TVFocusGuide/TVFocusGuideSafePaddingExample'),
+  },
   {
     key: 'VibrationExample',
     category: 'Basic',

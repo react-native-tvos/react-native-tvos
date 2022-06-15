@@ -145,10 +145,10 @@ const Example = ({description, focusGuideStyle, safePadding}) => {
 const TVFocusGuideSafePaddingExample = () => {
   const theme = useRNTesterTheme();
 
-  if (!Platform.isTVOS) {
+  if (!Platform.isTV) {
     return (
       <View>
-        <Text>This example is intended to be run on Apple TV.</Text>
+        <Text>This example is intended to be run on TV.</Text>
       </View>
     );
   }
@@ -194,23 +194,25 @@ const TVFocusGuideSafePaddingExample = () => {
   );
 };
 
+const scale = Platform.OS === 'ios' ? 1.0 : 0.5;
+
 const styles = StyleSheet.create({
   section: {
     flex: 1,
     borderWidth: 1,
-    padding: 24,
+    padding: 24*scale,
   },
   title: {
-    fontSize: 32,
-    marginBottom: 24,
+    fontSize: 32*scale,
+    marginBottom: 24*scale,
   },
   exampleContainer: {
     flex: 1,
   },
   exampleDescription: {
-    fontSize: 20,
+    fontSize: 20*scale,
     fontWeight: 'bold',
-    marginBottom: 24,
+    marginBottom: 24*scale,
     opacity: 0.8,
   },
   exampleContent: {
@@ -221,14 +223,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   exampleButton: {
-    marginVertical: 10,
-    minWidth: 100,
-    height: 60,
+    marginVertical: 10*scale,
+    minWidth: 100*scale,
+    height: 60*scale,
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 18*scale,
   },
 });
