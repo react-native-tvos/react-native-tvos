@@ -28,13 +28,13 @@ const {
 const RNText = ReactNative.Text;
 
 exports.framework = 'React';
-exports.title = 'TVFocusGuide examples with disableSafePadding prop';
+exports.title = 'TVFocusGuide examples with safePadding prop';
 exports.description = 'tvOS focus guide example of safe padding prop usage';
 exports.displayName = 'TVFocusGuideSafePaddingExample';
 exports.examples = [
   {
     title: 'TVFocusGuide',
-    render() {
+    render(): React.Node {
       return <TVFocusGuideSafePaddingExample />;
     },
   },
@@ -60,7 +60,9 @@ const Button = ({
   const ref = useRef(null);
   const pressed = pressedItemId === findNodeHandle(ref.current);
   const handleOnPress = () => {
-    if (onPress) onPress(findNodeHandle(ref.current));
+    if (onPress) {
+      onPress(findNodeHandle(ref.current));
+    }
   };
   useEffect(() => {
     if (triggerOnPressOnMount) {
@@ -89,7 +91,7 @@ const Button = ({
   );
 };
 
-const Example = ({description, focusGuideStyle, disableSafePadding}) => {
+const Example = ({description, focusGuideStyle, safePadding}) => {
   const [enabled, setEnabled] = useState(false);
 
   const [destinations, setDestinations] = useState([]);
@@ -108,7 +110,7 @@ const Example = ({description, focusGuideStyle, disableSafePadding}) => {
         <TVFocusGuideView
           style={[styles.exampleFocusGuide, focusGuideStyle]}
           destinations={destinations}
-          disableSafePadding={disableSafePadding}>
+          safePadding={safePadding}>
           <Button
             style={styles.exampleButton}
             text="Button 2"
@@ -140,7 +142,7 @@ const Example = ({description, focusGuideStyle, disableSafePadding}) => {
   );
 };
 
-export const TVFocusGuideSafePaddingExample = () => {
+const TVFocusGuideSafePaddingExample = () => {
   const theme = useRNTesterTheme();
 
   if (!Platform.isTVOS) {
@@ -171,10 +173,10 @@ export const TVFocusGuideSafePaddingExample = () => {
           When there aren't padding/margin between TVFocusGuide's view and its
           children:
         </Text>
-        <Example description="With `disableSafePadding = false` (default), it makes sure TVFocusGuideView will always get the focus by adding `padding: 1;` to its view." />
+        <Example description="With `safePadding: 'both'(default) | 'vertical' | 'horizontal'`, it makes sure TVFocusGuideView will always get the focus by adding `padding: 1;` to its view." />
         <Example
-          description="With `disableSafePadding = true` and without any padding/margin inside the focus guide view, TVFocusGuideView might not and most probably won't get the focus before its children."
-          disableSafePadding={true}
+          description="With `safePadding: null` and without any padding/margin inside the focus guide view, TVFocusGuideView might not and most probably won't get the focus before its children."
+          safePadding={null}
         />
       </View>
       <View style={sectionStyle}>
@@ -183,8 +185,8 @@ export const TVFocusGuideSafePaddingExample = () => {
           children:
         </Text>
         <Example
-          description="With `disableSafePadding = true` and some padding/margin inside the focus guide view, it removes the unnecessary padding added to the focus guide view."
-          disableSafePadding={true}
+          description="With `safePadding: null` and some padding/margin inside the focus guide view, it removes the unnecessary padding added to the focus guide view."
+          safePadding={null}
           focusGuideStyle={{paddingHorizontal: 24}}
         />
       </View>

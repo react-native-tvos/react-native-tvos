@@ -66,6 +66,10 @@ declare module 'react-native' {
      * Array of `Component`s to register as destinations with `UIFocusGuide`
      */
     destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[];
+    /**
+     * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
+     */
+    safePadding?: 'vertical' | 'horizontal' | 'both' | null;
   }
 
   /**

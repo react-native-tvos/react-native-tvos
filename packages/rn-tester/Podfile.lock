@@ -11,13 +11,6 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.68.2-1)
   - fmt (7.1.3)
   - glog (0.3.5)
-  - MyNativeView (0.0.1):
-    - RCTRequired
-    - RCTTypeSafety
-    - React
-    - React-Codegen
-    - React-RCTFabric
-    - ReactCommon/turbomodule/core
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -635,7 +628,6 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../../React/FBReactNativeSpec`)
   - fmt (from `../../third-party-podspecs/fmt.podspec`)
   - glog (from `../../third-party-podspecs/glog.podspec`)
-  - MyNativeView (from `NativeComponentExample`)
   - RCT-Folly (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../../Libraries/RCTRequired`)
@@ -686,8 +678,6 @@ EXTERNAL SOURCES:
     :podspec: "../../third-party-podspecs/fmt.podspec"
   glog:
     :podspec: "../../third-party-podspecs/glog.podspec"
-  MyNativeView:
-    :path: NativeComponentExample
   RCT-Folly:
     :podspec: "../../third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -755,16 +745,15 @@ SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   DoubleConversion: 1d2f3470dfd56717030d0855f8332361bbd85236
   FBLazyVector: 56a91155c9ff965a77f1876171013b7056581e9a
-  FBReactNativeSpec: cb6ce543230f3b4d3c15f3eaa2ba0f0ac6f858df
+  FBReactNativeSpec: 33c3f75405b01d597d9608ce59a7fa3dcefca1e6
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: 5b768715ae7bf8149e9d269089c22585cee27eb7
-  MyNativeView: d444ad6ef53ee30c13693e0e61435a2378027686
   RCT-Folly: 5b616707d7d51519bd8d59b3e11f15df58f54df7
   RCTRequired: c97f8af9f600ffd8cf5f101547ceb7cc8555c0c9
   RCTTypeSafety: 6b3624a7fecf6bd6f31a5d5eb7b33bea1580923a
   React: 3689e676f51aa62bd84ddf696a7cfd7db5af02bf
   React-callinvoker: c40a80cc59197558502fb9cf364f38b947124a76
-  React-Codegen: cd59d09e73c87488903b43ce509a853d73f2989e
+  React-Codegen: 03e9532410ddb04c9e62daae6df0cbd821a21995
   React-Core: 93c215a922e890d0e9088d563431e4ad78870773
   React-CoreModules: ad30bc95e8939c87c1f300c3c23db6ae82ab979b
   React-cxxreact: b93854e4e135abce897ca03d122fcc4a7eebb501
@@ -785,10 +774,10 @@ SPEC CHECKSUMS:
   React-RCTSettings: f2c2b8c2128a4250a0433a69f46908c900276f64
   React-RCTTest: 20434d1d152287133f39f0ffec86c95a983f35fe
   React-RCTText: b538cd29384af3312792a3256494fdfbfd7a4561
-  React-rncore: baff6ff919406a069dfdc5ee01587fba6112ea88
+  React-rncore: a5cb03e002cb227d37e884c6a181236c0a6552a1
   React-runtimeexecutor: 6fe99da549c9d00a6e23ca266c74b2f95a440641
   ReactCommon: 95e89a61dfe0cb1e46f7e63a579487525e5e89f7
-  ScreenshotManager: ca5665635b55ad273242997f596423baeff0bd25
+  ScreenshotManager: 8a08e488cb533b83ebe069ad6109d9c1df9cea79
   Yoga: 58cbf7f6e7d4fb754d72b64e55a532e6caa726c5
 
 PODFILE CHECKSUM: c2b9881c7c9a3203cdf506b0a454419839e938dd
