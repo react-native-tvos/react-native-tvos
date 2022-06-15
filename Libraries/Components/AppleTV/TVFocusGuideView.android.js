@@ -23,6 +23,10 @@ type FocusGuideProps = $ReadOnly<{
    * The views the focus should go to
    */
   destinations: ?(Object[]),
+  /**
+   * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
+   */
+  safePadding?: 'vertical' | 'horizontal' | 'both' | null,
 }>;
 
 const TVFocusGuideView = (props: FocusGuideProps) => {
@@ -36,11 +40,22 @@ const TVFocusGuideView = (props: FocusGuideProps) => {
     );
   }, [props.destinations]);
 
+  const safePadding =
+    props.safePadding === undefined ? 'both' : props.safePadding;
+  const focusGuidePadding =
+    safePadding === 'both'
+      ? {padding: 1}
+      : safePadding === 'vertical'
+      ? {paddingVertical: 1}
+      : safePadding === 'horizontal'
+      ? {paddingHorizontal: 1}
+      : null;
+
   const renderContent = () => {
     if (Platform.isTV) {
       return (
         <ReactNative.View
-          style={[props.style, styles.focusGuideLayout]}
+          style={[focusGuidePadding, props.style, styles.focusGuideLayout]}
           focusable={true}
           destinations={nativeDestinations}>
           {props.children}
