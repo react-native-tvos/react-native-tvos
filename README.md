@@ -201,7 +201,13 @@ class Game2048 extends React.Component {
   - `enableTVMenuKey`/`disableTVMenuKey`:  Method to enable and disable the menu key gesture recognizer, in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses these methods to implement correct menu key behavior for back navigation.
   - `enableTVPanGesture`/`disableTVPanGesture`: Methods to enable and disable detection of finger touches that pan across the touch surface of the Siri remote. See `TVEventHandlerExample` in the `RNTester` app for a demo.
 
-- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  An example is provided in `RNTester` that shows two different ways of using this component.
+- _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API and is implemented in the same way for Android TV, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  An example is provided in `RNTester` that shows two different ways of using this component.
+
+| Prop | Value | Description |  |  |
+|---|---|---|---|---|
+| destinations | any[] | Array of `Component`s to register as destinations of the FocusGuideView |  |  |
+| safePadding | 'both' (default) \| 'vertical' \| 'horizontal' \| null | When the FocusGuide children are exactly the same size as the FocusGuide's container, the focus will almost certainly be given directly to the children without going through the FocusGuide. This prop make sure it doesn't happen by adding a padding of 1 in all directions.<br />"null" to disable it. |  |  |
+|  |  |  |  |  |                                                                       |   |   |
 
 - _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
 

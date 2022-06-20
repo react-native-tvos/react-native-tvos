@@ -20,7 +20,7 @@ const {Platform, View, StyleSheet, TouchableOpacity, Text, TVFocusGuideView} =
 
 exports.framework = 'React';
 exports.title = 'TVFocusGuide example';
-exports.description = 'tvOS focus guide API';
+exports.description = 'Focus guide API';
 exports.displayName = 'TVFocusGuideExample';
 exports.examples = [
   {
