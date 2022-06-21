@@ -20,7 +20,7 @@ import type {PressEvent} from '../../Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import processColor from '../../StyleSheet/processColor';
-import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 import invariant from 'invariant';
 

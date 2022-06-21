@@ -14,7 +14,7 @@
 'use strict';
 
 const Platform = require('./Platform');
-const TVEventHandler = require('../Components/AppleTV/TVEventHandler');
+const TVEventHandler = require('../Components/TV/TVEventHandler');
 
 type BackPressEventName = 'backPress' | 'hardwareBackPress';
 

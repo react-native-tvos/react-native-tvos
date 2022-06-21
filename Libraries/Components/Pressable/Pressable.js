@@ -36,10 +36,10 @@ import type {
   PressEvent,
 } from '../../Types/CoreEventTypes';
 import View from '../View/View';
-import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
+import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
 import Platform from '../../Utilities/Platform';
-import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
-import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
+import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 
 type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, 'style'>;
 

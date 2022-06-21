@@ -15,7 +15,7 @@ import Platform from '../../Utilities/Platform';
 import Position from './Position';
 import UIManager from '../../ReactNative/UIManager';
 import SoundManager from '../Sound/SoundManager';
-import {tvFocusEventHandler} from '../AppleTV/TVFocusEventHandler';
+import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 

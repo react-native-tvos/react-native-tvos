@@ -18,7 +18,7 @@ import type {
   PressEvent,
 } from '../../Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
-import TVEventHandler from '../../Components/AppleTV/TVEventHandler';
+import TVEventHandler from '../../Components/TV/TVEventHandler';
 
 type TVTouchableConfig = $ReadOnly<{|
   getDisabled: () => boolean,

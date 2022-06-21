@@ -10,10 +10,10 @@
 
 const React = require('react');
 const ReactNative = require('react-native');
-import ReactNativeShims from '../Renderer/shims/ReactNative';
-const Platform = require('../Utilities/Platform');
-import {Commands} from './View/ViewNativeComponent';
-import type {ViewProps} from './View/ViewPropTypes';
+import ReactNativeShims from '../../Renderer/shims/ReactNative';
+const Platform = require('../../Utilities/Platform');
+import {Commands} from '../View/ViewNativeComponent';
+import type {ViewProps} from '../View/ViewPropTypes';
 
 type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,

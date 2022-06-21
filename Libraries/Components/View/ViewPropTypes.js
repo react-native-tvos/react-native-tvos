@@ -21,7 +21,7 @@ import type {
 import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
 import type {Node} from 'react';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import type {TVViewProps} from '../AppleTV/TVViewPropTypes';
+import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {
   AccessibilityRole,
   AccessibilityState,

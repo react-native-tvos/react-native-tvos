@@ -19,8 +19,8 @@ import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import type {ViewProps} from '../../Components/View/ViewPropTypes';
-import typeof TVParallaxPropertiesType from '../AppleTV/TVViewPropTypes';
-import tagForComponentOrHandle from '../AppleTV/tagForComponentOrHandle';
+import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
