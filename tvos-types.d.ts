@@ -69,7 +69,7 @@ declare module 'react-native' {
     /**
      * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
      */
-    safePadding?: 'vertical' | 'horizontal' | 'both' | null;
+    safePadding?: 'both' | 'vertical' | 'horizontal' | null;
   }
 
   /**

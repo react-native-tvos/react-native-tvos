@@ -29,7 +29,7 @@ const RNText = ReactNative.Text;
 
 exports.framework = 'React';
 exports.title = 'TVFocusGuide examples with safePadding prop';
-exports.description = 'tvOS focus guide example of safe padding prop usage';
+exports.description = 'Focus guide example of safe padding prop usage';
 exports.displayName = 'TVFocusGuideSafePaddingExample';
 exports.examples = [
   {
