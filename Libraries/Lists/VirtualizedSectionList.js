@@ -11,7 +11,8 @@
 import invariant from 'invariant';
 import type {ViewToken} from './ViewabilityHelper';
 import {keyExtractor as defaultKeyExtractor} from './VirtualizeUtils';
-import {View, VirtualizedList} from 'react-native';
+import View from '../Components/View/View';
+import VirtualizedList from './VirtualizedList';
 import * as React from 'react';
 
 type Item = any;

@@ -243,8 +243,6 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const [focused, setFocused] = useState(false);
 
-  const hitSlop = normalizeRect(props.hitSlop);
-
   const accessibilityState =
     disabled != null
       ? {...props.accessibilityState, disabled}
