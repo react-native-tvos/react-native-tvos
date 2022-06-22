@@ -18,8 +18,8 @@ if (__DEV__) {
 "use strict";
 
 var React = require("react");
-require("react-native/Libraries/ReactPrivate/ReactNativePrivateInitializeCore");
-var ReactNativePrivateInterface = require("react-native/Libraries/ReactPrivate/ReactNativePrivateInterface");
+require("../../ReactPrivate/ReactNativePrivateInitializeCore");
+var ReactNativePrivateInterface = require("../../ReactPrivate/ReactNativePrivateInterface");
 var Scheduler = require("scheduler");
 
 var ReactSharedInternals =
