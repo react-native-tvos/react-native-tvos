@@ -893,6 +893,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../..";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 11.0;
 				WARNING_CFLAGS = (
@@ -969,6 +970,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../..";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VALIDATE_PRODUCT = YES;

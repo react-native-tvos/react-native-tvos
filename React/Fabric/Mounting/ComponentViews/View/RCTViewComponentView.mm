@@ -812,7 +812,7 @@ using namespace facebook::react;
   _props = std::static_pointer_cast<ViewProps const>(props);
 }
 
-- (float)getFloat:(butter::optional<float>)property orDefault:(float)defaultValue
+- (float)getFloat:(std::optional<float>)property orDefault:(float)defaultValue
 {
   return property.has_value() ? (float)property.value() : defaultValue;
 }

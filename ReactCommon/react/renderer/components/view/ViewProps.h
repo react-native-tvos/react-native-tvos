@@ -74,10 +74,10 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   bool isTVSelectable{false};
   bool hasTVPreferredFocus{false};
   TVParallaxProperties tvParallaxProperties;
-  butter::optional<int> nextFocusUp;
-  butter::optional<int> nextFocusDown;
-  butter::optional<int> nextFocusLeft;
-  butter::optional<int> nextFocusRight;
+  std::optional<int> nextFocusUp;
+  std::optional<int> nextFocusDown;
+  std::optional<int> nextFocusLeft;
+  std::optional<int> nextFocusRight;
 #endif
 
   Float elevation{}; /* Android-only */

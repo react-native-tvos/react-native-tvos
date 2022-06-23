@@ -248,7 +248,9 @@ struct PointerHasher {
   __weak UIView *_rootComponentView;
   IdentifierPool<11> _identifierPool;
 
+#if !TARGET_OS_TV
   UIHoverGestureRecognizer *_hoverRecognizer API_AVAILABLE(ios(13.0));
+#endif
   NSOrderedSet *_currentlyHoveredViews;
 }
 
@@ -265,7 +267,9 @@ struct PointerHasher {
 
     self.delegate = self;
 
+#if !TARGET_OS_TV
     _hoverRecognizer = nil;
+#endif
     _currentlyHoveredViews = [NSOrderedSet orderedSet];
   }
 
@@ -281,12 +285,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   [view addGestureRecognizer:self];
   _rootComponentView = view;
 
+#if !TARGET_OS_TV
   if (RCTGetDispatchW3CPointerEvents()) {
     if (@available(iOS 13.0, *)) {
       _hoverRecognizer = [[UIHoverGestureRecognizer alloc] initWithTarget:self action:@selector(hovering:)];
       [view addGestureRecognizer:_hoverRecognizer];
     }
   }
+#endif
 }
 
 - (void)detachFromView:(UIView *)view
@@ -297,10 +303,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   [view removeGestureRecognizer:self];
   _rootComponentView = nil;
 
+#if !TARGET_OS_TV
   if (_hoverRecognizer != nil) {
     [view removeGestureRecognizer:_hoverRecognizer];
     _hoverRecognizer = nil;
   }
+#endif
 }
 
 - (void)_registerTouches:(NSSet<UITouch *> *)touches
@@ -545,6 +553,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   [self setEnabled:YES];
 }
 
+#if !TARGET_OS_TV
 - (void)hovering:(UIHoverGestureRecognizer *)recognizer API_AVAILABLE(ios(13.0))
 {
   UIView *listenerView = recognizer.view;
@@ -585,5 +594,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 
   _currentlyHoveredViews = eventPathViews;
 }
+#endif
 
 @end

@@ -34,16 +34,8 @@ Pod::Spec.new do |s|
   s.header_dir             = "RCTBlob"
   s.pod_target_xcconfig    = {
                                "USE_HEADERMAP" => "YES",
-<<<<<<< HEAD
-                               "CLANG_CXX_LANGUAGE_STANDARD" => "c++14",
-                               "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-Codegen/react/renderer/components\" \"${PODS_CONFIGURATION_BUILD_DIR}/React-Codegen/React_Codegen.framework/Headers\""
-||||||| 8aa87814f62
-                               "CLANG_CXX_LANGUAGE_STANDARD" => "c++14",
-                               "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-Codegen/react/renderer/components\""
-=======
                                "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
                                "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-Codegen/react/renderer/components\" \"${PODS_CONFIGURATION_BUILD_DIR}/React-Codegen/React_Codegen.framework/Headers\""
->>>>>>> upstream/0.69-stable
                              }
 
   s.dependency "RCT-Folly", folly_version
