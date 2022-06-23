@@ -74,30 +74,6 @@ abstract class GenerateCodegenArtifactsTask : Exec() {
     }
   }
 
-  private fun checkForDeprecatedProperty() {
-    if (deprecatedReactRoot.isPresent) {
-      project.logger.error(
-          """
-        ********************************************************************************
-        The `reactRoot` property is deprecated and will be removed in 
-        future versions of React Native. The property is currently ignored.
-        
-        You should instead use either:
-        - [root] to point to your root project (where the package.json lives)
-        - [reactNativeDir] to point to the NPM package of react native.
-        
-        You should be fine by just removing the `reactRoot` line entirely from 
-        your build.gradle file. Otherwise a valid configuration would look like:
-        
-        react {
-            root = rootProject.file('..')
-            reactNativeDir = rootProject.file('../node_modules/react-native')
-        }
-        ********************************************************************************
-      """.trimIndent())
-    }
-  }
-
   internal fun setupCommandLine() {
     commandLine(
         windowsAwareCommandLine(
