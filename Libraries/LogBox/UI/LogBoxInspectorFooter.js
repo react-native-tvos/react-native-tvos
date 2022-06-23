@@ -71,6 +71,7 @@ const buttonStyles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
     marginRight: 10,
+    // $FlowFixMe[sketchy-null-bool]
     paddingBottom: DeviceInfo.getConstants().isIPhoneX_deprecated ? 30 : 0,
   },
   content: {

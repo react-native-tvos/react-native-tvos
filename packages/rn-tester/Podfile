@@ -2,33 +2,29 @@ require_relative '../../scripts/react_native_pods'
 
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :tvos, '12.0'
+platform :tvos, '12.4'
 
 # Temporary solution to suppress duplicated GUID error.
 # Can be removed once we move to generate files outside pod install.
 install! 'cocoapods', :deterministic_uuids => false
 
 USE_FRAMEWORKS = ENV['USE_FRAMEWORKS'] == '1'
+@prefix_path = "../.."
 
 if USE_FRAMEWORKS
   puts "Installing pods with use_frameworks!"
   use_frameworks!
 end
 
-if ENV['USE_HERMES'] == '1'
-  puts "Using Hermes engine"
-end
-
 def pods(options = {})
   project 'RNTesterPods.xcodeproj'
 
   fabric_enabled = true
-  puts "Building RNTester with Fabric #{fabric_enabled ? "enabled" : "disabled"}."
-
-  prefix_path = "../.."
+  hermes_enabled = ENV['USE_HERMES'] == '1'
+  puts "Building RNTester with Fabric #{fabric_enabled ? "enabled" : "disabled"}.#{hermes_enabled ? " Using Hermes engine." : ""}"
 
   use_react_native!(
-    path: prefix_path,
+    path: @prefix_path,
     fabric_enabled: fabric_enabled,
     # No Hermes on tvOS
     # hermes_enabled: ENV['USE_HERMES'] == '1',
@@ -36,11 +32,11 @@ def pods(options = {})
     app_path: "#{Dir.pwd}",
     config_file_dir: "#{Dir.pwd}/node_modules",
   )
-  pod 'ReactCommon/turbomodule/samples', :path => "#{prefix_path}/ReactCommon"
+  pod 'ReactCommon/turbomodule/samples', :path => "#{@prefix_path}/ReactCommon"
 
   # Additional Pods which aren't included in the default Podfile
-  pod 'React-RCTPushNotification', :path => "#{prefix_path}/Libraries/PushNotificationIOS"
-  pod 'Yoga', :path => "#{prefix_path}/ReactCommon/yoga", :modular_headers => true
+  pod 'React-RCTPushNotification', :path => "#{@prefix_path}/Libraries/PushNotificationIOS"
+  pod 'Yoga', :path => "#{@prefix_path}/ReactCommon/yoga", :modular_headers => true
   # Additional Pods which are classed as unstable
 
   # RNTester native modules and components
@@ -69,6 +65,6 @@ target 'RNTesterIntegrationTests' do
 end
 
 post_install do |installer|
-  react_native_post_install(installer)
+  react_native_post_install(installer, @prefix_path)
   __apply_Xcode_12_5_M1_post_install_workaround(installer)
 end

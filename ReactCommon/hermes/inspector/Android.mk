@@ -6,7 +6,6 @@
 LOCAL_PATH := $(call my-dir)
 REACT_NATIVE := $(LOCAL_PATH)/../../..
 
-include $(REACT_NATIVE)/ReactCommon/common.mk
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := hermes-inspector
@@ -17,7 +16,7 @@ LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,,$(LOCAL_SRC_FILES))
 LOCAL_C_ROOT := $(LOCAL_PATH)/../..
 
 LOCAL_CFLAGS := -DHERMES_ENABLE_DEBUGGER=1 -DHERMES_INSPECTOR_FOLLY_KLUDGE=1
-LOCAL_C_INCLUDES := $(LOCAL_C_ROOT) $(REACT_NATIVE)/ReactCommon/jsi $(call find-node-module,$(LOCAL_PATH),hermes-engine)/android/include
+LOCAL_C_INCLUDES := $(LOCAL_C_ROOT) $(REACT_NATIVE)/ReactCommon/jsi
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_ROOT)
 
 LOCAL_CPP_FEATURES := exceptions
@@ -26,10 +25,12 @@ LOCAL_SHARED_LIBRARIES := \
   jsinspector \
   libfb \
   libfbjni \
-  libfolly_futures \
-  libfolly_json \
+  libfolly_runtime \
   libglog \
   libhermes \
   libjsi
+
+LOCAL_STATIC_LIBRARIES := \
+  libfolly_futures
 
 include $(BUILD_STATIC_LIBRARY)

@@ -25,8 +25,7 @@ LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES := \
   glog \
   libbutter \
-  libfolly_futures \
-  libfolly_json \
+  libfolly_runtime \
   libglog_init \
   libreact_debug \
   libreact_render_core \

@@ -9,6 +9,7 @@
 
 #import <React/RCTLog.h>
 #import <React/RCTSurface.h>
+#import <React/RCTSurfaceHostingView.h>
 
 @implementation RCTLogBoxView {
   RCTSurface *_surface;
@@ -36,28 +37,56 @@
   self.rootViewController = _rootViewController;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame bridge:(RCTBridge *)bridge
+- (instancetype)initWithWindow:(UIWindow *)window bridge:(RCTBridge *)bridge
 {
-  if ((self = [super initWithFrame:frame])) {
-#if TARGET_OS_TV
-    self.windowLevel = UIWindowLevelNormal;
-#else
-    self.windowLevel = UIWindowLevelStatusBar - 1;
-#endif
-    self.backgroundColor = [UIColor clearColor];
+  RCTErrorNewArchitectureValidation(RCTNotAllowedInAppWideFabric, @"RCTLogBoxView", nil);
 
-    _surface = [[RCTSurface alloc] initWithBridge:bridge moduleName:@"LogBox" initialProperties:@{}];
-
-    [_surface start];
-    [_surface setSize:frame.size];
-
-    if (![_surface synchronouslyWaitForStage:RCTSurfaceStageSurfaceDidInitialMounting timeout:1]) {
-      RCTLogInfo(@"Failed to mount LogBox within 1s");
-    }
-
-    [self createRootViewController:(UIView *)_surface.view];
+  if (@available(iOS 13.0, *)) {
+    self = [super initWithWindowScene:window.windowScene];
+  } else {
+    self = [super initWithFrame:window.frame];
   }
+
+#if TARGET_OS_TV
+  self.windowLevel = UIWindowLevelNormal;
+#else
+  self.windowLevel = UIWindowLevelStatusBar - 1;
+#endif
+  self.backgroundColor = [UIColor clearColor];
+
+  _surface = [[RCTSurface alloc] initWithBridge:bridge moduleName:@"LogBox" initialProperties:@{}];
+  [_surface start];
+
+  if (![_surface synchronouslyWaitForStage:RCTSurfaceStageSurfaceDidInitialMounting timeout:1]) {
+    RCTLogInfo(@"Failed to mount LogBox within 1s");
+  }
+  [self createRootViewController:(UIView *)_surface.view];
+
   return self;
+}
+
+- (instancetype)initWithWindow:(UIWindow *)window surfacePresenter:(id<RCTSurfacePresenterStub>)surfacePresenter
+{
+  if (@available(iOS 13.0, *)) {
+    self = [super initWithWindowScene:window.windowScene];
+  } else {
+    self = [super initWithFrame:window.frame];
+  }
+
+  id<RCTSurfaceProtocol> surface = [surfacePresenter createFabricSurfaceForModuleName:@"LogBox" initialProperties:@{}];
+  [surface start];
+  RCTSurfaceHostingView *rootView = [[RCTSurfaceHostingView alloc]
+      initWithSurface:surface
+      sizeMeasureMode:RCTSurfaceSizeMeasureModeWidthExact | RCTSurfaceSizeMeasureModeHeightExact];
+  [self createRootViewController:rootView];
+
+  return self;
+}
+
+- (void)layoutSubviews
+{
+  [super layoutSubviews];
+  [_surface setSize:self.frame.size];
 }
 
 - (void)dealloc

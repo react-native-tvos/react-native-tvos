@@ -15,7 +15,6 @@ import com.facebook.react.tasks.BundleJsAndAssetsTask
 import com.facebook.react.tasks.HermesBinaryTask
 import com.facebook.react.utils.detectedCliPath
 import com.facebook.react.utils.detectedEntryFile
-import com.facebook.react.utils.detectedHermesCommand
 import java.io.File
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -95,8 +94,8 @@ internal fun Project.configureReactTasks(variant: BaseVariant, config: ReactExte
         it.group = REACT_GROUP
         it.description = "bundle hermes resources for $targetName"
 
-        it.reactRoot = config.root.get().asFile
-        it.hermesCommand = detectedHermesCommand(config)
+        it.root = config.root.get().asFile
+        it.hermesCommand = config.hermesCommand.get()
         it.hermesFlags = config.hermesFlagsForVariant(variant)
         it.jsBundleFile = jsBundleFile
         it.composeSourceMapsCommand = nodeExecutableAndArgs + config.composeSourceMapsPath.get()
@@ -126,7 +125,7 @@ internal fun Project.configureReactTasks(variant: BaseVariant, config: ReactExte
   // Android configuration
   variant.registerGeneratedResFolders(generatedResFolders)
 
-  val packageTask =
+  val packageTask: TaskProvider<out Task>? =
       when (variant) {
         is ApplicationVariant -> variant.packageApplicationProvider
         is LibraryVariant -> variant.packageLibraryProvider
@@ -154,11 +153,11 @@ internal fun Project.configureReactTasks(variant: BaseVariant, config: ReactExte
           it.enabled = bundleEnabled
         }
 
-    packageTask.dependsOn(currentCopyResTask)
+    packageTask?.dependsOn(currentCopyResTask)
     preBundleTask.dependsOn(currentCopyResTask)
   }
 
-  packageTask.configure {
+  packageTask?.configure {
     if (config.enableVmCleanup.get()) {
       val libDir = "$buildDir/intermediates/transforms/"
       val targetVariant = ".*/transforms/[^/]*/${variant.name}/.*".toRegex()
@@ -194,6 +193,8 @@ internal fun Project.configureReactTasks(variant: BaseVariant, config: ReactExte
           it.into(jsBundleDirConfigValue.get())
         } else {
           it.into(mergeAssetsTask.map { mergeFoldersTask -> mergeFoldersTask.outputDir.get() })
+          // Workaround for Android Gradle Plugin 7.1 asset directory
+          it.into("$buildDir/intermediates/assets/${variant.name}/merge${targetName}Assets")
         }
 
         it.dependsOn(mergeAssetsTask)
@@ -205,7 +206,7 @@ internal fun Project.configureReactTasks(variant: BaseVariant, config: ReactExte
   // from Android plugin 4.1+.
   // This ensures to copy the bundle file before mergeResources task starts
   mergeResourcesTask.dependsOn(currentAssetsCopyTask)
-  packageTask.dependsOn(currentAssetsCopyTask)
+  packageTask?.dependsOn(currentAssetsCopyTask)
   preBundleTask.dependsOn(currentAssetsCopyTask)
 }
 
@@ -222,23 +223,23 @@ private fun Project.cleanupVMFiles(
   // two separate HermesDebug and HermesRelease AARs, but until then we'll
   // kludge it by deleting the .so files out of the /transforms/ directory.
   fileTree(libDir) {
-    if (enableHermes) {
-      // For Hermes, delete all the libjsc* files
-      it.include("**/libjsc*.so")
+        if (enableHermes) {
+          // For Hermes, delete all the libjsc* files
+          it.include("**/libjsc*.so")
 
-      if (cleanup) {
-        // Reduce size by deleting the debugger/inspector
-        it.include("**/libhermes-executor-debug.so")
-      } else {
-        // Release libs take precedence and must be removed
-        // to allow debugging
-        it.include("**/libhermes-executor-release.so")
+          if (cleanup) {
+            // Reduce size by deleting the debugger/inspector
+            it.include("**/libhermes-executor-debug.so")
+          } else {
+            // Release libs take precedence and must be removed
+            // to allow debugging
+            it.include("**/libhermes-executor-release.so")
+          }
+        } else {
+          // For JSC, delete all the libhermes* files
+          it.include("**/libhermes*.so")
+        }
       }
-    } else {
-      // For JSC, delete all the libhermes* files
-      it.include("**/libhermes*.so")
-    }
-  }
       .visit { visit ->
         val path = visit.file.absolutePath.replace(File.separatorChar, '/')
         if (path.matches(targetVariant) && visit.file.isFile) {

@@ -14,6 +14,7 @@
 #import <React/RCTFollyConvert.h>
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
+#import <react/config/ReactNativeConfig.h>
 #import <react/renderer/components/root/RootShadowNode.h>
 #import <react/renderer/core/LayoutableShadowNode.h>
 #import <react/renderer/core/RawProps.h>
@@ -265,15 +266,16 @@ static void RCTPerformMountInstructions(
   auto surfaceId = mountingCoordinator->getSurfaceId();
 
   mountingCoordinator->getTelemetryController().pullTransaction(
-      [&](MountingTransactionMetadata metadata) {
+      [&](MountingTransaction const &transaction, SurfaceTelemetry const &surfaceTelemetry) {
         [self.delegate mountingManager:self willMountComponentsWithRootTag:surfaceId];
-        _observerCoordinator.notifyObserversMountingTransactionWillMount(metadata);
+        _observerCoordinator.notifyObserversMountingTransactionWillMount(transaction, surfaceTelemetry);
       },
-      [&](ShadowViewMutationList const &mutations) {
-        RCTPerformMountInstructions(mutations, _componentViewRegistry, _observerCoordinator, surfaceId);
+      [&](MountingTransaction const &transaction, SurfaceTelemetry const &surfaceTelemetry) {
+        RCTPerformMountInstructions(
+            transaction.getMutations(), _componentViewRegistry, _observerCoordinator, surfaceId);
       },
-      [&](MountingTransactionMetadata metadata) {
-        _observerCoordinator.notifyObserversMountingTransactionDidMount(metadata);
+      [&](MountingTransaction const &transaction, SurfaceTelemetry const &surfaceTelemetry) {
+        _observerCoordinator.notifyObserversMountingTransactionDidMount(transaction, surfaceTelemetry);
         [self.delegate mountingManager:self didMountComponentsWithRootTag:surfaceId];
       });
 }
@@ -315,6 +317,11 @@ static void RCTPerformMountInstructions(
   }
   if (props[@"opacity"] && componentView.layer.opacity != (float)newViewProps.opacity) {
     componentView.layer.opacity = newViewProps.opacity;
+  }
+
+  auto reactNativeConfig = _contextContainer->at<std::shared_ptr<ReactNativeConfig const>>("ReactNativeConfig");
+  if (reactNativeConfig && reactNativeConfig->getBool("react_fabric:finalize_updates_on_synchronous_update_view_ios")) {
+    [componentView finalizeUpdates:RNComponentViewUpdateMaskProps];
   }
 }
 

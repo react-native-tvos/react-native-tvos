@@ -39,7 +39,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onOrientationChange;
 
 // Fabric only
-@property (nonatomic, copy) RCTBubblingEventBlock onDismiss;
+@property (nonatomic, copy) RCTDirectEventBlock onDismiss;
 #if TARGET_OS_TV
 @property (nonatomic, copy) RCTDirectEventBlock onRequestClose;
 @property (nonatomic, strong) RCTTVRemoteHandler *tvRemoteHandler;
