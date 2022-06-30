@@ -1,16 +1,23 @@
 PODS:
   - boost (1.76.0)
   - DoubleConversion (1.1.6)
-  - FBLazyVector (0.69.0)
-  - FBReactNativeSpec (0.69.0):
+  - FBLazyVector (0.69.0-0)
+  - FBReactNativeSpec (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Core (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Core (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
   - fmt (7.1.3)
   - glog (0.3.5)
+  - MyNativeView (0.0.1):
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - React-Codegen
+    - React-RCTFabric
+    - ReactCommon/turbomodule/core
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -27,599 +34,599 @@ PODS:
     - DoubleConversion
     - fmt
     - glog
-  - RCTRequired (0.69.0)
-  - RCTTypeSafety (0.69.0):
-    - FBLazyVector (= 0.69.0)
-    - RCTRequired (= 0.69.0)
-    - React-Core (= 0.69.0)
-  - React (0.69.0):
-    - React-Core (= 0.69.0)
-    - React-Core/DevSupport (= 0.69.0)
-    - React-Core/RCTWebSocket (= 0.69.0)
-    - React-RCTAnimation (= 0.69.0)
-    - React-RCTBlob (= 0.69.0)
-    - React-RCTImage (= 0.69.0)
-    - React-RCTLinking (= 0.69.0)
-    - React-RCTNetwork (= 0.69.0)
-    - React-RCTSettings (= 0.69.0)
-    - React-RCTText (= 0.69.0)
-  - React-bridging (0.69.0):
+  - RCTRequired (0.69.0-0)
+  - RCTTypeSafety (0.69.0-0):
+    - FBLazyVector (= 0.69.0-0)
+    - RCTRequired (= 0.69.0-0)
+    - React-Core (= 0.69.0-0)
+  - React (0.69.0-0):
+    - React-Core (= 0.69.0-0)
+    - React-Core/DevSupport (= 0.69.0-0)
+    - React-Core/RCTWebSocket (= 0.69.0-0)
+    - React-RCTAnimation (= 0.69.0-0)
+    - React-RCTBlob (= 0.69.0-0)
+    - React-RCTImage (= 0.69.0-0)
+    - React-RCTLinking (= 0.69.0-0)
+    - React-RCTNetwork (= 0.69.0-0)
+    - React-RCTSettings (= 0.69.0-0)
+    - React-RCTText (= 0.69.0-0)
+  - React-bridging (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-jsi (= 0.69.0)
-  - React-callinvoker (0.69.0)
-  - React-Codegen (0.69.0):
-    - FBReactNativeSpec (= 0.69.0)
+    - React-jsi (= 0.69.0-0)
+  - React-callinvoker (0.69.0-0)
+  - React-Codegen (0.69.0-0):
+    - FBReactNativeSpec (= 0.69.0-0)
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Core (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-rncore (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Core (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Core (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-rncore (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Core (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Core/Default (= 0.69.0)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-Core/Default (= 0.69.0-0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/CoreModulesHeaders (0.69.0):
-    - glog
-    - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-    - Yoga
-  - React-Core/Default (0.69.0):
-    - glog
-    - RCT-Folly (= 2021.06.28.00-v2)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-    - Yoga
-  - React-Core/DevSupport (0.69.0):
-    - glog
-    - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Core/Default (= 0.69.0)
-    - React-Core/RCTWebSocket (= 0.69.0)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-jsinspector (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-    - Yoga
-  - React-Core/RCTAnimationHeaders (0.69.0):
+  - React-Core/CoreModulesHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTBlobHeaders (0.69.0):
+  - React-Core/Default (0.69.0-0):
+    - glog
+    - RCT-Folly (= 2021.06.28.00-v2)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+    - Yoga
+  - React-Core/DevSupport (0.69.0-0):
+    - glog
+    - RCT-Folly (= 2021.06.28.00-v2)
+    - React-Core/Default (= 0.69.0-0)
+    - React-Core/RCTWebSocket (= 0.69.0-0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-jsinspector (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+    - Yoga
+  - React-Core/RCTAnimationHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTImageHeaders (0.69.0):
+  - React-Core/RCTBlobHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTLinkingHeaders (0.69.0):
+  - React-Core/RCTImageHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTNetworkHeaders (0.69.0):
+  - React-Core/RCTLinkingHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTPushNotificationHeaders (0.69.0):
+  - React-Core/RCTNetworkHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTSettingsHeaders (0.69.0):
+  - React-Core/RCTPushNotificationHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTTextHeaders (0.69.0):
+  - React-Core/RCTSettingsHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core/Default
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-Core/RCTWebSocket (0.69.0):
+  - React-Core/RCTTextHeaders (0.69.0-0):
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Core/Default (= 0.69.0)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-perflogger (= 0.69.0)
+    - React-Core/Default
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
     - Yoga
-  - React-CoreModules (0.69.0):
+  - React-Core/RCTWebSocket (0.69.0-0):
+    - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/CoreModulesHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-RCTImage (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-cxxreact (0.69.0):
+    - React-Core/Default (= 0.69.0-0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+    - Yoga
+  - React-CoreModules (0.69.0-0):
+    - RCT-Folly (= 2021.06.28.00-v2)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/CoreModulesHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-RCTImage (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-cxxreact (0.69.0-0):
     - boost (= 1.76.0)
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-callinvoker (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsinspector (= 0.69.0)
-    - React-logger (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-    - React-runtimeexecutor (= 0.69.0)
-  - React-Fabric (0.69.0):
+    - React-callinvoker (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsinspector (= 0.69.0-0)
+    - React-logger (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+    - React-runtimeexecutor (= 0.69.0-0)
+  - React-Fabric (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Fabric/animations (= 0.69.0)
-    - React-Fabric/attributedstring (= 0.69.0)
-    - React-Fabric/butter (= 0.69.0)
-    - React-Fabric/componentregistry (= 0.69.0)
-    - React-Fabric/componentregistrynative (= 0.69.0)
-    - React-Fabric/components (= 0.69.0)
-    - React-Fabric/config (= 0.69.0)
-    - React-Fabric/core (= 0.69.0)
-    - React-Fabric/debug_core (= 0.69.0)
-    - React-Fabric/debug_renderer (= 0.69.0)
-    - React-Fabric/imagemanager (= 0.69.0)
-    - React-Fabric/leakchecker (= 0.69.0)
-    - React-Fabric/mounting (= 0.69.0)
-    - React-Fabric/runtimescheduler (= 0.69.0)
-    - React-Fabric/scheduler (= 0.69.0)
-    - React-Fabric/telemetry (= 0.69.0)
-    - React-Fabric/templateprocessor (= 0.69.0)
-    - React-Fabric/textlayoutmanager (= 0.69.0)
-    - React-Fabric/uimanager (= 0.69.0)
-    - React-Fabric/utils (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/animations (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Fabric/animations (= 0.69.0-0)
+    - React-Fabric/attributedstring (= 0.69.0-0)
+    - React-Fabric/butter (= 0.69.0-0)
+    - React-Fabric/componentregistry (= 0.69.0-0)
+    - React-Fabric/componentregistrynative (= 0.69.0-0)
+    - React-Fabric/components (= 0.69.0-0)
+    - React-Fabric/config (= 0.69.0-0)
+    - React-Fabric/core (= 0.69.0-0)
+    - React-Fabric/debug_core (= 0.69.0-0)
+    - React-Fabric/debug_renderer (= 0.69.0-0)
+    - React-Fabric/imagemanager (= 0.69.0-0)
+    - React-Fabric/leakchecker (= 0.69.0-0)
+    - React-Fabric/mounting (= 0.69.0-0)
+    - React-Fabric/runtimescheduler (= 0.69.0-0)
+    - React-Fabric/scheduler (= 0.69.0-0)
+    - React-Fabric/telemetry (= 0.69.0-0)
+    - React-Fabric/templateprocessor (= 0.69.0-0)
+    - React-Fabric/textlayoutmanager (= 0.69.0-0)
+    - React-Fabric/uimanager (= 0.69.0-0)
+    - React-Fabric/utils (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/animations (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/attributedstring (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/attributedstring (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/butter (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/butter (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/componentregistry (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/componentregistry (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/componentregistrynative (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/componentregistrynative (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Fabric/components/activityindicator (= 0.69.0)
-    - React-Fabric/components/image (= 0.69.0)
-    - React-Fabric/components/inputaccessory (= 0.69.0)
-    - React-Fabric/components/legacyviewmanagerinterop (= 0.69.0)
-    - React-Fabric/components/modal (= 0.69.0)
-    - React-Fabric/components/root (= 0.69.0)
-    - React-Fabric/components/safeareaview (= 0.69.0)
-    - React-Fabric/components/scrollview (= 0.69.0)
-    - React-Fabric/components/slider (= 0.69.0)
-    - React-Fabric/components/text (= 0.69.0)
-    - React-Fabric/components/textinput (= 0.69.0)
-    - React-Fabric/components/unimplementedview (= 0.69.0)
-    - React-Fabric/components/view (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/activityindicator (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Fabric/components/activityindicator (= 0.69.0-0)
+    - React-Fabric/components/image (= 0.69.0-0)
+    - React-Fabric/components/inputaccessory (= 0.69.0-0)
+    - React-Fabric/components/legacyviewmanagerinterop (= 0.69.0-0)
+    - React-Fabric/components/modal (= 0.69.0-0)
+    - React-Fabric/components/root (= 0.69.0-0)
+    - React-Fabric/components/safeareaview (= 0.69.0-0)
+    - React-Fabric/components/scrollview (= 0.69.0-0)
+    - React-Fabric/components/slider (= 0.69.0-0)
+    - React-Fabric/components/text (= 0.69.0-0)
+    - React-Fabric/components/textinput (= 0.69.0-0)
+    - React-Fabric/components/unimplementedview (= 0.69.0-0)
+    - React-Fabric/components/view (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/activityindicator (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/image (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/image (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/inputaccessory (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/inputaccessory (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/legacyviewmanagerinterop (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/legacyviewmanagerinterop (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/modal (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/modal (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/root (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/root (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/safeareaview (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/safeareaview (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/scrollview (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/scrollview (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/slider (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/slider (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/text (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/text (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/textinput (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/textinput (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/unimplementedview (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/unimplementedview (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/components/view (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/components/view (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
     - Yoga
-  - React-Fabric/config (0.69.0):
+  - React-Fabric/config (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/core (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/core (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/debug_core (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/debug_core (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/debug_renderer (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/debug_renderer (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/imagemanager (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/imagemanager (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - React-RCTImage (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/leakchecker (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - React-RCTImage (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/leakchecker (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/mounting (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/mounting (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/runtimescheduler (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/runtimescheduler (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/scheduler (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/scheduler (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/telemetry (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/telemetry (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/templateprocessor (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/templateprocessor (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/textlayoutmanager (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/textlayoutmanager (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
     - React-Fabric/uimanager
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/uimanager (0.69.0):
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/uimanager (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-Fabric/utils (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-Fabric/utils (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - RCTRequired (= 0.69.0)
-    - RCTTypeSafety (= 0.69.0)
-    - React-graphics (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-jsiexecutor (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-graphics (0.69.0):
+    - RCTRequired (= 0.69.0-0)
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-graphics (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-jsiexecutor (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-graphics (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - React-Core/Default (= 0.69.0)
-  - React-jsi (0.69.0):
+    - React-Core/Default (= 0.69.0-0)
+  - React-jsi (0.69.0-0):
     - boost (= 1.76.0)
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-jsi/Default (= 0.69.0)
-  - React-jsi/Default (0.69.0):
+    - React-jsi/Default (= 0.69.0-0)
+  - React-jsi/Default (0.69.0-0):
     - boost (= 1.76.0)
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-  - React-jsi/Fabric (0.69.0):
+  - React-jsi/Fabric (0.69.0-0):
     - boost (= 1.76.0)
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-  - React-jsiexecutor (0.69.0):
+  - React-jsiexecutor (0.69.0-0):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-  - React-jsinspector (0.69.0)
-  - React-logger (0.69.0):
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+  - React-jsinspector (0.69.0-0)
+  - React-logger (0.69.0-0):
     - glog
-  - React-perflogger (0.69.0)
-  - React-RCTAnimation (0.69.0):
+  - React-perflogger (0.69.0-0)
+  - React-RCTAnimation (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTAnimationHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTBlob (0.69.0):
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTAnimationHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTBlob (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTBlobHeaders (= 0.69.0)
-    - React-Core/RCTWebSocket (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-RCTNetwork (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTFabric (0.69.0):
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTBlobHeaders (= 0.69.0-0)
+    - React-Core/RCTWebSocket (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-RCTNetwork (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTFabric (0.69.0-0):
     - RCT-Folly/Fabric (= 2021.06.28.00-v2)
-    - React-Core (= 0.69.0)
-    - React-Fabric (= 0.69.0)
-    - React-RCTImage (= 0.69.0)
-  - React-RCTImage (0.69.0):
+    - React-Core (= 0.69.0-0)
+    - React-Fabric (= 0.69.0-0)
+    - React-RCTImage (= 0.69.0-0)
+  - React-RCTImage (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTImageHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-RCTNetwork (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTLinking (0.69.0):
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTLinkingHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTNetwork (0.69.0):
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTImageHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-RCTNetwork (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTLinking (0.69.0-0):
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTLinkingHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTNetwork (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTNetworkHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTPushNotification (0.69.0):
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTPushNotificationHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTSettings (0.69.0):
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTNetworkHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTPushNotification (0.69.0-0):
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTPushNotificationHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTSettings (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - RCTTypeSafety (= 0.69.0)
-    - React-Codegen (= 0.69.0)
-    - React-Core/RCTSettingsHeaders (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTTest (0.69.0):
+    - RCTTypeSafety (= 0.69.0-0)
+    - React-Codegen (= 0.69.0-0)
+    - React-Core/RCTSettingsHeaders (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTTest (0.69.0-0):
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-Core (= 0.69.0)
-    - React-CoreModules (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
-  - React-RCTText (0.69.0):
-    - React-Core/RCTTextHeaders (= 0.69.0)
-  - React-rncore (0.69.0)
-  - React-runtimeexecutor (0.69.0):
-    - React-jsi (= 0.69.0)
-  - ReactCommon/turbomodule/core (0.69.0):
+    - React-Core (= 0.69.0-0)
+    - React-CoreModules (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
+  - React-RCTText (0.69.0-0):
+    - React-Core/RCTTextHeaders (= 0.69.0-0)
+  - React-rncore (0.69.0-0)
+  - React-runtimeexecutor (0.69.0-0):
+    - React-jsi (= 0.69.0-0)
+  - ReactCommon/turbomodule/core (0.69.0-0):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-bridging (= 0.69.0)
-    - React-callinvoker (= 0.69.0)
-    - React-Core (= 0.69.0)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-logger (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-  - ReactCommon/turbomodule/samples (0.69.0):
+    - React-bridging (= 0.69.0-0)
+    - React-callinvoker (= 0.69.0-0)
+    - React-Core (= 0.69.0-0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-logger (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+  - ReactCommon/turbomodule/samples (0.69.0-0):
     - DoubleConversion
     - glog
     - RCT-Folly (= 2021.06.28.00-v2)
-    - React-bridging (= 0.69.0)
-    - React-callinvoker (= 0.69.0)
-    - React-Core (= 0.69.0)
-    - React-cxxreact (= 0.69.0)
-    - React-jsi (= 0.69.0)
-    - React-logger (= 0.69.0)
-    - React-perflogger (= 0.69.0)
-    - ReactCommon/turbomodule/core (= 0.69.0)
+    - React-bridging (= 0.69.0-0)
+    - React-callinvoker (= 0.69.0-0)
+    - React-Core (= 0.69.0-0)
+    - React-cxxreact (= 0.69.0-0)
+    - React-jsi (= 0.69.0-0)
+    - React-logger (= 0.69.0-0)
+    - React-perflogger (= 0.69.0-0)
+    - ReactCommon/turbomodule/core (= 0.69.0-0)
   - ScreenshotManager (0.0.1):
     - RCT-Folly (= 2021.06.28.00-v2)
     - React-Core
@@ -632,6 +639,7 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../../React/FBReactNativeSpec`)
   - fmt (from `../../third-party-podspecs/fmt.podspec`)
   - glog (from `../../third-party-podspecs/glog.podspec`)
+  - MyNativeView (from `NativeComponentExample`)
   - RCT-Folly (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../../Libraries/RCTRequired`)
@@ -683,6 +691,8 @@ EXTERNAL SOURCES:
     :podspec: "../../third-party-podspecs/fmt.podspec"
   glog:
     :podspec: "../../third-party-podspecs/glog.podspec"
+  MyNativeView:
+    :path: NativeComponentExample
   RCT-Folly:
     :podspec: "../../third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -751,42 +761,43 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
-  FBLazyVector: ea59a366c47b9410fd9a3c35cf3fdd89940ef5cc
-  FBReactNativeSpec: 320ea26d758278589d2c001c55db5cb60c81edf4
+  FBLazyVector: 680a3cb72c0521675a812bca59c71d31ea7861ca
+  FBReactNativeSpec: 5795b8be29e8e9bbdc6adee3b13adafa849bb150
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: bac6d5aa2990176cc22d0432fb3e28805d580aeb
+  MyNativeView: 412ff641161c6577d85641afa32d5f4f8014a816
   RCT-Folly: 5b616707d7d51519bd8d59b3e11f15df58f54df7
-  RCTRequired: c7e467c622a79bdd24c8196309d6fa8c520344d5
-  RCTTypeSafety: 156843c7804a51a43ee179c8da8bda630e2aae67
-  React: 7550321cdd55d6364e9b361fcb183aaeb608d7e4
-  React-bridging: 7c8b6007d63ae33cbb48e649535bdc86730b8492
-  React-callinvoker: cab48e45dcea38002a13494e4cb8736a1bf050b3
-  React-Codegen: f38ba6489f4c5ad52ff0c1fee6bf2eb978ba12e9
-  React-Core: d644986ce5807eb5d07fd43e1dd32ecc91480291
-  React-CoreModules: 7619121ef2e6d925e72679e11e85626f91af0e27
-  React-cxxreact: 51a2239091bc13a3c0b5b1cb445b1585a483df2d
-  React-Fabric: 7b6cd17cc443853254a5b542ca88fd3750589deb
-  React-graphics: 2d0bc92b641fb84924ff55f98161391ce5112372
-  React-jsi: 5f63f7f1008dacbf8acda588e424845d8e4e9736
-  React-jsiexecutor: e4f287a368729887fd788f483f9031bfbeb24de0
-  React-jsinspector: 3de1b6f1ca70ad8c647b922406eaee86deb75a0f
-  React-logger: bcf33ce10afa135158c72635e621ddb94126c610
-  React-perflogger: d68d58044963e17e862254391ec3614719288ba5
-  React-RCTAnimation: a207229f3ed67e116d93731b8ab4151e5676167c
-  React-RCTBlob: 7bc95de35e1d1fd595869a4d7dd7bcd3f902d888
-  React-RCTFabric: 0346ebfe4fc712e768ba3cab2134066c1282e085
-  React-RCTImage: 229728b37c8302279bd38d489eeca9441bb71793
-  React-RCTLinking: abd9e6d5013ca460da7d07cbc7bacc00029602a2
-  React-RCTNetwork: 48cd5981753b434042612378a2f9976726934ace
-  React-RCTPushNotification: 918fe82074af4eab0f7f73c525b264c8d4e5ae89
-  React-RCTSettings: 09a2c0c1d24f018276b60b30c999f1d1b3451720
-  React-RCTTest: 57397f502a81938d16d5466821684ae7458ffd9a
-  React-RCTText: 8cdb6e18d122becb3558880195b0bacfec917ed8
-  React-rncore: e68bca776c7ca81721d9c5e276cbcbe6992bc873
-  React-runtimeexecutor: da8f873e20d1d6b74e9f8048025909dab82b14e9
-  ReactCommon: 82e01a2f8893fc70b4ecad26ad5a8bf099fdc301
-  ScreenshotManager: 2cece1df548810a0122fcc271d1b06f82d0cab8b
-  Yoga: eb406d49b81694a01e027e543459f70aa0125d00
+  RCTRequired: 86f7e0c4dae635a0a4e4a0b4ebd5a6fc59c915dc
+  RCTTypeSafety: 94fc2bc8724c2af6708a918d388cbfaf3952d6d6
+  React: ea590277780b1d0c4f44cec4cbd5fbaf094170e2
+  React-bridging: f2485ecabdfffe2bba2f7c87e05e44d618d5aa4d
+  React-callinvoker: 067e71db785d90eab351684bf890babde00b3df8
+  React-Codegen: fe78740cddc1e6f873c32627beac561831daf544
+  React-Core: 4c40f7f6f52cbb7aca8df89f774801bead0a284d
+  React-CoreModules: 9be686b98ca2f58b1b7df8effe4f81ed85327abe
+  React-cxxreact: 6e8a877c51fc65ada96e5a80743941dd7c375f46
+  React-Fabric: aa2fd37bda91b61c2d443528304443cee5461bbf
+  React-graphics: 8acf5c9ccc1cb8e9019942d54d4535aafaabf10a
+  React-jsi: 2e018c6eead82bd49ec2b5c4bf7580d13fcbc8ff
+  React-jsiexecutor: 77d57f630e2202b081bb59d2402a1a51ebd9150c
+  React-jsinspector: e9a61d957962d0654575e89f7ac80acb1041e7ef
+  React-logger: 9f9dcb0c953daa1bddcd73d8ce23ddaaa8198f68
+  React-perflogger: 34e72f8a76d793632425e681886b309e2647bc49
+  React-RCTAnimation: 827d678a70a93fa6db2205e0529a6b91b010ef00
+  React-RCTBlob: 41b668e5db333ca663be66417285dd62f90ae313
+  React-RCTFabric: bf331edbedc908385084911a6495411c8f88bfae
+  React-RCTImage: 943da2d1b05466cd977875f5d6ce780a436e071b
+  React-RCTLinking: 7b68d6c56b994bfff213ad08efe15a4e6b500d3d
+  React-RCTNetwork: 270a819c599f9cde7008224ef2e723efc89659d5
+  React-RCTPushNotification: 5a5f30cf4efbb306d96b6b5aaad59562748b2630
+  React-RCTSettings: 4bf4cc149eb523c50dab043c7c6581cced99451f
+  React-RCTTest: 363d40567fe78a3755e743449bfa1357da494466
+  React-RCTText: 7714e49eb04ce3e91a97a8e006e8d7c1a598b9ea
+  React-rncore: def644f6e18d25fad69d07ddd3f0687c6417f535
+  React-runtimeexecutor: 836ad9aa9cdb455ea6e033773b0002d120dc2c61
+  ReactCommon: 26d1b281f7d5b697e9c0b25913426b02433b26b7
+  ScreenshotManager: 3ad89d9fe639c27464079c987688a4a6ed7a559c
+  Yoga: 6f0119b667f8bb1e13961a07c7462ea7d6aa8796
 
 PODFILE CHECKSUM: 51f3a8d709ff083e47b365df79bad095af103ac9
 
