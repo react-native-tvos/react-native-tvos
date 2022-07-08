@@ -311,7 +311,7 @@ public class ReactScrollView extends ScrollView
 
   @Override
   protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-    if(!mScrollEnabled) {
+    if (!mScrollEnabled) {
       return 0;
     }
     return super.computeScrollDeltaToGetChildRectOnScreen(rect);
