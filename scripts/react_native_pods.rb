@@ -198,7 +198,8 @@ def exclude_architectures(installer)
     .push(installer.pods_project)
 
   # Hermes does not support `i386` architecture
-  excluded_archs_default = has_pod(installer, 'hermes-engine') ? "i386" : ""
+  # Also exclude this arch when building on M1 machines
+  excluded_archs_default = (running_on_m1(installer) || has_pod(installer, 'hermes-engine')) ? "i386" : ""
 
   projects.each do |project|
     project.build_configurations.each do |config|
@@ -207,6 +208,10 @@ def exclude_architectures(installer)
 
     project.save()
   end
+end
+
+def running_on_m1(installer)
+  return `/usr/sbin/sysctl -n hw.optional.arm64 2>&1`.to_i == 1
 end
 
 def fix_library_search_paths(installer)
