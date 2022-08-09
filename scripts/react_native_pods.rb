@@ -225,7 +225,10 @@ def exclude_architectures(installer)
     .push(installer.pods_project)
 
   # Hermes does not support `i386` architecture
-  excluded_archs_default = has_pod(installer, 'hermes-engine') ? "i386" : ""
+  # excluded_archs_default = has_pod(installer, 'hermes-engine') ? "i386" : ""
+
+  # For TV repo, do not support `i386` architecture
+  excluded_archs_default = "i386"
 
   projects.each do |project|
     project.build_configurations.each do |config|
