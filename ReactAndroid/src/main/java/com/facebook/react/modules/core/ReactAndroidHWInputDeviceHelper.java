@@ -49,6 +49,18 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_DPAD_LEFT, "left")
           .put(KeyEvent.KEYCODE_INFO, "info")
           .put(KeyEvent.KEYCODE_MENU, "menu")
+          .put(KeyEvent.KEYCODE_0, "0")
+          .put(KeyEvent.KEYCODE_1, "1")
+          .put(KeyEvent.KEYCODE_2, "2")
+          .put(KeyEvent.KEYCODE_3, "3")
+          .put(KeyEvent.KEYCODE_4, "4")
+          .put(KeyEvent.KEYCODE_5, "5")
+          .put(KeyEvent.KEYCODE_6, "6")
+          .put(KeyEvent.KEYCODE_7, "7")
+          .put(KeyEvent.KEYCODE_8, "8")
+          .put(KeyEvent.KEYCODE_9, "9")
+          .put(KeyEvent.KEYCODE_CHANNEL_DOWN, "channelDown")
+          .put(KeyEvent.KEYCODE_CHANNEL_UP, "channelUp")
           .build();
 
   /**
