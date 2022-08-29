@@ -127,7 +127,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return (self.isTVSelectable);
 }
 
-- (RCTRootView *)rootView
+- (RCTRootView * _Nullable)rootView
 {
   UIView *rootview = self;
   while (![rootview isReactRootView] && rootview != nil) {
@@ -137,6 +137,20 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
   rootview = [rootview superview];
   return (RCTRootView *)rootview;
+}
+
+- (RCTRootView * _Nullable)waitForNonNullRootView
+{
+  // Spin for 480 ms and check at 16 ms intervals
+  // When root view available, set this view as focused
+  RCTRootView *rootview = [self rootView];
+  int counter = 30;
+  while (rootview == nil || counter > 0) {
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.016]];
+    counter = counter - 1;
+    rootview = [self rootView];
+  }
+  return rootview;
 }
 
 - (void)addParallaxMotionEffects
@@ -405,13 +419,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
     dispatch_async(dispatch_get_main_queue(), ^{
-      RCTRootView *rootview = [self rootView];
-      
+      RCTRootView *rootview = [self waitForNonNullRootView];
       if (rootview == nil) return;
-      
       [rootview setReactPreferredFocusedView:self];
       [rootview setNeedsFocusUpdate];
-      [rootview updateFocusIfNeeded];
     });
   }
 }

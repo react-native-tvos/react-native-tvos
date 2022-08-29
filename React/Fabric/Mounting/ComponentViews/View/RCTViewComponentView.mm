@@ -761,6 +761,13 @@ using namespace facebook::react;
   // `hasTVPreferredFocus
   if (oldViewProps.hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
     _hasTVPreferredFocus = newViewProps.hasTVPreferredFocus;
+    if (_hasTVPreferredFocus) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        RCTRootComponentView *rootview = [self containingRootView];
+        [rootview setReactPreferredFocusedView:self];
+        [rootview setNeedsFocusUpdate];
+      });
+    }
   }
   // `nextFocusUp`
   if (oldViewProps.nextFocusUp != newViewProps.nextFocusUp) {
