@@ -145,7 +145,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   // When root view available, set this view as focused
   RCTRootView *rootview = [self rootView];
   int counter = 30;
-  while (rootview == nil || counter > 0) {
+  while (rootview == nil && counter > 0) {
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.016]];
     counter = counter - 1;
     rootview = [self rootView];
