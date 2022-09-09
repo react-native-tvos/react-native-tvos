@@ -45,12 +45,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
     UIView *containerView = [UIView new];
     containerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _modalViewController.view = containerView;
+    _modalViewController.modalHostView = self;
     _touchHandler = [[RCTTouchHandler alloc] initWithBridge:bridge];
 #if TARGET_OS_TV
     _menuButtonGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                            action:@selector(menuButtonPressed:)];
     _menuButtonGestureRecognizer.allowedPressTypes = @[ @(UIPressTypeMenu) ];
-    self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:self];
 #endif
     _isPresented = NO;
 
@@ -74,21 +74,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   if (_onRequestClose) {
     _onRequestClose(nil);
   }
+  if (_onDismiss) {
+    _onDismiss(nil);
+  }
 }
 #endif
 
 - (void)setOnRequestClose:(RCTDirectEventBlock)onRequestClose
 {
   _onRequestClose = onRequestClose;
-#if TARGET_OS_TV
-  if (_reactSubview) {
-    if (_onRequestClose && _menuButtonGestureRecognizer) {
-      [_reactSubview addGestureRecognizer:_menuButtonGestureRecognizer];
-    } else {
-      [_reactSubview removeGestureRecognizer:_menuButtonGestureRecognizer];
-    }
-  }
-#endif
 }
 
 - (void)notifyForBoundsChange:(CGRect)newBounds
@@ -99,11 +93,16 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   }
 }
 
-- (void)presentationControllerDidAttemptToDismiss:(UIPresentationController *)controller
+- (void)enableEventHandlers
 {
-  if (_onRequestClose != nil) {
-    _onRequestClose(nil);
-  }
+  self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:_reactSubview];
+  [self addGestureRecognizer:_menuButtonGestureRecognizer];
+}
+
+- (void)disableEventHandlers
+{
+  self.tvRemoteHandler = nil;
+  [self removeGestureRecognizer:_menuButtonGestureRecognizer];
 }
 
 - (void)notifyForOrientationChange
@@ -133,12 +132,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   RCTAssert(_reactSubview == nil, @"Modal view can only have one subview");
   [super insertReactSubview:subview atIndex:atIndex];
   [_touchHandler attachToView:subview];
-#if TARGET_OS_TV
-  if (_onRequestClose) {
-    [subview addGestureRecognizer:_menuButtonGestureRecognizer];
-  }
-#endif
-
   [_modalViewController.view insertSubview:subview atIndex:0];
   _reactSubview = subview;
 }
@@ -149,11 +142,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
   // Superclass (category) removes the `subview` from actual `superview`.
   [super removeReactSubview:subview];
   [_touchHandler detachFromView:subview];
-#if TARGET_OS_TV
-  if (_menuButtonGestureRecognizer) {
-    [subview removeGestureRecognizer:_menuButtonGestureRecognizer];
-  }
-#endif
   _reactSubview = nil;
 }
 
