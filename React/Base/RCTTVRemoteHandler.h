@@ -46,4 +46,7 @@ extern NSString * _Nonnull const RCTTVRemoteEventPan;
 + (BOOL)usePanGesture;
 + (void)setUsePanGesture:(BOOL)usePanGesture;
 
+- (void)enableTVMenuKey;
+- (void)disableTVMenuKey;
+
 @end
