@@ -47,6 +47,9 @@
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge NS_DESIGNATED_INITIALIZER;
 
+- (void)enableEventHandlers;
+- (void)disableEventHandlers;
+
 @end
 
 @protocol RCTModalHostViewInteractor <NSObject>
