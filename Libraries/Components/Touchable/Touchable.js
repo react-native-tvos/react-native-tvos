@@ -382,6 +382,10 @@ const TouchableMixin = {
         this.touchableHandlePress &&
           !this.props.disabled &&
           this.touchableHandlePress(evt);
+      } else if (evt.eventType === 'longSelect') {
+        this.touchableHandleLongPress &&
+          !this.props.disabled &&
+          this.touchableHandleLongPress();
       }
     });
   },
