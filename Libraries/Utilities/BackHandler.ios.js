@@ -68,12 +68,10 @@ if (Platform.isTV) {
   const _tvEventHandler = new TVEventHandler();
   const _backPressSubscriptions = new Set();
 
-  _tvEventHandler.enable(this, function(cmp, evt) {
+  _tvEventHandler.enable(this, function (cmp, evt) {
     if (evt && evt.eventType === 'menu') {
       let invokeDefault = true;
-      const subscriptions = Array.from(
-        _backPressSubscriptions.values(),
-      ).reverse();
+      const subscriptions = Array.from(_backPressSubscriptions.values());
 
       for (let i = 0; i < subscriptions.length; ++i) {
         if (subscriptions[i]()) {
@@ -91,7 +89,7 @@ if (Platform.isTV) {
   BackHandler = {
     exitApp: emptyFunction,
 
-    addEventListener: function(
+    addEventListener: function (
       eventName: BackPressEventName,
       handler: () => ?boolean,
     ): {remove: () => void, ...} {
@@ -101,7 +99,7 @@ if (Platform.isTV) {
       };
     },
 
-    removeEventListener: function(
+    removeEventListener: function (
       eventName: BackPressEventName,
       handler: () => ?boolean,
     ): void {
