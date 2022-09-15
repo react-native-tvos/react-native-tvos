@@ -404,7 +404,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				68CD48B71D2BCB2C007E06A9 /* Build JS Bundle */,
 				5CF0FD27207FC6EC00C13D65 /* Start Metro */,
-				FA8D4E92C71D381C484B8772 /* [CP] Copy Pods Resources */,
+				D0D544135FC4EFAB2186DCE7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -419,7 +419,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7DB20A622B2BA84005AC45F /* Build configuration list for PBXNativeTarget "RNTesterUnitTests" */;
 			buildPhases = (
-				A2FBDDDD0C26B4EFA3726B6C /* [CP] Check Pods Manifest.lock */,
+				90426036ADF7539282B540B4 /* [CP] Check Pods Manifest.lock */,
 				E7DB209B22B2BA84005AC45F /* Sources */,
 				E7DB209C22B2BA84005AC45F /* Frameworks */,
 				E7DB209D22B2BA84005AC45F /* Resources */,
@@ -589,7 +589,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\nexport PROJECT_ROOT=\"$SRCROOT/../../\"\nexport ENTRY_FILE=\"$SRCROOT/js/RNTesterApp.ios.js\"\nexport SOURCEMAP_FILE=../sourcemap.ios.map\n# export FORCE_BUNDLING=true\n\"$SRCROOT/../../scripts/react-native-xcode.sh\"\n";
 		};
-		A2FBDDDD0C26B4EFA3726B6C /* [CP] Check Pods Manifest.lock */ = {
+		90426036ADF7539282B540B4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -650,7 +650,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTesterUnitTests/Pods-RNTesterUnitTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA8D4E92C71D381C484B8772 /* [CP] Copy Pods Resources */ = {
+		D0D544135FC4EFAB2186DCE7 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -893,6 +893,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../..";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 11.0;
 				WARNING_CFLAGS = (
@@ -969,6 +970,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../..";
 				SDKROOT = iphoneos;
 				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VALIDATE_PRODUCT = YES;

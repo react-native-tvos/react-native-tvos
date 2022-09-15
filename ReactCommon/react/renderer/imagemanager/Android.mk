@@ -13,7 +13,7 @@ LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/*.cpp $(LOCAL_PATH)/platform/cxx/rea
 LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,,$(LOCAL_SRC_FILES))
 
 LOCAL_SHARED_LIBRARIES := \
-  libfolly_json \
+  libfolly_runtime \
   libreact_debug \
   libreact_render_core \
   libreact_render_debug \

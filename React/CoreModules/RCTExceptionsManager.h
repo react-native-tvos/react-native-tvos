@@ -6,7 +6,6 @@
  */
 
 #import <Foundation/Foundation.h>
-
 #import <React/RCTBridgeModule.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,10 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)handleSoftJSExceptionWithMessage:(nullable NSString *)message
                                    stack:(nullable NSArray *)stack
-                             exceptionId:(NSNumber *)exceptionId;
+                             exceptionId:(NSNumber *)exceptionId
+                         extraDataAsJSON:(nullable NSString *)extraDataAsJSON;
 - (void)handleFatalJSExceptionWithMessage:(nullable NSString *)message
                                     stack:(nullable NSArray *)stack
-                              exceptionId:(NSNumber *)exceptionId;
+                              exceptionId:(NSNumber *)exceptionId
+                          extraDataAsJSON:(nullable NSString *)extraDataAsJSON;
 
 @optional
 - (void)updateJSExceptionWithMessage:(nullable NSString *)message
@@ -37,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)reportFatalException:(nullable NSString *)message
                        stack:(nullable NSArray<NSDictionary *> *)stack
                  exceptionId:(double)exceptionId;
+- (void)reportEarlyJsException:(NSString *)errorMap;
 
 @property (nonatomic, weak) id<RCTExceptionsManagerDelegate> delegate;
 

@@ -19,10 +19,11 @@ const {shouldUseNativeDriver} = require('../NativeAnimatedHelper');
 
 import type {PlatformConfig} from '../AnimatedPlatformConfig';
 import type {AnimationConfig, EndCallback} from './Animation';
+import type {RgbaValue} from '../nodes/AnimatedColor';
 
 import AnimatedColor from '../nodes/AnimatedColor';
 
-export type TimingAnimationConfig = {
+export type TimingAnimationConfig = $ReadOnly<{
   ...AnimationConfig,
   toValue:
     | number
@@ -33,27 +34,21 @@ export type TimingAnimationConfig = {
         ...
       }
     | AnimatedValueXY
-    | {
-        r: number,
-        g: number,
-        b: number,
-        a: number,
-        ...
-      }
+    | RgbaValue
     | AnimatedColor
     | AnimatedInterpolation,
   easing?: (value: number) => number,
   duration?: number,
   delay?: number,
-};
+}>;
 
-export type TimingAnimationConfigSingle = {
+export type TimingAnimationConfigSingle = $ReadOnly<{
   ...AnimationConfig,
   toValue: number | AnimatedValue | AnimatedInterpolation,
   easing?: (value: number) => number,
   duration?: number,
   delay?: number,
-};
+}>;
 
 let _easeInOut;
 function easeInOut() {

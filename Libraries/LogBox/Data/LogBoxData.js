@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ * @flow strict
  * @format
  */
 
@@ -156,7 +156,7 @@ function appendNewLog(newLog) {
     // sybolication for up to a second before adding the log.
     const OPTIMISTIC_WAIT_TIME = 1000;
 
-    let addPendingLog = () => {
+    let addPendingLog: ?() => void = () => {
       logs.add(newLog);
       if (_selectedIndex < 0) {
         setSelectedLog(logs.size - 1);

@@ -29,7 +29,7 @@ import type {
 } from '../View/ViewAccessibility';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import usePressability from '../../Pressability/usePressability';
-import {normalizeRect, type RectOrSize} from '../../StyleSheet/Rect';
+import {type RectOrSize} from '../../StyleSheet/Rect';
 import type {
   LayoutEvent,
   MouseEvent,
@@ -68,6 +68,7 @@ type Props = $ReadOnly<{|
   accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,
   accessibilityElementsHidden?: ?boolean,
   accessibilityHint?: ?Stringish,
+  accessibilityLanguage?: ?Stringish,
   accessibilityIgnoresInvertColors?: ?boolean,
   accessibilityLabel?: ?Stringish,
   accessibilityLiveRegion?: ?('none' | 'polite' | 'assertive'),
@@ -210,6 +211,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     delayLongPress,
     disabled,
     focusable,
+    hitSlop,
     onHoverIn,
     onHoverOut,
     isTVSelectable,
@@ -240,8 +242,6 @@ function Pressable(props: Props, forwardedRef): React.Node {
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
 
   const [focused, setFocused] = useState(false);
-
-  const hitSlop = normalizeRect(props.hitSlop);
 
   const accessibilityState =
     disabled != null

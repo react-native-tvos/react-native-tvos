@@ -15,8 +15,6 @@ LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,,$(LOCAL_SRC_FILES))
 LOCAL_SHARED_LIBRARIES := \
   libfb \
   libfbjni \
-  libfolly_futures \
-  libfolly_json \
   libglog \
   libglog_init \
   libreact_debug \
