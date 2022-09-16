@@ -2,7 +2,7 @@
 
 Going forward, Apple TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.68.0-0 release of this package will be derived from the 0.68.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.69.5-0 release of this package will be derived from the 0.69.5 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -18,7 +18,7 @@ You cannot use this package and the core react-native package simultaneously in 
 
 ### React Native new architecture (Fabric) support
 
-Before creating a new project, or running `pod install` in an existing project using version 0.68.0-0 or higher, execute 
+Before creating a new project, or running `pod install` in an existing project using version 0.69.5-0 or higher, execute 
 
 ```sh
 export RCT_NEW_ARCH_ENABLED=1
@@ -214,7 +214,7 @@ class Game2048 extends React.Component {
 
 - _Known issues_:
 
-  - As of the 0.61.2-0 release, Fabric code does not compile or run.  Issue is under investigation.
+  - The Hermes engine has not yet been ported to Apple TV, so it should be disabled in application Podfiles targeting TV.
   - There are known issues with the TabBarIOS component, due to changes that Apple made in UITabBar for tvOS 13.
 
 
