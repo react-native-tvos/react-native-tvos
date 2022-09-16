@@ -63,13 +63,13 @@ using namespace facebook::react;
     _props = defaultProps;
     _reactSubviews = [NSMutableArray new];
 #if TARGET_OS_TV
-    _tvParallaxProperties.enabled = NO;
-    _tvParallaxProperties.shiftDistanceX = 0.0f;
-    _tvParallaxProperties.shiftDistanceY = 0.0f;
-    _tvParallaxProperties.tiltAngle = 0.0f;
-    _tvParallaxProperties.magnification = 0.0f;
-    _tvParallaxProperties.pressMagnification = 0.0f;
-    _tvParallaxProperties.pressDuration = 0.0f;
+    _tvParallaxProperties.enabled = YES;
+    _tvParallaxProperties.shiftDistanceX = 2.0f;
+    _tvParallaxProperties.shiftDistanceY = 2.0f;
+    _tvParallaxProperties.tiltAngle = 0.05f;
+    _tvParallaxProperties.magnification = 1.0f;
+    _tvParallaxProperties.pressMagnification = 1.0f;
+    _tvParallaxProperties.pressDuration = 0.3f;
     _tvParallaxProperties.pressDelay = 0.0f;
     self.focusGuide = [UIFocusGuide new];
     [self addLayoutGuide:self.focusGuide];
@@ -266,13 +266,20 @@ using namespace facebook::react;
   yTilt.maximumRelativeValue = [NSValue valueWithCATransform3D:transMaximumTiltAboutX];
 
   // Add all of the motion effects to this group
-  self.motionEffects = @[ xShift, yShift, xTilt, yTilt ];
+  //self.motionEffects = @[ xShift, yShift, xTilt, yTilt ];
+
+  // In Fabric, the tilt motion transforms conflict with other CATransform3D transforms
+  // being applied elsewhere in the framework. We are disabling them for now until
+  // a better solution is found.
+  self.motionEffects = @[ xShift, yShift ];
 
   float magnification = _tvParallaxProperties.magnification;
 
-  [UIView animateWithDuration:0.2 animations:^{
-    self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
-  }];
+  if (magnification != 1.0) {
+    [UIView animateWithDuration:0.2 animations:^{
+      self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
+    }];
+  }
 
   _motionEffectsAdded = YES;
 }
@@ -286,7 +293,7 @@ using namespace facebook::react;
   [UIView animateWithDuration:0.2 animations:^{
     float magnification = self->_tvParallaxProperties.magnification;
     BOOL enabled = self->_tvParallaxProperties.enabled;
-    if (enabled && magnification) {
+    if (enabled && magnification != 0.0 && magnification != 1.0) {
       self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
     }
   }];
