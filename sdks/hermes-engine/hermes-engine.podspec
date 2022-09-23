@@ -12,7 +12,8 @@ import_hermesc_file=File.join(__dir__, "..", "hermesc", "osx-bin", "ImportHermes
 # package.json
 package_file = File.join(__dir__, "..", "..", "package.json")
 package = JSON.parse(File.read(package_file))
-version = package['version']
+# Use the RN core Hermes engine (remove extra TV version)
+version = package['version'].split("-")[0]
 
 # We need to check the current git branch/remote to verify if
 # we're on a React Native release branch to actually build Hermes.
