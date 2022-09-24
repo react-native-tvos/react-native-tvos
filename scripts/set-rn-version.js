@@ -129,7 +129,8 @@ if (
 }
 
 // Change react-native version in the template's package.json
-exec(`node scripts/set-rn-template-version.js ${version}`);
+//exec(`node scripts/set-rn-template-version.js ${version}`);
+exec(`node scripts/set-rn-template-version.js npm:react-native-tvos@${version}`);
 
 // Make sure to update ruby version
 if (exec('scripts/update-ruby.sh').code) {
