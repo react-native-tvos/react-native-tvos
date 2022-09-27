@@ -38,6 +38,8 @@ declare module 'react-native' {
     disableTVMenuKey(): void;
     enableTVPanGesture(): void;
     disableTVPanGesture(): void;
+    enableGestureHandlersCancelTouches(): void;
+    disableGestureHandlersCancelTouches(): void;
   };
 
   export type HWEvent = {

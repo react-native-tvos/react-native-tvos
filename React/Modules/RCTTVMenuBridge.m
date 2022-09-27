@@ -36,4 +36,14 @@ RCT_EXPORT_METHOD(disableTVPanGesture)
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisablePanGestureNotification object:nil];
 }
 
+RCT_EXPORT_METHOD(enableGestureHandlersCancelTouches) {
+  [RCTTVRemoteHandler setGestureHandlersCancelTouches:YES];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableGestureHandlersCancelTouchesNotification object:nil];
+}
+
+RCT_EXPORT_METHOD(disableGestureHandlersCancelTouches) {
+  [RCTTVRemoteHandler setGestureHandlersCancelTouches:NO];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableGestureHandlersCancelTouchesNotification object:nil];
+}
+
 @end
