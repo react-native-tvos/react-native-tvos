@@ -405,6 +405,7 @@ static __volatile BOOL __usePanGesture = NO;
 {
   UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.allowedPressTypes = @[ @(pressType) ];
+  recognizer.cancelsTouchesInView = NO;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
@@ -413,6 +414,7 @@ static __volatile BOOL __usePanGesture = NO;
 {
   UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.allowedPressTypes = @[ @(pressType) ];
+  recognizer.cancelsTouchesInView = NO;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
@@ -423,6 +425,7 @@ static __volatile BOOL __usePanGesture = NO;
 {
   UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
   recognizer.direction = direction;
+  recognizer.cancelsTouchesInView = NO;
 
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
