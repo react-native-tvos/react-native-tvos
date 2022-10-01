@@ -22,4 +22,10 @@ module.exports = {
   disableTVPanGesture: () => {
     TVMenuBridge && TVMenuBridge.disableTVPanGesture();
   },
+  enableGestureHandlersCancelTouches: () => {
+    TVMenuBridge && TVMenuBridge.enableGestureHandlersCancelTouches();
+  },
+  disableGestureHandlersCancelTouches: () => {
+    TVMenuBridge && TVMenuBridge.disableGestureHandlersCancelTouches();
+  },
 };
