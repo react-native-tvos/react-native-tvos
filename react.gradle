@@ -123,15 +123,6 @@ def getHermesCommand = {
         return prebuiltHermes.getAbsolutePath()
     }
 
-    // 4. If the above fails, use hermesc from hermes-engine dependency
-    def hermesEnginePath = "node_modules/hermes-engine/%OS-BIN%/hermesc"
-        .replaceAll("%OS-BIN%", getHermesOSBin())
-        .replace('/' as char, File.separatorChar);
-    def hermesEngineHermes = new File(reactRoot, hermesEnginePath)
-    if (hermesEngineHermes.exists()) {
-        return hermesEngineHermes.getAbsolutePath()
-    }
-
     throw new Exception("Couldn't determine Hermesc location. " +
         "Please set `project.ext.react.hermesCommand` to the path of the hermesc binary file. " +
         "node_modules/react-native/sdks/hermesc/%OS-BIN%/hermesc");
