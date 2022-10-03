@@ -21,12 +21,19 @@ const {cat, echo, exec, exit, sed} = require('shelljs');
 const yargs = require('yargs');
 const {parseVersion} = require('./version-utils');
 
-let argv = yargs.option('v', {
-  alias: 'to-version',
-  type: 'string',
-}).argv;
+let argv = yargs
+  .option('c', {
+    alias: 'commit',
+    type: 'boolean',
+    default: false,
+  })
+  .option('v', {
+    alias: 'to-version',
+    type: 'string',
+  }).argv;
 
 const version = argv.toVersion;
+const commit = argv.commit || false;
 
 if (!version) {
   echo('You must specify a version using -v');
@@ -113,6 +120,10 @@ packageJson.dependencies = {
   ...packageJson.dependencies,
   'react-native-codegen': repoConfigJson.dependencies['react-native-codegen'],
 };
+// Add react-native-core dependency
+const coreVersion = version.split('-')[0];
+packageJson.devDependencies['react-native-core'] = `npm:react-native@${coreVersion}`;
+
 fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2), 'utf-8');
 
 // Change ReactAndroid/gradle.properties
@@ -130,7 +141,7 @@ if (
 
 // Change react-native version in the template's package.json
 //exec(`node scripts/set-rn-template-version.js ${version}`);
-exec(`node scripts/set-rn-template-version.js npm:react-native-tvos@${version}`);
+exec(`node scripts/set-rn-template-version.js ${version}`);
 
 // Make sure to update ruby version
 if (exec('scripts/update-ruby.sh').code) {
@@ -159,6 +170,20 @@ if (+numberOfChangedLinesWithNewVersion !== filesToValidate.length) {
   );
   echo('Fix the issue and try again');
   exit(1);
+}
+
+if (commit) {
+  const filesToCommit = [
+    'Libraries/Core/ReactNativeVersion.js',
+    'React/Base/RCTVersion.m',
+    'ReactAndroid/gradle.properties',
+    'ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/ReactNativeVersion.java',
+    'ReactCommon/cxxreact/ReactNativeVersion.h',
+    'package.json',
+    'template/package.json',
+  ];
+  exec(`git add ${filesToCommit.join(' ')}`);
+  exec(`git commit -m "Bump version number (${version})"`);
 }
 
 exit(0);
