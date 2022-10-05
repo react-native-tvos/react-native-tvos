@@ -86,6 +86,7 @@ public class ReactViewGroup extends ViewGroup
   private static final Rect windowRectBuffer = new Rect();
 
   private static boolean androidVisibleFocusOnly = true;
+  private boolean programmaticRequestFocus = true;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1027,9 +1028,13 @@ public class ReactViewGroup extends ViewGroup
     ReactViewGroup.androidVisibleFocusOnly = androidVisibleFocusOnly;
   }
 
+  public void setProgrammaticRequestFocus(boolean pRF) {
+    this.programmaticRequestFocus = pRF;
+  }
+
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (ReactViewGroup.androidVisibleFocusOnly) {
+    if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
       if (!isShown()) {
         Log.v("RVG", "no focus for invisible views");
         return false;
@@ -1043,7 +1048,7 @@ public class ReactViewGroup extends ViewGroup
         + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
       );
       if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
-        Log.v("RVG", "no focus for item outside of window");
+        Log.v("RVG", "no focus for item outside of window " + direction);
         return false;
       }
     }

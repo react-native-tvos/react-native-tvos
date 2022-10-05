@@ -63,7 +63,9 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     if (hasTVPreferredFocus) {
       view.setFocusable(true);
       view.setFocusableInTouchMode(true);
+      view.setProgrammaticRequestFocus(true);
       view.requestFocus();
+      view.setProgrammaticRequestFocus(false);
     }
   }
 
