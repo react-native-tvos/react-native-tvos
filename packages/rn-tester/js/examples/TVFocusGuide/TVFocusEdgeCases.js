@@ -104,6 +104,16 @@ const ShowTextRef = ({nameRef}) => {
 
 const TVFocusGuideEdgeCases = () => {
   const focusedNameRef = useRef('no focus');
+  const [delayedFocus, setDelayedFocus] = useState(0);
+  const focusCount = useRef(0);
+  useEffect(() => {
+    const i = setInterval(() => {
+      focusCount.current = focusCount.current + 1;
+      setDelayedFocus(focusCount.current);
+    }, 3000);
+    return () => clearInterval(i);
+  }, []);
+
   const setFocusedName = name => {
     focusedNameRef.current = name;
   };
@@ -120,14 +130,15 @@ const TVFocusGuideEdgeCases = () => {
     <>
       <Button
         style={styles.barelyVisibleTop}
-        text="Button barely visible top"
+        text="Button barely visible top [2]"
+        hasTVPreferredFocus={delayedFocus === 2}
         onFocus={setFocusedName}
       />
       <Button
         style={styles.exampleButton}
-        text="Button before"
+        text="Button before [1]"
         onFocus={setFocusedName}
-        hasTVPreferredFocus={true}
+        hasTVPreferredFocus={delayedFocus === 1}
       />
       <Button
         style={styles.barelyVisibleLeft}
@@ -136,19 +147,25 @@ const TVFocusGuideEdgeCases = () => {
       />
       <Button
         style={styles.outOfScreenLeft}
-        text="Button out of screen visible left"
+        text="Button out of screen visible left [3]"
+        hasTVPreferredFocus={delayedFocus === 3}
         onFocus={setFocusedName}
       />
       <Button
         style={styles.outOfScreenRight}
-        text="Button out of screen visible right"
+        text="Button out of screen visible right [4]"
+        hasTVPreferredFocus={delayedFocus === 4}
         onFocus={setFocusedName}
       />
+      <View>
+        <Text>Delayed focus: {'' + delayedFocus}</Text>
+      </View>
       <ShowTextRef nameRef={focusedNameRef} />
       <Button
         style={styles.exampleButton}
-        text="Button after"
+        text="Button after [5]"
         onFocus={setFocusedName}
+        hasTVPreferredFocus={delayedFocus === 5}
       />
     </>
   );
