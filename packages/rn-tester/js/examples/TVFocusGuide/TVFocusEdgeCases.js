@@ -16,14 +16,8 @@ const React = require('react');
 const ReactNative = require('react-native');
 
 const {useRef, useState, useEffect} = React;
-const {
-  Platform,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  TVFocusGuideView,
-  findNodeHandle,
-} = ReactNative;
+const {Platform, View, StyleSheet, TouchableOpacity, findNodeHandle} =
+  ReactNative;
 
 const RNText = ReactNative.Text;
 
@@ -43,7 +37,9 @@ exports.examples = [
 const Text = ({style, children, tvHiddenFromFocus}) => {
   const theme = useRNTesterTheme();
   return (
-    <RNText style={[styles.text, {color: theme.LabelColor}, style]} tvHiddenFromFocus={tvHiddenFromFocus}>
+    <RNText
+      style={[styles.text, {color: theme.LabelColor}, style]}
+      tvHiddenFromFocus={tvHiddenFromFocus}>
       {children}
     </RNText>
   );
@@ -54,8 +50,8 @@ const Button = ({
   style,
   pressedItemId,
   onPress,
-  triggerOnPressOnMount,
-                  hasTVPreferredFocus,
+  hasTVPreferredFocus,
+  onFocus,
 }) => {
   const [focused, setFocused] = useState(false);
   const ref = useRef(null);
@@ -65,11 +61,6 @@ const Button = ({
       onPress(findNodeHandle(ref.current));
     }
   };
-  useEffect(() => {
-    if (triggerOnPressOnMount) {
-      handleOnPress();
-    }
-  }, []);
   return (
     <TouchableOpacity
       ref={ref}
@@ -79,14 +70,14 @@ const Button = ({
       ]}
       onFocus={() => {
         setFocused(true);
+        onFocus(text);
       }}
       onBlur={() => {
         setFocused(false);
       }}
       onPress={handleOnPress}
       activeOpacity={0.7}
-      hasTVPreferredFocus={hasTVPreferredFocus}
-    >
+      hasTVPreferredFocus={hasTVPreferredFocus}>
       <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
         {text}
       </Text>
@@ -94,66 +85,28 @@ const Button = ({
   );
 };
 
-const Example = ({description, focusGuideStyle, safePadding}) => {
-  const [enabled, setEnabled] = useState(false);
-
-  const [destinations, setDestinations] = useState([]);
-  const destination = destinations[0];
-
-  const onItemPressed = target => {
-    setDestinations([target]);
-    setEnabled(!enabled);
-  };
-
+const ShowTextRef = ({nameRef}) => {
+  const [date, setDate] = useState('--');
+  useEffect(() => {
+    const i = setInterval(() => {
+      setDate(new Date().toISOString());
+    }, 200);
+    return () => clearInterval(i);
+  }, []);
   return (
-    <View style={styles.exampleContainer}>
-      <Text style={styles.exampleDescription}>{description}</Text>
-      <View style={styles.exampleContent}>
-        <Button style={styles.exampleButton} text="Button 1" />
-        <TVFocusGuideView
-          style={[styles.exampleFocusGuide, focusGuideStyle]}
-          destinations={destinations}
-          safePadding={safePadding}>
-          <Button
-            style={styles.exampleButton}
-            text="Button 2"
-            onPress={onItemPressed}
-            pressedItemId={destination}
-          />
-          <Button
-            style={styles.exampleButton}
-            text="Button 3"
-            onPress={onItemPressed}
-            pressedItemId={destination}
-            triggerOnPressOnMount
-          />
-          <Button
-            style={styles.exampleButton}
-            text="Button 4"
-            onPress={onItemPressed}
-            pressedItemId={destination}
-          />
-          <Button
-            style={styles.exampleButton}
-            text="Button 5"
-            onPress={onItemPressed}
-            pressedItemId={destination}
-          />
-        </TVFocusGuideView>
-      </View>
+    <View>
+      <Text style={styles.title}>
+        Last onFocus: {nameRef.current} @{date}
+      </Text>
     </View>
   );
 };
 
 const TVFocusGuideEdgeCases = () => {
-  const theme = useRNTesterTheme();
-
-  const [test, setTest] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setTest(true);
-    }, 2000);
-  }, []);
+  const focusedNameRef = useRef('no focus');
+  const setFocusedName = name => {
+    focusedNameRef.current = name;
+  };
 
   if (!Platform.isTV) {
     return (
@@ -163,26 +116,40 @@ const TVFocusGuideEdgeCases = () => {
     );
   }
 
-  const sectionStyle = [styles.section, {borderColor: theme.BorderColor}];
-
   return (
-  <>
-    <Button style={styles.exampleButton} text="Button before" />
-    <Button style={styles.barelyVisibleLeft} text="Button barely visible left" hasTVPreferredFocus={true}/>
-    <Button style={styles.barelyVisibleTop} text="Button barely visible top" />
-    <View style={sectionStyle} tvHiddenFromFocus={true}>
-      <Text style={styles.title}>
-         hidden from focus
-      </Text>
-      <Button style={styles.exampleButton} text="Button hiddenff" tvHiddenFromFocus={true}/>
-    </View>
-    <View style={sectionStyle} tvHiddenFromFocus={false}>
-      <Text style={styles.title}>
-        Hidden from focus
-      </Text>
-      <Button style={styles.exampleButton} text="Button !hiddenff" tvHiddenFromFocus={true}/>
-    </View>
-      <Button style={styles.exampleButton} text="Button after" />
+    <>
+      <Button
+        style={styles.barelyVisibleTop}
+        text="Button barely visible top"
+        onFocus={setFocusedName}
+      />
+      <Button
+        style={styles.exampleButton}
+        text="Button before"
+        onFocus={setFocusedName}
+        hasTVPreferredFocus={true}
+      />
+      <Button
+        style={styles.barelyVisibleLeft}
+        text="Button barely visible left"
+        onFocus={setFocusedName}
+      />
+      <Button
+        style={styles.outOfScreenLeft}
+        text="Button out of screen visible left"
+        onFocus={setFocusedName}
+      />
+      <Button
+        style={styles.outOfScreenRight}
+        text="Button out of screen visible right"
+        onFocus={setFocusedName}
+      />
+      <ShowTextRef nameRef={focusedNameRef} />
+      <Button
+        style={styles.exampleButton}
+        text="Button after"
+        onFocus={setFocusedName}
+      />
     </>
   );
 };
@@ -221,6 +188,12 @@ const styles = StyleSheet.create({
     top: 10,
     left: -100,
     width: 101,
+  },
+  barelyVisibleTop: {
+    position: 'absolute',
+    top: -100,
+    height: 50,
+    padding: 0,
   },
   section: {
     flex: 1,
