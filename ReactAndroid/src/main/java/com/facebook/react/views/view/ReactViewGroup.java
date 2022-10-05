@@ -86,7 +86,7 @@ public class ReactViewGroup extends ViewGroup
   private static final Rect windowRectBuffer = new Rect();
 
   private static boolean androidVisibleFocusOnly = true;
-  private boolean programmaticRequestFocus = true;
+  private boolean programmaticRequestFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
