@@ -261,14 +261,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     }
   }
 
-  @ReactProp(name = "tvFocusable")
-  public void setTvFocusable(final ReactViewGroup view, boolean focusable) {
-    setFocusable(view, focusable);
-    if (!focusable) {
-      view.setFocusable(false);
-    }
-  }
-
   @ReactProp(name = ViewProps.OVERFLOW)
   public void setOverflow(ReactViewGroup view, String overflow) {
     view.setOverflow(overflow);
