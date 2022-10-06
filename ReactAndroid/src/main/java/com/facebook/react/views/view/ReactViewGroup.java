@@ -20,6 +20,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,12 @@ public class ReactViewGroup extends ViewGroup
   /* should only be used in {@link #updateClippingToRect} */
   private static final Rect sHelperRect = new Rect();
   private @NonNull int[] focusDestinations = new int[0];
+  /* only used in {@link #requestFocus} */
+  private static final int[] locationBuffer = new int[2];
+  private static final Rect windowRectBuffer = new Rect();
+
+  private static boolean androidVisibleFocusOnly = true;
+  private boolean programmaticRequestFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1017,8 +1024,34 @@ public class ReactViewGroup extends ViewGroup
     return false;
   }
 
+  public static void setAndroidVisibleFocusOnly(boolean androidVisibleFocusOnly) {
+    ReactViewGroup.androidVisibleFocusOnly = androidVisibleFocusOnly;
+  }
+
+  public void setProgrammaticRequestFocus(boolean pRF) {
+    this.programmaticRequestFocus = pRF;
+  }
+
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+    if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
+      if (!isShown()) {
+        Log.v("RVG", "no focus for invisible views");
+        return false;
+      }
+      getLocationInWindow(locationBuffer);
+      getWindowVisibleDisplayFrame(windowRectBuffer);
+      int x = locationBuffer[0];
+      int y = locationBuffer[1];
+      Log.v("RVG", "requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
+        + " " + getWidth() + "x" + getHeight()
+        + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
+      );
+      if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
+        Log.v("RVG", "no focus for item outside of window " + direction);
+        return false;
+      }
+    }
     if (focusDestinations.length == 0) {
       return super.requestFocus(direction, previouslyFocusedRect);
     }
