@@ -163,10 +163,10 @@ const TVFocusGuideEdgeCases = () => {
         hasTVPreferredFocus={delayedFocus === 5}
         onFocus={setFocusedName}
       />
-      <View style={styles.transparentItem}>
+      <View style={(Math.floor(delayedFocus / 10) % 2) === 0 ? styles.transparentItem : {}}>
         <Button
           style={styles.exampleButton}
-          text="Button with transparent parent [6]"
+          text="Button with transparent parent (transparent every 10 seconds) [6]"
           hasTVPreferredFocus={delayedFocus === 6}
           onFocus={setFocusedName}
         />
