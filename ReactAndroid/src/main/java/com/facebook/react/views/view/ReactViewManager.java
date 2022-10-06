@@ -55,14 +55,13 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @ReactProp(name = "accessible")
   public void setAccessible(ReactViewGroup view, boolean accessible) {
-    view.setFocusable(accessible);
+    view.setRNAccessible(accessible);
   }
 
   @ReactProp(name = "hasTVPreferredFocus")
   public void setTVPreferredFocus(ReactViewGroup view, boolean hasTVPreferredFocus) {
+    view.setTVPreferredFocus(hasTVPreferredFocus);
     if (hasTVPreferredFocus) {
-      view.setFocusable(true);
-      view.setFocusableInTouchMode(true);
       view.setProgrammaticRequestFocus(true);
       view.requestFocus();
       view.setProgrammaticRequestFocus(false);
@@ -254,10 +253,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
                       UIManagerHelper.getSurfaceId(view.getContext()), view.getId()));
             }
           });
-
-      // Clickable elements are focusable. On API 26, this is taken care by setClickable.
-      // Explicitly calling setFocusable here for backward compatibility.
-      view.setFocusable(true /*isFocusable*/);
     } else {
       view.setOnClickListener(null);
       view.setClickable(false);
@@ -361,7 +356,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     root.drawableHotspotChanged(x, y);
   }
 
-
   @ReactProp(name = "destinations")
   public void setDestinations(final ReactViewGroup view, final ReadableArray destinations) {
     int[] fd = new int[destinations.size()];
@@ -370,5 +364,4 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     }
     view.setFocusDestinations(fd);
   }
-
 }

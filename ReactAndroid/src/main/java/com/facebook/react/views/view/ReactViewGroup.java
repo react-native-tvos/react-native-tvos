@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStructure;
 import android.view.animation.Animation;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,6 +86,8 @@ public class ReactViewGroup extends ViewGroup
 
   private static boolean androidVisibleFocusOnly = true;
   private boolean programmaticRequestFocus = false;
+  private boolean rnAccessible = true;
+  private boolean tvPreferredFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -775,6 +776,55 @@ public class ReactViewGroup extends ViewGroup
   }
 
   @Override
+  public void setAlpha(float alpha) {
+    super.setAlpha(alpha);
+    updateThisAndChildrenFocusability();
+  }
+
+  public void setRNAccessible(boolean accessible) {
+    this.rnAccessible = accessible;
+    updateThisAndChildrenFocusability();
+  }
+
+  public void setTVPreferredFocus(boolean hasTVPreferredFocus) {
+    this.tvPreferredFocus = hasTVPreferredFocus;
+    updateThisAndChildrenFocusability();
+    if (hasTVPreferredFocus) {
+      setFocusableInTouchMode(true);
+    }
+  }
+
+  public void updateThisAndChildrenFocusability() {
+    updateThisAndChildrenFocusability(getTotalAlpha());
+  }
+
+  private float getTotalAlpha() {
+    float alpha = 1;
+    View v = this;
+    for(;;) {
+      ViewParent parent = v.getParent();
+      if (parent instanceof View) {
+        v = (View) parent;
+        alpha *= v.getAlpha();
+      } else {
+        break;
+      }
+    }
+    return alpha;
+  }
+
+  public void updateThisAndChildrenFocusability(float parentAlpha) {
+    float alpha = parentAlpha * getAlpha();
+    setFocusable(this.tvPreferredFocus || (this.rnAccessible && alpha > 0.001));
+    for (int i = 0; i < getChildCount(); i++) {
+      View child = getChildAt(i);
+      if (child instanceof ReactViewGroup) {
+        ((ReactViewGroup) child).updateThisAndChildrenFocusability(parentAlpha);
+      }
+    }
+  }
+
+    @Override
   protected void dispatchDraw(Canvas canvas) {
     try {
       dispatchOverflowDraw(canvas);

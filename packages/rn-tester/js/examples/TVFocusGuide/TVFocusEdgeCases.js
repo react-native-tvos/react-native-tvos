@@ -110,7 +110,7 @@ const TVFocusGuideEdgeCases = () => {
     const i = setInterval(() => {
       focusCount.current = focusCount.current + 1;
       setDelayedFocus(focusCount.current);
-    }, 3000);
+    }, 2000);
     return () => clearInterval(i);
   }, []);
 
@@ -157,15 +157,29 @@ const TVFocusGuideEdgeCases = () => {
         hasTVPreferredFocus={delayedFocus === 4}
         onFocus={setFocusedName}
       />
+      <Button
+        style={styles.transparentItem}
+        text="Transparent button [5]"
+        hasTVPreferredFocus={delayedFocus === 5}
+        onFocus={setFocusedName}
+      />
+      <View style={styles.transparentItem}>
+        <Button
+          style={styles.exampleButton}
+          text="Button with transparent parent [6]"
+          hasTVPreferredFocus={delayedFocus === 6}
+          onFocus={setFocusedName}
+        />
+      </View>
       <View>
         <Text>Delayed focus: {'' + delayedFocus}</Text>
       </View>
       <ShowTextRef nameRef={focusedNameRef} />
       <Button
         style={styles.exampleButton}
-        text="Button after [5]"
+        text="Button after [7]"
         onFocus={setFocusedName}
-        hasTVPreferredFocus={delayedFocus === 5}
+        hasTVPreferredFocus={delayedFocus === 7}
       />
     </>
   );
@@ -211,6 +225,9 @@ const styles = StyleSheet.create({
     top: -100,
     height: 50,
     padding: 0,
+  },
+  transparentItem: {
+    opacity: 0,
   },
   section: {
     flex: 1,
