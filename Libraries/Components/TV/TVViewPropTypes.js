@@ -53,21 +53,21 @@ export type TVParallaxPropertiesType = $ReadOnly<{|
 |}>;
 
 /**
- * Additional View properties for Apple TV
+ * Additional View properties for Apple and Android TV
  */
 export type TVViewProps = $ReadOnly<{|
   /**
-   * *(Apple TV only)* When set to true, this view will be focusable
-   * and navigable using the Apple TV remote.
+   * When set to true, this view will be focusable
+   * and navigable using the TV remote.
    *
-   * @platform ios
+   * @platform ios, android
    */
   isTVSelectable?: boolean,
 
   /**
-   * *(Apple TV only)* May be set to true to force the Apple TV focus engine to move focus to this view.
+   * *(TV only)* May be set to true to force the TV focus engine to move focus to this view.
    *
-   * @platform ios
+   * @platform ios, android
    */
   hasTVPreferredFocus?: boolean,
 
