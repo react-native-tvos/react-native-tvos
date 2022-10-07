@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.facebook.react.views.view.ReactViewGroup;
+
+import java.util.ArrayList;
 
 /** Base Activity for React Native applications. */
 public abstract class ReactActivity extends AppCompatActivity
@@ -110,14 +113,34 @@ public abstract class ReactActivity extends AppCompatActivity
         return;
       }
       if (this.previousFocus != focused) {
+        highlightFocusables();
         this.previousFocus = focused;
         focusView.message = focused.toString();
-        focusView.alpha = 30;
+        focusView.alpha = 100;
       }
       focused.getGlobalVisibleRect(focusView.getRect());
       focusView.invalidate();
       if (focusView.alpha > 0) {
         focusView.alpha--;
+      }
+    }
+
+    private void highlightFocusables() {
+      focusView.focusableRects.clear();
+      highlightFocusables(findViewById(android.R.id.content).getRootView());
+    }
+
+    private void highlightFocusables(View view) {
+      if (view.isFocusable()) {
+        Rect r = new Rect();
+        view.getGlobalVisibleRect(r);
+        focusView.focusableRects.add(r);
+      }
+      if (view instanceof ViewGroup) {
+        int count = ((ViewGroup) view).getChildCount();
+        for (int i = 0; i < count; i++) {
+          highlightFocusables(((ViewGroup) view).getChildAt(i));
+        }
       }
     }
   };
@@ -209,10 +232,13 @@ public abstract class ReactActivity extends AppCompatActivity
     public int alpha;
     public String message = "";
     Paint paintFill = new Paint();
+    Paint paintFocusable = new Paint();
+    Paint paintFocusableAuto = new Paint();
     Paint paintBorder = new Paint();
     Paint paintOutOfScreen = new Paint();
     private Paint paintText = new Paint();
     Rect rect = new Rect(0,0,0,0);
+    ArrayList<Rect> focusableRects = new ArrayList<Rect>();
 
     public FocusView(Context context) {
       super(context);
@@ -227,10 +253,15 @@ public abstract class ReactActivity extends AppCompatActivity
       paintText.setStyle(Paint.Style.FILL);
       paintText.setTextSize(20);
       paintText.setTextAlign(Paint.Align.RIGHT);
+      paintFocusable.setStyle(Paint.Style.STROKE);
+      paintFocusable.setColor(Color.RED);
+      paintFocusable.setStrokeWidth(2);
+      paintFocusable.setPathEffect(new DashPathEffect(new float[] {2f,10f}, 0f));
     }
 
     public void onDraw(Canvas canvas) {
       super.onDraw(canvas);
+      drawRects(canvas, focusableRects, paintFocusable);
       paintFill.setAlpha(alpha);
       canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, paintFill);
       canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, paintBorder);
@@ -249,6 +280,15 @@ public abstract class ReactActivity extends AppCompatActivity
         canvas.drawRect(0, 0, w, 10, paintOutOfScreen);
       }
       canvas.drawText(message, w - 10, 30, paintText);
+    }
+
+    private void drawRects(Canvas canvas, ArrayList<Rect> rects, Paint paint) {
+      for (Rect focusableRect : rects) {
+        if (focusableRect == null) {
+          break;
+        }
+        canvas.drawRect(focusableRect, paint);
+      }
     }
 
     public Rect getRect() {
