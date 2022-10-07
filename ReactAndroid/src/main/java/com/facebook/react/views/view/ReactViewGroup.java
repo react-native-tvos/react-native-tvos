@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
+import com.facebook.react.R;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactNoCrashSoftException;
 import com.facebook.react.bridge.ReactSoftExceptionLogger;
@@ -86,8 +87,9 @@ public class ReactViewGroup extends ViewGroup
 
   private static boolean androidVisibleFocusOnly = true;
   private boolean programmaticRequestFocus = false;
-  private boolean rnAccessible = true;
+  private boolean rnAccessible = false;
   private boolean tvPreferredFocus = false;
+  private boolean tvSelectable = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -794,6 +796,10 @@ public class ReactViewGroup extends ViewGroup
     }
   }
 
+  public void setTVSelectable(boolean tvSelectable) {
+    this.tvSelectable = tvSelectable;
+  }
+
   public void updateThisAndChildrenFocusability() {
     updateThisAndChildrenFocusability(getTotalAlpha());
   }
@@ -815,7 +821,11 @@ public class ReactViewGroup extends ViewGroup
 
   public void updateThisAndChildrenFocusability(float parentAlpha) {
     float alpha = parentAlpha * getAlpha();
-    setFocusable(this.tvPreferredFocus || (this.rnAccessible && alpha > 0.001));
+    setFocusable(
+      ((this.tvSelectable || this.hasOnClickListeners()) && ((alpha > 0.001) || this.tvPreferredFocus))
+      || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
+      || this.focusDestinations.length > 0
+    );
     for (int i = 0; i < getChildCount(); i++) {
       View child = getChildAt(i);
       if (child instanceof ReactViewGroup) {
@@ -1123,5 +1133,6 @@ public class ReactViewGroup extends ViewGroup
 
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
     this.focusDestinations = focusDestinations;
+    updateThisAndChildrenFocusability();
   }
 }
