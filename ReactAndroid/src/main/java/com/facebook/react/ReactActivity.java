@@ -51,7 +51,7 @@ public abstract class ReactActivity extends AppCompatActivity
   }
 
   private Handler debugHandler;
-  private static int focusMonitorInterval = 50;
+  private static int focusMonitorInterval = 500;
   private FocusView focusView;
 
   /** Called at construction time, override if you have a custom delegate implementation. */
@@ -116,7 +116,7 @@ public abstract class ReactActivity extends AppCompatActivity
         highlightFocusables();
         this.previousFocus = focused;
         focusView.message = focused.toString();
-        focusView.alpha = 100;
+        focusView.alpha = 10;
       }
       focused.getGlobalVisibleRect(focusView.getRect());
       focusView.invalidate();
@@ -242,6 +242,9 @@ public abstract class ReactActivity extends AppCompatActivity
 
     public FocusView(Context context) {
       super(context);
+      if (!isInEditMode()) {
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+      }
       paintFill.setStyle(Paint.Style.FILL);
       paintFill.setColor(Color.GREEN);
       paintBorder.setStyle(Paint.Style.STROKE);
