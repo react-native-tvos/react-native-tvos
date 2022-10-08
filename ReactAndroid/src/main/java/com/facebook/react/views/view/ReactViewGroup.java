@@ -90,6 +90,7 @@ public class ReactViewGroup extends ViewGroup
   private boolean rnAccessible = false;
   private boolean tvPreferredFocus = false;
   private boolean tvSelectable = false;
+  private boolean inRequestFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1108,45 +1109,55 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
-      if (!isShown()) {
-        Log.v("RVG", "no focus for invisible views");
-        return false;
-      }
-      getLocationInWindow(locationBuffer);
-      getWindowVisibleDisplayFrame(windowRectBuffer);
-      int x = locationBuffer[0];
-      int y = locationBuffer[1];
-      Log.v("RVG", "requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
-        + " " + getWidth() + "x" + getHeight()
-        + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
-      );
-      if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
-        Log.v("RVG", "no focus for item outside of window " + direction);
-        return false;
-      }
-    }
-    if (this.focusDestinations.length == 1 && this.focusDestinations[0] == -1) {
+    if (this.inRequestFocus) {
+      Log.v("RVG", "requestFocus self from another requestFocus " + toString());
+      // Prevent infinite loop
       return false;
     }
+    this.inRequestFocus = true;
+    try {
+      if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
+        if (!isShown()) {
+          Log.v("RVG", "no focus for invisible views " + toString());
+          return false;
+        }
+        getLocationInWindow(locationBuffer);
+        getWindowVisibleDisplayFrame(windowRectBuffer);
+        int x = locationBuffer[0];
+        int y = locationBuffer[1];
+        Log.v("RVG", "requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
+          + " " + getWidth() + "x" + getHeight()
+          + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
+        );
+        if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
+          Log.v("RVG", "no focus for item outside of window (direction:" + direction + ")" + toString());
+          return false;
+        }
+      }
+      if (this.focusDestinations.length == 1 && this.focusDestinations[0] == -1) {
+        return false;
+      }
 
-    if (focusDestinations.length == 0) {
-      return super.requestFocus(direction, previouslyFocusedRect);
-    }
+      if (focusDestinations.length == 0) {
+        return super.requestFocus(direction, previouslyFocusedRect);
+      }
 
-    View destination = findDestinationView();
+      View destination = findDestinationView();
 
-    if (destination != null && requestFocusViewOrAncestor(destination)) {
-      return true;
-    }
-
-    for (int i = 0; i < getChildCount(); i++) {
-      if (getChildAt(i).requestFocus()) {
+      if (destination != null && requestFocusViewOrAncestor(destination)) {
         return true;
       }
-    }
 
-    return false;
+      for (int i = 0; i < getChildCount(); i++) {
+        if (getChildAt(i).requestFocus()) {
+          return true;
+        }
+      }
+
+      return false;
+    } finally {
+      this.inRequestFocus = false;
+    }
   }
 
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
