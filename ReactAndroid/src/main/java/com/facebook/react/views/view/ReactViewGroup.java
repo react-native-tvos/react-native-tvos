@@ -785,23 +785,32 @@ public class ReactViewGroup extends ViewGroup
 
   public void setRNAccessible(boolean accessible) {
     this.rnAccessible = accessible;
-    updateThisAndChildrenFocusability();
+    updateFocusability();
   }
 
   public void setTVPreferredFocus(boolean hasTVPreferredFocus) {
     this.tvPreferredFocus = hasTVPreferredFocus;
-    updateThisAndChildrenFocusability();
+    updateFocusability();
     if (hasTVPreferredFocus) {
       setFocusableInTouchMode(true);
     }
   }
 
+  public boolean isTvPreferredFocus() {
+    return tvPreferredFocus;
+  }
+
   public void setTVSelectable(boolean tvSelectable) {
     this.tvSelectable = tvSelectable;
+    updateFocusability();
   }
 
   public void updateThisAndChildrenFocusability() {
     updateThisAndChildrenFocusability(getTotalAlpha());
+  }
+
+  public void updateFocusability() {
+    updateFocusability(getTotalAlpha());
   }
 
   private float getTotalAlpha() {
@@ -820,21 +829,26 @@ public class ReactViewGroup extends ViewGroup
   }
 
   public void updateThisAndChildrenFocusability(float parentAlpha) {
+    float alpha = updateFocusability(parentAlpha);
+    for (int i = 0; i < getChildCount(); i++) {
+      View child = getChildAt(i);
+      if (child instanceof ReactViewGroup) {
+        ((ReactViewGroup) child).updateThisAndChildrenFocusability(alpha);
+      }
+    }
+  }
+
+  public float updateFocusability(float parentAlpha) {
     float alpha = parentAlpha * getAlpha();
     setFocusable(
       ((this.tvSelectable || this.hasOnClickListeners()) && ((alpha > 0.001) || this.tvPreferredFocus))
       || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
       || this.focusDestinations.length > 0
     );
-    for (int i = 0; i < getChildCount(); i++) {
-      View child = getChildAt(i);
-      if (child instanceof ReactViewGroup) {
-        ((ReactViewGroup) child).updateThisAndChildrenFocusability(parentAlpha);
-      }
-    }
+    return alpha;
   }
 
-    @Override
+  @Override
   protected void dispatchDraw(Canvas canvas) {
     try {
       dispatchOverflowDraw(canvas);

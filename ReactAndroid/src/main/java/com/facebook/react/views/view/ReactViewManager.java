@@ -10,6 +10,7 @@ package com.facebook.react.views.view;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,8 +61,10 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @ReactProp(name = "hasTVPreferredFocus")
   public void setTVPreferredFocus(ReactViewGroup view, boolean hasTVPreferredFocus) {
+    boolean wasPreferredFocus = view.isTvPreferredFocus();
     view.setTVPreferredFocus(hasTVPreferredFocus);
-    if (hasTVPreferredFocus) {
+    Log.v("RVM", "hasTVPreferredFocus " + hasTVPreferredFocus + " was " + wasPreferredFocus);
+    if (hasTVPreferredFocus && !wasPreferredFocus) {
       view.setProgrammaticRequestFocus(true);
       view.requestFocus();
       view.setProgrammaticRequestFocus(false);
@@ -259,10 +262,12 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       // Don't set view.setFocusable(false) because we might still want it to be focusable for
       // accessibility reasons
     }
+    view.updateFocusability();
   }
 
   @ReactProp(name = "isTVSelectable")
   public void setIsTVSelectable(final ReactViewGroup view, boolean focusable) {
+    Log.v("RVM", "isTVSelectable " + focusable);
     view.setTVSelectable(focusable);
   }
 
