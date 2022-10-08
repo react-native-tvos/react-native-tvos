@@ -27,6 +27,10 @@ type TVFocusGuideViewProps = $ReadOnly<{
    * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
    */
   safePadding?: 'vertical' | 'horizontal' | 'both' | null,
+  /**
+   * Android only: when set the view will consume the focus event so that focus does not move.
+   */
+  consumeFocus?: boolean,
 }>;
 
 const TVFocusGuideView = (props: TVFocusGuideViewProps): React.Node => {
@@ -92,7 +96,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
-  const nativeDestinations = React.useMemo(
+  const nativeDestinations = props.consumeFocus ? [-1] : React.useMemo(
     () =>
       (props.destinations || [])
         .map(d => ReactNative.findNodeHandle(d))

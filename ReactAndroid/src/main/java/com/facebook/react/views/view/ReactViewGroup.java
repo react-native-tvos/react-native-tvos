@@ -1126,6 +1126,10 @@ public class ReactViewGroup extends ViewGroup
         return false;
       }
     }
+    if (this.focusDestinations.length == 1 && this.focusDestinations[0] == -1) {
+      return false;
+    }
+
     if (focusDestinations.length == 0) {
       return super.requestFocus(direction, previouslyFocusedRect);
     }

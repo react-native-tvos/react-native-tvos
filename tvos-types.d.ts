@@ -70,6 +70,10 @@ declare module 'react-native' {
      * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
      */
     safePadding?: 'both' | 'vertical' | 'horizontal' | null;
+    /**
+     * Android only: when set the view will consume the focus event so that focus does not move.
+     */
+    consumeFocus: boolean;
   }
 
   /**

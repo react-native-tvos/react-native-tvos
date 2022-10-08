@@ -267,7 +267,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @ReactProp(name = "isTVSelectable")
   public void setIsTVSelectable(final ReactViewGroup view, boolean focusable) {
-    Log.v("RVM", "isTVSelectable " + focusable);
     view.setTVSelectable(focusable);
   }
 
