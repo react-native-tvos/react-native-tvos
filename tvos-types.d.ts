@@ -2,6 +2,13 @@ import React from 'react';
 import { ViewProps, ScrollViewProps } from 'react-native';
 
 declare module 'react-native' {
+  interface TouchableWithoutFeedbackProps {
+    /**
+     * TV Focus override.
+     */
+    isTVSelectable?: boolean,
+  }
+
   interface ViewProps {
   /**
    * TV next focus down (see documentation for the View component).
