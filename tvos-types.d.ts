@@ -29,6 +29,11 @@ declare module 'react-native' {
    * TV next focus up (see documentation for the View component).
    */
   nextFocusUp?: number,
+
+  /**
+   * TV Focus override.
+   */
+  isTVSelectable?: boolean,
   }
 
   export const useTVEventHandler: (handleEvent: (event: HWEvent) => void) => void;
@@ -73,7 +78,7 @@ declare module 'react-native' {
     /**
      * Android only: when set the view will consume the focus event so that focus does not move.
      */
-    consumeFocus: boolean;
+    consumeFocus?: boolean;
   }
 
   /**
