@@ -262,6 +262,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       // Don't set view.setFocusable(false) because we might still want it to be focusable for
       // accessibility reasons
     }
+    Log.v("RVG", "setFocusable: " + focusable + " " + " hasOnClick: " + view.hasOnClickListeners() + " " + toString());
     view.updateFocusability();
   }
 

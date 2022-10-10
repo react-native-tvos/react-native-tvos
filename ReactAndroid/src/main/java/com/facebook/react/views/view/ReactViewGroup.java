@@ -80,7 +80,8 @@ public class ReactViewGroup extends ViewGroup
   private final Rect mOverflowInset = new Rect();
   /* should only be used in {@link #updateClippingToRect} */
   private static final Rect sHelperRect = new Rect();
-  private @NonNull int[] focusDestinations = new int[0];
+  private @NonNull
+  int[] focusDestinations = new int[0];
   /* only used in {@link #requestFocus} */
   private static final int[] locationBuffer = new int[2];
   private static final Rect windowRectBuffer = new Rect();
@@ -817,7 +818,7 @@ public class ReactViewGroup extends ViewGroup
   private float getTotalAlpha() {
     float alpha = 1;
     View v = this;
-    for(;;) {
+    for (; ; ) {
       ViewParent parent = v.getParent();
       if (parent instanceof View) {
         v = (View) parent;
@@ -841,11 +842,19 @@ public class ReactViewGroup extends ViewGroup
 
   public float updateFocusability(float parentAlpha) {
     float alpha = parentAlpha * getAlpha();
-    setFocusable(
-      ((this.tvSelectable || this.hasOnClickListeners()) && ((alpha > 0.001) || this.tvPreferredFocus))
+    boolean focusable = ((this.tvSelectable || this.hasOnClickListeners()) && ((alpha > 0.001) || this.tvPreferredFocus))
       || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
-      || this.focusDestinations.length > 0
-    );
+      || this.focusDestinations.length > 0;
+    setFocusable(focusable);
+    Log.v("RVG",
+      focusable + " <- " + "tvSelectable: " + this.tvSelectable
+      + " hasOnClick: " + this.hasOnClickListeners()
+      + " alpha: " + alpha
+      + " tvPreferred: " + tvPreferredFocus
+      + " rnAccessible: " + this.rnAccessible
+      + " accessLabel: " + (this.getTag(R.id.accessibility_label) != null)
+      + " destinations: " + this.focusDestinations.length
+      + " " + toString());
     return alpha;
   }
 
