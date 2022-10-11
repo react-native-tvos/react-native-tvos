@@ -35,6 +35,8 @@ import {RNTesterThemeContext, themes} from './components/RNTesterTheme';
 import RNTTitleBar from './components/RNTTitleBar';
 import {RNTesterEmptyBookmarksState} from './components/RNTesterEmptyBookmarksState';
 
+const ReactNative = require('react-native');
+
 const APP_STATE_KEY = 'RNTesterAppState.v3';
 
 // RNTester App currently uses AsyncStorage from react-native for storing navigation state
@@ -58,6 +60,10 @@ const RNTesterApp = (): React.Node => {
     bookmarks,
     recentlyUsed,
   } = state;
+
+  const {FocusModule} = ReactNative.NativeModules;
+  FocusModule.setDebugger(true);
+  FocusModule.setLog(true);
 
   React.useEffect(() => {
     getInitialStateFromAsyncStorage(APP_STATE_KEY).then(

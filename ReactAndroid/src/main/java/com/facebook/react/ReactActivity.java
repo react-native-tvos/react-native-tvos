@@ -7,8 +7,10 @@
 
 package com.facebook.react;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,19 +26,21 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 import com.facebook.react.views.view.ReactViewGroup;
 
 import java.util.ArrayList;
+import com.facebook.react.modules.focus.FocusModule;
 
 /** Base Activity for React Native applications. */
 public abstract class ReactActivity extends AppCompatActivity
     implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
   private final ReactActivityDelegate mDelegate;
-  private boolean monitorFocus = true;
 
   protected ReactActivity() {
     mDelegate = createReactActivityDelegate();
@@ -77,9 +81,23 @@ public abstract class ReactActivity extends AppCompatActivity
   protected void onResume() {
     super.onResume();
     mDelegate.onResume();
-    if (monitorFocus)
+    if (FocusModule.enabled) {
       startFocusMonitor();
+    }
+    LocalBroadcastManager.getInstance(this).registerReceiver(mNotificationReceiver, new IntentFilter(FocusModule.ON_CHANGE));
   }
+
+
+  private BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      if (FocusModule.enabled) {
+        startFocusMonitor();
+      } else {
+        stopFocusMonitor();
+      }
+    }
+  };
 
   private void startFocusMonitor() {
     focusMonitor.run();
@@ -97,6 +115,7 @@ public abstract class ReactActivity extends AppCompatActivity
       try {
         highlightFocus();
       } finally {
+        debugHandler.removeCallbacks(focusMonitor);
         debugHandler.postDelayed(focusMonitor, focusMonitorInterval);
       }
     }

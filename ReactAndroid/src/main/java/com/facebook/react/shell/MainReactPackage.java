@@ -56,6 +56,7 @@ import com.facebook.react.views.text.frescosupport.FrescoBasedReactTextInlineIma
 import com.facebook.react.views.textinput.ReactTextInputManager;
 import com.facebook.react.views.unimplementedview.ReactUnimplementedViewManager;
 import com.facebook.react.views.view.ReactViewManager;
+import com.facebook.react.modules.focus.FocusModule;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +87,7 @@ import java.util.Map;
       ToastModule.class,
       VibrationModule.class,
       WebSocketModule.class,
+      FocusModule.class,
     })
 public class MainReactPackage extends TurboReactPackage {
 
@@ -145,6 +147,8 @@ public class MainReactPackage extends TurboReactPackage {
         return new VibrationModule(context);
       case WebSocketModule.NAME:
         return new WebSocketModule(context);
+      case FocusModule.NAME:
+        return new FocusModule(context);
       default:
         return null;
     }
@@ -209,7 +213,8 @@ public class MainReactPackage extends TurboReactPackage {
             SoundManagerModule.class,
             ToastModule.class,
             VibrationModule.class,
-            WebSocketModule.class
+            WebSocketModule.class,
+            FocusModule.class,
           };
 
       final Map<String, ReactModuleInfo> reactModuleInfoMap = new HashMap<>();

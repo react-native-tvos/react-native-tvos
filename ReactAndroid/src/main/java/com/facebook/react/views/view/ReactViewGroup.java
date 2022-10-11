@@ -60,6 +60,7 @@ import com.facebook.react.uimanager.ViewProps;
 import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.yoga.YogaConstants;
+import com.facebook.react.modules.focus.FocusModule;
 
 /**
  * Backing for a React View. Has support for borders, but since borders aren't common, lazy
@@ -846,15 +847,17 @@ public class ReactViewGroup extends ViewGroup
       || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
       || this.focusDestinations.length > 0;
     setFocusable(focusable);
-    Log.v("RVG",
-      focusable + " <- " + "tvSelectable: " + this.tvSelectable
-      + " hasOnClick: " + this.hasOnClickListeners()
-      + " alpha: " + alpha
-      + " tvPreferred: " + tvPreferredFocus
-      + " rnAccessible: " + this.rnAccessible
-      + " accessLabel: " + (this.getTag(R.id.accessibility_label) != null)
-      + " destinations: " + this.focusDestinations.length
-      + " " + toString());
+    if (FocusModule.log) {
+      log(
+        focusable + " <- " + "tvSelectable: " + this.tvSelectable
+          + " hasOnClick: " + this.hasOnClickListeners()
+          + " alpha: " + alpha
+          + " tvPreferred: " + tvPreferredFocus
+          + " rnAccessible: " + this.rnAccessible
+          + " accessLabel: " + (this.getTag(R.id.accessibility_label) != null)
+          + " destinations: " + this.focusDestinations.length
+          + " " + toString());
+    }
     return alpha;
   }
 
@@ -1119,7 +1122,7 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
     if (this.inRequestFocus) {
-      Log.v("RVG", "requestFocus self from another requestFocus " + toString());
+      log("requestFocus self from another requestFocus " + toString());
       // Prevent infinite loop
       return false;
     }
@@ -1127,19 +1130,19 @@ public class ReactViewGroup extends ViewGroup
     try {
       if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
         if (!isShown()) {
-          Log.v("RVG", "no focus for invisible views " + toString());
+          log("no focus for invisible views " + toString());
           return false;
         }
         getLocationInWindow(locationBuffer);
         getWindowVisibleDisplayFrame(windowRectBuffer);
         int x = locationBuffer[0];
         int y = locationBuffer[1];
-        Log.v("RVG", "requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
+        log("requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
           + " " + getWidth() + "x" + getHeight()
           + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
         );
         if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
-          Log.v("RVG", "no focus for item outside of window (direction:" + direction + ")" + toString());
+          log("no focus for item outside of window (direction:" + direction + ")" + toString());
           return false;
         }
       }
@@ -1172,5 +1175,11 @@ public class ReactViewGroup extends ViewGroup
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
     this.focusDestinations = focusDestinations;
     updateThisAndChildrenFocusability();
+  }
+
+  private void log(final String log) {
+    if (FocusModule.log) {
+      Log.v("RVM", log);
+    }
   }
 }

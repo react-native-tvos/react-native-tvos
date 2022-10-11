@@ -19,6 +19,7 @@ import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.annotations.VisibleForTesting;
 import com.facebook.react.module.annotations.ReactModule;
@@ -34,6 +35,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.yoga.YogaConstants;
 
 import java.util.Map;
+import com.facebook.react.modules.focus.FocusModule;
 
 /** View manager for AndroidViews (plain React Views). */
 @ReactModule(name = ReactViewManager.REACT_CLASS)
@@ -63,7 +65,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   public void setTVPreferredFocus(ReactViewGroup view, boolean hasTVPreferredFocus) {
     boolean wasPreferredFocus = view.isTvPreferredFocus();
     view.setTVPreferredFocus(hasTVPreferredFocus);
-    Log.v("RVM", "hasTVPreferredFocus " + hasTVPreferredFocus + " was " + wasPreferredFocus);
+    log("hasTVPreferredFocus " + hasTVPreferredFocus + " was " + wasPreferredFocus);
     if (hasTVPreferredFocus && !wasPreferredFocus) {
       view.setProgrammaticRequestFocus(true);
       view.requestFocus();
@@ -262,7 +264,9 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       // Don't set view.setFocusable(false) because we might still want it to be focusable for
       // accessibility reasons
     }
-    Log.v("RVG", "setFocusable: " + focusable + " " + " hasOnClick: " + view.hasOnClickListeners() + " " + toString());
+    if (FocusModule.log) {
+      log("setFocusable: " + focusable + " " + " hasOnClick: " + view.hasOnClickListeners() + " " + toString());
+    }
     view.updateFocusability();
   }
 
@@ -365,5 +369,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       fd[i] = destinations.getInt(i);
     }
     view.setFocusDestinations(fd);
+  }
+
+  private void log(final String log) {
+    if (FocusModule.log) {
+      Log.v("RVM", log);
+    }
   }
 }
