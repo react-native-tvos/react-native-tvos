@@ -33,4 +33,4 @@ const TVBlockFocusView = (props: TVBlockFocusViewProps): React.Node => {
   return <TVFocusGuideView {...props} destinations={[-1]} />;
 };
 
-export default TVBlockFocusView;
+module.exports = TVBlockFocusView;

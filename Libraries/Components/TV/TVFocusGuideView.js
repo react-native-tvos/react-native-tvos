@@ -131,4 +131,4 @@ const styles = ReactNative.StyleSheet.create({
   },
 });
 
-export default TVFocusGuideView;
+module.exports = TVFocusGuideView;

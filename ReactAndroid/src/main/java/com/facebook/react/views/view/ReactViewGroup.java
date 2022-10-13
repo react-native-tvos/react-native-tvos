@@ -843,14 +843,13 @@ public class ReactViewGroup extends ViewGroup
 
   public float updateFocusability(float parentAlpha) {
     float alpha = parentAlpha * getAlpha();
-    boolean focusable = ((this.tvSelectable || this.hasOnClickListeners()) && ((alpha > 0.001) || this.tvPreferredFocus))
+    boolean focusable = (this.tvSelectable && ((alpha > 0.001) || this.tvPreferredFocus))
       || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
       || this.focusDestinations.length > 0;
     setFocusable(focusable);
     if (FocusModule.log) {
       log(
         focusable + " <- " + "tvSelectable: " + this.tvSelectable
-          + " hasOnClick: " + this.hasOnClickListeners()
           + " alpha: " + alpha
           + " tvPreferred: " + tvPreferredFocus
           + " rnAccessible: " + this.rnAccessible
