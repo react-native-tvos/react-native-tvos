@@ -82,10 +82,6 @@ declare module 'react-native' {
      * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
      */
     safePadding?: 'both' | 'vertical' | 'horizontal' | null;
-    /**
-     * Android only: when set the view will consume the focus event so that focus does not move.
-     */
-    consumeFocus?: boolean;
   }
 
   /**
@@ -96,6 +92,11 @@ declare module 'react-native' {
    * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.63.4/RNTester/js/examples/TVFocusGuide/TVFocusGuideExample.js
    */
   export class TVFocusGuideView extends React.Component<FocusGuideProps> {}
+
+  /**
+   * (Android-only) This component blocks (or "consumes") the focus going in its direction instead of letting Android's focus system trying the find the closest focusable element.
+   */
+  export class TVBlockFocusView extends React.Component<Omit<FocusGuideProps, "destinations" | "children">> {}
 
   export interface TVTextScrollViewProps extends ScrollViewProps {
     /**

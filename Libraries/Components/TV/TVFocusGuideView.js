@@ -15,7 +15,7 @@ const Platform = require('../../Utilities/Platform');
 import {Commands} from '../View/ViewNativeComponent';
 import type {ViewProps} from '../View/ViewPropTypes';
 
-type TVFocusGuideViewProps = $ReadOnly<{
+export type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
 
   /**
@@ -27,10 +27,6 @@ type TVFocusGuideViewProps = $ReadOnly<{
    * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
    */
   safePadding?: 'vertical' | 'horizontal' | 'both' | null,
-  /**
-   * Android only: when set the view will consume the focus event so that focus does not move.
-   */
-  consumeFocus?: boolean,
 }>;
 
 const TVFocusGuideView = (props: TVFocusGuideViewProps): React.Node => {
@@ -96,7 +92,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
-  const nativeDestinations = props.consumeFocus ? [-1] : React.useMemo(
+  const nativeDestinations = React.useMemo(
     () =>
       (props.destinations || [])
         .map(d => ReactNative.findNodeHandle(d))
@@ -108,8 +104,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
     <ReactNative.View
       style={props.style}
       focusable={props.focusable ?? true}
-      destinations={nativeDestinations}
-    >
+      destinations={nativeDestinations}>
       {props.children}
     </ReactNative.View>
   );
@@ -136,4 +131,4 @@ const styles = ReactNative.StyleSheet.create({
   },
 });
 
-module.exports = TVFocusGuideView;
+export default TVFocusGuideView;

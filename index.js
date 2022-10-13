@@ -83,6 +83,7 @@ import typeof * as TurboModuleRegistry from './Libraries/TurboModule/TurboModule
 import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/TV/TVEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/TV/TVFocusGuideView';
+import typeof TVBlockFocusView from './Libraries/Components/TV/TVBlockFocusView';
 import typeof TVEventControl from './Libraries/Components/TV/TVEventControl';
 import typeof TVTextScrollView from './Libraries/Components/TV/TVTextScrollView';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
@@ -412,10 +413,13 @@ module.exports = {
   get TVFocusGuideView(): TVFocusGuideView {
     return require('./Libraries/Components/TV/TVFocusGuideView');
   },
+  get TVBlockFocusView(): TVBlockFocusView {
+    return require('./Libraries/Components/TV/TVBlockFocusView');
+  },
   get TVMenuControl(): TVMenuControl {
     warnOnce(
       'TVMenuControl-moved',
-      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.'
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
     );
     return require('./Libraries/Components/TV/TVEventControl');
   },
