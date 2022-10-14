@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
@@ -105,6 +106,13 @@ public abstract class ReactActivity extends AppCompatActivity
 
   private void stopFocusMonitor() {
     debugHandler.removeCallbacks(focusMonitor);
+    if (focusView != null) {
+      ViewParent parent = focusView.getParent();
+      if (parent instanceof ViewGroup) {
+        ((ViewGroup) parent).removeView(focusView);
+      }
+      focusView = null;
+    }
   }
 
   private Runnable focusMonitor = new Runnable() {
@@ -125,19 +133,25 @@ public abstract class ReactActivity extends AppCompatActivity
         focusView = new FocusView(ReactActivity.this);
         addContentView(focusView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
       }
-      View focused = getCurrentFocus();
+      @Nullable View focused = getCurrentFocus();
       if (focused == null) {
         focusView.rect.setEmpty();
         focusView.invalidate();
-        return;
       }
       if (this.previousFocus != focused) {
         highlightFocusables();
         this.previousFocus = focused;
-        focusView.message = focused.toString();
+        focusView.message = focused != null ? focused.toString() : "--";
         focusView.alpha = 10;
       }
-      focused.getGlobalVisibleRect(focusView.getRect());
+      if (focused != null) {
+        focused.getGlobalVisibleRect(focusView.getRect());
+      } else {
+        focusView.getRect().top = 1;
+        focusView.getRect().left = 1;
+        focusView.getRect().bottom = focusView.getHeight() - 1;
+        focusView.getRect().right = focusView.getWidth() - 1;
+      }
       focusView.invalidate();
       if (focusView.alpha > 0) {
         focusView.alpha--;
