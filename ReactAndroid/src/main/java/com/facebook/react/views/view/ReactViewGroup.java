@@ -92,6 +92,7 @@ public class ReactViewGroup extends ViewGroup
   private boolean rnAccessible = false;
   private boolean tvPreferredFocus = false;
   private boolean tvSelectable = false;
+  private float previousAlpha = -1; // force first propagation
   private View inRequestFocus = null;
 
   /**
@@ -472,6 +473,7 @@ public class ReactViewGroup extends ViewGroup
     if (mRemoveClippedSubviews) {
       updateClippingRect();
     }
+    updateFocusability();
   }
 
   private boolean customDrawOrderDisabled() {
@@ -783,7 +785,10 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public void setAlpha(float alpha) {
     super.setAlpha(alpha);
-    updateThisAndChildrenFocusability();
+    if (this.previousAlpha != alpha) {
+      updateThisAndChildrenFocusability();
+    }
+    this.previousAlpha = alpha;
   }
 
   public void setRNAccessible(boolean accessible) {
