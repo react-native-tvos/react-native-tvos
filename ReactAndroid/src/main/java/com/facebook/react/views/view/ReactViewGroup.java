@@ -809,14 +809,14 @@ public class ReactViewGroup extends ViewGroup
   }
 
   public void updateThisAndChildrenFocusability() {
-    updateThisAndChildrenFocusability(getTotalAlpha());
+    updateTreeFocusability(getAncestorsAlpha(), this);
   }
 
   public void updateFocusability() {
-    updateFocusability(getTotalAlpha());
+    updateFocusability(getAncestorsAlpha() * getAlpha());
   }
 
-  private float getTotalAlpha() {
+  private float getAncestorsAlpha() {
     float alpha = 1;
     View v = this;
     for (; ; ) {
@@ -824,26 +824,31 @@ public class ReactViewGroup extends ViewGroup
       if (parent instanceof View) {
         v = (View) parent;
         alpha *= v.getAlpha();
-      } else {
+      }
+      if (parent == null) {
         break;
       }
     }
     return alpha;
   }
 
-  public void updateThisAndChildrenFocusability(float parentAlpha) {
-    float alpha = updateFocusability(parentAlpha);
-    for (int i = 0; i < getChildCount(); i++) {
-      View child = getChildAt(i);
-      if (child instanceof ReactViewGroup) {
-        ((ReactViewGroup) child).updateThisAndChildrenFocusability(alpha);
+  public static void updateTreeFocusability(float parentAlpha, View v) {
+    float alpha = parentAlpha * v.getAlpha();
+    if (v instanceof ReactViewGroup) {
+      ((ReactViewGroup) v).updateFocusability(alpha);
+    }
+    if (v instanceof ViewGroup) {
+      ViewGroup vg = (ViewGroup) v;
+      for (int i = 0; i < vg.getChildCount(); i++) {
+        View child = vg.getChildAt(i);
+        updateTreeFocusability(alpha, child);
       }
     }
   }
 
-  public float updateFocusability(float parentAlpha) {
-    float alpha = parentAlpha * getAlpha();
-    boolean focusable = (this.tvSelectable && ((alpha > 0.001) || this.tvPreferredFocus))
+  public void updateFocusability(float alpha) {
+    boolean focusable =
+      (this.tvSelectable && ((alpha > 0.001) || this.tvPreferredFocus))
       || (this.rnAccessible && (this.getTag(R.id.accessibility_label) != null))
       || this.focusDestinations.length > 0;
     setFocusable(focusable);
@@ -857,7 +862,6 @@ public class ReactViewGroup extends ViewGroup
           + " destinations: " + this.focusDestinations.length
           + " " + toString());
     }
-    return alpha;
   }
 
   @Override
