@@ -92,7 +92,7 @@ public class ReactViewGroup extends ViewGroup
   private boolean rnAccessible = false;
   private boolean tvPreferredFocus = false;
   private boolean tvSelectable = false;
-  private boolean inRequestFocus = false;
+  private View inRequestFocus = null;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -787,15 +787,19 @@ public class ReactViewGroup extends ViewGroup
   }
 
   public void setRNAccessible(boolean accessible) {
-    this.rnAccessible = accessible;
-    updateFocusability();
+    if (this.rnAccessible != accessible) {
+      this.rnAccessible = accessible;
+      updateFocusability();
+    }
   }
 
   public void setTVPreferredFocus(boolean hasTVPreferredFocus) {
-    this.tvPreferredFocus = hasTVPreferredFocus;
-    updateFocusability();
-    if (hasTVPreferredFocus) {
-      setFocusableInTouchMode(true);
+    if (this.tvPreferredFocus != hasTVPreferredFocus) {
+      this.tvPreferredFocus = hasTVPreferredFocus;
+      updateFocusability();
+      if (hasTVPreferredFocus) {
+        setFocusableInTouchMode(true);
+      }
     }
   }
 
@@ -804,8 +808,10 @@ public class ReactViewGroup extends ViewGroup
   }
 
   public void setTVSelectable(boolean tvSelectable) {
-    this.tvSelectable = tvSelectable;
-    updateFocusability();
+    if (this.tvSelectable != tvSelectable) {
+      this.tvSelectable = tvSelectable;
+      updateFocusability();
+    }
   }
 
   public void updateThisAndChildrenFocusability() {
@@ -1124,12 +1130,11 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (this.inRequestFocus) {
-      log("requestFocus self from another requestFocus " + toString());
-      // Prevent infinite loop
+    if (this.inRequestFocus == this) {
+      log("self focus recursion " + toString());
       return false;
     }
-    this.inRequestFocus = true;
+    this.inRequestFocus = this;
     try {
       if (ReactViewGroup.androidVisibleFocusOnly && !programmaticRequestFocus) {
         if (!isShown()) {
@@ -1143,6 +1148,7 @@ public class ReactViewGroup extends ViewGroup
         log("requestFocus " + " destinations: " + focusDestinations.length + " +" + x + "+" + y
           + " " + getWidth() + "x" + getHeight()
           + " " + windowRectBuffer.left + "+" + windowRectBuffer.top + ":" + windowRectBuffer.right + "+" + windowRectBuffer.bottom
+          + toString()
         );
         if (!windowRectBuffer.intersect(x, y, x + getWidth(), y + getHeight())) {
           log("no focus for item outside of window (direction:" + direction + ")" + toString());
@@ -1150,6 +1156,7 @@ public class ReactViewGroup extends ViewGroup
         }
       }
       if (this.focusDestinations.length == 1 && this.focusDestinations[0] == -1) {
+        log("consume focus");
         return false;
       }
 
@@ -1160,6 +1167,7 @@ public class ReactViewGroup extends ViewGroup
       View destination = findDestinationView();
 
       if (destination != null && requestFocusViewOrAncestor(destination)) {
+        log("focused ancestor");
         return true;
       }
 
@@ -1171,7 +1179,7 @@ public class ReactViewGroup extends ViewGroup
 
       return false;
     } finally {
-      this.inRequestFocus = false;
+      this.inRequestFocus = null;
     }
   }
 
