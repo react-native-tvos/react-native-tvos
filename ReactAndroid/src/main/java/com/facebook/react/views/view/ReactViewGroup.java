@@ -830,8 +830,7 @@ public class ReactViewGroup extends ViewGroup
       if (parent instanceof View) {
         v = (View) parent;
         alpha *= v.getAlpha();
-      }
-      if (parent == null) {
+      } else {
         break;
       }
     }
