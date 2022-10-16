@@ -180,8 +180,10 @@ if (commit) {
     'ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/ReactNativeVersion.java',
     'ReactCommon/cxxreact/ReactNativeVersion.h',
     'package.json',
+    'yarn.lock',
     'template/package.json',
   ];
+  exec('yarn');
   exec(`git add ${filesToCommit.join(' ')}`);
   exec(`git commit -m "Bump version number (${version})"`);
 }
