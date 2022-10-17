@@ -141,10 +141,12 @@ static CGFloat RadsToDegrees(CGFloat rads)
 
 static int ButtonMaskToButtons(UIEventButtonMask buttonMask)
 {
+#if !TARGET_OS_TV
   if (@available(iOS 13.4, *)) {
     return (((buttonMask & UIEventButtonMaskPrimary) > 0) ? 1 : 0) |
         (((buttonMask & UIEventButtonMaskSecondary) > 0) ? 2 : 0);
   }
+#endif
   return 0;
 }
 
@@ -176,11 +178,15 @@ static void UpdateActiveTouchWithUITouch(
   activeTouch.majorRadius = uiTouch.majorRadius;
   activeTouch.altitudeAngle = uiTouch.altitudeAngle;
   activeTouch.azimuthAngle = [uiTouch azimuthAngleInView:nil];
+#if TARGET_OS_TV
+  activeTouch.buttonMask = 0;
+#else
   if (@available(iOS 13.4, *)) {
     activeTouch.buttonMask = uiEvent.buttonMask;
   } else {
     activeTouch.buttonMask = 0;
   }
+#endif
 }
 
 static ActiveTouch

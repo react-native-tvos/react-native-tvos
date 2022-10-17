@@ -45,23 +45,43 @@ ViewProps::ViewProps(
       tvParallaxProperties(
           Props::enablePropIteratorSetter ? sourceProps.tvParallaxProperties
                                           : convertRawProp(
-          context,
-          rawProps,
-          "tvParallaxProperties",
-          sourceProps.tvParallaxProperties,
-          {})),
+                                                context,
+                                                rawProps,
+                                                "tvParallaxProperties",
+                                                sourceProps.tvParallaxProperties,
+                                                {})),
       nextFocusUp(
           Props::enablePropIteratorSetter ? sourceProps.nextFocusUp
-                                          : convertRawProp(context, rawProps, "nextFocusUp", sourceProps.nextFocusUp, {})),
+                                          : convertRawProp(
+                                                           context,
+                                                           rawProps,
+                                                           "nextFocusUp",
+                                                           sourceProps.nextFocusUp,
+                                                           {})),
       nextFocusDown(
           Props::enablePropIteratorSetter ? sourceProps.nextFocusDown
-                                          : convertRawProp(context, rawProps, "nextFocusDown", sourceProps.nextFocusDown, {})),
+                                          : convertRawProp(
+                                                           context,
+                                                           rawProps,
+                                                           "nextFocusDown",
+                                                           sourceProps.nextFocusDown,
+                                                           {})),
       nextFocusLeft(
           Props::enablePropIteratorSetter ? sourceProps.nextFocusLeft
-                                          : convertRawProp(context, rawProps, "nextFocusLeft", sourceProps.nextFocusLeft, {})),
+                                          : convertRawProp(
+                                                           context,
+                                                           rawProps,
+                                                           "nextFocusLeft",
+                                                           sourceProps.nextFocusLeft,
+                                                           {})),
       nextFocusRight(
           Props::enablePropIteratorSetter ? sourceProps.nextFocusRight
-                                          : convertRawProp(context, rawProps, "nextFocusRight", sourceProps.nextFocusRight, {})),
+                                          : convertRawProp(
+                                                           context,
+                                                           rawProps,
+                                                           "nextFocusRight",
+                                                           sourceProps.nextFocusRight,
+                                                           {})),
 #endif
       opacity(
           Props::enablePropIteratorSetter ? sourceProps.opacity

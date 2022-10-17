@@ -54,11 +54,6 @@ def pods(options = {}, use_flipper: false)
   # RNTester native modules and components
   pod 'ScreenshotManager', :path => "NativeModuleExample"
 
-  if ENV['USE_CODEGEN_DISCOVERY'] == '1'
-    # Custom fabric component is only supported when using codegen discovery.
-    pod 'MyNativeView', :path => "NativeComponentExample"
-  end
-
 end
 
 target 'RNTester' do
