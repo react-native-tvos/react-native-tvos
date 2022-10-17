@@ -55,6 +55,7 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
     _prevComponent: any;
     _propsAnimated: AnimatedProps;
     _eventDetachers: Array<Function> = [];
+    _initialAnimatedProps: Object;
 
     // Only to be used in this file, and only in Fabric.
     _animatedComponentId: string = `${animatedComponentNextId++}:animatedComponent`;
@@ -199,8 +200,21 @@ function createAnimatedComponent<Props: {+[string]: mixed, ...}, Instance>(
       },
     });
 
-    render() {
-      const {style = {}, ...props} = this._propsAnimated.__getValue() || {};
+    render(): React.Node {
+      // When rendering in Fabric and an AnimatedValue is used, we keep track of
+      // the initial value of that Value, to avoid additional prop updates when
+      // this component re-renders
+      const initialPropsIfFabric = this._isFabric()
+        ? this._initialAnimatedProps
+        : null;
+
+      const animatedProps =
+        this._propsAnimated.__getValue(initialPropsIfFabric) || {};
+      if (!this._initialAnimatedProps) {
+        this._initialAnimatedProps = animatedProps;
+      }
+
+      const {style = {}, ...props} = animatedProps;
       const {style: passthruStyle = {}, ...passthruProps} =
         this.props.passthroughAnimatedPropExplicitValues || {};
       const mergedStyle = {...style, ...passthruStyle};

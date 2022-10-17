@@ -128,11 +128,12 @@ jest
       isGrayscaleEnabled: jest.fn(),
       isInvertColorsEnabled: jest.fn(),
       isReduceMotionEnabled: jest.fn(),
+      prefersCrossFadeTransitions: jest.fn(),
       isReduceTransparencyEnabled: jest.fn(),
       isScreenReaderEnabled: jest.fn(() => Promise.resolve(false)),
       removeEventListener: jest.fn(),
       setAccessibilityFocus: jest.fn(),
-      sendAccessibilityEvent_unstable: jest.fn(),
+      sendAccessibilityEvent: jest.fn(),
       getRecommendedTimeoutMillis: jest.fn(),
     },
   }))
@@ -355,6 +356,10 @@ jest
     '../Libraries/Utilities/verifyComponentAttributeEquivalence',
     () => function () {},
   )
+  .mock('../Libraries/Vibration/Vibration', () => ({
+    vibrate: jest.fn(),
+    cancel: jest.fn(),
+  }))
   .mock('../Libraries/Components/View/ViewNativeComponent', () => {
     const React = require('react');
     const Component = class extends React.Component {

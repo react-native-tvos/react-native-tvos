@@ -36,7 +36,7 @@ module.exports = {
   overrides: [
     {
       files: ['*.js'],
-      parser: 'babel-eslint',
+      parser: '@babel/eslint-parser',
       plugins: ['flowtype'],
       rules: {
         // Flow Plugin
@@ -85,6 +85,7 @@ module.exports = {
     __dirname: false,
     __fbBatchedBridgeConfig: false,
     AbortController: false,
+    Blob: true,
     alert: false,
     cancelAnimationFrame: false,
     cancelIdleCallback: false,
@@ -99,6 +100,7 @@ module.exports = {
     EventTarget: false,
     exports: false,
     fetch: false,
+    File: true,
     FileReader: false,
     FormData: false,
     global: false,

@@ -80,7 +80,7 @@ using namespace facebook::react;
   return self;
 }
 
-- (facebook::react::SharedProps)props
+- (facebook::react::Props::Shared)props
 {
   return _props;
 }

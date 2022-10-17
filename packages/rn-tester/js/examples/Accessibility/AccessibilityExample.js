@@ -958,7 +958,7 @@ function SetAccessibilityFocusExample(props: {}): React.Node {
 
   const onPress = () => {
     if (myRef && myRef.current) {
-      AccessibilityInfo.sendAccessibilityEvent_unstable(myRef.current, 'focus');
+      AccessibilityInfo.sendAccessibilityEvent(myRef.current, 'focus');
     }
   };
 
@@ -1117,6 +1117,11 @@ class DisplayOptionsStatusExample extends React.Component<{}> {
           notification={'reduceMotionChanged'}
         />
         <DisplayOptionStatusExample
+          optionName={'Prefer Cross-Fade Transitions'}
+          optionChecker={AccessibilityInfo.prefersCrossFadeTransitions}
+          notification={'prefersCrossFadeTransitionsChanged'}
+        />
+        <DisplayOptionStatusExample
           optionName={'Screen Reader'}
           optionChecker={AccessibilityInfo.isScreenReaderEnabled}
           notification={'screenReaderChanged'}
@@ -1150,15 +1155,27 @@ class DisplayOptionsStatusExample extends React.Component<{}> {
   }
 }
 
-function DisplayOptionStatusExample({optionName, optionChecker, notification}) {
+function DisplayOptionStatusExample({
+  optionName,
+  optionChecker,
+  notification,
+}: {
+  notification: string,
+  optionChecker: () => Promise<boolean>,
+  optionName: string,
+}) {
   const [statusEnabled, setStatusEnabled] = React.useState(false);
   React.useEffect(() => {
-    AccessibilityInfo.addEventListener(notification, setStatusEnabled);
+    const listener = AccessibilityInfo.addEventListener(
+      // $FlowFixMe[prop-missing]
+      notification,
+      setStatusEnabled,
+    );
     optionChecker().then(isEnabled => {
       setStatusEnabled(isEnabled);
     });
     return function cleanup() {
-      AccessibilityInfo.removeEventListener(notification, setStatusEnabled);
+      listener.remove();
     };
   }, [optionChecker, notification]);
   return (

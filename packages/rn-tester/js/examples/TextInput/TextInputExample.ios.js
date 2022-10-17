@@ -47,7 +47,7 @@ class TextInputAccessoryViewChangeTextExample extends React.Component<
   {...},
   {text: string},
 > {
-  constructor(props) {
+  constructor(props: void | {...}) {
     super(props);
     this.state = {text: 'Placeholder Text'};
   }
@@ -80,7 +80,7 @@ class TextInputAccessoryViewChangeKeyboardExample extends React.Component<
   {...},
   {keyboardType: string, text: string},
 > {
-  constructor(props) {
+  constructor(props: void | {...}) {
     super(props);
     this.state = {text: '', keyboardType: 'default'};
   }
@@ -122,7 +122,7 @@ class TextInputAccessoryViewDefaultDoneButtonExample extends React.Component<
   |}>,
   {text: string},
 > {
-  constructor(props) {
+  constructor(props: void | $ReadOnly<{keyboardType: KeyboardType}>) {
     super(props);
     this.state = {text: ''};
   }
@@ -141,7 +141,7 @@ class TextInputAccessoryViewDefaultDoneButtonExample extends React.Component<
 }
 
 class RewriteExampleKana extends React.Component<$FlowFixMeProps, any> {
-  constructor(props) {
+  constructor(props: any | void) {
     super(props);
     this.state = {text: ''};
   }
@@ -162,7 +162,7 @@ class RewriteExampleKana extends React.Component<$FlowFixMeProps, any> {
 }
 
 class SecureEntryExample extends React.Component<$FlowFixMeProps, any> {
-  constructor(props) {
+  constructor(props: any | void) {
     super(props);
     this.state = {
       text: '',
@@ -210,7 +210,7 @@ class AutogrowingTextInputExample extends React.Component<
   $FlowFixMeProps,
   $FlowFixMeState,
 > {
-  constructor(props) {
+  constructor(props: any | void) {
     super(props);
 
     this.state = {
@@ -224,7 +224,7 @@ class AutogrowingTextInputExample extends React.Component<
     };
   }
 
-  UNSAFE_componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props: any) {
     this.setState({
       multiline: props.multiline,
     });

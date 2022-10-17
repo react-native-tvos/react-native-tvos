@@ -151,7 +151,10 @@ public class ForwardingCookieHandler extends CookieHandler {
         if (exception.getClass().getCanonicalName().contains("MissingWebViewPackageException")
             || (message != null
                 && (message.contains("WebView provider")
-                    || message.contains("No WebView installed")))) {
+                    || message.contains("No WebView installed")
+                    || message.contains("Cannot load WebView")
+                    || message.contains("disableWebView")
+                    || message.contains("WebView is disabled")))) {
           return null;
         } else {
           throw exception;

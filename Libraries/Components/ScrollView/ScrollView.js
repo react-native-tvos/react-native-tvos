@@ -42,7 +42,7 @@ import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import ScrollViewContext, {HORIZONTAL, VERTICAL} from './ScrollViewContext';
 import type {Props as ScrollViewStickyHeaderProps} from './ScrollViewStickyHeader';
-import type {KeyboardEvent} from '../Keyboard/Keyboard';
+import type {KeyboardEvent, KeyboardMetrics} from '../Keyboard/Keyboard';
 import type {EventSubscription} from '../../vendor/emitter/EventEmitter';
 
 import Commands from './ScrollViewCommands';
@@ -173,8 +173,8 @@ type IOSProps = $ReadOnly<{|
    */
   automaticallyAdjustContentInsets?: ?boolean,
   /**
-   * Controls whether the ScrollView should automatically adjust it's contentInset
-   * and scrollViewInsets when the Keyboard changes it's size. The default value is false.
+   * Controls whether the ScrollView should automatically adjust its `contentInset`
+   * and `scrollViewInsets` when the Keyboard changes its size. The default value is false.
    * @platform ios
    */
   automaticallyAdjustKeyboardInsets?: ?boolean,
@@ -190,12 +190,6 @@ type IOSProps = $ReadOnly<{|
    * @platform ios
    */
   contentInset?: ?EdgeInsetsProp,
-  /**
-   * Used to manually set the starting scroll offset.
-   * The default value is `{x: 0, y: 0}`.
-   * @platform ios
-   */
-  contentOffset?: ?PointProp,
   /**
    * When true, the scroll view bounces when it reaches the end of the
    * content if the content is larger then the scroll view along the axis of
@@ -457,6 +451,11 @@ export type Props = $ReadOnly<{|
    * ```
    */
   contentContainerStyle?: ?ViewStyleProp,
+  /**
+   * Used to manually set the starting scroll offset.
+   * The default value is `{x: 0, y: 0}`.
+   */
+  contentOffset?: ?PointProp,
   /**
    * When true, the scroll view stops on the next index (in relation to scroll
    * position at release) regardless of how fast the gesture is. This can be
@@ -732,7 +731,7 @@ class ScrollView extends React.Component<Props, State> {
     new Map();
   _headerLayoutYs: Map<string, number> = new Map();
 
-  _keyboardWillOpenTo: ?KeyboardEvent = null;
+  _keyboardMetrics: ?KeyboardMetrics = null;
   _additionalScrollOffset: number = 0;
   _isTouching: boolean = false;
   _lastMomentumScrollBeginTime: number = 0;
@@ -770,7 +769,7 @@ class ScrollView extends React.Component<Props, State> {
       );
     }
 
-    this._keyboardWillOpenTo = null;
+    this._keyboardMetrics = Keyboard.metrics();
     this._additionalScrollOffset = 0;
 
     this._subscriptionKeyboardWillShow = Keyboard.addListener(
@@ -1076,8 +1075,8 @@ class ScrollView extends React.Component<Props, State> {
     let keyboardScreenY = Dimensions.get('window').height;
 
     const scrollTextInputIntoVisibleRect = () => {
-      if (this._keyboardWillOpenTo != null) {
-        keyboardScreenY = this._keyboardWillOpenTo.endCoordinates.screenY;
+      if (this._keyboardMetrics != null) {
+        keyboardScreenY = this._keyboardMetrics.screenY;
       }
       let scrollOffsetY =
         top - keyboardScreenY + height + this._additionalScrollOffset;
@@ -1095,8 +1094,8 @@ class ScrollView extends React.Component<Props, State> {
       this._preventNegativeScrollOffset = false;
     };
 
-    if (this._keyboardWillOpenTo == null) {
-      // `_keyboardWillOpenTo` is set inside `scrollResponderKeyboardWillShow` which
+    if (this._keyboardMetrics == null) {
+      // `_keyboardMetrics` is set inside `scrollResponderKeyboardWillShow` which
       // is not guaranteed to be called before `_inputMeasureAndScrollToKeyboard` but native has already scheduled it.
       // In case it was not called before `_inputMeasureAndScrollToKeyboard`, we postpone scrolling to
       // text input.
@@ -1108,7 +1107,7 @@ class ScrollView extends React.Component<Props, State> {
     }
   };
 
-  _getKeyForIndex(index, childArray) {
+  _getKeyForIndex(index: $FlowFixMe, childArray: $FlowFixMe) {
     const child = childArray[index];
     return child && child.key;
   }
@@ -1141,7 +1140,7 @@ class ScrollView extends React.Component<Props, State> {
     }
   }
 
-  _onStickyHeaderLayout(index, event, key) {
+  _onStickyHeaderLayout(index: $FlowFixMe, event: $FlowFixMe, key: $FlowFixMe) {
     const {stickyHeaderIndices} = this.props;
     if (!stickyHeaderIndices) {
       return;
@@ -1244,32 +1243,28 @@ class ScrollView extends React.Component<Props, State> {
   scrollResponderKeyboardWillShow: (e: KeyboardEvent) => void = (
     e: KeyboardEvent,
   ) => {
-    this._keyboardWillOpenTo = e;
+    this._keyboardMetrics = e.endCoordinates;
     this.props.onKeyboardWillShow && this.props.onKeyboardWillShow(e);
   };
 
   scrollResponderKeyboardWillHide: (e: KeyboardEvent) => void = (
     e: KeyboardEvent,
   ) => {
-    this._keyboardWillOpenTo = null;
+    this._keyboardMetrics = null;
     this.props.onKeyboardWillHide && this.props.onKeyboardWillHide(e);
   };
 
   scrollResponderKeyboardDidShow: (e: KeyboardEvent) => void = (
     e: KeyboardEvent,
   ) => {
-    // TODO(7693961): The event for DidShow is not available on iOS yet.
-    // Use the one from WillShow and do not assign.
-    if (e) {
-      this._keyboardWillOpenTo = e;
-    }
+    this._keyboardMetrics = e.endCoordinates;
     this.props.onKeyboardDidShow && this.props.onKeyboardDidShow(e);
   };
 
   scrollResponderKeyboardDidHide: (e: KeyboardEvent) => void = (
     e: KeyboardEvent,
   ) => {
-    this._keyboardWillOpenTo = null;
+    this._keyboardMetrics = null;
     this.props.onKeyboardDidHide && this.props.onKeyboardDidHide(e);
   };
 
@@ -1519,6 +1514,7 @@ class ScrollView extends React.Component<Props, State> {
       keyboardNeverPersistTaps &&
       this._keyboardIsDismissible() &&
       e.target != null &&
+      // $FlowFixMe[incompatible-call]
       !TextInputState.isTextInput(e.target)
     ) {
       return true;
@@ -1547,7 +1543,7 @@ class ScrollView extends React.Component<Props, State> {
     // keyboard, except on Android where setting windowSoftInputMode to
     // adjustNone leads to missing keyboard events.
     const softKeyboardMayBeOpen =
-      this._keyboardWillOpenTo != null || Platform.OS === 'android';
+      this._keyboardMetrics != null || Platform.OS === 'android';
 
     return hasFocusedTextInput && softKeyboardMayBeOpen;
   };
@@ -1823,7 +1819,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function Wrapper(props, ref) {
+/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
+ * LTI update could not be added via codemod */
+function Wrapper(props, ref: (mixed => mixed) | {current: mixed, ...}) {
   return <ScrollView {...props} scrollViewRef={ref} />;
 }
 Wrapper.displayName = 'ScrollView';

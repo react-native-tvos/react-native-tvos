@@ -104,6 +104,7 @@ class WebSocket extends (EventTarget(...WEBSOCKET_EVENTS): any) {
     const {headers = {}, ...unrecognized} = options || {};
 
     // Preserve deprecated backwards compatibility for the 'origin' option
+    // $FlowFixMe[prop-missing]
     if (unrecognized && typeof unrecognized.origin === 'string') {
       console.warn(
         'Specifying `origin` as a WebSocket connection option is deprecated. Include it under `headers` instead.',

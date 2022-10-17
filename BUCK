@@ -10,7 +10,6 @@ load(
 )
 load(
     "//tools/build_defs/oss:rn_defs.bzl",
-    "APPLETVOS",
     "HERMES_BYTECODE_VERSION",
     "IOS",
     "RCT_IMAGE_DATA_DECODER_SOCKET",
@@ -165,7 +164,7 @@ rn_xplat_cxx_library2(
         ":RCTCxxUtils",
         ":ReactInternal",
         "//xplat/fbsystrace:fbsystrace",
-        "//xplat/folly:headers_only",
+        "//xplat/folly:headers_only_do_not_use",
         react_native_xplat_target("cxxreact:module"),
         react_native_xplat_target("cxxreact:bridge"),
         react_native_xplat_target("reactperflogger:reactperflogger"),
@@ -189,7 +188,7 @@ rn_xplat_cxx_library2(
         exclude = RCTCXXMODULE_PUBLIC_HEADERS.values(),
         prefix = "React",
     ),
-    apple_sdks = (IOS, APPLETVOS),
+    apple_sdks = (IOS,),
     contacts = ["oncall+react_native@xmail.facebook.com"],
     fbobjc_enable_exceptions = True,
     frameworks = [
@@ -737,6 +736,7 @@ rn_library(
             "**/__*__/**",
             "**/gulpfile.js",
             "Libraries/Components/Switch/SwitchSchema.js",
+            "**/*._reactvr.js",
         ],
     ),
     labels = [
@@ -762,7 +762,6 @@ rn_library(
         "//xplat/js:node_modules__use_19sync_19external_19store",
         "//xplat/js:node_modules__whatwg_19fetch",
         "//xplat/js/RKJSModules/Libraries/Polyfills:Polyfills",
-        "//xplat/js/RKJSModules/Libraries/React:React",
         "//xplat/js/RKJSModules/vendor/react:react",
         "//xplat/js/RKJSModules/vendor/react-test-renderer:react-test-renderer",
         "//xplat/js/RKJSModules/vendor/scheduler:scheduler",

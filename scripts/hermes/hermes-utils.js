@@ -68,7 +68,7 @@ function getHermesTagSHA(hermesTag) {
 
 function getHermesTarballDownloadPath(hermesTag) {
   const hermesTagSHA = getHermesTagSHA(hermesTag);
-  return `${HERMES_TARBALL_DOWNLOAD_DIR}/hermes-${hermesTagSHA}.tgz`;
+  return path.join(HERMES_TARBALL_DOWNLOAD_DIR, `hermes-${hermesTagSHA}.tgz`);
 }
 
 function downloadHermesTarball() {
@@ -129,16 +129,16 @@ function copyBuildScripts() {
   }
 
   fs.copyFileSync(
-    `${SDKS_DIR}/hermes-engine/utils/build-apple-framework.sh`,
-    `${HERMES_DIR}/utils/build-apple-framework.sh`,
+    path.join(SDKS_DIR, 'hermes-engine', 'utils', 'build-apple-framework.sh'),
+    path.join(HERMES_DIR, 'utils', 'build-apple-framework.sh'),
   );
   fs.copyFileSync(
-    `${SDKS_DIR}/hermes-engine/utils/build-ios-framework.sh`,
-    `${HERMES_DIR}/utils/build-ios-framework.sh`,
+    path.join(SDKS_DIR, 'hermes-engine', 'utils', 'build-ios-framework.sh'),
+    path.join(HERMES_DIR, 'utils', 'build-ios-framework.sh'),
   );
   fs.copyFileSync(
-    `${SDKS_DIR}/hermes-engine/utils/build-mac-framework.sh`,
-    `${HERMES_DIR}/utils/build-mac-framework.sh`,
+    path.join(SDKS_DIR, 'hermes-engine', 'utils', 'build-mac-framework.sh'),
+    path.join(HERMES_DIR, 'utils', 'build-mac-framework.sh'),
   );
 }
 
@@ -158,7 +158,11 @@ function copyPodSpec() {
   );
 }
 
-function isOnAReleaseBranch() {
+function isTestingAgainstLocalHermesTarball() {
+  return 'HERMES_ENGINE_TARBALL_PATH' in process.env;
+}
+
+function isOnAReactNativeReleaseBranch() {
   try {
     let currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
       .toString()
@@ -176,7 +180,7 @@ function isOnAReleaseBranch() {
   }
 }
 
-function isOnAReleaseTag() {
+function isOnAReactNativeReleaseTag() {
   try {
     // If on a named tag, this method will return the tag name.
     // If not, it will throw as the return code is not 0.
@@ -190,28 +194,17 @@ function isOnAReleaseTag() {
   return currentRemote.endsWith('facebook/react-native.git');
 }
 
-function isPRAgainstStable(pullRequest) {
-  if (pullRequest == null) {
-    return false;
-  }
-
-  const prComponents = pullRequest.split('/');
-  const prNumber = prComponents[prComponents.length - 1];
-  const apiURL = `https://api.github.com/repos/facebook/react-native/pulls/${prNumber}`;
-  const prJson = JSON.parse(execSync(`curl ${apiURL}`).toString());
-  const baseBranch = prJson.base.label;
-
-  return baseBranch.endsWith('-stable');
+function isRequestingLatestCommitFromHermesMainBranch() {
+  const hermesTag = readHermesTag();
+  return hermesTag === DEFAULT_HERMES_TAG;
 }
 
-function shouldBuildHermesFromSource(pullRequest) {
-  const hermesTag = readHermesTag();
-
+function shouldBuildHermesFromSource() {
   return (
-    isOnAReleaseBranch() ||
-    isOnAReleaseTag() ||
-    isPRAgainstStable(pullRequest) ||
-    hermesTag === DEFAULT_HERMES_TAG
+    !isTestingAgainstLocalHermesTarball() &&
+    (isOnAReactNativeReleaseBranch() ||
+      isOnAReactNativeReleaseTag() ||
+      isRequestingLatestCommitFromHermesMainBranch())
   );
 }
 
