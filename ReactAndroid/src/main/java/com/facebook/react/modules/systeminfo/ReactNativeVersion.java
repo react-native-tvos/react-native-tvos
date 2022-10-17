@@ -18,5 +18,5 @@ public class ReactNativeVersion {
       "major", 0,
       "minor", 70,
       "patch", 3,
-      "prerelease", null);
+      "prerelease", "0");
 }
