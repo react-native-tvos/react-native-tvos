@@ -35,6 +35,7 @@ export default class TVTouchable {
     this._tvEventHandler = new TVEventHandler();
     this._tvEventHandler.enable(component, (_, tvData) => {
       tvData.dispatchConfig = {};
+      try {
       if (ReactNative.findNodeHandle(component) === tvData.tag) {
         if (tvData.eventType === 'focus') {
           config.onFocus(tvData);
@@ -45,6 +46,8 @@ export default class TVTouchable {
             config.onPress(tvData);
           }
         }
+      }
+      } catch(e) {
       }
     });
   }
