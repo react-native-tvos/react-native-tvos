@@ -11,13 +11,6 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.3-0)
   - fmt (7.1.3)
   - glog (0.3.5)
-  - MyNativeView (0.0.1):
-    - RCTRequired
-    - RCTTypeSafety
-    - React
-    - React-Codegen
-    - React-RCTFabric
-    - ReactCommon/turbomodule/core
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -102,6 +95,15 @@ PODS:
     - React-jsinspector (= 0.70.3-0)
     - React-perflogger (= 0.70.3-0)
     - Yoga
+  - React-Core/RCTActionSheetHeaders (0.70.3-0):
+    - glog
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core/Default
+    - React-cxxreact (= 0.70.3-0)
+    - React-jsi (= 0.70.3-0)
+    - React-jsiexecutor (= 0.70.3-0)
+    - React-perflogger (= 0.70.3-0)
+    - Yoga
   - React-Core/RCTAnimationHeaders (0.70.3-0):
     - glog
     - RCT-Folly (= 2021.07.22.00)
@@ -166,6 +168,15 @@ PODS:
     - React-perflogger (= 0.70.3-0)
     - Yoga
   - React-Core/RCTTextHeaders (0.70.3-0):
+    - glog
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core/Default
+    - React-cxxreact (= 0.70.3-0)
+    - React-jsi (= 0.70.3-0)
+    - React-jsiexecutor (= 0.70.3-0)
+    - React-perflogger (= 0.70.3-0)
+    - Yoga
+  - React-Core/RCTVibrationHeaders (0.70.3-0):
     - glog
     - RCT-Folly (= 2021.07.22.00)
     - React-Core/Default
@@ -540,6 +551,8 @@ PODS:
   - React-logger (0.70.3-0):
     - glog
   - React-perflogger (0.70.3-0)
+  - React-RCTActionSheet (0.70.3-0):
+    - React-Core/RCTActionSheetHeaders (= 0.70.3-0)
   - React-RCTAnimation (0.70.3-0):
     - RCT-Folly (= 2021.07.22.00)
     - RCTTypeSafety (= 0.70.3-0)
@@ -601,6 +614,12 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.3-0)
   - React-RCTText (0.70.3-0):
     - React-Core/RCTTextHeaders (= 0.70.3-0)
+  - React-RCTVibration (0.70.3-0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Codegen (= 0.70.3-0)
+    - React-Core/RCTVibrationHeaders (= 0.70.3-0)
+    - React-jsi (= 0.70.3-0)
+    - ReactCommon/turbomodule/core (= 0.70.3-0)
   - React-rncore (0.70.3-0)
   - React-runtimeexecutor (0.70.3-0):
     - React-jsi (= 0.70.3-0)
@@ -627,9 +646,6 @@ PODS:
     - React-logger (= 0.70.3-0)
     - React-perflogger (= 0.70.3-0)
     - ReactCommon/turbomodule/core (= 0.70.3-0)
-  - ScreenshotManager (0.0.1):
-    - RCT-Folly (= 2021.07.22.00)
-    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -639,7 +655,6 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../../React/FBReactNativeSpec`)
   - fmt (from `../../third-party-podspecs/fmt.podspec`)
   - glog (from `../../third-party-podspecs/glog.podspec`)
-  - MyNativeView (from `NativeComponentExample`)
   - RCT-Folly (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../../Libraries/RCTRequired`)
@@ -660,6 +675,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../../ReactCommon/jsinspector`)
   - React-logger (from `../../ReactCommon/logger`)
   - React-perflogger (from `../../ReactCommon/reactperflogger`)
+  - React-RCTActionSheet (from `../../Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../../Libraries/NativeAnimation`)
   - React-RCTBlob (from `../../Libraries/Blob`)
   - React-RCTFabric (from `../../React`)
@@ -670,11 +686,11 @@ DEPENDENCIES:
   - React-RCTSettings (from `../../Libraries/Settings`)
   - React-RCTTest (from `./RCTTest`)
   - React-RCTText (from `../../Libraries/Text`)
+  - React-RCTVibration (from `../../Libraries/Vibration`)
   - React-rncore (from `../../ReactCommon`)
   - React-runtimeexecutor (from `../../ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../../ReactCommon`)
   - ReactCommon/turbomodule/samples (from `../../ReactCommon`)
-  - ScreenshotManager (from `NativeModuleExample`)
   - Yoga (from `../../ReactCommon/yoga`)
 
 EXTERNAL SOURCES:
@@ -690,8 +706,6 @@ EXTERNAL SOURCES:
     :podspec: "../../third-party-podspecs/fmt.podspec"
   glog:
     :podspec: "../../third-party-podspecs/glog.podspec"
-  MyNativeView:
-    :path: NativeComponentExample
   RCT-Folly:
     :podspec: "../../third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -726,6 +740,8 @@ EXTERNAL SOURCES:
     :path: "../../ReactCommon/logger"
   React-perflogger:
     :path: "../../ReactCommon/reactperflogger"
+  React-RCTActionSheet:
+    :path: "../../Libraries/ActionSheetIOS"
   React-RCTAnimation:
     :path: "../../Libraries/NativeAnimation"
   React-RCTBlob:
@@ -746,14 +762,14 @@ EXTERNAL SOURCES:
     :path: "./RCTTest"
   React-RCTText:
     :path: "../../Libraries/Text"
+  React-RCTVibration:
+    :path: "../../Libraries/Vibration"
   React-rncore:
     :path: "../../ReactCommon"
   React-runtimeexecutor:
     :path: "../../ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../../ReactCommon"
-  ScreenshotManager:
-    :path: NativeModuleExample
   Yoga:
     :path: "../../ReactCommon/yoga"
 
@@ -761,17 +777,16 @@ SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
   FBLazyVector: cd06b098e8e05dac4094476dc7d8aad6b83ff8c2
-  FBReactNativeSpec: ac9071ede79f25c9d1b623dde9f3089f13d4d524
+  FBReactNativeSpec: 099da45e2e66c7925912282a3891a0fc0b3333c8
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: a2ded9bf28f0cb2fce90ad21eb419299a500ff6c
-  MyNativeView: 412ff641161c6577d85641afa32d5f4f8014a816
   RCT-Folly: df763db4d07de80ce9ec70fff2afcf1c6c06ebf9
   RCTRequired: d52b5baf464b9800e5983d728d7b31ab76a82a64
   RCTTypeSafety: e57ed46c4beb5e33584a753b78649c22693a7e61
   React: 20871656e5d06eef52b51c8a4e66d848f00461c0
   React-bridging: 9d8c5da423ee8fad54ba41138b956c1a77cd627d
   React-callinvoker: c80fdc84eecb02906f762654ee628512babf05a2
-  React-Codegen: 642b36d8c89d2a51dc940f4201681df9d320f081
+  React-Codegen: e6c626aac307a8c0cd6ecdbfb421fb7765822232
   React-Core: 6eb28e49fc3fcd00dbf4dcd23bd72ec5269d2c50
   React-CoreModules: 20b27d2a83db3927bc21f47d50354c870d9f2b2c
   React-cxxreact: d23968fb10f50c349f5c35dfc73e8f3bd1464aa4
@@ -782,6 +797,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 9d874b95f9c44721e6e306c7786750e289b7a684
   React-logger: 26d8d6c487520245e9032349ac454e72922f59c8
   React-perflogger: e4b04f1c2cd7ec8ae51a84b286818b134083826f
+  React-RCTActionSheet: 3e494a3ed9cf7a188e218883983d9f5c3de12f38
   React-RCTAnimation: c14bfacce04e01d50e7f2a8c2d60215dc470d300
   React-RCTBlob: 6b5cad5ab45a3b275fba68ed8c3bfe604aa8d2d7
   React-RCTFabric: f41307215409a259e6774fba88ddb7a9551e01bd
@@ -792,12 +808,12 @@ SPEC CHECKSUMS:
   React-RCTSettings: 236369dba7cc3d0fc453d065e6d166b5b8dc86dd
   React-RCTTest: eea32927e8d7dbf818cfc32a1fecf3225c61cb87
   React-RCTText: c313924ba2f9718f2487a5b121a82cabb4087a90
-  React-rncore: 66378456b38d45da024c971d52002a01e0985608
+  React-RCTVibration: 0baa74c8a0f58465577be982e19b001833687cf0
+  React-rncore: 17f11973286b1772c57dd95083249f95e9422313
   React-runtimeexecutor: 6c18816289f9a33912df9a6a5f184240c6ff1925
   ReactCommon: d3efc828a92ed64ec85cd1003d3a90973533b82a
-  ScreenshotManager: 5fe3d8792945f28a66baebf199c45c19dc59035b
   Yoga: 8c548fbf1705262b8b5fbba51763c581ea8df152
 
-PODFILE CHECKSUM: 66f4aef6c391bb53ac698f6d977b2adbe3f820b6
+PODFILE CHECKSUM: 75d6d0f66029c2c893066ea420a3bbbb26e762d5
 
 COCOAPODS: 1.11.3
