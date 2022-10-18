@@ -646,6 +646,9 @@ PODS:
     - React-logger (= 0.70.3-0)
     - React-perflogger (= 0.70.3-0)
     - ReactCommon/turbomodule/core (= 0.70.3-0)
+  - ScreenshotManager (0.0.1):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -691,6 +694,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../../ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../../ReactCommon`)
   - ReactCommon/turbomodule/samples (from `../../ReactCommon`)
+  - ScreenshotManager (from `NativeModuleExample`)
   - Yoga (from `../../ReactCommon/yoga`)
 
 EXTERNAL SOURCES:
@@ -770,6 +774,8 @@ EXTERNAL SOURCES:
     :path: "../../ReactCommon/runtimeexecutor"
   ReactCommon:
     :path: "../../ReactCommon"
+  ScreenshotManager:
+    :path: NativeModuleExample
   Yoga:
     :path: "../../ReactCommon/yoga"
 
@@ -812,8 +818,9 @@ SPEC CHECKSUMS:
   React-rncore: 17f11973286b1772c57dd95083249f95e9422313
   React-runtimeexecutor: 6c18816289f9a33912df9a6a5f184240c6ff1925
   ReactCommon: d3efc828a92ed64ec85cd1003d3a90973533b82a
+  ScreenshotManager: 71d047abd38a77310985b87f8136b620c5c61e88
   Yoga: 8c548fbf1705262b8b5fbba51763c581ea8df152
 
-PODFILE CHECKSUM: 75d6d0f66029c2c893066ea420a3bbbb26e762d5
+PODFILE CHECKSUM: 66f4aef6c391bb53ac698f6d977b2adbe3f820b6
 
 COCOAPODS: 1.11.3
