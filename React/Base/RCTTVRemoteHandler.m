@@ -130,6 +130,7 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
   // Menu recognizer
   self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
   self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
+  self.tvMenuKeyRecognizer.cancelsTouchesInView = YES;
 
   // Pan gesture recognizer
   self.tvPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -329,7 +330,7 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = YES;
     }
-    [self.tvMenuKeyRecognizer setCancelsTouchesInView:YES];
+    //[self.tvMenuKeyRecognizer setCancelsTouchesInView:YES];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:YES];
   });
 }
@@ -340,7 +341,7 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = NO;
     }
-    [self.tvMenuKeyRecognizer setCancelsTouchesInView:NO];
+    //[self.tvMenuKeyRecognizer setCancelsTouchesInView:NO];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:NO];
   });
 }
