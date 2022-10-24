@@ -104,8 +104,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
     <ReactNative.View
       style={props.style}
       focusable={props.focusable ?? true}
-      destinations={nativeDestinations}
-    >
+      destinations={nativeDestinations}>
       {props.children}
     </ReactNative.View>
   );
@@ -121,6 +120,9 @@ const styles = ReactNative.StyleSheet.create({
     paddingRight: 0,
   },
   focusGuide: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
     left: 0,
     top: 0,
     right: 0,
