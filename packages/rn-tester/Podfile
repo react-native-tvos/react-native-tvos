@@ -38,7 +38,7 @@ def pods(options = {}, use_flipper: false)
     fabric_enabled: fabric_enabled,
     # No Hermes on tvOS
     # hermes_enabled: ENV['USE_HERMES'] == '1',
-    hermes_enabled: false,
+    hermes_enabled: true,
     flipper_configuration: FlipperConfiguration.disabled,
     app_path: "#{Dir.pwd}",
     config_file_dir: "#{Dir.pwd}/node_modules",
