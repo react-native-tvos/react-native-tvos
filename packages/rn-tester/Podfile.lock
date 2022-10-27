@@ -11,8 +11,6 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.70.3-0)
   - fmt (7.1.3)
   - glog (0.3.5)
-  - hermes-engine (0.70.3-0)
-  - libevent (2.1.12)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -29,12 +27,6 @@ PODS:
     - DoubleConversion
     - fmt
     - glog
-  - RCT-Folly/Futures (2021.07.22.00):
-    - boost
-    - DoubleConversion
-    - fmt
-    - glog
-    - libevent
   - RCTRequired (0.70.3-0)
   - RCTTypeSafety (0.70.3-0):
     - FBLazyVector (= 0.70.3-0)
@@ -532,17 +524,6 @@ PODS:
   - React-graphics (0.70.3-0):
     - RCT-Folly/Fabric (= 2021.07.22.00)
     - React-Core/Default (= 0.70.3-0)
-  - React-hermes (0.70.3-0):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2021.07.22.00)
-    - RCT-Folly/Futures (= 2021.07.22.00)
-    - React-cxxreact (= 0.70.3-0)
-    - React-jsi (= 0.70.3-0)
-    - React-jsiexecutor (= 0.70.3-0)
-    - React-jsinspector (= 0.70.3-0)
-    - React-perflogger (= 0.70.3-0)
   - React-jsi (0.70.3-0):
     - boost (= 1.76.0)
     - DoubleConversion
@@ -677,8 +658,6 @@ DEPENDENCIES:
   - FBReactNativeSpec (from `../../React/FBReactNativeSpec`)
   - fmt (from `../../third-party-podspecs/fmt.podspec`)
   - glog (from `../../third-party-podspecs/glog.podspec`)
-  - hermes-engine (from `../../sdks/hermes/hermes-engine.podspec`)
-  - libevent (from `../../third-party-podspecs/libevent.podspec`)
   - RCT-Folly (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../../Libraries/RCTRequired`)
@@ -693,7 +672,6 @@ DEPENDENCIES:
   - React-cxxreact (from `../../ReactCommon/cxxreact`)
   - React-Fabric (from `../../ReactCommon`)
   - React-graphics (from `../../ReactCommon/react/renderer/graphics`)
-  - React-hermes (from `../../ReactCommon/hermes`)
   - React-jsi (from `../../ReactCommon/jsi`)
   - React-jsi/Fabric (from `../../ReactCommon/jsi`)
   - React-jsiexecutor (from `../../ReactCommon/jsiexecutor`)
@@ -732,10 +710,6 @@ EXTERNAL SOURCES:
     :podspec: "../../third-party-podspecs/fmt.podspec"
   glog:
     :podspec: "../../third-party-podspecs/glog.podspec"
-  hermes-engine:
-    :podspec: "../../sdks/hermes/hermes-engine.podspec"
-  libevent:
-    :path: "../../third-party-podspecs/libevent.podspec"
   RCT-Folly:
     :podspec: "../../third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -760,8 +734,6 @@ EXTERNAL SOURCES:
     :path: "../../ReactCommon"
   React-graphics:
     :path: "../../ReactCommon/react/renderer/graphics"
-  React-hermes:
-    :path: "../../ReactCommon/hermes"
   React-jsi:
     :path: "../../ReactCommon/jsi"
   React-jsiexecutor:
@@ -814,8 +786,6 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 099da45e2e66c7925912282a3891a0fc0b3333c8
   fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: a2ded9bf28f0cb2fce90ad21eb419299a500ff6c
-  hermes-engine: 2684ba7dd4514a683d11634d3a0b986c4c47c362
-  libevent: 145cbafd2f2bce6de2cc1788b6ac49865e2b0677
   RCT-Folly: df763db4d07de80ce9ec70fff2afcf1c6c06ebf9
   RCTRequired: d52b5baf464b9800e5983d728d7b31ab76a82a64
   RCTTypeSafety: e57ed46c4beb5e33584a753b78649c22693a7e61
@@ -828,7 +798,6 @@ SPEC CHECKSUMS:
   React-cxxreact: d23968fb10f50c349f5c35dfc73e8f3bd1464aa4
   React-Fabric: bb942d65f1595044a145010d4ca1a0a96eb2f936
   React-graphics: 544a5ffcf9317c6b096cb9cf32353925c53d4f1f
-  React-hermes: 72030fa623c36a71b3c3259b512b92701a0aea43
   React-jsi: 5d65b1d468768281aabd74407ba4892f780e16e1
   React-jsiexecutor: 4925431afaf8b5f00855063f57e2b03bee46d303
   React-jsinspector: 9d874b95f9c44721e6e306c7786750e289b7a684
@@ -852,6 +821,6 @@ SPEC CHECKSUMS:
   ScreenshotManager: 71d047abd38a77310985b87f8136b620c5c61e88
   Yoga: 8c548fbf1705262b8b5fbba51763c581ea8df152
 
-PODFILE CHECKSUM: 51a4c023f4e16ecf18266b2f33ed7d07efb1acbf
+PODFILE CHECKSUM: 66f4aef6c391bb53ac698f6d977b2adbe3f820b6
 
 COCOAPODS: 1.11.3
