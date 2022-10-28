@@ -15,6 +15,7 @@ def install_hermes_if_enabled(hermes_enabled, react_native_path)
     abort unless prep_status == 0
 
     pod 'React-hermes', :path => "#{react_native_path}/ReactCommon/hermes"
-    pod 'libevent', '~> 2.1.12'
+    # For Apple TV, use this version, sourced from https://github.com/react-native-tvos/react-native-tvos-podspecs
+    pod 'libevent', '2.1.12.1'
     pod 'hermes-engine', :podspec => "#{react_native_path}/sdks/hermes/hermes-engine.podspec"
 end
