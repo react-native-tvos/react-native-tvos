@@ -29,8 +29,8 @@ git = "https://github.com/douglowder/hermes.git"
   source[:tag] = hermestag
 
 module HermesHelper
-  # BUILD_TYPE = :debug
-  BUILD_TYPE = :release
+  BUILD_TYPE = :debug
+  # BUILD_TYPE = :release
 end
 
 Pod::Spec.new do |spec|

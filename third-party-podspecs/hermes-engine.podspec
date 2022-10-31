@@ -4,8 +4,8 @@
 # LICENSE file in the root directory of this source tree.
 
 module HermesHelper
-  # BUILD_TYPE = :debug
-  BUILD_TYPE = :release
+  BUILD_TYPE = :debug
+  # BUILD_TYPE = :release
 end
 
 Pod::Spec.new do |spec|
