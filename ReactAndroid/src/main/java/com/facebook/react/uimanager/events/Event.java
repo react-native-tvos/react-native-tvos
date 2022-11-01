@@ -39,6 +39,7 @@ public abstract class Event<T extends Event> {
   private int mViewTag;
   private long mTimestampMs;
   private int mUniqueID = sUniqueID++;
+  private @Nullable EventAnimationDriverMatchSpec mEventAnimationDriverMatchSpec;
 
   protected Event() {}
 
@@ -156,6 +157,19 @@ public abstract class Event<T extends Event> {
   /** @return the name of this event as registered in JS */
   public abstract String getEventName();
 
+  public EventAnimationDriverMatchSpec getEventAnimationDriverMatchSpec() {
+    if (mEventAnimationDriverMatchSpec == null) {
+      mEventAnimationDriverMatchSpec =
+          new EventAnimationDriverMatchSpec() {
+            @Override
+            public boolean match(int viewTag, String eventName) {
+              return viewTag == getViewTag() && eventName.equals(getEventName());
+            };
+          };
+    }
+    return mEventAnimationDriverMatchSpec;
+  }
+
   /**
    * Dispatch this event to JS using the given event emitter. Compatible with old and new renderer.
    * Instead of using this or dispatchModern, it is recommended that you simply override
@@ -215,5 +229,9 @@ public abstract class Event<T extends Event> {
       }
     }
     dispatch(rctEventEmitter);
+  }
+
+  public interface EventAnimationDriverMatchSpec {
+    boolean match(int viewTag, String eventName);
   }
 }

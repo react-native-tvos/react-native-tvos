@@ -30,11 +30,9 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.EventDispatcherListener;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -57,9 +55,9 @@ import java.util.Queue;
   private final SparseArray<AnimatedNode> mAnimatedNodes = new SparseArray<>();
   private final SparseArray<AnimationDriver> mActiveAnimations = new SparseArray<>();
   private final SparseArray<AnimatedNode> mUpdatedNodes = new SparseArray<>();
-  // Mapping of a view tag and an event name to a list of event animation drivers. 99% of the time
-  // there will be only one driver per mapping so all code code should be optimized around that.
-  private final Map<String, List<EventAnimationDriver>> mEventDrivers = new HashMap<>();
+  // List of event animation drivers for an event on view.
+  // There may be multiple drivers for the same event and view.
+  private final List<EventAnimationDriver> mEventDrivers = new ArrayList<>();
   private final ReactApplicationContext mReactApplicationContext;
   private int mAnimatedGraphBFSColor = 0;
   // Used to avoid allocating a new array on every frame in `runUpdates` and `onEventDispatch`.
@@ -462,7 +460,8 @@ import java.util.Queue;
   }
 
   @UiThread
-  public void addAnimatedEventToView(int viewTag, String eventName, ReadableMap eventMapping) {
+  public void addAnimatedEventToView(
+      int viewTag, String eventHandlerName, ReadableMap eventMapping) {
     int nodeTag = eventMapping.getInt("animatedValueTag");
     AnimatedNode node = mAnimatedNodes.get(nodeTag);
     if (node == null) {
@@ -473,8 +472,8 @@ import java.util.Queue;
       throw new JSApplicationIllegalArgumentException(
           "addAnimatedEventToView: Animated node on view ["
               + viewTag
-              + "] connected to event ("
-              + eventName
+              + "] connected to event handler ("
+              + eventHandlerName
               + ") should be of type "
               + ValueAnimatedNode.class.getName());
     }
@@ -485,32 +484,27 @@ import java.util.Queue;
       pathList.add(path.getString(i));
     }
 
-    EventAnimationDriver event = new EventAnimationDriver(pathList, (ValueAnimatedNode) node);
-    String key = viewTag + eventName;
-    if (mEventDrivers.containsKey(key)) {
-      mEventDrivers.get(key).add(event);
-    } else {
-      List<EventAnimationDriver> drivers = new ArrayList<>(1);
-      drivers.add(event);
-      mEventDrivers.put(key, drivers);
-    }
+    String eventName = normalizeEventName(eventHandlerName);
+
+    EventAnimationDriver eventDriver =
+        new EventAnimationDriver(eventName, viewTag, pathList, (ValueAnimatedNode) node);
+    mEventDrivers.add(eventDriver);
   }
 
   @UiThread
-  public void removeAnimatedEventFromView(int viewTag, String eventName, int animatedValueTag) {
-    String key = viewTag + eventName;
-    if (mEventDrivers.containsKey(key)) {
-      List<EventAnimationDriver> driversForKey = mEventDrivers.get(key);
-      if (driversForKey.size() == 1) {
-        mEventDrivers.remove(viewTag + eventName);
-      } else {
-        ListIterator<EventAnimationDriver> it = driversForKey.listIterator();
-        while (it.hasNext()) {
-          if (it.next().mValueNode.mTag == animatedValueTag) {
-            it.remove();
-            break;
-          }
-        }
+  public void removeAnimatedEventFromView(
+      int viewTag, String eventHandlerName, int animatedValueTag) {
+
+    String eventName = normalizeEventName(eventHandlerName);
+
+    ListIterator<EventAnimationDriver> it = mEventDrivers.listIterator();
+    while (it.hasNext()) {
+      EventAnimationDriver driver = it.next();
+      if (eventName.equals(driver.mEventName)
+          && viewTag == driver.mViewTag
+          && animatedValueTag == driver.mValueNode.mTag) {
+        it.remove();
+        break;
       }
     }
   }
@@ -546,18 +540,19 @@ import java.util.Queue;
       if (uiManager == null) {
         return;
       }
-      String eventName = uiManager.resolveCustomDirectEventName(event.getEventName());
-      if (eventName == null) {
-        eventName = "";
-      }
 
-      List<EventAnimationDriver> driversForKey = mEventDrivers.get(event.getViewTag() + eventName);
-      if (driversForKey != null) {
-        for (EventAnimationDriver driver : driversForKey) {
+      boolean foundAtLeastOneDriver = false;
+      Event.EventAnimationDriverMatchSpec matchSpec = event.getEventAnimationDriverMatchSpec();
+      for (EventAnimationDriver driver : mEventDrivers) {
+        if (matchSpec.match(driver.mViewTag, driver.mEventName)) {
+          foundAtLeastOneDriver = true;
           stopAnimationsForNode(driver.mValueNode);
           event.dispatch(driver);
           mRunUpdateNodeList.add(driver.mValueNode);
         }
+      }
+
+      if (foundAtLeastOneDriver) {
         updateNodes(mRunUpdateNodeList);
         mRunUpdateNodeList.clear();
       }
@@ -771,5 +766,15 @@ import java.util.Queue;
     } else {
       mWarnedAboutGraphTraversal = false;
     }
+  }
+
+  private String normalizeEventName(String eventHandlerName) {
+    // Fabric UIManager also makes this assumption
+    String eventName = eventHandlerName;
+    if (eventHandlerName.startsWith("on")) {
+      eventName = "top" + eventHandlerName.substring(2);
+    }
+
+    return eventName;
   }
 }
