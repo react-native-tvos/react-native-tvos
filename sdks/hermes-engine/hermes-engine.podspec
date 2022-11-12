@@ -9,6 +9,9 @@ require "open3"
 # sdks/hermesc/osx-bin/ImportHermesc.cmake
 import_hermesc_file=File.join(__dir__, "..", "hermesc", "osx-bin", "ImportHermesc.cmake")
 
+# Whether Hermes is built for Release or Debug is determined by the PRODUCTION envvar.
+build_type = ENV['PRODUCTION'] == "1" ? :release : :debug
+
 # package.json
 package_file = File.join(__dir__, "..", "..", "package.json")
 package = JSON.parse(File.read(package_file))
@@ -28,11 +31,6 @@ git = "https://github.com/douglowder/hermes.git"
   source[:git] = git
   source[:tag] = hermestag
 
-module HermesHelper
-  BUILD_TYPE = :debug
-  # BUILD_TYPE = :release
-end
-
 Pod::Spec.new do |spec|
   spec.name        = "hermes-engine"
   spec.version     = version
@@ -44,20 +42,23 @@ Pod::Spec.new do |spec|
   spec.source      = source
   spec.platforms   = { :osx => "10.13", :ios => "12.4", :tvos => "12.4" }
 
-  spec.preserve_paths      = ["destroot/bin/*"].concat(HermesHelper::BUILD_TYPE == :debug ? ["**/*.{h,c,cpp}"] : [])
+  spec.preserve_paths      = ["destroot/bin/*"].concat(build_type == :debug ? ["**/*.{h,c,cpp}"] : [])
   spec.source_files        = "destroot/include/**/*.h"
   spec.header_mappings_dir = "destroot/include"
 
   spec.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
   spec.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
 
-  spec.xcconfig            = { "CLANG_CXX_LANGUAGE_STANDARD" => "c++17", "CLANG_CXX_LIBRARY" => "compiler-default", "GCC_PREPROCESSOR_DEFINITIONS" => "HERMES_ENABLE_DEBUGGER=1" }
+  spec.xcconfig = {
+                    "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+                    "CLANG_CXX_LIBRARY" => "compiler-default"
+                  }.merge!(build_type == :debug ? { "GCC_PREPROCESSOR_DEFINITIONS" => "HERMES_ENABLE_DEBUGGER=1" } : {})
 
   if source[:git] then
     spec.prepare_command = <<-EOS
       # When true, debug build will be used.
       # See `build-apple-framework.sh` for details
-      DEBUG=#{HermesHelper::BUILD_TYPE == :debug}
+      DEBUG=#{build_type == :debug}
 
       # Set HERMES_OVERRIDE_HERMESC_PATH if pre-built HermesC is available
       #{File.exist?(import_hermesc_file) ? "export HERMES_OVERRIDE_HERMESC_PATH=#{import_hermesc_file}" : ""}
