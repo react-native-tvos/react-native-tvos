@@ -121,6 +121,7 @@ const styles = ReactNative.StyleSheet.create({
   },
   focusGuide: {
     position: 'relative',
+    opacity: 1,
     left: 0,
     top: 0,
     right: 0,
