@@ -84,11 +84,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
       Commands.setDestinations(hostComponentRef, nativeDestinations);
   }, [props.destinations]);
 
-  return (
-    <ReactNative.View style={props.style} ref={focusGuideRef}>
-      {props.children}
-    </ReactNative.View>
-  );
+  return <ReactNative.View ref={focusGuideRef} {...props} />;
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
@@ -102,11 +98,10 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
 
   return (
     <ReactNative.View
-      style={props.style}
+      {...props}
       focusable={props.focusable ?? true}
-      destinations={nativeDestinations}>
-      {props.children}
-    </ReactNative.View>
+      destinations={nativeDestinations}
+    />
   );
 };
 
