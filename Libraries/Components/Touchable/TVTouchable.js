@@ -25,6 +25,7 @@ type TVTouchableConfig = $ReadOnly<{|
   onBlur: (event: BlurEvent) => mixed,
   onFocus: (event: FocusEvent) => mixed,
   onPress: (event: PressEvent) => mixed,
+  onLongPress: (event: PressEvent) => mixed,
 |}>;
 
 export default class TVTouchable {
@@ -43,6 +44,10 @@ export default class TVTouchable {
         } else if (tvData.eventType === 'select') {
           if (!config.getDisabled()) {
             config.onPress(tvData);
+          }
+        } else if (tvData.eventType === 'longSelect') {
+          if (!config.getDisabled()) {
+            config.onLongPress(tvData);
           }
         }
       }
