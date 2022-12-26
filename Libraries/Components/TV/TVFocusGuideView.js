@@ -19,6 +19,13 @@ type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
 
   /**
+   * If the view should be "visible". display "flex" if visible, otherwise "none".
+   * Useful for absolute focus guides without children
+   * Defaults to true
+   */
+  enabled: ?Boolean,
+
+  /**
    * The views the focus should go to
    */
   destinations: ?(Object[]),
@@ -29,17 +36,23 @@ type TVFocusGuideViewProps = $ReadOnly<{
   safePadding?: 'vertical' | 'horizontal' | 'both' | null,
 }>;
 
-const TVFocusGuideView = (props: TVFocusGuideViewProps): React.Node => {
-  const safePadding =
-    props.safePadding === undefined ? 'both' : props.safePadding;
+const TVFocusGuideView = ({
+  enabled = true,
+  safePadding,
+  style,
+  ...otherProps
+}: TVFocusGuideViewProps): React.Node => {
+  const paddingChoice = safePadding === undefined ? 'both' : safePadding;
   const focusGuidePadding =
-    safePadding === 'both'
+    paddingChoice === 'both'
       ? {padding: 1}
-      : safePadding === 'vertical'
+      : paddingChoice === 'vertical'
       ? {paddingVertical: 1}
-      : safePadding === 'horizontal'
+      : paddingChoice === 'horizontal'
       ? {paddingHorizontal: 1}
       : null;
+
+  const enabledStyle = {display: enabled ? 'flex' : 'none'};
 
   /**
    * The client specified layout(using 'style' prop) should be applied the container view ReactNative.View.
@@ -49,22 +62,22 @@ const TVFocusGuideView = (props: TVFocusGuideViewProps): React.Node => {
    * and so, the left margin is getting added twice and UI becomes incorrect.
    * The same is applicable for other layout properties.
    */
-  const focusGuideStyle = [focusGuidePadding, props.style, styles.focusGuide];
+  const focusGuideStyle = [focusGuidePadding, style, styles.focusGuide];
 
   return (
     /**
      * The container needs to have at least a width of 1 and a height of 1.
      * Also, being the container, it shouldn't be possible to give it some padding.
      */
-    <ReactNative.View style={[props.style, styles.container]}>
+    <ReactNative.View style={[style, styles.container, enabledStyle]}>
       {Platform.isTV ? (
         Platform.isTVOS ? (
-          <FocusGuideViewTVOS {...props} style={focusGuideStyle} />
+          <FocusGuideViewTVOS {...otherProps} style={focusGuideStyle} />
         ) : (
-          <FocusGuideViewAndroidTV {...props} style={focusGuideStyle} />
+          <FocusGuideViewAndroidTV {...otherProps} style={focusGuideStyle} />
         )
       ) : (
-        props.children
+        otherProps.children
       )}
     </ReactNative.View>
   );
@@ -84,11 +97,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
       Commands.setDestinations(hostComponentRef, nativeDestinations);
   }, [props.destinations]);
 
-  return (
-    <ReactNative.View style={props.style} ref={focusGuideRef}>
-      {props.children}
-    </ReactNative.View>
-  );
+  return <ReactNative.View ref={focusGuideRef} {...props} />;
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
@@ -102,12 +111,10 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
 
   return (
     <ReactNative.View
-      style={props.style}
+      {...props}
       focusable={props.focusable ?? true}
       destinations={nativeDestinations}
-    >
-      {props.children}
-    </ReactNative.View>
+    />
   );
 };
 
@@ -121,6 +128,8 @@ const styles = ReactNative.StyleSheet.create({
     paddingRight: 0,
   },
   focusGuide: {
+    position: 'relative',
+    opacity: 1,
     left: 0,
     top: 0,
     right: 0,

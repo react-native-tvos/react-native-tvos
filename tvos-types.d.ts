@@ -64,6 +64,11 @@ declare module 'react-native' {
   }
 
   export interface FocusGuideProps extends ViewProps {
+     /**
+     * If the view should be "visible". display "flex" if visible, otherwise "none".
+     * Defaults to true
+     */
+    enabled?: boolean;
     /**
      * Array of `Component`s to register as destinations with `UIFocusGuide`
      */
