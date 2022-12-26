@@ -324,6 +324,11 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
             this.props.onPress(event);
           }
         },
+        onLongPress: event => {
+          if (this.props.onLongPress != null && Platform.OS !== 'android') {
+            this.props.onLongPress(event);
+          }
+        },
       });
     }
   }
