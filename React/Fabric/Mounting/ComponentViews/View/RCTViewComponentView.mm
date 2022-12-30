@@ -71,8 +71,6 @@ using namespace facebook::react;
     _tvParallaxProperties.pressMagnification = 1.0f;
     _tvParallaxProperties.pressDuration = 0.3f;
     _tvParallaxProperties.pressDelay = 0.0f;
-    self.focusGuide = [UIFocusGuide new];
-    [self addLayoutGuide:self.focusGuide];
 #else
     self.multipleTouchEnabled = YES;
 #endif
@@ -134,7 +132,16 @@ using namespace facebook::react;
 }
 
 - (void)addFocusDestinations:(NSArray*)destinations {
-  
+  if (self.focusGuide == nil) {
+    self.focusGuide = [UIFocusGuide new];
+    [self addLayoutGuide:self.focusGuide];
+
+    [self.focusGuide.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+    [self.focusGuide.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+    [self.focusGuide.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+    [self.focusGuide.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+  }
+
   self.focusGuide.preferredFocusEnvironments = destinations;
 }
 
@@ -856,11 +863,6 @@ using namespace facebook::react;
   }
   
 #if TARGET_OS_TV
-  [self.focusGuide.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-  [self.focusGuide.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
-  [self.focusGuide.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-  [self.focusGuide.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
-  
   if (_hasTVPreferredFocus) {
     RCTRootComponentView *rootview = [self containingRootView];
     if (rootview != nil && rootview.reactPreferredFocusedView != self) {
