@@ -433,16 +433,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)addFocusGuide:(NSArray*)destinations {
-  
-  UIView *origin = [self reactSuperview];
-  if (self.focusGuide == nil && origin != nil) {
+  if (self.focusGuide == nil) {
     self.focusGuide = [UIFocusGuide new];
     [self addLayoutGuide:self.focusGuide];
     
-    [self.focusGuide.widthAnchor constraintEqualToAnchor:origin.widthAnchor].active = YES;
-    [self.focusGuide.heightAnchor constraintEqualToAnchor:origin.heightAnchor].active = YES;
-    [self.focusGuide.topAnchor constraintEqualToAnchor:origin.topAnchor].active = YES;
-    [self.focusGuide.leftAnchor constraintEqualToAnchor:origin.leftAnchor].active = YES;
+    [self.focusGuide.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+    [self.focusGuide.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+    [self.focusGuide.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+    [self.focusGuide.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
   }
   
   self.focusGuide.preferredFocusEnvironments = destinations;
