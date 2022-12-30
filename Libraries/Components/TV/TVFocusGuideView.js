@@ -97,7 +97,9 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
       Commands.setDestinations(hostComponentRef, nativeDestinations);
   }, [props.destinations]);
 
-  return <ReactNative.View ref={focusGuideRef} {...props} />;
+  return (
+    <ReactNative.View ref={focusGuideRef} {...props} collapsable={false} />
+  );
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
