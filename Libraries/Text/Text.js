@@ -15,6 +15,7 @@ import processColor from '../StyleSheet/processColor';
 import TextAncestor from './TextAncestor';
 import {NativeText, NativeVirtualText} from './TextNativeComponent';
 import {type TextProps} from './TextProps';
+import Platform from '../Utilities/Platform';
 import * as React from 'react';
 import {useContext, useMemo, useState} from 'react';
 
@@ -185,7 +186,11 @@ const Text: React.AbstractComponent<
         {...restProps}
         {...eventHandlersForText}
         disabled={_disabled}
-        accessible={accessible !== false}
+        accessible={
+          Platform.isTV && Platform.OS === 'android'
+            ? accessible === true
+            : accessible !== false
+        }
         accessibilityState={_accessibilityState}
         allowFontScaling={allowFontScaling !== false}
         ellipsizeMode={ellipsizeMode ?? 'tail'}
