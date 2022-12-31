@@ -910,6 +910,11 @@ using namespace facebook::react;
   if ([_propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN containsObject:@"opacity"]) {
     self.layer.opacity = (float)props.opacity;
   }
+    
+  if (self.focusGuide != nil) {
+    [self removeLayoutGuide:self.focusGuide];
+    self.focusGuide = nil;
+  }
 
   _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN = nil;
   _eventEmitter.reset();
