@@ -186,7 +186,11 @@ const Text: React.AbstractComponent<
         {...restProps}
         {...eventHandlersForText}
         disabled={_disabled}
-        accessible={Platform.isTV ? accessible === true : accessible !== false}
+        accessible={
+          Platform.isTV && Platform.OS === 'android'
+            ? accessible === true
+            : accessible !== false
+        }
         accessibilityState={_accessibilityState}
         allowFontScaling={allowFontScaling !== false}
         ellipsizeMode={ellipsizeMode ?? 'tail'}
