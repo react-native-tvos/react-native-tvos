@@ -74,7 +74,7 @@ declare module 'react-native' {
      */
     destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[];
     /**
-     * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
+     * @deprecated Don't use it, no longer necessary.
      */
     safePadding?: 'both' | 'vertical' | 'horizontal' | null;
   }
