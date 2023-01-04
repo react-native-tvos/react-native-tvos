@@ -206,8 +206,7 @@ class Game2048 extends React.Component {
 
 | Prop | Value | Description | 
 |---|---|---|
-| destinations | any[] | Array of `Component`s to register as destinations of the FocusGuideView | 
-| safePadding | 'both' (default) \| 'vertical' \| 'horizontal' \| null | When the FocusGuide children are exactly the same size as the FocusGuide's container, the focus will almost certainly be given directly to the children without going through the FocusGuide. This prop make sure it doesn't happen by adding a padding of 1 in all directions.<br />"null" to disable it. |
+| destinations | any[] | Array of `Component`s to register as destinations of the FocusGuideView |
 
 - _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
 
