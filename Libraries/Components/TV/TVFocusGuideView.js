@@ -88,6 +88,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
       {...props}
       focusable={props.focusable ?? true}
       destinations={nativeDestinations}
+      collapsable={false}
     />
   );
 };
