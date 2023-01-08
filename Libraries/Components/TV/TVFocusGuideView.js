@@ -23,7 +23,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
    * Useful for absolute focus guides without children
    * Defaults to true
    */
-  enabled: ?Boolean,
+  enabled?: boolean,
 
   /**
    * The views the focus should go to
@@ -31,7 +31,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
   destinations: ?(Object[]),
 
   /**
-   * How the TVFocusGuideView content safe padding should be applied. "null" to disable it.
+   * @deprecated Don't use it, no longer necessary.
    */
   safePadding?: 'vertical' | 'horizontal' | 'both' | null,
 }>;
@@ -39,48 +39,20 @@ type TVFocusGuideViewProps = $ReadOnly<{
 const TVFocusGuideView = ({
   enabled = true,
   safePadding,
-  style,
-  ...otherProps
+  ...props
 }: TVFocusGuideViewProps): React.Node => {
-  const paddingChoice = safePadding === undefined ? 'both' : safePadding;
-  const focusGuidePadding =
-    paddingChoice === 'both'
-      ? {padding: 1}
-      : paddingChoice === 'vertical'
-      ? {paddingVertical: 1}
-      : paddingChoice === 'horizontal'
-      ? {paddingHorizontal: 1}
-      : null;
-
   const enabledStyle = {display: enabled ? 'flex' : 'none'};
+  const style = [styles.container, props.style, enabledStyle];
 
-  /**
-   * The client specified layout(using 'style' prop) should be applied the container view ReactNative.View.
-   * And the focusGuide's layout should be overridden to wrap it fully inside the container view.
-   * For example, if the client specifies 'marginLeft' property in the style prop,
-   * then the TVFocusGuideView will apply the 'marginLeft' for both the parentView and the focusGuideView.
-   * and so, the left margin is getting added twice and UI becomes incorrect.
-   * The same is applicable for other layout properties.
-   */
-  const focusGuideStyle = [focusGuidePadding, style, styles.focusGuide];
+  if (Platform.isTVOS) {
+    return <FocusGuideViewTVOS {...props} style={style} />;
+  }
 
-  return (
-    /**
-     * The container needs to have at least a width of 1 and a height of 1.
-     * Also, being the container, it shouldn't be possible to give it some padding.
-     */
-    <ReactNative.View style={[style, styles.container, enabledStyle]}>
-      {Platform.isTV ? (
-        Platform.isTVOS ? (
-          <FocusGuideViewTVOS {...otherProps} style={focusGuideStyle} />
-        ) : (
-          <FocusGuideViewAndroidTV {...otherProps} style={focusGuideStyle} />
-        )
-      ) : (
-        otherProps.children
-      )}
-    </ReactNative.View>
-  );
+  if (Platform.isTV) {
+    return <FocusGuideViewAndroidTV {...props} style={style} />;
+  }
+
+  return <ReactNative.View {...props} style={style} />;
 };
 
 const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
@@ -97,7 +69,9 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
       Commands.setDestinations(hostComponentRef, nativeDestinations);
   }, [props.destinations]);
 
-  return <ReactNative.View ref={focusGuideRef} {...props} />;
+  return (
+    <ReactNative.View ref={focusGuideRef} {...props} collapsable={false} />
+  );
 };
 
 const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
@@ -114,6 +88,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
       {...props}
       focusable={props.focusable ?? true}
       destinations={nativeDestinations}
+      collapsable={false}
     />
   );
 };
@@ -122,22 +97,6 @@ const styles = ReactNative.StyleSheet.create({
   container: {
     minWidth: 1,
     minHeight: 1,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  focusGuide: {
-    position: 'relative',
-    opacity: 1,
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    marginLeft: 0,
-    marginTop: 0,
-    marginRight: 0,
-    marginBottom: 0,
   },
 });
 
