@@ -46,7 +46,7 @@ export default class TVTouchable {
             config.onPress(tvData);
           }
         } else if (tvData.eventType === 'longSelect') {
-          if (!config.getDisabled()) {
+          if (Platform.OS !== 'android' && !config.getDisabled()) {
             config.onLongPress(tvData);
           }
         }
