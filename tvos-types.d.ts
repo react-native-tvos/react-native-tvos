@@ -43,7 +43,7 @@ declare module 'react-native' {
   };
 
   export type HWEvent = {
-    eventType: 'up' | 'down' | 'right' | 'left' | 'blur' | 'focus' | 'pan' | string;
+    eventType: 'up' | 'down' | 'right' | 'left' | 'longUp' | 'longDown' | 'longRight' | 'longLeft' | 'blur' | 'focus' | 'pan' | string;
     eventKeyAction?: -1 | 1 | 0 | number;
     tag?: number;
     body?: {

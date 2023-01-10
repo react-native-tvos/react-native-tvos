@@ -35,6 +35,10 @@ NSString *const RCTTVRemoteEventSelect = @"select";
 
 NSString *const RCTTVRemoteEventLongPlayPause = @"longPlayPause";
 NSString *const RCTTVRemoteEventLongSelect = @"longSelect";
+NSString *const RCTTVRemoteEventLongUp = @"longUp";
+NSString *const RCTTVRemoteEventLongDown = @"longDown";
+NSString *const RCTTVRemoteEventLongLeft = @"longLeft";
+NSString *const RCTTVRemoteEventLongRight = @"longRight";
 
 NSString *const RCTTVRemoteEventLeft = @"left";
 NSString *const RCTTVRemoteEventRight = @"right";
@@ -186,6 +190,22 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
   [self addLongPressGestureRecognizerWithSelector:@selector(longSelectPressed:)
                                         pressType:UIPressTypeSelect
                                              name:RCTTVRemoteEventLongSelect];
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longUpPressed:)
+                                        pressType:UIPressTypeUpArrow
+                                             name:RCTTVRemoteEventLongUp];
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longDownPressed:)
+                                        pressType:UIPressTypeDownArrow
+                                             name:RCTTVRemoteEventLongDown];
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longLeftPressed:)
+                                        pressType:UIPressTypeLeftArrow
+                                             name:RCTTVRemoteEventLongLeft];
+
+  [self addLongPressGestureRecognizerWithSelector:@selector(longRightPressed:)
+                                        pressType:UIPressTypeRightArrow
+                                             name:RCTTVRemoteEventLongRight];
 
   // Recognizers for Apple TV remote trackpad swipes
 
@@ -376,6 +396,26 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 - (void)longSelectPressed:(UIGestureRecognizer *)r
 {
   [self sendAppleTVEvent:RCTTVRemoteEventLongSelect];
+}
+
+- (void)longUpPressed:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventLongUp];
+}
+
+- (void)longDownPressed:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventLongDown];
+}
+
+- (void)longLeftPressed:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventLongLeft];
+}
+
+- (void)longRightPressed:(UIGestureRecognizer *)r
+{
+  [self sendAppleTVEvent:RCTTVRemoteEventLongRight];
 }
 
 - (void)swipedUp:(UIGestureRecognizer *)r

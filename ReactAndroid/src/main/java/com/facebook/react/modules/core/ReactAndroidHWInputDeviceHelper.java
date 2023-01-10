@@ -63,6 +63,18 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_CHANNEL_UP, "channelUp")
           .build();
 
+  private static final Map<Integer, String> KEY_EVENTS_LONG_PRESS_ACTIONS =
+      MapBuilder.<Integer, String>builder()
+          .put(KeyEvent.KEYCODE_DPAD_CENTER, "longSelect")
+          .put(KeyEvent.KEYCODE_ENTER, "longSelect")
+          .put(KeyEvent.KEYCODE_NUMPAD_ENTER, "longSelect")
+          .put(KeyEvent.KEYCODE_BUTTON_SELECT, "longSelect")
+          .put(KeyEvent.KEYCODE_DPAD_UP, "longUp")
+          .put(KeyEvent.KEYCODE_DPAD_RIGHT, "longRight")
+          .put(KeyEvent.KEYCODE_DPAD_DOWN, "longDown")
+          .put(KeyEvent.KEYCODE_DPAD_LEFT, "longLeft")
+          .build();
+
   /**
    * We keep a reference to the last focused view id so that we can send it as a target for key
    * events and be able to send a blur event when focus changes.
@@ -81,21 +93,33 @@ public class ReactAndroidHWInputDeviceHelper {
       eventKeyCode == KeyEvent.KEYCODE_ENTER;
   }
 
+  /** Only the up/right/down/left arrows. The dpad center button is not included */
+  private boolean isDPadEvent(int eventKeyCode) {
+    return eventKeyCode == KeyEvent.KEYCODE_DPAD_UP ||
+      eventKeyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
+      eventKeyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
+      eventKeyCode == KeyEvent.KEYCODE_DPAD_LEFT;
+  }
+
   /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
     long time = SystemClock.uptimeMillis();
+    boolean isSelectOrDPadEvent = isDPadEvent(eventKeyCode) || isSelectEvent(eventKeyCode);
 
     // Simple implementation of long press detection
     if ((eventKeyAction == KeyEvent.ACTION_DOWN)
-      && isSelectEvent(eventKeyCode) && mLastKeyDownTime == 0) {
+      && isSelectOrDPadEvent && mLastKeyDownTime == 0) {
       mLastKeyDownTime = time;
     }
+
     if (shouldDispatchEvent(eventKeyCode, eventKeyAction)) {
       long delta = time - mLastKeyDownTime;
-      if (isSelectEvent(eventKeyCode) && (delta > mPressedDelta)) {
-        dispatchEvent("longSelect", mLastFocusedViewId, eventKeyAction, context);
+      boolean isLongPress = delta > mPressedDelta;
+
+      if(isLongPress && isSelectOrDpadEvent){
+        dispatchEvent(KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
       } else {
         dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
       }
