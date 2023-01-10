@@ -22,6 +22,10 @@ extern NSString * _Nonnull const RCTTVRemoteEventSelect;
 
 extern NSString * _Nonnull const RCTTVRemoteEventLongPlayPause;
 extern NSString * _Nonnull const RCTTVRemoteEventLongSelect;
+extern NSString * _Nonnull const RCTTVRemoteEventLongUp;
+extern NSString * _Nonnull const RCTTVRemoteEventLongDown;
+extern NSString * _Nonnull const RCTTVRemoteEventLongLeft;
+extern NSString * _Nonnull const RCTTVRemoteEventLongRight;
 
 extern NSString * _Nonnull const RCTTVRemoteEventLeft;
 extern NSString * _Nonnull const RCTTVRemoteEventRight;
