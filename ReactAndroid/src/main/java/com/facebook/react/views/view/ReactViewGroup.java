@@ -60,6 +60,8 @@ import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.yoga.YogaConstants;
 
+import java.util.ArrayList;
+
 /**
  * Backing for a React View. Has support for borders, but since borders aren't common, lazy
  * initializes most of the storage needed for them.
@@ -1016,6 +1018,72 @@ public class ReactViewGroup extends ViewGroup
     }
     return false;
   }
+
+  private boolean isTVFocusGuide() {
+    return focusDestinations.length > 0;
+  }
+
+  @Nullable
+  private ReactViewGroup findParentFocusGuide(View view) {
+    ViewParent parent = view.getParent();
+
+    while (parent != null) {
+      if (parent instanceof ReactViewGroup) {
+        ReactViewGroup elem = (ReactViewGroup) parent;
+        if (elem.isTVFocusGuide()) return elem;
+      }
+      parent = parent.getParent();
+    }
+
+    return null;
+  }
+
+  /***
+   * This is meant to be used only for TVFocusGuide.
+   * @return View | null
+   */
+  @Nullable
+  private View getFocusedChildOfFocusGuide() {
+    if (!isTVFocusGuide()) return null;
+
+    /*
+     * We can have nested `TVFocusGuide`s, this is a typical scenario.
+     * The problem is, returned element from `getFocusedChild` can be
+     * either a direct `child` of the `TVFocusGuide` or a `descendant` of it.
+     * Let's say if we run `getFocusedChild` for the Root element, it will always
+     * give us an element even though the Root element is not the direct parent
+     * of the focused element.
+     * So, we need to find the closest `TVFocusGuide` to the focused child
+     * to make sure the focused element's closest `TVFocusGuide` is "this" one.
+     */
+    View focusedChild = this.getFocusedChild();
+    if (focusedChild == null) return null;
+
+    ReactViewGroup parentFocusGuide = findParentFocusGuide(focusedChild);
+    if (parentFocusGuide == this) return focusedChild;
+
+    return null;
+  }
+
+  @Override
+  public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+    if (isTVFocusGuide()) {
+      View focusedChild = getFocusedChildOfFocusGuide();
+
+      /*
+       * We only include the view's (TVFocusGuide) itself if it doesn't have a child that currently has the focus.
+       * Otherwise, it means focus is already in the `TVFocusGuide` and all of it's descendants should be included
+       * for focus calculations.
+       */
+      if (focusedChild == null) {
+        views.add(this);
+        return;
+      }
+    }
+
+    super.addFocusables(views, direction, focusableMode);
+  }
+
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
