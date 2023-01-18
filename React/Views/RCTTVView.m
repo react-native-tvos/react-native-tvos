@@ -261,6 +261,15 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   if (context.previouslyFocusedView == context.nextFocusedView) {
     return;
   }
+    
+  if (_autoFocus) {
+    // Whenever focus leaves the container, `nextFocusedView` is the destination, the item outside the container.
+    // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
+    // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
+    // the last focused element and redirects the focus to it whenever focus comes back.
+    self.focusGuide.preferredFocusEnvironments = @[context.previouslyFocusedItem];
+  }
+    
   if (context.nextFocusedView == self && self.isTVSelectable ) {
     [self becomeFirstResponder];
     [self enableDirectionalFocusGuides];
@@ -430,6 +439,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)setHasTVPreferredFocus:(BOOL)hasTVPreferredFocus
 {
   [self setPreferredFocus:hasTVPreferredFocus];
+}
+
+- (void)setAutoFocus:(BOOL)autoFocus
+{
+    if (_autoFocus != autoFocus) {
+        _autoFocus = autoFocus;
+        [self addFocusGuide:@[self]];
+    }
 }
 
 - (void)addFocusGuide:(NSArray*)destinations {

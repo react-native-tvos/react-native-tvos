@@ -52,6 +52,12 @@ ViewProps::ViewProps(
           convertRawProp(context, rawProps, "nextFocusLeft", sourceProps.nextFocusLeft, {})),
       nextFocusRight(
           convertRawProp(context, rawProps, "nextFocusRight", sourceProps.nextFocusRight, {})),
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          (Boolean) false)),
 #endif
       opacity(convertRawProp(
           context,

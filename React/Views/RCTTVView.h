@@ -42,6 +42,11 @@
 @property (nonatomic, strong) UIFocusGuide * focusGuideLeft;
 @property (nonatomic, strong) UIFocusGuide * focusGuideRight;
 
+/**
+ * Auto focus
+ */
+@property (nonatomic, assign) BOOL autoFocus;
+
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 
 /**

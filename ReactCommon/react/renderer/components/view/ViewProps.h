@@ -78,6 +78,7 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   std::optional<int> nextFocusDown;
   std::optional<int> nextFocusLeft;
   std::optional<int> nextFocusRight;
+  bool autoFocus{false};
 #endif
 
   Float elevation{}; /* Android-only */
