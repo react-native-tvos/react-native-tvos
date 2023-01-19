@@ -60,6 +60,7 @@ import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.yoga.YogaConstants;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -83,7 +84,7 @@ public class ReactViewGroup extends ViewGroup
   private static final Rect sHelperRect = new Rect();
   private @NonNull int[] focusDestinations = new int[0];
   private boolean autoFocus = false;
-  private @Nullable View lastFocusedElement = null;
+  private WeakReference<View> lastFocusedElement;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1090,8 +1091,8 @@ public class ReactViewGroup extends ViewGroup
   public void requestChildFocus(View child, View focused) {
     super.requestChildFocus(child, focused);
 
-    if (this.autoFocus) {
-      lastFocusedElement = focused;
+    if (autoFocus) {
+      lastFocusedElement = new WeakReference<View>(focused);
     }
   }
 
@@ -1102,15 +1103,28 @@ public class ReactViewGroup extends ViewGroup
     }
 
     if (this.autoFocus) {
-      if (lastFocusedElement != null) {
-        lastFocusedElement.requestFocus();
-        return true;
+      View lastFocusedElem = lastFocusedElement.get();
+
+      if (lastFocusedElem != null) {
+
+        if (lastFocusedElem.isAttachedToWindow()) {
+          lastFocusedElem.requestFocus();
+          return true;
+        }
+
+        /**
+         * `lastFocusedElem` can get detached based on application logic.
+         * If the code reaches here, that means we're dealing with that case.
+         * We should set `lastFocusedElem` to null and let the focus determination
+         * logic below to do its magic and redirect focus to the first element.
+         */
+        lastFocusedElement = new WeakReference<View>(null);
       }
 
 
       ArrayList<View> focusables = new ArrayList<View>(0);
       /**
-       * We should redirect the focus to the *first focusable element* on first visit.
+       * We should redirect the focus to the *first focusable element* if `lastFocusedElement` is not set.
        *
        * `addFocusables` is the method used by `FocusFinder` to determine
        * which elements are `focusable` within the given view.
@@ -1153,5 +1167,6 @@ public class ReactViewGroup extends ViewGroup
 
   public void setAutoFocus(boolean autoFocus) {
     this.autoFocus = autoFocus;
+    lastFocusedElement = new WeakReference<View>(null);
   }
 }
