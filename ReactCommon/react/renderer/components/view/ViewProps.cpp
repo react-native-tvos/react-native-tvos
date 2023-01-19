@@ -216,7 +216,13 @@ ViewProps::ViewProps(
           rawProps,
           "renderToHardwareTextureAndroid",
           sourceProps.renderToHardwareTextureAndroid,
-          {}))
+          {})),
+    autoFocus(convertRawProp(
+            context,
+            rawProps,
+            "autoFocus",
+            sourceProps.hasTVPreferredFocus,
+            false))
 #endif
           {};
 

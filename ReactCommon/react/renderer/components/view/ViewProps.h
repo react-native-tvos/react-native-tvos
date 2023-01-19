@@ -92,7 +92,7 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   bool hasTVPreferredFocus{false};
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};
-
+  bool autoFocus{false};
 #endif
 
 #pragma mark - Convenience Methods

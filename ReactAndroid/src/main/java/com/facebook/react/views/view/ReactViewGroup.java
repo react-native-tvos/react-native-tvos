@@ -82,6 +82,8 @@ public class ReactViewGroup extends ViewGroup
   /* should only be used in {@link #updateClippingToRect} */
   private static final Rect sHelperRect = new Rect();
   private @NonNull int[] focusDestinations = new int[0];
+  private boolean autoFocus = false;
+  private @Nullable View lastFocusedElement = null;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1020,7 +1022,7 @@ public class ReactViewGroup extends ViewGroup
   }
 
   private boolean isTVFocusGuide() {
-    return focusDestinations.length > 0;
+    return focusDestinations.length > 0 || autoFocus;
   }
 
   @Nullable
@@ -1084,11 +1086,47 @@ public class ReactViewGroup extends ViewGroup
     super.addFocusables(views, direction, focusableMode);
   }
 
+  @Override
+  public void requestChildFocus(View child, View focused) {
+    super.requestChildFocus(child, focused);
+    lastFocusedElement = this.getFocusedChild();
+  }
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (focusDestinations.length == 0) {
+    if (!isTVFocusGuide()) {
       return super.requestFocus(direction, previouslyFocusedRect);
+    }
+
+    if (this.autoFocus) {
+      if (lastFocusedElement != null) {
+        lastFocusedElement.requestFocus();
+        return true;
+      }
+
+
+      ArrayList<View> focusables = new ArrayList<View>(0);
+      /**
+       * We should redirect the focus to the *first focusable element* on first visit.
+       *
+       * `addFocusables` is the method used by `FocusFinder` to determine
+       * which elements are `focusable` within the given view.
+       * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
+       * Focus direction (FOCUS_DOWN) doesn't matter at all.
+       * It's not being used by the underlying implementation.
+       */
+      super.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
+      /**
+       * Since ViewGroup's default `descendantFocusability` mode is `FOCUS_BEFORE_DESCENDANTS`
+       * index 0 always will be the `TVFocusGuide` itself.
+       * So, if `focusables` size is more than 1 it means we have child elements to focus.
+       * This case only happens on the first visit of the view.
+       */
+      if (focusables.size() > 1) {
+        View firstFocusable = focusables.get(1);
+        firstFocusable.requestFocus();
+        return true;
+      }
     }
 
     View destination = findDestinationView();
@@ -1108,5 +1146,9 @@ public class ReactViewGroup extends ViewGroup
 
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
     this.focusDestinations = focusDestinations;
+  }
+
+  public void setAutoFocus(boolean autoFocus) {
+    this.autoFocus = autoFocus;
   }
 }
