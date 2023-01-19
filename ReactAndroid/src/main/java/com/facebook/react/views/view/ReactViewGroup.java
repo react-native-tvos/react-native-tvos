@@ -1089,7 +1089,10 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public void requestChildFocus(View child, View focused) {
     super.requestChildFocus(child, focused);
-    lastFocusedElement = this.getFocusedChild();
+
+    if (this.autoFocus) {
+      lastFocusedElement = focused;
+    }
   }
 
   @Override
