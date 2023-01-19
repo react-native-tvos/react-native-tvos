@@ -428,7 +428,7 @@ using namespace facebook::react;
       return;
     }
   
-    if (_autoFocus) {
+    if (_autoFocus && self.focusGuide != nil) {
       // Whenever focus leaves the container, `nextFocusedView` is the destination, the item outside the container.
       // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
       // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
