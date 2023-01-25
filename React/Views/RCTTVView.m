@@ -262,7 +262,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     return;
   }
     
-  if (_autoFocus && self.focusGuide != nil) {
+  if (_autoFocus && self.focusGuide != nil && context.previouslyFocusedItem != nil) {
     // Whenever focus leaves the container, `nextFocusedView` is the destination, the item outside the container.
     // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
     // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
