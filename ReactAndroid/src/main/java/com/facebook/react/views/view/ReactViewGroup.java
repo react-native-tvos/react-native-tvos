@@ -446,65 +446,6 @@ public class ReactViewGroup extends ViewGroup
     }
   }
 
-  @Override
-  public boolean getChildVisibleRect(View child, Rect r, android.graphics.Point offset) {
-    return super.getChildVisibleRect(child, r, offset);
-  }
-
-  @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    super.onSizeChanged(w, h, oldw, oldh);
-    if (mRemoveClippedSubviews) {
-      updateClippingRect();
-    }
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-    if (mRemoveClippedSubviews) {
-      updateClippingRect();
-    }
-  }
-
-  private boolean customDrawOrderDisabled() {
-    if (getId() == NO_ID) {
-      return false;
-    }
-    return ViewUtil.getUIManagerType(getId()) == UIManagerType.FABRIC;
-  }
-
-  @Override
-  public void addView(View child, int index, ViewGroup.LayoutParams params) {
-    // This will get called for every overload of addView so there is not need to override every
-    // method.
-
-    if (!customDrawOrderDisabled()) {
-      getDrawingOrderHelper().handleAddView(child);
-      setChildrenDrawingOrderEnabled(getDrawingOrderHelper().shouldEnableCustomDrawingOrder());
-    } else {
-      setChildrenDrawingOrderEnabled(false);
-    }
-
-    super.addView(child, index, params);
-  }
-
-  @Override
-  public void removeView(View view) {
-    UiThreadUtil.assertOnUiThread();
-
-    if (!customDrawOrderDisabled()) {
-      getDrawingOrderHelper().handleRemoveView(view);
-      setChildrenDrawingOrderEnabled(getDrawingOrderHelper().shouldEnableCustomDrawingOrder());
-    } else {
-      setChildrenDrawingOrderEnabled(false);
-    }
-
-    recoverFocus(view);
-
-    super.removeView(view);
-  }
-
   void moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
     ArrayList<View> focusables = new ArrayList<View>(0);
     /**
@@ -566,6 +507,65 @@ public class ReactViewGroup extends ViewGroup
           parentFocusGuide.mRecoverFocus = false;
         }
       });
+  }
+
+  @Override
+  public boolean getChildVisibleRect(View child, Rect r, android.graphics.Point offset) {
+    return super.getChildVisibleRect(child, r, offset);
+  }
+
+  @Override
+  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    super.onSizeChanged(w, h, oldw, oldh);
+    if (mRemoveClippedSubviews) {
+      updateClippingRect();
+    }
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    if (mRemoveClippedSubviews) {
+      updateClippingRect();
+    }
+  }
+
+  private boolean customDrawOrderDisabled() {
+    if (getId() == NO_ID) {
+      return false;
+    }
+    return ViewUtil.getUIManagerType(getId()) == UIManagerType.FABRIC;
+  }
+
+  @Override
+  public void addView(View child, int index, ViewGroup.LayoutParams params) {
+    // This will get called for every overload of addView so there is not need to override every
+    // method.
+
+    if (!customDrawOrderDisabled()) {
+      getDrawingOrderHelper().handleAddView(child);
+      setChildrenDrawingOrderEnabled(getDrawingOrderHelper().shouldEnableCustomDrawingOrder());
+    } else {
+      setChildrenDrawingOrderEnabled(false);
+    }
+
+    super.addView(child, index, params);
+  }
+
+  @Override
+  public void removeView(View view) {
+    UiThreadUtil.assertOnUiThread();
+
+    if (!customDrawOrderDisabled()) {
+      getDrawingOrderHelper().handleRemoveView(view);
+      setChildrenDrawingOrderEnabled(getDrawingOrderHelper().shouldEnableCustomDrawingOrder());
+    } else {
+      setChildrenDrawingOrderEnabled(false);
+    }
+
+    recoverFocus(view);
+
+    super.removeView(view);
   }
 
   @Override
