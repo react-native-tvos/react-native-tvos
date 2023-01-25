@@ -331,6 +331,12 @@ const APIs: Array<RNTesterModuleInfo> = [
     supportsTVOS: true,
   },
   {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'TurboModuleExample',
     module: require('../examples/TurboModule/TurboModuleExample'),
     supportsTVOS: false,
