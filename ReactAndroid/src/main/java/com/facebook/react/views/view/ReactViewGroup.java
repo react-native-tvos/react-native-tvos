@@ -85,6 +85,7 @@ public class ReactViewGroup extends ViewGroup
   private @NonNull int[] focusDestinations = new int[0];
   private boolean autoFocus = false;
   private WeakReference<View> lastFocusedElement;
+  private boolean mRecoverFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -499,7 +500,72 @@ public class ReactViewGroup extends ViewGroup
       setChildrenDrawingOrderEnabled(false);
     }
 
+    recoverFocus(view);
+
     super.removeView(view);
+  }
+
+  void moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+    ArrayList<View> focusables = new ArrayList<View>(0);
+    /**
+     * `addFocusables` is the method used by `FocusFinder` to determine
+     * which elements are `focusable` within the given view.
+     * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
+     * Focus direction (FOCUS_DOWN) doesn't matter at all because
+     * it's not being used by the underlying implementation.
+     */
+    viewGroup.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
+    /**
+     * Depending on ViewGroup's `descendantFocusability` property,
+     * the first element can be the ViewGroup itself.
+     * The other ones on the list can be non-focusable as well.
+     * So, we run a loop till finding the first real focusable element.
+     */
+    if (focusables.size() <= 0) return;
+
+    View firstFocusableElement = null;
+    Integer index = 0;
+    while (firstFocusableElement == null && index < focusables.size()) {
+      View elem = focusables.get(index);
+      if (elem.isFocusable() && elem != viewGroup) {
+        firstFocusableElement = elem;
+        break;
+      }
+      index++;
+    }
+
+    if (firstFocusableElement != null) firstFocusableElement.requestFocus();
+  }
+
+  void recoverFocus(View view) {
+    if (!view.isFocused() || !(view instanceof ReactViewGroup)) return;
+
+    ReactViewGroup parentFocusGuide = findParentFocusGuide(view);
+    if (parentFocusGuide == null) return;
+
+    /**
+     * Making `parentFocusGuide` focusable for a brief time to
+     * temporarily move the focus to it. We do this to prevent
+     * Android from moving the focus to top-left-most element of the screen.
+     */
+    parentFocusGuide.mRecoverFocus = true;
+    parentFocusGuide.setFocusable(true);
+    parentFocusGuide.requestFocus();
+
+    /**
+     * We set a Runnable to wait and make sure every layout related action gets completed
+     * before trying to find a new focus candidate inside the `parentFocusGuide`.
+     */
+    UiThreadUtil.runOnUiThread(
+      new Runnable() {
+        @Override
+        public void run() {
+          moveFocusToFirstFocusable(parentFocusGuide);
+
+          parentFocusGuide.setFocusable(false);
+          parentFocusGuide.mRecoverFocus = false;
+        }
+      });
   }
 
   @Override
@@ -512,6 +578,8 @@ public class ReactViewGroup extends ViewGroup
     } else {
       setChildrenDrawingOrderEnabled(false);
     }
+
+    recoverFocus(getChildAt(index));
 
     super.removeViewAt(index);
   }
@@ -1070,7 +1138,12 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-    if (isTVFocusGuide()) {
+    /**
+     * TVFocusGuides should reveral their children when `mRecoverFocus` is set.
+     * `mRecoverFocus` flag indicates a temporary focus recovery mode it's in which
+     * requires full access to children focusable elements.
+     */
+    if (isTVFocusGuide() && !mRecoverFocus) {
       View focusedChild = getFocusedChildOfFocusGuide();
 
       /*
@@ -1097,8 +1170,13 @@ public class ReactViewGroup extends ViewGroup
   }
 
   @Override
+  protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+  }
+
+  @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (!isTVFocusGuide()) {
+    if (!isTVFocusGuide() || mRecoverFocus) {
       return super.requestFocus(direction, previouslyFocusedRect);
     }
 
@@ -1121,29 +1199,9 @@ public class ReactViewGroup extends ViewGroup
         lastFocusedElement = new WeakReference<View>(null);
       }
 
-
-      ArrayList<View> focusables = new ArrayList<View>(0);
-      /**
-       * We should redirect the focus to the *first focusable element* if `lastFocusedElement` is not set.
-       *
-       * `addFocusables` is the method used by `FocusFinder` to determine
-       * which elements are `focusable` within the given view.
-       * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
-       * Focus direction (FOCUS_DOWN) doesn't matter at all.
-       * It's not being used by the underlying implementation.
-       */
-      super.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
-      /**
-       * Since ViewGroup's default `descendantFocusability` mode is `FOCUS_BEFORE_DESCENDANTS`
-       * index 0 always will be the `TVFocusGuide` itself.
-       * So, if `focusables` size is more than 1 it means we have child elements to focus.
-       * This case only happens on the first visit of the view.
-       */
-      if (focusables.size() > 1) {
-        View firstFocusable = focusables.get(1);
-        firstFocusable.requestFocus();
-        return true;
-      }
+      // Try moving the focus to the first focusable element otherwise.
+      moveFocusToFirstFocusable(this);
+      return true;
     }
 
     View destination = findDestinationView();
