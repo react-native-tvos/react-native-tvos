@@ -68,7 +68,7 @@ const TVFocusGuideView = ({
 
 const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
   const focusGuideRef = React.useRef(null);
-  console.log(props.autoFocus);
+
   React.useEffect(() => {
     if (props.destinations) {
       const nativeDestinations = (props.destinations || [])
@@ -77,7 +77,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
       const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(
         focusGuideRef?.current,
       );
-      console.log(nativeDestinations);
+
       hostComponentRef &&
         Commands.setDestinations(hostComponentRef, nativeDestinations);
     }
