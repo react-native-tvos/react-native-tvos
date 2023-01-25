@@ -206,7 +206,8 @@ class Game2048 extends React.Component {
 
 | Prop | Value | Description | 
 |---|---|---|
-| destinations | any[] | Array of `Component`s to register as destinations of the FocusGuideView |
+| destinations | any[]? | Array of `Component`s to register as destinations of the FocusGuideView |
+| autoFocus | boolean? | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. |
 
 - _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
 

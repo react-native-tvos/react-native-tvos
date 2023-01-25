@@ -75,9 +75,9 @@ declare module 'react-native' {
     destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[];
     /**
      * If true, `TVFocusGuide` will automatically manage focus for you.
-     * It will redirect the focus to the first focusable child on first visit.
-     * It also remembers the last focused child and redirect the focus
-     * to the last focused child on subsequent visits.
+     * It will redirect the focus to the first focusable child on the first visit.
+     * It also remembers the last focused child and redirects the focus
+     * to it on the subsequent visits.
      *
      * @default false
      */
