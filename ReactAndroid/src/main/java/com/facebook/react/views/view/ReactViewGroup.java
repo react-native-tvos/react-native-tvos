@@ -446,7 +446,7 @@ public class ReactViewGroup extends ViewGroup
     }
   }
 
-  void moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
     ArrayList<View> focusables = new ArrayList<View>(0);
     /**
      * `addFocusables` is the method used by `FocusFinder` to determine
@@ -462,7 +462,7 @@ public class ReactViewGroup extends ViewGroup
      * The other ones on the list can be non-focusable as well.
      * So, we run a loop till finding the first real focusable element.
      */
-    if (focusables.size() <= 0) return;
+    if (focusables.size() <= 0) return false;
 
     View firstFocusableElement = null;
     Integer index = 0;
@@ -475,11 +475,13 @@ public class ReactViewGroup extends ViewGroup
       index++;
     }
 
-    if (firstFocusableElement != null) firstFocusableElement.requestFocus();
+    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
+
+    return false;
   }
 
   void recoverFocus(View view) {
-    if (!view.isFocused() || !(view instanceof ReactViewGroup)) return;
+    if (!view.hasFocus() || !(view instanceof ReactViewGroup)) return;
 
     ReactViewGroup parentFocusGuide = findParentFocusGuide(view);
     if (parentFocusGuide == null) return;
@@ -1200,8 +1202,9 @@ public class ReactViewGroup extends ViewGroup
       }
 
       // Try moving the focus to the first focusable element otherwise.
-      moveFocusToFirstFocusable(this);
-      return true;
+      if (moveFocusToFirstFocusable(this)) {
+        return true;
+      }
     }
 
     View destination = findDestinationView();
