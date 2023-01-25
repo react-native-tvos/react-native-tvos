@@ -46,8 +46,14 @@ const FOCUS_BORDER_COLOR = '#D1CAA1';
 const screenHeight = ReactNative.Dimensions.get('window').height;
 const scale = screenHeight / 1080;
 
-const generateData = (length = 10) => {
-  return Array.from({length}).map((item, index) => index);
+const generateData = (length = 10, randomize = false) => {
+  return Array.from({length}).map((item, index) => {
+    if (randomize) {
+      return Math.floor(Math.random() * 999);
+    }
+
+    return index;
+  });
   // return Array.from({length: length + Math.floor(Math.random() * 10)}).map(
   //   (item, index) => Math.floor(Math.random() * 999),
   // );
@@ -131,6 +137,7 @@ const HList = ({
   itemHeight = 120 * scale,
   itemColor = FOCUSABLE_ITEM_COLOR,
   onItemFocused,
+  onItemPressed,
   prefix = '',
   ...props
 }) => {
@@ -147,6 +154,7 @@ const HList = ({
         style={styles.mr5}
         text={getItemText({prefix, item})}
         onFocus={() => onItemFocused?.({item, index})}
+        onPress={() => onItemPressed?.({item, index})}
       />
     );
   };
@@ -211,16 +219,39 @@ const Col = ({title}) => {
   );
 };
 
+const RestoreFocusTestList = () => {
+  const [randomize, setRandomize] = React.useState(false);
+  const data = React.useMemo(() => generateData(10, randomize), [randomize]);
+  /**
+   * This is a test to make sure that the focus is restored
+   * after the list is re-rendered and currently focused item is removed.
+   *
+   * We force the list to re-render by toggling the `randomize` state. It invalidates
+   * the `data` and causes the list to re-render with random or regular data.
+   */
+  const onItemPressed = ({item}) => setRandomize(r => !r);
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Restore Focus Test
+      </Text>
+      <HList itemCount={10} data={data} onItemPressed={onItemPressed} />
+    </TVFocusGuide>
+  );
+};
+
 const ContentArea = () => {
   return (
     <TVFocusGuide autoFocus style={{flex: 1}}>
       <ScrollView>
-        <Text style={{fontSize: 48 * scale, margin: 10 * scale}}>
-          Welcome to the TVFocusGuide example!
+        <Text style={styles.pageTitle}>
+          Welcome to the TVFocusGuide autoFocus example!
         </Text>
-        <TVFocusGuide autoFocus style={styles.mb5}>
-          <HList itemCount={10} />
-        </TVFocusGuide>
+        <RestoreFocusTestList />
         <Row title="Category Example 1" />
         <Row title="Category Example 2" />
 
@@ -290,4 +321,5 @@ const styles = StyleSheet.create({
     height: 100 * scale,
     marginBottom: 5 * scale,
   },
+  pageTitle: {fontSize: 48 * scale, margin: 10 * scale},
 });
