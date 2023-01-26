@@ -54,9 +54,6 @@ const generateData = (length = 10, randomize = false) => {
 
     return index;
   });
-  // return Array.from({length: length + Math.floor(Math.random() * 10)}).map(
-  //   (item, index) => Math.floor(Math.random() * 999),
-  // );
 };
 
 const TVFocusGuide = ({autoFocus, destinations, ...props}) => {
