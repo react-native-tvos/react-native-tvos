@@ -86,6 +86,7 @@ const FocusableBox = ({
   text,
   ...props
 }) => {
+  const theme = useRNTesterTheme();
   return (
     <Pressable
       {...props}
@@ -98,7 +99,7 @@ const FocusableBox = ({
           justifyContent: 'center',
           borderRadius: 4,
         },
-        state.focused && {borderColor: FOCUS_BORDER_COLOR, borderWidth: 2},
+        state.focused && {borderColor: theme.SystemRedColor, borderWidth: 4},
         props.style,
       ]}>
       {text !== undefined ? (
