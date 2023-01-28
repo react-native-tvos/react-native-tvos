@@ -40,8 +40,6 @@ exports.examples = [
 
 // Set it to false to see the behavior without TVFocusGuide.
 const FOCUS_GUIDE_ENABLED = true;
-const FOCUSABLE_ITEM_COLOR = '#197BBD';
-const FOCUS_BORDER_COLOR = '#D1CAA1';
 
 const screenHeight = ReactNative.Dimensions.get('window').height;
 const scale = screenHeight / 1080;
@@ -82,7 +80,6 @@ const Text = ({style, children}) => {
 const FocusableBox = ({
   width,
   height,
-  color: backgroundColor = FOCUSABLE_ITEM_COLOR,
   text,
   ...props
 }) => {
@@ -94,12 +91,12 @@ const FocusableBox = ({
         {
           width,
           height,
-          backgroundColor,
+          backgroundColor: theme.TertiarySystemFillColor,
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: 4,
         },
-        state.focused && {borderColor: theme.SystemRedColor, borderWidth: 4},
+        state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
         props.style,
       ]}>
       {text !== undefined ? (
@@ -110,17 +107,19 @@ const FocusableBox = ({
 };
 
 const SideMenu = () => {
+  const theme = useRNTesterTheme();
+  const sideMenuItemStyle = [styles.sideMenuItem, {backgroundColor: theme.TertiarySystemFillColor}];
   return (
     <TVFocusGuide autoFocus style={styles.sideMenuContainer}>
       <Text style={{fontSize: 18 * scale, marginBottom: 10 * scale}}>
         Side Menu
       </Text>
 
-      <FocusableBox style={styles.sideMenuItem} />
-      <FocusableBox style={styles.sideMenuItem} />
-      <FocusableBox style={styles.sideMenuItem} />
-      <FocusableBox style={styles.sideMenuItem} />
-      <FocusableBox style={styles.sideMenuItem} />
+      <FocusableBox style={sideMenuItemStyle} />
+      <FocusableBox style={sideMenuItemStyle} />
+      <FocusableBox style={sideMenuItemStyle} />
+      <FocusableBox style={sideMenuItemStyle} />
+      <FocusableBox style={sideMenuItemStyle} />
     </TVFocusGuide>
   );
 };
@@ -133,7 +132,6 @@ const HList = ({
   itemCount,
   itemWidth = 500 * scale,
   itemHeight = 120 * scale,
-  itemColor = FOCUSABLE_ITEM_COLOR,
   onItemFocused,
   onItemPressed,
   prefix = '',
@@ -148,7 +146,6 @@ const HList = ({
       <FocusableBox
         width={itemWidth}
         height={itemHeight}
-        color={itemColor}
         style={styles.mr5}
         text={getItemText({prefix, item})}
         onFocus={() => onItemFocused?.({item, index})}
@@ -302,7 +299,6 @@ const styles = StyleSheet.create({
   },
   sideMenuContainer: {
     width: 100 * scale,
-    backgroundColor: 'gray',
     alignItems: 'center',
   },
   sideMenuItem: {
