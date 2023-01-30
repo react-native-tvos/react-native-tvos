@@ -221,7 +221,7 @@ ViewProps::ViewProps(
             context,
             rawProps,
             "autoFocus",
-            sourceProps.hasTVPreferredFocus,
+            sourceProps.autoFocus,
             false))
 #endif
           {};
