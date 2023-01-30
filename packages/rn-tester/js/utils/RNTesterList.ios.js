@@ -325,9 +325,9 @@ const APIs: Array<RNTesterModuleInfo> = [
     supportsTVOS: true,
   },
   {
-    key: 'TVFocusGuideSafePaddingExample',
+    key: 'TVFocusGuideAutoFocusExample',
     category: 'TV',
-    module: require('../examples/TVFocusGuide/TVFocusGuideSafePaddingExample'),
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
     supportsTVOS: true,
   },
   {

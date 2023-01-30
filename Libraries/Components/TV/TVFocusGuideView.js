@@ -28,12 +28,14 @@ type TVFocusGuideViewProps = $ReadOnly<{
   /**
    * The views the focus should go to
    */
-  destinations: ?(Object[]),
+  destinations?: ?(Object[]),
 
   /**
    * @deprecated Don't use it, no longer necessary.
    */
   safePadding?: 'vertical' | 'horizontal' | 'both' | null,
+
+  autoFocus?: boolean,
 }>;
 
 const TVFocusGuideView = ({
@@ -44,12 +46,21 @@ const TVFocusGuideView = ({
   const enabledStyle = {display: enabled ? 'flex' : 'none'};
   const style = [styles.container, props.style, enabledStyle];
 
+  // `autoFocus` and `destinations` props shouldn't be used together.
+  // Otherwise they can conflict with each other. So if `destinations` is
+  // provided, we set `autoFocus` prop to false to avoid that conflict.
+  const autoFocus = props.destinations?.length ? false : props.autoFocus;
+
   if (Platform.isTVOS) {
-    return <FocusGuideViewTVOS {...props} style={style} />;
+    return (
+      <FocusGuideViewTVOS {...props} style={style} autoFocus={autoFocus} />
+    );
   }
 
   if (Platform.isTV) {
-    return <FocusGuideViewAndroidTV {...props} style={style} />;
+    return (
+      <FocusGuideViewAndroidTV {...props} style={style} autoFocus={autoFocus} />
+    );
   }
 
   return <ReactNative.View {...props} style={style} />;
@@ -59,14 +70,17 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
   const focusGuideRef = React.useRef(null);
 
   React.useEffect(() => {
-    const nativeDestinations = (props.destinations || [])
-      .map(d => ReactNative.findNodeHandle(d))
-      .filter(c => c !== 0 && c !== null && c !== undefined);
-    const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(
-      focusGuideRef?.current,
-    );
-    hostComponentRef &&
-      Commands.setDestinations(hostComponentRef, nativeDestinations);
+    if (props.destinations) {
+      const nativeDestinations = (props.destinations || [])
+        .map(d => ReactNative.findNodeHandle(d))
+        .filter(c => c !== 0 && c !== null && c !== undefined);
+      const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(
+        focusGuideRef?.current,
+      );
+
+      hostComponentRef &&
+        Commands.setDestinations(hostComponentRef, nativeDestinations);
+    }
   }, [props.destinations]);
 
   return (

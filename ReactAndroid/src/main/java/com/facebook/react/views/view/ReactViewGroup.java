@@ -60,6 +60,7 @@ import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.yoga.YogaConstants;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -82,6 +83,9 @@ public class ReactViewGroup extends ViewGroup
   /* should only be used in {@link #updateClippingToRect} */
   private static final Rect sHelperRect = new Rect();
   private @NonNull int[] focusDestinations = new int[0];
+  private boolean autoFocus = false;
+  private WeakReference<View> lastFocusedElement;
+  private boolean mRecoverFocus = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -442,6 +446,71 @@ public class ReactViewGroup extends ViewGroup
     }
   }
 
+  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+    ArrayList<View> focusables = new ArrayList<View>(0);
+    /**
+     * `addFocusables` is the method used by `FocusFinder` to determine
+     * which elements are `focusable` within the given view.
+     * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
+     * Focus direction (FOCUS_DOWN) doesn't matter at all because
+     * it's not being used by the underlying implementation.
+     */
+    viewGroup.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
+    /**
+     * Depending on ViewGroup's `descendantFocusability` property,
+     * the first element can be the ViewGroup itself.
+     * The other ones on the list can be non-focusable as well.
+     * So, we run a loop till finding the first real focusable element.
+     */
+    if (focusables.size() <= 0) return false;
+
+    View firstFocusableElement = null;
+    Integer index = 0;
+    while (firstFocusableElement == null && index < focusables.size()) {
+      View elem = focusables.get(index);
+      if (elem.isFocusable() && elem != viewGroup) {
+        firstFocusableElement = elem;
+        break;
+      }
+      index++;
+    }
+
+    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
+
+    return false;
+  }
+
+  void recoverFocus(View view) {
+    if (!view.hasFocus() || !(view instanceof ReactViewGroup)) return;
+
+    ReactViewGroup parentFocusGuide = findParentFocusGuide(view);
+    if (parentFocusGuide == null) return;
+
+    /**
+     * Making `parentFocusGuide` focusable for a brief time to
+     * temporarily move the focus to it. We do this to prevent
+     * Android from moving the focus to top-left-most element of the screen.
+     */
+    parentFocusGuide.mRecoverFocus = true;
+    parentFocusGuide.setFocusable(true);
+    parentFocusGuide.requestFocus();
+
+    /**
+     * We set a Runnable to wait and make sure every layout related action gets completed
+     * before trying to find a new focus candidate inside the `parentFocusGuide`.
+     */
+    UiThreadUtil.runOnUiThread(
+      new Runnable() {
+        @Override
+        public void run() {
+          moveFocusToFirstFocusable(parentFocusGuide);
+
+          parentFocusGuide.setFocusable(false);
+          parentFocusGuide.mRecoverFocus = false;
+        }
+      });
+  }
+
   @Override
   public boolean getChildVisibleRect(View child, Rect r, android.graphics.Point offset) {
     return super.getChildVisibleRect(child, r, offset);
@@ -496,6 +565,8 @@ public class ReactViewGroup extends ViewGroup
       setChildrenDrawingOrderEnabled(false);
     }
 
+    recoverFocus(view);
+
     super.removeView(view);
   }
 
@@ -509,6 +580,8 @@ public class ReactViewGroup extends ViewGroup
     } else {
       setChildrenDrawingOrderEnabled(false);
     }
+
+    recoverFocus(getChildAt(index));
 
     super.removeViewAt(index);
   }
@@ -1020,7 +1093,7 @@ public class ReactViewGroup extends ViewGroup
   }
 
   private boolean isTVFocusGuide() {
-    return focusDestinations.length > 0;
+    return focusDestinations.length > 0 || autoFocus;
   }
 
   @Nullable
@@ -1067,7 +1140,12 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-    if (isTVFocusGuide()) {
+    /**
+     * TVFocusGuides should reveral their children when `mRecoverFocus` is set.
+     * `mRecoverFocus` flag indicates a temporary focus recovery mode it's in which
+     * requires full access to children focusable elements.
+     */
+    if (isTVFocusGuide() && !mRecoverFocus) {
       View focusedChild = getFocusedChildOfFocusGuide();
 
       /*
@@ -1084,11 +1162,49 @@ public class ReactViewGroup extends ViewGroup
     super.addFocusables(views, direction, focusableMode);
   }
 
+  @Override
+  public void requestChildFocus(View child, View focused) {
+    super.requestChildFocus(child, focused);
+
+    if (autoFocus) {
+      lastFocusedElement = new WeakReference<View>(focused);
+    }
+  }
+
+  @Override
+  protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+  }
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    if (focusDestinations.length == 0) {
+    if (!isTVFocusGuide() || mRecoverFocus) {
       return super.requestFocus(direction, previouslyFocusedRect);
+    }
+
+    if (this.autoFocus) {
+      View lastFocusedElem = lastFocusedElement.get();
+
+      if (lastFocusedElem != null) {
+
+        if (lastFocusedElem.isAttachedToWindow()) {
+          lastFocusedElem.requestFocus();
+          return true;
+        }
+
+        /**
+         * `lastFocusedElem` can get detached based on application logic.
+         * If the code reaches here, that means we're dealing with that case.
+         * We should set `lastFocusedElem` to null and let the focus determination
+         * logic below to do its magic and redirect focus to the first element.
+         */
+        lastFocusedElement = new WeakReference<View>(null);
+      }
+
+      // Try moving the focus to the first focusable element otherwise.
+      if (moveFocusToFirstFocusable(this)) {
+        return true;
+      }
     }
 
     View destination = findDestinationView();
@@ -1108,5 +1224,10 @@ public class ReactViewGroup extends ViewGroup
 
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
     this.focusDestinations = focusDestinations;
+  }
+
+  public void setAutoFocus(boolean autoFocus) {
+    this.autoFocus = autoFocus;
+    lastFocusedElement = new WeakReference<View>(null);
   }
 }

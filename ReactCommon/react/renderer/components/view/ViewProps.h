@@ -78,6 +78,7 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   std::optional<int> nextFocusDown;
   std::optional<int> nextFocusLeft;
   std::optional<int> nextFocusRight;
+  bool autoFocus{false};
 #endif
 
   Float elevation{}; /* Android-only */
@@ -91,7 +92,7 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   bool hasTVPreferredFocus{false};
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};
-
+  bool autoFocus{false};
 #endif
 
 #pragma mark - Convenience Methods
