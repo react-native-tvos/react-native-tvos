@@ -1226,7 +1226,7 @@ public class ReactViewGroup extends ViewGroup
     this.focusDestinations = focusDestinations;
   }
 
-  public void setAutoFocus(boolean autoFocus) {
+  public void setAutoFocusTV(boolean autoFocus) {
     this.autoFocus = autoFocus;
     lastFocusedElement = new WeakReference<View>(null);
   }

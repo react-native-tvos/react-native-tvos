@@ -370,8 +370,8 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   }
 
   @ReactProp(name = "autoFocus")
-  public void setAutoFocus(ReactViewGroup view, boolean autoFocus) {
-    view.setAutoFocus(autoFocus);
+  public void setAutoFocusTV(ReactViewGroup view, boolean autoFocus) {
+    view.setAutoFocusTV(autoFocus);
   }
 
 }
