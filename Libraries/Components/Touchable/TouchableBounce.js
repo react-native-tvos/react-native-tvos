@@ -187,6 +187,11 @@ class TouchableBounce extends React.Component<Props, State> {
             this.props.onPress(event);
           }
         },
+        onLongPress: event => {
+          if (this.props.onLongPress != null) {
+            this.props.onLongPress(event);
+          }
+        },
       });
     }
   }

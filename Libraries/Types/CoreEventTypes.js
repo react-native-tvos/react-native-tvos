@@ -164,3 +164,11 @@ export type MouseEvent = SyntheticEvent<
     timestamp: number,
   |}>,
 >;
+
+export type TVRemoteEvent = SyntheticEvent<
+  $ReadOnly<{|
+    eventType: string,
+    eventKeyAction?: string,
+  |}>,
+>;
+
