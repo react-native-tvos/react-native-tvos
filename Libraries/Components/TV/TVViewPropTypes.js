@@ -78,4 +78,11 @@ export type TVViewProps = $ReadOnly<{|
    */
   tvParallaxProperties?: TVParallaxPropertiesType,
 
+  /**
+   * Additional properties needed for flow checks on TVFocusGuideView
+   */
+  destinations?: ?(Object[]),
+  enabled?: boolean,
+  autofocus?: boolean,
+  safePadding?: string | null,
 |}>;

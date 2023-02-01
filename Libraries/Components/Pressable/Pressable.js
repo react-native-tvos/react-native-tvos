@@ -34,9 +34,10 @@ import type {
   LayoutEvent,
   MouseEvent,
   PressEvent,
+  TVRemoteEvent,
 } from '../../Types/CoreEventTypes';
 import View from '../View/View';
-import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import TVParallaxPropertiesType from '../TV/TVViewPropTypes';
 import Platform from '../../Utilities/Platform';
 import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
@@ -320,7 +321,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
   const eventHandlers = usePressability(config);
 
   const pressableTVFocusEventHandler = useCallback(
-    (evt: Event) => {
+    (evt: FocusEvent) => {
       if (isTVSelectable !== false || focusable !== false) {
         if (evt?.eventType === 'focus') {
           setFocused(true);

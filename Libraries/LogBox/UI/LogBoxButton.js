@@ -19,10 +19,6 @@ import type {EdgeInsetsProp} from '../../StyleSheet/EdgeInsetsPropType';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {PressEvent} from '../../Types/CoreEventTypes';
 
-const LogBoxTouchable = Platform.isTVOS ?
-                            TouchableHighlight :
-                            TouchableWithoutFeedback;
-
 type Props = $ReadOnly<{|
   backgroundColor: $ReadOnly<{|
     default: string,
@@ -61,15 +57,23 @@ function LogBoxButton(props: Props): React.Node {
 
   return props.onPress == null ? (
     content
+  ) : Platform.isTV ? (
+        <TouchableHighlight
+          tvParallaxProperties={{enabled: false}}
+          hitSlop={props.hitSlop}
+          onPress={props.onPress}
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setPressed(false)}>
+          {content}
+        </TouchableHighlight>
   ) : (
-    <LogBoxTouchable
-      tvParallaxProperties={{enabled: false}}
-      hitSlop={props.hitSlop}
-      onPress={props.onPress}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}>
-      {content}
-    </LogBoxTouchable>
+        <TouchableWithoutFeedback
+          hitSlop={props.hitSlop}
+          onPress={props.onPress}
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setPressed(false)}>
+          {content}
+        </TouchableWithoutFeedback>
   );
 }
 
