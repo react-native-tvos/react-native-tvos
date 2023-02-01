@@ -20,7 +20,7 @@ const {
   View,
 } = require('react-native');
 
-import type {ViewStyleProp} from '../../../../Libraries/StyleSheet/StyleSheet';
+import type {ViewStyleProp} from '../../../../../Libraries/StyleSheet/StyleSheet';
 
 exports.displayName = 'TVTextScrollView';
 exports.title = '<TVTextScrollView> with large text blocks';

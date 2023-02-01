@@ -54,7 +54,7 @@ const generateData = (length = 10, randomize = false) => {
   });
 };
 
-const TVFocusGuide = ({autoFocus, destinations, ...props}) => {
+const TVFocusGuide = (props: any) => {
   if (!FOCUS_GUIDE_ENABLED) {
     return <View {...props} />;
   }
@@ -62,8 +62,8 @@ const TVFocusGuide = ({autoFocus, destinations, ...props}) => {
   return (
     <TVFocusGuideView
       {...props}
-      autoFocus={autoFocus}
-      destinations={destinations}
+      autoFocus={props.autoFocus}
+      destinations={props.destinations}
     />
   );
 };

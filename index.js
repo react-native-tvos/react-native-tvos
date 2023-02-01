@@ -102,12 +102,6 @@ import typeof RCTDeviceEventEmitter from './Libraries/EventEmitter/RCTDeviceEven
 import typeof RCTNativeAppEventEmitter from './Libraries/EventEmitter/RCTNativeAppEventEmitter';
 import typeof {RootTagContext} from './Libraries/ReactNative/RootTag';
 
-// Prop Types
-import typeof DeprecatedColorPropType from './Libraries/DeprecatedPropTypes/DeprecatedColorPropType';
-import typeof DeprecatedEdgeInsetsPropType from './Libraries/DeprecatedPropTypes/DeprecatedEdgeInsetsPropType';
-import typeof DeprecatedPointPropType from './Libraries/DeprecatedPropTypes/DeprecatedPointPropType';
-import typeof DeprecatedViewPropTypes from './Libraries/DeprecatedPropTypes/DeprecatedViewPropTypes';
-
 import CheckPlatform from './Libraries/Utilities/Platform';
 
 import type {HostComponent as _HostComponentInternal} from './Libraries/Renderer/shims/ReactNativeTypes';
