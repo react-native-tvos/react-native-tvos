@@ -14,20 +14,22 @@ import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
 import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 class TVEventHandler {
   __nativeTVNavigationEventListener: ?EventSubscription = null;
-  __nativeTVNavigationEventEmitter: ?NativeEventEmitter = null;
+  __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
 
   enable(component: ?any, callback: Function): void {
     if (Platform.OS === 'ios' && !NativeTVNavigationEventEmitter) {
       return;
     }
 
-    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter(
+    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
       NativeTVNavigationEventEmitter,
     );
     this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(
+      // $FlowFixMe[prop-missing]
       'onHWKeyEvent',
       data => {
         if (callback) {

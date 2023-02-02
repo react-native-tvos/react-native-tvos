@@ -10,8 +10,9 @@
 
 'use strict';
 
-const React = require('react');
-const ReactNative = require('react-native');
+import * as React from 'react';
+import ReactNative from 'react-native';
+import type {TVRemoteEvent} from '../../../../../Libraries/Types/CoreEventTypes';
 
 const {Platform, View, Text, TouchableOpacity, TVEventControl, useTVEventHandler} = ReactNative;
 
@@ -22,14 +23,14 @@ const TVEventHandlerView: () => React.Node = () => {
 
   const isAndroid = Platform.OS === 'android';
 
-  function appendEvent(eventType, eventAction, body) {
+  function appendEvent(eventType, eventKeyAction, body) {
     const limit = 6;
     const newEventLog = eventLog.slice(0, limit - 1);
     if (isAndroid) {
-      newEventLog.unshift(`type=${eventType}, action=${eventAction}`);
+      newEventLog.unshift(`type=${eventType}, action=${eventKeyAction || ''}`);
     } else {
       if (eventType === 'pan') {
-        newEventLog.unshift(`type=${eventType}, body=${JSON.stringify(body)}`);
+        newEventLog.unshift(`type=${eventType}, body=${JSON.stringify(body || {})}`);
       } else {
         newEventLog.unshift(`type=${eventType}`);
       }
@@ -37,7 +38,7 @@ const TVEventHandlerView: () => React.Node = () => {
     setEventLog(newEventLog);
   }
 
-  const myTVEventHandler = evt => {
+  const myTVEventHandler = (evt: TVRemoteEvent) => {
     appendEvent(evt.eventType, evt.eventKeyAction, evt.body);
   };
 

@@ -75,10 +75,10 @@ const ThemedView = (props: $FlowFixMeProps) => (
 );
 
 const DirectionalNextFocusExample = () => {
-  const [upDestination, setUpDestination] = React.useState(null);
-  const [downDestination, setDownDestination] = React.useState(null);
-  const [leftDestination, setLeftDestination] = React.useState(null);
-  const [rightDestination, setRightDestination] = React.useState(null);
+  const [upDestination, setUpDestination]: [any, (any) => void] = React.useState(null);
+  const [downDestination, setDownDestination]: [any, (any) => void] = React.useState(null);
+  const [leftDestination, setLeftDestination]: [any, (any) => void] = React.useState(null);
+  const [rightDestination, setRightDestination]: [any, (any) => void] = React.useState(null);
 
   const tagForDestination = (destination: ?React.Node) =>
     destination ? findNodeHandle(destination) : undefined;

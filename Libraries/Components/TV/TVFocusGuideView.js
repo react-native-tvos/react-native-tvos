@@ -63,6 +63,7 @@ const TVFocusGuideView = ({
     );
   }
 
+  // $FlowFixMe[prop-missing]
   return <ReactNative.View {...props} style={style} />;
 };
 
@@ -71,7 +72,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
 
   React.useEffect(() => {
     if (props.destinations) {
-      const nativeDestinations = (props.destinations || [])
+      const nativeDestinations: any = (props.destinations || [])
         .map(d => ReactNative.findNodeHandle(d))
         .filter(c => c !== 0 && c !== null && c !== undefined);
       const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(
@@ -84,6 +85,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
   }, [props.destinations]);
 
   return (
+    // $FlowFixMe[prop-missing]
     <ReactNative.View ref={focusGuideRef} {...props} collapsable={false} />
   );
 };
@@ -98,6 +100,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
   );
 
   return (
+    // $FlowFixMe[prop-missing]
     <ReactNative.View
       {...props}
       focusable={props.focusable ?? true}

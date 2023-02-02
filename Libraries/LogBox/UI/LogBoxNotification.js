@@ -67,7 +67,7 @@ function LogBoxLogNotification(props: Props): React.Node {
           }}>
           <View
             style={toastStyles.tvDismissContainer}>
-            <Message message={{content: 'Dismiss'}} />
+            <Message message={{content: 'Dismiss', substitutions: []}} />
           </View>
         </LogBoxButton>
       ) : null}

@@ -19,7 +19,7 @@ import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import type {ViewProps} from '../../Components/View/ViewPropTypes';
-import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
@@ -34,7 +34,7 @@ type AndroidProps = $ReadOnly<{|
 type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
   isTVSelectable?: ?boolean,
-  tvParallaxProperties?: ?TVParallaxPropertiesType,
+  tvParallaxProperties?: TVParallaxPropertiesType,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
   nextFocusLeft?: ?number,
@@ -377,6 +377,11 @@ class TouchableHighlight extends React.Component<Props, State> {
         onPress: event => {
           if (this.props.onPress != null && Platform.OS !== 'android') {
             this.props.onPress(event);
+          }
+        },
+        onLongPress: event => {
+          if (this.props.onLongPress != null && Platform.OS !== 'android') {
+            this.props.onLongPress(event);
           }
         },
       });

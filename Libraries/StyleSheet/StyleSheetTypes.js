@@ -16,6 +16,7 @@ import type {NativeColorValue} from './PlatformColorValueTypes';
 
 export type ____ColorValue_Internal = null | string | number | NativeColorValue;
 
+export type ColorValue = ____ColorValue_Internal;
 export type ColorArrayValue = null | $ReadOnlyArray<____ColorValue_Internal>;
 export type PointValue = {
   x: number,

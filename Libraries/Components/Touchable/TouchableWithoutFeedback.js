@@ -13,6 +13,7 @@ import Pressability, {
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import TVTouchable from './TVTouchable';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import type {
   AccessibilityActionEvent,
   AccessibilityActionInfo,
@@ -65,6 +66,7 @@ type Props = $ReadOnly<{|
   rejectResponderTermination?: ?boolean,
   testID?: ?string,
   touchSoundDisabled?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
 |}>;
 
 type State = $ReadOnly<{|
@@ -154,6 +156,11 @@ class TouchableWithoutFeedback extends React.Component<Props, State> {
         onPress: event => {
           if (this.props.onPress != null) {
             this.props.onPress(event);
+          }
+        },
+        onLongPress: event => {
+          if (this.props.onLongPress != null) {
+            this.props.onLongPress(event);
           }
         },
       });
