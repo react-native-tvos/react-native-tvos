@@ -14,11 +14,11 @@ import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
 import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
-import TVRemoteEvent from '../../Types/CoreEventTypes';
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 class TVFocusEventHandler {
   __nativeTVNavigationEventListener: ?EventSubscription = null;
-  __nativeTVNavigationEventEmitter: ?NativeEventEmitter<typeof TVRemoteEvent> = null;
+  __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
   __callbackMap: Map<any, Function> = new Map();
 
   constructor() {
@@ -26,7 +26,7 @@ class TVFocusEventHandler {
       return;
     }
 
-    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<typeof TVRemoteEvent>(
+    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
       NativeTVNavigationEventEmitter,
     );
     this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(

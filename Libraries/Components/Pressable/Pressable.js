@@ -37,7 +37,7 @@ import type {
   TVRemoteEvent,
 } from '../../Types/CoreEventTypes';
 import View from '../View/View';
-import TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import Platform from '../../Utilities/Platform';
 import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';

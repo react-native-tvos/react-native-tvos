@@ -13,7 +13,7 @@ import Pressability, {
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import TVTouchable from './TVTouchable';
-import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import type {
   AccessibilityActionEvent,
   AccessibilityActionInfo,

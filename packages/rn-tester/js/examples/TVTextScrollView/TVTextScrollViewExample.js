@@ -210,7 +210,7 @@ const Button = ({label, onPress, selected}) => (
   <TouchableOpacity
     style={selected ? styles.buttonSelected : styles.button}
     activeOpacity={0.5}
-    tvParallaxProperties={{pressedMagnification: 1.1}}
+    tvParallaxProperties={{pressMagnification: 1.1}}
     onPress={onPress}>
     <Text>{label}</Text>
   </TouchableOpacity>

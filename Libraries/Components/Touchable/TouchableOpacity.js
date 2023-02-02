@@ -19,7 +19,7 @@ import Easing from '../../Animated/Easing';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
-import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 
 import * as React from 'react';

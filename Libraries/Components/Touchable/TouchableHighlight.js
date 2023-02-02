@@ -19,7 +19,7 @@ import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import type {ViewProps} from '../../Components/View/ViewPropTypes';
-import typeof TVParallaxPropertiesType from '../TV/TVViewPropTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 

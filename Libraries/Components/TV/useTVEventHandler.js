@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import TVEventHandler from './TVEventHandler';
-import TVRemoteEvent from '../../Types/CoreEventTypes';
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 const useTVEventHandler = (handleEvent: (evt: TVRemoteEvent) => void) => {
   React.useEffect(() => {
