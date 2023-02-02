@@ -318,14 +318,17 @@ function Pressable(props: Props, forwardedRef): React.Node {
       unstable_pressDelay,
     ],
   );
+  // $FlowFixMe[incompatible-call]
   const eventHandlers = usePressability(config);
 
   const pressableTVFocusEventHandler = useCallback(
     (evt: FocusEvent) => {
       if (isTVSelectable !== false || focusable !== false) {
+        // $FlowFixMe[prop-missing]
         if (evt?.eventType === 'focus') {
           setFocused(true);
           onFocus && onFocus(evt);
+        // $FlowFixMe[prop-missing]
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
           setFocused(false);
@@ -334,10 +337,14 @@ function Pressable(props: Props, forwardedRef): React.Node {
       // Use these on tvOS only. Android press events go to onClick() so we don't
       // need to call onPress() again here
       if (Platform.isTVOS) {
+        // $FlowFixMe[prop-missing]
         if (focused && evt.eventType === 'select') {
+        // $FlowFixMe[incompatible-exact]
           onPress && onPress(evt);
         }
+        // $FlowFixMe[prop-missing]
         if (focused && evt.eventType === 'longSelect') {
+        // $FlowFixMe[incompatible-exact]
           onLongPress && onLongPress(evt);
         }
       }
@@ -349,6 +356,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     if (!tvFocusEventHandler) {
       return;
     }
+    // $FlowFixMe[prop-missing]
     const viewTag = viewRef?.current?._nativeTag;
     tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
     return () => {

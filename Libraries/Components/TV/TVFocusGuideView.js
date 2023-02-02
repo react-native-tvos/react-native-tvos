@@ -63,6 +63,7 @@ const TVFocusGuideView = ({
     );
   }
 
+  // $FlowFixMe[prop-missing]
   return <ReactNative.View {...props} style={style} />;
 };
 
@@ -84,6 +85,7 @@ const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
   }, [props.destinations]);
 
   return (
+    // $FlowFixMe[prop-missing]
     <ReactNative.View ref={focusGuideRef} {...props} collapsable={false} />
   );
 };
@@ -98,6 +100,7 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
   );
 
   return (
+    // $FlowFixMe[prop-missing]
     <ReactNative.View
       {...props}
       focusable={props.focusable ?? true}

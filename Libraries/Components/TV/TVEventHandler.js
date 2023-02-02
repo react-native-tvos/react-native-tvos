@@ -29,6 +29,7 @@ class TVEventHandler {
       NativeTVNavigationEventEmitter,
     );
     this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(
+      // $FlowFixMe[prop-missing]
       'onHWKeyEvent',
       data => {
         if (callback) {

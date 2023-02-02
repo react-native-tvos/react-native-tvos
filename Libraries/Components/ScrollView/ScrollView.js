@@ -1834,6 +1834,7 @@ ForwardedScrollView.Context = ScrollViewContext;
 
 ForwardedScrollView.displayName = 'ScrollView';
 
+// $FlowFixMe[not-an-object]
 module.exports = ((ForwardedScrollView: $FlowFixMe): React.AbstractComponent<
   React.ElementConfig<typeof ScrollView>,
   $ReadOnly<{|
