@@ -100,7 +100,7 @@ const FocusableBox = ({
         props.style,
       ]}>
       {text !== undefined ? (
-        <RNText style={{fontSize: 24 * scale}}>{text}</RNText>
+        <RNText style={{fontSize: 24 * scale, color: theme.LabelColor}}>{text}</RNText>
       ) : null}
     </Pressable>
   );
