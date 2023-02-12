@@ -1146,7 +1146,7 @@ jobs:
       - run_yarn
       - add_ssh_keys:
           fingerprints:
-            - "1c:98:e0:3a:52:79:95:29:12:cd:b4:87:5b:41:e2:bb"
+            - "1f:c7:61:c4:e2:ff:77:e3:cc:ca:a7:34:c2:79:e3:3c"
       - run:
           name: "Set new react-native version and commit changes"
           command: |
@@ -1249,7 +1249,7 @@ jobs:
                 command: |
                   curl -X POST https://api.github.com/repos/react-native-community/rn-diff-purge/dispatches \
                     -H "Accept: application/vnd.github.v3+json" \
-                    -u "$PAT_USERNAME:$PAT_TOKEN" \
+                    -H "Authorization: Bearer $REACT_NATIVE_BOT_GITHUB_TOKEN" \
                     -d "{\"event_type\": \"publish\", \"client_payload\": { \"version\": \"${CIRCLE_TAG:1}\" }}"
       # END: Stable releases
 
