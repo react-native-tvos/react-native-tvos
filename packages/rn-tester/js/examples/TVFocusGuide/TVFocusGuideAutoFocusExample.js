@@ -77,13 +77,15 @@ const Text = ({style, children}) => {
   );
 };
 
-const FocusableBox = ({
-  width,
-  height,
-  text,
-  ...props
-}) => {
+const FocusableBox = React.memo(({width, height, text, slow, ...props}) => {
   const theme = useRNTesterTheme();
+
+  if (slow) {
+    console.log('Slow component rendering...', text);
+    const now = performance.now();
+    while (performance.now() - now < 500) {}
+  }
+
   return (
     <Pressable
       {...props}
@@ -100,15 +102,18 @@ const FocusableBox = ({
         props.style,
       ]}>
       {text !== undefined ? (
-        <RNText style={{fontSize: 24 * scale, color: theme.LabelColor}}>{text}</RNText>
+        <Text style={{fontSize: 24 * scale}}>{text}</Text>
       ) : null}
     </Pressable>
   );
-};
+});
 
 const SideMenu = () => {
   const theme = useRNTesterTheme();
-  const sideMenuItemStyle = [styles.sideMenuItem, {backgroundColor: theme.TertiarySystemFillColor}];
+  const sideMenuItemStyle = [
+    styles.sideMenuItem,
+    {backgroundColor: theme.TertiarySystemFillColor},
+  ];
   return (
     <TVFocusGuide autoFocus style={styles.sideMenuContainer}>
       <Text style={{fontSize: 18 * scale, marginBottom: 10 * scale}}>
@@ -135,6 +140,7 @@ const HList = ({
   onItemFocused,
   onItemPressed,
   prefix = '',
+  slow,
   ...props
 }) => {
   const listRef = React.useRef(null);
@@ -148,8 +154,9 @@ const HList = ({
         height={itemHeight}
         style={styles.mr5}
         text={getItemText({prefix, item})}
-        onFocus={() => onItemFocused?.({item, index})}
-        onPress={() => onItemPressed?.({item, index})}
+        onFocus={onItemFocused}
+        onPress={onItemPressed}
+        slow={slow}
       />
     );
   };
@@ -239,6 +246,36 @@ const RestoreFocusTestList = () => {
   );
 };
 
+const SlowListFocusTest = () => {
+  const data = React.useMemo(() => generateData(8), []);
+
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Slow List Focus Test
+      </Text>
+      <View style={{flexDirection: 'row'}}>
+        <FocusableBox text="LEFT" style={styles.slowListPlaceholderItem} />
+        <View style={styles.slowList}>
+          <HList
+            data={data}
+            slow
+            initialNumToRender={4}
+            windowSize={1}
+            maxToRenderPerBatch={1}
+            itemWidth={550 * scale}
+          />
+        </View>
+        <FocusableBox text="RIGHT" style={styles.slowListPlaceholderItem} />
+      </View>
+    </TVFocusGuide>
+  );
+};
+
 const ContentArea = () => {
   return (
     <TVFocusGuide autoFocus style={{flex: 1}}>
@@ -247,6 +284,7 @@ const ContentArea = () => {
           Welcome to the TVFocusGuide autoFocus example!
         </Text>
         <RestoreFocusTestList />
+        <SlowListFocusTest />
         <Row title="Category Example 1" />
         <Row title="Category Example 2" />
 
@@ -316,4 +354,11 @@ const styles = StyleSheet.create({
     marginBottom: 5 * scale,
   },
   pageTitle: {fontSize: 48 * scale, margin: 10 * scale},
+  slowListPlaceholderItem: {
+    width: 100 * scale,
+  },
+  slowList: {
+    flex: 1,
+    marginHorizontal: 8 * scale,
+  },
 });

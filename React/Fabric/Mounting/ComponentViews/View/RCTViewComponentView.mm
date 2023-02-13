@@ -53,6 +53,10 @@ using namespace facebook::react;
   UIView *_nextFocusRight;
   UIView *_nextFocusActiveTarget;
   BOOL _autoFocus;
+  BOOL _trapFocusUp;
+  BOOL _trapFocusDown;
+  BOOL _trapFocusLeft;
+  BOOL _trapFocusRight;
 }
 
 @synthesize removeClippedSubviews = _removeClippedSubviews;
@@ -420,6 +424,24 @@ using namespace facebook::react;
     [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
     self.focusGuideRight = nil;
   }
+}
+
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+  if (_trapFocusUp || _trapFocusDown || _trapFocusLeft || _trapFocusRight) {
+    bool isDescendant = [context.nextFocusedView isDescendantOfView:self];
+
+    if (!isDescendant) {
+      if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
+         || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
+         || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
+         || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
+        return false;
+      }
+    }
+  }
+
+  return [super shouldUpdateFocusInContext:context];
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
@@ -857,6 +879,11 @@ using namespace facebook::react;
       [self removeFocusGuide];
     }
   }
+
+  _trapFocusUp = newViewProps.trapFocusUp;
+  _trapFocusDown = newViewProps.trapFocusDown;
+  _trapFocusLeft = newViewProps.trapFocusLeft;
+  _trapFocusRight = newViewProps.trapFocusRight;
 #endif
 
 
