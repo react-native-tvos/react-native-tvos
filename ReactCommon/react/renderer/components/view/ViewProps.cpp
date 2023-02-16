@@ -257,12 +257,36 @@ ViewProps::ViewProps(
           "renderToHardwareTextureAndroid",
           sourceProps.renderToHardwareTextureAndroid,
           {})),
-    autoFocus(convertRawProp(
-            context,
-            rawProps,
-            "autoFocus",
-            sourceProps.autoFocus,
-            false))
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          false)),
+      trapFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusUp",
+          sourceProps.trapFocusUp,
+          false)),
+      trapFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusDown",
+          sourceProps.trapFocusDown,
+          false)),
+      trapFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusLeft",
+          sourceProps.trapFocusLeft,
+          false)),
+      trapFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusRight",
+          sourceProps.trapFocusRight,
+          false))
 #endif
           {};
 

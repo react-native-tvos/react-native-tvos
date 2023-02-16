@@ -81,9 +81,8 @@ const FocusableBox = React.memo(({width, height, text, slow, ...props}) => {
   const theme = useRNTesterTheme();
 
   if (slow) {
-    console.log('Slow component rendering...', text);
     const now = performance.now();
-    while (performance.now() - now < 500) {}
+    while (performance.now() - now < 200) {}
   }
 
   return (
@@ -247,7 +246,13 @@ const RestoreFocusTestList = () => {
 };
 
 const SlowListFocusTest = () => {
-  const data = React.useMemo(() => generateData(8), []);
+  const data = React.useMemo(() => generateData(100), []);
+
+  /**
+   * This is a testing playground for virtualized lists with slow components.
+   * Focus should be trapped inside the list until user reaches the end
+   * or the beginning of the list.
+   */
 
   return (
     <TVFocusGuide autoFocus style={styles.mb5}>

@@ -116,7 +116,13 @@ const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
     // $FlowFixMe[prop-missing]
     <ReactNative.View
       {...props}
-      focusable={props.focusable ?? true}
+      /**
+       * TVFocusGuide should be focusable only if it has `destinations`.
+       * Without giving too much implementation details, I can say both
+       * `autoFocus` and `trapFocus*` functionalities manage their focusable state
+       * on the native layer when/if necessarry.
+       */
+      focusable={props.focusable || props.destinations?.length > 0}
       destinations={nativeDestinations}
       collapsable={false}
     />

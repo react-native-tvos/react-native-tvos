@@ -20,6 +20,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.view.FocusFinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,10 @@ public class ReactViewGroup extends ViewGroup
   private boolean autoFocus = false;
   private WeakReference<View> lastFocusedElement;
   private boolean mRecoverFocus = false;
+  private boolean trapFocusUp = false;
+  private boolean trapFocusDown = false;
+  private boolean trapFocusLeft = false;
+  private boolean trapFocusRight = false;
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -1092,8 +1097,14 @@ public class ReactViewGroup extends ViewGroup
     return false;
   }
 
+  private boolean isFocusTrap() {
+    return trapFocusUp  || trapFocusDown || trapFocusLeft || trapFocusRight;
+  }
+
   private boolean isTVFocusGuide() {
-    return focusDestinations.length > 0 || autoFocus;
+    return focusDestinations.length > 0
+      || autoFocus
+      || isFocusTrap();
   }
 
   @Nullable
@@ -1222,6 +1233,28 @@ public class ReactViewGroup extends ViewGroup
     return false;
   }
 
+  @Override
+  public View focusSearch(View focused, int direction) {
+    /**
+     * FocusSearch recursively goes all the way up to the Root view
+     * and runs `FocusFinder.findNextFocus()` to determine the next focusable.
+     * It finds the next focusable by accounting *every* focusable elements on the screen.
+     *
+     * That is exactly the thing we want to prevent if the view has a `focusTrap` enabled
+     * matching the `direction`. We interrupt `focusSearch` to make the `FocusFinder` run
+     * the algorithm only accounting the children elements of the focus trap.
+     * This ensures that focus will always stay inside the container until trap gets disabled.
+     */
+    if ((trapFocusUp && direction == FOCUS_UP)
+      || (trapFocusDown && direction == FOCUS_DOWN)
+      || (trapFocusLeft && direction == FOCUS_LEFT)
+      || (trapFocusRight && direction == FOCUS_RIGHT)) {
+      return FocusFinder.getInstance().findNextFocus(this, focused, direction);
+    }
+
+    return super.focusSearch(focused, direction);
+  }
+
   public void setFocusDestinations(@NonNull int[] focusDestinations) {
     this.focusDestinations = focusDestinations;
   }
@@ -1229,5 +1262,21 @@ public class ReactViewGroup extends ViewGroup
   public void setAutoFocusTV(boolean autoFocus) {
     this.autoFocus = autoFocus;
     lastFocusedElement = new WeakReference<View>(null);
+  }
+
+  public void setTrapFocusUp(boolean enabled) {
+    this.trapFocusUp = enabled;
+  }
+
+  public void setTrapFocusDown(boolean enabled) {
+    this.trapFocusDown = enabled;
+  }
+
+  public void setTrapFocusLeft(boolean enabled) {
+    this.trapFocusLeft = enabled;
+  }
+
+  public void setTrapFocusRight(boolean enabled) {
+    this.trapFocusRight = enabled;
   }
 }
