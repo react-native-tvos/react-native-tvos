@@ -185,12 +185,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   // CATransform3D value for minimumRelativeValue
   CATransform3D transMinimumTiltAboutX = CATransform3DIdentity;
   transMinimumTiltAboutX.m34 = 1.0 / 500;
-  transMinimumTiltAboutX = CATransform3DRotate(transMinimumTiltAboutX, tiltAngle * -1.0, 1, 0, 0);
+  transMinimumTiltAboutX = CATransform3DRotate(transMinimumTiltAboutX, tiltAngle, 1, 0, 0);
   
   // CATransform3D value for minimumRelativeValue
   CATransform3D transMaximumTiltAboutX = CATransform3DIdentity;
   transMaximumTiltAboutX.m34 = 1.0 / 500;
-  transMaximumTiltAboutX = CATransform3DRotate(transMaximumTiltAboutX, tiltAngle, 1, 0, 0);
+  transMaximumTiltAboutX = CATransform3DRotate(transMaximumTiltAboutX, tiltAngle * -1.0, 1, 0, 0);
   
   // Set the transform property boundaries for the interpolation
   yTilt.minimumRelativeValue = [NSValue valueWithCATransform3D:transMinimumTiltAboutX];
