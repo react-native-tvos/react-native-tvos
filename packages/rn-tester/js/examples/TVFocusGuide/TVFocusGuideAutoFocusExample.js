@@ -246,7 +246,7 @@ const RestoreFocusTestList = () => {
 };
 
 const SlowListFocusTest = () => {
-  const data = React.useMemo(() => generateData(100), []);
+  const data = React.useMemo(() => generateData(10), []);
 
   /**
    * This is a testing playground for virtualized lists with slow components.
