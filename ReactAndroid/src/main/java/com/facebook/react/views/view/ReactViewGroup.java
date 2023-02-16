@@ -1097,14 +1097,14 @@ public class ReactViewGroup extends ViewGroup
     return false;
   }
 
-  private boolean isFocusTrap() {
-    return trapFocusUp  || trapFocusDown || trapFocusLeft || trapFocusRight;
-  }
-
   private boolean isTVFocusGuide() {
-    return focusDestinations.length > 0
-      || autoFocus
-      || isFocusTrap();
+    /**
+     * We don't count a view as `TVFocusGuide` if it has `trapFocus*` props enabled.
+     * The reason is, it's a seperate functionality that has nothing to do with other
+     * TVFocusGuide features that involves heavy focus management. So, the feature
+     * is not directly tied to `TVFocusGuide`.
+     */
+    return focusDestinations.length > 0 || autoFocus;
   }
 
   @Nullable
