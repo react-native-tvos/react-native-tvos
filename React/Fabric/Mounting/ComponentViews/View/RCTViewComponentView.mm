@@ -428,17 +428,16 @@ using namespace facebook::react;
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
-  if (_trapFocusUp || _trapFocusDown || _trapFocusLeft || _trapFocusRight) {
-    bool isDescendant = [context.nextFocusedView isDescendantOfView:self];
-
-    if (!isDescendant) {
-      if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
-         || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
-         || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
-         || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
-        return false;
-      }
-    }
+  // This is  the `trapFocus*` logic that prevents the focus updates if
+  // focus should be trapped and `nextFocusedItem` is not a child FocusEnv.
+  if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
+     || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
+     || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
+     || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
+    
+    // Checks if `nextFocusedItem` is a child `FocusEnvironment`.
+    // If not, it returns false thus it keeps the focus inside.
+    return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
   }
 
   return [super shouldUpdateFocusInContext:context];
