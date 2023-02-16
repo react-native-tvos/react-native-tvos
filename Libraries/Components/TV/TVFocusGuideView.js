@@ -15,14 +15,6 @@ const Platform = require('../../Utilities/Platform');
 import {Commands} from '../View/ViewNativeComponent';
 import type {ViewProps} from '../View/ViewPropTypes';
 
-type TrapDirection =
-  | 'up'
-  | 'down'
-  | 'left'
-  | 'right'
-  | 'vertical'
-  | 'horizontal';
-
 type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
 
