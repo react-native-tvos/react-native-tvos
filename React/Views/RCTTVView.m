@@ -482,20 +482,4 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   self.focusGuide.preferredFocusEnvironments = destinations;
 }
 
-- (void)setTrapFocusUp:(BOOL)enabled {
-  self->_trapFocusUp = enabled;
-}
-
-- (void)setTrapFocusDown:(BOOL)enabled {
-  self->_trapFocusDown = enabled;
-}
-
-- (void)setTrapFocusLeft:(BOOL)enabled {
-  self->_trapFocusLeft = enabled;
-}
-
-- (void)setTrapFocusRight:(BOOL)enabled {
-  self->_trapFocusRight = enabled;
-}
-
 @end
