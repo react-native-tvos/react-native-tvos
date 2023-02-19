@@ -77,17 +77,22 @@ const Text = ({style, children}) => {
   );
 };
 
-const FocusableBox = React.memo(({width, height, text, slow, ...props}) => {
+const FocusableBox = React.memo(({id, width, height, text, slow, ...props}) => {
   const theme = useRNTesterTheme();
 
   if (slow) {
+    // eslint-disable-next-line no-undef
     const now = performance.now();
+    // eslint-disable-next-line no-undef
     while (performance.now() - now < 200) {}
   }
+
+  const onFocus = e => props?.onFocus?.(e, id);
 
   return (
     <Pressable
       {...props}
+      onFocus={onFocus}
       style={state => [
         {
           width,
@@ -149,6 +154,7 @@ const HList = ({
   const renderItem = ({item, index}) => {
     return (
       <FocusableBox
+        id={item}
         width={itemWidth}
         height={itemHeight}
         style={styles.mr5}
@@ -181,8 +187,8 @@ const getSelectedItemPrefix = selectedCategory => {
 const Row = ({title}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = ({item}) => {
-    setSelectedCategory(item);
+  const onCategoryFocused = (event, id) => {
+    setSelectedCategory(id);
   };
 
   return (
@@ -256,13 +262,7 @@ const SlowListFocusTest = () => {
 
   return (
     <TVFocusGuide autoFocus style={styles.mb5}>
-      <Text
-        style={[
-          styles.rowTitle,
-          {marginLeft: 16 * scale, marginVertical: 16 * scale},
-        ]}>
-        Slow List Focus Test
-      </Text>
+      <Text style={styles.slowListTitle}>Slow List Focus Test</Text>
       <View style={{flexDirection: 'row'}}>
         <FocusableBox text="LEFT" style={styles.slowListPlaceholderItem} />
         <View style={styles.slowList}>
@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowTitle: {marginRight: 10 * scale, fontSize: 24 * scale},
+  slowListTitle: {fontSize: 24 * scale, margin: 16 * scale},
   container: {
     flex: 1,
     flexDirection: 'row',
