@@ -83,6 +83,22 @@ declare module 'react-native' {
      */
     autoFocus?: boolean;
     /**
+     * Enables focus trapping for the focus guide (see README).
+     */
+    trapFocusUp?: boolean;
+    /**
+     * Enables focus trapping for the focus guide (see README).
+     */
+    trapFocusDown?: boolean;
+    /**
+     * Enables focus trapping for the focus guide (see README).
+     */
+    trapFocusLeft?: boolean;
+    /**
+     * Enables focus trapping for the focus guide (see README).
+     */
+    trapFocusRight?: boolean;
+    /**
      * @deprecated Don't use it, no longer necessary.
      */
     safePadding?: 'both' | 'vertical' | 'horizontal' | null;

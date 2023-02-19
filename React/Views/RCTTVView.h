@@ -47,6 +47,11 @@
  */
 @property (nonatomic, assign) BOOL autoFocus;
 
+@property (nonatomic, assign) BOOL trapFocusUp;
+@property (nonatomic, assign) BOOL trapFocusDown;
+@property (nonatomic, assign) BOOL trapFocusLeft;
+@property (nonatomic, assign) BOOL trapFocusRight;
+
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 
 /**

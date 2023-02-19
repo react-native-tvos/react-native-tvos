@@ -255,6 +255,23 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   motionEffectsAdded = NO;
 }
 
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+  // This is  the `trapFocus*` logic that prevents the focus updates if
+  // focus should be trapped and `nextFocusedItem` is not a child FocusEnv.
+  if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
+     || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
+     || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
+     || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
+
+    // Checks if `nextFocusedItem` is a child `FocusEnvironment`.
+    // If not, it returns false thus it keeps the focus inside.
+    return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+  }
+
+  return [super shouldUpdateFocusInContext:context];
+}
+
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {

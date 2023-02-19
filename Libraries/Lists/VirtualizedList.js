@@ -42,6 +42,7 @@ import {
   type ChildListState,
   type ListDebugInfo,
 } from './VirtualizedListContext.js';
+import TVFocusGuideView from '../Components/TV/TVFocusGuideView';
 
 type Item = any;
 
@@ -1116,16 +1117,30 @@ class VirtualizedList extends React.PureComponent<Props, State> {
           unregisterAsNestedChild: this._unregisterAsNestedChild,
           debugInfo: this._getDebugInfo(),
         }}>
-        {React.cloneElement(
-          (
-            this.props.renderScrollComponent ||
-            this._defaultRenderScrollComponent
-          )(scrollProps),
-          {
-            ref: this._captureScrollRef,
-          },
-          cells,
-        )}
+        <TVFocusGuideView
+          trapFocusLeft={
+            horizontalOrDefault(this.props.horizontal) && this.state.first > 0
+          }
+          trapFocusRight={
+            horizontalOrDefault(this.props.horizontal) && this._hasMore
+          }
+          trapFocusUp={
+            !horizontalOrDefault(this.props.horizontal) && this.state.first > 0
+          }
+          trapFocusDown={
+            !horizontalOrDefault(this.props.horizontal) && this._hasMore
+          }>
+          {React.cloneElement(
+            (
+              this.props.renderScrollComponent ||
+              this._defaultRenderScrollComponent
+            )(scrollProps),
+            {
+              ref: this._captureScrollRef,
+            },
+            cells,
+          )}
+        </TVFocusGuideView>
       </VirtualizedListContextProvider>
     );
     let ret: React.Node = innerRet;

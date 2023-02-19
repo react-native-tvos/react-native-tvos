@@ -53,6 +53,10 @@ using namespace facebook::react;
   UIView *_nextFocusRight;
   UIView *_nextFocusActiveTarget;
   BOOL _autoFocus;
+  BOOL _trapFocusUp;
+  BOOL _trapFocusDown;
+  BOOL _trapFocusLeft;
+  BOOL _trapFocusRight;
 }
 
 @synthesize removeClippedSubviews = _removeClippedSubviews;
@@ -420,6 +424,23 @@ using namespace facebook::react;
     [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
     self.focusGuideRight = nil;
   }
+}
+
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+  // This is  the `trapFocus*` logic that prevents the focus updates if
+  // focus should be trapped and `nextFocusedItem` is not a child FocusEnv.
+  if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
+     || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
+     || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
+     || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
+    
+    // Checks if `nextFocusedItem` is a child `FocusEnvironment`.
+    // If not, it returns false thus it keeps the focus inside.
+    return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+  }
+
+  return [super shouldUpdateFocusInContext:context];
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
@@ -857,6 +878,11 @@ using namespace facebook::react;
       [self removeFocusGuide];
     }
   }
+
+  _trapFocusUp = newViewProps.trapFocusUp;
+  _trapFocusDown = newViewProps.trapFocusDown;
+  _trapFocusLeft = newViewProps.trapFocusLeft;
+  _trapFocusRight = newViewProps.trapFocusRight;
 #endif
 
 

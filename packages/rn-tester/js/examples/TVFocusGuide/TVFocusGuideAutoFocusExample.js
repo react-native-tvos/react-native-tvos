@@ -77,16 +77,22 @@ const Text = ({style, children}) => {
   );
 };
 
-const FocusableBox = ({
-  width,
-  height,
-  text,
-  ...props
-}) => {
+const FocusableBox = React.memo(({id, width, height, text, slow, ...props}) => {
   const theme = useRNTesterTheme();
+
+  if (slow) {
+    // eslint-disable-next-line no-undef
+    const now = performance.now();
+    // eslint-disable-next-line no-undef
+    while (performance.now() - now < 200) {}
+  }
+
+  const onFocus = e => props?.onFocus?.(e, id);
+
   return (
     <Pressable
       {...props}
+      onFocus={onFocus}
       style={state => [
         {
           width,
@@ -100,15 +106,18 @@ const FocusableBox = ({
         props.style,
       ]}>
       {text !== undefined ? (
-        <RNText style={{fontSize: 24 * scale, color: theme.LabelColor}}>{text}</RNText>
+        <Text style={{fontSize: 24 * scale}}>{text}</Text>
       ) : null}
     </Pressable>
   );
-};
+});
 
 const SideMenu = () => {
   const theme = useRNTesterTheme();
-  const sideMenuItemStyle = [styles.sideMenuItem, {backgroundColor: theme.TertiarySystemFillColor}];
+  const sideMenuItemStyle = [
+    styles.sideMenuItem,
+    {backgroundColor: theme.TertiarySystemFillColor},
+  ];
   return (
     <TVFocusGuide autoFocus style={styles.sideMenuContainer}>
       <Text style={{fontSize: 18 * scale, marginBottom: 10 * scale}}>
@@ -135,6 +144,7 @@ const HList = ({
   onItemFocused,
   onItemPressed,
   prefix = '',
+  slow,
   ...props
 }) => {
   const listRef = React.useRef(null);
@@ -144,12 +154,14 @@ const HList = ({
   const renderItem = ({item, index}) => {
     return (
       <FocusableBox
+        id={item}
         width={itemWidth}
         height={itemHeight}
         style={styles.mr5}
         text={getItemText({prefix, item})}
-        onFocus={() => onItemFocused?.({item, index})}
-        onPress={() => onItemPressed?.({item, index})}
+        onFocus={onItemFocused}
+        onPress={onItemPressed}
+        slow={slow}
       />
     );
   };
@@ -175,8 +187,8 @@ const getSelectedItemPrefix = selectedCategory => {
 const Row = ({title}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = ({item}) => {
-    setSelectedCategory(item);
+  const onCategoryFocused = (event, id) => {
+    setSelectedCategory(id);
   };
 
   return (
@@ -239,6 +251,36 @@ const RestoreFocusTestList = () => {
   );
 };
 
+const SlowListFocusTest = () => {
+  const data = React.useMemo(() => generateData(10), []);
+
+  /**
+   * This is a testing playground for virtualized lists with slow components.
+   * Focus should be trapped inside the list until user reaches the end
+   * or the beginning of the list.
+   */
+
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text style={styles.slowListTitle}>Slow List Focus Test</Text>
+      <View style={{flexDirection: 'row'}}>
+        <FocusableBox text="LEFT" style={styles.slowListPlaceholderItem} />
+        <View style={styles.slowList}>
+          <HList
+            data={data}
+            slow
+            initialNumToRender={4}
+            windowSize={1}
+            maxToRenderPerBatch={1}
+            itemWidth={550 * scale}
+          />
+        </View>
+        <FocusableBox text="RIGHT" style={styles.slowListPlaceholderItem} />
+      </View>
+    </TVFocusGuide>
+  );
+};
+
 const ContentArea = () => {
   return (
     <TVFocusGuide autoFocus style={{flex: 1}}>
@@ -247,6 +289,7 @@ const ContentArea = () => {
           Welcome to the TVFocusGuide autoFocus example!
         </Text>
         <RestoreFocusTestList />
+        <SlowListFocusTest />
         <Row title="Category Example 1" />
         <Row title="Category Example 2" />
 
@@ -293,6 +336,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowTitle: {marginRight: 10 * scale, fontSize: 24 * scale},
+  slowListTitle: {fontSize: 24 * scale, margin: 16 * scale},
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -316,4 +360,11 @@ const styles = StyleSheet.create({
     marginBottom: 5 * scale,
   },
   pageTitle: {fontSize: 48 * scale, margin: 10 * scale},
+  slowListPlaceholderItem: {
+    width: 100 * scale,
+  },
+  slowList: {
+    flex: 1,
+    marginHorizontal: 8 * scale,
+  },
 });

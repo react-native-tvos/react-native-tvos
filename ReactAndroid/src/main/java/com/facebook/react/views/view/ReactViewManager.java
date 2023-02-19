@@ -374,4 +374,24 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     view.setAutoFocusTV(autoFocus);
   }
 
+  @ReactProp(name = "trapFocusUp")
+  public void trapFocusUp(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusUp(enabled);
+  }
+
+  @ReactProp(name = "trapFocusDown")
+    public void trapFocusDown(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusDown(enabled);
+  }
+
+  @ReactProp(name = "trapFocusLeft")
+    public void trapFocusLeft(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusLeft(enabled);
+  }
+
+  @ReactProp(name = "trapFocusRight")
+    public void trapFocusRight(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusRight(enabled);
+  }
+
 }
