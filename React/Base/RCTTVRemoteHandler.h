@@ -13,6 +13,10 @@ extern NSString *const RCTTVRemoteEventSelect;
 
 extern NSString *const RCTTVRemoteEventLongPlayPause;
 extern NSString *const RCTTVRemoteEventLongSelect;
+extern NSString *const RCTTVRemoteEventLongUp;
+extern NSString *const RCTTVRemoteEventLongDown;
+extern NSString *const RCTTVRemoteEventLongLeft;
+extern NSString *const RCTTVRemoteEventLongRight;
 
 extern NSString *const RCTTVRemoteEventLeft;
 extern NSString *const RCTTVRemoteEventRight;

@@ -47,7 +47,7 @@ declare module 'react-native' {
   export type HWKeyEvent =
     | HWFocusEvent
     | {
-        eventType: 'up' | 'down' | 'right' | 'left' | string;
+        eventType: 'up' | 'down' | 'right' | 'left' | 'longUp' | 'longDown' | 'longRight' | 'longLeft' | 'blur' | 'focus' | 'pan' | string;
         eventKeyAction: -1 | 1 | 0 | number;
         tag?: number;
       };
