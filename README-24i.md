@@ -36,3 +36,16 @@ It's important to list all changes we have done in order to keep track of them a
 ### ./React/Views/RCTTVView.m
 
 - Negated vertical tiltAngle value in order to fix https://jira.24i.com/browse/PRDSAPPSTV-398 ([link to PR](https://github.com/24i/react-native-tvos/pull/1))
+
+
+### ./React/Base/RCTTVRemoteHandler.h
+
+- Adding long press events for arrow keys in order to support https://jira.24i.com/browse/PRDPLAYER-1152 ([link to PR](https://github.com/24i/react-native-tvos/pull/2))
+
+### ./React/Base/RCTTVRemoteHandler.m
+
+- Adding long press events for arrow keys in order to support https://jira.24i.com/browse/PRDPLAYER-1152 ([link to PR](https://github.com/24i/react-native-tvos/pull/2))
+
+### ./tvos-types.d.ts
+
+- Adding long press events for arrow keys in order to support https://jira.24i.com/browse/PRDPLAYER-1152 ([link to PR](https://github.com/24i/react-native-tvos/pull/2))
