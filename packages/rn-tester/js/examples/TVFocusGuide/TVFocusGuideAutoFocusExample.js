@@ -221,7 +221,7 @@ const Row = ({title}) => {
 const Col = ({title}) => {
   return (
     <TVFocusGuide autoFocus style={styles.col}>
-      <Text style={styles.rowTitle}>{title}</Text>
+      <Text style={styles.colTitle}>{title}</Text>
       <FocusableBox text="0" style={styles.colItem} />
       <FocusableBox text="1" style={styles.colItem} />
       <FocusableBox text="2" style={styles.colItem} />
@@ -230,12 +230,14 @@ const Col = ({title}) => {
   );
 };
 
-const MoveToTheSameDestinationTest = () => {
+const FocusToTheSameDestinationTest = () => {
   const [destinationItem, setDestinationItem] = React.useState(null);
 
   return (
-    <TVFocusGuide autoFocus destinations={[destinationItem]} style={styles.col}>
-      <Text style={styles.rowTitle}>Move To The Same Item</Text>
+    <TVFocusGuide destinations={[destinationItem]} style={styles.col}>
+      <Text style={styles.colTitle}>
+        Focus To The Specific Destination (Always)
+      </Text>
       <FocusableBox text="0" style={styles.colItem} />
       <FocusableBox text="1" style={styles.colItem} />
       <FocusableBox ref={setDestinationItem} text="2" style={styles.colItem} />
@@ -244,7 +246,11 @@ const MoveToTheSameDestinationTest = () => {
   );
 };
 
-const MoveToTheDestinationOnlyOnceTest = () => {
+/**
+ * Demonstrates the usage of `destinations` and `autoFocus` props
+ * together in harmony without losing state.
+ */
+const FocusToTheDestinationOnlyOnceTest = () => {
   const visited = React.useRef(false);
   const focusGuideRef =
     React.useRef<?React.ElementRef<typeof TVFocusGuideView>>(null);
@@ -260,7 +266,9 @@ const MoveToTheDestinationOnlyOnceTest = () => {
       autoFocus
       destinations={[destinationItemRef.current]}
       style={styles.col}>
-      <Text style={styles.rowTitle}>Move To The Same Item</Text>
+      <Text style={styles.colTitle}>
+        Focus To The Specific Destination (Once)
+      </Text>
       <FocusableBox text="0" style={styles.colItem} />
       <FocusableBox text="1" style={styles.colItem} />
       <FocusableBox
@@ -348,8 +356,8 @@ const ContentArea = () => {
 
         <TVFocusGuide autoFocus style={styles.cols}>
           <Col title="Genres" />
-          <MoveToTheSameDestinationTest />
-          <MoveToTheDestinationOnlyOnceTest />
+          <FocusToTheSameDestinationTest />
+          <FocusToTheDestinationOnlyOnceTest />
         </TVFocusGuide>
       </ScrollView>
     </TVFocusGuide>
@@ -389,6 +397,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowTitle: {marginRight: 10 * scale, fontSize: 24 * scale},
+  colTitle: {margin: 10 * scale, fontSize: 24 * scale},
   slowListTitle: {fontSize: 24 * scale, margin: 16 * scale},
   container: {
     flex: 1,

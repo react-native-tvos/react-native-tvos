@@ -78,6 +78,8 @@ declare module 'react-native' {
      * It will redirect the focus to the first focusable child on the first visit.
      * It also remembers the last focused child and redirects the focus
      * to it on the subsequent visits.
+     * 
+     * `destinations` prop takes precedence over this prop when used together.
      *
      * @default false
      */
