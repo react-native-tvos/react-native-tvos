@@ -27,7 +27,7 @@ const TVEventHandlerView: () => React.Node = () => {
     const limit = 6;
     const newEventLog = eventLog.slice(0, limit - 1);
     if (isAndroid) {
-      newEventLog.unshift(`type=${eventType}, action=${eventKeyAction || ''}`);
+      newEventLog.unshift(`type=${eventType}, action=${eventKeyAction !== undefined ? eventKeyAction : '' }`);
     } else {
       if (eventType === 'pan') {
         newEventLog.unshift(`type=${eventType}, body=${JSON.stringify(body || {})}`);

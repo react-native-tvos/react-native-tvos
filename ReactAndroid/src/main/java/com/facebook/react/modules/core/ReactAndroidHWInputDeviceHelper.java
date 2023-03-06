@@ -81,8 +81,14 @@ public class ReactAndroidHWInputDeviceHelper {
    */
   private int mLastFocusedViewId = View.NO_ID;
 
+  // Presses longer than this number of milliseconds are treated as long presses
+  // This seems to be roughly the time the emulator waits after the first key down event
+  // before sending a continuous stream of rapid key downs on a long press.
+  private long mLongPressedDelta = 300;
+
+  // These are used for long press detection
   private long mLastKeyDownTime = 0;
-  private long mPressedDelta = 1000;
+  private boolean longPressEventActive = false;
 
   public ReactAndroidHWInputDeviceHelper() {}
 
@@ -101,6 +107,12 @@ public class ReactAndroidHWInputDeviceHelper {
       eventKeyCode == KeyEvent.KEYCODE_DPAD_LEFT;
   }
 
+  // True if we are in the long press state and we are more than
+  // mLongPressedDelta milliseconds since the last long press event was fired
+  private boolean isLongPressEventTime(long time) {
+    return mLastKeyDownTime != 0 && time - mLastKeyDownTime > mLongPressedDelta;
+  }
+
   /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
@@ -108,30 +120,48 @@ public class ReactAndroidHWInputDeviceHelper {
     long time = SystemClock.uptimeMillis();
     boolean isSelectOrDPadEvent = isDPadEvent(eventKeyCode) || isSelectEvent(eventKeyCode);
 
-    // Simple implementation of long press detection
-    if ((eventKeyAction == KeyEvent.ACTION_DOWN)
-      && isSelectOrDPadEvent && mLastKeyDownTime == 0) {
-      mLastKeyDownTime = time;
+    // Simple implementation of long press detection for key down events
+    if ((eventKeyAction == KeyEvent.ACTION_DOWN) && isSelectOrDPadEvent) {
+      if (mLastKeyDownTime == 0) {
+        mLastKeyDownTime = time;
+      } else {
+        if (isLongPressEventTime(time)) {
+          // Activate long press state and don't reset until key up event arrives
+          longPressEventActive = true;
+        }
+      }
     }
 
-    if (shouldDispatchEvent(eventKeyCode, eventKeyAction)) {
-      long delta = time - mLastKeyDownTime;
-      boolean isLongPress = delta > mPressedDelta;
-
-      if(isLongPress && isSelectOrDPadEvent){
-        dispatchEvent(KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
+    if (shouldDispatchEvent(eventKeyCode, eventKeyAction, time)) {
+      if(longPressEventActive) {
+        // If we are not sending key down events to JS, send the long press event as a key up to make sure it is received
+        dispatchEvent(
+          KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
+          mLastFocusedViewId,
+          ReactFeatureFlags.enableKeyDownEvents ? eventKeyAction : KeyEvent.ACTION_UP,
+          context
+        );
+        // Update the start time for detecting the next long press event
+        mLastKeyDownTime = time;
       } else {
         dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
       }
-      mLastKeyDownTime = 0;
     }
+
+    // If this is key up event, reset long press detector
+    if ((eventKeyAction == KeyEvent.ACTION_UP) && isSelectOrDPadEvent) {
+      mLastKeyDownTime = 0;
+      longPressEventActive = false;
+    }
+
   }
 
-  // Android TV: Only send key up actions, unless key down events are enabled
-  private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction) {
+  // Android TV: Only send key up actions, unless key down events are enabled or we need to send a long press event
+  private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction, long time) {
     return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
       (eventKeyAction == KeyEvent.ACTION_UP) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents)
+      (eventKeyAction == KeyEvent.ACTION_DOWN && !longPressEventActive && ReactFeatureFlags.enableKeyDownEvents) ||
+      (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive && isLongPressEventTime(time))
     );
   }
 
