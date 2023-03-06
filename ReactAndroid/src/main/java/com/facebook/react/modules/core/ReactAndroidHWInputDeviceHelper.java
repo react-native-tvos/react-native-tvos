@@ -81,8 +81,11 @@ public class ReactAndroidHWInputDeviceHelper {
    */
   private int mLastFocusedViewId = View.NO_ID;
 
-  private long mLastKeyDownTime = 0;
+  // Presses longer than this number of milliseconds are treated as long presses
   private long mPressedDelta = 1000;
+
+  // These are used for long press detection
+  private long mLastKeyDownTime = 0;
   private boolean longPressEventActive = false;
 
   public ReactAndroidHWInputDeviceHelper() {}
@@ -102,6 +105,12 @@ public class ReactAndroidHWInputDeviceHelper {
       eventKeyCode == KeyEvent.KEYCODE_DPAD_LEFT;
   }
 
+  // True if we are in the long press state and we are more than
+  // mPressedDelta milliseconds since the last long press event was fired
+  private boolean isLongPressEventTime(long time) {
+    return mLastKeyDownTime != 0 && time - mLastKeyDownTime > mPressedDelta;
+  }
+
   /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
@@ -109,20 +118,28 @@ public class ReactAndroidHWInputDeviceHelper {
     long time = SystemClock.uptimeMillis();
     boolean isSelectOrDPadEvent = isDPadEvent(eventKeyCode) || isSelectEvent(eventKeyCode);
 
-    // Simple implementation of long press detection
+    // Simple implementation of long press detection for key down events
     if ((eventKeyAction == KeyEvent.ACTION_DOWN) && isSelectOrDPadEvent) {
       if (mLastKeyDownTime == 0) {
         mLastKeyDownTime = time;
       } else {
-        if (time - mLastKeyDownTime > mPressedDelta) {
+        if (isLongPressEventTime(time)) {
+          // Activate long press state and don't reset until key up event arrives
           longPressEventActive = true;
         }
       }
     }
 
-    if (shouldDispatchEvent(eventKeyCode, eventKeyAction)) {
+    if (shouldDispatchEvent(eventKeyCode, eventKeyAction, time)) {
       if(longPressEventActive) {
-        dispatchEvent(KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, ReactFeatureFlags.enableKeyDownEvents ? eventKeyAction : KeyEvent.ACTION_UP, context);
+        // If we are not sending key down events to JS, send the long press event as a key up to make sure it is received
+        dispatchEvent(
+          KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
+          mLastFocusedViewId,
+          ReactFeatureFlags.enableKeyDownEvents ? eventKeyAction : KeyEvent.ACTION_UP,
+          context
+        );
+        // Update the start time for detecting the next long press event
         mLastKeyDownTime = time;
       } else {
         dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
@@ -137,12 +154,12 @@ public class ReactAndroidHWInputDeviceHelper {
 
   }
 
-  // Android TV: Only send key up actions, unless key down events are enabled
-  private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction) {
+  // Android TV: Only send key up actions, unless key down events are enabled or we need to send a long press event
+  private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction, long time) {
     return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
       (eventKeyAction == KeyEvent.ACTION_UP) ||
       (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive)
+      (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive && isLongPressEventTime(time))
     );
   }
 
