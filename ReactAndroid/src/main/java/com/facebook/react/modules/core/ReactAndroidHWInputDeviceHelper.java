@@ -83,6 +83,7 @@ public class ReactAndroidHWInputDeviceHelper {
 
   private long mLastKeyDownTime = 0;
   private long mPressedDelta = 1000;
+  private boolean longPressEventActive = false;
 
   public ReactAndroidHWInputDeviceHelper() {}
 
@@ -109,29 +110,39 @@ public class ReactAndroidHWInputDeviceHelper {
     boolean isSelectOrDPadEvent = isDPadEvent(eventKeyCode) || isSelectEvent(eventKeyCode);
 
     // Simple implementation of long press detection
-    if ((eventKeyAction == KeyEvent.ACTION_DOWN)
-      && isSelectOrDPadEvent && mLastKeyDownTime == 0) {
-      mLastKeyDownTime = time;
+    if ((eventKeyAction == KeyEvent.ACTION_DOWN) && isSelectOrDPadEvent) {
+      if (mLastKeyDownTime == 0) {
+        mLastKeyDownTime = time;
+      } else {
+        if (time - mLastKeyDownTime > mPressedDelta) {
+          longPressEventActive = true;
+        }
+      }
     }
 
     if (shouldDispatchEvent(eventKeyCode, eventKeyAction)) {
-      long delta = time - mLastKeyDownTime;
-      boolean isLongPress = delta > mPressedDelta;
-
-      if(isLongPress && isSelectOrDPadEvent){
-        dispatchEvent(KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
+      if(longPressEventActive) {
+        dispatchEvent(KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, ReactFeatureFlags.enableKeyDownEvents ? eventKeyAction : KeyEvent.ACTION_UP, context);
+        mLastKeyDownTime = time;
       } else {
         dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
       }
-      mLastKeyDownTime = 0;
     }
+
+    // If this is key up event, reset long press detector
+    if ((eventKeyAction == KeyEvent.ACTION_UP) && isSelectOrDPadEvent) {
+      mLastKeyDownTime = 0;
+      longPressEventActive = false;
+    }
+
   }
 
   // Android TV: Only send key up actions, unless key down events are enabled
   private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction) {
     return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
       (eventKeyAction == KeyEvent.ACTION_UP) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents)
+      (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents) ||
+      (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive)
     );
   }
 
