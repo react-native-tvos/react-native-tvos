@@ -82,7 +82,9 @@ public class ReactAndroidHWInputDeviceHelper {
   private int mLastFocusedViewId = View.NO_ID;
 
   // Presses longer than this number of milliseconds are treated as long presses
-  private long mPressedDelta = 1000;
+  // This seems to be roughly the time the emulator waits after the first key down event
+  // before sending a continuous stream of rapid key downs on a long press.
+  private long mLongPressedDelta = 300;
 
   // These are used for long press detection
   private long mLastKeyDownTime = 0;
@@ -106,9 +108,9 @@ public class ReactAndroidHWInputDeviceHelper {
   }
 
   // True if we are in the long press state and we are more than
-  // mPressedDelta milliseconds since the last long press event was fired
+  // mLongPressedDelta milliseconds since the last long press event was fired
   private boolean isLongPressEventTime(long time) {
-    return mLastKeyDownTime != 0 && time - mLastKeyDownTime > mPressedDelta;
+    return mLastKeyDownTime != 0 && time - mLastKeyDownTime > mLongPressedDelta;
   }
 
   /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
@@ -158,7 +160,7 @@ public class ReactAndroidHWInputDeviceHelper {
   private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction, long time) {
     return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
       (eventKeyAction == KeyEvent.ACTION_UP) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && ReactFeatureFlags.enableKeyDownEvents) ||
+      (eventKeyAction == KeyEvent.ACTION_DOWN && !longPressEventActive && ReactFeatureFlags.enableKeyDownEvents) ||
       (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive && isLongPressEventTime(time))
     );
   }
