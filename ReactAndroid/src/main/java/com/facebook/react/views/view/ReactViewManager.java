@@ -10,6 +10,7 @@ package com.facebook.react.views.view;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +52,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   };
   private static final int CMD_HOTSPOT_UPDATE = 1;
   private static final int CMD_SET_PRESSED = 2;
+  private static final int CMD_SET_DESTINATIONS = 3;
   private static final String HOTSPOT_UPDATE_KEY = "hotspotUpdate";
 
   @ReactProp(name = "accessible")
@@ -305,7 +307,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED);
+    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS);
   }
 
   @Override
@@ -321,6 +323,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
           handleSetPressed(root, args);
           break;
         }
+      case CMD_SET_DESTINATIONS:
+      {
+        handleSetDestinations(root, args);
+        break;
+      }
     }
   }
 
@@ -337,6 +344,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
           handleSetPressed(root, args);
           break;
         }
+      case "setDestinations":
+      {
+        handleSetDestinations(root, args);
+        break;
+      }
     }
   }
 
@@ -359,14 +371,18 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     root.drawableHotspotChanged(x, y);
   }
 
+  private void handleSetDestinations(ReactViewGroup root, @Nullable ReadableArray args) {
+    if (args == null || args.size() != 1) {
+      throw new JSApplicationIllegalArgumentException(
+        "Illegal number of arguments for 'setDestinations' command");
+    }
 
-  @ReactProp(name = "destinations")
-  public void setDestinations(final ReactViewGroup view, final ReadableArray destinations) {
+    ReadableArray destinations = args.getArray(0);
     int[] fd = new int[destinations.size()];
     for (int i = 0; i < fd.length; i++) {
       fd[i] = destinations.getInt(i);
     }
-    view.setFocusDestinations(fd);
+    root.setFocusDestinations(fd);
   }
 
   @ReactProp(name = "autoFocus")

@@ -1097,6 +1097,10 @@ public class ReactViewGroup extends ViewGroup
     return false;
   }
 
+  private boolean isFocusDestinationsSet() {
+    return focusDestinations.length > 0;
+  }
+
   private boolean isTVFocusGuide() {
     /**
      * We don't count a view as `TVFocusGuide` if it has `trapFocus*` props enabled.
@@ -1104,7 +1108,7 @@ public class ReactViewGroup extends ViewGroup
      * TVFocusGuide features that involves heavy focus management. So, the feature
      * is not directly tied to `TVFocusGuide`.
      */
-    return focusDestinations.length > 0 || autoFocus;
+    return isFocusDestinationsSet() || autoFocus;
   }
 
   @Nullable
@@ -1193,6 +1197,14 @@ public class ReactViewGroup extends ViewGroup
       return super.requestFocus(direction, previouslyFocusedRect);
     }
 
+    if (isFocusDestinationsSet()) {
+      View destination = findDestinationView();
+
+      if (destination != null && requestFocusViewOrAncestor(destination)) {
+        return true;
+      }
+    }
+
     if (this.autoFocus) {
       View lastFocusedElem = lastFocusedElement.get();
 
@@ -1218,19 +1230,7 @@ public class ReactViewGroup extends ViewGroup
       }
     }
 
-    View destination = findDestinationView();
-
-    if (destination != null && requestFocusViewOrAncestor(destination)) {
-      return true;
-    }
-
-    for (int i = 0; i < getChildCount(); i++) {
-      if (getChildAt(i).requestFocus()) {
-        return true;
-      }
-    }
-
-    return false;
+    return super.requestFocus(direction, previouslyFocusedRect);
   }
 
   @Override

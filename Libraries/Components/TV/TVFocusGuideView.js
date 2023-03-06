@@ -10,10 +10,10 @@
 
 const React = require('react');
 const ReactNative = require('react-native');
-import ReactNativeShims from '../../Renderer/shims/ReactNative';
-const Platform = require('../../Utilities/Platform');
+
 import {Commands} from '../View/ViewNativeComponent';
 import type {ViewProps} from '../View/ViewPropTypes';
+import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 
 type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
@@ -28,7 +28,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
   /**
    * The views the focus should go to
    */
-  destinations?: ?(Object[]),
+  destinations?: (?React.ElementRef<HostComponent<mixed>>)[],
 
   /**
    * @deprecated Don't use it, no longer necessary.
@@ -43,83 +43,65 @@ type TVFocusGuideViewProps = $ReadOnly<{
   trapFocusRight?: boolean,
 }>;
 
-const TVFocusGuideView = ({
-  enabled = true,
-  safePadding,
-  ...props
-}: TVFocusGuideViewProps): React.Node => {
-  const enabledStyle = {display: enabled ? 'flex' : 'none'};
-  const style = [styles.container, props.style, enabledStyle];
+export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
+  setDestinations: (
+    destinations: (?React.ElementRef<HostComponent<mixed>>)[],
+  ) => void,
+}>;
 
-  // `autoFocus` and `destinations` props shouldn't be used together.
-  // Otherwise they can conflict with each other. So if `destinations` is
-  // provided, we set `autoFocus` prop to false to avoid that conflict.
-  const autoFocus = props.destinations?.length ? false : props.autoFocus;
+function TVFocusGuideView(
+  {
+    enabled = true,
+    safePadding,
+    destinations: destinationsProp,
+    ...props
+  }: TVFocusGuideViewProps,
+  forwardedRef,
+): React.Node {
+  const focusGuideRef = React.useRef<React.ElementRef<
+    typeof ReactNative.View,
+  > | null>(null);
 
-  if (Platform.isTVOS) {
-    return (
-      <FocusGuideViewTVOS {...props} style={style} autoFocus={autoFocus} />
-    );
-  }
+  const setDestinations = React.useCallback(
+    (destinations: (?React.ElementRef<HostComponent<mixed>>)[]) => {
+      const dests: number[] = (destinations || [])
+        .map(ReactNative.findNodeHandle)
+        .filter(Boolean);
 
-  if (Platform.isTV) {
-    return (
-      <FocusGuideViewAndroidTV {...props} style={style} autoFocus={autoFocus} />
-    );
-  }
+      if (focusGuideRef.current != null) {
+        Commands.setDestinations(focusGuideRef.current, dests);
+      }
+    },
+    [],
+  );
 
-  // $FlowFixMe[prop-missing]
-  return <ReactNative.View {...props} style={style} />;
-};
-
-const FocusGuideViewTVOS = (props: TVFocusGuideViewProps) => {
-  const focusGuideRef = React.useRef(null);
+  React.useImperativeHandle(
+    forwardedRef,
+    () => ({
+      setDestinations,
+    }),
+    [setDestinations],
+  );
 
   React.useEffect(() => {
-    if (props.destinations) {
-      const nativeDestinations: any = (props.destinations || [])
-        .map(d => ReactNative.findNodeHandle(d))
-        .filter(c => c !== 0 && c !== null && c !== undefined);
-      const hostComponentRef = ReactNativeShims.findHostInstance_DEPRECATED(
-        focusGuideRef?.current,
-      );
-
-      hostComponentRef &&
-        Commands.setDestinations(hostComponentRef, nativeDestinations);
+    if (destinationsProp != null) {
+      setDestinations(destinationsProp);
     }
-  }, [props.destinations]);
+  }, [setDestinations, destinationsProp]);
 
-  return (
-    // $FlowFixMe[prop-missing]
-    <ReactNative.View ref={focusGuideRef} {...props} collapsable={false} />
-  );
-};
-
-const FocusGuideViewAndroidTV = (props: TVFocusGuideViewProps) => {
-  const nativeDestinations = React.useMemo(
-    () =>
-      (props.destinations || [])
-        .map(d => ReactNative.findNodeHandle(d))
-        .filter(c => c !== 0 && c !== null && c !== undefined),
-    [props.destinations],
-  );
+  const enabledStyle = {display: enabled ? 'flex' : 'none'};
+  const style = [styles.container, props.style, enabledStyle];
 
   return (
     // $FlowFixMe[prop-missing]
     <ReactNative.View
       {...props}
-      /**
-       * TVFocusGuide should be focusable only if it has `destinations`.
-       * Without giving too much implementation details, I can say both
-       * `autoFocus` and `trapFocus*` functionalities manage their focusable state
-       * on the native layer when/if necessarry.
-       */
-      focusable={props.focusable || props.destinations?.length > 0}
-      destinations={nativeDestinations}
+      style={style}
+      ref={focusGuideRef}
       collapsable={false}
     />
   );
-};
+}
 
 const styles = ReactNative.StyleSheet.create({
   container: {
@@ -128,4 +110,10 @@ const styles = ReactNative.StyleSheet.create({
   },
 });
 
-module.exports = TVFocusGuideView;
+const ForwardedTVFocusGuideView: React.AbstractComponent<
+  TVFocusGuideViewProps,
+  TVFocusGuideViewImperativeMethods,
+> = React.forwardRef(TVFocusGuideView);
+ForwardedTVFocusGuideView.displayName = 'TVFocusGuideView';
+
+module.exports = ForwardedTVFocusGuideView;

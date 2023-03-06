@@ -54,7 +54,7 @@ const generateData = (length = 10, randomize = false) => {
   });
 };
 
-const TVFocusGuide = (props: any) => {
+const TVFocusGuide = React.forwardRef((props: any, forwardedRef) => {
   if (!FOCUS_GUIDE_ENABLED) {
     return <View {...props} />;
   }
@@ -62,11 +62,12 @@ const TVFocusGuide = (props: any) => {
   return (
     <TVFocusGuideView
       {...props}
+      ref={forwardedRef}
       autoFocus={props.autoFocus}
       destinations={props.destinations}
     />
   );
-};
+});
 
 const Text = ({style, children}) => {
   const theme = useRNTesterTheme();
@@ -77,40 +78,43 @@ const Text = ({style, children}) => {
   );
 };
 
-const FocusableBox = React.memo(({id, width, height, text, slow, ...props}) => {
-  const theme = useRNTesterTheme();
+const FocusableBox = React.memo(
+  React.forwardRef(({id, width, height, text, slow, ...props}, forwardRef) => {
+    const theme = useRNTesterTheme();
 
-  if (slow) {
-    // eslint-disable-next-line no-undef
-    const now = performance.now();
-    // eslint-disable-next-line no-undef
-    while (performance.now() - now < 200) {}
-  }
+    if (slow) {
+      // eslint-disable-next-line no-undef
+      const now = performance.now();
+      // eslint-disable-next-line no-undef
+      while (performance.now() - now < 200) {}
+    }
 
-  const onFocus = e => props?.onFocus?.(e, id);
+    const onFocus = e => props?.onFocus?.(e, id);
 
-  return (
-    <Pressable
-      {...props}
-      onFocus={onFocus}
-      style={state => [
-        {
-          width,
-          height,
-          backgroundColor: theme.TertiarySystemFillColor,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 4,
-        },
-        state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
-        props.style,
-      ]}>
-      {text !== undefined ? (
-        <Text style={{fontSize: 24 * scale}}>{text}</Text>
-      ) : null}
-    </Pressable>
-  );
-});
+    return (
+      <Pressable
+        {...props}
+        ref={forwardRef}
+        onFocus={onFocus}
+        style={state => [
+          {
+            width,
+            height,
+            backgroundColor: theme.TertiarySystemFillColor,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 4,
+          },
+          state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
+          props.style,
+        ]}>
+        {text !== undefined ? (
+          <Text style={{fontSize: 24 * scale}}>{text}</Text>
+        ) : null}
+      </Pressable>
+    );
+  }),
+);
 
 const SideMenu = () => {
   const theme = useRNTesterTheme();
@@ -226,6 +230,55 @@ const Col = ({title}) => {
   );
 };
 
+const MoveToTheSameDestinationTest = () => {
+  const [destinationItem, setDestinationItem] = React.useState(null);
+
+  return (
+    <TVFocusGuide autoFocus destinations={[destinationItem]} style={styles.col}>
+      <Text style={styles.rowTitle}>Move To The Same Item</Text>
+      <FocusableBox text="0" style={styles.colItem} />
+      <FocusableBox text="1" style={styles.colItem} />
+      <FocusableBox ref={setDestinationItem} text="2" style={styles.colItem} />
+      <FocusableBox text="3" style={styles.colItem} />
+    </TVFocusGuide>
+  );
+};
+
+const MoveToTheDestinationOnlyOnceTest = () => {
+  const visited = React.useRef(false);
+  const focusGuideRef =
+    React.useRef<?React.ElementRef<typeof TVFocusGuideView>>(null);
+  const destinationItemRef = React.useRef<?React.ElementRef<typeof View>>(null);
+
+  React.useEffect(() => {
+    focusGuideRef.current?.setDestinations([destinationItemRef.current]);
+  }, []);
+
+  return (
+    <TVFocusGuide
+      ref={focusGuideRef}
+      autoFocus
+      destinations={[destinationItemRef.current]}
+      style={styles.col}>
+      <Text style={styles.rowTitle}>Move To The Same Item</Text>
+      <FocusableBox text="0" style={styles.colItem} />
+      <FocusableBox text="1" style={styles.colItem} />
+      <FocusableBox
+        ref={destinationItemRef}
+        onFocus={() => {
+          if (visited.current === false) {
+            focusGuideRef.current?.setDestinations([]);
+            visited.current = true;
+          }
+        }}
+        text="2"
+        style={styles.colItem}
+      />
+      <FocusableBox text="3" style={styles.colItem} />
+    </TVFocusGuide>
+  );
+};
+
 const RestoreFocusTestList = () => {
   const [randomize, setRandomize] = React.useState(false);
   const data = React.useMemo(() => generateData(10, randomize), [randomize]);
@@ -295,8 +348,8 @@ const ContentArea = () => {
 
         <TVFocusGuide autoFocus style={styles.cols}>
           <Col title="Genres" />
-          <Col title="Sub Genres" />
-          <Col title="Year" />
+          <MoveToTheSameDestinationTest />
+          <MoveToTheDestinationOnlyOnceTest />
         </TVFocusGuide>
       </ScrollView>
     </TVFocusGuide>

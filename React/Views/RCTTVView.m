@@ -23,6 +23,9 @@
   __weak RCTBridge *_bridge;
   UITapGestureRecognizer *_selectRecognizer;
   BOOL motionEffectsAdded;
+  NSArray* focusDestinations;
+  id<UIFocusItem> previouslyFocusedItem;
+  
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge {
@@ -284,9 +287,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
     // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
     // the last focused element and redirects the focus to it whenever focus comes back.
-    // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
-    // `self` helps redirecting focus to the first focusable element in that case.
-    self.focusGuide.preferredFocusEnvironments = @[context.previouslyFocusedItem, self];
+    previouslyFocusedItem = context.previouslyFocusedItem;
+    [self handleFocusGuide];
   }
     
   if (context.nextFocusedView == self && self.isTVSelectable ) {
@@ -462,10 +464,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)setAutoFocus:(BOOL)autoFocus
 {
-    if (_autoFocus != autoFocus) {
-        _autoFocus = autoFocus;
-        [self addFocusGuide:@[self]];
-    }
+  if (_autoFocus != autoFocus) {
+    _autoFocus = autoFocus;
+    [self handleFocusGuide];
+  }
 }
 
 - (void)addFocusGuide:(NSArray*)destinations {
@@ -480,6 +482,42 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
   
   self.focusGuide.preferredFocusEnvironments = destinations;
+}
+
+- (void)removeFocusGuide {
+	if (self.focusGuide != nil) {
+		[self removeLayoutGuide:self.focusGuide];
+		self.focusGuide = nil;
+	}
+}
+
+/// Responsible of determining what focusGuide's next state should be based on the active properties of the component.
+- (void)handleFocusGuide
+{
+  // `destinations` should always be favored against `autoFocus` feature, if provided.
+  if (focusDestinations != nil) {
+    [self addFocusGuide:focusDestinations];
+  } else if (_autoFocus && previouslyFocusedItem != nil) {
+    // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
+    // `self` helps redirecting focus to the first focusable element in that case.
+    [self addFocusGuide:@[previouslyFocusedItem, self]];
+  } else if (_autoFocus) {
+    [self addFocusGuide:@[self]];
+  } else {
+    // Then there's no need to have `focusGuide`, remove it to prevent potential bugs.
+    [self removeFocusGuide];
+  }
+}
+
+- (void)setFocusDestinations:(NSArray*)destinations
+{
+  if(destinations.count == 0) {
+    focusDestinations = nil;
+  } else {
+    focusDestinations = destinations;
+  }
+
+  [self handleFocusGuide];
 }
 
 @end

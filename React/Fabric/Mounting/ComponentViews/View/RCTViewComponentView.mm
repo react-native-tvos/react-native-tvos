@@ -57,6 +57,8 @@ using namespace facebook::react;
   BOOL _trapFocusDown;
   BOOL _trapFocusLeft;
   BOOL _trapFocusRight;
+  NSArray* _focusDestinations;
+  id<UIFocusItem> _previouslyFocusedItem;
 }
 
 @synthesize removeClippedSubviews = _removeClippedSubviews;
@@ -136,7 +138,7 @@ using namespace facebook::react;
   return (RCTRootComponentView *)rootview;
 }
 
-- (void)addFocusGuide {
+- (void)addFocusGuide:(NSArray*)destinations {
   if (self.focusGuide == nil) {
     self.focusGuide = [UIFocusGuide new];
     [self addLayoutGuide:self.focusGuide];
@@ -146,6 +148,8 @@ using namespace facebook::react;
     [self.focusGuide.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
     [self.focusGuide.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
   }
+  
+  self.focusGuide.preferredFocusEnvironments = destinations;
 }
 
 - (void)removeFocusGuide {
@@ -155,9 +159,34 @@ using namespace facebook::react;
   }
 }
 
-- (void)addFocusDestinations:(NSArray*)destinations {
-  [self addFocusGuide];
-  self.focusGuide.preferredFocusEnvironments = destinations;
+/// Responsible of determining what focusGuide's next state should be based on the active properties of the component.
+- (void)handleFocusGuide
+{
+  // `destinations` should always be favored against `autoFocus` feature, if provided.
+  if (_focusDestinations != nil) {
+    [self addFocusGuide:_focusDestinations];
+    return;
+  } else if (_autoFocus && _previouslyFocusedItem != nil) {
+    // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
+    // `self` helps redirecting focus to the first focusable element in that case.
+    [self addFocusGuide:@[_previouslyFocusedItem, self]];
+  } else if (_autoFocus) {
+    [self addFocusGuide:@[self]];
+  } else {
+    // Then there's no need to have `focusGuide`, remove it to prevent potential bugs.
+    [self removeFocusGuide];
+  }
+}
+
+- (void)setFocusDestinations:(NSArray*)destinations
+{
+  if(destinations.count == 0) {
+    _focusDestinations = nil;
+  } else {
+    _focusDestinations = destinations;
+  }
+
+  [self handleFocusGuide];
 }
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
@@ -454,9 +483,8 @@ using namespace facebook::react;
       // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
       // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
       // the last focused element and redirects the focus to it whenever focus comes back.
-      // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
-      // `self` helps redirecting focus to the first focusable element in that case.
-      self.focusGuide.preferredFocusEnvironments = @[context.previouslyFocusedItem, self];
+      _previouslyFocusedItem = context.previouslyFocusedItem;
+      [self handleFocusGuide];
     }
 
     if (context.nextFocusedView == self && self.isUserInteractionEnabled ) {
@@ -502,7 +530,7 @@ using namespace facebook::react;
         [destinations addObject:view];
       }
     }
-    [self addFocusDestinations:destinations];
+    [self setFocusDestinations:destinations];
     return;
 #endif
   }
@@ -872,11 +900,7 @@ using namespace facebook::react;
   // `autoFocus`
   if (oldViewProps.autoFocus != newViewProps.autoFocus) {
     _autoFocus = newViewProps.autoFocus;
-    if (_autoFocus == true) {
-      [self addFocusGuide];
-    } else {
-      [self removeFocusGuide];
-    }
+    [self handleFocusGuide];
   }
 
   _trapFocusUp = newViewProps.trapFocusUp;
@@ -969,22 +993,9 @@ using namespace facebook::react;
     self.layer.opacity = (float)props.opacity;
   }
   
-  // We reset the `preferredFocusEnvironments` in case of recycling to prevent bugs.
-  // Resetting it also introduces a bug but it prevents much worse ones.
-  // The destination `focusEnvironment` reference could be recycled and used in another place so we might
-  // be holding a reference and redirecting the focus to the wrong view.
-  // To make sure that's not the case, we reset the destination to `self` which will
-  // redirect the focus to the first focusable child.
-  if (self.focusGuide != nil) {
-    self.focusGuide.preferredFocusEnvironments = @[self];
-  }
-    
-  // If `autoFocus` is enabled, addition/removal process of `UIFocusGuide` is managed
-  // inside `updateProps` method. Removing `UIFocusGuide` here for that case would cause
-  // weird bugs and state loss.
-  if (!_autoFocus) {
-    [self removeFocusGuide];
-  }
+  _focusDestinations = nil;
+  _previouslyFocusedItem = nil;
+  [self removeFocusGuide];
 
   _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN = nil;
   _eventEmitter.reset();
