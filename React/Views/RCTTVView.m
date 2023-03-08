@@ -486,6 +486,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)removeFocusGuide {
 	if (self.focusGuide != nil) {
+        focusDestinations = nil;
+        previouslyFocusedItem = nil;
+
 		[self removeLayoutGuide:self.focusGuide];
 		self.focusGuide = nil;
 	}

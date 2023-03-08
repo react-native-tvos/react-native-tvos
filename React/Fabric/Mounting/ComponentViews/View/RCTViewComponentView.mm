@@ -154,6 +154,9 @@ using namespace facebook::react;
 
 - (void)removeFocusGuide {
   if (self.focusGuide != nil) {
+    _focusDestinations = nil;
+    _previouslyFocusedItem = nil;
+
     [self removeLayoutGuide:self.focusGuide];
     self.focusGuide = nil;
   }
@@ -165,7 +168,6 @@ using namespace facebook::react;
   // `destinations` should always be favored against `autoFocus` feature, if provided.
   if (_focusDestinations != nil) {
     [self addFocusGuide:_focusDestinations];
-    return;
   } else if (_autoFocus && _previouslyFocusedItem != nil) {
     // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
     // `self` helps redirecting focus to the first focusable element in that case.
@@ -993,8 +995,6 @@ using namespace facebook::react;
     self.layer.opacity = (float)props.opacity;
   }
   
-  _focusDestinations = nil;
-  _previouslyFocusedItem = nil;
   [self removeFocusGuide];
 
   _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN = nil;

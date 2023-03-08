@@ -184,15 +184,19 @@ const HList = ({
 };
 
 const categoryData = [1, 2, 3, 4, 5];
-const getSelectedItemPrefix = selectedCategory => {
-  if (selectedCategory === null) return 'Item';
+const getSelectedItemPrefix = (selectedCategory: string) => {
+  if (selectedCategory === null) {
+    return 'Item';
+  }
+
   return `Category ${selectedCategory} - Item`;
 };
+
 const Row = ({title}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = (event, id) => {
-    setSelectedCategory(id);
+  const onCategoryFocused = (event, id: number) => {
+    setSelectedCategory(id.toString());
   };
 
   return (
