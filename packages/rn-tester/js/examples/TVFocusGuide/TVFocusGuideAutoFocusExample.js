@@ -243,8 +243,8 @@ const FocusToTheSameDestinationTest = () => {
         Focus To The Specific Destination (Always)
       </Text>
       <FocusableBox text="0" style={styles.colItem} />
-      <FocusableBox text="1" style={styles.colItem} />
-      <FocusableBox ref={setDestinationItem} text="2" style={styles.colItem} />
+      <FocusableBox ref={setDestinationItem} text="1" style={styles.colItem} />
+      <FocusableBox text="2" style={styles.colItem} />
       <FocusableBox text="3" style={styles.colItem} />
     </TVFocusGuide>
   );
