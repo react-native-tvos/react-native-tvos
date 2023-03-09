@@ -54,7 +54,7 @@ const generateData = (length = 10, randomize = false) => {
   });
 };
 
-const TVFocusGuide = (props: any) => {
+const TVFocusGuide = React.forwardRef((props: any, forwardedRef) => {
   if (!FOCUS_GUIDE_ENABLED) {
     return <View {...props} />;
   }
@@ -62,11 +62,12 @@ const TVFocusGuide = (props: any) => {
   return (
     <TVFocusGuideView
       {...props}
+      ref={forwardedRef}
       autoFocus={props.autoFocus}
       destinations={props.destinations}
     />
   );
-};
+});
 
 const Text = ({style, children}) => {
   const theme = useRNTesterTheme();
@@ -77,40 +78,43 @@ const Text = ({style, children}) => {
   );
 };
 
-const FocusableBox = React.memo(({id, width, height, text, slow, ...props}) => {
-  const theme = useRNTesterTheme();
+const FocusableBox = React.memo(
+  React.forwardRef(({id, width, height, text, slow, ...props}, forwardRef) => {
+    const theme = useRNTesterTheme();
 
-  if (slow) {
-    // eslint-disable-next-line no-undef
-    const now = performance.now();
-    // eslint-disable-next-line no-undef
-    while (performance.now() - now < 200) {}
-  }
+    if (slow) {
+      // eslint-disable-next-line no-undef
+      const now = performance.now();
+      // eslint-disable-next-line no-undef
+      while (performance.now() - now < 200) {}
+    }
 
-  const onFocus = e => props?.onFocus?.(e, id);
+    const onFocus = e => props?.onFocus?.(e, id);
 
-  return (
-    <Pressable
-      {...props}
-      onFocus={onFocus}
-      style={state => [
-        {
-          width,
-          height,
-          backgroundColor: theme.TertiarySystemFillColor,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 4,
-        },
-        state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
-        props.style,
-      ]}>
-      {text !== undefined ? (
-        <Text style={{fontSize: 24 * scale}}>{text}</Text>
-      ) : null}
-    </Pressable>
-  );
-});
+    return (
+      <Pressable
+        {...props}
+        ref={forwardRef}
+        onFocus={onFocus}
+        style={state => [
+          {
+            width,
+            height,
+            backgroundColor: theme.TertiarySystemFillColor,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 4,
+          },
+          state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
+          props.style,
+        ]}>
+        {text !== undefined ? (
+          <Text style={{fontSize: 24 * scale}}>{text}</Text>
+        ) : null}
+      </Pressable>
+    );
+  }),
+);
 
 const SideMenu = () => {
   const theme = useRNTesterTheme();
@@ -180,15 +184,19 @@ const HList = ({
 };
 
 const categoryData = [1, 2, 3, 4, 5];
-const getSelectedItemPrefix = selectedCategory => {
-  if (selectedCategory === null) return 'Item';
+const getSelectedItemPrefix = (selectedCategory: string) => {
+  if (selectedCategory === null) {
+    return 'Item';
+  }
+
   return `Category ${selectedCategory} - Item`;
 };
+
 const Row = ({title}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = (event, id) => {
-    setSelectedCategory(id);
+  const onCategoryFocused = (event, id: number) => {
+    setSelectedCategory(id.toString());
   };
 
   return (
@@ -217,10 +225,67 @@ const Row = ({title}) => {
 const Col = ({title}) => {
   return (
     <TVFocusGuide autoFocus style={styles.col}>
-      <Text style={styles.rowTitle}>{title}</Text>
+      <Text style={styles.colTitle}>{title}</Text>
       <FocusableBox text="0" style={styles.colItem} />
       <FocusableBox text="1" style={styles.colItem} />
       <FocusableBox text="2" style={styles.colItem} />
+      <FocusableBox text="3" style={styles.colItem} />
+    </TVFocusGuide>
+  );
+};
+
+const FocusToTheSameDestinationTest = () => {
+  const [destinationItem, setDestinationItem] = React.useState(null);
+
+  return (
+    <TVFocusGuide destinations={[destinationItem]} style={styles.col}>
+      <Text style={styles.colTitle}>
+        Focus To The Specific Destination (Always)
+      </Text>
+      <FocusableBox text="0" style={styles.colItem} />
+      <FocusableBox ref={setDestinationItem} text="1" style={styles.colItem} />
+      <FocusableBox text="2" style={styles.colItem} />
+      <FocusableBox text="3" style={styles.colItem} />
+    </TVFocusGuide>
+  );
+};
+
+/**
+ * Demonstrates the usage of `destinations` and `autoFocus` props
+ * together in harmony without losing state.
+ */
+const FocusToTheDestinationOnlyOnceTest = () => {
+  const visited = React.useRef(false);
+  const focusGuideRef =
+    React.useRef<?React.ElementRef<typeof TVFocusGuideView>>(null);
+  const destinationItemRef = React.useRef<?React.ElementRef<typeof View>>(null);
+
+  React.useEffect(() => {
+    focusGuideRef.current?.setDestinations([destinationItemRef.current]);
+  }, []);
+
+  return (
+    <TVFocusGuide
+      ref={focusGuideRef}
+      autoFocus
+      destinations={[destinationItemRef.current]}
+      style={styles.col}>
+      <Text style={styles.colTitle}>
+        Focus To The Specific Destination (Once)
+      </Text>
+      <FocusableBox text="0" style={styles.colItem} />
+      <FocusableBox text="1" style={styles.colItem} />
+      <FocusableBox
+        ref={destinationItemRef}
+        onFocus={() => {
+          if (visited.current === false) {
+            focusGuideRef.current?.setDestinations([]);
+            visited.current = true;
+          }
+        }}
+        text="2"
+        style={styles.colItem}
+      />
       <FocusableBox text="3" style={styles.colItem} />
     </TVFocusGuide>
   );
@@ -295,8 +360,8 @@ const ContentArea = () => {
 
         <TVFocusGuide autoFocus style={styles.cols}>
           <Col title="Genres" />
-          <Col title="Sub Genres" />
-          <Col title="Year" />
+          <FocusToTheSameDestinationTest />
+          <FocusToTheDestinationOnlyOnceTest />
         </TVFocusGuide>
       </ScrollView>
     </TVFocusGuide>
@@ -336,6 +401,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowTitle: {marginRight: 10 * scale, fontSize: 24 * scale},
+  colTitle: {margin: 10 * scale, fontSize: 24 * scale},
   slowListTitle: {fontSize: 24 * scale, margin: 16 * scale},
   container: {
     flex: 1,

@@ -456,7 +456,7 @@ RCT_EXPORT_METHOD(setDestinations : (nonnull NSNumber *)viewTag reactTags : (NSA
         [destinations addObject:destination];
       }
     }
-    [view addFocusGuide:destinations];
+    [view setFocusDestinations:destinations];
   }];  
 }
 #endif

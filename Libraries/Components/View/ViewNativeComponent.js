@@ -96,7 +96,7 @@ interface NativeCommands {
   // Apple TV focus guide API
   +setDestinations: (
     viewRef: React.ElementRef<HostComponent<mixed>>,
-    destinations: Array<React.ElementRef<HostComponent<mixed>>>,
+    destinations: Array<number>, // Node handles are basically integers
   ) => void;
 }
 

@@ -80,7 +80,7 @@
 - (void)removeParallaxMotionEffects;
 
 
-- (void)addFocusGuide:(NSArray*)destinations;
+- (void)setFocusDestinations:(NSArray*)destinations;
 
 @property (nonatomic, strong) UIFocusGuide * focusGuide;
 

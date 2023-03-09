@@ -78,6 +78,8 @@ declare module 'react-native' {
      * It will redirect the focus to the first focusable child on the first visit.
      * It also remembers the last focused child and redirects the focus
      * to it on the subsequent visits.
+     * 
+     * `destinations` prop takes precedence over this prop when used together.
      *
      * @default false
      */
@@ -104,15 +106,20 @@ declare module 'react-native' {
     safePadding?: 'both' | 'vertical' | 'horizontal' | null;
   }
 
+  export type FocusGuideMethods = {
+    setDestinations: (
+      destinations: (?React.ElementRef<HostComponent<unknown>>)[],
+    ) => void;
+  }
+
   /**
    * This component provides support for Apple's `UIFocusGuide` API,
    * to help ensure that focusable controls can be navigated to,
-   * even if they are not directly in line with other controls.
-   * An example is provided in `RNTester` that shows two different ways of using this component.
-   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.63.4/RNTester/js/examples/TVFocusGuide/TVFocusGuideExample.js
+   * even if they are not directly in line with other controls on both tvOS and Android.
+   * An example is provided in `RNTester` that shows different ways of using this component.
+   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.69.8/packages/rn-tester/js/examples/TVFocusGuide/TVFocusGuideAutoFocusExample.js
    */
-  export class TVFocusGuideView extends React.Component<FocusGuideProps> {}
-
+  export const TVFocusGuideView: React.ForwardRefExoticComponent<FocusGuideProps & React.RefAttributes<FocusGuideMethods>>;
   export interface TVTextScrollViewProps extends ScrollViewProps {
     /**
      * The duration of the scroll animation when a swipe is detected.
