@@ -117,7 +117,7 @@ declare module 'react-native' {
    * to help ensure that focusable controls can be navigated to,
    * even if they are not directly in line with other controls on both tvOS and Android.
    * An example is provided in `RNTester` that shows different ways of using this component.
-   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.69.6/packages/rn-tester/js/examples/TVFocusGuide/TVFocusGuideAutoFocusExample.js
+   * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.69.8/packages/rn-tester/js/examples/TVFocusGuide/TVFocusGuideAutoFocusExample.js
    */
   export const TVFocusGuideView: React.ForwardRefExoticComponent<FocusGuideProps & React.RefAttributes<FocusGuideMethods>>;
   export interface TVTextScrollViewProps extends ScrollViewProps {
