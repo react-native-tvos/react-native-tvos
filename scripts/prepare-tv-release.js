@@ -25,6 +25,8 @@ const fs_extra = require('fs-extra');
 const os = require('os');
 const path = require('path');
 
+let extraHermesDirectoryPath;
+
 {
   const HERMES_INSTALL_LOCATION = 'sdks';
   const HERMES_SOURCE_DEST_PATH = `${HERMES_INSTALL_LOCATION}/hermes`;
@@ -39,6 +41,7 @@ const path = require('path');
       })
       .trim();
     hermesReleaseURI = `https://github.com/facebook/hermes/archive/refs/tags/${hermesReleaseTag}.tar.gz`;
+    extraHermesDirectoryPath = `${HERMES_INSTALL_LOCATION}/hermes/hermes-${hermesReleaseTag}`;
   } catch (err) {
     echo('Failed to read current Hermes release tag.');
     // TODO: We'll need to make sure every release going forward has one of these.
@@ -122,5 +125,12 @@ artifacts.forEach(name => {
   }
 });
 
+if (extraHermesDirectoryPath) {
+  echo('Cleanup extra hermes directory...');
+  fs.rmSync(extraHermesDirectoryPath, { recursive: true, force: true });
+  echo(`Removed ${extraHermesDirectoryPath}.`);
+}
+
 echo(`Release prepared for version ${releaseVersion}`);
+
 exit(0);
