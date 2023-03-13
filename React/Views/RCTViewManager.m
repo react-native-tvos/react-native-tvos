@@ -459,6 +459,14 @@ RCT_EXPORT_METHOD(setDestinations : (nonnull NSNumber *)viewTag reactTags : (NSA
     [view setFocusDestinations:destinations];
   }];  
 }
+
+RCT_EXPORT_METHOD(requestTVFocus : (nonnull NSNumber *)viewTag)
+{
+  [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+    RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
+    [view requestTVFocus];
+  }];
+}
 #endif
 
 // The events below define the properties that are not used by native directly, but required in the view config for new
