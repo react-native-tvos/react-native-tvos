@@ -544,16 +544,16 @@ using namespace facebook::react;
     }
 
     RCTRootComponentView *rootview = [self containingRootView];
-    if (rootview != nil) {
-      if (self.focusGuide != nil) {
-        rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
-      } else {
-        rootview.reactPreferredFocusEnvironments = @[self];
-      }
+    if (rootview == nil) return;
 
-      [rootview setNeedsFocusUpdate];
-      [rootview updateFocusIfNeeded];
+    if (self.focusGuide != nil) {
+      rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
+    } else {
+      rootview.reactPreferredFocusEnvironments = @[self];
     }
+
+    [rootview setNeedsFocusUpdate];
+    [rootview updateFocusIfNeeded];
     
 #endif
     return;
