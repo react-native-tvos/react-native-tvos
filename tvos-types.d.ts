@@ -31,6 +31,10 @@ declare module 'react-native' {
   nextFocusUp?: number,
   }
 
+  interface View {
+    requestTVFocus(): void;
+  }
+
   export const useTVEventHandler: (handleEvent: (event: HWEvent) => void) => void;
 
   export const TVEventControl: {

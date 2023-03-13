@@ -523,4 +523,18 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   [self handleFocusGuide];
 }
 
+- (void)requestTVFocus
+{
+  RCTRootView *rootview = [self rootView];
+  if (rootview == nil) return;
+
+  if (self.focusGuide != nil) {
+    rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
+  } else {
+    rootview.reactPreferredFocusEnvironments = @[self];
+  }
+
+  [rootview setNeedsFocusUpdate];
+  [rootview updateFocusIfNeeded];
+}
 @end

@@ -82,6 +82,8 @@
 
 - (void)setFocusDestinations:(NSArray*)destinations;
 
+- (void)requestTVFocus;
+
 @property (nonatomic, strong) UIFocusGuide * focusGuide;
 
 @end

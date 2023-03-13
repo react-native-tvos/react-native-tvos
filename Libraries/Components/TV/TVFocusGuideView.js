@@ -16,6 +16,8 @@ import type {ViewProps} from '../View/ViewPropTypes';
 import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
 
+const {View} = ReactNative;
+
 type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
 
@@ -82,12 +84,12 @@ function TVFocusGuideView(
       focusGuideRef.current = ref;
 
       // This is a hack. Ideally we would forwardRef to the underlying
-      // host component. However, since TVFocusGuide has it's own methods that can be
+      // host component. However, since TVFocusGuide has its own methods that can be
       // called as well, if we used the standard forwardRef then these
       // methods wouldn't be accessible
       //
-      // Here we mutate the ref, so that the user can use the standart native
-      // methods like `focus()`, `blur()`, etc. and while also having access to
+      // Here we mutate the ref, so that the user can use the standard native
+      // methods like `focus()`, `blur()`, etc. while also having access to
       // imperative methods of this component like `setDestinations()`.
       if (ref) {
         ref.setDestinations = setDestinations;
@@ -124,7 +126,7 @@ const styles = ReactNative.StyleSheet.create({
 
 const ForwardedTVFocusGuideView: React.AbstractComponent<
   TVFocusGuideViewProps,
-  React.ElementRef<HostComponent<mixed>> & TVFocusGuideViewImperativeMethods,
+  React.ElementRef<typeof View> & TVFocusGuideViewImperativeMethods,
 > = React.forwardRef(TVFocusGuideView);
 ForwardedTVFocusGuideView.displayName = 'TVFocusGuideView';
 
