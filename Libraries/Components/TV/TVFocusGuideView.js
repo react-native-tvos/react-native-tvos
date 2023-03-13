@@ -88,7 +88,7 @@ function TVFocusGuideView(
       // called as well, if we used the standard forwardRef then these
       // methods wouldn't be accessible
       //
-      // Here we mutate the ref, so that the user can use the standart native
+      // Here we mutate the ref, so that the user can use the standard native
       // methods like `focus()`, `blur()`, etc. while also having access to
       // imperative methods of this component like `setDestinations()`.
       if (ref) {
