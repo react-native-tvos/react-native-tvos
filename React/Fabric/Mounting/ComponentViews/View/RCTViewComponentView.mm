@@ -535,6 +535,28 @@ using namespace facebook::react;
     [self setFocusDestinations:destinations];
     return;
 #endif
+  } else if ([commandName isEqualToString:@"requestTVFocus"]) {
+#if TARGET_OS_TV
+    if ([args count] != 0) {
+      RCTLogError(
+          @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 0);
+      return;
+    }
+
+    RCTRootComponentView *rootview = [self containingRootView];
+    if (rootview != nil) {
+      if (self.focusGuide != nil) {
+        rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
+      } else {
+        rootview.reactPreferredFocusEnvironments = @[self];
+      }
+
+      [rootview setNeedsFocusUpdate];
+      [rootview updateFocusIfNeeded];
+    }
+    
+#endif
+    return;
   }
 #if RCT_DEBUG
   RCTLogError(@"%@ received command %@, which is not a supported command.", @"View", commandName);

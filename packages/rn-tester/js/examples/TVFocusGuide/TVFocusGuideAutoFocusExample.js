@@ -59,14 +59,7 @@ const TVFocusGuide = React.forwardRef((props: any, forwardedRef) => {
     return <View {...props} />;
   }
 
-  return (
-    <TVFocusGuideView
-      {...props}
-      ref={forwardedRef}
-      autoFocus={props.autoFocus}
-      destinations={props.destinations}
-    />
-  );
+  return <TVFocusGuideView {...props} ref={forwardedRef} />;
 });
 
 const Text = ({style, children}) => {
