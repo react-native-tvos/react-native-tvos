@@ -116,14 +116,14 @@ const FocusableBox = React.memo(
   }),
 );
 
-const SideMenu = () => {
+const SideMenu = React.forwardRef((props, forwardedRef) => {
   const theme = useRNTesterTheme();
   const sideMenuItemStyle = [
     styles.sideMenuItem,
     {backgroundColor: theme.TertiarySystemFillColor},
   ];
   return (
-    <TVFocusGuide autoFocus style={styles.sideMenuContainer}>
+    <TVFocusGuide autoFocus style={styles.sideMenuContainer} ref={forwardedRef}>
       <Text style={{fontSize: 18 * scale, marginBottom: 10 * scale}}>
         Side Menu
       </Text>
@@ -135,7 +135,7 @@ const SideMenu = () => {
       <FocusableBox style={sideMenuItemStyle} />
     </TVFocusGuide>
   );
-};
+});
 
 const getItemText = ({item, prefix}) => {
   return prefix ? `${prefix}-${item}` : `${item}`;
@@ -346,35 +346,51 @@ const SlowListFocusTest = () => {
   );
 };
 
-const ContentArea = () => {
-  return (
-    <TVFocusGuide autoFocus style={{flex: 1}}>
-      <ScrollView>
-        <Text style={styles.pageTitle}>
-          Welcome to the TVFocusGuide autoFocus example!
-        </Text>
-        <RestoreFocusTestList />
-        <SlowListFocusTest />
-        <Row title="Category Example 1" />
-        <Row title="Category Example 2" />
+type ContentAreaProps = $ReadOnly<{|
+  sideMenuRef: {current: ?React.ElementRef<typeof View>},
+|}>;
 
-        <TVFocusGuide autoFocus style={styles.cols}>
-          <Col title="Genres" />
-          <FocusToTheSameDestinationTest />
-          <FocusToTheDestinationOnlyOnceTest />
-        </TVFocusGuide>
-      </ScrollView>
-    </TVFocusGuide>
-  );
-};
+const ContentArea = React.forwardRef(
+  ({sideMenuRef}: ContentAreaProps, forwardedRef) => {
+    return (
+      <TVFocusGuide ref={forwardedRef} autoFocus style={{flex: 1}}>
+        <ScrollView>
+          <Text style={styles.pageTitle}>
+            Welcome to the TVFocusGuide autoFocus example!
+          </Text>
+          <RestoreFocusTestList />
+          <SlowListFocusTest />
+          <Row title="Category Example 1" />
+          <Row title="Category Example 2" />
+
+          <FocusableBox
+            style={styles.focusToSideMenuBtn}
+            text="Focus To Side Menu"
+            onPress={() => {
+              sideMenuRef.current?.requestTVFocus();
+            }}
+          />
+
+          <TVFocusGuide autoFocus style={styles.cols}>
+            <Col title="Genres" />
+            <FocusToTheSameDestinationTest />
+            <FocusToTheDestinationOnlyOnceTest />
+          </TVFocusGuide>
+        </ScrollView>
+      </TVFocusGuide>
+    );
+  },
+);
 
 const TVFocusGuideAutoFocusExample = () => {
+  const sideMenuRef =
+    React.useRef<?React.ElementRef<typeof TVFocusGuide>>(null);
   const theme = useRNTesterTheme();
 
   return (
     <View style={[styles.container, {backgroundColor: theme.BackgroundColor}]}>
-      <SideMenu />
-      <ContentArea />
+      <SideMenu ref={sideMenuRef} />
+      <ContentArea sideMenuRef={sideMenuRef} />
     </View>
   );
 };
@@ -432,5 +448,9 @@ const styles = StyleSheet.create({
   slowList: {
     flex: 1,
     marginHorizontal: 8 * scale,
+  },
+  focusToSideMenuBtn: {
+    height: 100 * scale,
+    marginHorizontal: 16 * scale,
   },
 });

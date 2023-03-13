@@ -349,6 +349,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
         handleSetDestinations(root, args);
         break;
       }
+      case "requestTVFocus":
+        {
+          root.requestFocus();
+          break;
+        }
     }
   }
 
