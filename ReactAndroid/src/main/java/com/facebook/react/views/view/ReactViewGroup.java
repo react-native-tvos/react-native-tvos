@@ -396,6 +396,8 @@ public class ReactViewGroup extends ViewGroup
     Animation animation = child.getAnimation();
     boolean isAnimating = animation != null && !animation.hasEnded();
     if (!intersects && child.getParent() != null && !isAnimating) {
+      recoverFocus(child);
+
       // We can try saving on invalidate call here as the view that we remove is out of visible area
       // therefore invalidation is not necessary.
       super.removeViewsInLayout(idx - clippedSoFar, 1);
