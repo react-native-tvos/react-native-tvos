@@ -134,47 +134,50 @@ const getItemText = ({item, prefix}) => {
   return prefix ? `${prefix}-${item}` : `${item}`;
 };
 
-const HList = ({
-  itemCount,
-  itemWidth = 500 * scale,
-  itemHeight = 120 * scale,
-  onItemFocused,
-  onItemPressed,
-  prefix = '',
-  slow,
-  ...props
-}) => {
-  const listRef = React.useRef(null);
+const HList = React.forwardRef(
+  (
+    {
+      itemCount,
+      itemWidth = 500 * scale,
+      itemHeight = 120 * scale,
+      onItemFocused,
+      onItemPressed,
+      prefix = '',
+      slow,
+      ...props
+    },
+    forwardedRef,
+  ) => {
+    const data = React.useMemo(() => generateData(itemCount), [itemCount]);
 
-  const data = React.useMemo(() => generateData(itemCount), [itemCount]);
+    const renderItem = ({item, index}) => {
+      return (
+        <FocusableBox
+          id={item}
+          width={itemWidth}
+          height={itemHeight}
+          style={styles.mr5}
+          text={getItemText({prefix, item})}
+          onFocus={onItemFocused}
+          onPress={onItemPressed}
+          slow={slow}
+        />
+      );
+    };
 
-  const renderItem = ({item, index}) => {
     return (
-      <FocusableBox
-        id={item}
-        width={itemWidth}
-        height={itemHeight}
-        style={styles.mr5}
-        text={getItemText({prefix, item})}
-        onFocus={onItemFocused}
-        onPress={onItemPressed}
-        slow={slow}
+      <FlatList
+        keyExtractor={item => getItemText({prefix, item})}
+        ref={forwardedRef}
+        data={data}
+        renderItem={renderItem}
+        horizontal
+        contentContainerStyle={styles.hListContainer}
+        {...props}
       />
     );
-  };
-
-  return (
-    <FlatList
-      keyExtractor={item => getItemText({prefix, item})}
-      ref={listRef}
-      data={data}
-      renderItem={renderItem}
-      horizontal
-      contentContainerStyle={styles.hListContainer}
-      {...props}
-    />
-  );
-};
+  },
+);
 
 const categoryData = [1, 2, 3, 4, 5];
 const getSelectedItemPrefix = (selectedCategory: string) => {
@@ -284,6 +287,33 @@ const FocusToTheDestinationOnlyOnceTest = () => {
   );
 };
 
+const RestoreFocusOnScrollToTopTestList = () => {
+  const listRef = React.useRef<React.ElementRef<typeof FlatList> | null>(null);
+  /**
+   * This is an example to make sure that the focus is restored
+   * when the list is scrolled to the top. On Android, `removeClippedSubviews` is enabled
+   * for the lists by default. This leads to this weird behavior where the focus gets lost
+   * when view clipping logic can't keep up with the scroll speed.
+   */
+
+  const onItemPressed = () => {
+    listRef.current?.scrollToIndex({index: 0, animated: false});
+  };
+
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Restore Focus on Scroll To Top Test
+      </Text>
+      <HList ref={listRef} itemCount={10} onItemPressed={onItemPressed} />
+    </TVFocusGuide>
+  );
+};
+
 const RestoreFocusTestList = () => {
   const [randomize, setRandomize] = React.useState(false);
   const data = React.useMemo(() => generateData(10, randomize), [randomize]);
@@ -352,6 +382,7 @@ const ContentArea = React.forwardRef(
             Welcome to the TVFocusGuide autoFocus example!
           </Text>
           <RestoreFocusTestList />
+          <RestoreFocusOnScrollToTopTestList />
           <SlowListFocusTest />
           <Row title="Category Example 1" />
           <Row title="Category Example 2" />
