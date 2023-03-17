@@ -112,7 +112,7 @@ declare module 'react-native' {
 
   export type FocusGuideMethods = {
     setDestinations: (
-      destinations: (?React.ElementRef<HostComponent<unknown>>)[],
+      destinations: (React.ElementRef<HostComponent<unknown>> | null)[],
     ) => void;
   }
 
@@ -123,7 +123,7 @@ declare module 'react-native' {
    * An example is provided in `RNTester` that shows different ways of using this component.
    * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.69.8/packages/rn-tester/js/examples/TVFocusGuide/TVFocusGuideAutoFocusExample.js
    */
-  export const TVFocusGuideView: React.ForwardRefExoticComponent<FocusGuideProps & React.RefAttributes<FocusGuideMethods>>;
+  export const TVFocusGuideView: React.ForwardRefExoticComponent<FocusGuideProps & React.RefAttributes<View & FocusGuideMethods>>;
   export interface TVTextScrollViewProps extends ScrollViewProps {
     /**
      * The duration of the scroll animation when a swipe is detected.
