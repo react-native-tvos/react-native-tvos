@@ -112,7 +112,7 @@ declare module 'react-native' {
 
   export type FocusGuideMethods = {
     setDestinations: (
-      destinations: (React.ElementRef<HostComponent<unknown>> | null)[],
+      destinations: (React.ElementRef<HostComponent<unknown>> | null | undefined)[],
     ) => void;
   }
 
