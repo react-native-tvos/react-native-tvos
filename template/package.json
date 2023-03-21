@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "react": "18.0.0",
-    "react-native": "npm:react-native-tvos@0.69.8-0rc3"
+    "react-native": "npm:react-native-tvos@0.69.8-0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
