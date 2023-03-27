@@ -461,8 +461,11 @@ public class ReactViewGroup extends ViewGroup
      * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
      * Focus direction (FOCUS_DOWN) doesn't matter at all because
      * it's not being used by the underlying implementation.
+     *
+     * Here we intentionally call `super` method to bypass `ReactViewGroup`'s
+     * overriden `addFocusables` logic.
      */
-    viewGroup.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
+    super.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
     /**
      * Depending on ViewGroup's `descendantFocusability` property,
      * the first element can be the ViewGroup itself.
