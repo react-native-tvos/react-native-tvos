@@ -142,20 +142,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   return (RCTRootView *)rootview;
 }
 
-- (RCTRootView * _Nullable)waitForNonNullRootView
-{
-  // Spin for 480 ms and check at 16 ms intervals
-  // When root view available, set this view as focused
-  RCTRootView *rootview = [self rootView];
-  int counter = 30;
-  while (rootview == nil && counter > 0) {
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.016]];
-    counter = counter - 1;
-    rootview = [self rootView];
-  }
-  return rootview;
-}
-
 - (void)addParallaxMotionEffects
 {
   if(![self.tvParallaxProperties[@"enabled"] boolValue]) {
@@ -448,12 +434,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   _hasTVPreferredFocus = hasTVPreferredFocus;
   if (hasTVPreferredFocus) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      RCTRootView *rootview = [self waitForNonNullRootView];
-      if (rootview == nil) return;
-      [rootview setReactPreferredFocusedView:self];
-      [rootview setNeedsFocusUpdate];
-    });
+    [self requestFocusSelf];
   }
 }
 
@@ -523,18 +504,37 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   [self handleFocusGuide];
 }
 
-- (void)requestTVFocus
-{
+-(bool)focusSelf {
   RCTRootView *rootview = [self rootView];
-  if (rootview == nil) return;
-
+  if (rootview == nil) return false;
+  
   if (self.focusGuide != nil) {
     rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
   } else {
-    rootview.reactPreferredFocusEnvironments = @[self];
+    rootview.reactPreferredFocusedView = self;
   }
 
   [rootview setNeedsFocusUpdate];
   [rootview updateFocusIfNeeded];
+  return true;
+}
+
+/// Tries to move focus to `self`. Does that synchronously if possible, fallbacks to async if it fails.
+-(void)requestFocusSelf {
+  bool focusedSync = [self focusSelf];
+  
+  if (!focusedSync) {
+    // `focusSelf` function relies on `rootView` which may not be present on the first render.
+    // `focusSelf` fails and returns `false` in that case. We try re-executing the same action
+    // by putting it to the main queue to make sure it runs after UI creation is completed.
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self focusSelf];
+    });
+  }
+}
+
+- (void)requestTVFocus
+{
+  [self requestFocusSelf];
 }
 @end

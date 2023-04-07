@@ -332,9 +332,54 @@ const RestoreFocusTestList = () => {
           styles.rowTitle,
           {marginLeft: 16 * scale, marginVertical: 16 * scale},
         ]}>
-        Restore Focus Test
+        Restore Focus When All The Items Change Test
       </Text>
       <HList itemCount={10} data={data} onItemPressed={onItemPressed} />
+    </TVFocusGuide>
+  );
+};
+
+const RestoreFocusOnSingleDeletionTestList = () => {
+  const [data, setData] = React.useState(() => generateData(10, false));
+  const itemNeedsToBeFocusedRef = React.useRef<?number>(undefined);
+
+  const onItemPressed = (id, index) => {
+    // We practially set the focus to the previous item here
+    itemNeedsToBeFocusedRef.current = index - 1;
+    setData(d => d.filter(i => i !== id));
+  };
+
+  const renderItem = ({item, index}) => {
+    return (
+      <FocusableBox
+        id={item}
+        width={300 * scale}
+        height={100 * scale}
+        style={styles.mr5}
+        text={item}
+        onPress={() => onItemPressed(item, index)}
+        hasTVPreferredFocus={index === itemNeedsToBeFocusedRef.current}
+      />
+    );
+  };
+
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Restore Focus To Previous Item on Deletion Test
+      </Text>
+
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        horizontal
+        contentContainerStyle={styles.hListContainer}
+        keyExtractor={item => item.toString()}
+      />
     </TVFocusGuide>
   );
 };
@@ -382,6 +427,7 @@ const ContentArea = React.forwardRef(
             Welcome to the TVFocusGuide autoFocus example!
           </Text>
           <RestoreFocusTestList />
+          <RestoreFocusOnSingleDeletionTestList />
           <RestoreFocusOnScrollToTopTestList />
           <SlowListFocusTest />
           <Row title="Category Example 1" />

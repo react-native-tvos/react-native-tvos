@@ -513,7 +513,16 @@ public class ReactViewGroup extends ViewGroup
       new Runnable() {
         @Override
         public void run() {
-          moveFocusToFirstFocusable(parentFocusGuide);
+          /**
+           * Focus can move to an another element while waiting for the next frame.
+           * E.g: An element with `hasTVPreferredFocus` can appear.
+           *
+           * We check here to make sure `parentFocusGuide` still remains the focus
+           * before recovering the focus to make sure we don't accidentally override it.
+           */
+          if (parentFocusGuide.isFocused()) {
+            moveFocusToFirstFocusable(parentFocusGuide);
+          }
 
           parentFocusGuide.setFocusable(false);
           parentFocusGuide.mRecoverFocus = false;
