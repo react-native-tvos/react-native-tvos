@@ -138,6 +138,36 @@ using namespace facebook::react;
   return (RCTRootComponentView *)rootview;
 }
 
+/// Handles self-focusing logic. Shouldn't be used directly, use `requestFocusSelf` method instead.
+-(bool)focusSelf {
+  RCTRootComponentView *rootview = [self containingRootView];
+  if (rootview == nil) return false;
+  
+  if (self.focusGuide != nil) {
+    rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
+  } else {
+    rootview.reactPreferredFocusedView = self;
+  }
+
+  [rootview setNeedsFocusUpdate];
+  [rootview updateFocusIfNeeded];
+  return true;
+}
+
+/// Tries to move focus to `self`. Does that synchronously if possible, fallbacks to async if it fails.
+-(void)requestFocusSelf {
+  bool focusedSync = [self focusSelf];
+  
+  if (!focusedSync) {
+    // `focusSelf` function relies on `rootView` which may not be present on the first render.
+    // `focusSelf` fails and returns `false` in that case. We try re-executing the same action
+    // by putting it to the main queue to make sure it runs after UI creation is completed.
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self focusSelf];
+    });
+  }
+}
+
 - (void)addFocusGuide:(NSArray*)destinations {
   if (self.focusGuide == nil) {
     self.focusGuide = [UIFocusGuide new];
@@ -543,18 +573,7 @@ using namespace facebook::react;
       return;
     }
 
-    RCTRootComponentView *rootview = [self containingRootView];
-    if (rootview == nil) return;
-
-    if (self.focusGuide != nil) {
-      rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
-    } else {
-      rootview.reactPreferredFocusEnvironments = @[self];
-    }
-
-    [rootview setNeedsFocusUpdate];
-    [rootview updateFocusIfNeeded];
-    
+    [self requestFocusSelf];
 #endif
     return;
   }
@@ -877,11 +896,7 @@ using namespace facebook::react;
   if (oldViewProps.hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
     _hasTVPreferredFocus = newViewProps.hasTVPreferredFocus;
     if (_hasTVPreferredFocus) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-        RCTRootComponentView *rootview = [self containingRootView];
-        [rootview setReactPreferredFocusedView:self];
-        [rootview setNeedsFocusUpdate];
-      });
+      [self requestFocusSelf];
     }
   }
   // `nextFocusUp`
@@ -972,9 +987,7 @@ using namespace facebook::react;
   if (_hasTVPreferredFocus) {
     RCTRootComponentView *rootview = [self containingRootView];
     if (rootview != nil && rootview.reactPreferredFocusedView != self) {
-      rootview.reactPreferredFocusedView = self;
-      [rootview setNeedsFocusUpdate];
-      [rootview updateFocusIfNeeded];
+      [self requestFocusSelf];
     }
   }
 
