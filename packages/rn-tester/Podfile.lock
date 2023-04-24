@@ -672,6 +672,7 @@ DEPENDENCIES:
   - DoubleConversion (from `../../third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../../Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../../React/FBReactNativeSpec`)
+  - fmt (from `../../third-party-podspecs/fmt.podspec`)
   - glog (from `../../third-party-podspecs/glog.podspec`)
   - RCT-Folly (from `../../third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../../third-party-podspecs/RCT-Folly.podspec`)
@@ -712,10 +713,6 @@ DEPENDENCIES:
   - ScreenshotManager (from `NativeModuleExample`)
   - Yoga (from `../../ReactCommon/yoga`)
 
-SPEC REPOS:
-  trunk:
-    - fmt
-
 EXTERNAL SOURCES:
   boost:
     :podspec: "../../third-party-podspecs/boost.podspec"
@@ -725,6 +722,8 @@ EXTERNAL SOURCES:
     :path: "../../Libraries/FBLazyVector"
   FBReactNativeSpec:
     :path: "../../React/FBReactNativeSpec"
+  fmt:
+    :podspec: "../../third-party-podspecs/fmt.podspec"
   glog:
     :podspec: "../../third-party-podspecs/glog.podspec"
   RCT-Folly:
@@ -797,32 +796,32 @@ EXTERNAL SOURCES:
     :path: "../../ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  boost: 57d2868c099736d80fcd648bf211b4431e51a558
+  boost: 0ed1b9a58a27b2f7885dc9f279bc3b341f44512b
   DoubleConversion: 234abba95e31cc2aada0cf3b97cdb11bc5b90575
   FBLazyVector: 2e451c405a8f6fd55121656165dcfbf0bef47ca0
   FBReactNativeSpec: a6c88cd0fcd5d5460fe1c1609105ab3d52f07d71
-  fmt: 332e3819af8f4ae9c0ae1ae28dcfaaf45f95e107
+  fmt: 135c0c55547979f715b56dfa54037ececa96d07a
   glog: a2ded9bf28f0cb2fce90ad21eb419299a500ff6c
-  RCT-Folly: f749ad9753d4116d21df080c97d7886c0ae03aac
+  RCT-Folly: 136e9161a833a162fe3e8b647098759aae227036
   RCTRequired: d9f98db6e41d5f9835f9209701876d8ed7094ae1
   RCTTypeSafety: 7368578c5ff9ac229fcf0d446f8a15040d965c78
   React: 915f681a18e0fdc4f15da720087dda1446615cb2
   React-callinvoker: ba6eed2c586945d98175799f7c00221a3128d65a
-  React-Codegen: 837304cf1e2aae6b3784954521331dfc3e092b97
+  React-Codegen: 03b22d07693751b708d33c7c5d9a8b7d8a0e9423
   React-Core: 4414120fdf47569a8d66cee1986b86e26015398d
   React-CoreModules: 92a8c1c71fcf178990da74d5c2a6774cc6e5f483
-  React-cxxreact: d93d501dc91ff5db1e645f92e2ff5d2f1349049b
+  React-cxxreact: 38bdea84cd704456325fd2b274f52e41b20841b0
   React-Fabric: 48e890dbe9d2fbddc3bff1e367c6b17b9fdd9d4e
-  React-graphics: a7e870a0b7394a1310f8ec90d17fa26652b294c4
+  React-graphics: b4717ed360822bdbae25fd11ee50bad6d8a18913
   React-jsc: 7e64334b52b5fe31bcffed9fb6e844c556d4c65d
   React-jsi: 3974d0bfc9636c92f20f072f123d5319fee0a98f
   React-jsiexecutor: 85b1b672f5d0e02e8188e7c5837617e84d134c16
   React-jsinspector: cab807080bccf737ee315c69b0b42660a90141ed
-  React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
+  React-logger: 8f1cbc2940b42412177599381c5ce1df6277d093
   React-perflogger: 0155a50da547af874be4e05901bf6d0712724a83
   React-RCTActionSheet: 864040061872530a561900f91774f2681eb5938f
   React-RCTAnimation: 9836325eb827e5e655633217dd1232c9b4e0cb9d
-  React-RCTAppDelegate: 0b535af4d6912d86d7ac57ab689c19643151c2e7
+  React-RCTAppDelegate: 55d505815042f21fec99925450550098b5446af7
   React-RCTBlob: 6259acda3a2bbcee45e5baace093ed31ff12026c
   React-RCTFabric: f75e333a11d2d34f9ffcb55122c0423ce51b8533
   React-RCTImage: bb6421ee7b79c38419deea8d5eee0c472f7af28e
@@ -830,14 +829,14 @@ SPEC CHECKSUMS:
   React-RCTNetwork: f2caa1945fd74d10c145d8f0e4a8ae982782a426
   React-RCTPushNotification: 627b04cd4c7da88be37751a25a5049ed6178ee66
   React-RCTSettings: bf8d2ad1bc2a3f43cc6d6095c34631e7b4eca8d0
-  React-RCTTest: 93fc45476ed9f1f2bd3bd713bb479e47483d5dad
+  React-RCTTest: aef44fb4b3457217d45fdb2e82848b925ae812ab
   React-RCTText: aab1f937019f44700d3be9b25fbd6302b16b8732
   React-rncore: 720101837b24face9147a27689c024dc8c285981
   React-runtimeexecutor: 7d32491d5b7f8f519fe8ba8118534d46cd4c9cc7
   ReactCommon: 58fe20a7a4684a89de713fa23b1d674f0ff07838
-  ScreenshotManager: e77ad8e427160ebce1f86313e2b21ea56b665285
+  ScreenshotManager: 6ac37428fe4ff9cd7c5c1b9dcfa2c3bee5cdc4f0
   Yoga: 230a293c96753f05740c656dca10a875a6dd1056
 
-PODFILE CHECKSUM: f776e14dbf6b19432692f6618af7fa1c07a121db
+PODFILE CHECKSUM: 3cc3fd5b6ecddd19887b5b7b3d95408b035539b8
 
 COCOAPODS: 1.11.3

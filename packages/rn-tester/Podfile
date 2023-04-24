@@ -2,7 +2,7 @@ require_relative '../../scripts/react_native_pods'
 
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :ios, min_ios_version_supported
+platform :tvos, min_ios_version_supported
 
 prepare_react_native_project!
 

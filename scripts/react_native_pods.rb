@@ -126,6 +126,7 @@ def use_react_native! (
   pod 'glog', :podspec => "#{prefix}/third-party-podspecs/glog.podspec"
   pod 'boost', :podspec => "#{prefix}/third-party-podspecs/boost.podspec"
   pod 'RCT-Folly', :podspec => "#{prefix}/third-party-podspecs/RCT-Folly.podspec", :modular_headers => true
+  pod 'fmt', :podspec => "#{prefix}/third-party-podspecs/fmt.podspec"
 
   run_codegen!(
     app_path,
