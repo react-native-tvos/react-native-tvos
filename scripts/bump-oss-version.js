@@ -18,12 +18,10 @@ const {exit} = require('shelljs');
 const yargs = require('yargs');
 const inquirer = require('inquirer');
 const request = require('request');
+const {getBranchName, exitIfNotOnGit} = require('./scm-utils');
 
-const {
-  parseVersion,
-  isReleaseBranch,
-  getBranchName,
-} = require('./version-utils');
+const {parseVersion, isReleaseBranch} = require('./version-utils');
+const {failIfTagExists} = require('./release-utils');
 
 let argv = yargs
   .option('r', {
@@ -42,7 +40,10 @@ let argv = yargs
     required: true,
   })
   .check(() => {
-    const branch = getBranchName();
+    const branch = exitIfNotOnGit(
+      () => getBranchName(),
+      "Not in git. You can't invoke bump-oss-versions.js from outside a git repo.",
+    );
     exitIfNotOnReleaseBranch(branch);
     return true;
   }).argv;
@@ -69,9 +70,13 @@ function triggerReleaseWorkflow(options) {
 }
 
 async function main() {
-  const branch = getBranchName();
+  const branch = exitIfNotOnGit(
+    () => getBranchName(),
+    "Not in git. You can't invoke bump-oss-versions.js from outside a git repo.",
+  );
   const token = argv.token;
   const releaseVersion = argv.toVersion;
+  failIfTagExists(releaseVersion, 'release');
 
   const {pushed} = await inquirer.prompt({
     type: 'confirm',
@@ -86,7 +91,7 @@ async function main() {
   }
 
   let latest = false;
-  const {version, prerelease} = parseVersion(releaseVersion);
+  const {version, prerelease} = parseVersion(releaseVersion, 'release');
   if (!prerelease) {
     const {setLatest} = await inquirer.prompt({
       type: 'confirm',

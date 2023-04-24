@@ -8,7 +8,9 @@
 package com.facebook.react.views.text;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.Spannable;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.facebook.react.R;
 import com.facebook.react.bridge.ReadableMap;
@@ -16,13 +18,13 @@ import com.facebook.react.bridge.ReadableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.annotations.VisibleForTesting;
 import com.facebook.react.common.mapbuffer.MapBuffer;
-import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.IViewManagerWithChildren;
 import com.facebook.react.uimanager.ReactAccessibilityDelegate;
 import com.facebook.react.uimanager.ReactStylesDiffMap;
 import com.facebook.react.uimanager.StateWrapper;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.ViewProps;
 import com.facebook.yoga.YogaMeasureMode;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,30 @@ public class ReactTextViewManager
   @VisibleForTesting public static final String REACT_CLASS = "RCTText";
 
   protected @Nullable ReactTextViewManagerCallback mReactTextViewManagerCallback;
+
+  public ReactTextViewManager() {
+    this(null);
+  }
+
+  public ReactTextViewManager(@Nullable ReactTextViewManagerCallback reactTextViewManagerCallback) {
+    mReactTextViewManagerCallback = reactTextViewManagerCallback;
+    setupViewRecycling();
+  }
+
+  @Override
+  protected ReactTextView prepareToRecycleView(
+      @NonNull ThemedReactContext reactContext, ReactTextView view) {
+    // BaseViewManager
+    super.prepareToRecycleView(reactContext, view);
+
+    // Resets background and borders
+    view.recycleView();
+
+    // Defaults from ReactTextAnchorViewManager
+    setSelectionColor(view, null);
+
+    return view;
+  }
 
   @Override
   public String getName() {
@@ -106,18 +132,11 @@ public class ReactTextViewManager
 
   @Override
   public Object updateState(
-      ReactTextView view, ReactStylesDiffMap props, @Nullable StateWrapper stateWrapper) {
-    if (stateWrapper == null) {
-      return null;
+      ReactTextView view, ReactStylesDiffMap props, StateWrapper stateWrapper) {
+    MapBuffer stateMapBuffer = stateWrapper.getStateDataMapBuffer();
+    if (stateMapBuffer != null) {
+      return getReactTextUpdate(view, props, stateMapBuffer);
     }
-
-    if (ReactFeatureFlags.isMapBufferSerializationEnabled()) {
-      MapBuffer stateMapBuffer = stateWrapper.getStateDataMapBuffer();
-      if (stateMapBuffer != null) {
-        return getReactTextUpdate(view, props, stateMapBuffer);
-      }
-    }
-
     ReadableNativeMap state = stateWrapper.getStateData();
     if (state == null) {
       return null;
@@ -131,15 +150,19 @@ public class ReactTextViewManager
     view.setSpanned(spanned);
 
     int textBreakStrategy =
-        TextAttributeProps.getTextBreakStrategy(paragraphAttributes.getString("textBreakStrategy"));
+        TextAttributeProps.getTextBreakStrategy(
+            paragraphAttributes.getString(ViewProps.TEXT_BREAK_STRATEGY));
+    int currentJustificationMode =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.O ? 0 : view.getJustificationMode();
 
     return new ReactTextUpdate(
         spanned,
         state.hasKey("mostRecentEventCount") ? state.getInt("mostRecentEventCount") : -1,
         false, // TODO add this into local Data
-        TextAttributeProps.getTextAlignment(props, TextLayoutManager.isRTL(attributedString)),
+        TextAttributeProps.getTextAlignment(
+            props, TextLayoutManager.isRTL(attributedString), view.getGravityHorizontal()),
         textBreakStrategy,
-        TextAttributeProps.getJustificationMode(props));
+        TextAttributeProps.getJustificationMode(props, currentJustificationMode));
   }
 
   private Object getReactTextUpdate(ReactTextView view, ReactStylesDiffMap props, MapBuffer state) {
@@ -154,15 +177,17 @@ public class ReactTextViewManager
     int textBreakStrategy =
         TextAttributeProps.getTextBreakStrategy(
             paragraphAttributes.getString(TextLayoutManagerMapBuffer.PA_KEY_TEXT_BREAK_STRATEGY));
+    int currentJustificationMode =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.O ? 0 : view.getJustificationMode();
 
     return new ReactTextUpdate(
         spanned,
         -1, // UNUSED FOR TEXT
         false, // TODO add this into local Data
         TextAttributeProps.getTextAlignment(
-            props, TextLayoutManagerMapBuffer.isRTL(attributedString)),
+            props, TextLayoutManagerMapBuffer.isRTL(attributedString), view.getGravityHorizontal()),
         textBreakStrategy,
-        TextAttributeProps.getJustificationMode(props));
+        TextAttributeProps.getJustificationMode(props, currentJustificationMode));
   }
 
   @Override

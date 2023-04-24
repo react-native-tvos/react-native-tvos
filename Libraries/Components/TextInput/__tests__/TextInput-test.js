@@ -4,20 +4,19 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @emails oncall+react_native
- * @format
  * @flow-strict
+ * @format
+ * @oncall react_native
  */
 
-const React = require('react');
-const ReactTestRenderer = require('react-test-renderer');
-const TextInput = require('../TextInput');
-const ReactNative = require('../../../Renderer/shims/ReactNative');
-
+const ReactNative = require('../../../ReactNative/RendererProxy');
 const {
   enter,
   expectRendersMatchingSnapshot,
 } = require('../../../Utilities/ReactNativeTestTools');
+const TextInput = require('../TextInput');
+const React = require('react');
+const ReactTestRenderer = require('react-test-renderer');
 
 jest.unmock('../TextInput');
 
@@ -168,6 +167,51 @@ describe('TextInput tests', () => {
     expect(textInputRe1.current.isFocused()).toBe(false);
     expect(textInputRe2.current.isFocused()).toBe(true);
     expect(TextInput.State.currentlyFocusedInput()).toBe(textInputRe2.current);
+  });
+
+  it('should give precedence to `textContentType` when set', () => {
+    const instance = ReactTestRenderer.create(
+      <TextInput autoComplete="tel" textContentType="emailAddress" />,
+    );
+
+    expect(instance.toJSON()).toMatchInlineSnapshot(`
+      <RCTSinglelineTextInputView
+        accessibilityState={
+          Object {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessible={true}
+        allowFontScaling={true}
+        focusable={true}
+        forwardedRef={null}
+        mostRecentEventCount={0}
+        onBlur={[Function]}
+        onChange={[Function]}
+        onChangeSync={null}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onScroll={[Function]}
+        onSelectionChange={[Function]}
+        onSelectionChangeShouldSetResponder={[Function]}
+        onStartShouldSetResponder={[Function]}
+        rejectResponderTermination={true}
+        selection={null}
+        submitBehavior="blurAndSubmit"
+        text=""
+        textContentType="emailAddress"
+        underlineColorAndroid="transparent"
+      />
+    `);
   });
 
   it('should render as expected', () => {

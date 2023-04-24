@@ -100,6 +100,8 @@ public abstract class NativeSampleTurboModuleSpec extends ReactContextBaseJavaMo
 }
 `;
 
+exports[`GenerateModuleJavaSpec can generate fixture cxx_only_native_modules 1`] = `Map {}`;
+
 exports[`GenerateModuleJavaSpec can generate fixture empty_native_modules 1`] = `
 Map {
   "java/com/facebook/fbreact/specs/NativeSampleTurboModuleSpec.java" => "
@@ -374,6 +376,14 @@ public abstract class NativeSampleTurboModuleSpec extends ReactContextBaseJavaMo
   @ReactMethod
   @DoNotStrip
   public abstract void getValueWithPromise(boolean error, Promise promise);
+
+  @ReactMethod
+  @DoNotStrip
+  public abstract void getValueWithOptionalArg(ReadableMap parameter, Promise promise);
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  @DoNotStrip
+  public abstract String getEnums(double enumInt, double enumFloat, String enumString);
 }
 ",
 }

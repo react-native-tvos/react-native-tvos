@@ -55,6 +55,15 @@ object ReactMapBufferPropSetter {
   private const val VP_TEST_ID = 32
   private const val VP_TRANSFORM = 33
   private const val VP_ZINDEX = 34
+  private const val VP_POINTER_ENTER_CAPTURE = 38
+  private const val VP_POINTER_LEAVE_CAPTURE = 39
+  private const val VP_POINTER_MOVE_CAPTURE = 40
+  private const val VP_POINTER_OUT = 41
+  private const val VP_POINTER_OUT_CAPTURE = 42
+  private const val VP_POINTER_OVER = 43
+  private const val VP_POINTER_OVER_CAPTURE = 44
+  private const val VP_BORDER_CURVES = 45 // iOS only
+  private const val VP_FG_COLOR = 46 // iOS only?
 
   // Yoga values
   private const val YG_BORDER_WIDTH = 100
@@ -134,6 +143,9 @@ object ReactMapBufferPropSetter {
           // TODO: color for some reason can be object in Java but not in C++
           viewManager.backgroundColor(view, entry.intValue)
         }
+        VP_FG_COLOR -> {
+          // Prop not used on Android?
+        }
         VP_BORDER_COLOR -> {
           viewManager.borderColor(view, entry.mapBufferValue)
         }
@@ -141,7 +153,10 @@ object ReactMapBufferPropSetter {
           viewManager.borderRadius(view, entry.mapBufferValue)
         }
         VP_BORDER_STYLE -> {
-          viewManager.borderStyle(view, entry.intValue)
+          val styleBuffer = entry.mapBufferValue
+          if (styleBuffer.contains(CORNER_ALL)) {
+            viewManager.borderStyle(view, (styleBuffer.getDouble(CORNER_ALL)).toInt())
+          }
         }
         VP_ELEVATION -> {
           viewManager.setElevation(view, entry.doubleValue.toFloat())
@@ -184,6 +199,27 @@ object ReactMapBufferPropSetter {
         }
         VP_POINTER_MOVE -> {
           viewManager.setPointerMove(view, entry.booleanValue)
+        }
+        VP_POINTER_ENTER_CAPTURE -> {
+          viewManager.setPointerEnterCapture(view, entry.booleanValue)
+        }
+        VP_POINTER_LEAVE_CAPTURE -> {
+          viewManager.setPointerLeaveCapture(view, entry.booleanValue)
+        }
+        VP_POINTER_MOVE_CAPTURE -> {
+          viewManager.setPointerMoveCapture(view, entry.booleanValue)
+        }
+        VP_POINTER_OUT -> {
+          viewManager.setPointerOut(view, entry.booleanValue)
+        }
+        VP_POINTER_OUT_CAPTURE -> {
+          viewManager.setPointerOutCapture(view, entry.booleanValue)
+        }
+        VP_POINTER_OVER -> {
+          viewManager.setPointerOver(view, entry.booleanValue)
+        }
+        VP_POINTER_OVER_CAPTURE -> {
+          viewManager.setPointerOverCapture(view, entry.booleanValue)
         }
         VP_REMOVE_CLIPPED_SUBVIEW -> {
           viewManager.setRemoveClippedSubviews(view, entry.booleanValue)

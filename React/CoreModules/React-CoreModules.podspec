@@ -17,7 +17,7 @@ else
 end
 
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
-folly_version = '2021.06.28.00-v2'
+folly_version = '2021.07.22.00'
 
 Pod::Spec.new do |s|
   s.name                   = "React-CoreModules"
@@ -46,4 +46,5 @@ Pod::Spec.new do |s|
   s.dependency "React-RCTImage", version
   s.dependency "ReactCommon/turbomodule/core", version
   s.dependency "React-jsi", version
+  s.dependency 'React-RCTBlob'
 end

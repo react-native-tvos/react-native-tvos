@@ -19,9 +19,16 @@ public class ReactViewBackgroundManager {
 
   private @Nullable ReactViewBackgroundDrawable mReactBackgroundDrawable;
   private View mView;
+  private int mColor = Color.TRANSPARENT;
 
   public ReactViewBackgroundManager(View view) {
     this.mView = view;
+  }
+
+  public void cleanup() {
+    ViewCompat.setBackground(mView, null);
+    this.mView = null;
+    this.mReactBackgroundDrawable = null;
   }
 
   private ReactViewBackgroundDrawable getOrCreateReactViewBackground() {
@@ -48,6 +55,10 @@ public class ReactViewBackgroundManager {
     } else {
       getOrCreateReactViewBackground().setColor(color);
     }
+  }
+
+  public int getBackgroundColor() {
+    return mColor;
   }
 
   public void setBorderWidth(int position, float width) {

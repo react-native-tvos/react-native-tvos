@@ -36,6 +36,7 @@ Class<RCTComponentViewProtocol> RCTFabricComponentsProvider(const char *name) {
 #endif
     {"View", RCTViewCls},
     {"Image", RCTImageCls},
+    {"ModalHostView", RCTModalHostViewCls},
   };
 
   auto p = sFabricComponentsClassMap.find(name);

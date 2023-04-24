@@ -13,7 +13,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.BlendModeColorFilter;
-import android.annotation.SuppressLint;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -28,7 +28,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.autofill.HintConstants;
@@ -46,6 +45,7 @@ import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.common.mapbuffer.MapBuffer;
 import com.facebook.react.module.annotations.ReactModule;
 import com.facebook.react.uimanager.BaseViewManager;
 import com.facebook.react.uimanager.FabricViewStateManager;
@@ -68,9 +68,11 @@ import com.facebook.react.views.text.DefaultStyleValuesUtil;
 import com.facebook.react.views.text.ReactBaseTextShadowNode;
 import com.facebook.react.views.text.ReactTextUpdate;
 import com.facebook.react.views.text.ReactTextViewManagerCallback;
+import com.facebook.react.views.text.ReactTypefaceUtils;
 import com.facebook.react.views.text.TextAttributeProps;
 import com.facebook.react.views.text.TextInlineImageSpan;
 import com.facebook.react.views.text.TextLayoutManager;
+import com.facebook.react.views.text.TextLayoutManagerMapBuffer;
 import com.facebook.react.views.text.TextTransform;
 import com.facebook.yoga.YogaConstants;
 import java.lang.reflect.Field;
@@ -84,6 +86,12 @@ import java.util.Map;
 public class ReactTextInputManager extends BaseViewManager<ReactEditText, LayoutShadowNode> {
   public static final String TAG = ReactTextInputManager.class.getSimpleName();
   public static final String REACT_CLASS = "AndroidTextInput";
+
+  // See also ReactTextViewManager
+  private static final short TX_STATE_KEY_ATTRIBUTED_STRING = 0;
+  private static final short TX_STATE_KEY_PARAGRAPH_ATTRIBUTES = 1;
+  private static final short TX_STATE_KEY_HASH = 2;
+  private static final short TX_STATE_KEY_MOST_RECENT_EVENT_COUNT = 3;
 
   private static final int[] SPACING_TYPES = {
     Spacing.ALL, Spacing.LEFT, Spacing.RIGHT, Spacing.TOP, Spacing.BOTTOM,
@@ -398,6 +406,11 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     view.setFontStyle(fontStyle);
   }
 
+  @ReactProp(name = ViewProps.FONT_VARIANT)
+  public void setFontVariant(ReactEditText view, @Nullable ReadableArray fontVariant) {
+    view.setFontFeatureSettings(ReactTypefaceUtils.parseFontVariant(fontVariant));
+  }
+
   @ReactProp(name = ViewProps.INCLUDE_FONT_PADDING, defaultBoolean = true)
   public void setIncludeFontPadding(ReactEditText view, boolean includepad) {
     view.setIncludeFontPadding(includepad);
@@ -443,9 +456,9 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     }
   }
 
-  @ReactProp(name = "blurOnSubmit")
-  public void setBlurOnSubmit(ReactEditText view, @Nullable Boolean blurOnSubmit) {
-    view.setBlurOnSubmit(blurOnSubmit);
+  @ReactProp(name = "submitBehavior")
+  public void setSubmitBehavior(ReactEditText view, @Nullable String submitBehavior) {
+    view.setSubmitBehavior(submitBehavior);
   }
 
   @ReactProp(name = "onContentSizeChange", defaultBoolean = false)
@@ -627,6 +640,11 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     // See https://code.google.com/p/android/issues/detail?id=191754 for more info
     Drawable background = view.getBackground();
     Drawable drawableToMutate = background;
+
+    if (background == null) {
+      return;
+    }
+
     if (background.getConstantState() != null) {
       try {
         drawableToMutate = background.mutate();
@@ -914,6 +932,20 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     view.setAutoFocus(autoFocus);
   }
 
+  @ReactProp(name = ViewProps.TEXT_DECORATION_LINE)
+  public void setTextDecorationLine(ReactEditText view, @Nullable String textDecorationLineString) {
+    view.setPaintFlags(
+        view.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG | Paint.UNDERLINE_TEXT_FLAG));
+
+    for (String token : textDecorationLineString.split(" ")) {
+      if (token.equals("underline")) {
+        view.setPaintFlags(view.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+      } else if (token.equals("line-through")) {
+        view.setPaintFlags(view.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+      }
+    }
+  }
+
   @ReactPropGroup(
       names = {
         ViewProps.BORDER_WIDTH,
@@ -973,12 +1005,11 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     return UIManagerHelper.getEventDispatcherForReactTag(reactContext, editText.getId());
   }
 
-  private class ReactTextInputTextWatcher implements TextWatcher {
-
-    private EventDispatcher mEventDispatcher;
-    private ReactEditText mEditText;
+  private final class ReactTextInputTextWatcher implements TextWatcher {
+    private final ReactEditText mEditText;
+    private final EventDispatcher mEventDispatcher;
+    private final int mSurfaceId;
     private String mPreviousText;
-    private int mSurfaceId;
 
     public ReactTextInputTextWatcher(
         final ReactContext reactContext, final ReactEditText editText) {
@@ -1014,24 +1045,23 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
         return;
       }
 
-      if (mEditText.getFabricViewStateManager().hasStateWrapper()) {
+      FabricViewStateManager stateManager = mEditText.getFabricViewStateManager();
+      if (stateManager.hasStateWrapper()) {
         // Fabric: communicate to C++ layer that text has changed
         // We need to call `incrementAndGetEventCounter` here explicitly because this
         // update may race with other updates.
         // We simply pass in the cache ID, which never changes, but UpdateState will still be called
         // on the native side, triggering a measure.
-        mEditText
-            .getFabricViewStateManager()
-            .setState(
-                new FabricViewStateManager.StateUpdateCallback() {
-                  @Override
-                  public WritableMap getStateUpdate() {
-                    WritableMap map = new WritableNativeMap();
-                    map.putInt("mostRecentEventCount", mEditText.incrementAndGetEventCounter());
-                    map.putInt("opaqueCacheId", mEditText.getId());
-                    return map;
-                  }
-                });
+        stateManager.setState(
+            new FabricViewStateManager.StateUpdateCallback() {
+              @Override
+              public WritableMap getStateUpdate() {
+                WritableMap map = new WritableNativeMap();
+                map.putInt("mostRecentEventCount", mEditText.incrementAndGetEventCounter());
+                map.putInt("opaqueCacheId", mEditText.getId());
+                return map;
+              }
+            });
       }
 
       // The event that contains the event counter and updates it must be sent first.
@@ -1081,65 +1111,38 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
           @Override
           public boolean onEditorAction(TextView v, int actionId, KeyEvent keyEvent) {
             if ((actionId & EditorInfo.IME_MASK_ACTION) != 0 || actionId == EditorInfo.IME_NULL) {
-              boolean blurOnSubmit = editText.getBlurOnSubmit();
               boolean isMultiline = editText.isMultiline();
 
+              boolean shouldSubmit = editText.shouldSubmitOnReturn();
+              boolean shouldBlur = editText.shouldBlurOnReturn();
+
               // Motivation:
-              // * blurOnSubmit && isMultiline => Clear focus; prevent default behaviour (return
+              // * shouldSubmit => Clear focus; prevent default behavior (return true);
+              // * shouldBlur => Submit; prevent default behavior (return true);
+              // * !shouldBlur && !shouldSubmit && isMultiline => Perform default behavior (return
+              // false);
+              // * !shouldBlur && !shouldSubmit && !isMultiline => Prevent default behavior (return
               // true);
-              // * blurOnSubmit && !isMultiline => Clear focus; prevent default behaviour (return
-              // true);
-              // * !blurOnSubmit && isMultiline => Perform default behaviour (return false);
-              // * !blurOnSubmit && !isMultiline => Prevent default behaviour (return true).
-              // Additionally we always generate a `submit` event.
+              if (shouldSubmit) {
+                EventDispatcher eventDispatcher = getEventDispatcher(reactContext, editText);
+                eventDispatcher.dispatchEvent(
+                    new ReactTextInputSubmitEditingEvent(
+                        reactContext.getSurfaceId(),
+                        editText.getId(),
+                        editText.getText().toString()));
+              }
 
-              EventDispatcher eventDispatcher = getEventDispatcher(reactContext, editText);
-              eventDispatcher.dispatchEvent(
-                  new ReactTextInputSubmitEditingEvent(
-                      reactContext.getSurfaceId(),
-                      editText.getId(),
-                      editText.getText().toString()));
-
-              switch (actionId) {
-                case EditorInfo.IME_ACTION_PREVIOUS: {
-                  @SuppressLint("WrongConstant") View view = editText.focusSearch(View.FOCUS_BACKWARD);
-                  editText.hideKeyboard();
-                }
-                break;
-                case EditorInfo.IME_ACTION_NEXT:
-                case EditorInfo.IME_ACTION_DONE: {
-                  @SuppressLint("WrongConstant") View view = editText.focusSearch(View.FOCUS_FORWARD);
-                  if (view instanceof ReactEditText && editText.getId() != view.getId()) {
-                    view.requestFocus();
-                    ((ReactEditText) view).showKeyboard();
-                  } else {
-                    if (view != null) {
-                      view.requestFocus();
-
-                      // manually triggering onFocusChanged when having only one input field on
-                      // the screen and no other focusable elements
-                      if (editText.getId() == view.getId()) {
-                        editText.onFocusChanged(false, View.FOCUSABLES_ALL, null);
-                      }
-                    }
-                    editText.hideKeyboard();
-                  }
-                }
-                break;
-                default:
-                  if (blurOnSubmit) {
-                    editText.clearFocus();
-                  }
-                  break;
+              if (shouldBlur) {
+                editText.clearFocus();
               }
 
               // Prevent default behavior except when we want it to insert a newline.
-              if (blurOnSubmit || !isMultiline) {
+              if (shouldBlur || shouldSubmit || !isMultiline) {
                 return true;
               }
 
-              // If we've reached this point, it means that the TextInput has 'blurOnSubmit' set to
-              // false and 'multiline' set to true. But it's still possible to get IME_ACTION_NEXT
+              // If we've reached this point, it means that the TextInput has 'submitBehavior' set
+              // nullish and 'multiline' set to true. But it's still possible to get IME_ACTION_NEXT
               // and IME_ACTION_PREVIOUS here in case if 'disableFullscreenUI' is false and Android
               // decides to render this EditText in the full screen mode (when a phone has the
               // landscape orientation for example). The full screen EditText also renders an action
@@ -1156,11 +1159,11 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
   }
 
   private static class ReactContentSizeWatcher implements ContentSizeWatcher {
-    private ReactEditText mEditText;
-    private @Nullable EventDispatcher mEventDispatcher;
+    private final ReactEditText mEditText;
+    private final EventDispatcher mEventDispatcher;
+    private final int mSurfaceId;
     private int mPreviousContentWidth = 0;
     private int mPreviousContentHeight = 0;
-    private int mSurfaceId;
 
     public ReactContentSizeWatcher(ReactEditText editText) {
       mEditText = editText;
@@ -1204,17 +1207,15 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     }
   }
 
-  private class ReactSelectionWatcher implements SelectionWatcher {
-
-    private ReactEditText mReactEditText;
-    private EventDispatcher mEventDispatcher;
+  private static class ReactSelectionWatcher implements SelectionWatcher {
+    private final ReactEditText mReactEditText;
+    private final EventDispatcher mEventDispatcher;
+    private final int mSurfaceId;
     private int mPreviousSelectionStart;
     private int mPreviousSelectionEnd;
-    private int mSurfaceId;
 
     public ReactSelectionWatcher(ReactEditText editText) {
       mReactEditText = editText;
-
       ReactContext reactContext = getReactContext(editText);
       mEventDispatcher = getEventDispatcher(reactContext, editText);
       mSurfaceId = UIManagerHelper.getSurfaceId(reactContext);
@@ -1243,12 +1244,11 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
   }
 
   private static class ReactScrollWatcher implements ScrollWatcher {
-
-    private ReactEditText mReactEditText;
-    private EventDispatcher mEventDispatcher;
+    private final ReactEditText mReactEditText;
+    private final EventDispatcher mEventDispatcher;
+    private final int mSurfaceId;
     private int mPreviousHoriz;
     private int mPreviousVert;
-    private int mSurfaceId;
 
     public ReactScrollWatcher(ReactEditText editText) {
       mReactEditText = editText;
@@ -1302,40 +1302,36 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     view.setPadding(left, top, right, bottom);
   }
 
-  /**
-   * May be overridden by subclasses that would like to provide their own instance of the internal
-   * {@code EditText} this class uses to determine the expected size of the view.
-   */
-  protected EditText createInternalEditText(ThemedReactContext themedReactContext) {
-    return new EditText(themedReactContext);
-  }
-
   @Override
   public Object updateState(
-      ReactEditText view, ReactStylesDiffMap props, @Nullable StateWrapper stateWrapper) {
-
+      ReactEditText view, ReactStylesDiffMap props, StateWrapper stateWrapper) {
     if (ReactEditText.DEBUG_MODE) {
       FLog.e(TAG, "updateState: [" + view.getId() + "]");
     }
 
-    view.getFabricViewStateManager().setStateWrapper(stateWrapper);
+    FabricViewStateManager stateManager = view.getFabricViewStateManager();
+    if (!stateManager.hasStateWrapper()) {
+      // HACK: In Fabric, we assume all components start off with zero padding, which is
+      // not true for TextInput components. We expose the theme's default padding via
+      // AndroidTextInputComponentDescriptor, which will be applied later though setPadding.
+      // TODO T58784068: move this constructor once Fabric is shipped
+      view.setPadding(0, 0, 0, 0);
+    }
 
-    if (stateWrapper == null) {
-      return null;
+    stateManager.setStateWrapper(stateWrapper);
+
+    MapBuffer stateMapBuffer = stateWrapper.getStateDataMapBuffer();
+    if (stateMapBuffer != null) {
+      return getReactTextUpdate(view, props, stateMapBuffer);
     }
 
     ReadableNativeMap state = stateWrapper.getStateData();
-
-    if (state == null) {
+    if (state == null || !state.hasKey("attributedString")) {
       return null;
     }
 
-    if (!state.hasKey("attributedString")) {
-      return null;
-    }
     ReadableMap attributedString = state.getMap("attributedString");
     ReadableMap paragraphAttributes = state.getMap("paragraphAttributes");
-
     if (attributedString == null || paragraphAttributes == null) {
       throw new IllegalArgumentException("Invalid TextInput State was received as a parameters");
     }
@@ -1344,18 +1340,51 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
         TextLayoutManager.getOrCreateSpannableForText(
             view.getContext(), attributedString, mReactTextViewManagerCallback);
 
-    boolean containsMultipleFragments =
-        attributedString.getArray("fragments").toArrayList().size() > 1;
-
     int textBreakStrategy =
-        TextAttributeProps.getTextBreakStrategy(paragraphAttributes.getString("textBreakStrategy"));
+        TextAttributeProps.getTextBreakStrategy(
+            paragraphAttributes.getString(ViewProps.TEXT_BREAK_STRATEGY));
+    int currentJustificationMode =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.O ? 0 : view.getJustificationMode();
 
     return ReactTextUpdate.buildReactTextUpdateFromState(
         spanned,
         state.getInt("mostRecentEventCount"),
-        TextAttributeProps.getTextAlignment(props, TextLayoutManager.isRTL(attributedString)),
+        TextAttributeProps.getTextAlignment(
+            props, TextLayoutManager.isRTL(attributedString), view.getGravityHorizontal()),
         textBreakStrategy,
-        TextAttributeProps.getJustificationMode(props),
-        containsMultipleFragments);
+        TextAttributeProps.getJustificationMode(props, currentJustificationMode));
+  }
+
+  public Object getReactTextUpdate(ReactEditText view, ReactStylesDiffMap props, MapBuffer state) {
+    // If native wants to update the state wrapper but the state data hasn't actually
+    // changed, the MapBuffer may be empty
+    if (state.getCount() == 0) {
+      return null;
+    }
+
+    MapBuffer attributedString = state.getMapBuffer(TX_STATE_KEY_ATTRIBUTED_STRING);
+    MapBuffer paragraphAttributes = state.getMapBuffer(TX_STATE_KEY_PARAGRAPH_ATTRIBUTES);
+    if (attributedString == null || paragraphAttributes == null) {
+      throw new IllegalArgumentException(
+          "Invalid TextInput State (MapBuffer) was received as a parameters");
+    }
+
+    Spannable spanned =
+        TextLayoutManagerMapBuffer.getOrCreateSpannableForText(
+            view.getContext(), attributedString, mReactTextViewManagerCallback);
+
+    int textBreakStrategy =
+        TextAttributeProps.getTextBreakStrategy(
+            paragraphAttributes.getString(TextLayoutManagerMapBuffer.PA_KEY_TEXT_BREAK_STRATEGY));
+    int currentJustificationMode =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.O ? 0 : view.getJustificationMode();
+
+    return ReactTextUpdate.buildReactTextUpdateFromState(
+        spanned,
+        state.getInt(TX_STATE_KEY_MOST_RECENT_EVENT_COUNT),
+        TextAttributeProps.getTextAlignment(
+            props, TextLayoutManagerMapBuffer.isRTL(attributedString), view.getGravityHorizontal()),
+        textBreakStrategy,
+        TextAttributeProps.getJustificationMode(props, currentJustificationMode));
   }
 }

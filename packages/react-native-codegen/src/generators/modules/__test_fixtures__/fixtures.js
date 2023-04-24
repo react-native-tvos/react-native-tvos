@@ -275,6 +275,61 @@ const SIMPLE_NATIVE_MODULES: SchemaType = {
               ],
             },
           },
+          {
+            name: 'getValueWithOptionalArg',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'PromiseTypeAnnotation',
+              },
+              params: [
+                {
+                  optional: true,
+                  name: 'parameter',
+                  typeAnnotation: {
+                    type: 'GenericObjectTypeAnnotation',
+                  },
+                },
+              ],
+            },
+          },
+          {
+            name: 'getEnums',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'StringTypeAnnotation',
+              },
+              params: [
+                {
+                  name: 'enumInt',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'enumFloat',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'enumString',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'StringTypeAnnotation',
+                  },
+                },
+              ],
+            },
+          },
         ],
       },
       moduleNames: ['SampleTurboModule'],
@@ -1169,73 +1224,6 @@ const REAL_MODULE_EXAMPLE: SchemaType = {
       },
       moduleNames: ['CameraRollManager'],
     },
-    NativeImagePickerIOS: {
-      type: 'NativeModule',
-      aliases: {},
-      spec: {
-        properties: [
-          {
-            name: 'openCameraDialog',
-            optional: false,
-            typeAnnotation: {
-              type: 'FunctionTypeAnnotation',
-              returnTypeAnnotation: {
-                type: 'VoidTypeAnnotation',
-              },
-              params: [
-                {
-                  optional: false,
-                  name: 'config',
-                  typeAnnotation: {
-                    type: 'ObjectTypeAnnotation',
-                    properties: [
-                      {
-                        optional: false,
-                        name: 'unmirrorFrontFacingCamera',
-                        typeAnnotation: {
-                          type: 'BooleanTypeAnnotation',
-                        },
-                      },
-                      {
-                        optional: false,
-                        name: 'videoMode',
-                        typeAnnotation: {
-                          type: 'BooleanTypeAnnotation',
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  name: 'successCallback',
-                  optional: false,
-                  typeAnnotation: {
-                    type: 'FunctionTypeAnnotation',
-                    params: [],
-                    returnTypeAnnotation: {
-                      type: 'VoidTypeAnnotation',
-                    },
-                  },
-                },
-                {
-                  name: 'cancelCallback',
-                  optional: false,
-                  typeAnnotation: {
-                    type: 'FunctionTypeAnnotation',
-                    params: [],
-                    returnTypeAnnotation: {
-                      type: 'VoidTypeAnnotation',
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-      moduleNames: ['ImagePickerIOS'],
-      excludedPlatforms: ['android'],
-    },
     NativeExceptionsManager: {
       type: 'NativeModule',
       aliases: {
@@ -1502,6 +1490,160 @@ const REAL_MODULE_EXAMPLE: SchemaType = {
   },
 };
 
+const CXX_ONLY_NATIVE_MODULES: SchemaType = {
+  modules: {
+    NativeSampleTurboModule: {
+      type: 'NativeModule',
+      aliases: {
+        ObjectAlias: {
+          type: 'ObjectTypeAnnotation',
+          properties: [
+            {
+              name: 'x',
+              optional: false,
+              typeAnnotation: {
+                type: 'NumberTypeAnnotation',
+              },
+            },
+          ],
+        },
+      },
+      spec: {
+        properties: [
+          {
+            name: 'getMixed',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'MixedTypeAnnotation',
+              },
+              params: [
+                {
+                  name: 'arg',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'MixedTypeAnnotation',
+                  },
+                },
+              ],
+            },
+          },
+          {
+            name: 'getNullableNumberFromNullableAlias',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'NullableTypeAnnotation',
+                typeAnnotation: {
+                  type: 'NumberTypeAnnotation',
+                },
+              },
+              params: [
+                {
+                  name: 'a',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'NullableTypeAnnotation',
+                    typeAnnotation: {
+                      type: 'TypeAliasTypeAnnotation',
+                      name: 'ObjectAlias',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            name: 'getEnums',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'StringTypeAnnotation',
+              },
+              params: [
+                {
+                  name: 'enumInt',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'enumFloat',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'enumString',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'EnumDeclaration',
+                    memberType: 'StringTypeAnnotation',
+                  },
+                },
+              ],
+            },
+          },
+          {
+            name: 'getUnion',
+            optional: false,
+            typeAnnotation: {
+              type: 'FunctionTypeAnnotation',
+              returnTypeAnnotation: {
+                type: 'UnionTypeAnnotation',
+                memberType: 'ObjectTypeAnnotation',
+              },
+              params: [
+                {
+                  name: 'chooseInt',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'UnionTypeAnnotation',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'chooseFloat',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'UnionTypeAnnotation',
+                    memberType: 'NumberTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'chooseObject',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'UnionTypeAnnotation',
+                    memberType: 'ObjectTypeAnnotation',
+                  },
+                },
+                {
+                  name: 'chooseString',
+                  optional: false,
+                  typeAnnotation: {
+                    type: 'UnionTypeAnnotation',
+                    memberType: 'StringTypeAnnotation',
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      moduleNames: ['SampleTurboModuleCxx'],
+      excludedPlatforms: ['iOS', 'android'],
+    },
+  },
+};
+
 const SAMPLE_WITH_UPPERCASE_NAME: SchemaType = {
   modules: {
     NativeSampleTurboModule: {
@@ -1522,5 +1664,6 @@ module.exports = {
   simple_native_modules: SIMPLE_NATIVE_MODULES,
   native_modules_with_type_aliases: NATIVE_MODULES_WITH_TYPE_ALIASES,
   real_module_example: REAL_MODULE_EXAMPLE,
+  cxx_only_native_modules: CXX_ONLY_NATIVE_MODULES,
   SampleWithUppercaseName: SAMPLE_WITH_UPPERCASE_NAME,
 };

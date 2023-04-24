@@ -8,71 +8,40 @@
  * @flow
  */
 
-import {Button, Switch, StyleSheet, ScrollView, View, Text} from 'react-native';
+import {Button, StyleSheet, ScrollView, View, Text} from 'react-native';
 import * as React from 'react';
-import type {ViewProps} from 'react-native/Libraries/Components/View/ViewPropTypes';
 
-function EventfulView(props: {|
-  name: string,
-  emitByDefault?: boolean,
-  log: string => void,
-  ...ViewProps,
-|}) {
-  const ref = React.useRef<?React.ElementRef<typeof View>>();
-  React.useEffect(() => {
-    // $FlowFixMe[prop-missing] Using private property
-    setTag(ref.current?._nativeTag);
-  }, [ref]);
-
-  const {log, name, children, emitByDefault, ...restProps} = props;
-  const [lastEvent, setLastEvent] = React.useState('');
-  const [listen, setListen] = React.useState(!!emitByDefault);
-  const [tag, setTag] = React.useState('');
-
-  const eventLog = eventName => event => {
-    // $FlowFixMe Using private property
-    log(`${name} - ${eventName} - target: ${event.target._nativeTag}`);
-    setLastEvent(eventName);
-  };
-
-  const listeners = listen
-    ? {
-        onPointerUp: eventLog('up'),
-        onPointerUpCapture: eventLog('up capture'),
-        onPointerDown: eventLog('down'),
-        onPointerDownCapture: eventLog('down capture'),
-        onPointerLeave2: eventLog('leave'),
-        onPointerLeave2Capture: eventLog('leave capture'),
-        onPointerEnter2: eventLog('enter'),
-        onPointerEnter2Capture: eventLog('enter capture'),
-      }
-    : Object.freeze({});
-
-  return (
-    <View ref={ref} {...listeners} {...restProps} collapsable={!listen}>
-      <View style={styles.row}>
-        <Text>
-          {props.name}, {tag}, last event: {lastEvent}
-        </Text>
-        <Switch
-          disabled={emitByDefault}
-          value={listen}
-          onValueChange={() => setListen(l => !l)}
-        />
-      </View>
-      {props.children}
-    </View>
-  );
-}
+import PointerEventAttributesHoverablePointers from './W3CPointerEventPlatformTests/PointerEventAttributesHoverablePointers';
+import PointerEventPointerMove from './W3CPointerEventPlatformTests/PointerEventPointerMove';
+import CompatibilityAnimatedPointerMove from './Compatibility/CompatibilityAnimatedPointerMove';
+import CompatibilityNativeGestureHandling from './Compatibility/CompatibilityNativeGestureHandling';
+import PointerEventPrimaryTouchPointer from './W3CPointerEventPlatformTests/PointerEventPrimaryTouchPointer';
+import PointerEventAttributesNoHoverPointers from './W3CPointerEventPlatformTests/PointerEventAttributesNoHoverPointers';
+import PointerEventPointerMoveOnChordedMouseButton from './W3CPointerEventPlatformTests/PointerEventPointerMoveOnChordedMouseButton';
+import PointerEventPointerMoveAcross from './W3CPointerEventPlatformTests/PointerEventPointerMoveAcross';
+import PointerEventPointerMoveEventOrder from './W3CPointerEventPlatformTests/PointerEventPointerMoveEventOrder';
+import PointerEventPointerMoveBetween from './W3CPointerEventPlatformTests/PointerEventPointerMoveBetween';
+import PointerEventPointerOverOut from './W3CPointerEventPlatformTests/PointerEventPointerOverOut';
+import PointerEventLayoutChangeShouldFirePointerOver from './W3CPointerEventPlatformTests/PointerEventLayoutChangeShouldFirePointerOver';
+import EventfulView from './W3CPointerEventsEventfulView';
+import ManyPointersPropertiesExample from './Compatibility/ManyPointersPropertiesExample';
 
 function AbsoluteChildExample({log}: {log: string => void}) {
   return (
     <View style={styles.absoluteExampleContainer}>
       <EventfulView
+        onUp
+        onDown
+        onEnter
+        onLeave
         log={log}
         style={StyleSheet.compose(styles.eventfulView, styles.parent)}
         name="parent">
         <EventfulView
+          onUp
+          onDown
+          onEnter
+          onLeave
           log={log}
           emitByDefault
           style={StyleSheet.compose(styles.eventfulView, styles.absoluteChild)}
@@ -89,13 +58,31 @@ function RelativeChildExample({log}: {log: string => void}) {
       <EventfulView
         log={log}
         style={StyleSheet.compose(styles.eventfulView, styles.parent)}
+        onUp
+        onOver
+        onOut
+        onDown
+        onEnter
+        onLeave
         name="parent">
         <EventfulView
           log={log}
+          onUp
+          onOver
+          onOut
+          onDown
+          onEnter
+          onLeave
           style={StyleSheet.compose(styles.eventfulView, styles.relativeChild)}
           name="childA">
           <EventfulView
             log={log}
+            onUp
+            onOver
+            onOut
+            onDown
+            onEnter
+            onLeave
             style={StyleSheet.compose(
               styles.eventfulView,
               styles.relativeChild,
@@ -115,7 +102,7 @@ function PointerEventScaffolding({
 }) {
   const [eventsLog, setEventsLog] = React.useState('');
   const clear = () => setEventsLog('');
-  const log = eventStr => {
+  const log = (eventStr: string) => {
     setEventsLog(currentEventsLog => `${eventStr}\n${currentEventsLog}`);
   };
   return (
@@ -166,6 +153,86 @@ export default {
   showIndividualExamples: true,
   examples: [
     {
+      name: 'pointerevent_attributes_hoverable_pointers',
+      description: '',
+      title: 'WPT: Pointer Events hoverable pointer attributes test',
+      render(): React.Node {
+        return <PointerEventAttributesHoverablePointers />;
+      },
+    },
+    {
+      name: 'pointerevent_attributes_nohover_pointers',
+      description: '',
+      title: 'WPT: Pointer Events no-hover pointer attributes test',
+      render(): React.Node {
+        return <PointerEventAttributesNoHoverPointers />;
+      },
+    },
+    {
+      name: 'pointerevent_pointermove',
+      description: '',
+      title: 'WPT: PointerMove test',
+      render(): React.Node {
+        return <PointerEventPointerMove />;
+      },
+    },
+    {
+      name: 'pointerevent_primary_touch_pointer',
+      description: '',
+      title: 'WPT: Pointer Event primary touch pointer test',
+      render(): React.Node {
+        return <PointerEventPrimaryTouchPointer />;
+      },
+    },
+    {
+      name: 'pointerevent_pointermove_on_chorded_mouse_button',
+      description: '',
+      title: 'WPT: PointerEvents pointermove on button state changes',
+      render(): React.Node {
+        return <PointerEventPointerMoveOnChordedMouseButton />;
+      },
+    },
+    {
+      name: 'pointerevent_pointermove_across',
+      description: '',
+      title: 'WPT: Pointermove handling across elements',
+      render(): React.Node {
+        return <PointerEventPointerMoveAcross />;
+      },
+    },
+    {
+      name: 'pointerevent_pointermove_event_order',
+      description: '',
+      title: 'WPT: PointerEvent - pointermove event order',
+      render(): React.Node {
+        return <PointerEventPointerMoveEventOrder />;
+      },
+    },
+    {
+      name: 'pointerevent_pointermove_between',
+      description: '',
+      title: 'WPT: Pointermove handling between elements',
+      render(): React.Node {
+        return <PointerEventPointerMoveBetween />;
+      },
+    },
+    {
+      name: 'pointerevent_pointerover_out',
+      description: '',
+      title: 'WPT: PointerOver/PointerOut handling',
+      render(): React.Node {
+        return <PointerEventPointerOverOut />;
+      },
+    },
+    {
+      name: 'pointerevent_layout_change_should_fire_pointerover',
+      description: '',
+      title: 'WPT: Layout change should fire pointerover',
+      render(): React.Node {
+        return <PointerEventLayoutChangeShouldFirePointerOver />;
+      },
+    },
+    {
       name: 'relative',
       description: 'Children laid out using relative positioning',
       title: 'Relative Child',
@@ -181,5 +248,8 @@ export default {
         return <PointerEventScaffolding Example={AbsoluteChildExample} />;
       },
     },
+    CompatibilityAnimatedPointerMove,
+    CompatibilityNativeGestureHandling,
+    ManyPointersPropertiesExample,
   ],
 };

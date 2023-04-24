@@ -12,6 +12,7 @@
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 #import <React/RCTAppearance.h>
 #import <React/RCTBridge.h>
+#import <React/RCTConstants.h>
 #import <React/RCTConvert.h>
 #import <React/RCTDefines.h>
 #import <React/RCTDevLoadingViewSetEnabled.h>
@@ -106,6 +107,20 @@ RCT_EXPORT_MODULE()
 - (void)showMessage:(NSString *)message color:(UIColor *)color backgroundColor:(UIColor *)backgroundColor
 {
   if (!RCTDevLoadingViewGetEnabled() || self->_hiding) {
+    return;
+  }
+
+  // Input validation
+  if (message == nil || [message isEqualToString:@""]) {
+    NSLog(@"Error: message cannot be nil or empty");
+    return;
+  }
+  if (color == nil) {
+    NSLog(@"Error: color cannot be nil");
+    return;
+  }
+  if (backgroundColor == nil) {
+    NSLog(@"Error: backgroundColor cannot be nil");
     return;
   }
 

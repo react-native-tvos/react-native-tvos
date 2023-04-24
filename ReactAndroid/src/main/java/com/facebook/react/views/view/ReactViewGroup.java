@@ -39,7 +39,6 @@ import com.facebook.react.bridge.ReactNoCrashSoftException;
 import com.facebook.react.bridge.ReactSoftExceptionLogger;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.common.annotations.VisibleForTesting;
-import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.facebook.react.touch.OnInterceptTouchEventListener;
 import com.facebook.react.touch.ReactHitSlopView;
@@ -155,13 +154,77 @@ public class ReactViewGroup extends ViewGroup
   ViewGroupDrawingOrderHelper mDrawingOrderHelper = null;
   private @Nullable
   Path mPath;
+||||||| 208422fe8e5
+  private @Nullable Rect mClippingRect;
+  private @Nullable Rect mHitSlopRect;
+  private @Nullable String mOverflow;
+  private PointerEvents mPointerEvents = PointerEvents.AUTO;
+  private @Nullable ChildrenLayoutChangeListener mChildrenLayoutChangeListener;
+  private @Nullable ReactViewBackgroundDrawable mReactBackgroundDrawable;
+  private @Nullable OnInterceptTouchEventListener mOnInterceptTouchEventListener;
+  private boolean mNeedsOffscreenAlphaCompositing = false;
+  private @Nullable ViewGroupDrawingOrderHelper mDrawingOrderHelper = null;
+  private @Nullable Path mPath;
+=======
+  private @Nullable Rect mClippingRect;
+  private @Nullable Rect mHitSlopRect;
+  private @Nullable String mOverflow;
+  private PointerEvents mPointerEvents;
+  private @Nullable ChildrenLayoutChangeListener mChildrenLayoutChangeListener;
+  private @Nullable ReactViewBackgroundDrawable mReactBackgroundDrawable;
+  private @Nullable OnInterceptTouchEventListener mOnInterceptTouchEventListener;
+  private boolean mNeedsOffscreenAlphaCompositing;
+  private @Nullable ViewGroupDrawingOrderHelper mDrawingOrderHelper;
+  private @Nullable Path mPath;
+>>>>>>> upstream/0.71-stable
   private int mLayoutDirection;
-  private float mBackfaceOpacity = 1.f;
-  private String mBackfaceVisibility = "visible";
+  private float mBackfaceOpacity;
+  private String mBackfaceVisibility;
 
   public ReactViewGroup(Context context) {
     super(context);
+    initView();
+  }
+
+  /**
+   * Set all default values here as opposed to in the constructor or field defaults. It is important
+   * that these properties are set during the constructor, but also on-demand whenever an existing
+   * ReactTextView is recycled.
+   */
+  private void initView() {
     setClipChildren(false);
+
+    mRemoveClippedSubviews = false;
+    mAllChildren = null;
+    mAllChildrenCount = 0;
+    mClippingRect = null;
+    mHitSlopRect = null;
+    mOverflow = null;
+    mPointerEvents = PointerEvents.AUTO;
+    mChildrenLayoutChangeListener = null;
+    mReactBackgroundDrawable = null;
+    mOnInterceptTouchEventListener = null;
+    mNeedsOffscreenAlphaCompositing = false;
+    mDrawingOrderHelper = null;
+    mPath = null;
+    mLayoutDirection = 0; // set when background is created
+    mBackfaceOpacity = 1.f;
+    mBackfaceVisibility = "visible";
+  }
+
+  /* package */ void recycleView() {
+    // Set default field values
+    initView();
+    mOverflowInset.setEmpty();
+    sHelperRect.setEmpty();
+
+    // Remove any children
+    removeAllViews();
+
+    // Reset background, borders
+    updateBackgroundDrawable(null);
+
+    resetPointerEvents();
   }
 
   private ViewGroupDrawingOrderHelper getDrawingOrderHelper() {
@@ -250,7 +313,7 @@ public class ReactViewGroup extends ViewGroup
       return true;
     }
     // We intercept the touch event if the children are not supposed to receive it.
-    if (mPointerEvents == PointerEvents.NONE || mPointerEvents == PointerEvents.BOX_ONLY) {
+    if (!PointerEvents.canChildrenBeTouchTarget(mPointerEvents)) {
       return true;
     }
     return super.onInterceptTouchEvent(ev);
@@ -259,7 +322,7 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public boolean onTouchEvent(MotionEvent ev) {
     // We do not accept the touch event if this view is not supposed to receive it.
-    if (mPointerEvents == PointerEvents.NONE || mPointerEvents == PointerEvents.BOX_NONE) {
+    if (!PointerEvents.canBeTouchTarget(mPointerEvents)) {
       return false;
     }
     // The root view always assumes any view that was tapped wants the touch
@@ -268,6 +331,16 @@ public class ReactViewGroup extends ViewGroup
     // For an explanation of bubbling and capturing, see
     // http://javascript.info/tutorial/bubbling-and-capturing#capturing
     return true;
+  }
+
+  @Override
+  public boolean dispatchGenericPointerEvent(MotionEvent ev) {
+    // We do not dispatch the pointer event if its children are not supposed to receive it
+    if (!PointerEvents.canChildrenBeTouchTarget(mPointerEvents)) {
+      return false;
+    }
+
+    return super.dispatchGenericPointerEvent(ev);
   }
 
   /**
@@ -654,6 +727,10 @@ public class ReactViewGroup extends ViewGroup
     mPointerEvents = pointerEvents;
   }
 
+  /*package*/ void resetPointerEvents() {
+    mPointerEvents = PointerEvents.AUTO;
+  }
+
   /*package*/ int getAllChildrenCount() {
     return mAllChildrenCount;
   }
@@ -797,7 +874,7 @@ public class ReactViewGroup extends ViewGroup
     return DEFAULT_BACKGROUND_COLOR;
   }
 
-  private ReactViewBackgroundDrawable getOrCreateReactViewBackground() {
+  /* package */ ReactViewBackgroundDrawable getOrCreateReactViewBackground() {
     if (mReactBackgroundDrawable == null) {
       mReactBackgroundDrawable = new ReactViewBackgroundDrawable(getContext());
       Drawable backgroundDrawable = getBackground();
@@ -857,7 +934,7 @@ public class ReactViewGroup extends ViewGroup
    * @param drawable {@link Drawable} The Drawable to use as the background, or null to remove the
    *                 background
    */
-  private void updateBackgroundDrawable(Drawable drawable) {
+  /* package */ void updateBackgroundDrawable(Drawable drawable) {
     super.setBackground(drawable);
   }
 
@@ -886,8 +963,7 @@ public class ReactViewGroup extends ViewGroup
 
   @Override
   protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-    boolean drawWithZ =
-      child.getElevation() > 0 && ReactFeatureFlags.insertZReorderBarriersOnViewGroupChildren;
+    boolean drawWithZ = child.getElevation() > 0;
 
     if (drawWithZ) {
       CanvasUtil.enableZ(canvas, true);

@@ -23,6 +23,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UIManager;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.events.Event;
@@ -48,7 +49,7 @@ import java.util.Queue;
  *
  * <p>IMPORTANT: This class should be accessed only from the UI Thread
  */
-/*package*/ class NativeAnimatedNodesManager implements EventDispatcherListener {
+public class NativeAnimatedNodesManager implements EventDispatcherListener {
 
   private static final String TAG = "NativeAnimatedNodesManager";
 
@@ -97,8 +98,8 @@ import java.util.Queue;
     }
   }
 
-  /*package*/ @Nullable
-  AnimatedNode getNodeById(int id) {
+  @Nullable
+  public AnimatedNode getNodeById(int id) {
     return mAnimatedNodes.get(id);
   }
 
@@ -300,6 +301,16 @@ import java.util.Queue;
           WritableMap endCallbackResponse = Arguments.createMap();
           endCallbackResponse.putBoolean("finished", false);
           animation.mEndCallback.invoke(endCallbackResponse);
+        } else if (mReactApplicationContext != null) {
+          // If no callback is passed in, this /may/ be an animation set up by the single-op
+          // instruction from JS, meaning that no jsi::functions are passed into native and
+          // we communicate via RCTDeviceEventEmitter instead of callbacks.
+          WritableMap params = Arguments.createMap();
+          params.putInt("animationId", animation.mId);
+          params.putBoolean("finished", false);
+          mReactApplicationContext
+              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+              .emit("onNativeAnimatedModuleAnimationFinished", params);
         }
         mActiveAnimations.removeAt(i);
         i--;
@@ -321,6 +332,16 @@ import java.util.Queue;
           WritableMap endCallbackResponse = Arguments.createMap();
           endCallbackResponse.putBoolean("finished", false);
           animation.mEndCallback.invoke(endCallbackResponse);
+        } else if (mReactApplicationContext != null) {
+          // If no callback is passed in, this /may/ be an animation set up by the single-op
+          // instruction from JS, meaning that no jsi::functions are passed into native and
+          // we communicate via RCTDeviceEventEmitter instead of callbacks.
+          WritableMap params = Arguments.createMap();
+          params.putInt("animationId", animation.mId);
+          params.putBoolean("finished", false);
+          mReactApplicationContext
+              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+              .emit("onNativeAnimatedModuleAnimationFinished", params);
         }
         mActiveAnimations.removeAt(i);
         return;
@@ -437,7 +458,25 @@ import java.util.Queue;
       throw new JSApplicationIllegalArgumentException(
           "getValue: Animated node with tag [" + tag + "] does not exist or is not a 'value' node");
     }
-    callback.invoke(((ValueAnimatedNode) node).getValue());
+    double value = ((ValueAnimatedNode) node).getValue();
+    if (callback != null) {
+      callback.invoke(value);
+      return;
+    }
+
+    // If there's no callback, that means that JS is using the single-operation mode, and not
+    // passing any callbacks into Java.
+    // See NativeAnimatedHelper.js for details.
+    // Instead, we use RCTDeviceEventEmitter to pass data back to JS and emulate callbacks.
+    if (mReactApplicationContext == null) {
+      return;
+    }
+    WritableMap params = Arguments.createMap();
+    params.putInt("tag", tag);
+    params.putDouble("value", value);
+    mReactApplicationContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit("onNativeAnimatedModuleGetValue", params);
   }
 
   @UiThread
@@ -607,6 +646,19 @@ import java.util.Queue;
             WritableMap endCallbackResponse = Arguments.createMap();
             endCallbackResponse.putBoolean("finished", true);
             animation.mEndCallback.invoke(endCallbackResponse);
+          } else if (mReactApplicationContext != null) {
+            // If no callback is passed in, this /may/ be an animation set up by the single-op
+            // instruction from JS, meaning that no jsi::functions are passed into native and
+            // we communicate via RCTDeviceEventEmitter instead of callbacks.
+            WritableMap params = Arguments.createMap();
+            params.putInt("animationId", animation.mId);
+            params.putBoolean("finished", true);
+            DeviceEventManagerModule.RCTDeviceEventEmitter eventEmitter =
+                mReactApplicationContext.getJSModule(
+                    DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+            if (eventEmitter != null) {
+              eventEmitter.emit("onNativeAnimatedModuleAnimationFinished", params);
+            }
           }
           mActiveAnimations.removeAt(i);
         }

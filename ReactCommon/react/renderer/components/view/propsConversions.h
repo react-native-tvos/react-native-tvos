@@ -16,6 +16,8 @@
 namespace facebook {
 namespace react {
 
+// Nearly this entire file can be deleted when iterator-style Prop parsing
+// ships fully for View
 static inline YGStyle::Dimensions convertRawProp(
     const PropsParserContext &context,
     RawProps const &rawProps,
@@ -35,7 +37,7 @@ static inline YGStyle::Dimensions convertRawProp(
       rawProps,
       heightName,
       sourceValue[YGDimensionHeight],
-      defaultValue[YGDimensionWidth]);
+      defaultValue[YGDimensionHeight]);
   return dimensions;
 }
 
@@ -264,6 +266,28 @@ static inline YGStyle convertRawProp(
       "",
       sourceValue.padding(),
       yogaStyle.padding());
+
+  yogaStyle.gap()[YGGutterRow] = convertRawProp(
+      context,
+      rawProps,
+      "rowGap",
+      sourceValue.gap()[YGGutterRow],
+      yogaStyle.gap()[YGGutterRow]);
+
+  yogaStyle.gap()[YGGutterColumn] = convertRawProp(
+      context,
+      rawProps,
+      "columnGap",
+      sourceValue.gap()[YGGutterColumn],
+      yogaStyle.gap()[YGGutterColumn]);
+
+  yogaStyle.gap()[YGGutterAll] = convertRawProp(
+      context,
+      rawProps,
+      "gap",
+      sourceValue.gap()[YGGutterAll],
+      yogaStyle.gap()[YGGutterAll]);
+
   yogaStyle.border() = convertRawProp(
       context,
       rawProps,
@@ -301,6 +325,7 @@ static inline YGStyle convertRawProp(
   return yogaStyle;
 }
 
+// This can be deleted when non-iterator ViewProp parsing is deleted
 template <typename T>
 static inline CascadedRectangleCorners<T> convertRawProp(
     const PropsParserContext &context,
@@ -529,7 +554,6 @@ inline void fromRawValue(
   }
 
 }
-#endif
 
 static inline ViewEvents convertRawProp(
     const PropsParserContext &context,
@@ -557,6 +581,38 @@ static inline ViewEvents convertRawProp(
       "onPointerLeave",
       sourceValue[Offset::PointerLeave],
       defaultValue[Offset::PointerLeave]);
+
+  // Experimental W3C Pointer callbacks
+  result[Offset::PointerEnterCapture] = convertRawProp(
+      context,
+      rawProps,
+      "onPointerEnterCapture",
+      sourceValue[Offset::PointerEnterCapture],
+      defaultValue[Offset::PointerEnterCapture]);
+  result[Offset::PointerMoveCapture] = convertRawProp(
+      context,
+      rawProps,
+      "onPointerMoveCapture",
+      sourceValue[Offset::PointerMoveCapture],
+      defaultValue[Offset::PointerMoveCapture]);
+  result[Offset::PointerLeaveCapture] = convertRawProp(
+      context,
+      rawProps,
+      "onPointerLeaveCapture",
+      sourceValue[Offset::PointerLeaveCapture],
+      defaultValue[Offset::PointerLeaveCapture]);
+  result[Offset::PointerOver] = convertRawProp(
+      context,
+      rawProps,
+      "onPointerOver",
+      sourceValue[Offset::PointerOver],
+      defaultValue[Offset::PointerOver]);
+  result[Offset::PointerOut] = convertRawProp(
+      context,
+      rawProps,
+      "onPointerOut",
+      sourceValue[Offset::PointerOut],
+      defaultValue[Offset::PointerOut]);
 
   // PanResponder callbacks
   result[Offset::MoveShouldSetResponder] = convertRawProp(
@@ -687,8 +743,8 @@ static inline void fromRawValue(
         attrIterator->second.hasType<std::string>());
 
     result = NativeDrawable{
-        .kind = NativeDrawable::Kind::ThemeAttr,
-        .themeAttr = (std::string)attrIterator->second,
+        NativeDrawable::Kind::ThemeAttr,
+        (std::string)attrIterator->second,
     };
   } else if (type == "RippleAndroid") {
     auto color = map.find("color");
@@ -696,21 +752,19 @@ static inline void fromRawValue(
     auto rippleRadius = map.find("rippleRadius");
 
     result = NativeDrawable{
-        .kind = NativeDrawable::Kind::Ripple,
-        .ripple =
-            NativeDrawable::Ripple{
-                .color = color != map.end() && color->second.hasType<int32_t>()
-                    ? (int32_t)color->second
-                    : std::optional<int32_t>{},
-                .borderless = borderless != map.end() &&
-                        borderless->second.hasType<bool>()
-                    ? (bool)borderless->second
-                    : false,
-                .rippleRadius = rippleRadius != map.end() &&
-                        rippleRadius->second.hasType<Float>()
-                    ? (Float)rippleRadius->second
-                    : std::optional<Float>{},
-            },
+        NativeDrawable::Kind::Ripple,
+        std::string{},
+        NativeDrawable::Ripple{
+            color != map.end() && color->second.hasType<int32_t>()
+                ? (int32_t)color->second
+                : std::optional<int32_t>{},
+            borderless != map.end() && borderless->second.hasType<bool>()
+                ? (bool)borderless->second
+                : false,
+            rippleRadius != map.end() && rippleRadius->second.hasType<Float>()
+                ? (Float)rippleRadius->second
+                : std::optional<Float>{},
+        },
     };
   } else {
     LOG(ERROR) << "Unknown native drawable type: " << type;

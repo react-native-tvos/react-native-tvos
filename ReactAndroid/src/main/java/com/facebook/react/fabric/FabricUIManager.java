@@ -59,6 +59,7 @@ import com.facebook.react.fabric.events.FabricEventEmitter;
 import com.facebook.react.fabric.mounting.MountItemDispatcher;
 import com.facebook.react.fabric.mounting.MountingManager;
 import com.facebook.react.fabric.mounting.SurfaceMountingManager;
+import com.facebook.react.fabric.mounting.SurfaceMountingManager.ViewEvent;
 import com.facebook.react.fabric.mounting.mountitems.DispatchIntCommandMountItem;
 import com.facebook.react.fabric.mounting.mountitems.DispatchStringCommandMountItem;
 import com.facebook.react.fabric.mounting.mountitems.IntBufferBatchMountItem;
@@ -80,7 +81,6 @@ import com.facebook.react.uimanager.ViewManagerRegistry;
 import com.facebook.react.uimanager.events.EventCategoryDef;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.react.uimanager.events.EventDispatcherImpl;
-import com.facebook.react.uimanager.events.LockFreeEventDispatcherImpl;
 import com.facebook.react.views.text.TextLayoutManager;
 import com.facebook.react.views.text.TextLayoutManagerMapBuffer;
 import java.util.HashMap;
@@ -105,7 +105,56 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
       ReactFeatureFlags.enableFabricLogs
           || PrinterHolder.getPrinter()
               .shouldDisplayLogMessage(ReactDebugOverlayTags.FABRIC_UI_MANAGER);
+  public static final boolean ENABLE_FABRIC_PERF_LOGS = ENABLE_FABRIC_LOGS || false;
   public DevToolsReactPerfLogger mDevToolsReactPerfLogger;
+
+  private static final DevToolsReactPerfLogger.DevToolsReactPerfLoggerListener FABRIC_PERF_LOGGER =
+      new DevToolsReactPerfLogger.DevToolsReactPerfLoggerListener() {
+        @Override
+        public void onFabricCommitEnd(DevToolsReactPerfLogger.FabricCommitPoint commitPoint) {
+          long commitDuration = commitPoint.getCommitDuration();
+          long layoutDuration = commitPoint.getLayoutDuration();
+          long diffDuration = commitPoint.getDiffDuration();
+          long transactionEndDuration = commitPoint.getTransactionEndDuration();
+          long batchExecutionDuration = commitPoint.getBatchExecutionDuration();
+
+          DevToolsReactPerfLogger.mStreamingCommitStats.add(commitDuration);
+          DevToolsReactPerfLogger.mStreamingLayoutStats.add(layoutDuration);
+          DevToolsReactPerfLogger.mStreamingDiffStats.add(diffDuration);
+          DevToolsReactPerfLogger.mStreamingTransactionEndStats.add(transactionEndDuration);
+          DevToolsReactPerfLogger.mStreamingBatchExecutionStats.add(batchExecutionDuration);
+
+          FLog.i(
+              TAG,
+              "Statistics of Fabric commit #%d:\n"
+                  + " - Total commit time: %d ms. Avg: %.2f. Median: %.2f ms. Max: %d ms.\n"
+                  + " - Layout time: %d ms. Avg: %.2f. Median: %.2f ms. Max: %d ms.\n"
+                  + " - Diffing time: %d ms. Avg: %.2f. Median: %.2f ms. Max: %d ms.\n"
+                  + " - FinishTransaction (Diffing + JNI serialization): %d ms. Avg: %.2f. Median: %.2f ms. Max: %d ms.\n"
+                  + " - Mounting: %d ms. Avg: %.2f. Median: %.2f ms. Max: %d ms.\n",
+              commitPoint.getCommitNumber(),
+              commitDuration,
+              DevToolsReactPerfLogger.mStreamingCommitStats.getAverage(),
+              DevToolsReactPerfLogger.mStreamingCommitStats.getMedian(),
+              DevToolsReactPerfLogger.mStreamingCommitStats.getMax(),
+              layoutDuration,
+              DevToolsReactPerfLogger.mStreamingLayoutStats.getAverage(),
+              DevToolsReactPerfLogger.mStreamingLayoutStats.getMedian(),
+              DevToolsReactPerfLogger.mStreamingLayoutStats.getMax(),
+              diffDuration,
+              DevToolsReactPerfLogger.mStreamingDiffStats.getAverage(),
+              DevToolsReactPerfLogger.mStreamingDiffStats.getMedian(),
+              DevToolsReactPerfLogger.mStreamingDiffStats.getMax(),
+              transactionEndDuration,
+              DevToolsReactPerfLogger.mStreamingTransactionEndStats.getAverage(),
+              DevToolsReactPerfLogger.mStreamingTransactionEndStats.getMedian(),
+              DevToolsReactPerfLogger.mStreamingTransactionEndStats.getMax(),
+              batchExecutionDuration,
+              DevToolsReactPerfLogger.mStreamingBatchExecutionStats.getAverage(),
+              DevToolsReactPerfLogger.mStreamingBatchExecutionStats.getMedian(),
+              DevToolsReactPerfLogger.mStreamingBatchExecutionStats.getMax());
+        }
+      };
 
   static {
     FabricSoLoader.staticInit();
@@ -116,6 +165,7 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
   @NonNull private final MountingManager mMountingManager;
   @NonNull private final EventDispatcher mEventDispatcher;
   @NonNull private final MountItemDispatcher mMountItemDispatcher;
+  @NonNull private final ViewManagerRegistry mViewManagerRegistry;
 
   @NonNull private final EventBeatManager mEventBeatManager;
 
@@ -176,6 +226,9 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
     mShouldDeallocateEventDispatcher = false;
     mEventBeatManager = eventBeatManager;
     mReactApplicationContext.addLifecycleEventListener(this);
+
+    mViewManagerRegistry = viewManagerRegistry;
+    mReactApplicationContext.registerComponentCallbacks(viewManagerRegistry);
   }
 
   public FabricUIManager(
@@ -187,13 +240,13 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
     mMountingManager = new MountingManager(viewManagerRegistry, mMountItemExecutor);
     mMountItemDispatcher =
         new MountItemDispatcher(mMountingManager, new MountItemDispatchListener());
-    mEventDispatcher =
-        ReactFeatureFlags.enableLockFreeEventDispatcher
-            ? new LockFreeEventDispatcherImpl(reactContext)
-            : new EventDispatcherImpl(reactContext);
+    mEventDispatcher = new EventDispatcherImpl(reactContext);
     mShouldDeallocateEventDispatcher = true;
     mEventBeatManager = eventBeatManager;
     mReactApplicationContext.addLifecycleEventListener(this);
+
+    mViewManagerRegistry = viewManagerRegistry;
+    mReactApplicationContext.registerComponentCallbacks(viewManagerRegistry);
   }
 
   // TODO (T47819352): Rename this to startSurface for consistency with xplat/iOS
@@ -208,8 +261,8 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
         new IllegalViewOperationException(
             "Do not call addRootView in Fabric; it is unsupported. Call startSurface instead."));
 
-    final int rootTag = ReactRootViewTagGenerator.getNextRootViewTag();
     ReactRoot reactRootView = (ReactRoot) rootView;
+    final int rootTag = reactRootView.getRootViewTag();
 
     ThemedReactContext reactContext =
         new ThemedReactContext(
@@ -237,7 +290,7 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
    * @return a {@link ReadableMap} that contains metadata associated to the React Component that
    *     rendered the Android View received as a parameter. For more details about the keys stored
    *     in the {@link ReadableMap} refer to the "getInspectorDataForInstance" method from
-   *     com/facebook/react/fabric/jni/Binding.cpp file.
+   *     jni/react/fabric/Binding.cpp file.
    */
   @UiThread
   @ThreadConfined(UI)
@@ -265,7 +318,7 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
       final WritableMap initialProps,
       int widthMeasureSpec,
       int heightMeasureSpec) {
-    final int rootTag = ReactRootViewTagGenerator.getNextRootViewTag();
+    final int rootTag = ((ReactRoot) rootView).getRootViewTag();
     Context context = rootView.getContext();
     ThemedReactContext reactContext =
         new ThemedReactContext(mReactApplicationContext, context, moduleName, rootTag);
@@ -365,32 +418,10 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
   public void initialize() {
     mEventDispatcher.registerEventEmitter(FABRIC, new FabricEventEmitter(this));
     mEventDispatcher.addBatchEventDispatchedListener(mEventBeatManager);
-    if (ENABLE_FABRIC_LOGS) {
+    if (ENABLE_FABRIC_PERF_LOGS) {
       mDevToolsReactPerfLogger = new DevToolsReactPerfLogger();
-      mDevToolsReactPerfLogger.addDevToolsReactPerfLoggerListener(
-          new DevToolsReactPerfLogger.DevToolsReactPerfLoggerListener() {
-            @Override
-            public void onFabricCommitEnd(DevToolsReactPerfLogger.FabricCommitPoint commitPoint) {
-              FLog.i(
-                  TAG,
-                  "Statistic of Fabric commit #: "
-                      + commitPoint.getCommitNumber()
-                      + "\n - Total commit time: "
-                      + (commitPoint.getFinishTransactionEnd() - commitPoint.getCommitStart())
-                      + " ms.\n - Layout: "
-                      + (commitPoint.getLayoutEnd() - commitPoint.getLayoutStart())
-                      + " ms.\n - Diffing: "
-                      + (commitPoint.getDiffEnd() - commitPoint.getDiffStart())
-                      + " ms.\n"
-                      + " - FinishTransaction (Diffing + JNI serialization): "
-                      + (commitPoint.getFinishTransactionEnd()
-                          - commitPoint.getFinishTransactionStart())
-                      + " ms.\n"
-                      + " - Mounting: "
-                      + (commitPoint.getBatchExecutionEnd() - commitPoint.getBatchExecutionStart())
-                      + " ms.");
-            }
-          });
+      mDevToolsReactPerfLogger.addDevToolsReactPerfLoggerListener(FABRIC_PERF_LOGGER);
+
       ReactMarker.addFabricListener(mDevToolsReactPerfLogger);
     }
   }
@@ -403,6 +434,7 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
     FLog.i(TAG, "FabricUIManager.onCatalystInstanceDestroy");
 
     if (mDevToolsReactPerfLogger != null) {
+      mDevToolsReactPerfLogger.removeDevToolsReactPerfLoggerListener(FABRIC_PERF_LOGGER);
       ReactMarker.removeFabricListener(mDevToolsReactPerfLogger);
     }
 
@@ -421,6 +453,8 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
 
     mEventDispatcher.removeBatchEventDispatchedListener(mEventBeatManager);
     mEventDispatcher.unregisterEventEmitter(FABRIC);
+
+    mReactApplicationContext.unregisterComponentCallbacks(mViewManagerRegistry);
 
     // Remove lifecycle listeners (onHostResume, onHostPause) since the FabricUIManager is going
     // away. Then stop the mDispatchUIFrameCallback false will cause the choreographer
@@ -491,11 +525,16 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
   }
 
   @SuppressWarnings("unused")
-  public int getColor(int surfaceId, ReadableMap platformColor) {
+  public int getColor(int surfaceId, String[] resourcePaths) {
     ThemedReactContext context =
         mMountingManager.getSurfaceManagerEnforced(surfaceId, "getColor").getContext();
-    Integer color = ColorPropConverter.getColor(platformColor, context);
-    return color != null ? color : 0;
+    for (String resourcePath : resourcePaths) {
+      Integer color = ColorPropConverter.resolveResourcePath(context, resourcePath);
+      if (color != null) {
+        return color;
+      }
+    }
+    return 0;
   }
 
   @SuppressWarnings("unused")
@@ -768,9 +807,29 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
 
     if (shouldSchedule) {
       mMountItemDispatcher.addMountItem(mountItem);
+      Runnable runnable =
+          new Runnable() {
+            @Override
+            public void run() {
+              mMountItemDispatcher.tryDispatchMountItems();
+            }
+          };
       if (UiThreadUtil.isOnUiThread()) {
-        // We only read these flags on the UI thread.
-        mMountItemDispatcher.tryDispatchMountItems();
+        runnable.run();
+      } else {
+        // The Choreographer will dispatch any mount items,
+        // but it only gets called at the /beginning/ of the
+        // frame - it has no idea if, or when, there is actually work scheduled. That means if we
+        // have a big chunk of work
+        // scheduled but the scheduling happens 1ms after the
+        // start of a UI frame, we'll miss out on 15ms of time
+        // to perform the work (assuming a 16ms frame).
+        // The DispatchUIFrameCallback still has value because of
+        // the PreMountItems that we need to process at a lower
+        // priority.
+        if (ReactFeatureFlags.enableEarlyScheduledMountItemExecution) {
+          UiThreadUtil.runOnUiThread(runnable);
+        }
       }
     }
 
@@ -923,8 +982,18 @@ public class FabricUIManager implements UIManager, LifecycleEventListener {
     EventEmitterWrapper eventEmitter = mMountingManager.getEventEmitter(surfaceId, reactTag);
 
     if (eventEmitter == null) {
-      // This can happen if the view has disappeared from the screen (because of async events)
-      FLog.d(TAG, "Unable to invoke event: " + eventName + " for reactTag: " + reactTag);
+      if (ReactFeatureFlags.enableFabricPendingEventQueue
+          && mMountingManager.getViewExists(reactTag)) {
+        // The view is preallocated and created. However, it hasn't been mounted yet. We will have
+        // access to the event emitter later when the view is mounted. For now just save the event
+        // in the view state and trigger it later.
+        mMountingManager.enqueuePendingEvent(
+            reactTag,
+            new ViewEvent(eventName, params, eventCategory, canCoalesceEvent, customCoalesceKey));
+      } else {
+        // This can happen if the view has disappeared from the screen (because of async events)
+        FLog.d(TAG, "Unable to invoke event: " + eventName + " for reactTag: " + reactTag);
+      }
       return;
     }
 

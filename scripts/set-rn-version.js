@@ -17,9 +17,12 @@
  *   * Creates a gemfile
  */
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const {cat, echo, exec, exit, sed} = require('shelljs');
 const yargs = require('yargs');
-const {parseVersion} = require('./version-utils');
+const {parseVersion, validateBuildType} = require('./version-utils');
+const {saveFiles} = require('./scm-utils');
 
 let argv = yargs
   .option('c', {
@@ -30,14 +33,22 @@ let argv = yargs
   .option('v', {
     alias: 'to-version',
     type: 'string',
+    required: true,
+  })
+  .option('b', {
+    alias: 'build-type',
+    type: 'string',
+    required: true,
   }).argv;
 
+const buildType = argv.buildType;
 const version = argv.toVersion;
 const commit = argv.commit || false;
 
-if (!version) {
-  echo('You must specify a version using -v');
-  exit(1);
+try {
+  validateBuildType(buildType);
+} catch (e) {
+  throw e;
 }
 
 let major,
@@ -45,11 +56,17 @@ let major,
   patch,
   prerelease = -1;
 try {
-  ({major, minor, patch, prerelease} = parseVersion(version));
+  ({major, minor, patch, prerelease} = parseVersion(version, buildType));
 } catch (e) {
-  echo(e.message);
-  exit(1);
+  throw e;
 }
+
+const tmpVersioningFolder = fs.mkdtempSync(
+  path.join(os.tmpdir(), 'rn-set-version'),
+);
+echo(`The temp versioning folder is ${tmpVersioningFolder}`);
+
+saveFiles(['package.json', 'template/package.json'], tmpVersioningFolder);
 
 fs.writeFileSync(
   'ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/ReactNativeVersion.java',
@@ -127,6 +144,7 @@ packageJson.devDependencies['react-native-core'] = `npm:react-native@${coreVersi
 fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2), 'utf-8');
 
 // Change ReactAndroid/gradle.properties
+saveFiles(['ReactAndroid/gradle.properties'], tmpVersioningFolder);
 if (
   sed(
     '-i',
@@ -155,21 +173,24 @@ const filesToValidate = [
   'ReactAndroid/gradle.properties',
   'template/package.json',
 ];
+
 const numberOfChangedLinesWithNewVersion = exec(
-  `git diff -U0 ${filesToValidate.join(
-    ' ',
-  )}| grep '^[+]' | grep -c ${version} `,
+  `diff -r ${tmpVersioningFolder} . | grep '^[>]' | grep -c ${version} `,
   {silent: true},
 ).stdout.trim();
 
 if (+numberOfChangedLinesWithNewVersion !== filesToValidate.length) {
+  // TODO: the logic that checks whether all the changes have been applied
+  // is missing several files. For example, it is not checking Ruby version nor that
+  // the Objecive-C files, the codegen and other files are properly updated.
+  // We are going to work on this in another PR.
+  echo('WARNING:');
   echo(
     `Failed to update all the files: [${filesToValidate.join(
       ', ',
     )}] must have versions in them`,
   );
-  echo('Fix the issue and try again');
-  exit(1);
+  echo(`These files already had version ${version} set.`);
 }
 
 if (commit) {

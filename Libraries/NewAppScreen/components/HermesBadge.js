@@ -8,17 +8,16 @@
  * @format
  */
 
-import React from 'react';
 import type {Node} from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  useTVEventHandler,
-  View,
-} from 'react-native';
+
+import Platform from '../../Utilities/Platform';
+import useTVEventHandler from '../../Components/TV/useTVEventHandler';
+import View from '../../Components/View/View';
+import StyleSheet from '../../StyleSheet/StyleSheet';
+import Text from '../../Text/Text';
+import useColorScheme from '../../Utilities/useColorScheme';
 import Colors from './Colors';
+import React from 'react';
 
 const HermesBadge = (): Node => {
   const [lastEventType, setLastEventType] = React.useState('');

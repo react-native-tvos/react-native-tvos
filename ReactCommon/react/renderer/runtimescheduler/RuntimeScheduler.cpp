@@ -10,8 +10,7 @@
 #include <utility>
 #include "ErrorUtils.h"
 
-namespace facebook {
-namespace react {
+namespace facebook::react {
 
 #pragma mark - Public
 
@@ -22,19 +21,14 @@ RuntimeScheduler::RuntimeScheduler(
 
 void RuntimeScheduler::scheduleWork(
     std::function<void(jsi::Runtime &)> callback) const {
-  if (enableYielding_) {
-    runtimeAccessRequests_ += 1;
-    runtimeExecutor_(
-        [this, callback = std::move(callback)](jsi::Runtime &runtime) {
-          runtimeAccessRequests_ -= 1;
-          callback(runtime);
-          startWorkLoop(runtime);
-        });
-  } else {
-    runtimeExecutor_([callback = std::move(callback)](jsi::Runtime &runtime) {
-      callback(runtime);
-    });
-  }
+  runtimeAccessRequests_ += 1;
+
+  runtimeExecutor_(
+      [this, callback = std::move(callback)](jsi::Runtime &runtime) {
+        runtimeAccessRequests_ -= 1;
+        callback(runtime);
+        startWorkLoop(runtime);
+      });
 }
 
 std::shared_ptr<Task> RuntimeScheduler::scheduleTask(
@@ -70,10 +64,6 @@ RuntimeSchedulerTimePoint RuntimeScheduler::now() const noexcept {
   return now_();
 }
 
-void RuntimeScheduler::setEnableYielding(bool enableYielding) {
-  enableYielding_ = enableYielding;
-}
-
 void RuntimeScheduler::executeNowOnTheSameThread(
     std::function<void(jsi::Runtime &runtime)> callback) {
   runtimeAccessRequests_ += 1;
@@ -105,7 +95,7 @@ void RuntimeScheduler::callExpiredTasks(jsi::Runtime &runtime) {
       }
 
       currentPriority_ = topPriorityTask->priority;
-      auto result = topPriorityTask->execute(runtime);
+      auto result = topPriorityTask->execute(runtime, didUserCallbackTimeout);
 
       if (result.isObject() && result.getObject(runtime).isFunction(runtime)) {
         topPriorityTask->callback =
@@ -150,7 +140,7 @@ void RuntimeScheduler::startWorkLoop(jsi::Runtime &runtime) const {
       }
 
       currentPriority_ = topPriorityTask->priority;
-      auto result = topPriorityTask->execute(runtime);
+      auto result = topPriorityTask->execute(runtime, didUserCallbackTimeout);
 
       if (result.isObject() && result.getObject(runtime).isFunction(runtime)) {
         topPriorityTask->callback =
@@ -169,5 +159,4 @@ void RuntimeScheduler::startWorkLoop(jsi::Runtime &runtime) const {
   isPerformingWork_ = false;
 }
 
-} // namespace react
-} // namespace facebook
+} // namespace facebook::react

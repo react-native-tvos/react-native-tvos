@@ -31,7 +31,6 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"ActionSheetManager", RCTActionSheetManagerCls},
 #endif
     {"AlertManager", RCTAlertManagerCls},
-    {"AsyncLocalStorage", RCTAsyncLocalStorageCls},
     {"Timing", RCTTimingCls},
     {"StatusBarManager", RCTStatusBarManagerCls},
     {"KeyboardObserver", RCTKeyboardObserverCls},
@@ -47,6 +46,7 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"DevLoadingView", RCTDevLoadingViewCls},
     {"DevSplitBundleLoader", RCTDevSplitBundleLoaderCls},
     {"EventDispatcher", RCTEventDispatcherCls},
+    {"BlobModule", RCTBlobManagerCls},
   };
 
   auto p = sCoreModuleClassMap->find(name);

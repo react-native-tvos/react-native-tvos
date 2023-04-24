@@ -8,32 +8,32 @@
  * @format
  */
 
-const Platform = require('../Utilities/Platform');
-const deepDiffer = require('../Utilities/differ/deepDiffer');
-const React = require('react');
-const View = require('../Components/View/View');
-const VirtualizedList = require('./VirtualizedList');
-const StyleSheet = require('../StyleSheet/StyleSheet');
-
-const invariant = require('invariant');
-
 import typeof ScrollViewNativeComponent from '../Components/ScrollView/ScrollViewNativeComponent';
-import {type ScrollResponderType} from '../Components/ScrollView/ScrollView';
 import type {ViewStyleProp} from '../StyleSheet/StyleSheet';
 import type {
-  ViewToken,
   ViewabilityConfigCallbackPair,
+  ViewToken,
 } from './ViewabilityHelper';
-import type {RenderItemType, RenderItemProps} from './VirtualizedList';
+import type {RenderItemProps, RenderItemType} from './VirtualizedList';
+
+import {type ScrollResponderType} from '../Components/ScrollView/ScrollView';
+import VirtualizedList from './VirtualizedList';
 import {keyExtractor as defaultKeyExtractor} from './VirtualizeUtils';
 import memoizeOne from 'memoize-one';
 
+const View = require('../Components/View/View');
+const StyleSheet = require('../StyleSheet/StyleSheet');
+const deepDiffer = require('../Utilities/differ/deepDiffer');
+const Platform = require('../Utilities/Platform');
+const invariant = require('invariant');
+const React = require('react');
+
 type RequiredProps<ItemT> = {|
   /**
-   * For simplicity, data is just a plain array. If you want to use something else, like an
-   * immutable list, use the underlying `VirtualizedList` directly.
+   * An array (or array-like list) of items to render. Other data types can be
+   * used by targetting VirtualizedList directly.
    */
-  data: ?$ReadOnlyArray<ItemT>,
+  data: ?$ArrayLike<ItemT>,
 |};
 type OptionalProps<ItemT> = {|
   /**
@@ -161,6 +161,11 @@ function removeClippedSubviewsOrDefault(removeClippedSubviews: ?boolean) {
 // numColumnsOrDefault(this.props.numColumns)
 function numColumnsOrDefault(numColumns: ?number) {
   return numColumns ?? 1;
+}
+
+function isArrayLike(data: mixed): boolean {
+  // $FlowExpectedError[incompatible-use]
+  return typeof Object(data).length === 'number';
 }
 
 type FlatListProps<ItemT> = {|
@@ -334,6 +339,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   scrollToItem(params: {
     animated?: ?boolean,
     item: ItemT,
+    viewOffset?: number,
     viewPosition?: number,
     ...
   }) {
@@ -433,6 +439,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   }
 
+  // $FlowFixMe[missing-local-annot]
   componentDidUpdate(prevProps: Props<ItemT>) {
     invariant(
       prevProps.numColumns === this.props.numColumns,
@@ -459,10 +466,11 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
   _listRef: ?React.ElementRef<typeof VirtualizedList>;
   _virtualizedListPairs: Array<ViewabilityConfigCallbackPair> = [];
 
-  _captureRef = ref => {
+  _captureRef = (ref: ?React.ElementRef<typeof VirtualizedList>) => {
     this._listRef = ref;
   };
 
+  // $FlowFixMe[missing-local-annot]
   _checkProps(props: Props<ItemT>) {
     const {
       // $FlowFixMe[prop-missing] this prop doesn't exist, is only used for an invariant
@@ -494,13 +502,17 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     );
   }
 
-  _getItem = (data: Array<ItemT>, index: number) => {
+  _getItem = (
+    data: $ArrayLike<ItemT>,
+    index: number,
+  ): ?(ItemT | $ReadOnlyArray<ItemT>) => {
     const numColumns = numColumnsOrDefault(this.props.numColumns);
     if (numColumns > 1) {
       const ret = [];
       for (let kk = 0; kk < numColumns; kk++) {
-        const item = data[index * numColumns + kk];
-        if (item != null) {
+        const itemIndex = index * numColumns + kk;
+        if (itemIndex < data.length) {
+          const item = data[itemIndex];
           ret.push(item);
         }
       }
@@ -510,8 +522,14 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   };
 
-  _getItemCount = (data: ?Array<ItemT>): number => {
-    if (data) {
+  _getItemCount = (data: ?$ArrayLike<ItemT>): number => {
+    // Legacy behavior of FlatList was to forward "undefined" length if invalid
+    // data like a non-arraylike object is passed. VirtualizedList would then
+    // coerce this, and the math would work out to no-op. For compatibility, if
+    // invalid data is passed, we tell VirtualizedList there are zero items
+    // available to prevent it from trying to read from the invalid data
+    // (without propagating invalidly typed data).
+    if (data != null && isArrayLike(data)) {
       const numColumns = numColumnsOrDefault(this.props.numColumns);
       return numColumns > 1 ? Math.ceil(data.length / numColumns) : data.length;
     } else {
@@ -519,29 +537,26 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     }
   };
 
-  _keyExtractor = (items: ItemT | Array<ItemT>, index: number) => {
+  _keyExtractor = (items: ItemT | Array<ItemT>, index: number): string => {
     const numColumns = numColumnsOrDefault(this.props.numColumns);
     const keyExtractor = this.props.keyExtractor ?? defaultKeyExtractor;
 
     if (numColumns > 1) {
-      if (Array.isArray(items)) {
-        return items
-          .map((item, kk) =>
-            keyExtractor(((item: $FlowFixMe): ItemT), index * numColumns + kk),
-          )
-          .join(':');
-      } else {
-        invariant(
-          Array.isArray(items),
-          'FlatList: Encountered internal consistency error, expected each item to consist of an ' +
-            'array with 1-%s columns; instead, received a single item.',
-          numColumns,
-        );
-      }
-    } else {
-      // $FlowFixMe[incompatible-call] Can't call keyExtractor with an array
-      return keyExtractor(items, index);
+      invariant(
+        Array.isArray(items),
+        'FlatList: Encountered internal consistency error, expected each item to consist of an ' +
+          'array with 1-%s columns; instead, received a single item.',
+        numColumns,
+      );
+      return items
+        .map((item, kk) =>
+          keyExtractor(((item: $FlowFixMe): ItemT), index * numColumns + kk),
+        )
+        .join(':');
     }
+
+    // $FlowFixMe[incompatible-call] Can't call keyExtractor with an array
+    return keyExtractor(items, index);
   };
 
   _pushMultiColumnViewable(arr: Array<ViewToken>, v: ViewToken): void {
@@ -560,6 +575,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
       changed: Array<ViewToken>,
       ...
     }) => void,
+    // $FlowFixMe[missing-local-annot]
   ) {
     return (info: {
       viewableItems: Array<ViewToken>,
@@ -569,8 +585,8 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
       const numColumns = numColumnsOrDefault(this.props.numColumns);
       if (onViewableItemsChanged) {
         if (numColumns > 1) {
-          const changed = [];
-          const viewableItems = [];
+          const changed: Array<ViewToken> = [];
+          const viewableItems: Array<ViewToken> = [];
           info.viewableItems.forEach(v =>
             this._pushMultiColumnViewable(viewableItems, v),
           );
@@ -589,14 +605,11 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     columnWrapperStyle: ?ViewStyleProp,
     numColumns: ?number,
     extraData: ?any,
+    // $FlowFixMe[missing-local-annot]
   ) => {
     const cols = numColumnsOrDefault(numColumns);
 
-    let virtualizedListRenderKey = ListItemComponent
-      ? 'ListItemComponent'
-      : 'renderItem';
-
-    const renderer = (props): React.Node => {
+    const render = (props: RenderItemProps<ItemT>): React.Node => {
       if (ListItemComponent) {
         // $FlowFixMe[not-a-component] Component isn't valid
         // $FlowFixMe[incompatible-type-arg] Component isn't valid
@@ -610,38 +623,39 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
       }
     };
 
-    return {
-      /* $FlowFixMe[invalid-computed-prop] (>=0.111.0 site=react_native_fb)
-       * This comment suppresses an error found when Flow v0.111 was deployed.
-       * To see the error, delete this comment and run Flow. */
-      [virtualizedListRenderKey]: (info: RenderItemProps<ItemT>) => {
-        if (cols > 1) {
-          const {item, index} = info;
-          invariant(
-            Array.isArray(item),
-            'Expected array of items with numColumns > 1',
-          );
-          return (
-            <View style={StyleSheet.compose(styles.row, columnWrapperStyle)}>
-              {item.map((it, kk) => {
-                const element = renderer({
-                  item: it,
-                  index: index * cols + kk,
-                  separators: info.separators,
-                });
-                return element != null ? (
-                  <React.Fragment key={kk}>{element}</React.Fragment>
-                ) : null;
-              })}
-            </View>
-          );
-        } else {
-          return renderer(info);
-        }
-      },
+    const renderProp = (info: RenderItemProps<ItemT>) => {
+      if (cols > 1) {
+        const {item, index} = info;
+        invariant(
+          Array.isArray(item),
+          'Expected array of items with numColumns > 1',
+        );
+        return (
+          <View style={StyleSheet.compose(styles.row, columnWrapperStyle)}>
+            {item.map((it, kk) => {
+              const element = render({
+                // $FlowFixMe[incompatible-call]
+                item: it,
+                index: index * cols + kk,
+                separators: info.separators,
+              });
+              return element != null ? (
+                <React.Fragment key={kk}>{element}</React.Fragment>
+              ) : null;
+            })}
+          </View>
+        );
+      } else {
+        return render(info);
+      }
     };
+
+    return ListItemComponent
+      ? {ListItemComponent: renderProp}
+      : {renderItem: renderProp};
   };
 
+  // $FlowFixMe[missing-local-annot]
   _memoizedRenderer = memoizeOne(this._renderer);
 
   render(): React.Node {
@@ -656,6 +670,7 @@ class FlatList<ItemT> extends React.PureComponent<Props<ItemT>, void> {
     const renderer = strictMode ? this._memoizedRenderer : this._renderer;
 
     return (
+      // $FlowFixMe[incompatible-exact] - `restProps` (`Props`) is inexact.
       <VirtualizedList
         {...restProps}
         getItem={this._getItem}

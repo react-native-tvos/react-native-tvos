@@ -161,7 +161,8 @@ export type ObjectAlias = {|
   y: number,
   label: string,
   truthy: boolean,
-|}
+|};
+export type ReadOnlyAlias = $ReadOnly<ObjectAlias>;
 
 export interface Spec extends TurboModule {
   // Exported methods.
@@ -169,6 +170,9 @@ export interface Spec extends TurboModule {
   +getVoid: () => Void;
   +getArray: (a: Array<A>) => {| a: B |};
   +getStringFromAlias: (a: ObjectAlias) => string;
+  +getStringFromNullableAlias: (a: ?ObjectAlias) => string;
+  +getStringFromReadOnlyAlias: (a: ReadOnlyAlias) => string;
+  +getStringFromNullableReadOnlyAlias: (a: ?ReadOnlyAlias) => string;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('SampleTurboModule');
@@ -565,8 +569,29 @@ const IOS_ONLY_NATIVE_MODULE = `
 import type {TurboModule} from '../RCTExport';
 import * as TurboModuleRegistry from '../TurboModuleRegistry';
 
+export enum Quality {
+  SD,
+  HD,
+}
+
+export enum Resolution {
+  Low = 720,
+  High = 1080,
+}
+
+export enum Floppy {
+  LowDensity = 0.72,
+  HighDensity = 1.44,
+}
+
+export enum StringOptions {
+  One = 'one',
+  Two = 'two',
+  Three = 'three',
+}
+
 export interface Spec extends TurboModule {
-  // no methods
+  +getEnums: (quality: Quality, resolution?: Resolution, floppy: Floppy, stringOptions: StringOptions) => string;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('SampleTurboModuleIOS');
@@ -589,8 +614,39 @@ const CXX_ONLY_NATIVE_MODULE = `
 import type {TurboModule} from '../RCTExport';
 import * as TurboModuleRegistry from '../TurboModuleRegistry';
 
+export type ChooseInt = 1 | 2 | 3;
+export type ChooseFloat = 1.44 | 2.88 | 5.76;
+export type ChooseObject = {} | {low: string};
+export type ChooseString = 'One' | 'Two' | 'Three';
+
+export enum Quality {
+  SD,
+  HD,
+}
+
+export enum Resolution {
+  Low = 720,
+  High = 1080,
+}
+
+export enum Floppy {
+  LowDensity = 0.72,
+  HighDensity = 1.44,
+}
+
+export enum StringOptions {
+  One = 'one',
+  Two = 'two',
+  Three = 'three',
+}
+
 export interface Spec extends TurboModule {
   +getCallback: () => () => void;
+  +getMixed: (arg: mixed) => mixed;
+  +getEnums: (quality: Quality, resolution?: Resolution, floppy: Floppy, stringOptions: StringOptions) => string;
+  +getMap: (arg: {[a: string]: ?number}) => {[b: string]: ?number};
+  +getAnotherMap: (arg: {[string]: string}) => {[string]: string};
+  +getUnion: (chooseInt: ChooseInt, chooseFloat: ChooseFloat, chooseObject: ChooseObject, chooseString: ChooseString) => ChooseObject;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('SampleTurboModuleCxx');

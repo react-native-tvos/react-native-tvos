@@ -17,9 +17,11 @@ else
 end
 
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
-folly_version = '2021.06.28.00-v2'
+folly_version = '2021.07.22.00'
 boost_compiler_flags = '-Wno-documentation'
 tvos_no_hermes_flags = '-DRCT_USE_HERMES=0'
+
+use_hermes = ENV['USE_HERMES'] == '1'
 
 header_subspecs = {
   'CoreModulesHeaders'          => 'React/CoreModules/**/*.h',
@@ -35,6 +37,19 @@ header_subspecs = {
   'RCTVibrationHeaders'         => 'Libraries/Vibration/*.h',
 }
 
+header_search_paths = [
+  "$(PODS_TARGET_SRCROOT)/ReactCommon",
+  "$(PODS_ROOT)/boost",
+  "$(PODS_ROOT)/DoubleConversion",
+  "$(PODS_ROOT)/RCT-Folly",
+  "${PODS_ROOT}/Headers/Public/FlipperKit",
+  "$(PODS_ROOT)/Headers/Public/ReactCommon",
+  "$(PODS_ROOT)/Headers/Public/React-RCTFabric"
+].concat(use_hermes ? [
+  "$(PODS_ROOT)/Headers/Public/React-hermes",
+  "$(PODS_ROOT)/Headers/Public/hermes-engine"
+] : []).map{|p| "\"#{p}\""}.join(" ")
+
 Pod::Spec.new do |s|
   s.name                   = "React-Core"
   s.version                = version
@@ -49,18 +64,33 @@ Pod::Spec.new do |s|
   s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags + ' ' + tvos_no_hermes_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
-  s.pod_target_xcconfig    = { "HEADER_SEARCH_PATHS" => "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\" \"${PODS_ROOT}/Headers/Public/FlipperKit\" \"$(PODS_ROOT)/Headers/Public/ReactCommon\" \"$(PODS_ROOT)/Headers/Public/React-RCTFabric\"", "DEFINES_MODULE" => "YES" }
+  s.pod_target_xcconfig    = {
+                               "HEADER_SEARCH_PATHS" => header_search_paths,
+                               "DEFINES_MODULE" => "YES",
+                               "GCC_PREPROCESSOR_DEFINITIONS" => "RCT_METRO_PORT=${RCT_METRO_PORT}",
+                               "CLANG_CXX_LANGUAGE_STANDARD" => "c++17",
+                             }.merge!(use_hermes ? {
+                               "FRAMEWORK_SEARCH_PATHS" => "\"$(PODS_CONFIGURATION_BUILD_DIR)/React-hermes\""
+                             } : {})
   s.user_target_xcconfig   = { "HEADER_SEARCH_PATHS" => "\"$(PODS_ROOT)/Headers/Private/React-Core\""}
   s.default_subspec        = "Default"
 
   s.subspec "Default" do |ss|
     ss.source_files           = "React/**/*.{c,h,m,mm,S,cpp}"
-    ss.exclude_files          = "React/CoreModules/**/*",
-                                "React/DevSupport/**/*",
-                                "React/Fabric/**/*",
-                                "React/FBReactNativeSpec/**/*",
-                                "React/Tests/**/*",
-                                "React/Inspector/**/*"
+    exclude_files = [
+      "React/CoreModules/**/*",
+      "React/DevSupport/**/*",
+      "React/Fabric/**/*",
+      "React/FBReactNativeSpec/**/*",
+      "React/Tests/**/*",
+      "React/Inspector/**/*"
+    ]
+    # If we are using Hermes (the default is use hermes, so USE_HERMES can be nil), we don't have jsc installed
+    # So we have to exclude the JSCExecutorFactory
+    if ENV['USE_HERMES'] == nil || ENV['USE_HERMES'] == "1"
+      exclude_files = exclude_files.append("React/CxxBridge/JSCExecutorFactory.{h,mm}")
+    end
+    ss.exclude_files = exclude_files
     ss.ios.exclude_files      = "React/**/RCTTV*.*"
     ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
                                 "React/Views/RCTDatePicker*",
@@ -101,4 +131,11 @@ Pod::Spec.new do |s|
   s.dependency "React-jsiexecutor", version
   s.dependency "Yoga"
   s.dependency "glog"
+
+  if ENV['USE_HERMES'] == "0"
+    s.dependency 'React-jsc'
+  else
+    s.dependency 'React-hermes'
+    s.dependency 'hermes-engine'
+  end
 end

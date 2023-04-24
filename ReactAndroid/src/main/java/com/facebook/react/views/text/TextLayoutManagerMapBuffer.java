@@ -105,6 +105,11 @@ public class TextLayoutManagerMapBuffer {
 
     MapBuffer fragment = fragments.getMapBuffer((short) 0);
     MapBuffer textAttributes = fragment.getMapBuffer(FR_KEY_TEXT_ATTRIBUTES);
+
+    if (!textAttributes.contains(TextAttributeProps.TA_KEY_LAYOUT_DIRECTION)) {
+      return false;
+    }
+
     return TextAttributeProps.getLayoutDirection(
             textAttributes.getString(TextAttributeProps.TA_KEY_LAYOUT_DIRECTION))
         == LayoutDirection.RTL;
@@ -203,24 +208,8 @@ public class TextLayoutManagerMapBuffer {
       MapBuffer attributedString,
       @Nullable ReactTextViewManagerCallback reactTextViewManagerCallback) {
 
-    Spannable preparedSpannableText;
-
-    synchronized (sSpannableCacheLock) {
-      preparedSpannableText = sSpannableCache.get(attributedString);
-      if (preparedSpannableText != null) {
-        return preparedSpannableText;
-      }
-    }
-
-    preparedSpannableText =
-        createSpannableFromAttributedString(
-            context, attributedString, reactTextViewManagerCallback);
-
-    synchronized (sSpannableCacheLock) {
-      sSpannableCache.put(attributedString, preparedSpannableText);
-    }
-
-    return preparedSpannableText;
+    return createSpannableFromAttributedString(
+        context, attributedString, reactTextViewManagerCallback);
   }
 
   private static Spannable createSpannableFromAttributedString(

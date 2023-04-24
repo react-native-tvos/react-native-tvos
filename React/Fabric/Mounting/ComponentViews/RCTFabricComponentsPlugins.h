@@ -48,6 +48,7 @@ Class<RCTComponentViewProtocol> RCTInputAccessoryCls(void) __attribute__((used))
 #endif
 Class<RCTComponentViewProtocol> RCTViewCls(void) __attribute__((used));
 Class<RCTComponentViewProtocol> RCTImageCls(void) __attribute__((used));
+Class<RCTComponentViewProtocol> RCTModalHostViewCls(void) __attribute__((used));
 
 #ifdef __cplusplus
 }

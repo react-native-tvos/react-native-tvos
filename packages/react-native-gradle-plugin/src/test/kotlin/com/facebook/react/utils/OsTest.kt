@@ -10,21 +10,24 @@ package com.facebook.react.utils
 import com.facebook.react.tests.OS
 import com.facebook.react.tests.OsRule
 import com.facebook.react.tests.WithOs
+import com.facebook.react.utils.Os.cliPath
 import com.facebook.react.utils.Os.unixifyPath
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
 class OsTest {
 
   @get:Rule val osRule = OsRule()
+  @get:Rule val tempFolder = TemporaryFolder()
 
   @Test
-  @WithOs(OS.UNIX)
-  fun onUnix_checksOsCorrectly() {
+  @WithOs(OS.LINUX, "amd64")
+  fun onLinuxAmd64_checksOsCorrectly() {
     assertFalse(Os.isWindows())
     assertFalse(Os.isMac())
-    assertFalse(Os.isLinuxAmd64())
+    assertTrue(Os.isLinuxAmd64())
   }
 
   @Test
@@ -55,5 +58,29 @@ class OsTest {
     val aWindowsPath = "D:\\just\\a\\windows\\path\\"
 
     assertEquals("/D/just/a/windows/path/", aWindowsPath.unixifyPath())
+  }
+
+  @Test
+  @WithOs(OS.WIN)
+  fun cliPath_onWindows_returnsRelativePath() {
+    val tempFile = tempFolder.newFile("test.txt").apply { createNewFile() }
+
+    assertEquals(tempFile.relativeTo(tempFolder.root).path, tempFile.cliPath(tempFolder.root))
+  }
+
+  @Test
+  @WithOs(OS.LINUX)
+  fun cliPath_onLinux_returnsAbsolutePath() {
+    val tempFile = tempFolder.newFile("test.txt").apply { createNewFile() }
+
+    assertEquals(tempFile.absolutePath, tempFile.cliPath(tempFolder.root))
+  }
+
+  @Test
+  @WithOs(OS.MAC)
+  fun cliPath_onMac_returnsAbsolutePath() {
+    val tempFile = tempFolder.newFile("test.txt").apply { createNewFile() }
+
+    assertEquals(tempFile.absolutePath, tempFile.cliPath(tempFolder.root))
   }
 }

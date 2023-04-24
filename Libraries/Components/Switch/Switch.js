@@ -9,26 +9,25 @@
  * @generate-docs
  */
 
-import Platform from '../../Utilities/Platform';
-import * as React from 'react';
-import StyleSheet from '../../StyleSheet/StyleSheet';
-import useMergeRefs from '../../Utilities/useMergeRefs';
-import UnimplementedView from '../UnimplementedViews/UnimplementedView';
+import type {ColorValue} from '../../StyleSheet/StyleSheet';
+import type {SyntheticEvent} from '../../Types/CoreEventTypes';
+import type {ViewProps} from '../View/ViewPropTypes';
 
+import StyleSheet from '../../StyleSheet/StyleSheet';
+import Platform from '../../Utilities/Platform';
+import useMergeRefs from '../../Utilities/useMergeRefs';
 import AndroidSwitchNativeComponent, {
   Commands as AndroidSwitchCommands,
 } from './AndroidSwitchNativeComponent';
 import SwitchNativeComponent, {
   Commands as SwitchCommands,
 } from './SwitchNativeComponent';
-
-import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {SyntheticEvent} from '../../Types/CoreEventTypes';
-import type {ViewProps} from '../View/ViewPropTypes';
+import * as React from 'react';
 
 type SwitchChangeEvent = SyntheticEvent<
   $ReadOnly<{|
     value: boolean,
+    target: number,
   |}>,
 >;
 
@@ -184,12 +183,6 @@ const SwitchWithForwardedRef: React.AbstractComponent<
       }
     }
   }, [value, native]);
-
-  if (Platform.isTVOS) {
-    return (
-      <UnimplementedView />
-    );
-  }
 
   if (Platform.OS === 'android') {
     const {accessibilityState} = restProps;

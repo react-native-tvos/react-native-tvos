@@ -14,13 +14,14 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import androidx.annotation.Nullable;
+import com.facebook.common.logging.FLog;
 import com.facebook.hermes.reactexecutor.HermesExecutor;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.JSBundleLoader;
+import com.facebook.react.bridge.JSExceptionHandler;
 import com.facebook.react.bridge.JSIModulePackage;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
-import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 import com.facebook.react.bridge.NotThreadSafeBridgeIdleDebugListener;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.common.SurfaceDelegateFactory;
@@ -33,13 +34,14 @@ import com.facebook.react.jscexecutor.JSCExecutor;
 import com.facebook.react.jscexecutor.JSCExecutorFactory;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.packagerconnection.RequestHandler;
-import com.facebook.react.uimanager.UIImplementationProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /** Builder class for {@link ReactInstanceManager} */
 public class ReactInstanceManagerBuilder {
+
+  private static final String TAG = ReactInstanceManagerBuilder.class.getSimpleName();
 
   private final List<ReactPackage> mPackages = new ArrayList<>();
 
@@ -52,8 +54,7 @@ public class ReactInstanceManagerBuilder {
   private @Nullable DevSupportManagerFactory mDevSupportManagerFactory;
   private boolean mRequireActivity;
   private @Nullable LifecycleState mInitialLifecycleState;
-  private @Nullable UIImplementationProvider mUIImplementationProvider;
-  private @Nullable NativeModuleCallExceptionHandler mNativeModuleCallExceptionHandler;
+  private @Nullable JSExceptionHandler mJSExceptionHandler;
   private @Nullable Activity mCurrentActivity;
   private @Nullable DefaultHardwareBackBtnHandler mDefaultHardwareBackBtnHandler;
   private @Nullable RedBoxHandler mRedBoxHandler;
@@ -66,16 +67,9 @@ public class ReactInstanceManagerBuilder {
   private @Nullable Map<String, RequestHandler> mCustomPackagerCommandHandlers;
   private @Nullable ReactPackageTurboModuleManagerDelegate.Builder mTMMDelegateBuilder;
   private @Nullable SurfaceDelegateFactory mSurfaceDelegateFactory;
-  private JSInterpreter jsInterpreter = JSInterpreter.OLD_LOGIC;
+  private JSEngineResolutionAlgorithm jsEngineResolutionAlgorithm = null;
 
   /* package protected */ ReactInstanceManagerBuilder() {}
-
-  /** Sets a provider of {@link UIImplementation}. Uses default provider if null is passed. */
-  public ReactInstanceManagerBuilder setUIImplementationProvider(
-      @Nullable UIImplementationProvider uiImplementationProvider) {
-    mUIImplementationProvider = uiImplementationProvider;
-    return this;
-  }
 
   public ReactInstanceManagerBuilder setJSIModulesPackage(
       @Nullable JSIModulePackage jsiModulePackage) {
@@ -127,28 +121,12 @@ public class ReactInstanceManagerBuilder {
   }
 
   /**
-   * Sets the jsEngine as JSC or HERMES as per the setJsEngineAsHermes call Uses the enum {@link
-   * JSInterpreter}
-   *
-   * @param jsInterpreter
+   * Sets the JS Engine to load as either Hermes or JSC. If not set, the default is JSC with a
+   * Hermes fallback.
    */
-  private void setJSEngine(JSInterpreter jsInterpreter) {
-    this.jsInterpreter = jsInterpreter;
-  }
-
-  /**
-   * Utility setter to set the required JSEngine as HERMES or JSC Defaults to OLD_LOGIC if not
-   * called by the host app
-   *
-   * @param hermesEnabled hermesEnabled = true sets the JS Engine as HERMES and JSC otherwise
-   */
-  public ReactInstanceManagerBuilder setJsEngineAsHermes(boolean hermesEnabled) {
-    if (hermesEnabled) {
-      setJSEngine(JSInterpreter.HERMES);
-    } else {
-      setJSEngine(JSInterpreter.JSC);
-    }
-    return this;
+  private void setJSEngineResolutionAlgorithm(
+      @Nullable JSEngineResolutionAlgorithm jsEngineResolutionAlgorithm) {
+    this.jsEngineResolutionAlgorithm = jsEngineResolutionAlgorithm;
   }
 
   /**
@@ -253,9 +231,8 @@ public class ReactInstanceManagerBuilder {
    * DevSupportManager} will be used, which shows a redbox in dev mode and rethrows (crashes the
    * app) in prod mode.
    */
-  public ReactInstanceManagerBuilder setNativeModuleCallExceptionHandler(
-      NativeModuleCallExceptionHandler handler) {
-    mNativeModuleCallExceptionHandler = handler;
+  public ReactInstanceManagerBuilder setJSExceptionHandler(JSExceptionHandler handler) {
+    mJSExceptionHandler = handler;
     return this;
   }
 
@@ -326,11 +303,6 @@ public class ReactInstanceManagerBuilder {
         mJSMainModulePath != null || mJSBundleAssetUrl != null || mJSBundleLoader != null,
         "Either MainModulePath or JS Bundle File needs to be provided");
 
-    if (mUIImplementationProvider == null) {
-      // create default UIImplementationProvider if the provided one is null.
-      mUIImplementationProvider = new UIImplementationProvider();
-    }
-
     // We use the name of the device and the app for debugging & metrics
     //noinspection ConstantConditions
     String appName = mApplication.getPackageName();
@@ -356,8 +328,7 @@ public class ReactInstanceManagerBuilder {
         mRequireActivity,
         mBridgeIdleDebugListener,
         Assertions.assertNotNull(mInitialLifecycleState, "Initial lifecycle state was not set"),
-        mUIImplementationProvider,
-        mNativeModuleCallExceptionHandler,
+        mJSExceptionHandler,
         mRedBoxHandler,
         mLazyViewManagersEnabled,
         mDevBundleDownloadListener,
@@ -381,7 +352,11 @@ public class ReactInstanceManagerBuilder {
 
     // if nothing is specified, use old loading method
     // else load the required engine
-    if (jsInterpreter == JSInterpreter.OLD_LOGIC) {
+    if (jsEngineResolutionAlgorithm == null) {
+      FLog.w(
+          TAG,
+          "You're not setting the JS Engine Resolution Algorithm. "
+              + "We'll try to load JSC first, and if it fails we'll fallback to Hermes");
       try {
         // If JSC is included, use it as normal
         initializeSoLoaderIfNecessary(applicationContext);
@@ -394,7 +369,7 @@ public class ReactInstanceManagerBuilder {
         HermesExecutor.loadLibrary();
         return new HermesExecutorFactory();
       }
-    } else if (jsInterpreter == JSInterpreter.HERMES) {
+    } else if (jsEngineResolutionAlgorithm == JSEngineResolutionAlgorithm.HERMES) {
       HermesExecutor.loadLibrary();
       return new HermesExecutorFactory();
     } else {
