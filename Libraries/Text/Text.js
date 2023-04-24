@@ -20,7 +20,6 @@ import Platform from '../Utilities/Platform';
 import TextAncestor from './TextAncestor';
 import {NativeText, NativeVirtualText} from './TextNativeComponent';
 import {type TextProps} from './TextProps';
-import Platform from '../Utilities/Platform';
 import * as React from 'react';
 import {useContext, useMemo, useState} from 'react';
 

@@ -14,6 +14,7 @@ import type {PressEvent} from '../../Types/CoreEventTypes';
 
 import TouchableWithoutFeedback from '../../Components/Touchable/TouchableWithoutFeedback';
 import TouchableHighlight from '../../Components/Touchable/TouchableHighlight';
+import Platform from '../../Utilities/Platform';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import * as LogBoxStyle from './LogBoxStyle';

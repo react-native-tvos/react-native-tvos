@@ -373,7 +373,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
   // $FlowFixMe[incompatible-call]
   const eventHandlers = usePressability(config);
 
-  const pressableTVFocusEventHandler = useCallback(
+  const pressableTVFocusEventHandler = React.useCallback(
     (evt: FocusEvent) => {
       if (isTVSelectable !== false || focusable !== false) {
         // $FlowFixMe[prop-missing]
@@ -404,7 +404,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
     [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!tvFocusEventHandler) {
       return;
     }

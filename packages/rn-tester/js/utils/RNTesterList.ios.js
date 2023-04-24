@@ -14,6 +14,8 @@ import type {RNTesterModuleInfo} from '../types/RNTesterTypes';
 
 import ReactNativeFeatureFlags from 'react-native/Libraries/ReactNative/ReactNativeFeatureFlags';
 
+import { Platform } from 'react-native';
+
 const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'ActivityIndicatorExample',
@@ -344,11 +346,13 @@ const APIs: Array<RNTesterModuleInfo> = [
     key: 'TurboCxxModuleExample',
     module: require('../examples/TurboModule/TurboCxxModuleExample'),
   },
+/*
   {
     key: 'VibrationExample',
-    module: require('../examples/Vibration/VibrationExample'),
+    module: Platform.isTV ? null : require('../examples/Vibration/VibrationExample'),
     supportsTVOS: false,
   },
+ */
   {
     key: 'WebSocketExample',
     module: require('../examples/WebSocket/WebSocketExample'),
