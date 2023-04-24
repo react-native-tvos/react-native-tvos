@@ -54,8 +54,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   NSDictionary *initProps = [self prepareInitialProps];
   UIView *rootView = [self createRootViewWithBridge:self.bridge moduleName:self.moduleName initProps:initProps];
 
-  if (@available(iOS 13.0, *)) {
+  if (@available(iOS 13.0, tvOS 13.0, *)) {
+#if TARGET_OS_TV
+    rootView.backgroundColor = [UIColor whiteColor];
+#else
     rootView.backgroundColor = [UIColor systemBackgroundColor];
+#endif
   } else {
     rootView.backgroundColor = [UIColor whiteColor];
   }

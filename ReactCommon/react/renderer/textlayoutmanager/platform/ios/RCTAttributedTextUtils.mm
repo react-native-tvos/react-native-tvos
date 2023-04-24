@@ -79,7 +79,11 @@ inline static UIFontTextStyle RCTUIFontTextStyleForDynamicTypeRamp(const Dynamic
     case DynamicTypeRamp::Title1:
       return UIFontTextStyleTitle1;
     case DynamicTypeRamp::LargeTitle:
+#if TARGET_OS_TV
+      return UIFontTextStyleTitle1;
+#else
       return UIFontTextStyleLargeTitle;
+#endif
   }
 }
 

@@ -554,6 +554,7 @@ inline void fromRawValue(
   }
 
 }
+#endif
 
 static inline ViewEvents convertRawProp(
     const PropsParserContext &context,

@@ -171,6 +171,9 @@ static CGFloat RadsToDegrees(CGFloat rads)
 
 static int ButtonMaskToButtons(UIEventButtonMask buttonMask)
 {
+#if TARGET_OS_TV
+  return 0;
+#else
   int buttonsMaskResult = 0;
   if (@available(iOS 13.4, *)) {
     if ((buttonMask & UIEventButtonMaskPrimary) != 0) {
@@ -185,10 +188,14 @@ static int ButtonMaskToButtons(UIEventButtonMask buttonMask)
     }
   }
   return buttonsMaskResult;
+#endif
 }
 
 static int ButtonMaskDiffToButton(UIEventButtonMask prevButtonMask, UIEventButtonMask curButtonMask)
 {
+#if TARGET_OS_TV
+  return 0;
+#else
   if (@available(iOS 13.4, *)) {
     if ((prevButtonMask & UIEventButtonMaskPrimary) != (curButtonMask & UIEventButtonMaskPrimary)) {
       return 0;
@@ -201,6 +208,7 @@ static int ButtonMaskDiffToButton(UIEventButtonMask prevButtonMask, UIEventButto
     }
   }
   return -1;
+#endif
 }
 
 static void UpdateActiveTouchWithUITouch(
@@ -231,6 +239,7 @@ static void UpdateActiveTouchWithUITouch(
   activeTouch.majorRadius = uiTouch.majorRadius;
   activeTouch.altitudeAngle = uiTouch.altitudeAngle;
   activeTouch.azimuthAngle = [uiTouch azimuthAngleInView:nil];
+#if !TARGET_OS_TV
   if (@available(iOS 13.4, *)) {
     UIEventButtonMask nextButtonMask = 0;
     if (uiTouch.phase != UITouchPhaseEnded) {
@@ -239,7 +248,9 @@ static void UpdateActiveTouchWithUITouch(
     activeTouch.button = ButtonMaskDiffToButton(activeTouch.buttonMask, nextButtonMask);
     activeTouch.buttonMask = nextButtonMask;
     activeTouch.modifierFlags = uiEvent.modifierFlags;
-  } else {
+  } else
+#endif
+  {
     activeTouch.button = 0;
     activeTouch.buttonMask = 0;
     activeTouch.modifierFlags = 0;
@@ -663,18 +674,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
     // emit w3c pointer events
     if (RCTGetDispatchW3CPointerEvents()) {
       PointerEvent pointerEvent = CreatePointerEventFromActiveTouch(activeTouch, eventType);
-
       if ((eventType == RCTTouchEventTypeTouchEnd && activeTouch.shouldLeaveWhenReleased)) {
         activeTouch.eventEmitter->onPointerUp(pointerEvent);
+#if !TARGET_OS_TV
         [self handleIncomingPointerEvent:pointerEvent onView:nil];
+#endif
       } else {
         CGPoint clientLocation = CGPointMake(pointerEvent.clientPoint.x, pointerEvent.clientPoint.y);
         UIView *targetView = FindClosestFabricManagedTouchableView([_rootComponentView hitTest:clientLocation
                                                                                      withEvent:nil]);
 
+#if TARGET_OS_TV
+        NSOrderedSet<RCTReactTaggedView *> *eventPathViews = [[NSOrderedSet alloc] init];
+#else
         NSOrderedSet<RCTReactTaggedView *> *eventPathViews = [self handleIncomingPointerEvent:pointerEvent
                                                                                        onView:targetView];
-
+#endif
         switch (eventType) {
           case RCTTouchEventTypeTouchStart:
             activeTouch.eventEmitter->onPointerDown(pointerEvent);
