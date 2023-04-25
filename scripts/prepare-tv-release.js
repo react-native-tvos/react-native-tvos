@@ -95,6 +95,12 @@ if (exec('./gradlew :ReactAndroid:hermes-engine:installArchives').code) {
   exit(1);
 }
 
+// -------- For now, publish Maven artifacts inside android directory
+if (exec('./gradlew publishAllInsideNpmPackage').code) {
+  echo('Could not generate artifacts');
+  exit(1);
+}
+
 // undo uncommenting javadoc setting
 exec('git checkout ReactAndroid/gradle.properties');
 
