@@ -276,36 +276,6 @@ ViewProps::ViewProps(
                     false))
 #ifdef ANDROID
       ,
-      autoFocus(convertRawProp(
-          context,
-          rawProps,
-          "autoFocus",
-          sourceProps.autoFocus,
-          false)),
-      trapFocusUp(convertRawProp(
-          context,
-          rawProps,
-          "trapFocusUp",
-          sourceProps.trapFocusUp,
-          false)),
-      trapFocusDown(convertRawProp(
-          context,
-          rawProps,
-          "trapFocusDown",
-          sourceProps.trapFocusDown,
-          false)),
-      trapFocusLeft(convertRawProp(
-          context,
-          rawProps,
-          "trapFocusLeft",
-          sourceProps.trapFocusLeft,
-          false)),
-      trapFocusRight(convertRawProp(
-          context,
-          rawProps,
-          "trapFocusRight",
-          sourceProps.trapFocusRight,
-          false))
       elevation(
           CoreFeatures::enablePropIteratorSetter ? sourceProps.elevation
                                                  : convertRawProp(
@@ -366,8 +336,38 @@ ViewProps::ViewProps(
                     rawProps,
                     "renderToHardwareTextureAndroid",
                     sourceProps.renderToHardwareTextureAndroid,
-                    {}))
+                    {})),
 
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          false)),
+      trapFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusUp",
+          sourceProps.trapFocusUp,
+          false)),
+      trapFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusDown",
+          sourceProps.trapFocusDown,
+          false)),
+      trapFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusLeft",
+          sourceProps.trapFocusLeft,
+          false)),
+      trapFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusRight",
+          sourceProps.trapFocusRight,
+          false))
 #endif
           {};
 

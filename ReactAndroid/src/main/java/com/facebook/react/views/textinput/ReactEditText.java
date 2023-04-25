@@ -644,19 +644,9 @@ public class ReactEditText extends AppCompatEditText
     SpannableStringBuilder spannableStringBuilder =
         new SpannableStringBuilder(reactTextUpdate.getText());
 
-<<<<<<< HEAD
-    manageSpans(spannableStringBuilder, reactTextUpdate.mContainsMultipleFragments);
-
-    // Mitigation for https://github.com/facebook/react-native/issues/35936 (S318090)
-    stripAbsoluteSizeSpans(spannableStringBuilder);
-
-||||||| 208422fe8e5
-    manageSpans(spannableStringBuilder, reactTextUpdate.mContainsMultipleFragments);
-=======
     manageSpans(spannableStringBuilder);
     stripStyleEquivalentSpans(spannableStringBuilder);
 
->>>>>>> upstream/0.71-stable
     mContainsImages = reactTextUpdate.containsImages();
 
     // When we update text, we trigger onChangeText code that will

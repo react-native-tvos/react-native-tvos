@@ -132,40 +132,9 @@ public class ReactViewGroup extends ViewGroup
   // whenever the option is set. We also override {@link ViewGroup#getChildAt} and
   // {@link ViewGroup#getChildCount} so those methods may return views that are not attached.
   // This is risky but allows us to perform a correct cleanup in {@link NativeViewHierarchyManager}.
-  private boolean mRemoveClippedSubviews = false;
-  private @Nullable
-  View[] mAllChildren = null;
+  private boolean mRemoveClippedSubviews;
+  private @Nullable View[] mAllChildren;
   private int mAllChildrenCount;
-  private @Nullable
-  Rect mClippingRect;
-  private @Nullable
-  Rect mHitSlopRect;
-  private @Nullable
-  String mOverflow;
-  private PointerEvents mPointerEvents = PointerEvents.AUTO;
-  private @Nullable
-  ChildrenLayoutChangeListener mChildrenLayoutChangeListener;
-  private @Nullable
-  ReactViewBackgroundDrawable mReactBackgroundDrawable;
-  private @Nullable
-  OnInterceptTouchEventListener mOnInterceptTouchEventListener;
-  private boolean mNeedsOffscreenAlphaCompositing = false;
-  private @Nullable
-  ViewGroupDrawingOrderHelper mDrawingOrderHelper = null;
-  private @Nullable
-  Path mPath;
-||||||| 208422fe8e5
-  private @Nullable Rect mClippingRect;
-  private @Nullable Rect mHitSlopRect;
-  private @Nullable String mOverflow;
-  private PointerEvents mPointerEvents = PointerEvents.AUTO;
-  private @Nullable ChildrenLayoutChangeListener mChildrenLayoutChangeListener;
-  private @Nullable ReactViewBackgroundDrawable mReactBackgroundDrawable;
-  private @Nullable OnInterceptTouchEventListener mOnInterceptTouchEventListener;
-  private boolean mNeedsOffscreenAlphaCompositing = false;
-  private @Nullable ViewGroupDrawingOrderHelper mDrawingOrderHelper = null;
-  private @Nullable Path mPath;
-=======
   private @Nullable Rect mClippingRect;
   private @Nullable Rect mHitSlopRect;
   private @Nullable String mOverflow;
@@ -176,7 +145,6 @@ public class ReactViewGroup extends ViewGroup
   private boolean mNeedsOffscreenAlphaCompositing;
   private @Nullable ViewGroupDrawingOrderHelper mDrawingOrderHelper;
   private @Nullable Path mPath;
->>>>>>> upstream/0.71-stable
   private int mLayoutDirection;
   private float mBackfaceOpacity;
   private String mBackfaceVisibility;
