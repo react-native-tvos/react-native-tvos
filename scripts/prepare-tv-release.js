@@ -113,8 +113,6 @@ let artifacts = [
   '-release.aar',
   '-debug-sources.jar',
   '-release-sources.jar',
-  '-debug-javadoc.jar',
-  '-release-javadoc.jar',
 ].map(suffix => {
   return `react-android-${releaseVersion}${suffix}`;
 });
