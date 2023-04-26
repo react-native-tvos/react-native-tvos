@@ -116,14 +116,14 @@ let artifacts = [
   '-debug-javadoc.jar',
   '-release-javadoc.jar',
 ].map(suffix => {
-  return `react-native-${releaseVersion}${suffix}`;
+  return `react-android-${releaseVersion}${suffix}`;
 });
 
 artifacts.forEach(name => {
   if (
     !test(
       '-e',
-      `./android/com/facebook/react/react-native/${releaseVersion}/${name}`,
+      `./android/com/facebook/react/react-android/${releaseVersion}/${name}`,
     )
   ) {
     echo(`Failing as expected file: ${name} was not correctly generated.`);
