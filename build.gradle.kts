@@ -21,7 +21,9 @@ version =
       reactAndroidProperties.getProperty("VERSION_NAME")
     }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 val ndkPath by extra(System.getenv("ANDROID_NDK"))
 val ndkVersion by extra(System.getenv("ANDROID_NDK_VERSION"))
