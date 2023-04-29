@@ -25,6 +25,8 @@ const fs_extra = require('fs-extra');
 const os = require('os');
 const path = require('path');
 
+const {generateAndroidArtifacts} = require('./release-utils');
+
 let extraHermesDirectoryPath;
 
 {
@@ -95,43 +97,16 @@ if (exec('./gradlew :ReactAndroid:hermes-engine:installArchives').code) {
   exit(1);
 }
 
-// -------- For now, publish Maven artifacts inside android directory
-if (exec('./gradlew publishAllInsideNpmPackage').code) {
-  echo('Could not generate artifacts');
-  exit(1);
-}
-
 // undo uncommenting javadoc setting
 exec('git checkout ReactAndroid/gradle.properties');
 
-echo('Generated artifacts for Maven');
+// generate Maven artifacts in /tmp/maven-local
 
-let artifacts = [
-  '.module',
-  '.pom',
-  '-debug.aar',
-  '-release.aar',
-  '-debug-sources.jar',
-  '-release-sources.jar',
-].map(suffix => {
-  return `react-android-${releaseVersion}${suffix}`;
-});
-
-artifacts.forEach(name => {
-  if (
-    !test(
-      '-e',
-      `./android/com/facebook/react/react-android/${releaseVersion}/${name}`,
-    )
-  ) {
-    echo(`Failing as expected file: ${name} was not correctly generated.`);
-    exit(1);
-  }
-});
+generateAndroidArtifacts(releaseVersion);
 
 if (extraHermesDirectoryPath) {
   echo('Cleanup extra hermes directory...');
-  fs.rmSync(extraHermesDirectoryPath, { recursive: true, force: true });
+  fs.rmSync(extraHermesDirectoryPath, {recursive: true, force: true});
   echo(`Removed ${extraHermesDirectoryPath}.`);
 }
 
