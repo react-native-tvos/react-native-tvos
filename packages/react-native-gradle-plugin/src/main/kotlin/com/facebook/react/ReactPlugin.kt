@@ -19,6 +19,7 @@ import com.facebook.react.utils.AgpConfiguratorUtils.configureDevPorts
 import com.facebook.react.utils.BackwardCompatUtils.configureBackwardCompatibilityReactMap
 import com.facebook.react.utils.DependencyUtils.configureDependencies
 import com.facebook.react.utils.DependencyUtils.configureRepositories
+import com.facebook.react.utils.DependencyUtils.readGroupString
 import com.facebook.react.utils.DependencyUtils.readVersionString
 import com.facebook.react.utils.JsonUtils
 import com.facebook.react.utils.NdkConfiguratorUtils.configureReactNativeNdk
@@ -56,7 +57,8 @@ class ReactPlugin : Plugin<Project> {
         val reactNativeDir = extension.reactNativeDir.get().asFile
         val propertiesFile = File(reactNativeDir, "ReactAndroid/gradle.properties")
         val versionString = readVersionString(propertiesFile)
-        configureDependencies(project, versionString)
+        val groupString = readGroupString(propertiesFile)
+        configureDependencies(project, versionString, groupString)
         configureRepositories(project, reactNativeDir)
       }
 
