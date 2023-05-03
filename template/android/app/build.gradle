@@ -156,7 +156,7 @@ dependencies {
     // in gradle.properties for now
     // We also use the io.github.react-native-tvos group for the react-android and hermes-android dependencies
 
-    implementation("io.github.react-native-tvos:react-android:${REACT_NATIVE_TV_VERSION_STRING}")
+    implementation("io.github.react-native-tvos:react-android")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 
@@ -167,7 +167,7 @@ dependencies {
 
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
     if (hermesEnabled.toBoolean()) {
-        implementation("io.github.react-native-tvos:hermes-android:${REACT_NATIVE_TV_VERSION_STRING}")
+        implementation("io.github.react-native-tvos:hermes-android")
     } else {
         implementation jscFlavor
     }

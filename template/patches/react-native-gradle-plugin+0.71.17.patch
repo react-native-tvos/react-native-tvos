@@ -1,0 +1,76 @@
+diff --git a/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/ReactPlugin.kt b/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/ReactPlugin.kt
+index 10f4b74..ab8bdc1 100644
+--- a/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/ReactPlugin.kt
++++ b/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/ReactPlugin.kt
+@@ -19,6 +19,7 @@ import com.facebook.react.utils.AgpConfiguratorUtils.configureDevPorts
+ import com.facebook.react.utils.BackwardCompatUtils.configureBackwardCompatibilityReactMap
+ import com.facebook.react.utils.DependencyUtils.configureDependencies
+ import com.facebook.react.utils.DependencyUtils.configureRepositories
++import com.facebook.react.utils.DependencyUtils.readGroupString
+ import com.facebook.react.utils.DependencyUtils.readVersionString
+ import com.facebook.react.utils.JsonUtils
+ import com.facebook.react.utils.NdkConfiguratorUtils.configureReactNativeNdk
+@@ -56,7 +57,8 @@ class ReactPlugin : Plugin<Project> {
+         val reactNativeDir = extension.reactNativeDir.get().asFile
+         val propertiesFile = File(reactNativeDir, "ReactAndroid/gradle.properties")
+         val versionString = readVersionString(propertiesFile)
+-        configureDependencies(project, versionString)
++        val groupString = readGroupString(propertiesFile)
++        configureDependencies(project, versionString, groupString)
+         configureRepositories(project, reactNativeDir)
+       }
+ 
+diff --git a/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/DependencyUtils.kt b/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/DependencyUtils.kt
+index c8760f6..c28cd2c 100644
+--- a/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/DependencyUtils.kt
++++ b/node_modules/react-native-gradle-plugin/src/main/kotlin/com/facebook/react/utils/DependencyUtils.kt
+@@ -43,7 +43,7 @@ internal object DependencyUtils {
+    * - Forcing the react-android/hermes-android version to the one specified in the package.json
+    * - Substituting `react-native` with `react-android` and `hermes-engine` with `hermes-android`.
+    */
+-  fun configureDependencies(project: Project, versionString: String) {
++  fun configureDependencies(project: Project, versionString: String, groupString: String = defaultGroupString) {
+     if (versionString.isBlank()) return
+     project.rootProject.allprojects { eachProject ->
+       eachProject.configurations.all { configuration ->
+@@ -53,17 +53,17 @@ internal object DependencyUtils {
+         // implementation("com.facebook.react:react-native:+") and resolve the right dependency.
+         configuration.resolutionStrategy.dependencySubstitution {
+           it.substitute(it.module("com.facebook.react:react-native"))
+-              .using(it.module("com.facebook.react:react-android:${versionString}"))
++              .using(it.module("${groupString}:react-android:${versionString}"))
+               .because(
+                   "The react-native artifact was deprecated in favor of react-android due to https://github.com/facebook/react-native/issues/35210.")
+           it.substitute(it.module("com.facebook.react:hermes-engine"))
+-              .using(it.module("com.facebook.react:hermes-android:${versionString}"))
++              .using(it.module("${groupString}:hermes-android:${versionString}"))
+               .because(
+                   "The hermes-engine artifact was deprecated in favor of hermes-android due to https://github.com/facebook/react-native/issues/35210.")
+         }
+         configuration.resolutionStrategy.force(
+-            "com.facebook.react:react-android:${versionString}",
+-            "com.facebook.react:hermes-android:${versionString}",
++            "${groupString}:react-android:${versionString}",
++            "${groupString}:hermes-android:${versionString}",
+         )
+       }
+     }
+@@ -81,9 +81,18 @@ internal object DependencyUtils {
+     }
+   }
+ 
++  // Allows react-native-tvos to get its dependencies correctly with its custom Maven group name
++  fun readGroupString(propertiesFile: File): String {
++    val reactAndroidProperties = Properties()
++    propertiesFile.inputStream().use { reactAndroidProperties.load(it) }
++    return reactAndroidProperties["GROUP"] as? String ?: defaultGroupString
++  }
++
+   fun Project.mavenRepoFromUrl(url: String): MavenArtifactRepository =
+       project.repositories.maven { it.url = URI.create(url) }
+ 
+   fun Project.mavenRepoFromURI(uri: URI): MavenArtifactRepository =
+       project.repositories.maven { it.url = uri }
++
++  val defaultGroupString = "com.facebook.react"
+ }
