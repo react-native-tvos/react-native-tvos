@@ -73,6 +73,7 @@
     "!template/package-lock.json",
     "!template/yarn.lock",
     "third-party-podspecs",
+    "tvos-types.d.ts",
     "types"
   ],
   "scripts": {
