@@ -13,6 +13,7 @@ import type {ColorValue} from '../../StyleSheet/StyleSheet';
 import type {PressEvent} from '../../Types/CoreEventTypes';
 import type {TouchableType} from './Touchable.flow';
 
+import ReactNative from '../../Renderer/shims/ReactNative';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import UIManager from '../../ReactNative/UIManager';
 import Platform from '../../Utilities/Platform';
