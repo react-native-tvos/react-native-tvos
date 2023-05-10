@@ -43,11 +43,17 @@ export default class TVTouchable {
           config.onBlur(tvData);
         } else if (tvData.eventType === 'select') {
           if (!config.getDisabled()) {
-            config.onPress(tvData);
+            // The timeout is needed to ensure that destructor is called in the correct order
+            // if the onPress results in an unrender of this component
+            // See https://github.com/react-native-tvos/react-native-tvos/issues/500
+            setTimeout(() => config.onPress(tvData), 0);
           }
         } else if (tvData.eventType === 'longSelect') {
           if (Platform.OS !== 'android' && !config.getDisabled()) {
-            config.onLongPress(tvData);
+            // The timeout is needed to ensure that destructor is called in the correct order
+            // if the onLongPress results in an unrender of this component
+            // See https://github.com/react-native-tvos/react-native-tvos/issues/500
+            setTimeout(() => config.onLongPress(tvData), 0);
           }
         }
       }
