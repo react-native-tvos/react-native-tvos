@@ -29,13 +29,18 @@ type TVTouchableConfig = $ReadOnly<{|
 |}>;
 
 export default class TVTouchable {
-  _tvEventHandler: TVEventHandler;
+  _tvEventHandler: TVEventHandler = null;
+  _enabled: boolean = false;
 
   constructor(component: any, config: TVTouchableConfig) {
     invariant(Platform.isTV, 'TVTouchable: Requires `Platform.isTV`.');
     this._tvEventHandler = new TVEventHandler();
+    const _tvtouchable = this;
     this._tvEventHandler.enable(component, (_, tvData) => {
       tvData.dispatchConfig = {};
+      if (!_tvtouchable._enabled) {
+        return;
+      }
       if (ReactNative.findNodeHandle(component) === tvData.tag) {
         if (tvData.eventType === 'focus') {
           config.onFocus(tvData);
@@ -52,9 +57,12 @@ export default class TVTouchable {
         }
       }
     });
+    this._enabled = true;
   }
 
   destroy(): void {
+    this._enabled = false;
     this._tvEventHandler.disable();
+    this._tvEventHandler = null;
   }
 }
