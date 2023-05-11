@@ -29,13 +29,18 @@ type TVTouchableConfig = $ReadOnly<{|
 |}>;
 
 export default class TVTouchable {
-  _tvEventHandler: TVEventHandler;
+  _tvEventHandler: TVEventHandler = null;
+  _enabled: boolean = false;
 
   constructor(component: any, config: TVTouchableConfig) {
     invariant(Platform.isTV, 'TVTouchable: Requires `Platform.isTV`.');
     this._tvEventHandler = new TVEventHandler();
+    const _tvtouchable = this;
     this._tvEventHandler.enable(component, (_, tvData) => {
       tvData.dispatchConfig = {};
+      if (!_tvtouchable._enabled) {
+        return;
+      }
       if (ReactNative.findNodeHandle(component) === tvData.tag) {
         if (tvData.eventType === 'focus') {
           config.onFocus(tvData);
@@ -43,24 +48,21 @@ export default class TVTouchable {
           config.onBlur(tvData);
         } else if (tvData.eventType === 'select') {
           if (!config.getDisabled()) {
-            // The timeout is needed to ensure that destructor is called in the correct order
-            // if the onPress results in an unrender of this component
-            // See https://github.com/react-native-tvos/react-native-tvos/issues/500
-            setTimeout(() => config.onPress(tvData), 0);
+            config.onPress(tvData);
           }
         } else if (tvData.eventType === 'longSelect') {
           if (Platform.OS !== 'android' && !config.getDisabled()) {
-            // The timeout is needed to ensure that destructor is called in the correct order
-            // if the onLongPress results in an unrender of this component
-            // See https://github.com/react-native-tvos/react-native-tvos/issues/500
-            setTimeout(() => config.onLongPress(tvData), 0);
+            config.onLongPress(tvData);
           }
         }
       }
     });
+    this._enabled = true;
   }
 
   destroy(): void {
+    this._enabled = false;
     this._tvEventHandler.disable();
+    this._tvEventHandler = null;
   }
 }
