@@ -193,6 +193,21 @@ if (+numberOfChangedLinesWithNewVersion !== filesToValidate.length) {
   echo(`These files already had version ${version} set.`);
 }
 
+if (buildType === 'release') {
+  echo('Updating RNTester Podfile.lock...');
+  if (exec('source scripts/update_podfile_lock.sh && update_pods').code) {
+    echo('Failed to update RNTester Podfile.lock.');
+    echo('Fix the issue, revert and try again.');
+    exit(1);
+  }
+  echo('Executing yarn to update yarn.lock...');
+  if (exec('yarn').code) {
+    echo('Failed to update yarn.lock.');
+    echo('Fix the issue, revert and try again.');
+    exit(1);
+  }
+}
+
 if (commit) {
   const filesToCommit = [
     'Libraries/Core/ReactNativeVersion.js',
@@ -203,6 +218,7 @@ if (commit) {
     'package.json',
     'yarn.lock',
     'template/package.json',
+    'packages/rn-tester/Podfile.lock'
   ];
   exec('yarn');
   exec(`git add ${filesToCommit.join(' ')}`);
