@@ -44,6 +44,24 @@ waitForPackager() {
   echo "Packager is ready!"
 }
 
+waitForWebSocketServer() {
+  local -i max_attempts=60
+  local -i attempt_num=1
+
+  until curl -s http://localhost:5555 | grep "Upgrade Required" -q; do
+    if (( attempt_num == max_attempts )); then
+      echo "WebSocket Server did not respond in time. No more attempts left."
+      exit 1
+    else
+      (( attempt_num++ ))
+      echo "WebSocket Server did not respond. Retrying for attempt number $attempt_num..."
+      sleep 1
+    fi
+  done
+
+  echo "WebSocket Server is ready!"
+}
+
 runTests() {
   # shellcheck disable=SC1091
   source "./scripts/.tests.tvos.env"
@@ -98,7 +116,9 @@ main() {
   # Start the packager
   # yarn start --max-workers=1 || echo "Can't start packager automatically" &
   # Start the WebSocket test server
-  open "./IntegrationTests/launchWebSocketServer.command" || echo "Can't start web socket server automatically"
+  echo "Launch WebSocket Server"
+  sh "./IntegrationTests/launchWebSocketServer.sh" &
+  waitForWebSocketServer
 
   # waitForPackager
   # preloadBundles

@@ -18,6 +18,7 @@ import type {ViewProps} from '../View/ViewPropTypes';
 import type {TextInputType} from './TextInput.flow';
 
 import usePressability from '../../Pressability/usePressability';
+import warnOnce from '../../Utilities/warnOnce';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import StyleSheet, {
   type ColorValue,
