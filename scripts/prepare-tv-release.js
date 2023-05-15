@@ -84,22 +84,6 @@ let extraHermesDirectoryPath;
 
 const releaseVersion = require('../package.json').version;
 
-// -------- Generating Android Artifacts with JavaDoc
-if (exec('./gradlew :ReactAndroid:installArchives').code) {
-  echo('Could not generate artifacts');
-  exit(1);
-}
-
-// -------- Generating the Hermes Engine Artifacts
-env.REACT_NATIVE_HERMES_SKIP_PREFAB = true;
-if (exec('./gradlew :ReactAndroid:hermes-engine:installArchives').code) {
-  echo('Could not generate artifacts');
-  exit(1);
-}
-
-// undo uncommenting javadoc setting
-exec('git checkout ReactAndroid/gradle.properties');
-
 // generate Maven artifacts in /tmp/maven-local
 
 generateAndroidArtifacts(releaseVersion);
