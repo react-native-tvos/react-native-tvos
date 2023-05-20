@@ -19,7 +19,6 @@ end
 folly_compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32'
 folly_version = '2021.07.22.00'
 boost_compiler_flags = '-Wno-documentation'
-tvos_no_hermes_flags = '-DRCT_USE_HERMES=0'
 
 use_hermes = ENV['USE_HERMES'] == '1'
 
@@ -61,7 +60,7 @@ Pod::Spec.new do |s|
   s.source                 = source
   s.resource_bundle        = { "AccessibilityResources" => ["React/AccessibilityResources/*.lproj"]}
   s.ios.compiler_flags     = folly_compiler_flags + ' ' + boost_compiler_flags
-  s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags + ' ' + tvos_no_hermes_flags
+  s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
   s.pod_target_xcconfig    = {

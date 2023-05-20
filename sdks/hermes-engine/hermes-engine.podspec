@@ -20,7 +20,7 @@ hermestag_file = File.join(react_native_path, "sdks", ".hermesversion")
 isInCI = ENV['REACT_NATIVE_CI'] === 'true'
 
 source = {}
-git = "https://github.com/facebook/hermes.git"
+git = "https://github.com/react-native-tvos/hermes.git"
 
 isInMain = version.include?('1000.0.0')
 isNightly = version.start_with?('0.0.0-')
@@ -51,7 +51,7 @@ elsif File.exist?(hermestag_file) && isInCI
 else
   # Sample url from Maven:
   # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.71.0/react-native-artifacts-0.71.0-hermes-ios-debug.tar.gz
-  source[:http] = "https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+  source[:http] = "https://s01.oss.sonatype.org/content/groups/public/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
 end
 
 Pod::Spec.new do |spec|
@@ -63,7 +63,7 @@ Pod::Spec.new do |spec|
   spec.license     = package['license']
   spec.author      = "Facebook"
   spec.source      = source
-  spec.platforms   = { :osx => "10.13", :ios => "12.4" }
+  spec.platforms   = { :osx => "10.13", :ios => "12.4", :tvos => "12.4" }
 
   spec.preserve_paths      = '**/*.*'
   spec.source_files        = ''
@@ -81,6 +81,7 @@ Pod::Spec.new do |spec|
       ss.exclude_files = ["destroot/include/jsi/jsi/JSIDynamic.{h,cpp}", "destroot/include/jsi/jsi/jsilib-*.{h,cpp}"]
       ss.header_mappings_dir = "destroot/include"
       ss.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
+      ss.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
       ss.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
     end
 
@@ -119,6 +120,8 @@ Pod::Spec.new do |spec|
     spec.user_target_xcconfig = {
       'FRAMEWORK_SEARCH_PATHS' => '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/iphoneos" ' +
                                   '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/iphonesimulator" ' +
+                                  '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/appletvos" ' +
+                                  '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/appletvsimulator" ' +
                                   '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/macosx" ' +
                                   '"$(PODS_ROOT)/hermes-engine/destroot/Library/Frameworks/catalyst"',
       'OTHER_LDFLAGS' => '-framework "hermes"',

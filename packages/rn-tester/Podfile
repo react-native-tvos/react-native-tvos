@@ -34,9 +34,7 @@ def pods(target_name, options = {}, use_flipper: false)
   use_react_native!(
     path: @prefix_path,
     fabric_enabled: fabric_enabled,
-    # No Hermes on tvOS
-    # hermes_enabled: ENV['USE_HERMES'] == '1',
-    hermes_enabled: false,
+    hermes_enabled: ENV['USE_HERMES'] == '1',
     flipper_configuration: FlipperConfiguration.disabled,
     app_path: "#{Dir.pwd}",
     config_file_dir: "#{Dir.pwd}/node_modules",
