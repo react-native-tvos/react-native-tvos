@@ -52,6 +52,8 @@ else
   # Sample url from Maven:
   # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.71.0/react-native-artifacts-0.71.0-hermes-ios-debug.tar.gz
   source[:http] = "https://s01.oss.sonatype.org/content/groups/public/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+  # Use the URL below when testing artifacts published to local temp Maven
+  # source[:http] = "file:///tmp/maven-local/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
 end
 
 Pod::Spec.new do |spec|

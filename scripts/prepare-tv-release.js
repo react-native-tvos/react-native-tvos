@@ -37,7 +37,7 @@ let extraHermesDirectoryPath;
   let hermesReleaseURI;
   try {
     hermesReleaseTag = fs
-      .readFileSync(`${HERMES_INSTALL_LOCATION}/.hermesversion`, {
+      .readFileSync('node_modules/react-native-core/sdks/.hermesversion', {
         encoding: 'utf8',
         flag: 'r',
       })
