@@ -1029,8 +1029,10 @@ using namespace facebook::react;
   if ([_propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN containsObject:@"opacity"]) {
     self.layer.opacity = (float)props.opacity;
   }
-  
+
+#if TARGET_OS_TV
   [self removeFocusGuide];
+#endif
 
   _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN = nil;
   _eventEmitter.reset();

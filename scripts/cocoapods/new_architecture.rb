@@ -16,7 +16,7 @@ class NewArchitectureHelper
         language_standard = nil
 
         installer.pods_project.targets.each do |target|
-            if target.name == 'React-Core'
+            if target.name.include? 'React-Core'
                 language_standard = target.resolved_build_setting("CLANG_CXX_LANGUAGE_STANDARD", resolve_against_xcconfig: true).values[0]
             end
         end
@@ -54,7 +54,7 @@ class NewArchitectureHelper
 
         # Add RCT_NEW_ARCH_ENABLED to generated pod target projects
         installer.target_installation_results.pod_target_installation_results.each do |pod_name, target_installation_result|
-            if pod_name == 'React-Core'
+            if pod_name.include? 'React-Core'
                 target_installation_result.native_target.build_configurations.each do |config|
                     config.build_settings['OTHER_CPLUSPLUSFLAGS'] = @@new_arch_cpp_flags
                 end
