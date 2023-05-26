@@ -58,11 +58,14 @@ function build_host_hermesc {
 function configure_apple_framework {
   local build_cli_tools enable_bitcode enable_debugger cmake_build_type
 
-  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
-    enable_bitcode="true"
-  else
-    enable_bitcode="false"
-  fi
+#  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
+#    enable_bitcode="true"
+#  else
+#    enable_bitcode="false"
+#  fi
+#
+# Xcode 14 deprecates bitcode, so we turn this off
+  enable_bitcode="false"
   if [[ $1 == macosx ]]; then
     build_cli_tools="true"
   else
@@ -74,9 +77,7 @@ function configure_apple_framework {
     enable_debugger="false"
   fi
   if [[ $BUILD_TYPE == "Debug" ]]; then
-    # JS developers aren't VM developers.
-    # Therefore we're passing as build type Release, to provide a faster build.
-    cmake_build_type="Release"
+    cmake_build_type="Debug"
   else
     cmake_build_type="MinSizeRel"
   fi
