@@ -66,6 +66,7 @@ class ReactNativePodsUtils
         projects.each do |project|
             project.build_configurations.each do |config|
                 config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = excluded_archs_default
+                config.build_settings["EXCLUDED_ARCHS[sdk=appletvsimulator*]"] = excluded_archs_default
             end
 
             project.save()
