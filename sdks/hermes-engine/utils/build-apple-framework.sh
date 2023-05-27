@@ -77,7 +77,9 @@ function configure_apple_framework {
     enable_debugger="false"
   fi
   if [[ $BUILD_TYPE == "Debug" ]]; then
-    cmake_build_type="Debug"
+    # JS developers aren't VM developers.
+    # Therefore we're passing as build type Release, to provide a faster build.
+    cmake_build_type="Release"
   else
     cmake_build_type="MinSizeRel"
   fi
