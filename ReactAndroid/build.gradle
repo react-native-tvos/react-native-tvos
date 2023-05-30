@@ -539,6 +539,8 @@ android {
         // that will include the necessary .so files to load.
         exclude("**/libhermes.so")
         exclude("**/libjsc.so")
+        exclude "**/libc++_shared.so"
+        exclude "**/libfbjni.so"
     }
 
     buildFeatures {
@@ -665,6 +667,8 @@ dependencies {
     // It's up to the consumer to decide if hermes should be included or not.
     // Therefore hermes-engine is a compileOnly dependency.
     compileOnly(project(":ReactAndroid:hermes-engine"))
+
+    implementation("com.facebook.fbjni:fbjni:0.3.0")
 
     testImplementation("junit:junit:${JUNIT_VERSION}")
     testImplementation("org.assertj:assertj-core:${ASSERTJ_VERSION}")
