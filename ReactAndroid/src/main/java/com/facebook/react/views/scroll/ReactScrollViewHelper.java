@@ -64,7 +64,7 @@ public class ReactScrollViewHelper {
   // If all else fails, this is the hardcoded value in OverScroller.java, in AOSP.
   // The default is defined here (as of this diff):
   // https://android.googlesource.com/platform/frameworks/base/+/ae5bcf23b5f0875e455790d6af387184dbd009c1/core/java/android/widget/OverScroller.java#44
-  private static int SMOOTH_SCROLL_DURATION = 250;
+  private static int SMOOTH_SCROLL_DURATION = 500;
   private static boolean mSmoothScrollDurationInitialized = false;
 
   /** Shared by {@link ReactScrollView} and {@link ReactHorizontalScrollView}. */
@@ -182,7 +182,7 @@ public class ReactScrollViewHelper {
 
   private static class OverScrollerDurationGetter extends OverScroller {
     // This is the default in AOSP, hardcoded in OverScroller.java.
-    private int mScrollAnimationDuration = 250;
+    private int mScrollAnimationDuration = 500;
 
     OverScrollerDurationGetter(Context context) {
       // We call with a null context because OverScroller does not use the context
