@@ -1,6 +1,6 @@
 {
   "name": "react-native-tvos",
-  "version": "0.71.8-0rc4",
+  "version": "0.71.10-0rc0",
   "bin": "./cli.js",
   "description": "A framework for building native apps using React",
   "license": "MIT",
@@ -196,7 +196,7 @@
     "mkdirp": "^0.5.1",
     "mock-fs": "^5.1.4",
     "prettier": "^2.4.1",
-    "react-native-core": "npm:react-native@0.71.8",
+    "react-native-core": "npm:react-native@0.71.10",
     "shelljs": "^0.8.5",
     "signedsource": "^1.0.0",
     "typescript": "4.1.3",
