@@ -209,9 +209,3 @@ More information on the focus handling improvements above can be found in [this 
 
 - _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component wraps ScrollView and uses tvOS-specific native code to allow scrolling using swipe gestures from the remote control.
 
-- _Known issues_:
-
-  - The Hermes engine has not yet been ported to Apple TV, so it should be disabled in application Podfiles targeting TV.
-  - There are known issues with the TabBarIOS component, due to changes that Apple made in UITabBar for tvOS 13.
-
-
