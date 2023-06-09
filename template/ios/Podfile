@@ -3,7 +3,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-install! 'cocoapods', :deterministic_uuids => false
 prepare_react_native_project!
 
 production = ENV["PRODUCTION"] == "1"
