@@ -1253,7 +1253,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
         .setDuration(ReactScrollViewHelper.getDefaultScrollAnimationDuration(getContext()))
         .setIntValues(start, end);
 
-    ReactScrollViewHelper.applyScrollEffect(DEFAULT_FLING_ANIMATOR);
+    ReactScrollViewHelper.applyScrollEffect(this, DEFAULT_FLING_ANIMATOR);
 
     // Start the animator
     DEFAULT_FLING_ANIMATOR.start();

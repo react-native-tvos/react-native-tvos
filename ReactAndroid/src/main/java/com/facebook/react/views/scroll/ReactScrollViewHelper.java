@@ -62,7 +62,7 @@ public class ReactScrollViewHelper {
       Collections.newSetFromMap(new WeakHashMap<ScrollListener, Boolean>());
 
   public interface ScrollAnimateCustomizer {
-    void onUpdateScrollAnimator(ValueAnimator valueAnimator);
+    void onUpdateScrollAnimator(ViewGroup scrollView, ValueAnimator valueAnimator);
   }
 
   private static ScrollAnimateCustomizer mScrollAnimateCustomizer;
@@ -175,9 +175,9 @@ public class ReactScrollViewHelper {
     mScrollAnimateCustomizer = scrollAnimateCustomizer;
   }
 
-  public static void applyScrollEffect(ValueAnimator valueAnimator) {
+  public static void applyScrollEffect(ViewGroup scrollView, ValueAnimator valueAnimator) {
     if(mScrollAnimateCustomizer != null) {
-      mScrollAnimateCustomizer.onUpdateScrollAnimator(valueAnimator);
+      mScrollAnimateCustomizer.onUpdateScrollAnimator(scrollView, valueAnimator);
     }
   }
 

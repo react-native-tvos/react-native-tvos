@@ -133,11 +133,11 @@
         {
           "name": "react-native-0.68.2-8.aar",
           "url": "react-native-0.68.2-8.aar",
-          "size": 16403536,
-          "sha512": "e35d55233878d9ad879506125094b7020bb98215bfb773e6a7e0ad2fc889695ab8bf150a5537439205a243024807cc1c840154f66872449368472b9950099c82",
-          "sha256": "72ea8363d3f76d8cbb9f0e35fb9df7ac47debfc8d91d4fbad8481c83d714fe81",
-          "sha1": "25700780890c74c3fc3c2de27018cc99b3954b46",
-          "md5": "aa7d6ff3564c9e4b09faede03f579878"
+          "size": 16403563,
+          "sha512": "62fca5392217188540148d8bf49c55096fbd0747c6d6f201a47fa688f1707f6107a15cb84b119a106db4235649722d6f0893dc2c64b282167098963d1878f02b",
+          "sha256": "b7a144a05bf292aa924cd8b4ef7e84f7944132689606896e17125e04cf390e1e",
+          "sha1": "d7822ee81e0e57585a5d793a0669f94e80264f01",
+          "md5": "e2907832011c328db370ccf690ebdb02"
         }
       ]
     },
@@ -260,11 +260,11 @@
         {
           "name": "react-native-0.68.2-8.aar",
           "url": "react-native-0.68.2-8.aar",
-          "size": 16403536,
-          "sha512": "e35d55233878d9ad879506125094b7020bb98215bfb773e6a7e0ad2fc889695ab8bf150a5537439205a243024807cc1c840154f66872449368472b9950099c82",
-          "sha256": "72ea8363d3f76d8cbb9f0e35fb9df7ac47debfc8d91d4fbad8481c83d714fe81",
-          "sha1": "25700780890c74c3fc3c2de27018cc99b3954b46",
-          "md5": "aa7d6ff3564c9e4b09faede03f579878"
+          "size": 16403563,
+          "sha512": "62fca5392217188540148d8bf49c55096fbd0747c6d6f201a47fa688f1707f6107a15cb84b119a106db4235649722d6f0893dc2c64b282167098963d1878f02b",
+          "sha256": "b7a144a05bf292aa924cd8b4ef7e84f7944132689606896e17125e04cf390e1e",
+          "sha1": "d7822ee81e0e57585a5d793a0669f94e80264f01",
+          "md5": "e2907832011c328db370ccf690ebdb02"
         }
       ]
     }
