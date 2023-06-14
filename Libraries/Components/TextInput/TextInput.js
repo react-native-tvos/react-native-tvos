@@ -1436,7 +1436,7 @@ function InternalTextInput(props: Props): React.Node {
     textInput = (
       <RCTTextInputView
         ref={_setNativeRef}
-        {...props}
+        {...otherProps}
         {...eventHandlers}
         accessibilityState={_accessibilityState}
         accessible={accessible}
@@ -1486,7 +1486,7 @@ function InternalTextInput(props: Props): React.Node {
        * fixed */
       <AndroidTextInput
         ref={_setNativeRef}
-        {...props}
+        {...otherProps}
         {...eventHandlers}
         accessibilityState={_accessibilityState}
         accessibilityLabelledBy={_accessibilityLabelledBy}
