@@ -244,6 +244,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   motionEffectsAdded = NO;
 }
 
+- (void)didMoveToSuperview {
+    [super didMoveToSuperview];
+
+    // There's no way for us to understand if the view is actually getting removed or getting detached.
+    // We play safe here and set the focusGuide's preferredFocusEnvs to an empty array
+    // to break a potential retain cycle (see `handleFocusGuide`).
+    if (self.superview == nil && self.focusGuide != nil) {
+        self.focusGuide.preferredFocusEnvironments = @[];
+    }
+    
+    // We should restore focusGuide's state if the item was only detached and now getting attached again.
+    if (self.superview != nil && self.focusGuide != nil) {
+        [self handleFocusGuide];
+    }
+}
+
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
   // This is  the `trapFocus*` logic that prevents the focus updates if
