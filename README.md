@@ -77,7 +77,8 @@ react-native init TestApp --template=react-native-tvos@latest
 cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
 ```
 
-(_Note_: As of now, `npx react-native run-ios` will no longer run Apple TV targets. A fix for this has been merged (https://github.com/react-native-community/cli/pull/1929) and will be released shortly. To run Apple TV (and Android TV) targets from the command line, it is now possible to use the Expo CLI, using the following steps:
+To run Apple TV (and Android TV) targets from the command line, it is now possible to use the Expo CLI, using the following steps:
+
 - In your app, install the required Expo modules: `yarn add expo`
 - Add a file `react-native.config.js` at the top level of your app directory, with [these contents](https://github.com/byCedric/custom-prebuild-example/blob/main/app/react-native.config.js).
 - Then an Apple TV target can be run: `npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"`
