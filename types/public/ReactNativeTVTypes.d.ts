@@ -31,7 +31,7 @@ declare module 'react-native' {
   nextFocusUp?: number,
   }
 
-  interface View {
+  export interface NativeMethods {
     requestTVFocus(): void;
   }
 
