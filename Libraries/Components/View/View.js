@@ -161,7 +161,7 @@ const View: React.AbstractComponent<
           nativeID={id ?? nativeID}
           style={style}
           pointerEvents={newPointerEvents}
-          ref={forwardedRef}
+          ref={_setNativeRef}
         />
       </TextAncestor.Provider>
     );
