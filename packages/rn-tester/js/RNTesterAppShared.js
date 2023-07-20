@@ -208,9 +208,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tvNavBar: {
-    bottom: 0,
-    left: 20,
-    width: '30%',
+    top: 20,
+    left: '5%',
+    width: '90%',
     display: 'flex',
     flexDirection: 'column',
     position: 'absolute',

@@ -156,7 +156,7 @@ const RNTesterNavbar = ({
           handleNavBarPress={handleNavBarPress}
           theme={theme}
         />
-        {Platform.isTV ? null : (
+        {Platform.isTV ? <View style={{flex: 1}} />  : (
           <BookmarkTab
             isBookmarkActive={isBookmarkActive}
             handleNavBarPress={handleNavBarPress}
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     height: navBarHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 15,
   },
   pressableContent: {
     flex: 1,
