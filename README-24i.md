@@ -49,3 +49,8 @@ It's important to list all changes we have done in order to keep track of them a
 ### ./tvos-types.d.ts
 
 - Adding long press events for arrow keys in order to support https://jira.24i.com/browse/PRDPLAYER-1152 ([link to PR](https://github.com/24i/react-native-tvos/pull/2))
+
+
+### ./React/Views/ScrollView/RCTScrollView.m
+
+- Changed how snapping to offset is being calculated. Ticket related https://aferian.atlassian.net/browse/PRDSAPPSTV-675. ([link to PR](https://github.com/24i/react-native-tvos/pull/3))
