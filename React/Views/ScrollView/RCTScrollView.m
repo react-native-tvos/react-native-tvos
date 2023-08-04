@@ -717,10 +717,24 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
         // snap to beginning
         targetOffset = firstOffset;
       }
-    } else if (velocityAlongAxis > 0.0) {
-      targetOffset = largerOffset;
-    } else if (velocityAlongAxis < 0.0) {
-      targetOffset = smallerOffset;
+    //
+    // This has been changed in order to fix how scrolling happens on tvos
+    // tvOS is adding exactly 80 pixels offset when scrolling probably to
+    // make sure user knows there are more items to scroll. In many cases
+    // this behavior is not what we want and is causing unaligned items.
+    //
+    // https://aferian.atlassian.net/browse/PRDSAPPSTV-675
+    //
+    // Old implementation:
+    //
+    // } else if (velocityAlongAxis > 0.0) {
+    //   targetOffset = largerOffset;
+    // } else if (velocityAlongAxis < 0.0) {
+    //   targetOffset = smallerOffset;
+    // } else {
+    //   targetOffset = nearestOffset;
+    // }
+    //
     } else {
       targetOffset = nearestOffset;
     }
