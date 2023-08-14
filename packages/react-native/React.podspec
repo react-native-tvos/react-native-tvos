@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
   s.homepage               = "https://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Meta Platforms, Inc. and its affiliates"
-  s.platforms              = { :ios => "12.4" }
+  s.platforms              = { :ios => "12.4", :tvos => "12.4" }
   s.source                 = source
   s.preserve_paths         = "package.json", "LICENSE", "LICENSE-docs"
   s.cocoapods_version      = ">= 1.10.1"
@@ -44,7 +44,8 @@ Pod::Spec.new do |s|
   s.dependency "React-Core", version
   s.dependency "React-Core/DevSupport", version
   s.dependency "React-Core/RCTWebSocket", version
-  s.dependency "React-RCTActionSheet", version
+  # Not for tvOS
+  # s.dependency "React-RCTActionSheet", version
   s.dependency "React-RCTAnimation", version
   s.dependency "React-RCTBlob", version
   s.dependency "React-RCTImage", version
@@ -52,5 +53,6 @@ Pod::Spec.new do |s|
   s.dependency "React-RCTNetwork", version
   s.dependency "React-RCTSettings", version
   s.dependency "React-RCTText", version
-  s.dependency "React-RCTVibration", version
+  # Not for tvOS
+  # s.dependency "React-RCTVibration", version
 end

@@ -19,7 +19,7 @@ version = package['version']
 hermestag_file = File.join(react_native_path, "sdks", ".hermesversion")
 build_from_source = ENV['BUILD_FROM_SOURCE'] === 'true'
 
-git = "https://github.com/facebook/hermes.git"
+git = "https://github.com/react-native-tvos/hermes.git"
 
 abort_if_invalid_tarball_provided!
 
@@ -34,7 +34,7 @@ Pod::Spec.new do |spec|
   spec.license     = package['license']
   spec.author      = "Facebook"
   spec.source      = source
-  spec.platforms   = { :osx => "10.13", :ios => "12.4" }
+  spec.platforms   = { :osx => "10.13", :ios => "12.4", :tvos => "12.4" }
 
   spec.preserve_paths      = '**/*.*'
   spec.source_files        = ''
@@ -45,6 +45,7 @@ Pod::Spec.new do |spec|
                   }.merge!(build_type == :debug ? { "GCC_PREPROCESSOR_DEFINITIONS" => "HERMES_ENABLE_DEBUGGER=1" } : {})
 
   spec.ios.vendored_frameworks = "destroot/Library/Frameworks/ios/hermes.framework"
+  spec.tvos.vendored_frameworks = "destroot/Library/Frameworks/tvos/hermes.framework"
   spec.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
 
   if source[:http] then
@@ -55,6 +56,7 @@ Pod::Spec.new do |spec|
       ss.exclude_files = ["destroot/include/jsi/jsi/JSIDynamic.{h,cpp}", "destroot/include/jsi/jsi/jsilib-*.{h,cpp}"]
       ss.header_mappings_dir = "destroot/include"
       ss.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
+      ss.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
       ss.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
     end
 

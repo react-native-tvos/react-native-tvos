@@ -67,10 +67,11 @@ Pod::Spec.new do |s|
   s.homepage               = "https://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Meta Platforms, Inc. and its affiliates"
-  s.platforms              = { :ios => "12.4" }
+  s.platforms              = { :ios => "12.4", :tvos => "12.4" }
   s.source                 = source
   s.resource_bundle        = { "AccessibilityResources" => ["React/AccessibilityResources/*.lproj"]}
-  s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.ios.compiler_flags     = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
   s.pod_target_xcconfig    = {
@@ -99,6 +100,13 @@ Pod::Spec.new do |s|
       exclude_files = exclude_files.append("React/CxxBridge/JSCExecutorFactory.{h,mm}")
     end
     ss.exclude_files = exclude_files
+    ss.ios.exclude_files      = "React/**/RCTTV*.*"
+    ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
+                                "React/Views/RCTDatePicker*",
+                                "React/Views/RCTPicker*",
+                                "React/Views/RefreshControl/*",
+                                "React/Views/RCTSlider*",
+                                "React/Views/RCTSwitch*"
     ss.private_header_files   = "React/Cxx*/*.h"
   end
 

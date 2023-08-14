@@ -15,12 +15,15 @@ Pod::Spec.new do |spec|
   spec.authors = 'Facebook'
   spec.source = { :git => 'https://github.com/facebook/folly.git',
                   :tag => "v#{folly_release_version}" }
+  # Folly has issues when compiled with iOS 10 set as deployment target
+  # See https://github.com/facebook/folly/issues/1470 for details
+  spec.platforms = { :ios => "9.0", :tvos => "12.4" }
   spec.module_name = 'folly'
   spec.header_mappings_dir = '.'
   spec.dependency 'boost'
   spec.dependency 'DoubleConversion'
   spec.dependency 'glog'
-  spec.dependency 'fmt' , '~> 6.2.1'
+  spec.dependency 'fmt'
   spec.compiler_flags = '-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_HAVE_PTHREAD=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation -faligned-new'
   spec.source_files = 'folly/String.cpp',
                       'folly/Conv.cpp',
@@ -104,6 +107,7 @@ Pod::Spec.new do |spec|
                             'folly/synchronization/ParkingLot.h',
                             'folly/synchronization/SanitizeThread.h',
                             'folly/system/ThreadId.h'
+    fabric.platforms = { :ios => "9.0", :tvos => "12.4" }
   end
 
   spec.subspec 'Futures' do |futures|
@@ -150,7 +154,4 @@ Pod::Spec.new do |spec|
                           #  'folly/experimental/{ReadMostlySharedPtr,TLRefCount}.h',
   end
 
-  # Folly has issues when compiled with iOS 10 set as deployment target
-  # See https://github.com/facebook/folly/issues/1470 for details
-  spec.platforms = { :ios => "9.0" }
 end

@@ -39,10 +39,12 @@ Pod::Spec.new do |s|
   s.homepage               = "https://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Meta Platforms, Inc. and its affiliates"
-  s.platforms              = { :ios => "12.4" }
+  s.platforms              = { :ios => "12.4", :tvos => "12.4" }
   s.compiler_flags         = folly_compiler_flags + ' -Wno-nullability-completeness'
   s.source                 = source
   s.source_files           = "**/*.{c,m,mm,cpp}"
+  s.tvos.exclude_files     = "**/RCTActionSheet*.*"
+  s.tvos.source_files     = "**/RCTTV*.*"
   s.header_dir             = "CoreModules"
   s.pod_target_xcconfig    = {
                                "USE_HEADERMAP" => "YES",
