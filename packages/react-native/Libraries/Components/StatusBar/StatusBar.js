@@ -269,7 +269,7 @@ class StatusBar extends React.Component<Props> {
   static setHidden(hidden: boolean, animation?: StatusBarAnimation) {
     animation = animation || 'none';
     StatusBar._defaultProps.hidden.value = hidden;
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && !Platform.isTV ) {
       NativeStatusBarManagerIOS.setHidden(hidden, animation);
     } else if (Platform.OS === 'android') {
       NativeStatusBarManagerAndroid.setHidden(hidden);
@@ -284,7 +284,7 @@ class StatusBar extends React.Component<Props> {
   static setBarStyle(style: StatusBarStyle, animated?: boolean) {
     animated = animated || false;
     StatusBar._defaultProps.barStyle.value = style;
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'ios' && !Platform.isTV ) {
       NativeStatusBarManagerIOS.setStyle(style, animated);
     } else if (Platform.OS === 'android') {
       NativeStatusBarManagerAndroid.setStyle(style);
@@ -296,7 +296,7 @@ class StatusBar extends React.Component<Props> {
    * @param visible Show the indicator.
    */
   static setNetworkActivityIndicatorVisible(visible: boolean) {
-    if (Platform.OS !== 'ios') {
+    if (Platform.OS !== 'ios' || Platform.isTV ) {
       console.warn(
         '`setNetworkActivityIndicatorVisible` is only available on iOS',
       );
@@ -427,7 +427,7 @@ class StatusBar extends React.Component<Props> {
       );
 
       // Update the props that have changed using the merged values from the props stack.
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === 'ios' && !Platform.isTV ) {
         if (
           !oldProps ||
           oldProps.barStyle.value !== mergedProps.barStyle.value

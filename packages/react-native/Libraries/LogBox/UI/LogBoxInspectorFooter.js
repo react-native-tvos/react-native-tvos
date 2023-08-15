@@ -69,6 +69,8 @@ function FooterButton(props: ButtonProps): React.Node {
 const buttonStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    marginLeft: 10,
+    marginRight: 10,
     // $FlowFixMe[sketchy-null-bool]
     paddingBottom: DeviceInfo.getConstants().isIPhoneX_deprecated ? 30 : 0,
   },
@@ -88,6 +90,7 @@ const buttonStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   root: {
     backgroundColor: LogBoxStyle.getBackgroundColor(1),
+    minHeight: 30,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: -2},
     shadowRadius: 2,

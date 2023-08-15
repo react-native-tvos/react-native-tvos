@@ -22,6 +22,7 @@ import type {
 import type {____TransformStyle_Internal} from './private/_TransformStyle';
 
 export type ____ColorValue_Internal = null | string | number | NativeColorValue;
+
 export type ColorArrayValue = null | $ReadOnlyArray<____ColorValue_Internal>;
 export type PointValue = {
   x: number,

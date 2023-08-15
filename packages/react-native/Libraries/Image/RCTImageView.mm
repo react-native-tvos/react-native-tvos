@@ -100,7 +100,7 @@ static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
                    name:UIApplicationDidEnterBackgroundNotification
                  object:nil];
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
-    if (@available(iOS 13.0, *)) {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
       [center addObserver:self
                  selector:@selector(clearImageIfDetached)
 

@@ -252,15 +252,18 @@ const Text: React.AbstractComponent<
       <NativeText
         {...restProps}
         {...eventHandlersForText}
-        accessibilityLabel={ariaLabel ?? accessibilityLabel}
-        accessibilityRole={
-          role ? getAccessibilityRoleFromRole(role) : accessibilityRole
-        }
-        accessibilityState={nativeTextAccessibilityState}
+        disabled={_disabled}
         accessible={
           accessible == null && Platform.OS === 'android'
             ? _hasOnPressOrOnLongPress
             : _accessible
+        }
+        accessibilityState={_accessibilityState}
+        selectable={_selectable}
+        accessibilityLabel={ariaLabel ?? accessibilityLabel}
+        accessibilityState={nativeTextAccessibilityState}
+        accessibilityRole={
+          role ? getAccessibilityRoleFromRole(role) : accessibilityRole
         }
         allowFontScaling={allowFontScaling !== false}
         disabled={_disabled}

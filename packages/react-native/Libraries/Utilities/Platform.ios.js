@@ -58,6 +58,11 @@ const Platform = {
     return this.constants.interfaceIdiom === 'tv';
   },
   // $FlowFixMe[unsafe-getters-setters]
+  get isTVOS(): boolean {
+    // $FlowFixMe[object-this-reference]
+    return this.constants.interfaceIdiom === 'tv';
+  },
+  // $FlowFixMe[unsafe-getters-setters]
   get isTesting(): boolean {
     if (__DEV__) {
       // $FlowFixMe[object-this-reference]
