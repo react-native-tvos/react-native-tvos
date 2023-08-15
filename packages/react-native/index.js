@@ -74,10 +74,16 @@ import typeof StyleSheet from './Libraries/StyleSheet/StyleSheet';
 import typeof * as Systrace from './Libraries/Performance/Systrace';
 import typeof ToastAndroid from './Libraries/Components/ToastAndroid/ToastAndroid';
 import typeof * as TurboModuleRegistry from './Libraries/TurboModule/TurboModuleRegistry';
+import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
+import typeof TVEventHandler from './Libraries/Components/TV/TVEventHandler';
+import typeof TVFocusGuideView from './Libraries/Components/TV/TVFocusGuideView';
+import typeof TVEventControl from './Libraries/Components/TV/TVEventControl';
+import typeof TVTextScrollView from './Libraries/Components/TV/TVTextScrollView';
 import typeof UIManager from './Libraries/ReactNative/UIManager';
 import typeof useAnimatedValue from './Libraries/Animated/useAnimatedValue';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
 import typeof useWindowDimensions from './Libraries/Utilities/useWindowDimensions';
+import typeof useTVEventHandler from './Libraries/Components/TV/useTVEventHandler';
 import typeof UTFSequence from './Libraries/UTFSequence';
 import typeof Vibration from './Libraries/Vibration/Vibration';
 import typeof YellowBox from './Libraries/YellowBox/YellowBoxDeprecated';
@@ -91,6 +97,8 @@ import typeof processColor from './Libraries/StyleSheet/processColor';
 import typeof RCTDeviceEventEmitter from './Libraries/EventEmitter/RCTDeviceEventEmitter';
 import typeof RCTNativeAppEventEmitter from './Libraries/EventEmitter/RCTNativeAppEventEmitter';
 import typeof {RootTagContext} from './Libraries/ReactNative/RootTag';
+
+import CheckPlatform from './Libraries/Utilities/Platform';
 
 import type {HostComponent as _HostComponentInternal} from './Libraries/Renderer/shims/ReactNativeTypes';
 
@@ -165,6 +173,9 @@ module.exports = {
   },
   get Switch(): Switch {
     return require('./Libraries/Components/Switch/Switch').default;
+  },
+  get TabBarIOS(): TabBarIOS {
+    return require('./Libraries/Components/TabBarIOS/TabBarIOS');
   },
   get Text(): Text {
     return require('./Libraries/Text/Text');
@@ -311,6 +322,25 @@ module.exports = {
   get TurboModuleRegistry(): TurboModuleRegistry {
     return require('./Libraries/TurboModule/TurboModuleRegistry');
   },
+  get TVEventControl(): TVEventControl {
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVEventHandler(): TVEventHandler {
+    return require('./Libraries/Components/TV/TVEventHandler');
+  },
+  get TVFocusGuideView(): TVFocusGuideView {
+    return require('./Libraries/Components/TV/TVFocusGuideView');
+  },
+  get TVMenuControl(): TVEventControl {
+    warnOnce(
+      'TVMenuControl-moved',
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.'
+    );
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVTextScrollView(): TVTextScrollView {
+    return require('./Libraries/Components/TV/TVTextScrollView');
+  },
   get UIManager(): UIManager {
     return require('./Libraries/ReactNative/UIManager');
   },
@@ -329,6 +359,9 @@ module.exports = {
   },
   get useWindowDimensions(): useWindowDimensions {
     return require('./Libraries/Utilities/useWindowDimensions').default;
+  },
+  get useTVEventHandler(): useTVEventHandler {
+    return require('./Libraries/Components/TV/useTVEventHandler');
   },
   get UTFSequence(): UTFSequence {
     return require('./Libraries/UTFSequence').default;
