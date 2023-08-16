@@ -1,6 +1,16 @@
 
 # react-native-tvos - 24i fork
 
+## Using this package in a project/product
+
+Use `https://github.com/24i/react-native-tvos.git#<TAG>` as a dependency. So for example:
+
+```
+"react-native-tvos": "https://github.com/24i/react-native-tvos.git#24i-v0.63.4-3"
+```
+
+It's very important you define it exactly like that. At least yarn have some bugs which are causing problems with using git references as npm dependency. See https://github.com/yarnpkg/yarn/issues/4722.
+
 ## Rules
 
 1. Read this documentation.
