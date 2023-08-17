@@ -20,8 +20,10 @@ RCT_ENUM_CONVERTER(
     UIModalPresentationStyle,
     (@{
       @"fullScreen" : @(UIModalPresentationFullScreen),
+#if !TARGET_OS_TV
       @"pageSheet" : @(UIModalPresentationPageSheet),
       @"formSheet" : @(UIModalPresentationFormSheet),
+#endif
       @"overFullScreen" : @(UIModalPresentationOverFullScreen),
     }),
     UIModalPresentationFullScreen,

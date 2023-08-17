@@ -136,8 +136,12 @@ RCT_EXPORT_MODULE()
           [[UILabel alloc] initWithFrame:CGRectMake(0, window.safeAreaInsets.top - 10, screenSize.width, 20)];
       [self->_window addSubview:self->_label];
 
+#if TARGET_OS_TV
+        self->_window.windowLevel = UIWindowLevelNormal + 1;
+#else
       self->_window.windowLevel = UIWindowLevelStatusBar + 1;
-      // set a root VC so rotation is supported
+#endif
+        // set a root VC so rotation is supported
       self->_window.rootViewController = [UIViewController new];
 
       self->_label.font = [UIFont monospacedDigitSystemFontOfSize:12.0 weight:UIFontWeightRegular];
@@ -152,7 +156,7 @@ RCT_EXPORT_MODULE()
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && defined(__IPHONE_13_0) && \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
-    if (@available(iOS 13.0, *)) {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
       UIWindowScene *scene = (UIWindowScene *)RCTSharedApplication().connectedScenes.anyObject;
       self->_window.windowScene = scene;
     }

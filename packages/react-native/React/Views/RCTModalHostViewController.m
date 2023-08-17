@@ -12,8 +12,10 @@
 
 @implementation RCTModalHostViewController {
   CGRect _lastViewFrame;
+#if !TARGET_OS_TV
   UIStatusBarStyle _preferredStatusBarStyle;
   BOOL _preferredStatusBarHidden;
+#endif
 }
 
 - (instancetype)init
@@ -24,15 +26,43 @@
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && defined(__IPHONE_13_0) && \
     __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0
-  if (@available(iOS 13.0, *)) {
+    if (@available(iOS 13.0, tvOS 13.0, *)) {
     self.modalInPresentation = YES;
   }
 #endif
 
+#if !TARGET_OS_TV
   _preferredStatusBarStyle = [RCTSharedApplication() statusBarStyle];
   _preferredStatusBarHidden = [RCTSharedApplication() isStatusBarHidden];
+#endif
 
   return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView enableEventHandlers];
+#endif
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView disableEventHandlers];
+  if (self.modalHostView.onRequestClose) {
+    self.modalHostView.onRequestClose(nil);
+  }
+#endif
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  if (self.modalHostView.onDismiss) {
+    self.modalHostView.onDismiss(nil);
+  }
+#endif
 }
 
 - (void)viewDidLayoutSubviews
@@ -45,6 +75,7 @@
   }
 }
 
+#if !TARGET_OS_TV
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
   return _preferredStatusBarStyle;
@@ -73,5 +104,6 @@
   return _supportedInterfaceOrientations;
 }
 #endif // RCT_DEV
+#endif // !TARGET_OS_TV
 
 @end

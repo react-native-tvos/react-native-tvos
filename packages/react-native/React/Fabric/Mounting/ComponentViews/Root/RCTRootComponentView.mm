@@ -20,10 +20,34 @@ using namespace facebook::react;
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const RootProps>();
     _props = defaultProps;
+#if TARGET_OS_TV
+      self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:self];
+#endif
   }
 
   return self;
 }
+
+#if TARGET_OS_TV
+- (void)dealloc
+{
+  self.tvRemoteHandler = nil;
+}
+
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
+  if (self.reactPreferredFocusEnvironments != nil) {
+    NSArray<id<UIFocusEnvironment>> *tempReactPreferredFocusEnvironments = self.reactPreferredFocusEnvironments;
+    self.reactPreferredFocusEnvironments = nil;
+    return tempReactPreferredFocusEnvironments;
+  }
+
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
+    return @[self.reactPreferredFocusedView];
+  }
+  return [super preferredFocusEnvironments];
+}
+#endif
+
 
 #pragma mark - RCTComponentViewProtocol
 
