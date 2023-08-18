@@ -23,7 +23,9 @@ import kotlin.Pair
 import de.undercouch.gradle.tasks.download.Download
 
 version = VERSION_NAME
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 // We download various C++ open-source dependencies into downloads.
 // We then copy both the downloaded code and our custom makefiles and headers into third-party-ndk.
@@ -282,11 +284,22 @@ task downloadFolly(dependsOn: createNativeDepsDirectories, type: Download) {
     dest(new File(downloadsDir, "folly-${FOLLY_VERSION}.tar.gz"))
 }
 
+def follyReplaceContent = '''
+  ssize_t r;
+  do {
+    r = open(name, flags, mode);
+  } while (r == -1 && errno == EINTR);
+  return r;
+'''
+
 task prepareFolly(dependsOn: dependenciesPath ? [] : [downloadFolly], type: Copy) {
     from(dependenciesPath ?: tarTree(downloadFolly.dest))
     from("src/main/jni/third-party/folly/")
     include("folly-${FOLLY_VERSION}/folly/**/*", "CMakeLists.txt")
     eachFile { fname -> fname.path = (fname.path - "folly-${FOLLY_VERSION}/") }
+    // Fixes problem with Folly failing to build on certain systems. See
+    // https://github.com/facebook/react-native/issues/28298
+    filter { line -> line.replaceAll('return int\\(wrapNoInt\\(open, name, flags, mode\\)\\);', follyReplaceContent) }
     includeEmptyDirs = false
     into("$thirdPartyNdkDir/folly")
 }
@@ -558,6 +571,8 @@ android {
         // that will include the necessary .so files to load.
         exclude("**/libhermes.so")
         exclude("**/libjsc.so")
+        exclude "**/libc++_shared.so"
+        exclude "**/libfbjni.so"
     }
 
     buildFeatures {
@@ -698,6 +713,8 @@ dependencies {
     // It's up to the consumer to decide if hermes should be included or not.
     // Therefore hermes-engine is a compileOnly dependency.
     compileOnly(project(":packages:react-native:ReactAndroid:hermes-engine"))
+
+    implementation("com.facebook.fbjni:fbjni:0.3.0")
 
     testImplementation("junit:junit:${JUNIT_VERSION}")
     testImplementation("org.assertj:assertj-core:${ASSERTJ_VERSION}")

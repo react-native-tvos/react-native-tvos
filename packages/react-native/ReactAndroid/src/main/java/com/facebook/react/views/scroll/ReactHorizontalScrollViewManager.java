@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+import com.facebook.react.modules.i18nmanager.I18nUtil;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.RetryableMountingLayerException;
@@ -76,6 +77,10 @@ public class ReactHorizontalScrollViewManager extends ViewGroupManager<ReactHori
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
   public void setScrollEnabled(ReactHorizontalScrollView view, boolean value) {
     view.setScrollEnabled(value);
+    
+    /*Set focusable to match whether scroll is enabled. This improves keyboarding
+    experience by not making scrollview to scroll when scroll enabled is to false.*/
+    view.setFocusable(value);
   }
 
   @ReactProp(name = "showsHorizontalScrollIndicator")
@@ -198,9 +203,36 @@ public class ReactHorizontalScrollViewManager extends ViewGroupManager<ReactHori
 
   @Override
   public void scrollTo(
-      ReactHorizontalScrollView scrollView, ReactScrollViewCommandHelper.ScrollToCommandData data) {
+          final ReactHorizontalScrollView scrollView, final ReactScrollViewCommandHelper.ScrollToCommandData data) {
+    boolean isRTL = I18nUtil.getInstance().isRTL(scrollView.getContext());
+
+    int destX = data.mDestX;
+
+    if (isRTL && scrollView.getChildAt(0) instanceof ReactHorizontalScrollContainerView) {
+      final ReactHorizontalScrollContainerView child = (ReactHorizontalScrollContainerView) scrollView.getChildAt(0);
+
+      // correct the x offset destination, as on android the scrollOffset is not adjusted to RTL
+      // i.e. the right-most part of the view will be a positive index and the left-most negative
+      destX = child.getWidth() - scrollView.getWidth() - destX;
+
+      // If the scrollContainerView is in RTL mode, fix the current scroll position in
+      // reaction to layout changes - need to listen for layout change events (e.g. because of
+      // fetching new data) and update the scroll position accordingly as soon as it's available
+      child.setListener(new ReactHorizontalScrollContainerView.Listener() {
+        @Override
+        public void onLayout() {
+          int destX = child.getWidth() - child.getLastWidth() + scrollView.getScrollX();
+
+          if (data.mAnimated) {
+            scrollView.smoothScrollTo(destX, data.mDestY);
+          } else {
+            scrollView.scrollTo(destX, data.mDestY);
+          }
+        }
+      });
+    }
     if (data.mAnimated) {
-      scrollView.reactSmoothScrollTo(data.mDestX, data.mDestY);
+      scrollView.reactSmoothScrollTo(destX, data.mDestY);
     } else {
       scrollView.scrollTo(data.mDestX, data.mDestY);
     }

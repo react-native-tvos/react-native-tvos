@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,8 +26,10 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import com.facebook.common.logging.FLog;
+
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.R;
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper;
 import com.facebook.react.bridge.GuardedRunnable;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
@@ -427,8 +430,14 @@ public class ReactModalHostView extends ViewGroup
     private final JSTouchDispatcher mJSTouchDispatcher = new JSTouchDispatcher(this);
     @Nullable private JSPointerDispatcher mJSPointerDispatcher;
 
+    private final ReactAndroidHWInputDeviceHelper mAndroidHWInputDeviceHelper;
+
+    private final ReactContext mReactContext;
+
     public DialogRootViewGroup(Context context) {
       super(context);
+      mReactContext = (ReactContext)context;
+      mAndroidHWInputDeviceHelper = new ReactAndroidHWInputDeviceHelper();
       if (ReactFeatureFlags.dispatchPointerEvents) {
         mJSPointerDispatcher = new JSPointerDispatcher(this);
       }
@@ -444,6 +453,18 @@ public class ReactModalHostView extends ViewGroup
       viewWidth = w;
       viewHeight = h;
       updateFirstChildView();
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+      mAndroidHWInputDeviceHelper.clearFocus(mReactContext);
+      super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+    }
+
+    @Override
+    public void requestChildFocus(View child, View focused) {
+      mAndroidHWInputDeviceHelper.onFocusChanged(focused, mReactContext);
+      super.requestChildFocus(child, focused);
     }
 
     private void updateFirstChildView() {
