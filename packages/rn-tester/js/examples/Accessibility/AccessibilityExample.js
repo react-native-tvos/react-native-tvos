@@ -27,7 +27,6 @@ const {
   Alert,
   StyleSheet,
   Platform,
-  Switch,
   ScrollView,
 } = require('react-native');
 import type {EventSubscription} from 'react-native/Libraries/vendor/emitter/EventEmitter';
@@ -266,16 +265,6 @@ class AccessibilityExample extends React.Component<{}> {
             />
           </View>
         </RNTesterBlock>
-        <RNTesterBlock title="Switch with accessibilityLabelledBy attribute">
-          <View>
-            <Text nativeID="formLabel4">Enable Notifications</Text>
-            <Switch
-              value={true}
-              accessibilityLabel="switch test1"
-              accessibilityLabelledBy="formLabel4"
-            />
-          </View>
-        </RNTesterBlock>
       </View>
     );
   }
@@ -450,38 +439,6 @@ class CheckboxExample extends React.Component<
         accessibilityState={{checked: this.state.checkboxState}}
         accessibilityHint="click me to change state">
         <Text>Checkbox example</Text>
-      </TouchableOpacity>
-    );
-  }
-}
-
-class SwitchExample extends React.Component<
-  {},
-  {
-    switchState: boolean,
-  },
-> {
-  state: {switchState: boolean} = {
-    switchState: true,
-  };
-
-  _onSwitchToggle = () => {
-    const switchState = !this.state.switchState;
-
-    this.setState({
-      switchState: switchState,
-    });
-  };
-
-  render(): React.Node {
-    return (
-      <TouchableOpacity
-        onPress={this._onSwitchToggle}
-        accessibilityLabel="element 12"
-        accessibilityRole="switch"
-        accessibilityState={{checked: this.state.switchState}}
-        accessible={true}>
-        <Text>Switch example</Text>
       </TouchableOpacity>
     );
   }
@@ -813,7 +770,6 @@ class AccessibilityRoleAndStateExample extends React.Component<{}> {
               accessible={true}>
               <Text>Spin button example</Text>
             </View>
-            <SwitchExample />
             <View
               accessibilityLabel="element 13"
               accessibilityRole="tab"

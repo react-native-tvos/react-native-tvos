@@ -113,3 +113,4 @@ export const RNTesterThemeContext: React.Context<RNTesterTheme> =
   React.createContext(
     Appearance.getColorScheme() === 'dark' ? themes.dark : themes.light,
   );
+export const useRNTesterTheme: (() => RNTesterTheme)  = () => React.useContext(RNTesterThemeContext);

@@ -59,6 +59,34 @@ function ContentPress() {
   );
 }
 
+function TVFocusContentPress() {
+  const [timesPressed, setTimesPressed] = useState(0);
+
+  let textLog = '';
+  if (timesPressed > 1) {
+    textLog = timesPressed + 'x onPress';
+  } else if (timesPressed > 0) {
+    textLog = 'onPress';
+  }
+
+  return (
+    <>
+      <View style={styles.row}>
+        <Pressable
+          onPress={() => {
+            setTimesPressed(current => current + 1);
+          }}>
+          {({focused}) => (
+            <Text style={styles.text}>{focused ? 'Focused!' : 'Press Me'}</Text>
+          )}
+        </Pressable>
+      </View>
+      <View style={styles.logBox}>
+        <Text testID="focusable_press_console">{textLog}</Text>
+      </View>
+    </>
+  );
+}
 function TextOnPressBox() {
   const [timesPressed, setTimesPressed] = useState(0);
 
@@ -118,6 +146,8 @@ function PressableFeedbackEvents() {
           testID="pressable_feedback_events_button"
           accessibilityLabel="pressable feedback events"
           accessibilityRole="button"
+          onBlur={() => appendEvent('blur')}
+          onFocus={() => appendEvent('focus')}
           onPress={() => appendEvent('press')}
           onPressIn={() => appendEvent('pressIn')}
           onPressOut={() => appendEvent('pressOut')}
@@ -259,6 +289,10 @@ function PressableDisabled() {
 
       <Pressable
         disabled={false}
+        tvParallaxProperties={{
+          enabled: true,
+          pressMagnification: 1.1,
+        }}
         style={({pressed}) => [
           {opacity: pressed ? 0.5 : 1},
           styles.row,
@@ -299,6 +333,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    color: '#808080',
   },
   block: {
     padding: 10,
@@ -371,14 +406,28 @@ const examples = [
     },
   },
   {
-    title: 'Change style based on Press',
+    title: 'Change content based on focus',
+    render(): React.Node {
+      return <TVFocusContentPress />;
+    },
+  },
+  {
+    title: 'Change style based on Press and Focus',
     render(): React.Node {
       return (
         <View style={styles.row}>
           <Pressable
-            style={({pressed}) => [
+            tvParallaxProperties={{
+              enabled: true,
+              pressMagnification: 1.1,
+            }}
+            style={({pressed, focused}) => [
               {
-                backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                backgroundColor: pressed
+                  ? 'rgb(210, 230, 255)'
+                  : focused
+                  ? 'rgb(255, 230, 210)'
+                  : 'white',
               },
               styles.wrapperCustom,
             ]}>

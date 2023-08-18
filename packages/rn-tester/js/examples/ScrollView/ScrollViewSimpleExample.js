@@ -28,11 +28,25 @@ class ScrollViewSimpleExample extends React.Component<{...}> {
   ): Array<any> => {
     const items = [];
     for (let i = 0; i < nItems; i++) {
-      items[i] = (
-        <TouchableOpacity key={i} style={styles}>
-          <Text>{'Item ' + i}</Text>
-        </TouchableOpacity>
-      );
+      if (i % 6 === 0) {
+        items[i] = (
+          <TouchableOpacity disabled accessible={false} key={i} style={styles}>
+            <Text style={{ color: '#a52a2a' }}>{'Inaccessible ' + i}</Text>
+          </TouchableOpacity>
+        );
+      } else if (i % 3 === 0) {
+        items[i] = (
+          <TouchableOpacity disabled key={i} style={styles}>
+            <Text style={{ color: '#a52a2a' }}>{'Disabled ' + i}</Text>
+          </TouchableOpacity>
+        );
+      } else {
+        items[i] = (
+          <TouchableOpacity key={i} style={styles}>
+            <Text>{'Item ' + i}</Text>
+          </TouchableOpacity>
+        );
+      }
     }
     return items;
   };
@@ -133,12 +147,12 @@ const styles = StyleSheet.create({
 exports.title = 'ScrollViewSimpleExample';
 exports.category = 'Basic';
 exports.description =
-  'Component that enables scrolling through child components.';
+  'Component that enables scrolling through child components.  The components are touchables, and every 7th component is disabled to check for correct behavior of scrolling and of the focus engine on TV platforms';
 
 exports.examples = [
   {
-    title: 'Simple scroll view',
-    render: function (): React.Element<typeof ScrollViewSimpleExample> {
+    title: 'Simple scroll view with every 7th element disabled',
+    render: function(): React.Element<typeof ScrollViewSimpleExample> {
       return <ScrollViewSimpleExample />;
     },
   },

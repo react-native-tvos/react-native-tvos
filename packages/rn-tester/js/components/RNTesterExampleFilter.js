@@ -11,12 +11,12 @@
 const React = require('react');
 const RNTesterListFilters = require('./RNTesterListFilters');
 const {
+  Platform,
   StyleSheet,
   TextInput,
   View,
   ScrollView,
   Image,
-  Platform,
 } = require('react-native');
 import {RNTesterThemeContext} from './RNTesterTheme';
 
@@ -106,6 +106,9 @@ class RNTesterExampleFilter<T> extends React.Component<Props<T>, State> {
 
   _renderTextInput(): ?React.Element<any> {
     if (this.props.disableSearch) {
+      return null;
+    }
+    if (Platform.isTV) {
       return null;
     }
     return (

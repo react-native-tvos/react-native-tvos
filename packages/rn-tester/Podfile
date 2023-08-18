@@ -1,7 +1,8 @@
 require_relative '../react-native/scripts/react_native_pods'
 
+source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :ios, min_ios_version_supported
+platform :tvos, min_ios_version_supported
 
 prepare_react_native_project!
 
@@ -16,7 +17,7 @@ if USE_FRAMEWORKS
   use_frameworks! :linkage => linkage.to_sym
 end
 
-def pods(target_name, options = {}, use_flipper: !IN_CI && !USE_FRAMEWORKS)
+def pods(target_name, options = {}, use_flipper: false)
   project 'RNTesterPods.xcodeproj'
 
   fabric_enabled = ENV['USE_FRAMEWORKS'] == 'dynamic' ? false : true
@@ -34,8 +35,8 @@ def pods(target_name, options = {}, use_flipper: !IN_CI && !USE_FRAMEWORKS)
   use_react_native!(
     path: @prefix_path,
     fabric_enabled: fabric_enabled,
-    hermes_enabled: hermes_enabled,
-    flipper_configuration: use_flipper ? FlipperConfiguration.enabled : FlipperConfiguration.disabled,
+    hermes_enabled: ENV['USE_HERMES'] == '1',
+    flipper_configuration: FlipperConfiguration.disabled,
     app_path: "#{Dir.pwd}",
     config_file_dir: "#{Dir.pwd}/node_modules",
     production: !ENV['PRODUCTION'].nil?,

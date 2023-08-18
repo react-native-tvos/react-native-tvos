@@ -129,6 +129,9 @@ public class RNTesterApplication extends Application implements ReactApplication
 
   @Override
   public void onCreate() {
+    // Normally we only send key up events in ReactAndroidHWInputDeviceHelper
+    // Change enableKeyDownEvents to true to send both key down and key up events
+    ReactFeatureFlags.enableKeyDownEvents = false;
     ReactFontManager.getInstance().addCustomFont(this, "Rubik", R.font.rubik);
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
