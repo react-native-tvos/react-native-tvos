@@ -18,7 +18,7 @@ const SDKS_DIR = path.normalize(path.join(__dirname, '..', '..', 'sdks'));
 const HERMES_DIR = path.join(SDKS_DIR, 'hermes');
 const HERMES_TAG_FILE_PATH = path.join(SDKS_DIR, '.hermesversion');
 const HERMES_SOURCE_TARBALL_BASE_URL =
-  'https://github.com/facebook/hermes/tarball/';
+  'https://github.com/react-native-tvos/hermes/tarball/';
 const HERMES_TARBALL_DOWNLOAD_DIR = path.join(SDKS_DIR, 'download');
 const MACOS_BIN_DIR = path.join(SDKS_DIR, 'hermesc', 'osx-bin');
 const MACOS_HERMESC_PATH = path.join(MACOS_BIN_DIR, 'hermesc');
@@ -72,7 +72,7 @@ function setHermesTag(hermesTag) {
 
 function getHermesTagSHA(hermesTag) {
   return execSync(
-    `git ls-remote https://github.com/facebook/hermes ${hermesTag} | cut -f 1`,
+    `git ls-remote https://github.com/react-native-tvos/hermes ${hermesTag} | cut -f 1`,
   )
     .toString()
     .trim();
@@ -98,7 +98,7 @@ function downloadHermesSourceTarball() {
   }
 
   console.info(
-    `[Hermes] Downloading Hermes source code for commit ${hermesTagSHA}`,
+    `[Hermes] Downloading Hermes source code for commit ${hermesTagSHA} from ${hermesTarballUrl}`,
   );
   try {
     delegateSync('curl', [hermesTarballUrl, '-Lo', hermesTarballDownloadPath]);
