@@ -81,6 +81,21 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
 
   bool removeClippedSubviews{false};
 
+#if TARGET_OS_TV
+  bool isTVSelectable{false};
+  bool hasTVPreferredFocus{false};
+  TVParallaxProperties tvParallaxProperties;
+  std::optional<int> nextFocusUp;
+  std::optional<int> nextFocusDown;
+  std::optional<int> nextFocusLeft;
+  std::optional<int> nextFocusRight;
+  bool autoFocus{false};
+  bool trapFocusUp{false};
+  bool trapFocusDown{false};
+  bool trapFocusLeft{false};
+  bool trapFocusRight{false};
+#endif
+
   Float elevation{}; /* Android-only */
 
 #ifdef ANDROID
@@ -92,7 +107,11 @@ class ViewProps : public YogaStylableProps, public AccessibilityProps {
   bool hasTVPreferredFocus{false};
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};
-
+  bool autoFocus{false};
+  bool trapFocusUp{false};
+  bool trapFocusDown{false};
+  bool trapFocusLeft{false};
+  bool trapFocusRight{false};
 #endif
 
 #pragma mark - Convenience Methods

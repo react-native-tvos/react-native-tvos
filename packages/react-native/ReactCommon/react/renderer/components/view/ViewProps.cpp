@@ -25,6 +25,80 @@ ViewProps::ViewProps(
     bool shouldSetRawProps)
     : YogaStylableProps(context, sourceProps, rawProps, shouldSetRawProps),
       AccessibilityProps(context, sourceProps, rawProps),
+#if TARGET_OS_TV
+      isTVSelectable(convertRawProp(
+          context,
+          rawProps,
+          "isTVSelectable",
+          sourceProps.isTVSelectable,
+          (Boolean) false)),
+      hasTVPreferredFocus(convertRawProp(
+          context,
+          rawProps,
+          "hasTVPreferredFocus",
+          sourceProps.hasTVPreferredFocus,
+          (Boolean) false)),
+      tvParallaxProperties(convertRawProp(
+          context,
+          rawProps,
+          "tvParallaxProperties",
+          sourceProps.tvParallaxProperties,
+          {})),
+      nextFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusUp",
+          sourceProps.nextFocusUp,
+          {})),
+      nextFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusDown",
+          sourceProps.nextFocusDown,
+          {})),
+      nextFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusLeft",
+          sourceProps.nextFocusLeft,
+          {})),
+      nextFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusRight",
+          sourceProps.nextFocusRight,
+          {})),
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          (Boolean) false)),
+      trapFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusUp",
+          sourceProps.trapFocusUp,
+          false)),
+      trapFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusDown",
+          sourceProps.trapFocusDown,
+          false)),
+      trapFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusLeft",
+          sourceProps.trapFocusLeft,
+          false)),
+      trapFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusRight",
+          sourceProps.trapFocusRight,
+          false)),
+#endif
       opacity(
           CoreFeatures::enablePropIteratorSetter ? sourceProps.opacity
                                                  : convertRawProp(
@@ -262,8 +336,38 @@ ViewProps::ViewProps(
                     rawProps,
                     "renderToHardwareTextureAndroid",
                     sourceProps.renderToHardwareTextureAndroid,
-                    {}))
+                    {})),
 
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          false)),
+      trapFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusUp",
+          sourceProps.trapFocusUp,
+          false)),
+      trapFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusDown",
+          sourceProps.trapFocusDown,
+          false)),
+      trapFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusLeft",
+          sourceProps.trapFocusLeft,
+          false)),
+      trapFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusRight",
+          sourceProps.trapFocusRight,
+          false))
 #endif
 {
 }

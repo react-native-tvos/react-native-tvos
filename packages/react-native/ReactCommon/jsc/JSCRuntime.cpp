@@ -293,8 +293,15 @@ class JSCRuntime : public jsi::Runtime {
     }                          \
   } while (0)
 
-#if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
-// This takes care of watch and tvos (due to backwards compatibility in
+#if defined(__TV_OS_VERSION_MIN_REQUIRED)
+#if __TV_OS_VERSION_MIN_REQUIRED < __TVOS_10_0
+#define _JSC_NO_ARRAY_BUFFERS
+#endif
+#if __TV_OS_VERSION_MIN_REQUIRED >= __TVOS_9_0
+#define _JSC_FAST_IS_ARRAY
+#endif
+#elif defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
+// This takes care of watch (due to backwards compatibility in
 // Availability.h
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_9_0
 #define _JSC_FAST_IS_ARRAY
