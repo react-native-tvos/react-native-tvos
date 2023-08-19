@@ -31,6 +31,7 @@ import {
   View,
   StyleSheet,
   findNodeHandle,
+  TVFocusGuideView,
 } from 'react-native';
 import Batchinator from '../Interaction/Batchinator';
 import clamp from '../Utilities/clamp';
@@ -46,7 +47,6 @@ import {
   VirtualizedListContext,
   VirtualizedListContextProvider,
 } from './VirtualizedListContext.js';
-import TVFocusGuideView from '../Components/TV/TVFocusGuideView';
 import {
   computeWindowedRenderLimits,
   keyExtractor as defaultKeyExtractor,
