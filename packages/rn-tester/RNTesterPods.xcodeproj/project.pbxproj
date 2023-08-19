@@ -16,7 +16,6 @@
 		3D2AFAF51D646CF80089D1A3 /* legacy_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D2AFAF41D646CF80089D1A3 /* legacy_image@2x.png */; };
 		5C60EB1C226440DB0018C04F /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5C60EB1B226440DB0018C04F /* AppDelegate.mm */; };
 		5CB07C9B226467E60039471C /* RNTesterTurboModuleProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5CB07C99226467E60039471C /* RNTesterTurboModuleProvider.mm */; };
-		8145AE06241172D900A3F8DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8145AE05241172D900A3F8DA /* LaunchScreen.storyboard */; };
 		953D44E0A849F5064163EA24 /* libPods-RNTesterIntegrationTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F4A7C4C85AB0198A25D51E4 /* libPods-RNTesterIntegrationTests.a */; };
 		BE3BEE3556275C62F33864C8 /* libPods-RNTesterUnitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6144DEEE56C6C17B301A90E4 /* libPods-RNTesterUnitTests.a */; };
 		CD10C7A5290BD4EB0033E1ED /* RCTEventEmitterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CD10C7A4290BD4EB0033E1ED /* RCTEventEmitterTests.m */; };
@@ -100,7 +99,6 @@
 		5CB07C9A226467E60039471C /* RNTesterTurboModuleProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNTesterTurboModuleProvider.h; path = RNTester/RNTesterTurboModuleProvider.h; sourceTree = "<group>"; };
 		6144DEEE56C6C17B301A90E4 /* libPods-RNTesterUnitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNTesterUnitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FC437025B5EE3899315628B /* Pods-RNTester.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTester.release.xcconfig"; path = "Target Support Files/Pods-RNTester/Pods-RNTester.release.xcconfig"; sourceTree = "<group>"; };
-		8145AE05241172D900A3F8DA /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RNTester/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AC474BFB29BBD4A1002BDAED /* RNTester.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = RNTester.xctestplan; path = RNTester/RNTester.xctestplan; sourceTree = "<group>"; };
 		B8219B8DAB1CDD38543E30A4 /* Pods-RNTesterUnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTesterUnitTests.release.xcconfig"; path = "Target Support Files/Pods-RNTesterUnitTests/Pods-RNTesterUnitTests.release.xcconfig"; sourceTree = "<group>"; };
 		BD6F35F6C79ACF7496CBC337 /* Pods-RNTesterIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTesterIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-RNTesterIntegrationTests/Pods-RNTesterIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 				5CB07C99226467E60039471C /* RNTesterTurboModuleProvider.mm */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				2DDEF00F1F84BF7B00DBDF73 /* Images.xcassets */,
-				8145AE05241172D900A3F8DA /* LaunchScreen.storyboard */,
 				680759612239798500290469 /* Fabric */,
 				272E6B3A1BEA846C001FCF37 /* NativeExampleViews */,
 				1323F18D1C04ABAC0091BED0 /* Supporting Files */,
@@ -416,7 +413,6 @@
 				68CD48B71D2BCB2C007E06A9 /* Build JS Bundle */,
 				5CF0FD27207FC6EC00C13D65 /* Start Metro */,
 				79E8BE2B119D4C5CCD2F04B3 /* [RN] Copy Hermes Framework */,
-				4E5A5A192F46F13B14A915AF /* [CP] Embed Pods Frameworks */,
 				4E2AB2EE08A8E6F86E659152 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -436,7 +432,6 @@
 				E7DB209B22B2BA84005AC45F /* Sources */,
 				E7DB209C22B2BA84005AC45F /* Frameworks */,
 				E7DB209D22B2BA84005AC45F /* Resources */,
-				B0C098EC04B51698381E2BD5 /* [CP] Embed Pods Frameworks */,
 				69760E095072DBD949449A0E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -457,7 +452,6 @@
 				E7DB214F22B2F332005AC45F /* Sources */,
 				E7DB215022B2F332005AC45F /* Frameworks */,
 				E7DB215122B2F332005AC45F /* Resources */,
-				4FB5AB9168FB67DD59C380D8 /* [CP] Embed Pods Frameworks */,
 				98FEA13D7CC9F0B84C9AFCC2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -514,7 +508,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DDEF0101F84BF7B00DBDF73 /* Images.xcassets in Resources */,
-				8145AE06241172D900A3F8DA /* LaunchScreen.storyboard in Resources */,
 				3D2AFAF51D646CF80089D1A3 /* legacy_image@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -598,40 +591,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTester/Pods-RNTester-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4E5A5A192F46F13B14A915AF /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTester/Pods-RNTester-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTester/Pods-RNTester-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTester/Pods-RNTester-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4FB5AB9168FB67DD59C380D8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTesterIntegrationTests/Pods-RNTesterIntegrationTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTesterIntegrationTests/Pods-RNTesterIntegrationTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTesterIntegrationTests/Pods-RNTesterIntegrationTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5CF0FD27207FC6EC00C13D65 /* Start Metro */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -713,23 +672,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTesterIntegrationTests/Pods-RNTesterIntegrationTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B0C098EC04B51698381E2BD5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTesterUnitTests/Pods-RNTesterUnitTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNTesterUnitTests/Pods-RNTesterUnitTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNTesterUnitTests/Pods-RNTesterUnitTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E13BEB5F9ED322B7AA8D6E0B /* [CP] Check Pods Manifest.lock */ = {
@@ -843,7 +785,6 @@
 				CODE_SIGN_ENTITLEMENTS = RNTester/RNTester.entitlements;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/RNTester/Info.plist";
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -863,7 +804,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTester.localDevelopment;
 				PRODUCT_NAME = RNTester;
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Debug;
 		};
@@ -876,7 +818,6 @@
 				DEVELOPMENT_TEAM = "";
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/RNTester/Info.plist";
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -895,7 +836,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTester.localDevelopment;
 				PRODUCT_NAME = RNTester;
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Release;
 		};
@@ -936,7 +878,8 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=appletvsimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=appletvsimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -961,7 +904,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
@@ -981,6 +923,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../react-native";
 				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 				WARNING_CFLAGS = (
 					"-Wextra",
 					"-Wall",
@@ -1026,7 +969,8 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=appletvsimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=appletvsimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -1044,7 +988,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_CFLAGS = (
 					"$(inherited)",
@@ -1063,6 +1006,7 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../react-native";
 				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 				VALIDATE_PRODUCT = YES;
 				WARNING_CFLAGS = (
 					"-Wextra",
@@ -1085,7 +1029,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = RNTesterUnitTests/Info.plist;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1105,7 +1048,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTesterUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Debug;
 		};
@@ -1123,7 +1067,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = RNTesterUnitTests/Info.plist;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1142,7 +1085,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTesterUnitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Release;
 		};
@@ -1164,7 +1108,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RNTesterIntegrationTests/Info.plist;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1179,8 +1122,9 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTesterIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RNTester.app/RNTester";
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Debug;
 		};
@@ -1199,7 +1143,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = RNTesterIntegrationTests/Info.plist;
-				TVOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1213,8 +1156,9 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xcc -DFB_SONARKIT_ENABLED";
 				PRODUCT_BUNDLE_IDENTIFIER = com.meta.RNTesterIntegrationTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "3";
+				TARGETED_DEVICE_FAMILY = 3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RNTester.app/RNTester";
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Release;
 		};
