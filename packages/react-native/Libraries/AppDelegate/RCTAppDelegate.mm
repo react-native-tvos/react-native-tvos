@@ -120,12 +120,15 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   enableFabric = self.fabricEnabled;
 #endif
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
+#if TARGET_OS_TV
+  rootView.backgroundColor = [UIColor whiteColor];
+#else
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];
   } else {
     rootView.backgroundColor = [UIColor whiteColor];
   }
-
+#endif
   return rootView;
 }
 
