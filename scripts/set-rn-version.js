@@ -25,6 +25,11 @@ const {parseVersion, validateBuildType} = require('./version-utils');
 const {saveFiles} = require('./scm-utils');
 
 let argv = yargs
+  .option('c', {
+    alias: 'commit',
+    type: 'boolean',
+    default: false,
+  })
   .option('v', {
     alias: 'to-version',
     type: 'string',
@@ -38,6 +43,7 @@ let argv = yargs
 
 const buildType = argv.buildType;
 const version = argv.toVersion;
+const commit = argv.commit || false;
 
 try {
   validateBuildType(buildType);
@@ -122,6 +128,12 @@ fs.writeFileSync(
 
 const packageJson = JSON.parse(cat('packages/react-native/package.json'));
 packageJson.version = version;
+// Add react-native-core dependency
+const coreVersion = version.split('-')[0];
+packageJson.devDependencies = packageJson.devDependencies ?? {};
+packageJson.devDependencies[
+  'react-native-core'
+] = `npm:react-native@${coreVersion}`;
 
 fs.writeFileSync(
   'packages/react-native/package.json',
@@ -147,6 +159,7 @@ if (
 }
 
 // Change react-native version in the template's package.json
+//exec(`node scripts/set-rn-template-version.js ${version}`);
 exec(`node scripts/set-rn-template-version.js ${version}`);
 
 // Make sure to update ruby version
@@ -179,6 +192,38 @@ if (+numberOfChangedLinesWithNewVersion !== filesToValidate.length) {
     )}] must have versions in them`,
   );
   echo(`These files already had version ${version} set.`);
+}
+
+if (buildType === 'release') {
+  echo('Updating RNTester Podfile.lock...');
+  if (exec('source scripts/update_podfile_lock.sh && update_pods').code) {
+    echo('Failed to update RNTester Podfile.lock.');
+    echo('Fix the issue, revert and try again.');
+    exit(1);
+  }
+  echo('Executing yarn to update yarn.lock...');
+  if (exec('yarn').code) {
+    echo('Failed to update yarn.lock.');
+    echo('Fix the issue, revert and try again.');
+    exit(1);
+  }
+}
+
+if (commit) {
+  const filesToCommit = [
+    'packages/react-native/Libraries/Core/ReactNativeVersion.js',
+    'packages/react-native/React/Base/RCTVersion.m',
+    'packages/react-native/ReactAndroid/gradle.properties',
+    'packages/react-native/ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/ReactNativeVersion.java',
+    'packages/react-native/ReactCommon/cxxreact/ReactNativeVersion.h',
+    'packages/react-native/package.json',
+    'packages/react-native/template/package.json',
+    'packages/rn-tester/Podfile.lock',
+    'yarn.lock',
+  ];
+  exec('yarn');
+  exec(`git add ${filesToCommit.join(' ')}`);
+  exec(`git commit -m "Bump version number (${version})"`);
 }
 
 exit(0);

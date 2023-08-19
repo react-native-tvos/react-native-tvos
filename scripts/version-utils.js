@@ -123,7 +123,7 @@ function validateNightly(version) {
 
 function isStableRelease(version) {
   return (
-    version.major === '0' && version.minor !== '0' && version.prerelease == null
+    version.major === '0' && version.minor !== '0'
   );
 }
 

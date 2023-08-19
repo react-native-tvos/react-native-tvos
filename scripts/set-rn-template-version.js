@@ -25,7 +25,9 @@ const jsonPath = path.join(
 );
 
 let templatePackageJson = require(jsonPath);
-templatePackageJson.dependencies['react-native'] = version;
+
+templatePackageJson.dependencies['react-native'] = `npm:react-native-tvos@${version}`;
+
 fs.writeFileSync(
   jsonPath,
   JSON.stringify(templatePackageJson, null, 2) + '\n',
