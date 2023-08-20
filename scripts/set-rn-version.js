@@ -126,20 +126,32 @@ fs.writeFileSync(
   'utf-8',
 );
 
-const packageJson = JSON.parse(cat('packages/react-native/package.json'));
-packageJson.version = version;
-// Add react-native-core dependency
-const coreVersion = version.split('-')[0];
-packageJson.devDependencies = packageJson.devDependencies ?? {};
-packageJson.devDependencies[
-  'react-native-core'
-] = `npm:react-native@${coreVersion}`;
+{
+  const packageJson = JSON.parse(cat('package.json'));
+  packageJson.version = version;
+  // Add react-native-core dependency
+  const coreVersion = version.split('-')[0];
+  packageJson.devDependencies[
+    'react-native-core'
+  ] = `npm:react-native@${coreVersion}`;
+  
+  fs.writeFileSync(
+    'package.json',
+    JSON.stringify(packageJson, null, 2),
+    'utf-8',
+  );
+}
 
-fs.writeFileSync(
-  'packages/react-native/package.json',
-  JSON.stringify(packageJson, null, 2),
-  'utf-8',
-);
+{
+  const packageJson = JSON.parse(cat('packages/react-native/package.json'));
+  packageJson.version = version;
+  
+  fs.writeFileSync(
+    'packages/react-native/package.json',
+    JSON.stringify(packageJson, null, 2),
+    'utf-8',
+  );
+}
 
 // Change ReactAndroid/gradle.properties
 saveFiles(
@@ -219,6 +231,7 @@ if (commit) {
     'packages/react-native/package.json',
     'packages/react-native/template/package.json',
     'packages/rn-tester/Podfile.lock',
+    'package.json',
     'yarn.lock',
   ];
   exec('yarn');
