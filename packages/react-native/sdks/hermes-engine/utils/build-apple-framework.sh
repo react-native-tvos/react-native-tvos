@@ -37,6 +37,10 @@ function get_ios_deployment_target {
   use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('ios')"
 }
 
+function get_tvos_deployment_target {
+  use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('tvos')"
+}
+
 function get_mac_deployment_target {
   use_env_var_or_ruby_prop "${MAC_DEPLOYMENT_TARGET}" "deployment_target('osx')"
 }
@@ -54,11 +58,14 @@ function build_host_hermesc {
 function configure_apple_framework {
   local build_cli_tools enable_bitcode enable_debugger cmake_build_type
 
-  if [[ $1 == iphoneos || $1 == catalyst ]]; then
-    enable_bitcode="true"
-  else
-    enable_bitcode="false"
-  fi
+#  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
+#    enable_bitcode="true"
+#  else
+#    enable_bitcode="false"
+#  fi
+#
+# Xcode 14 deprecates bitcode, so we turn this off
+  enable_bitcode="false"
   if [[ $1 == macosx ]]; then
     build_cli_tools="true"
   else

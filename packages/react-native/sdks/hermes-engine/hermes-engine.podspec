@@ -44,8 +44,8 @@ Pod::Spec.new do |spec|
                     "CLANG_CXX_LIBRARY" => "compiler-default"
                   }.merge!(build_type == :debug ? { "GCC_PREPROCESSOR_DEFINITIONS" => "HERMES_ENABLE_DEBUGGER=1" } : {})
 
-  spec.ios.vendored_frameworks = "destroot/Library/Frameworks/ios/hermes.framework"
-  spec.tvos.vendored_frameworks = "destroot/Library/Frameworks/tvos/hermes.framework"
+  spec.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.framework"
+  spec.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.framework"
   spec.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
 
   if source[:http] then

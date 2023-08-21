@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Should be run from the top level directory
+# Should be run from the packages/react-native directory
 
 
 export REACT_NATIVE_PATH=$PWD
@@ -10,6 +10,7 @@ export MAC_DEPLOYMENT_TARGET="10.13"
 export IOS_DEPLOYMENT_TARGET="12.4"
 
 export REACT_NATIVE_CI=true
+export CI=true
 
 # Prepare Hermes
 rm -rf $HERMES_TV_ARCHIVE_DIR
@@ -40,5 +41,5 @@ build_tv_artifact
 
 # Final step: publish to local repository
 echo "Artifacts are now in $HERMES_TV_ARCHIVE_DIR"
-echo "You can publish them to the local (/tmp/maven-local) repository:"
-echo "  ./gradlew :ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository"
+echo "You can publish them to the local (/tmp/maven-local) repository, from the top level directory:"
+echo "  ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository"
