@@ -31,7 +31,6 @@ import {
   View,
   StyleSheet,
   findNodeHandle,
-  TVFocusGuideView,
 } from 'react-native';
 import Batchinator from '../Interaction/Batchinator';
 import clamp from '../Utilities/clamp';
@@ -1152,30 +1151,16 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
           registerAsNestedChild: this._registerAsNestedChild,
           unregisterAsNestedChild: this._unregisterAsNestedChild,
         }}>
-        <TVFocusGuideView
-          trapFocusLeft={
-            horizontalOrDefault(this.props.horizontal) && this.state.first > 0
-          }
-          trapFocusRight={
-            horizontalOrDefault(this.props.horizontal) && this._hasMore
-          }
-          trapFocusUp={
-            !horizontalOrDefault(this.props.horizontal) && this.state.first > 0
-          }
-          trapFocusDown={
-            !horizontalOrDefault(this.props.horizontal) && this._hasMore
-          }>
-          {React.cloneElement(
-            (
-              this.props.renderScrollComponent ||
-              this._defaultRenderScrollComponent
-            )(scrollProps),
-            {
-              ref: this._captureScrollRef,
-            },
-            cells,
-          )}
-        </TVFocusGuideView>
+        {React.cloneElement(
+          (
+            this.props.renderScrollComponent ||
+            this._defaultRenderScrollComponent
+          )(scrollProps),
+          {
+            ref: this._captureScrollRef,
+          },
+          cells,
+        )}
       </VirtualizedListContextProvider>
     );
     let ret: React.Node = innerRet;
