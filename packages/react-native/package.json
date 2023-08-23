@@ -72,7 +72,7 @@
     "types"
   ],
   "scripts": {
-    "prepack": "cp ../../README.md ."
+    "prepack": "cp ../../README-tv.md ./README.md"
   },
   "peerDependencies": {
     "react": "18.2.0"
