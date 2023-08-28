@@ -305,7 +305,8 @@ function Pressable(props: Props, forwardedRef): React.Node {
     accessibilityLiveRegion,
     accessibilityLabel,
     accessibilityState: _accessibilityState,
-    focusable: focusable !== false,
+    focusable:
+      focusable !== false && disabled !== true && ariaDisabled !== true,
     isTVSelectable: isTVSelectable !== false && accessible !== false,
     accessibilityValue,
     hitSlop,
@@ -380,7 +381,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         if (evt?.eventType === 'focus') {
           setFocused(true);
           onFocus && onFocus(evt);
-        // $FlowFixMe[prop-missing]
+          // $FlowFixMe[prop-missing]
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
           setFocused(false);
@@ -391,12 +392,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       if (Platform.isTVOS) {
         // $FlowFixMe[prop-missing]
         if (focused && evt.eventType === 'select') {
-        // $FlowFixMe[incompatible-exact]
+          // $FlowFixMe[incompatible-exact]
           onPress && onPress(evt);
         }
         // $FlowFixMe[prop-missing]
         if (focused && evt.eventType === 'longSelect') {
-        // $FlowFixMe[incompatible-exact]
+          // $FlowFixMe[incompatible-exact]
           onLongPress && onLongPress(evt);
         }
       }
@@ -426,7 +427,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       nextFocusLeft={tagForComponentOrHandle(props.nextFocusLeft)}
       nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
       nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
-      isTVSelectable={isTVSelectable !== false && accessible !== false}
+      isTVSelectable={
+        isTVSelectable !== false &&
+        accessible !== false &&
+        disabled !== true &&
+        ariaDisabled !== true
+      }
       style={typeof style === 'function' ? style({pressed, focused}) : style}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
