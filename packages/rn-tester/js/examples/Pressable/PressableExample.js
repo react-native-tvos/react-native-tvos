@@ -47,8 +47,10 @@ function ContentPress() {
           onPress={() => {
             setTimesPressed(current => current + 1);
           }}>
-          {({pressed}) => (
-            <Text style={styles.text}>{pressed ? 'Pressed!' : 'Press Me'}</Text>
+          {({pressed, focused}) => (
+            <Text style={[styles.text, {opacity: focused ? 0.5 : 1.0}]}>
+              {pressed ? 'Pressed!' : 'Press Me'}
+            </Text>
           )}
         </Pressable>
       </View>
@@ -142,7 +144,10 @@ function PressableFeedbackEvents() {
     <View testID="pressable_feedback_events">
       <View style={[styles.row, styles.centered]}>
         <Pressable
-          style={styles.wrapper}
+          style={({focused}) => [
+            styles.wrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           testID="pressable_feedback_events_button"
           accessibilityLabel="pressable feedback events"
           accessibilityRole="button"
@@ -180,7 +185,10 @@ function PressableDelayEvents() {
     <View testID="pressable_delay_events">
       <View style={[styles.row, styles.centered]}>
         <Pressable
-          style={styles.wrapper}
+          style={({focused}) => [
+            styles.wrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           testID="pressable_delay_events_button"
           onPress={() => appendEvent('press')}
           onPressIn={() => appendEvent('pressIn')}
@@ -241,7 +249,10 @@ function PressableHitSlop() {
       <View style={[styles.row, styles.centered]}>
         <Pressable
           onPress={() => setTimesPressed(num => num + 1)}
-          style={styles.hitSlopWrapper}
+          style={({focused}) => [
+            styles.hitSlopWrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           hitSlop={{top: 30, bottom: 30, left: 60, right: 60}}
           testID="pressable_hit_slop_button">
           <Text style={styles.hitSlopButton}>Press Outside This View</Text>
@@ -283,7 +294,14 @@ function PressableNativeMethods() {
 function PressableDisabled() {
   return (
     <>
-      <Pressable disabled={true} style={[styles.row, styles.block]}>
+      <Pressable
+        disabled={true}
+        onPress={() => console.warn('Disabled pressable was pressed!')}
+        style={({pressed, focused}) => [
+          {opacity: pressed || focused ? 0.5 : 1},
+          styles.row,
+          styles.block,
+        ]}>
         <Text style={styles.disabledButton}>Disabled Pressable</Text>
       </Pressable>
 
@@ -293,8 +311,8 @@ function PressableDisabled() {
           enabled: true,
           pressMagnification: 1.1,
         }}
-        style={({pressed}) => [
-          {opacity: pressed ? 0.5 : 1},
+        style={({pressed, focused}) => [
+          {opacity: pressed || focused ? 0.5 : 1},
           styles.row,
           styles.block,
         ]}>
@@ -316,7 +334,9 @@ function PressableHoverStyle() {
           styles.wrapperCustom,
         ]}
         onHoverIn={() => setHovered(true)}
-        onHoverOut={() => setHovered(false)}>
+        onHoverOut={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}>
         <Text style={styles.text}>Hover Me</Text>
       </Pressable>
     </View>
