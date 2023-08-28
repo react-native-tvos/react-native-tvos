@@ -64,7 +64,7 @@ let extraHermesDirectoryPath;
 
   const hermesInstallScript = `
     mkdir -p ${HERMES_SOURCE_DEST_PATH} && \
-    wget ${hermesReleaseURI} -O ${tmpDownloadDir}/hermes.tar.gz && \
+    wget --secure-protocol=TLSv1_2 ${hermesReleaseURI} -O ${tmpDownloadDir}/hermes.tar.gz && \
     tar -xzf ${tmpDownloadDir}/hermes.tar.gz -C ${tmpExtractDir} && \
     HERMES_SOURCE_EXTRACT_PATH=$(ls -d ${tmpExtractDir}/*) && \
     mv $HERMES_SOURCE_EXTRACT_PATH ${HERMES_SOURCE_DEST_PATH}
