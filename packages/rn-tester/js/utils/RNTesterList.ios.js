@@ -68,7 +68,7 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'NewAppScreenExample',
     module: require('../examples/NewAppScreen/NewAppScreenExample'),
-    supportsTVOS: false,
+    supportsTVOS: true,
   },
   {
     key: 'PressableExample',
