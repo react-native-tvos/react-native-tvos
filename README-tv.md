@@ -1,6 +1,6 @@
 ## react-native-tvos
 
-Going forward, Apple TV and Android TV support for React Native will be maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
+Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.72.4-0 release of this package will be derived from the 0.72.4 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
@@ -22,15 +22,8 @@ As of the 0.71 release, Hermes is fully working on both Apple TV and Android TV,
 
 ### React Native new architecture (Fabric) support
 
-Before creating a new project, or running `pod install` in an existing project using version 0.69.5-0 or higher, execute 
-
-```sh
-export RCT_NEW_ARCH_ENABLED=1
-```
-Notes:
-
-- _Apple TV_: `pod install` will pick up the additional pods needed for the new architecture. There are some issues with interactions between Apple TV parallax properties implementation and the new renderer. TabBarIOS has not been reimplemented in the new architecture so it will show up as an "unimplemented component".
-- _Android TV_: As in the core repo, Android builds use prebuilt artifacts published in Maven Central.
+- _Apple TV_: Set the environment variable `RCT_FABRIC_ENABLED=1`, or modify your app's Podfile to set the `:fabric_enabled` value to `true` in both iOS and tvOS targets. After that, run `pod install` to pick up the additional pods needed for the new architecture. Some components (TVTextScrollView, TabBarIOS) have not been reimplemented in the new architecture so they will show up as an "unimplemented component".
+- _Android TV_: To enable Fabric, modify `android/gradle.properties` in your app and set `newArchEnabled=true`, then rebuild your app.
 
 ### Typescript
 
@@ -48,25 +41,19 @@ TV device support has been implemented with the intention of making existing Rea
 
 The RNTester app supports Apple TV and Android TV.  In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.  Run `pod install`, then open `RNTesterPods.xcworkspace` and build.
 
-## Pitfall
-
-Make sure you do not globally install `react-native` or `react-native-tvos`. You should only install `@react-native-community/cli` to use the commands below. If you have done this the wrong way, you may get error messages like:
-
-```
-ld: library not found for -lPods-TestApp-tvOS
-```
 
 You should also install `yarn` globally, as it should be used instead of `npm` for working in React Native projects.
 
 ## Build changes
 
-- _Native layer_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
-- _react-native init_: Creating a new project that uses this package is done using the react-native CLI.  New projects created this way will automatically have properly configured Apple TV targets created in their XCode projects.
-- _Maven artifacts_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `react-native-gradle-plugin` has been upgraded so that the Android dependencies will be detected correctly during build.
+- _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
+- _Maven artifacts for Android TV_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
 ## New project creation
 
-To use this NPM package in a new project, you can reference it as in the following example using the React Native community CLI:
+> _Pitfall:_ Make sure you do not globally install `react-native` or `react-native-tvos`. You should only install `@react-native-community/cli` to use the commands below. If you have done this the wrong way, you may get error messages like `ld: library not found for -lPods-TestApp-tvOS`.
+
+Creating a new project that uses this package is done using the react-native CLI.  New projects created this way will automatically have properly configured Apple TV targets created in their XCode projects.  To use this NPM package in a new project, you can reference it as in the following example using the React Native community CLI:
 
 ```sh
 # Make sure you have the CLI installed globally (this only needs to be done once on your system)
@@ -75,17 +62,24 @@ npm install -g @react-native-community/cli
 react-native init TestApp --template=react-native-tvos@latest
 # Now start the app in the tvOS Simulator - this will only work on a macOS machine
 cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
+# The Expo CLI may also be used -- see below for more details
 ```
+
+## Expo CLI support
 
 To run Apple TV (and Android TV) targets from the command line, it is now possible to use the Expo CLI, using the following steps:
 
-- In your app, install the required Expo modules: `yarn add expo`
+- In your app, install the required Expo module: `yarn add expo`
 - Add a file `react-native.config.js` at the top level of your app directory, with [these contents](https://github.com/byCedric/custom-prebuild-example/blob/main/app/react-native.config.js).
 - Then an Apple TV target can be run: `npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"`
 - To run Android TV: `npx expo run:android`
+- The above features are now built into
+
 See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details on Expo CLI functionality. Note that many of these features require that Expo SDK modules be built into your app, which is not yet supported on Apple TV.)
 
-- _JavaScript layer_: Support for Apple TV has been added to `Platform.ios.js`. You can check whether code is running on AppleTV by doing
+## Code changes
+
+- _JavaScript layer_: Support for TV has been added to the `Platform` React Native API.
 
 ```javascript
 var Platform = require('Platform');
@@ -96,19 +90,21 @@ var running_on_tv = Platform.isTV;
 var running_on_apple_tv = Platform.isTVOS;
 ```
 
-## Code changes
 
-- _General support for tvOS_: Apple TV specific changes in native code are all wrapped by the TARGET_OS_TV define. These include changes to suppress APIs that are not supported on tvOS (e.g. web views, sliders, switches, status bar, etc.), and changes to support user input from the TV remote or keyboard.
 
-- _Common codebase_: Since tvOS and iOS share most Objective-C and JavaScript code in common, most documentation for iOS applies equally to tvOS.
+- _Common codebase for iOS and tvOS_: Since tvOS and iOS share most Objective-C and JavaScript code in common, most documentation for iOS applies equally to tvOS. Apple TV specific changes in native code are all wrapped by the TARGET_OS_TV define. These include changes to suppress APIs that are not supported on tvOS (e.g. web views, sliders, switches, status bar, etc.), and changes to support user input from the TV remote or keyboard.
 
-- _Access to touchable controls_: When running on Apple TV, the native view class is `RCTTVView`, which has additional methods to make use of the tvOS focus engine. The `Touchable` mixin has code added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `TouchableWithoutFeedback`, `TouchableHighlight` and `TouchableOpacity` will "just work". In particular:
+- _Common codebase for Android phone and Android TV_: Apps built for Android using this repo will run on both Android phone and Android TV. Most of the changes for TV are specific to handling focus-based navigation on a TV using the D-Pad on the remote control.
+
+- _Access to touchable controls_:  The `Touchable` mixin has code added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `TouchableWithoutFeedback`, `TouchableHighlight` and `TouchableOpacity` will "just work" on both Apple TV and Android TV. In particular:
 
   - `onFocus` will be executed when the touchable view goes into focus
   - `onBlur` will be executed when the touchable view goes out of focus
   - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote.
 
-- _TV remote/keyboard input_: A native class, `RCTTVRemoteHandler`, sets up gesture recognizers for TV remote events. When TV remote events occur, this class fires notifications that are picked up by `RCTTVNavigationEventEmitter` (a subclass of `RCTEventEmitter`), that fires a JS event. This event will be picked up by instances of the `TVEventHandler` JavaScript object. Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  In 0.63.1-1, we have added `useTVEventHandler`, which wraps `useEffect` to make this more convenient and simpler for use with functional components. In 0.64.2-2, we added a TV event display to the new app template using `useTVEventHandler`.
+- _Pressable controls_: The `Pressable` API works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately.
+
+- _TV remote/keyboard input_: Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  For a more convenient API, we provide `useTVEventHandler`.
 
 ```javascript
 
@@ -177,21 +173,17 @@ class Game2048 extends React.Component {
   }
 ```
 
-- _Turbomodules_: Working as of the 0.61.2-0 release.
+- _Flipper_: We do not support Flipper.
 
-- _Flipper_: Working in the 0.62.2-x releases.  Working in the 0.63.x releases; however, tvOS requires the Flipper pods from 0.62.2-x.  `scripts/react_native_pods.rb` contains macros for both versions.  The new project template Podfile is correctly set up to provide the older Flipper for both iOS and tvOS targets. In 0.64.x and later, Flipper support is removed until issues can be resolved with newer Xcode versions.
+- _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected on TV platforms, after a few adjustments to make the controls accessible to the focus engine.
 
-- _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected in tvOS, after a few adjustments to make the controls accessible to the focus engine.
+- _Dev Menu support_: On the Apple TV simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) ). Android TV dev menu behavior is the same as on Android phone.
 
-- _Pressable_: The new `Pressable` API for React Native 0.63 works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately.
+- _TV remote animations on Apple TV_: `RCTTVView` native code implements Apple-recommended parallax animations to help guide the eye as the user navigates through views. The animations can be disabled or adjusted with new optional view properties.
 
-- _Dev Menu support_: On the simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) )
+- _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button or '<' button on the Apple TV remote, and the back button as usual on Android TV remote.
 
-- _TV remote animations_: `RCTTVView` native code implements Apple-recommended parallax animations to help guide the eye as the user navigates through views. The animations can be disabled or adjusted with new optional view properties.
-
-- _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button on the TV remote.
-
-- _TVEventControl_: (Formerly "TVMenuControl") (Apple TV only) This module provides methods to enable and disable features on the Apple TV Siri remote:
+- _TVEventControl for AppleTV_: (Formerly "TVMenuControl") This module provides methods to enable and disable features on the Apple TV Siri remote:
   - `enableTVMenuKey`/`disableTVMenuKey`:  Method to enable and disable the menu key gesture recognizer, in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses these methods to implement correct menu key behavior for back navigation.
   - `enableTVPanGesture`/`disableTVPanGesture`: Methods to enable and disable detection of finger touches that pan across the touch surface of the Siri remote. See `TVEventHandlerExample` in the `RNTester` app for a demo.
   - `enableGestureHandlersCancelTouches`/`disableGestureHandlersCancelTouches`: Methods to turn on and turn off cancellation of touches by the gesture handlers in `RCTTVRemoteHandler` (see #366). Cancellation of touches is turned on (enabled) by default in 0.69 and earlier releases.
