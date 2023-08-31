@@ -266,7 +266,6 @@ class FlatListExample extends React.PureComponent<Props, State> {
             getItemLayout={
               this.state.fixedHeight ? this._getItemLayout : undefined
             }
-            showsScrollIndex={false}
             accessibilityRole="list"
             horizontal={this.state.horizontal}
             inverted={this.state.inverted}

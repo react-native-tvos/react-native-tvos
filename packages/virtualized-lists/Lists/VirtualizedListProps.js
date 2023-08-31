@@ -285,11 +285,6 @@ type OptionalProps = {|
    * The legacy implementation is no longer supported.
    */
   legacyImplementation?: empty,
-  /**
-   * (TvOS only)
-   * Defines if UIScrollView index should be shown when fast scrolling.
-   */
-  showsScrollIndex?: ?boolean,
 |};
 
 export type Props = {|

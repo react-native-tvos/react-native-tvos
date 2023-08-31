@@ -390,10 +390,4 @@ export interface VirtualizedListWithoutRenderItemProps<ItemT>
     | React.ComponentType<CellRendererProps<ItemT>>
     | null
     | undefined;
-
-  /**
-   * (TvOS only)
-   * Defines if UIScrollView index should be shown when fast scrolling.
-   */
-  showsScrollIndex?: boolean;
 }

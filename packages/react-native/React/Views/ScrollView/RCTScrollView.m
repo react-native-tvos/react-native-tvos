@@ -494,10 +494,10 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
 
 - (void)updateScrollIndex
 {
-  if (!self.showsScrollIndex) {
-      self.scrollView.indexDisplayMode = UIScrollViewIndexDisplayModeAlwaysHidden;
-  } else {
+  if (self.showsScrollIndex) {
       self.scrollView.indexDisplayMode = UIScrollViewIndexDisplayModeAutomatic;
+  } else {
+      self.scrollView.indexDisplayMode = UIScrollViewIndexDisplayModeAlwaysHidden;
   }
 }
 
