@@ -109,6 +109,7 @@ class MultiColumnExample extends React.PureComponent<
         </View>
         <SeparatorComponent />
         <FlatList
+          showsScrollIndex={false}
           ListFooterComponent={FooterComponent}
           ListHeaderComponent={HeaderComponent}
           getItemLayout={
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
 });
 
 export default ({
-  title: 'MultiColumn',
+  title: 'MultiColumn (showsScrollIndex = false)',
   name: 'multicolumn',
   description: 'Performant, scrollable grid of data',
   render: () => <MultiColumnExample />,

@@ -232,6 +232,10 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
   if (oldScrollViewProps.indicatorStyle != newScrollViewProps.indicatorStyle) {
     _scrollView.indicatorStyle = RCTUIScrollViewIndicatorStyleFromProps(newScrollViewProps);
   }
+    
+  if (oldScrollViewProps.showsScrollIndex != newScrollViewProps.showsScrollIndex) {
+      _scrollView.indexDisplayMode = newScrollViewProps.showsScrollIndex ? UIScrollViewIndexDisplayModeAutomatic : UIScrollViewIndexDisplayModeAlwaysHidden;
+  }
 
   if (oldScrollViewProps.scrollEventThrottle != newScrollViewProps.scrollEventThrottle) {
     // Zero means "send value only once per significant logical event".

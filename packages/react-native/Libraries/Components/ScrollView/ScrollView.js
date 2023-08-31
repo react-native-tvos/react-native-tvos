@@ -355,6 +355,12 @@ type IOSProps = $ReadOnly<{|
     | 'never'
     | 'always'
   ),
+  /**
+   * (TvOS only)
+   * Defines if UIScrollView index should be shown when fast scrolling.
+   * Defaults to true.
+   */
+  showsScrollIndex?: ?boolean,
 |}>;
 
 type AndroidProps = $ReadOnly<{|
@@ -1796,6 +1802,8 @@ class ScrollView extends React.Component<Props, State> {
       snapToStart: this.props.snapToStart !== false,
       // default to true
       snapToEnd: this.props.snapToEnd !== false,
+      // default to true
+      showsScrollIndex: this.props.showsScrollIndex !== false,
       // pagingEnabled is overridden by snapToInterval / snapToOffsets
       pagingEnabled: Platform.select({
         // on iOS, pagingEnabled must be set to false to have snapToInterval / snapToOffsets work
