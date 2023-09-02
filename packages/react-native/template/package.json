@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "tvos": "expo run:ios --scheme HelloWorld-tvOS --device \"Apple TV\"",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "expo start",
     "test": "jest"
   },
   "dependencies": {
