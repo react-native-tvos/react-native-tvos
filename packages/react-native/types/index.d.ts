@@ -157,6 +157,7 @@ export * from './public/DeprecatedPropertiesAlias';
 export * from './public/Insets';
 export * from './public/ReactNativeRenderer';
 export * from './public/ReactNativeTypes';
+export * from './public/ReactNativeTVTypes';
 
 import type {ErrorUtils} from '../Libraries/vendor/core/ErrorUtils';
 
