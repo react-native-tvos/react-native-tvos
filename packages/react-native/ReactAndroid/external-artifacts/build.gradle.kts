@@ -9,7 +9,9 @@ import org.jetbrains.kotlin.gradle.plugin.extraProperties
 
 plugins { id("maven-publish") }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 version =
     parent?.extraProperties?.get("publishing_version")
@@ -36,6 +38,8 @@ val hermesiOSReleaseArtifact: PublishArtifact =
     }
 
 // Those artifacts should be placed inside the `artifacts/hermes-*.framework.dSYM` location
+// (For TV we are building these into the above tarballs
+/*
 val hermesDSYMDebugArtifactFile: RegularFile =
     layout.projectDirectory.file("artifacts/hermes-framework-dSYM-debug.tar.gz")
 val hermesDSYMDebugArtifact: PublishArtifact =
@@ -52,6 +56,7 @@ val hermesDSYMReleaseArtifact: PublishArtifact =
       extension = "tar.gz"
       classifier = "hermes-framework-dSYM-release"
     }
+ */
 
 apply(from = "../publish.gradle")
 
@@ -61,8 +66,8 @@ publishing {
       artifactId = "react-native-artifacts"
       artifact(hermesiOSDebugArtifact)
       artifact(hermesiOSReleaseArtifact)
-      artifact(hermesDSYMDebugArtifact)
-      artifact(hermesDSYMReleaseArtifact)
+      // artifact(hermesDSYMDebugArtifact)
+      // artifact(hermesDSYMReleaseArtifact)
     }
   }
 }

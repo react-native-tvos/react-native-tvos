@@ -10,6 +10,7 @@ package com.facebook.react.views.view;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +34,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.facebook.react.uimanager.events.EventDispatcher;
 import com.facebook.yoga.YogaConstants;
+
 import java.util.Map;
 
 /** View manager for AndroidViews (plain React Views). */
@@ -55,6 +57,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   };
   private static final int CMD_HOTSPOT_UPDATE = 1;
   private static final int CMD_SET_PRESSED = 2;
+  private static final int CMD_SET_DESTINATIONS = 3;
   private static final String HOTSPOT_UPDATE_KEY = "hotspotUpdate";
 
   public ReactViewManager() {
@@ -298,6 +301,14 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     }
   }
 
+  @ReactProp(name = "tvFocusable")
+  public void setTvFocusable(final ReactViewGroup view, boolean focusable) {
+    setFocusable(view, focusable);
+    if (!focusable) {
+      view.setFocusable(false);
+    }
+  }
+
   @ReactProp(name = ViewProps.OVERFLOW)
   public void setOverflow(ReactViewGroup view, String overflow) {
     view.setOverflow(overflow);
@@ -334,7 +345,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED);
+    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS);
   }
 
   @Override
@@ -350,6 +361,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
           handleSetPressed(root, args);
           break;
         }
+      case CMD_SET_DESTINATIONS:
+      {
+        handleSetDestinations(root, args);
+        break;
+      }
     }
   }
 
@@ -364,6 +380,16 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       case "setPressed":
         {
           handleSetPressed(root, args);
+          break;
+        }
+      case "setDestinations":
+      {
+        handleSetDestinations(root, args);
+        break;
+      }
+      case "requestTVFocus":
+        {
+          root.requestFocus();
           break;
         }
     }
@@ -387,4 +413,44 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     float y = PixelUtil.toPixelFromDIP(args.getDouble(1));
     root.drawableHotspotChanged(x, y);
   }
+
+  private void handleSetDestinations(ReactViewGroup root, @Nullable ReadableArray args) {
+    if (args == null || args.size() != 1) {
+      throw new JSApplicationIllegalArgumentException(
+        "Illegal number of arguments for 'setDestinations' command");
+    }
+
+    ReadableArray destinations = args.getArray(0);
+    int[] fd = new int[destinations.size()];
+    for (int i = 0; i < fd.length; i++) {
+      fd[i] = destinations.getInt(i);
+    }
+    root.setFocusDestinations(fd);
+  }
+
+  @ReactProp(name = "autoFocus")
+  public void setAutoFocusTV(ReactViewGroup view, boolean autoFocus) {
+    view.setAutoFocusTV(autoFocus);
+  }
+
+  @ReactProp(name = "trapFocusUp")
+  public void trapFocusUp(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusUp(enabled);
+  }
+
+  @ReactProp(name = "trapFocusDown")
+    public void trapFocusDown(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusDown(enabled);
+  }
+
+  @ReactProp(name = "trapFocusLeft")
+    public void trapFocusLeft(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusLeft(enabled);
+  }
+
+  @ReactProp(name = "trapFocusRight")
+    public void trapFocusRight(ReactViewGroup view, boolean enabled) {
+    view.setTrapFocusRight(enabled);
+  }
+
 }

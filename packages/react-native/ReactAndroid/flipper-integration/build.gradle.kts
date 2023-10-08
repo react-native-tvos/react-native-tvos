@@ -14,7 +14,9 @@ plugins {
   id("signing")
 }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 version =
     parent?.extraProperties?.get("publishing_version")

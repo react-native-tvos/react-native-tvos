@@ -14,7 +14,10 @@ plugins {
     alias(libs.plugins.android.library)
 }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
+
 version = parent.publishing_version
 def cmakeVersion = parent.cmake_version
 
@@ -56,7 +59,7 @@ def hermesBuildOutputFileTree = fileTree(hermesBuildDir.toString())
                     .include('**/link.txt')
 
 def hermesVersion = "main"
-def hermesVersionFile = new File(reactNativeRootDir, "sdks/.hermesversion")
+def hermesVersionFile = new File(reactNativeRootDir, "../../node_modules/react-native-core/sdks/.hermesversion")
 if (hermesVersionFile.exists()) {
     hermesVersion = hermesVersionFile.text
 }
