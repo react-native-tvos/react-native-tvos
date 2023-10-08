@@ -35,7 +35,7 @@ header_subspecs = {
   'RCTPushNotificationHeaders'  => 'Libraries/PushNotificationIOS/*.h',
   'RCTSettingsHeaders'          => 'Libraries/Settings/*.h',
   'RCTTextHeaders'              => 'Libraries/Text/**/*.h',
-  'RCTVibrationHeaders'         => 'Libraries/Vibration/*.h',
+  # 'RCTVibrationHeaders'         => 'Libraries/Vibration/*.h',
 }
 
 frameworks_search_paths = []
@@ -71,7 +71,8 @@ Pod::Spec.new do |s|
   s.platforms              = min_supported_versions
   s.source                 = source
   s.resource_bundle        = { "RCTI18nStrings" => ["React/I18n/strings/*.lproj"]}
-  s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.ios.compiler_flags     = folly_compiler_flags + ' ' + boost_compiler_flags
+  s.tvos.compiler_flags    = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.framework              = "JavaScriptCore"
   s.pod_target_xcconfig    = {
@@ -100,6 +101,14 @@ Pod::Spec.new do |s|
       exclude_files = exclude_files.append("React/CxxBridge/JSCExecutorFactory.{h,mm}")
     end
     ss.exclude_files = exclude_files
+    ss.ios.exclude_files      = "React/**/RCTTV*.*"
+    ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
+                                "React/Views/RCTActionSheet*",
+                                "React/Views/RCTDatePicker*",
+                                "React/Views/RCTPicker*",
+                                "React/Views/RefreshControl/*",
+                                "React/Views/RCTSlider*",
+                                "React/Views/RCTSwitch*"
     ss.private_header_files   = "React/Cxx*/*.h"
   end
 
