@@ -46,6 +46,13 @@ class HostPlatformViewProps : public BaseViewProps {
 
   bool focusable{false};
   bool hasTVPreferredFocus{false};
+
+  bool autoFocus{false};
+  bool trapFocusUp{false};
+  bool trapFocusDown{false};
+  bool trapFocusLeft{false};
+  bool trapFocusRight{false};
+
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};
 

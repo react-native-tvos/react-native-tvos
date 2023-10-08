@@ -295,6 +295,11 @@ class JSCRuntime : public jsi::Runtime {
 #define _JSC_HAS_INSPECTABLE
 #endif
 #endif
+#if defined(__TV_OS_VERSION_MIN_REQUIRED)
+#if __TV_OS_VERSION_MAX_ALLOWED >= 160400
+#define _JSC_HAS_INSPECTABLE
+#endif
+#endif
 
 // JSStringRef utilities
 namespace {
