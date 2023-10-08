@@ -17,12 +17,18 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
+import TVTouchable from './TVTouchable';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
+
 import * as React from 'react';
 
 type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
   nextFocusLeft?: ?number,
@@ -130,6 +136,8 @@ type State = $ReadOnly<{|
  *
  */
 class TouchableOpacity extends React.Component<Props, State> {
+  _tvTouchable: ?TVTouchable;
+
   state: State = {
     anim: new Animated.Value(this._getChildStyleOpacityWithDefault()),
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -279,12 +287,16 @@ class TouchableOpacity extends React.Component<Props, State> {
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         onLayout={this.props.onLayout}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={
+          this.props.isTVSelectable !== false && this.props.accessible !== false
+        }
+        tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
           this.props.focusable !== false && this.props.onPress !== undefined
@@ -297,6 +309,36 @@ class TouchableOpacity extends React.Component<Props, State> {
         ) : null}
       </Animated.View>
     );
+  }
+
+  componentDidMount(): void {
+    if (Platform.isTV) {
+      this._tvTouchable = new TVTouchable(this, {
+        getDisabled: () => this.props.disabled === true,
+        onBlur: event => {
+          this._opacityInactive(250);
+          if (this.props.onBlur != null) {
+            this.props.onBlur(event);
+          }
+        },
+        onFocus: event => {
+          this._opacityActive(150);
+          if (this.props.onFocus != null) {
+            this.props.onFocus(event);
+          }
+        },
+        onPress: event => {
+          if (this.props.onPress != null && Platform.OS !== 'android') {
+            this.props.onPress(event);
+          }
+        },
+        onLongPress: event => {
+          if (this.props.onLongPress != null && Platform.OS !== 'android') {
+            this.props.onLongPress(event);
+          }
+        },
+      });
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -315,6 +357,11 @@ class TouchableOpacity extends React.Component<Props, State> {
   }
 
   componentWillUnmount(): void {
+    if (Platform.isTV) {
+      if (this._tvTouchable != null) {
+        this._tvTouchable.destroy();
+      }
+    }
     this.state.pressability.reset();
   }
 }

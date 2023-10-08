@@ -12,6 +12,8 @@ exports[`TouchableHighlight renders correctly 1`] = `
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -44,6 +46,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -73,6 +77,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -102,6 +108,8 @@ exports[`TouchableHighlight with disabled state should disable button when acces
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -132,6 +140,8 @@ exports[`TouchableHighlight with disabled state should keep accessibilityState w
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
@@ -161,6 +171,8 @@ exports[`TouchableHighlight with disabled state should overwrite accessibilitySt
   }
   accessible={true}
   focusable={false}
+  hasTVPreferredFocus={false}
+  isTVSelectable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}

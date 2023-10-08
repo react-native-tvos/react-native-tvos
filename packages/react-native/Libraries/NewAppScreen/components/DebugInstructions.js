@@ -23,11 +23,18 @@ const styles = StyleSheet.create({
 
 const DebugInstructions: () => Node = Platform.select({
   ios: () => (
-    <Text>
-      Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
-      <Text style={styles.highlight}>Shake</Text> your device to open the Dev
-      Menu.
-    </Text>
+    Platform.isTVOS ? (
+      <Text>
+        Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
+        <Text style={styles.highlight}>long press the play/pause button</Text> on
+        the Apple TV remote to open the Dev Menu.
+      </Text>
+    ) : (
+      <Text>
+        Press <Text style={styles.highlight}>Cmd + D</Text> in the simulator or{' '}
+        <Text style={styles.highlight}>Shake</Text> your device to open the Dev Menu.
+      </Text>
+    )
   ),
   default: () => (
     <Text>

@@ -72,6 +72,7 @@ const ScrollViewViewConfig = {
     scrollsToTop: true,
     sendMomentumEvents: true,
     showsHorizontalScrollIndicator: true,
+    showsScrollIndex: true,
     showsVerticalScrollIndicator: true,
     snapToAlignment: true,
     snapToEnd: true,

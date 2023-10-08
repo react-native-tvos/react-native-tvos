@@ -225,7 +225,7 @@
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
 {
   // TODO: Adopt showMenuFromRect (necessary for UIKitForMac)
-#if !TARGET_OS_UIKITFORMAC
+#if !TARGET_OS_TV && !TARGET_OS_UIKITFORMAC
   UIMenuController *menuController = [UIMenuController sharedMenuController];
 
   if (menuController.isMenuVisible) {
@@ -257,6 +257,7 @@
 
 - (void)copy:(id)sender
 {
+#if !TARGET_OS_TV
   NSAttributedString *attributedText = _textStorage;
 
   NSMutableDictionary *item = [NSMutableDictionary new];
@@ -273,6 +274,7 @@
 
   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
   pasteboard.items = @[ item ];
+#endif
 }
 
 @end

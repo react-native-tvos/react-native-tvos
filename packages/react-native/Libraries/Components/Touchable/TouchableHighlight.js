@@ -17,7 +17,10 @@ import Pressability, {
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
+import TVTouchable from './TVTouchable';
 import Platform from '../../Utilities/Platform';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -28,14 +31,22 @@ type AndroidProps = $ReadOnly<{|
   nextFocusUp?: ?number,
 |}>;
 
-type IOSProps = $ReadOnly<{|
+type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
 |}>;
 
 type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
-  ...IOSProps,
+  ...TVProps,
+  ...ViewProps,
 
   activeOpacity?: ?number,
   underlayColor?: ?ColorValue,
@@ -156,6 +167,7 @@ type State = $ReadOnly<{|
 class TouchableHighlight extends React.Component<Props, State> {
   _hideTimeout: ?TimeoutID;
   _isMounted: boolean = false;
+  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -335,12 +347,14 @@ class TouchableHighlight extends React.Component<Props, State> {
         )}
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
+        tvParallaxProperties={this.props.tvParallaxProperties}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         focusable={
           this.props.focusable !== false && this.props.onPress !== undefined
         }
@@ -363,6 +377,37 @@ class TouchableHighlight extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this._isMounted = true;
+    if (Platform.isTV) {
+      this._tvTouchable = new TVTouchable(this, {
+        getDisabled: () => this.props.disabled === true,
+        onBlur: event => {
+          if (Platform.isTV) {
+            this._hideUnderlay();
+          }
+          if (this.props.onBlur != null) {
+            this.props.onBlur(event);
+          }
+        },
+        onFocus: event => {
+          if (Platform.isTV) {
+            this._showUnderlay();
+          }
+          if (this.props.onFocus != null) {
+            this.props.onFocus(event);
+          }
+        },
+        onPress: event => {
+          if (this.props.onPress != null && Platform.OS !== 'android') {
+            this.props.onPress(event);
+          }
+        },
+        onLongPress: event => {
+          if (this.props.onLongPress != null && Platform.OS !== 'android') {
+            this.props.onLongPress(event);
+          }
+        },
+      });
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -373,6 +418,11 @@ class TouchableHighlight extends React.Component<Props, State> {
     this._isMounted = false;
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
+    }
+    if (Platform.isTV) {
+      if (this._tvTouchable != null) {
+        this._tvTouchable.destroy();
+      }
     }
     this.state.pressability.reset();
   }

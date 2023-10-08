@@ -165,9 +165,11 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   enableFabric = self.fabricEnabled;
 #endif
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
-
+#if TARGET_OS_TV
+  rootView.backgroundColor = [UIColor whiteColor];
+#else
   rootView.backgroundColor = [UIColor systemBackgroundColor];
-
+#endif
   return rootView;
 }
 
@@ -187,6 +189,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 }
 
 #pragma mark - UISceneDelegate
+#if !TARGET_OS_TV
 - (void)windowScene:(UIWindowScene *)windowScene
     didUpdateCoordinateSpace:(id<UICoordinateSpace>)previousCoordinateSpace
         interfaceOrientation:(UIInterfaceOrientation)previousInterfaceOrientation
@@ -194,6 +197,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTRootViewFrameDidChangeNotification object:self];
 }
+#endif
 
 #pragma mark - RCTCxxBridgeDelegate
 - (std::unique_ptr<facebook::react::JSExecutorFactory>)jsExecutorFactoryForBridge:(RCTBridge *)bridge

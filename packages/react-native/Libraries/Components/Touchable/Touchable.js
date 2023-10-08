@@ -13,10 +13,12 @@ import type {ColorValue} from '../../StyleSheet/StyleSheet';
 import type {PressEvent} from '../../Types/CoreEventTypes';
 import type {TouchableType} from './Touchable.flow';
 
+import ReactNative from '../../Renderer/shims/ReactNative';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import UIManager from '../../ReactNative/UIManager';
 import Platform from '../../Utilities/Platform';
 import SoundManager from '../Sound/SoundManager';
+import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import BoundingDimensions from './BoundingDimensions';
 import Position from './Position';
 import * as React from 'react';
@@ -376,6 +378,27 @@ const TouchableMixin = {
     if (!Platform.isTV) {
       return;
     }
+    if (!tvFocusEventHandler) {
+      return;
+    }
+
+    this._componentTag = ReactNative.findNodeHandle(this);
+    tvFocusEventHandler.register(this._componentTag, evt => {
+      evt.dispatchConfig = {};
+      if (evt.eventType === 'focus') {
+        this.touchableHandleFocus(evt);
+      } else if (evt.eventType === 'blur') {
+        this.touchableHandleBlur(evt);
+      } else if (evt.eventType === 'select' && Platform.OS !== 'android') {
+        this.touchableHandlePress &&
+          !this.props.disabled &&
+          this.touchableHandlePress(evt);
+      } else if (evt.eventType === 'longSelect') {
+        this.touchableHandleLongPress &&
+          !this.props.disabled &&
+          this.touchableHandleLongPress();
+      }
+    });
   },
 
   /**
@@ -384,6 +407,9 @@ const TouchableMixin = {
   /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
    * Flow's LTI update could not be added via codemod */
   componentWillUnmount: function () {
+    if (tvFocusEventHandler) {
+      tvFocusEventHandler.unregister(this._componentTag);
+    }
     this.touchableDelayTimeout && clearTimeout(this.touchableDelayTimeout);
     this.longPressDelayTimeout && clearTimeout(this.longPressDelayTimeout);
     this.pressOutDelayTimeout && clearTimeout(this.pressOutDelayTimeout);
