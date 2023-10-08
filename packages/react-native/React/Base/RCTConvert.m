@@ -443,6 +443,7 @@ RCT_ENUM_CONVERTER(
   return type;
 }
 
+#if !TARGET_OS_TV
 RCT_MULTI_ENUM_CONVERTER(
     UIDataDetectorTypes,
     (@{
@@ -471,6 +472,8 @@ RCT_MULTI_ENUM_CONVERTER(
     }),
     WKDataDetectorTypePhoneNumber,
     unsignedLongLongValue)
+
+#endif // !TARGET_OS_TV
 
 RCT_ENUM_CONVERTER(
     UIKeyboardAppearance,
@@ -509,7 +512,7 @@ RCT_ENUM_CONVERTER(
     }),
     UIUserInterfaceStyleUnspecified,
     integerValue)
-
+#if !TARGET_OS_TV
 RCT_ENUM_CONVERTER(
     UIInterfaceOrientationMask,
     (@{
@@ -521,7 +524,7 @@ RCT_ENUM_CONVERTER(
     }),
     NSNotFound,
     unsignedIntegerValue)
-
+#endif
 RCT_ENUM_CONVERTER(
     UIViewContentMode,
     (@{
@@ -546,6 +549,7 @@ RCT_ENUM_CONVERTER(
     UIViewContentModeScaleAspectFill,
     integerValue)
 
+#if !TARGET_OS_TV
 RCT_ENUM_CONVERTER(
     UIBarStyle,
     (@{
@@ -556,6 +560,7 @@ RCT_ENUM_CONVERTER(
     }),
     UIBarStyleDefault,
     integerValue)
+#endif
 
 static void convertCGStruct(const char *type, NSArray *fields, CGFloat *result, id json)
 {

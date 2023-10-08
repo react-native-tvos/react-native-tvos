@@ -185,6 +185,9 @@ static UIView *FindClosestFabricManagedTouchableView(UIView *componentView)
 
 static NSInteger ButtonMaskDiffToButton(UIEventButtonMask prevButtonMask, UIEventButtonMask curButtonMask)
 {
+#if TARGET_OS_TV
+  return 0;
+#else
   if ((prevButtonMask & UIEventButtonMaskPrimary) != (curButtonMask & UIEventButtonMaskPrimary)) {
     return 0;
   }
@@ -196,6 +199,7 @@ static NSInteger ButtonMaskDiffToButton(UIEventButtonMask prevButtonMask, UIEven
   }
 
   return -1;
+#endif
 }
 
 // Returns a CGPoint which represents the tiltX/Y values (in RADIANS)
@@ -236,6 +240,9 @@ static CGFloat RadsToDegrees(CGFloat rads)
 
 static NSInteger ButtonMaskToButtons(UIEventButtonMask buttonMask)
 {
+#if TARGET_OS_TV
+  return 0;
+#else
   NSInteger buttonsMaskResult = 0;
 
   if ((buttonMask & UIEventButtonMaskPrimary) != 0) {
@@ -250,6 +257,7 @@ static NSInteger ButtonMaskToButtons(UIEventButtonMask buttonMask)
   }
 
   return buttonsMaskResult;
+#endif
 }
 
 static const char *PointerTypeCStringFromUITouchType(UITouchType type)
@@ -387,13 +395,17 @@ static void UpdateActivePointerWithUITouch(
   activePointer.altitudeAngle = uiTouch.altitudeAngle;
   activePointer.azimuthAngle = [uiTouch azimuthAngleInView:nil];
 
+#if !TARGET_OS_TV
   UIEventButtonMask nextButtonMask = 0;
   if (uiTouch.phase != UITouchPhaseEnded) {
     nextButtonMask = uiTouch.type == UITouchTypeIndirectPointer ? uiEvent.buttonMask : 1;
+  } else
+  {
+    activePointer.button = ButtonMaskDiffToButton(activePointer.buttonMask, nextButtonMask);
+    activePointer.buttonMask = nextButtonMask;
+    activePointer.modifierFlags = uiEvent.modifierFlags;
   }
-  activePointer.button = ButtonMaskDiffToButton(activePointer.buttonMask, nextButtonMask);
-  activePointer.buttonMask = nextButtonMask;
-  activePointer.modifierFlags = uiEvent.modifierFlags;
+#endif
 }
 
 /**
@@ -439,8 +451,10 @@ struct PointerHasher {
   __weak UIView *_rootComponentView;
   RCTIdentifierPool<11> _identifierPool;
 
+#if !TARGET_OS_TV
   UIHoverGestureRecognizer *_mouseHoverRecognizer API_AVAILABLE(ios(13.0));
   UIHoverGestureRecognizer *_penHoverRecognizer API_AVAILABLE(ios(13.0));
+#endif
 
   NSMutableDictionary<NSNumber *, NSOrderedSet<RCTReactTaggedView *> *> *_currentlyHoveredViewsPerPointer;
 
@@ -460,8 +474,10 @@ struct PointerHasher {
 
     self.delegate = self;
 
+#if !TARGET_OS_TV
     _mouseHoverRecognizer = nil;
     _penHoverRecognizer = nil;
+#endif
     _currentlyHoveredViewsPerPointer = [[NSMutableDictionary alloc] init];
     _primaryTouchPointerId = -1;
   }
@@ -478,6 +494,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   [view addGestureRecognizer:self];
   _rootComponentView = view;
 
+#if !TARGET_OS_TV
   _mouseHoverRecognizer = [[UIHoverGestureRecognizer alloc] initWithTarget:self action:@selector(mouseHovering:)];
   _mouseHoverRecognizer.allowedTouchTypes = @[ @(UITouchTypeIndirectPointer) ];
   [view addGestureRecognizer:_mouseHoverRecognizer];
@@ -485,6 +502,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   _penHoverRecognizer = [[UIHoverGestureRecognizer alloc] initWithTarget:self action:@selector(penHovering:)];
   _penHoverRecognizer.allowedTouchTypes = @[ @(UITouchTypePencil) ];
   [view addGestureRecognizer:_penHoverRecognizer];
+#endif
 }
 
 - (void)detachFromView:(UIView *)view
@@ -495,6 +513,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
   [view removeGestureRecognizer:self];
   _rootComponentView = nil;
 
+#if !TARGET_OS_TV
   if (_mouseHoverRecognizer != nil) {
     [view removeGestureRecognizer:_mouseHoverRecognizer];
     _mouseHoverRecognizer = nil;
@@ -504,6 +523,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
     [view removeGestureRecognizer:_penHoverRecognizer];
     _penHoverRecognizer = nil;
   }
+#endif
 }
 
 #pragma mark - UITouch to ActivePointer management
@@ -733,6 +753,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 
 #pragma mark - Hover callbacks
 
+#if !TARGET_OS_TV
 - (void)penHovering:(UIHoverGestureRecognizer *)recognizer API_AVAILABLE(ios(13.0))
 {
   [self hovering:recognizer pointerId:kPencilPointerId pointerType:"pen"];
@@ -770,6 +791,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
     eventEmitter->onPointerMove(event);
   }
 }
+#endif
 
 #pragma mark - Shared pointer handlers
 

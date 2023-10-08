@@ -221,9 +221,11 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
   MAP_SCROLL_VIEW_PROP(maximumZoomScale);
   MAP_SCROLL_VIEW_PROP(minimumZoomScale);
   MAP_SCROLL_VIEW_PROP(scrollEnabled);
+#if !TARGET_OS_TV
   MAP_SCROLL_VIEW_PROP(pagingEnabled);
   MAP_SCROLL_VIEW_PROP(pinchGestureEnabled);
   MAP_SCROLL_VIEW_PROP(scrollsToTop);
+#endif
   MAP_SCROLL_VIEW_PROP(showsHorizontalScrollIndicator);
   MAP_SCROLL_VIEW_PROP(showsVerticalScrollIndicator);
 
@@ -233,6 +235,10 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 
   if (oldScrollViewProps.indicatorStyle != newScrollViewProps.indicatorStyle) {
     _scrollView.indicatorStyle = RCTUIScrollViewIndicatorStyleFromProps(newScrollViewProps);
+  }
+    
+  if (oldScrollViewProps.showsScrollIndex != newScrollViewProps.showsScrollIndex) {
+      _scrollView.indexDisplayMode = newScrollViewProps.showsScrollIndex ? UIScrollViewIndexDisplayModeAutomatic : UIScrollViewIndexDisplayModeAlwaysHidden;
   }
 
   if (oldScrollViewProps.scrollEventThrottle != newScrollViewProps.scrollEventThrottle) {

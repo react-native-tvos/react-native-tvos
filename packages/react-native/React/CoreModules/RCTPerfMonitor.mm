@@ -183,8 +183,12 @@ RCT_EXPORT_MODULE()
 - (UIView *)container
 {
   if (!_container) {
+#if TARGET_OS_TV
+    int statusBarHeight = 0;
+#else
     CGSize statusBarSize = RCTSharedApplication().statusBarFrame.size;
     CGFloat statusBarHeight = statusBarSize.height;
+#endif
     _container = [[UIView alloc] initWithFrame:CGRectMake(10, statusBarHeight, 180, RCTPerfMonitorBarHeight)];
     _container.layer.borderWidth = 2;
     _container.layer.borderColor = [UIColor lightGrayColor].CGColor;
@@ -193,7 +197,9 @@ RCT_EXPORT_MODULE()
 
     _container.backgroundColor = [UIColor whiteColor];
 
+#if !TARGET_OS_TV
     _container.backgroundColor = [UIColor systemBackgroundColor];
+#endif
   }
 
   return _container;

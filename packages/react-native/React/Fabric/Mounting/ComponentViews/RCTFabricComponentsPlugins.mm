@@ -19,12 +19,14 @@
 Class<RCTComponentViewProtocol> RCTFabricComponentsProvider(const char *name) {
   static std::unordered_map<std::string, Class (*)(void)> sFabricComponentsClassMap = {
     {"ActivityIndicatorView", RCTActivityIndicatorViewCls},
+#if !TARGET_OS_TV
     {"InputAccessoryView", RCTInputAccessoryCls},
-    {"Paragraph", RCTParagraphCls},
     {"PullToRefreshView", RCTPullToRefreshViewCls},
+    {"Switch", RCTSwitchCls},
+#endif
+    {"Paragraph", RCTParagraphCls},
     {"SafeAreaView", RCTSafeAreaViewCls},
     {"ScrollView", RCTScrollViewCls},
-    {"Switch", RCTSwitchCls},
     {"TextInput", RCTTextInputCls},
     {"UnimplementedNativeView", RCTUnimplementedNativeViewCls},
     {"View", RCTViewCls},

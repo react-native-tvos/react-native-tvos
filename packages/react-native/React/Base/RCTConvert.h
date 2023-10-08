@@ -16,7 +16,7 @@
 #import <React/RCTPointerEvents.h>
 #import <React/RCTTextDecorationLineType.h>
 #import <yoga/Yoga.h>
-#if TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE && !TARGET_OS_TV
 #import <WebKit/WebKit.h>
 #endif
 
@@ -72,14 +72,13 @@ typedef NSURL RCTFileURL;
 + (UIKeyboardAppearance)UIKeyboardAppearance:(id)json;
 + (UIReturnKeyType)UIReturnKeyType:(id)json;
 + (UIUserInterfaceStyle)UIUserInterfaceStyle:(id)json API_AVAILABLE(ios(12));
-+ (UIInterfaceOrientationMask)UIInterfaceOrientationMask:(NSString *)orientation;
-
 #if !TARGET_OS_TV
++ (UIInterfaceOrientationMask)UIInterfaceOrientationMask:(NSString *)orientation;
 + (UIDataDetectorTypes)UIDataDetectorTypes:(id)json;
 #endif
 
-#if TARGET_OS_IPHONE
-+ (WKDataDetectorTypes)WKDataDetectorTypes:(id)json;
+#if TARGET_OS_IPHONE && !TARGET_OS_TV
++ (WKDataDetectorTypes)WKDataDetectorTypes:(id)json API_AVAILABLE(ios(10.0));
 #endif
 
 + (UIViewContentMode)UIViewContentMode:(id)json;
