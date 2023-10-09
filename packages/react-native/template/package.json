@@ -3,15 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "tvos": "expo run:ios --scheme HelloWorld-tvOS --device \"Apple TV\"",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "expo start",
     "test": "jest"
   },
   "dependencies": {
+    "expo": "^49.0.7",
     "react": "18.2.0",
-    "react-native": "0.73.0-rc.1"
+    "react-native": "npm:react-native-tvos@0.73.0-rc1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

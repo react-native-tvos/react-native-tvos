@@ -106,12 +106,15 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
-    implementation("com.facebook.react:react-android")
+    // For the TV repo,
+    // we use the io.github.react-native-tvos group for the react-android and hermes-android dependencies
+
+    implementation("io.github.react-native-tvos:react-android")
     // No Flipper for TV
     // implementation("com.facebook.react:flipper-integration")
 
     if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
+        implementation("io.github.react-native-tvos:hermes-android")
     } else {
         implementation jscFlavor
     }
