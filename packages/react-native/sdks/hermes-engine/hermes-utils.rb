@@ -197,9 +197,13 @@ def hermestag_file(react_native_path)
 end
 
 def release_tarball_url(version, build_type)
-    # Sample url from Maven:
-    # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.71.0/react-native-artifacts-0.71.0-hermes-ios-debug.tar.gz
-    return "https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+    if ENV["HERMES_ARTIFACT_FROM_MAVEN_LOCAL"] == "1"
+      return "file:///tmp/maven-local/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+    end
+    # React Native core URL
+    #return "https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+    # React Native TV URL
+    return "https://repo1.maven.org/maven2/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
 end
 
 def download_stable_hermes(react_native_path, version, configuration)
@@ -237,6 +241,9 @@ end
 # - version: the version of React Native
 # - build_type: debug or release
 def hermes_artifact_exists(tarball_url)
+    if tarball_url.start_with?("file:") == true
+      return true
+    end
     # -L is used to follow redirects, useful for the nightlies
     # I also needed to wrap the url in quotes to avoid escaping & and ?.
     return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")

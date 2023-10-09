@@ -37,6 +37,10 @@ function get_ios_deployment_target {
   use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('ios')"
 }
 
+function get_tvos_deployment_target {
+  use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('tvos')"
+}
+
 function get_mac_deployment_target {
   use_env_var_or_ruby_prop "${MAC_DEPLOYMENT_TARGET}" "deployment_target('osx')"
 }
@@ -54,6 +58,19 @@ function build_host_hermesc {
 function configure_apple_framework {
   local enable_debugger cmake_build_type xcode_15_flags xcode_major_version
 
+#  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
+#    enable_bitcode="true"
+#  else
+#    enable_bitcode="false"
+#  fi
+#
+# Xcode 14 deprecates bitcode, so we turn this off
+  enable_bitcode="false"
+  if [[ $1 == macosx ]]; then
+    build_cli_tools="true"
+  else
+    build_cli_tools="false"
+  fi
   if [[ $BUILD_TYPE == "Debug" ]]; then
     enable_debugger="true"
   else
@@ -146,11 +163,20 @@ function build_apple_framework {
 }
 
 function prepare_dest_root_for_ci {
-  mkdir -p "destroot/Library/Frameworks/macosx" "destroot/bin" "destroot/Library/Frameworks/iphoneos" "destroot/Library/Frameworks/iphonesimulator" "destroot/Library/Frameworks/catalyst"
+
+  mkdir -p "destroot/Library/Frameworks/macosx"
+  mkdir -p "destroot/bin"
+  mkdir -p "destroot/Library/Frameworks/iphoneos"
+  mkdir -p "destroot/Library/Frameworks/iphonesimulator"
+  mkdir -p "destroot/Library/Frameworks/appletvos"
+  mkdir -p "destroot/Library/Frameworks/appletvsimulator"
+  mkdir -p "destroot/Library/Frameworks/catalyst"
 
   cp -R "./build_macosx/API/hermes/hermes.framework"* "destroot/Library/Frameworks/macosx"
   cp -R "./build_iphoneos/API/hermes/hermes.framework"* "destroot/Library/Frameworks/iphoneos"
   cp -R "./build_iphonesimulator/API/hermes/hermes.framework"* "destroot/Library/Frameworks/iphonesimulator"
+  cp -R "./build_appletvos/API/hermes/hermes.framework"* "destroot/Library/Frameworks/appletvos"
+  cp -R "./build_appletvsimulator/API/hermes/hermes.framework"* "destroot/Library/Frameworks/appletvsimulator"
   cp -R "./build_catalyst/API/hermes/hermes.framework"* "destroot/Library/Frameworks/catalyst"
   cp "./build_macosx/bin/"* "destroot/bin"
 

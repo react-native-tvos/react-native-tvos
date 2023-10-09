@@ -11,6 +11,10 @@ function get_architecture {
       echo "arm64"
     elif [[ $1 == "iphonesimulator" ]]; then
       echo "x86_64;arm64"
+    elif [[ $1 == "appletvos" ]]; then
+      echo "arm64"
+    elif [[ $1 == "appletvsimulator" ]]; then
+      echo "x86_64;arm64"
     elif [[ $1 == "catalyst" ]]; then
       echo "x86_64;arm64"
     else
@@ -24,6 +28,9 @@ function get_architecture {
 function build_framework {
   if [ ! -d destroot/Library/Frameworks/universal/hermes.xcframework ]; then
     ios_deployment_target=$(get_ios_deployment_target)
+    if [[ "$1" == "appletvos" || "$1" == "appletvsimulator" ]]; then
+      ios_deployment_target=$(get_tvos_deployment_target)
+    fi
 
     architecture=$(get_architecture "$1")
 
@@ -36,7 +43,7 @@ function build_framework {
 # group the frameworks together to create a universal framework
 function build_universal_framework {
     if [ ! -d destroot/Library/Frameworks/universal/hermes.xcframework ]; then
-        create_universal_framework "iphoneos" "iphonesimulator" "catalyst"
+        create_universal_framework "iphoneos" "iphonesimulator" "appletvos" "appletvsimulator" "catalyst"
     else
         echo "Skipping; Clean \"destroot\" to rebuild".
     fi
@@ -50,6 +57,8 @@ function create_framework {
 
         build_framework "iphoneos"
         build_framework "iphonesimulator"
+        build_framework "appletvos"
+        build_framework "appletvsimulator"
         build_framework "catalyst"
 
         build_universal_framework
