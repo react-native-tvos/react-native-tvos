@@ -29,12 +29,14 @@ static BOOL CGColorsAreEqual(CGColorRef color1, CGColorRef color2)
 
 @implementation RCTConvert_NSColorTests
 
+#if !TARGET_OS_TV
 - (void)testColor
 {
   id json = RCTJSONParse(@"{ \"semantic\": \"lightTextColor\" }", nil);
   UIColor *value = [RCTConvert UIColor:json];
   XCTAssertEqualObjects(value, [UIColor lightTextColor]);
 }
+#endif
 
 - (void)testColorFailure
 {
@@ -126,6 +128,7 @@ static BOOL CGColorsAreEqual(CGColorRef color1, CGColorRef color2)
     // https://developer.apple.com/documentation/uikit/uicolor/ui_element_colors
     // Label Colors
     @"labelColor" : @(0xFF000000),
+#if !TARGET_OS_TV
     @"secondaryLabelColor" : @(0x993c3c43),
     @"tertiaryLabelColor" : @(0x4c3c3c43),
     @"quaternaryLabelColor" : @(0x2d3c3c43),
@@ -136,6 +139,7 @@ static BOOL CGColorsAreEqual(CGColorRef color1, CGColorRef color2)
     @"quaternarySystemFillColor" : @(0x14747480),
     // Text Colors
     @"placeholderTextColor" : @(0x4c3c3c43),
+#endif
     // Standard Content Background Colors
     @"systemBackgroundColor" : @(0xFFffffff),
     @"secondarySystemBackgroundColor" : @(0xFFf2f2f7),

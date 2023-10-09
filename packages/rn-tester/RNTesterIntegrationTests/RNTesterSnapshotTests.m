@@ -41,6 +41,11 @@ RCT_TEST(LayoutExample)
 RCT_TEST(ScrollViewExample)
 RCT_TEST(TextExample)
 
+#if TARGET_OS_TV
+RCT_TEST(TVFocusGuideExample)
+#endif
+
+
 - (void)testZZZNotInRecordMode
 {
   XCTAssertFalse(_runner.recordMode, @"Don't forget to turn record mode back to off");

@@ -11,7 +11,7 @@
 import type {RNTesterTheme} from './RNTesterTheme';
 
 import * as React from 'react';
-import {Text, View, StyleSheet, Image, Pressable} from 'react-native';
+import {Text, View, StyleSheet, Image, Platform, Pressable} from 'react-native';
 
 import {RNTesterThemeContext} from './RNTesterTheme';
 
@@ -62,24 +62,32 @@ const NavbarButton = ({
   label,
   handlePress,
   iconStyle,
-}) => (
-  <Pressable
-    testID={testID}
-    onPress={handlePress}
-    style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
-    <View
-      style={[styles.pressableContent, isActive ? styles.activeBar : null]}
-      collapsable={false}>
-      <Image
-        style={iconStyle}
-        source={isActive ? activeImage : inactiveImage}
-      />
-      <Text style={isActive ? styles.activeText : styles.inactiveText}>
-        {label}
-      </Text>
-    </View>
-  </Pressable>
-);
+}) => {
+  const [isFocused, setIsFocused] = React.useState(false);
+  return (
+    <Pressable
+      testID={testID}
+      onPress={handlePress}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
+      <View
+        style={[
+          styles.pressableContent,
+          isFocused || isActive ? styles.activeBar : null,
+        ]}
+        collapsable={false}>
+        <Image
+          style={iconStyle}
+          source={isActive ? activeImage : inactiveImage}
+        />
+        <Text style={isActive ? styles.activeText : styles.inactiveText}>
+          {label}
+        </Text>
+      </View>
+    </Pressable>
+  );
+};
 
 const ComponentTab = ({
   isComponentActive,
@@ -230,6 +238,7 @@ const styles = StyleSheet.create({
     height: navBarHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 15,
   },
   pressableContent: {
     flex: 1,

@@ -43,6 +43,8 @@ export default function RNTOption(props: Props): React.Node {
       }
       hitSlop={4}
       onPress={props.disabled === true ? undefined : props.onPress}
+      onFocus={() => setPressed(true)}
+      onBlur={() => setPressed(false)}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
       testID={props.testID}>
