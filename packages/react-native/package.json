@@ -1,5 +1,5 @@
 {
-  "name": "react-native",
+  "name": "react-native-tvos",
   "version": "0.73.0-rc.1",
   "description": "A framework for building native apps using React",
   "license": "MIT",
@@ -50,6 +50,7 @@
     "ReactAndroid",
     "ReactCommon",
     "README.md",
+    "README-core.md",
     "rn-get-polyfills.js",
     "scripts/compose-source-maps.js",
     "scripts/find-node-for-xcode.sh",
@@ -86,7 +87,7 @@
     "types"
   ],
   "scripts": {
-    "prepack": "cp ../../README.md ."
+    "prepack": "cp ../../README.md ./README.md; cp ../../README-core.md ./README-core.md"
   },
   "peerDependencies": {
     "react": "18.2.0"
