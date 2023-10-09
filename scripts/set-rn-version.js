@@ -10,7 +10,7 @@
 'use strict';
 
 const fs = require('fs');
-const {cat, echo, exit, sed} = require('shelljs');
+const {cat, echo, exec, exit, sed} = require('shelljs');
 const yargs = require('yargs');
 const {parseVersion, validateBuildType} = require('./version-utils');
 const updateTemplatePackage = require('./update-template-package');
@@ -25,35 +25,43 @@ const {applyPackageVersions, getNpmInfo} = require('./npm-utils');
  */
 if (require.main === module) {
   let argv = yargs
+    .option('c', {
+        alias: 'commit',
+        type: 'boolean',
+        default: false,
+      })
     .option('v', {
       alias: 'to-version',
       type: 'string',
-      required: false,
-    })
-    .option('d', {
-      alias: 'dependency-versions',
-      type: 'string',
-      describe:
-        'JSON string of package versions. Ex. "{"react-native":"0.64.1"}"',
-      default: null,
-    })
-    .coerce('d', dependencyVersions => {
-      if (dependencyVersions == null) {
-        return null;
-      }
-      return JSON.parse(dependencyVersions);
-    })
-    .option('b', {
-      alias: 'build-type',
-      type: 'string',
-      choices: ['dry-run', 'nightly', 'release'],
       required: true,
-    }).argv;
+    })
+//    .option('d', {
+//      alias: 'dependency-versions',
+//      type: 'string',
+//      describe:
+//        'JSON string of package versions. Ex. "{"react-native":"0.64.1"}"',
+//      default: null,
+//    })
+//    .coerce('d', dependencyVersions => {
+//      if (dependencyVersions == null) {
+//        return null;
+//      }
+//      return JSON.parse(dependencyVersions);
+//    })
+//    .option('b', {
+//      alias: 'build-type',
+//      type: 'string',
+//      choices: ['dry-run', 'nightly', 'release'],
+//      required: true,
+//    })
+    .argv;
 
+  const dependencyMap = { 'react-native': `npm:react-native-tvos@${argv.toVersion}` };
   setReactNativeVersion(
     argv.toVersion,
-    argv.dependencyVersions,
-    argv.buildType,
+    dependencyMap, // argv.dependencyVersions,
+    'release', // argv.buildType,
+    argv.commit ?? false,
   );
   exit(0);
 }
@@ -126,7 +134,7 @@ function setGradle({version}) {
   }
 }
 
-function setPackage({version}, dependencyVersions) {
+function setPackage({version}, dependencyVersions, argVersion) {
   const originalPackageJson = JSON.parse(
     cat('packages/react-native/package.json'),
   );
@@ -137,6 +145,12 @@ function setPackage({version}, dependencyVersions) {
 
   packageJson.version = version;
 
+  const coreVersion = argVersion.split('-')[0] + '-rc.1';
+  packageJson.devDependencies = packageJson.devDependencies ?? {};
+  packageJson.devDependencies[
+    'react-native-core'
+  ] = `npm:react-native@${coreVersion}`;
+
   fs.writeFileSync(
     'packages/react-native/package.json',
     JSON.stringify(packageJson, null, 2),
@@ -144,7 +158,7 @@ function setPackage({version}, dependencyVersions) {
   );
 }
 
-function setReactNativeVersion(argVersion, dependencyVersions, buildType) {
+function setReactNativeVersion(argVersion, dependencyVersions, buildType, commit) {
   if (!argVersion) {
     const {version} = getNpmInfo(buildType);
     argVersion = version;
@@ -154,7 +168,7 @@ function setReactNativeVersion(argVersion, dependencyVersions, buildType) {
   const version = parseVersion(argVersion, buildType);
 
   setSource(version);
-  setPackage(version, dependencyVersions);
+  setPackage(version, dependencyVersions, argVersion);
 
   const templateDependencyVersions = {
     'react-native': version.version,
@@ -163,6 +177,22 @@ function setReactNativeVersion(argVersion, dependencyVersions, buildType) {
   updateTemplatePackage(templateDependencyVersions);
 
   setGradle(version);
+  if (commit) {
+    const filesToCommit = [
+      'packages/react-native/Libraries/Core/ReactNativeVersion.js',
+      'packages/react-native/React/Base/RCTVersion.m',
+      'packages/react-native/ReactAndroid/gradle.properties',
+      'packages/react-native/ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/ReactNativeVersion.java',
+      'packages/react-native/ReactCommon/cxxreact/ReactNativeVersion.h',
+      'packages/react-native/package.json',
+      'packages/react-native/template/package.json',
+      'package.json',
+      'yarn.lock',
+    ];
+    exec('yarn');
+    exec(`git add ${filesToCommit.join(' ')}`);
+    exec(`git commit -m "Bump version number (${argVersion})"`);
+  }
   return;
 }
 

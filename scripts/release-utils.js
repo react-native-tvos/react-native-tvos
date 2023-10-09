@@ -39,12 +39,12 @@ function generateAndroidArtifacts(releaseVersion) {
     if (
       !test(
         '-e',
-        `/tmp/maven-local/com/facebook/react/react-android/${releaseVersion}/${name}`,
+        `/tmp/maven-local/io/github/react-native-tvos/react-android/${releaseVersion}/${name}`,
       )
     ) {
       echo(
         `Failing as expected file: \n\
-      /tmp/maven-local/com/facebook/react/react-android/${releaseVersion}/${name}\n\
+      /tmp/maven-local/io/github/react-native-tvos/react-android/${releaseVersion}/${name}\n\
       was not correctly generated.`,
       );
       exit(1);
@@ -55,8 +55,11 @@ function generateAndroidArtifacts(releaseVersion) {
 function publishAndroidArtifactsToMaven(releaseVersion, isNightly) {
   // -------- Publish every artifact to Maven Central
   // The GPG key is base64 encoded on CircleCI and then decoded here
-  let buff = Buffer.from(env.ORG_GRADLE_PROJECT_SIGNING_KEY_ENCODED, 'base64');
-  env.ORG_GRADLE_PROJECT_SIGNING_KEY = buff.toString('ascii');
+
+  // Comment this out for the TV repo, we are doing manual signing for now
+
+  //let buff = Buffer.from(env.ORG_GRADLE_PROJECT_SIGNING_KEY_ENCODED, 'base64');
+  //env.ORG_GRADLE_PROJECT_SIGNING_KEY = buff.toString('ascii');
 
   // We want to gate ourselves against accidentally publishing a 1.x or a 1000.x on
   // maven central which will break the semver for our artifacts.
@@ -90,6 +93,11 @@ function generateiOSArtifacts(
   targetFolder,
 ) {
   pushd(`${hermesCoreSourceFolder}`);
+
+  //Need to generate hermesc
+  exec(
+    `${hermesCoreSourceFolder}/utils/build-hermesc-xcode.sh ${hermesCoreSourceFolder}/build_host_hermesc`,
+  );
 
   //Generating iOS Artifacts
   exec(

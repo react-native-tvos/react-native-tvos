@@ -38,7 +38,7 @@ let argv = yargs
   .option('exclude-debug-symbols', {
     describe: 'Whether dSYMs should be excluded from the tarball.',
     type: 'boolean',
-    default: true,
+    default: false, // For TV we are leaving these in, and excluding the dSYM Maven artifacts
   }).argv;
 
 async function main() {
