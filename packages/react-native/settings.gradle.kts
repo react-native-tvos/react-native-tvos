@@ -30,7 +30,9 @@ include(":packages:react-native:ReactAndroid:hermes-engine")
 project(":packages:react-native:ReactAndroid:hermes-engine").projectDir =
     file("ReactAndroid/hermes-engine/")
 
-include(":packages:react-native:ReactAndroid:flipper-integration")
-
-project(":packages:react-native:ReactAndroid:flipper-integration").projectDir =
-    file("ReactAndroid/flipper-integration/")
+// No flipper-integration for TV
+// 
+// include(":packages:react-native:ReactAndroid:flipper-integration")
+// 
+// project(":packages:react-native:ReactAndroid:flipper-integration").projectDir =
+//     file("ReactAndroid/flipper-integration/")

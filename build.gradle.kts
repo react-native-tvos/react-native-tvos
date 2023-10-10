@@ -87,8 +87,9 @@ tasks.register("publishAllToMavenTempLocal") {
   description = "Publish all the artifacts to be available inside a Maven Local repository on /tmp."
   dependsOn(":packages:react-native:ReactAndroid:publishAllPublicationsToMavenTempLocalRepository")
   // We don't publish the external-artifacts to Maven Local as CircleCI is using it via workspace.
-  dependsOn(
-      ":packages:react-native:ReactAndroid:flipper-integration:publishAllPublicationsToMavenTempLocalRepository")
+  // No Flipper for TV
+  // dependsOn(
+  //    ":packages:react-native:ReactAndroid:flipper-integration:publishAllPublicationsToMavenTempLocalRepository")
   dependsOn(
       ":packages:react-native:ReactAndroid:hermes-engine:publishAllPublicationsToMavenTempLocalRepository")
 }
@@ -97,7 +98,8 @@ tasks.register("publishAllToSonatype") {
   description = "Publish all the artifacts to Sonatype (Maven Central or Snapshot repository)"
   dependsOn(":packages:react-native:ReactAndroid:publishToSonatype")
   dependsOn(":packages:react-native:ReactAndroid:external-artifacts:publishToSonatype")
-  dependsOn(":packages:react-native:ReactAndroid:flipper-integration:publishToSonatype")
+  // No Flipper for TV
+  // dependsOn(":packages:react-native:ReactAndroid:flipper-integration:publishToSonatype")
   dependsOn(":packages:react-native:ReactAndroid:hermes-engine:publishToSonatype")
 }
 

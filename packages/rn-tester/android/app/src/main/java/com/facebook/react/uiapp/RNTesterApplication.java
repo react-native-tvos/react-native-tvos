@@ -26,7 +26,6 @@ import com.facebook.react.defaults.DefaultComponentsRegistry;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.react.fabric.ComponentFactory;
-import com.facebook.react.flipper.ReactNativeFlipper;
 import com.facebook.react.interfaces.ReactHost;
 import com.facebook.react.interfaces.exceptionmanager.ReactJsExceptionHandler;
 import com.facebook.react.module.model.ReactModuleInfo;
@@ -160,11 +159,6 @@ public class RNTesterApplication extends Application implements ReactApplication
     SoLoader.init(this, /* native exopackage */ false);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       DefaultNewArchitectureEntryPoint.load();
-    }
-    if (ReactFeatureFlags.enableBridgelessArchitecture) {
-      // TODO: initialize Flipper for Bridgeless
-    } else {
-      ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     }
   }
 
