@@ -147,6 +147,7 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
   private static final int BLUR_TEXT_INPUT = 2;
   private static final int SET_MOST_RECENT_EVENT_COUNT = 3;
   private static final int SET_TEXT_AND_SELECTION = 4;
+  private static final int REQUEST_TV_FOCUS = 5;
 
   private static final int INPUT_TYPE_KEYBOARD_NUMBER_PAD = InputType.TYPE_CLASS_NUMBER;
   private static final int INPUT_TYPE_KEYBOARD_DECIMAL_PAD =
@@ -280,7 +281,7 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
 
   @Override
   public @Nullable Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of("focusTextInput", FOCUS_TEXT_INPUT, "blurTextInput", BLUR_TEXT_INPUT);
+    return MapBuilder.of("focusTextInput", FOCUS_TEXT_INPUT, "blurTextInput", BLUR_TEXT_INPUT, "requestTVFocus", REQUEST_TV_FOCUS);
   }
 
   @Override
@@ -288,6 +289,9 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
       ReactEditText reactEditText, int commandId, @Nullable ReadableArray args) {
     switch (commandId) {
       case FOCUS_TEXT_INPUT:
+        this.receiveCommand(reactEditText, "focus", args);
+        break;
+      case REQUEST_TV_FOCUS:
         this.receiveCommand(reactEditText, "focus", args);
         break;
       case BLUR_TEXT_INPUT:

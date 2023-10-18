@@ -368,13 +368,7 @@ public class ReactEditText extends AppCompatEditText
 
   @Override
   public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
-    // This is a no-op so that when the OS calls requestFocus(), nothing will happen. ReactEditText
-    // is a controlled component, which means its focus is controlled by JS, with two exceptions:
-    // autofocus when it's attached to the window, and responding to accessibility events. In both
-    // of these cases, we call requestFocusInternal() directly.
-    // Always return true if we are already focused. This is used by android in certain places,
-    // such as text selection.
-    return isFocused();
+    return requestFocusInternal();
   }
 
   private boolean requestFocusInternal() {
