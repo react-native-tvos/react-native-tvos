@@ -58,6 +58,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   private static final int CMD_HOTSPOT_UPDATE = 1;
   private static final int CMD_SET_PRESSED = 2;
   private static final int CMD_SET_DESTINATIONS = 3;
+  private static final int CMD_REQUEST_TV_FOCUS = 4;
   private static final String HOTSPOT_UPDATE_KEY = "hotspotUpdate";
 
   public ReactViewManager() {
@@ -336,7 +337,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS);
+    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS, "requestTVFocus", CMD_REQUEST_TV_FOCUS);
   }
 
   @Override
@@ -357,6 +358,9 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
         handleSetDestinations(root, args);
         break;
       }
+      case CMD_REQUEST_TV_FOCUS:
+        root.requestFocus();
+        break;
     }
   }
 
