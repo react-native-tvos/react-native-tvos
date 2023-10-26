@@ -8024,10 +8024,10 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-"react-native-core@npm:react-native@0.73.0-rc.1":
-  version "0.73.0-rc.1"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.73.0-rc.1.tgz#279f5f4ccdc3d43003310d22726efb89f03379f3"
-  integrity sha512-uXD3AZE77N4LDCBOuq+7BF1hWXrBNI7GoGFcH+UnEfQHn48JBVBtyIr5aT+qH+l8SchaZtq01v7yawDOOvRWRA==
+"react-native-core@npm:react-native@0.73.0-rc.3":
+  version "0.73.0-rc.3"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.73.0-rc.3.tgz#2f5bfd7386b871cc97ad7b9e8a1dbf8600e0c9cf"
+  integrity sha512-J6yKozyAI/jmiAlKL7G1VZb2kdhRDvXEYVmQc/3plDc/kvKEi3t74CZ6evl9hA/4PepM2noYXcNeUthQmwRIww==
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
     "@react-native-community/cli" "12.0.0-alpha.17"
@@ -8035,11 +8035,11 @@ react-is@^17.0.1:
     "@react-native-community/cli-platform-ios" "12.0.0-alpha.17"
     "@react-native/assets-registry" "^0.73.1"
     "@react-native/codegen" "^0.73.1"
-    "@react-native/community-cli-plugin" "^0.73.6"
-    "@react-native/gradle-plugin" "^0.73.1"
+    "@react-native/community-cli-plugin" "^0.73.7"
+    "@react-native/gradle-plugin" "^0.73.2"
     "@react-native/js-polyfills" "^0.73.1"
     "@react-native/normalize-colors" "^0.73.2"
-    "@react-native/virtualized-lists" "^0.73.1"
+    "@react-native/virtualized-lists" "^0.73.2"
     abort-controller "^3.0.0"
     anser "^1.4.9"
     ansi-regex "^5.0.0"
