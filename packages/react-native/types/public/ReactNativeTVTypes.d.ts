@@ -6,29 +6,29 @@ declare module 'react-native' {
   /**
    * TV next focus down (see documentation for the View component).
    */
-  nextFocusDown?: number,
+  nextFocusDown?: number | undefined,
 
   /**
    * TV next focus forward (see documentation for the View component).
    *
    * @platform android
    */
-  nextFocusForward?: number,
+  nextFocusForward?: number | undefined,
 
   /**
    * TV next focus left (see documentation for the View component).
    */
-  nextFocusLeft?: number,
+  nextFocusLeft?: number | undefined,
 
   /**
    * TV next focus right (see documentation for the View component).
    */
-  nextFocusRight?: number,
+  nextFocusRight?: number | undefined,
 
   /**
    * TV next focus up (see documentation for the View component).
    */
-  nextFocusUp?: number,
+  nextFocusUp?: number | undefined,
   }
 
   export interface NativeMethods {
@@ -48,15 +48,15 @@ declare module 'react-native' {
 
   export type HWEvent = {
     eventType: 'up' | 'down' | 'right' | 'left' | 'longUp' | 'longDown' | 'longRight' | 'longLeft' | 'blur' | 'focus' | 'pan' | string;
-    eventKeyAction?: -1 | 1 | 0 | number;
-    tag?: number;
+    eventKeyAction?: -1 | 1 | 0 | number | undefined;
+    tag?: number | undefined;
     body?: {
-      state: "Began" | "Changed" | "Ended",
+      state: 'Began' | 'Changed' | 'Ended',
       x: number,
       y: number,
       velocityx: number,
       velocityy: number
-    }
+    } | undefined
   };
 
   export class TVEventHandler {
@@ -72,11 +72,11 @@ declare module 'react-native' {
      * If the view should be "visible". display "flex" if visible, otherwise "none".
      * Defaults to true
      */
-    enabled?: boolean;
+    enabled?: boolean | undefined;
     /**
      * Array of `Component`s to register as destinations with `UIFocusGuide`
      */
-    destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[];
+    destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[] | undefined;
     /**
      * If true, `TVFocusGuide` will automatically manage focus for you.
      * It will redirect the focus to the first focusable child on the first visit.
@@ -87,27 +87,27 @@ declare module 'react-native' {
      *
      * @default false
      */
-    autoFocus?: boolean;
+    autoFocus?: boolean | undefined;
     /**
      * Enables focus trapping for the focus guide (see README).
      */
-    trapFocusUp?: boolean;
+    trapFocusUp?: boolean | undefined;
     /**
      * Enables focus trapping for the focus guide (see README).
      */
-    trapFocusDown?: boolean;
+    trapFocusDown?: boolean | undefined;
     /**
      * Enables focus trapping for the focus guide (see README).
      */
-    trapFocusLeft?: boolean;
+    trapFocusLeft?: boolean | undefined;
     /**
      * Enables focus trapping for the focus guide (see README).
      */
-    trapFocusRight?: boolean;
+    trapFocusRight?: boolean | undefined;
     /**
      * @deprecated Don't use it, no longer necessary.
      */
-    safePadding?: 'both' | 'vertical' | 'horizontal' | null;
+    safePadding?: 'both' | 'vertical' | 'horizontal' | null | undefined;
   }
 
   export type FocusGuideMethods = {
@@ -129,25 +129,25 @@ declare module 'react-native' {
      * The duration of the scroll animation when a swipe is detected.
      * Default value is 0.3 s
      */
-    scrollDuration?: number;
+    scrollDuration?: number | undefined;
     /**
      * Scrolling distance when a swipe is detected
      * Default value is half the visible height (vertical scroller)
      * or width (horizontal scroller)
      */
-    pageSize?: number;
+    pageSize?: number | undefined;
     /**
      * If true, will scroll to start when focus moves out past the beginning
      * of the scroller
      * Defaults to true
      */
-    snapToStart?: boolean;
+    snapToStart?: boolean | undefined;
     /**
      * If true, will scroll to end when focus moves out past the end of the
      * scroller
      * Defaults to true
      */
-    snapToEnd?: boolean;
+    snapToEnd?: boolean | undefined;
     /**
      * Called when the scroller comes into focus (e.g. for highlighting)
      */
@@ -170,7 +170,7 @@ declare module 'react-native' {
      *
      * @platform ios
      */
-    hasTVPreferredFocus?: boolean;
+    hasTVPreferredFocus?: boolean | undefined;
 
     /**
      * *(Apple TV only)* Object with properties to control Apple TV parallax effects.
@@ -186,7 +186,7 @@ declare module 'react-native' {
      *
      * @platform ios
      */
-    tvParallaxProperties?: TVParallaxProperties;
+    tvParallaxProperties?: TVParallaxProperties | undefined;
   }
 
 }
