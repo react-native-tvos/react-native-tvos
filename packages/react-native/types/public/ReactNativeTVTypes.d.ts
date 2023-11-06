@@ -1,5 +1,5 @@
-import React from 'react';
-import { ViewProps, ScrollViewProps } from 'react-native';
+import * as React from 'react';
+import type { View, ScrollViewProps, HostComponent, TVParallaxProperties } from 'react-native';
 
 declare module 'react-native' {
   interface ViewProps {
