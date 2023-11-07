@@ -49,32 +49,29 @@ You should also install `yarn` globally, as it should be used instead of `npm` f
 - _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
 - _Maven artifacts for Android TV_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
-## New project creation
+## New project creation and using the Expo CLI
 
-> _Pitfall:_ Make sure you do not globally install `react-native` or `react-native-tvos`. You should only install `@react-native-community/cli` to use the commands below. If you have done this the wrong way, you may get error messages like `ld: library not found for -lPods-TestApp-tvOS`.
+> _Pitfall:_ Make sure you do not globally install `react-native` or `react-native-tvos`. If you have done this the wrong way, you may get error messages like `ld: library not found for -lPods-TestApp-tvOS`.
 
-Creating a new project that uses this package is done using the react-native CLI.  New projects created this way will automatically have properly configured Apple TV targets created in their XCode projects.  To use this NPM package in a new project, you can reference it as in the following example using the React Native community CLI:
+To create a new project, use the Expo tool `create-react-native-app`.
+
+New projects created this way will automatically have properly configured Apple TV targets created in their XCode projects, and will have the Android manifest correctly configured for Android TV.  New projects are set up to use the Expo CLI; the Expo dependency and `react-native.config.js` are included in the new app template.
 
 ```sh
-# Make sure you have the CLI installed globally (this only needs to be done once on your system)
-npm install -g @react-native-community/cli
+# Make sure you have the app creation tool installed globally (this only needs to be done once on your system)
+npm install -g create-react-native-app
 # Init an app called 'TestApp', note that you must not be in a node module (directory with node_modules sub-directory) for this to work
-react-native init TestApp --template=react-native-tvos@latest
-# Now start the app in the tvOS Simulator - this will only work on a macOS machine
-cd TestApp && react-native run-ios  --simulator "Apple TV" --scheme "TestApp-tvOS"
-# The Expo CLI may also be used -- see below for more details
+yarn create react-native-app TestApp --template https://github.com/react-native-tvos/react-native-template-typescript-tv/tree/tv-release-0.73.0 --template-path template
+cd TestApp
+# Now build and start the app in the tvOS Simulator - this will only work on a macOS machine. This command can also be run via "yarn tvos".
+npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"
+# You can also build and start the app on an iOS phone simulator. This command can also be run via "yarn ios".
+npx expo run:ios
+# or specify a simulator:
+npx expo run:ios --scheme MyApp --device "iPhone 15"
+# This command builds and starts the app in an Android TV emulator or a phone emulator (needs to be created in advance). This command can also be run via "yarn android".
+npx expo run:android --device tv_api_31
 ```
-
-## Expo CLI support
-
-To run Apple TV (and Android TV) targets from the command line, it is now possible to use the Expo CLI, using the following steps:
-
-- In your app, install the required Expo module: `yarn add expo`
-- Add a file `react-native.config.js` at the top level of your app directory, with [these contents](https://github.com/byCedric/custom-prebuild-example/blob/main/app/react-native.config.js).
-- Then an Apple TV target can be run: `npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"`
-- To run Android TV: `npx expo run:android`
-
-The Expo dependency and `react-native.config.js` are included in the new app template.
 
 See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details on Expo CLI functionality. (Note that many of these features require that Expo SDK modules be built into your app, which is not yet supported on Apple TV.)
 
