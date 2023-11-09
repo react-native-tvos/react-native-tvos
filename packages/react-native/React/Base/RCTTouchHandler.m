@@ -42,6 +42,20 @@
   uint16_t _coalescingKey;
 }
 
+#if TARGET_OS_TV
+
+- (instancetype)initWithBridge:(RCTBridge *)bridge
+{
+  return [super initWithTarget:nil action:NULL];
+}
+
+RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
+
+- (void)attachToView:(UIView *)view {}
+- (void)detachFromView:(UIView *)view {}
+
+#else // TARGET_OS_TV
+
 - (instancetype)initWithBridge:(RCTBridge *)bridge
 {
   RCTAssertParam(bridge);
@@ -373,5 +387,7 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
   // Same condition for `failure of` as for `be prevented by`.
   return [self canBePreventedByGestureRecognizer:otherGestureRecognizer];
 }
+
+#endif // TARGET_OS_TV
 
 @end
