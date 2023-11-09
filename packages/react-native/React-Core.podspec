@@ -101,14 +101,16 @@ Pod::Spec.new do |s|
       exclude_files = exclude_files.append("React/CxxBridge/JSCExecutorFactory.{h,mm}")
     end
     ss.exclude_files = exclude_files
-    ss.ios.exclude_files      = "React/**/RCTTV*.*"
+    ss.ios.exclude_files      = "React/**/RCTTV*.*",
+                                "React/Base/RCTTouchHandlerTV.m"
     ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
                                 "React/Views/RCTActionSheet*",
                                 "React/Views/RCTDatePicker*",
                                 "React/Views/RCTPicker*",
                                 "React/Views/RefreshControl/*",
                                 "React/Views/RCTSlider*",
-                                "React/Views/RCTSwitch*"
+                                "React/Views/RCTSwitch*",
+                                "React/Base/RCTTouchHandler.m"
     ss.private_header_files   = "React/Cxx*/*.h"
   end
 

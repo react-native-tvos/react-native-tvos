@@ -62,7 +62,11 @@ Pod::Spec.new do |s|
   s.source                 = source
   s.source_files           = "Fabric/**/*.{c,h,m,mm,S,cpp}"
   s.exclude_files          = "**/tests/*",
-                             "**/android/*",
+                             "**/android/*"
+  s.tvos.exclude_files     = "Fabric/**/RCTSurfaceTouchHandler.mm",
+                             "Fabric/**/RCTSurfacePointerHandler.mm"
+  s.ios.exclude_files      = "Fabric/**/RCTSurfaceTouchHandlerTV.mm",
+                             "Fabric/**/RCTSurfacePointerHandlerTV.mm"
   s.compiler_flags         = folly_compiler_flags + ' ' + boost_compiler_flags
   s.header_dir             = "React"
   s.module_name            = "RCTFabric"
