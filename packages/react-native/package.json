@@ -150,6 +150,6 @@
     ]
   },
   "devDependencies": {
-    "react-native-core": "npm:react-native@0.73.0-rc.3"
+    "react-native-core": "npm:react-native@0.73.0-rc.4"
   }
 }
