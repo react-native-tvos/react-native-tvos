@@ -146,7 +146,7 @@ function setPackage({version}, dependencyVersions, argVersion) {
   packageJson.version = version;
 
   // Temporary until RN core is released
-  const coreVersion = argVersion.split('-')[0] + '-rc.4';
+  const coreVersion = argVersion.split('-')[0] + '-rc.5';
   packageJson.devDependencies = packageJson.devDependencies ?? {};
   packageJson.devDependencies[
     'react-native-core'
