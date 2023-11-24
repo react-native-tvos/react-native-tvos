@@ -10,7 +10,7 @@
 
 'use strict';
 
-const requireNativeComponent = require('../../ReactNative/requireNativeComponent');
+const requireNativeComponent = require('../../ReactNative/requireNativeComponent').default;
 
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
