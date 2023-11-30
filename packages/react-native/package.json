@@ -98,9 +98,9 @@
     "@react-native-community/cli-platform-android": "12.1.1",
     "@react-native-community/cli-platform-ios": "12.1.1",
     "@react-native/assets-registry": "^0.73.1",
-    "@react-native/community-cli-plugin": "^0.73.9",
-    "@react-native/codegen": "^0.73.1",
-    "@react-native/gradle-plugin": "^0.73.3",
+    "@react-native/community-cli-plugin": "^0.73.10",
+    "@react-native/codegen": "^0.73.2",
+    "@react-native/gradle-plugin": "^0.73.4",
     "@react-native/js-polyfills": "^0.73.1",
     "@react-native/normalize-colors": "^0.73.2",
     "@react-native/virtualized-lists": "^0.73.3",
@@ -150,6 +150,6 @@
     ]
   },
   "devDependencies": {
-    "react-native-core": "npm:react-native@0.73.0-rc.5"
+    "react-native-core": "npm:react-native@0.73.0-rc.6"
   }
 }
