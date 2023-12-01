@@ -10,7 +10,6 @@
 #include <react/renderer/components/view/conversions.h>
 #include <react/renderer/core/PropsParserContext.h>
 #include <react/renderer/core/propsConversions.h>
-#include <butter/map.h>
 
 #include <optional>
 
@@ -561,7 +560,7 @@ inline void fromRawValue(
     const PropsParserContext &,
     const RawValue &value,
     TVParallaxProperties &result) {
-  auto map = (butter::map<std::string, RawValue>)value;
+  auto map = (std::unordered_map<std::string, RawValue>)value;
 
   auto enabled = map.find("enabled");
   if (enabled != map.end()) {
