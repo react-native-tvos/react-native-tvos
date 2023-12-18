@@ -16,22 +16,22 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'HelloWorld' do
-  config = use_native_modules!
-  platform :ios, min_ios_version_supported
-
-  use_react_native!(
-    :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
-  )
-
-  target 'HelloWorldTests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
-end
+# target 'HelloWorld' do
+#   config = use_native_modules!
+#   platform :ios, min_ios_version_supported
+# 
+#   use_react_native!(
+#     :path => config[:reactNativePath],
+#     # An absolute path to your application root.
+#     :app_path => "#{Pod::Config.instance.installation_root}/.."
+#   )
+# 
+#   target 'HelloWorldTests' do
+#     inherit! :complete
+#     # Pods for testing
+#   end
+# 
+# end
 
 target 'HelloWorld-tvOS' do
   config = use_native_modules!
