@@ -1,6 +1,6 @@
 {
   "name": "react-native-tvos",
-  "version": "0.73.0-0",
+  "version": "0.73.1-0",
   "description": "A framework for building native apps using React",
   "license": "MIT",
   "repository": {
@@ -150,6 +150,6 @@
     ]
   },
   "devDependencies": {
-    "react-native-core": "npm:react-native@0.73.0"
+    "react-native-core": "npm:react-native@0.73.1"
   }
 }
