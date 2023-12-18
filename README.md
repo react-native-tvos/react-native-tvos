@@ -43,7 +43,7 @@ You should also install `yarn` globally, as it should be used instead of `npm` f
 - _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.  Changes in the React Native podspecs in 0.73 now require that your application `Podfile` only have one target. This repo supports either an iOS target or a tvOS target, but both targets should not be active at the same time. The new app template now has the iOS target commented out.
 - _Maven artifacts for Android TV_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
-## New project creation and using the Expo CLI
+## _(New)_ Project creation using the Expo CLI
 
 > _Pitfall:_ Make sure you do not globally install `react-native` or `react-native-tvos`. If you have done this the wrong way, you may get error messages like `ld: library not found for -lPods-TestApp-tvOS`.
 
@@ -70,7 +70,25 @@ npx expo run:ios --scheme MyApp --device "iPhone 15"
 npx expo run:android --device tv_api_31
 ```
 
-See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details on Expo CLI functionality. (Note that many of these features require that Expo SDK modules be built into your app, which is not yet supported on Apple TV.)
+See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details on Expo CLI functionality. (Note that many of these features require that Expo SDK modules be built into your app. Expo SDK support requires a different project configuration as described below.)
+
+## _(New)_ Using the Expo SDK with TV apps
+
+Starting with the Expo SDK 50 preview, and react-native-tvos 0.73.x, it will be possible to create Expo apps, and build them for TV via a new config plugin.
+
+This functionality will be new in Expo SDK 50, and will be considered an experimental feature for now.
+
+The fastest way to generate a new project is described in the [TV Example](https://github.com/expo/examples/tree/master/with-tv) in the Expo examples repo.
+
+Besides most of the core Expo modules, these also work on TV:
+
+- expo-av
+- expo-image
+- expo-localization
+- expo-updates
+
+TV does NOT support dev client (dev menu, dev launcher) at this time.
+TV does NOT support Expo Router at this time.
 
 ## Code changes
 
