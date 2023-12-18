@@ -40,7 +40,7 @@ You should also install `yarn` globally, as it should be used instead of `npm` f
 
 ## Build changes
 
-- _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.
+- _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.  Changes in the React Native podspecs in 0.73 now require that your application `Podfile` only have one target. This repo supports either an iOS target or a tvOS target, but both targets should not be active at the same time. The new app template now has the iOS target commented out.
 - _Maven artifacts for Android TV_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
 ## New project creation and using the Expo CLI
