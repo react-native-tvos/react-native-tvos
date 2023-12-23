@@ -19,6 +19,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifndef _RCT_VIEW_COMPONENT_VIEW_
+#define _RCT_VIEW_COMPONENT_VIEW_
+
 /**
  * UIView class for <View> component.
  */
@@ -89,5 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN;
 
 @end
+
+#endif // _RCT_VIEW_COMPONENT_VIEW_
 
 NS_ASSUME_NONNULL_END
