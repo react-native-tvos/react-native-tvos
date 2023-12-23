@@ -41,11 +41,11 @@ import {
   VirtualizedListCellContextProvider,
   VirtualizedListContext,
   VirtualizedListContextProvider,
-} from './VirtualizedListContext.js';
+} from '@react-native/virtualized-lists/Lists/VirtualizedListContext';
 import {
   computeWindowedRenderLimits,
   keyExtractor as defaultKeyExtractor,
-} from './VirtualizeUtils';
+} from '@react-native/virtualized-lists/Lists/VirtualizeUtils';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import * as React from 'react';
