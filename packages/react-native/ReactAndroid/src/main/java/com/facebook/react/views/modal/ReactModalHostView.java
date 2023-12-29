@@ -89,6 +89,8 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
   private boolean mPropertyRequiresNewDialog;
   private @Nullable DialogInterface.OnShowListener mOnShowListener;
   private @Nullable OnRequestCloseListener mOnRequestCloseListener;
+  private final ReactAndroidHWInputDeviceHelper mAndroidHWInputDeviceHelper =
+    new ReactAndroidHWInputDeviceHelper();
 
   public ReactModalHostView(ThemedReactContext context) {
     super(context);
@@ -300,6 +302,9 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
         new DialogInterface.OnKeyListener() {
           @Override
           public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+            // Modal needs to send the key event to its own TV event handler
+            // https://github.com/react-native-tvos/react-native-tvos/issues/609
+            mAndroidHWInputDeviceHelper.handleKeyEvent(event, mHostView.mReactContext);
             if (event.getAction() == KeyEvent.ACTION_UP) {
               // We need to stop the BACK button and ESCAPE key from closing the dialog by default
               // so we capture that event and instead inform JS so that it can make the decision as
