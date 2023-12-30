@@ -11,7 +11,20 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import * as React from 'react';
-import {Modal, Pressable, StyleSheet, Text, useTVEventHandler, View} from 'react-native';
+import {Modal, Platform, Pressable, StyleSheet, Text, useTVEventHandler, View} from 'react-native';
+
+function TVEventView(): React.Node {
+  const [lastEventType, setLastEventType] = React.useState('');
+  const myTVEventHandler = evt => {
+    setLastEventType(evt.eventType);
+  };
+  useTVEventHandler(myTVEventHandler);
+  if (Platform.isTV) {
+    return <Text>TVEvent: {lastEventType}</Text>;
+  } else {
+    return <View />;
+  }
+}
 
 function ModalOnShowOnDismiss(): React.Node {
   const [modalShowComponent, setModalShowComponent] = React.useState(true);
@@ -45,6 +58,7 @@ function ModalOnShowOnDismiss(): React.Node {
           }}>
           <View style={[styles.centeredView, styles.modalBackdrop]}>
             <View style={styles.modalView}>
+              <TVEventView />
               <Text testID="modal-on-show-count">
                 onShow is called {onShowCount} times
               </Text>
