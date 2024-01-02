@@ -13,7 +13,7 @@
   "dependencies": {
     "expo": "^50.0.0-preview.4",
     "react": "18.2.0",
-    "react-native": "npm:react-native-tvos@0.73.1-1"
+    "react-native": "npm:react-native-tvos@0.73.1-2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
