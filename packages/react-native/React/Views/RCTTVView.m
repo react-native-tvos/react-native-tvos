@@ -22,6 +22,7 @@
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
   UITapGestureRecognizer *_selectRecognizer;
+  UILongPressGestureRecognizer * _longSelectRecognizer;
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;
@@ -79,10 +80,20 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
                                                                                  action:@selector(handleSelect:)];
     recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
     _selectRecognizer = recognizer;
+
+    UILongPressGestureRecognizer *longRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongSelect:)];
+    recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+    [self addGestureRecognizer:longRecognizer];
+    _longSelectRecognizer = longRecognizer;
+
     [self addGestureRecognizer:_selectRecognizer];
+    [self addGestureRecognizer:_longSelectRecognizer];
   } else {
     if (_selectRecognizer) {
       [self removeGestureRecognizer:_selectRecognizer];
+    }
+    if (_longSelectRecognizer) {
+      [self removeGestureRecognizer:_longSelectRecognizer];
     }
   }
 }
@@ -117,6 +128,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     
   } else {
     [self sendSelectNotification:r];
+  }
+}
+
+- (void)handleLongSelect:(UIGestureRecognizer *)r
+{
+  if (r.state == UIGestureRecognizerStateBegan) {
+    [self sendLongSelectNotification:r];
   }
 }
 
@@ -412,6 +430,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
 {
     [self sendNotificationWithEventType:@"select"];
+}
+
+- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+{
+    [self sendNotificationWithEventType:@"longSelect"];
 }
 
 - (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
