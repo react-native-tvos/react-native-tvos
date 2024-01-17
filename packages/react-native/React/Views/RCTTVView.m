@@ -131,9 +131,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handleLongSelect:(__unused UIGestureRecognizer *)r
+- (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  [self sendLongSelectNotification:r];
+  if (r.state == UIGestureRecognizerStateBegan) {
+    [self sendLongSelectNotification:r];
+  }
 }
 
 - (BOOL)isUserInteractionEnabled

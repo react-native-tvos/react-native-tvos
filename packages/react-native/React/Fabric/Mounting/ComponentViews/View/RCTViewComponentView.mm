@@ -298,9 +298,11 @@ using namespace facebook::react;
   }
 }
 
-- (void)handleLongSelect:(__unused UIGestureRecognizer *)r
+- (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  [self sendLongSelectNotification:r];
+  if (r.state == UIGestureRecognizerStateBegan) {
+    [self sendLongSelectNotification:r];
+  }
 }
 
 - (void)addParallaxMotionEffects
