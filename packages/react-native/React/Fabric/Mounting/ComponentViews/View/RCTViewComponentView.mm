@@ -51,7 +51,8 @@ using namespace facebook::react;
   BOOL _removeClippedSubviews;
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _motionEffectsAdded;
-    UITapGestureRecognizer *_selectRecognizer;
+  UITapGestureRecognizer *_selectRecognizer;
+  UILongPressGestureRecognizer * _longSelectRecognizer;
   NSSet<NSString *> *_Nullable _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN;
   ParallaxProperties _tvParallaxProperties;
   BOOL _hasTVPreferredFocus;
@@ -257,6 +258,11 @@ using namespace facebook::react;
     [self sendNotificationWithEventType:@"select"];
 }
 
+- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+{
+  [self sendNotificationWithEventType:@"longSelect"];
+}
+
 - (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
@@ -297,6 +303,13 @@ using namespace facebook::react;
 
   } else {
     [self sendSelectNotification:r];
+  }
+}
+
+- (void)handleLongSelect:(UIGestureRecognizer *)r
+{
+  if (r.state == UIGestureRecognizerStateBegan) {
+    [self sendLongSelectNotification:r];
   }
 }
 
@@ -899,10 +912,20 @@ using namespace facebook::react;
                                                                                    action:@selector(handleSelect:)];
       recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
       _selectRecognizer = recognizer;
+
+      UILongPressGestureRecognizer *longRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongSelect:)];
+      recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+      [self addGestureRecognizer:longRecognizer];
+      _longSelectRecognizer = longRecognizer;
+
       [self addGestureRecognizer:_selectRecognizer];
+      [self addGestureRecognizer:_longSelectRecognizer];
     } else {
       if (_selectRecognizer) {
         [self removeGestureRecognizer:_selectRecognizer];
+      }
+      if (_longSelectRecognizer) {
+        [self removeGestureRecognizer:_longSelectRecognizer];
       }
     }
   }
