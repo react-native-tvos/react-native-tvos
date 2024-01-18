@@ -90,6 +90,8 @@ Besides most of the core Expo modules, these also work on TV:
 TV does NOT support dev client (dev menu, dev launcher) at this time.
 TV does NOT support Expo Router at this time.
 
+See also the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide from Expo.
+
 ## _(New)_ How to support TV specific file extensions
 
 The template contains an [example Metro configuration](./packages/react-native/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`).
