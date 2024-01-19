@@ -94,9 +94,9 @@ See also the [Building Expo apps for TV](https://docs.expo.dev/guides/building-f
 
 ## _(New)_ How to support TV specific file extensions
 
-The template contains an [example Metro configuration](./packages/react-native/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`).
+The template contains an [example Metro configuration](./packages/react-native/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`). The config will work the same way with the other standard source file extensions (`.js`, etc.), as documented in [Metro docs](https://metrobundler.dev/docs/configuration/#sourceexts)
 
-When this is enabled, Metro will resolve files in the following order of preference:
+When this is enabled, Metro will resolve files in the following order of preference (and similarly for the other supported file extensions):
 
 - `file.ios.tv.tsx` or `file.android.tv.tsx`
 - `file.tv.tsx`

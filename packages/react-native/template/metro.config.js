@@ -19,12 +19,14 @@ const config = getDefaultConfig(__dirname);
 // but is available for developers who need this capability.
 //
 /*
-const originalSourceExts = config.resolver.sourceExts;
-const tvSourceExts = [
-  ...originalSourceExts.map((e) => `tv.${e}`),
-  ...originalSourceExts,
-];
-config.resolver.sourceExts = tvSourceExts;
+if (process.env.BUILDING_FOR_TV) {
+  const originalSourceExts = config.resolver.sourceExts;
+  const tvSourceExts = [
+    ...originalSourceExts.map((e) => `tv.${e}`),
+    ...originalSourceExts,
+  ];
+  config.resolver.sourceExts = tvSourceExts;
+}
  */
 
 module.exports = config;
