@@ -74,23 +74,9 @@ See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details
 
 ## _(New)_ Using the Expo SDK with TV apps
 
-Starting with the Expo SDK 50 preview, and react-native-tvos 0.73.x, it will be possible to create Expo apps, and build them for TV via a new config plugin.
+See the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide from Expo for details, including supported Expo modules and limitations.
 
-This functionality will be new in Expo SDK 50, and will be considered an experimental feature for now.
-
-The fastest way to generate a new project is described in the [TV Example](https://github.com/expo/examples/tree/master/with-tv) in the Expo examples repo.
-
-Besides most of the core Expo modules, these also work on TV:
-
-- expo-av
-- expo-image
-- expo-localization
-- expo-updates
-
-TV does NOT support dev client (dev menu, dev launcher) at this time.
-TV does NOT support Expo Router at this time.
-
-See also the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide from Expo.
+Expo SDK 50 or greater, and react-native-tvos 0.73.x or later, are required.
 
 ## _(New)_ How to support TV specific file extensions
 
