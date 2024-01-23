@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "expo": "^50.0.0-preview.7",
+    "expo": "^50.0.2",
     "react": "18.2.0",
     "react-native": "npm:react-native-tvos@0.73.2-0"
   },
