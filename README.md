@@ -74,21 +74,22 @@ See [this document](https://docs.expo.dev/bare/using-expo-cli/) for more details
 
 ## _(New)_ Using the Expo SDK with TV apps
 
-Starting with the Expo SDK 50 preview, and react-native-tvos 0.73.x, it will be possible to create Expo apps, and build them for TV via a new config plugin.
+See the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide from Expo for details, including supported Expo modules and limitations.
 
-This functionality will be new in Expo SDK 50, and will be considered an experimental feature for now.
+Expo SDK 50 or greater, and react-native-tvos 0.73.x or later, are required.
 
-The fastest way to generate a new project is described in the [TV Example](https://github.com/expo/examples/tree/master/with-tv) in the Expo examples repo.
+## _(New)_ How to support TV specific file extensions
 
-Besides most of the core Expo modules, these also work on TV:
+The template contains an [example Metro configuration](./packages/react-native/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`). The config will work the same way with the other standard source file extensions (`.js`, etc.), as documented in [Metro docs](https://metrobundler.dev/docs/configuration/#sourceexts)
 
-- expo-av
-- expo-image
-- expo-localization
-- expo-updates
+When this is enabled, Metro will resolve files in the following order of preference (and similarly for the other supported file extensions):
 
-TV does NOT support dev client (dev menu, dev launcher) at this time.
-TV does NOT support Expo Router at this time.
+- `file.ios.tv.tsx` or `file.android.tv.tsx`
+- `file.tv.tsx`
+- `file.ios.tsx` or `file.android.tsx`
+- `file.tsx`
+
+This config is not enabled by default, since it will impact bundling performance, but is available for developers who need this capability.
 
 ## Code changes
 
