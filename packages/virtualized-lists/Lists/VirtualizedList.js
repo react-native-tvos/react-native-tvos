@@ -1112,13 +1112,15 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
         }}>
         <TVFocusGuideView
           trapFocusLeft={
-            horizontalOrDefault(this.props.horizontal) && this.state.first > 0
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0
           }
           trapFocusRight={
             horizontalOrDefault(this.props.horizontal) && this._hasMore
           }
           trapFocusUp={
-            !horizontalOrDefault(this.props.horizontal) && this.state.first > 0
+            !horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0
           }
           trapFocusDown={
             !horizontalOrDefault(this.props.horizontal) && this._hasMore
