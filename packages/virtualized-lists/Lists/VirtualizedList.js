@@ -64,6 +64,7 @@ import {
   onEndReachedThresholdOrDefault,
   windowSizeOrDefault,
 } from './VirtualizedListProps';
+import TVFocusGuideView from '../../react-native/Libraries/Components/TV/TVFocusGuideView';
 
 export type {RenderItemProps, RenderItemType, Separators};
 
@@ -1109,16 +1110,32 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
           registerAsNestedChild: this._registerAsNestedChild,
           unregisterAsNestedChild: this._unregisterAsNestedChild,
         }}>
-        {React.cloneElement(
-          (
-            this.props.renderScrollComponent ||
-            this._defaultRenderScrollComponent
-          )(scrollProps),
-          {
-            ref: this._captureScrollRef,
-          },
-          cells,
-        )}
+        <TVFocusGuideView
+          trapFocusLeft={
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0
+          }
+          trapFocusRight={
+            horizontalOrDefault(this.props.horizontal) && this._hasMore
+          }
+          trapFocusUp={
+            !horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0
+          }
+          trapFocusDown={
+            !horizontalOrDefault(this.props.horizontal) && this._hasMore
+          }>
+          {React.cloneElement(
+            (
+              this.props.renderScrollComponent ||
+              this._defaultRenderScrollComponent
+            )(scrollProps),
+            {
+              ref: this._captureScrollRef,
+            },
+            cells,
+          )}
+        </TVFocusGuideView>
       </VirtualizedListContextProvider>
     );
     let ret: React.Node = innerRet;
