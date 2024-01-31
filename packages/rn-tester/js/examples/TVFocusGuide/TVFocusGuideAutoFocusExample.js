@@ -144,6 +144,7 @@ const HList = React.forwardRef(
       onItemPressed,
       prefix = '',
       slow,
+      remountOnChange = false,
       ...props
     },
     forwardedRef,
@@ -167,7 +168,7 @@ const HList = React.forwardRef(
 
     return (
       <FlatList
-        keyExtractor={item => getItemText({prefix, item})}
+        keyExtractor={remountOnChange ? item => getItemText({prefix, item}) : item => item}
         ref={forwardedRef}
         data={data}
         renderItem={renderItem}
@@ -188,7 +189,7 @@ const getSelectedItemPrefix = (selectedCategory: string) => {
   return `Category ${selectedCategory} - Item`;
 };
 
-const Row = ({title}) => {
+const Row = ({title, remountOnChange = true}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
   const onCategoryFocused = (event, id: number) => {
@@ -210,6 +211,7 @@ const Row = ({title}) => {
       </TVFocusGuide>
       <TVFocusGuide autoFocus style={styles.mb5}>
         <HList
+          remountOnChange={remountOnChange}
           prefix={getSelectedItemPrefix(selectedCategory)}
           itemCount={10}
         />
@@ -414,6 +416,54 @@ const SlowListFocusTest = () => {
   );
 };
 
+const EntryModeFirstTestList = () => {
+  const data = React.useMemo(() => generateData(10), []);
+
+  /**
+   * When moving to this list, first element should always be focused.
+   */
+  return (
+    <TVFocusGuide autoFocus entryMode="first" style={styles.mb5}>
+      <Text style={styles.slowListTitle}>Always focus first element</Text>
+      <View style={{flexDirection: 'row'}}>
+        <HList itemCount={10} data={data} />
+      </View>
+    </TVFocusGuide>
+  );
+};
+
+const ResetLastFocusTest = () => {
+  const [selectedTag, setSelectedTag] = React.useState(0);
+  const listGuideRef = React.useRef(null);
+
+  React.useEffect(() => {
+    listGuideRef.current?.resetLastFocus();
+  }, [selectedTag]);
+
+  return (
+    <View style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Reset focus in Element list on tag change
+      </Text>
+      <TVFocusGuide autoFocus style={styles.rowTop}>
+        <FocusableBox text="Tag 1" width={100 * scale} height={50 * scale} onFocus={() => setSelectedTag(0)} />
+        <FocusableBox text="Tag 2" width={100 * scale} height={50 * scale} onFocus={() => setSelectedTag(1)} />
+        <FocusableBox text="Tag 3" width={100 * scale} height={50 * scale} onFocus={() => setSelectedTag(2)} />
+      </TVFocusGuide>
+
+      <TVFocusGuide autoFocus ref={listGuideRef} style={styles.cols}>
+        <FocusableBox text="Element 1" width={200 * scale} height={100 * scale} />
+        <FocusableBox text="Element 2" width={200 * scale} height={100 * scale} />
+        <FocusableBox text="Element 3" width={200 * scale} height={100 * scale} />
+      </TVFocusGuide>
+    </View>
+  );
+};
+
 type ContentAreaProps = $ReadOnly<{|
   sideMenuRef: {current: ?React.ElementRef<typeof View>},
 |}>;
@@ -429,9 +479,11 @@ const ContentArea = React.forwardRef(
           <RestoreFocusTestList />
           <RestoreFocusOnSingleDeletionTestList />
           <RestoreFocusOnScrollToTopTestList />
+          <EntryModeFirstTestList />
           <SlowListFocusTest />
           <Row title="Category Example 1" />
-          <Row title="Category Example 2" />
+          <Row title="Category Example 2 (without remounting)" remountOnChange={false} />
+          <ResetLastFocusTest />
 
           <FocusableBox
             style={styles.focusToSideMenuBtn}
