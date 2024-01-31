@@ -204,11 +204,20 @@ class Game2048 extends React.Component {
 
 - _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API and is implemented in the same way for Android TV, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  An example is provided in `RNTester` that shows two different ways of using this component.
 
-| Prop | Value | Description | 
-|---|---|---|
-| destinations | any[]? | Array of `Component`s to register as destinations of the FocusGuideView |
-| autoFocus | boolean? | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. `destinations` prop takes precedence over this prop when used together. |
-| trapFocus* (Up, Down, Left, Right) | Prevents focus escaping from the container for the given directions. |
+| Prop                               | Value                  | Description                                                                                                                                                                                                                                                                                                            | 
+|------------------------------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| destinations                       | any[]?                 | Array of `Component`s to register as destinations of the FocusGuideView                                                                                                                                                                                                                                                |
+| autoFocus                          | boolean?               | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. `destinations` prop takes precedence over this prop when used together.  |
+| entryMode                          | `'first' \| 'restore'` | Strategy for handling focus when entering the FocusGuide. Defaults to `restore`, which remembers last focused element. Setting it to `first` always focuses first element on entering the FocusGuide. Works only with `autoFocus`.                                                                                     |
+| trapFocus* (Up, Down, Left, Right) |                        | Prevents focus escaping from the container for the given directions.                                                                                                                                                                                                                                                   |
+
+Additionally, some TV only imperative methods are available on `<TVFocusGuideView>` `ref`:
+
+| Method                    | Description                                                                                                                             | 
+|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| `requestTVFocus()`        | Imperatively requests focus on this FocusGuide.                                                                                         |
+| `updateLastFocus(target)` | When `entryMode` is set to `"restore"`, updates currently tracked last focused element. Accepts ref to native view or nativeID (tag)    | 
+| `resetLastFocus()`        | When `entryMode` is set to `"restore"` (default), resets last focused element to first visible element in focus guide.                  | 
 
 More information on the focus handling improvements above can be found in [this article](https://medium.com/xite-engineering/revolutionizing-focus-management-in-tv-applications-with-react-native-10ba69bd90).
 
