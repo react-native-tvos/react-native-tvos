@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStructure;
 import android.view.animation.Animation;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -82,12 +81,18 @@ public class ReactViewGroup extends ViewGroup
   private static final Rect sHelperRect = new Rect();
   private @NonNull int[] focusDestinations = new int[0];
   private boolean autoFocus = false;
+  private EntryMode entryMode = EntryMode.RESTORE;
   private WeakReference<View> lastFocusedElement;
   private boolean mRecoverFocus = false;
   private boolean trapFocusUp = false;
   private boolean trapFocusDown = false;
   private boolean trapFocusLeft = false;
   private boolean trapFocusRight = false;
+
+  public enum EntryMode {
+    RESTORE,
+    FIRST,
+  }
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -492,7 +497,7 @@ public class ReactViewGroup extends ViewGroup
     }
   }
 
-  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+  View findFirstFocusableElement(ReactViewGroup viewGroup) {
     ArrayList<View> focusables = new ArrayList<View>(0);
     /**
      * `addFocusables` is the method used by `FocusFinder` to determine
@@ -511,7 +516,7 @@ public class ReactViewGroup extends ViewGroup
      * The other ones on the list can be non-focusable as well.
      * So, we run a loop till finding the first real focusable element.
      */
-    if (focusables.size() <= 0) return false;
+    if (focusables.size() <= 0) return null;
 
     View firstFocusableElement = null;
     Integer index = 0;
@@ -523,6 +528,24 @@ public class ReactViewGroup extends ViewGroup
       }
       index++;
     }
+
+    return firstFocusableElement;
+  }
+
+  boolean resetLastFocus(ReactViewGroup viewGroup) {
+    View firstFocusableElement = findFirstFocusableElement(viewGroup);
+
+    if (firstFocusableElement == null) return false;
+    lastFocusedElement = new WeakReference<>(firstFocusableElement);
+    return true;
+  }
+
+  void setLastFocus(ReactViewGroup viewGroup, View newLastFocusedView) {
+    lastFocusedElement = new WeakReference<>(newLastFocusedView);
+  }
+
+  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+    View firstFocusableElement = findFirstFocusableElement(viewGroup);
 
     if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
 
@@ -1262,22 +1285,24 @@ public class ReactViewGroup extends ViewGroup
     }
 
     if (this.autoFocus) {
-      View lastFocusedElem = lastFocusedElement.get();
+      if (entryMode == EntryMode.RESTORE) {
+        View lastFocusedElem = lastFocusedElement.get();
 
-      if (lastFocusedElem != null) {
+        if (lastFocusedElem != null) {
 
-        if (lastFocusedElem.isAttachedToWindow()) {
-          lastFocusedElem.requestFocus();
-          return true;
+          if (lastFocusedElem.isAttachedToWindow()) {
+            lastFocusedElem.requestFocus();
+            return true;
+          }
+
+          /**
+           * `lastFocusedElem` can get detached based on application logic.
+           * If the code reaches here, that means we're dealing with that case.
+           * We should set `lastFocusedElem` to null and let the focus determination
+           * logic below to do its magic and redirect focus to the first element.
+           */
+          lastFocusedElement = new WeakReference<View>(null);
         }
-
-        /**
-         * `lastFocusedElem` can get detached based on application logic.
-         * If the code reaches here, that means we're dealing with that case.
-         * We should set `lastFocusedElem` to null and let the focus determination
-         * logic below to do its magic and redirect focus to the first element.
-         */
-        lastFocusedElement = new WeakReference<View>(null);
       }
 
       // Try moving the focus to the first focusable element otherwise.
@@ -1318,6 +1343,11 @@ public class ReactViewGroup extends ViewGroup
   public void setAutoFocusTV(boolean autoFocus) {
     this.autoFocus = autoFocus;
     lastFocusedElement = new WeakReference<View>(null);
+  }
+
+  public void setEntryMode(EntryMode entryMode) {
+    this.entryMode = entryMode;
+    lastFocusedElement = new WeakReference<>(null);
   }
 
   public void setTrapFocusUp(boolean enabled) {

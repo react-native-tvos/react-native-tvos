@@ -26,7 +26,6 @@
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;
-  
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge {
@@ -45,6 +44,7 @@
       };
     });
     self.tvParallaxProperties = defaultTVParallaxProperties;
+    self.entryMode = RCTTVFocusGuideEntryModeRestore;
     motionEffectsAdded = NO;
   }
   
@@ -95,6 +95,13 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     if (_longSelectRecognizer) {
       [self removeGestureRecognizer:_longSelectRecognizer];
     }
+  }
+}
+
+- (void)setEntryMode:(RCTTVFocusGuideEntryMode)entryMode
+{
+  if (_entryMode != entryMode) {
+    _entryMode = entryMode;
   }
 }
 
@@ -523,7 +530,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   } else if (_autoFocus && previouslyFocusedItem != nil) {
     // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
     // `self` helps redirecting focus to the first focusable element in that case.
-    [self addFocusGuide:@[previouslyFocusedItem, self]];
+    if (_entryMode == RCTTVFocusGuideEntryModeFirst) {
+      previouslyFocusedItem = nil;
+      [self addFocusGuide:@[self]];
+    } else {
+      [self addFocusGuide:@[previouslyFocusedItem, self]];
+    }
   } else if (_autoFocus) {
     [self addFocusGuide:@[self]];
   } else {
@@ -575,5 +587,16 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)requestTVFocus
 {
   [self requestFocusSelf];
+}
+
+- (void)updateLastFocus:(id) target
+{
+  if ([target isKindOfClass:[UIView class]]) {
+    previouslyFocusedItem = target;
+  } else {
+    previouslyFocusedItem = nil;
+  }
+
+  [self handleFocusGuide];
 }
 @end

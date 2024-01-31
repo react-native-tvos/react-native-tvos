@@ -67,7 +67,17 @@ declare module 'react-native' {
     disable(): void;
   }
 
+  export type FocusGuideEntryMode = 'first' | 'restore';
+
   export interface FocusGuideProps extends ViewProps {
+    /**
+     * How focus should be handled when entering this focus guide.
+     * Defaults to "restore", which remembers last focused element.
+     * Setting it to "first" causes first element to always be focused when entering the view.
+     *
+     * NOTE: When using scrolled views, the first *visible* element is focused.
+     */
+    entryMode?: FocusGuideEntryMode | undefined;
      /**
      * If the view should be "visible". display "flex" if visible, otherwise "none".
      * Defaults to true
@@ -114,6 +124,16 @@ declare module 'react-native' {
     setDestinations: (
       destinations: (React.ElementRef<HostComponent<unknown>> | null | undefined)[],
     ) => void;
+    /**
+     * Overrides tracked last focused element in this FocusGuide to specified view ref or nativeId.
+     */
+    updateLastFocus: (
+      target: React.ElementRef<HostComponent<unknown>> | number
+    ) => void;
+    /**
+     * Resets tracked last focused element in this FocusGuide to first visible element.
+     */
+    resetLastFocus: () => void;
   }
 
   /**

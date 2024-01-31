@@ -124,6 +124,10 @@ interface NativeCommands {
     destinations: Array<number>, // Node handles are basically integers
   ) => void;
   +requestTVFocus: (viewRef: React.ElementRef<HostComponent<mixed>>) => void;
+  +updateLastFocus: (
+    viewRef: React.ElementRef<HostComponent<mixed>>,
+    target: number | null
+  ) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
@@ -132,6 +136,7 @@ export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
     'setPressed',
     'setDestinations',
     'requestTVFocus',
+    'updateLastFocus',
   ],
 });
 

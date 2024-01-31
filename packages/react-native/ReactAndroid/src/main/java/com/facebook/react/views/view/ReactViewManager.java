@@ -10,7 +10,6 @@ package com.facebook.react.views.view;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +19,7 @@ import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.common.annotations.VisibleForTesting;
@@ -58,6 +58,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   private static final int CMD_HOTSPOT_UPDATE = 1;
   private static final int CMD_SET_PRESSED = 2;
   private static final int CMD_SET_DESTINATIONS = 3;
+  private static final int CMD_UPDATE_LAST_FOCUS = 4;
   private static final String HOTSPOT_UPDATE_KEY = "hotspotUpdate";
 
   public ReactViewManager() {
@@ -345,7 +346,7 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
 
   @Override
   public Map<String, Integer> getCommandsMap() {
-    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS);
+    return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS, "updateLastFocus", CMD_UPDATE_LAST_FOCUS);
   }
 
   @Override
@@ -364,6 +365,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       case CMD_SET_DESTINATIONS:
       {
         handleSetDestinations(root, args);
+        break;
+      }
+      case CMD_UPDATE_LAST_FOCUS:
+      {
+        handleUpdateLastFocus(root, args);
         break;
       }
     }
@@ -392,6 +398,11 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
           root.requestFocus();
           break;
         }
+      case "updateLastFocus":
+      {
+        handleUpdateLastFocus(root, args);
+        break;
+      }
     }
   }
 
@@ -428,9 +439,45 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     root.setFocusDestinations(fd);
   }
 
+  private void handleUpdateLastFocus(ReactViewGroup root, @Nullable ReadableArray args) {
+    if (args == null || args.size() != 1) {
+      throw new JSApplicationIllegalArgumentException(
+        "Illegal number of arguments for 'setLastFocus' command");
+    }
+
+    Dynamic target = args.getDynamic(0);
+    // resetLastFocus()
+    if (target.isNull()) {
+      root.resetLastFocus(root);
+    }
+    // updateLastFocus(view)
+    else if (target.getType() == ReadableType.Number) {
+      int targetViewId = target.asInt();
+      root.setLastFocus(root, root.findViewById(targetViewId));
+    }
+    else {
+      throw new JSApplicationIllegalArgumentException(
+        "Illegal argument passed to 'updateLastFocus' command");
+    }
+  }
+
   @ReactProp(name = "autoFocus")
   public void setAutoFocusTV(ReactViewGroup view, boolean autoFocus) {
     view.setAutoFocusTV(autoFocus);
+  }
+
+  @ReactProp(name = "entryMode")
+  public void setEntryMode(ReactViewGroup view, String entryMode) {
+    if (entryMode.equals("first")) {
+      view.setEntryMode(ReactViewGroup.EntryMode.FIRST);
+    }
+    else if (entryMode.equals("default")) {
+      view.setEntryMode(ReactViewGroup.EntryMode.RESTORE);
+    }
+    else {
+      throw new JSApplicationIllegalArgumentException(
+        "Invalid entryMode passed to View");
+    }
   }
 
   @ReactProp(name = "trapFocusUp")

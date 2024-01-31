@@ -40,6 +40,8 @@ type TVFocusGuideViewProps = $ReadOnly<{
 
   autoFocus?: boolean,
 
+  entryMode?: 'restore' | 'first',
+
   trapFocusUp?: boolean,
   trapFocusDown?: boolean,
   trapFocusLeft?: boolean,
@@ -50,6 +52,13 @@ export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
   setDestinations: (
     destinations: (?React.ElementRef<HostComponent<mixed>>)[],
   ) => void,
+  updateLastFocus: (
+    viewRef: React.ElementRef<HostComponent<mixed>>,
+    target: (?React.ElementRef<HostComponent<mixed>>) | number
+  ) => void;
+  resetLastFocus: (
+    viewRef: React.ElementRef<HostComponent<mixed>>
+  ) => void;
 }>;
 
 function TVFocusGuideView(
@@ -78,6 +87,22 @@ function TVFocusGuideView(
     [],
   );
 
+  const updateLastFocus = React.useCallback((target) => {
+    if (focusGuideRef.current) {
+      // Handle ref to component argument
+      const handle = (typeof target === "number") ? target : findNodeHandle(target)
+      if (handle) {
+        Commands.updateLastFocus(focusGuideRef.current, handle);
+      }
+    }
+  }, []);
+
+  const resetLastFocus = React.useCallback(() => {
+    if (focusGuideRef.current) {
+      Commands.updateLastFocus(focusGuideRef.current, null);
+    }
+  }, []);
+
   const _setNativeRef = setAndForwardRef({
     getForwardedRef: () => forwardedRef,
     setLocalRef: ref => {
@@ -93,6 +118,8 @@ function TVFocusGuideView(
       // imperative methods of this component like `setDestinations()`.
       if (ref) {
         ref.setDestinations = setDestinations;
+        ref.updateLastFocus = updateLastFocus;
+        ref.resetLastFocus = resetLastFocus;
       }
     },
   });

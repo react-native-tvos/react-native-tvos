@@ -135,6 +135,19 @@ RCT_MULTI_ENUM_CONVERTER(
 
 @end
 
+#if TARGET_OS_TV
+@implementation RCTConvert (RCTTVProps)
+  RCT_ENUM_CONVERTER(
+      RCTTVFocusGuideEntryMode,
+      (@{
+        @"restore" : @(RCTTVFocusGuideEntryModeRestore),
+        @"first" : @(RCTTVFocusGuideEntryModeFirst),
+      }),
+      RCTTVFocusGuideEntryModeRestore,
+      integerValue)
+@end
+#endif
+
 @implementation RCTViewManager
 
 @synthesize bridge = _bridge;
@@ -194,6 +207,7 @@ RCT_EXPORT_MODULE()
 // TODO: Delete props for Apple TV.
 RCT_EXPORT_VIEW_PROPERTY(isTVSelectable, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(hasTVPreferredFocus, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(entryMode, RCTTVFocusGuideEntryMode)
 RCT_EXPORT_VIEW_PROPERTY(tvParallaxProperties, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(nextFocusUp, NSNumber)
 RCT_EXPORT_VIEW_PROPERTY(nextFocusDown, NSNumber)
@@ -569,6 +583,14 @@ RCT_EXPORT_METHOD(requestTVFocus : (nonnull NSNumber *)viewTag)
   [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
     RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
     [view requestTVFocus];
+  }];
+}
+
+RCT_EXPORT_METHOD(updateLastFocus : (nonnull NSNumber *)viewTag : (id) target)
+{
+  [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+    RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
+    [view updateLastFocus: target];
   }];
 }
 #endif

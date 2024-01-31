@@ -15,6 +15,14 @@
 @interface RCTTVView : RCTView
 
 /**
+ * Enum defining allowed EntryModes for TVFocusGuideView
+ */
+typedef NS_ENUM(NSInteger, RCTTVFocusGuideEntryMode) {
+  RCTTVFocusGuideEntryModeRestore = 0,
+  RCTTVFocusGuideEntryModeFirst,
+};
+
+/**
  * TV event handlers
  */
 @property (nonatomic, assign) BOOL isTVSelectable; // True if this view is TV-focusable
@@ -46,6 +54,7 @@
  * Auto focus
  */
 @property (nonatomic, assign) BOOL autoFocus;
+@property (nonatomic, assign) RCTTVFocusGuideEntryMode entryMode;
 
 @property (nonatomic, assign) BOOL trapFocusUp;
 @property (nonatomic, assign) BOOL trapFocusDown;
@@ -83,6 +92,8 @@
 - (void)setFocusDestinations:(NSArray*)destinations;
 
 - (void)requestTVFocus;
+
+- (void)updateLastFocus:(id)target;
 
 @property (nonatomic, strong) UIFocusGuide * focusGuide;
 
