@@ -356,6 +356,10 @@ class TouchableOpacity extends React.Component<Props, State> {
     }
   }
 
+  componentDidMount(): void {
+    this.state.pressability.configure(this._createPressabilityConfig());
+  }
+
   componentWillUnmount(): void {
     if (Platform.isTV) {
       if (this._tvTouchable != null) {

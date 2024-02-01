@@ -408,6 +408,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         },
       });
     }
+    this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
