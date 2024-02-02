@@ -1066,9 +1066,6 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
-    if (!self.isTVSelectable) {
-        return [super shouldUpdateFocusInContext:context];
-    }
     // Keep focus inside the scroll view till the end of the content
     if ([self isHorizontal:self.scrollView]) {
         if ((context.focusHeading == UIFocusHeadingLeft && self.scrollView.contentOffset.x > 0)
