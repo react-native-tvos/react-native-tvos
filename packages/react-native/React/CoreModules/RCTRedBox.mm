@@ -324,6 +324,23 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   return lineInfo;
 }
 
+- (void)tableView:(UITableView *)tableView didUpdateFocusInContext:(UITableViewFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+    UITableViewCell *previouslyFocusedItem = (UITableViewCell *)context.previouslyFocusedItem;
+    if ([previouslyFocusedItem isKindOfClass:[UITableViewCell class]]) {
+        [coordinator addCoordinatedUnfocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
+            previouslyFocusedItem.textLabel.textColor = [UIColor whiteColor];
+        } completion:nil];
+    }
+
+    UITableViewCell *nextFocusedItem = (UITableViewCell *)context.nextFocusedItem;
+    if ([nextFocusedItem isKindOfClass:[UITableViewCell class]]) {
+        [coordinator addCoordinatedFocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
+            nextFocusedItem.textLabel.textColor = [UIColor blackColor];
+        } completion:nil];
+    }
+}
+
 #pragma mark - TableView
 
 - (NSInteger)numberOfSectionsInTableView:(__unused UITableView *)tableView

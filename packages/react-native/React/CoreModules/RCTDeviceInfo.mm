@@ -103,11 +103,11 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:RCTAccessibilityManagerDidUpdateMultiplierNotification
                                                 object:[_moduleRegistry moduleForName:"AccessibilityManager"]];
-
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:UIApplicationDidChangeStatusBarOrientationNotification
                                                 object:nil];
-
+#endif
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 
   [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTUserInterfaceStyleDidChangeNotification object:nil];
