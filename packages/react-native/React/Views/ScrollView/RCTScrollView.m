@@ -288,6 +288,7 @@
   NSString *_lastEmittedEventName;
   NSHashTable *_scrollListeners;
   NSMutableDictionary *_tvRemoteGestureRecognizers;
+  BOOL _blockFirstTouch;
 }
 
 - (void)_registerKeyboardListener
@@ -988,7 +989,11 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
         [self sendFocusNotification];
+        // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
+        _blockFirstTouch = (unsigned long)context.focusHeading != 0;
+        [self addArrowsListeners];
     } else if (context.previouslyFocusedView == self) {
+        [self removeArrowsListeners];
         [self sendBlurNotification];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
@@ -1006,6 +1011,76 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
         }
 
     }
+}
+
+- (void) addArrowsListeners {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleTVNavigationEventNotification:)
+                                                 name:@"RCTTVNavigationEventNotification"
+                                               object:nil];
+}
+
+- (void) removeArrowsListeners {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"RCTTVNavigationEventNotification"
+                                                  object:nil];
+}
+
+
+- (void)handleTVNavigationEventNotification:(NSNotification *)notif
+{
+    NSArray *supportedEvents = [NSArray arrayWithObjects:@"up", @"down", @"left", @"right", nil];
+
+    if (notif.object == nil || notif.object[@"eventType"] == nil || ![supportedEvents containsObject:notif.object[@"eventType"]] ) {
+        return;
+    }
+    
+    if (_blockFirstTouch) {
+        _blockFirstTouch = NO;
+        return;
+    }
+
+    if (![self isHorizontal:self.scrollView]) {
+        if ([notif.object[@"eventType"]  isEqual: @"down"]) {
+            [self swipedDown];
+            return;
+        }
+        
+        if ([notif.object[@"eventType"]  isEqual: @"up"]) {
+            [self swipedUp];
+            return;
+        }
+    }
+  
+    if ([notif.object[@"eventType"]  isEqual: @"left"]) {
+        [self swipedLeft];
+        return;
+    }
+    
+    if ([notif.object[@"eventType"]  isEqual: @"right"]) {
+        [self swipedRight];
+        return;
+    }
+}
+
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+    // Keep focus inside the scroll view till the end of the content
+    if ([self isHorizontal:self.scrollView]) {
+        if ((context.focusHeading == UIFocusHeadingLeft && self.scrollView.contentOffset.x > 0)
+            || (context.focusHeading == UIFocusHeadingRight && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - self.scrollView.visibleSize.width)
+        ) {
+            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        }
+    } else {
+        if ((context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0)
+            || (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - self.scrollView.visibleSize.height)
+        ) {
+            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        }
+    }
+
+    return [super shouldUpdateFocusInContext:context];
 }
 
 - (void)sendFocusNotification
@@ -1047,6 +1122,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)swipeVerticalScrollToOffset:(CGFloat)yOffset
 {
+    _blockFirstTouch = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat limitedOffset = yOffset;
         limitedOffset = MAX(limitedOffset, 0.0);
@@ -1060,6 +1136,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)swipeHorizontalScrollToOffset:(CGFloat)xOffset
 {
+    _blockFirstTouch = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat limitedOffset = xOffset;
         limitedOffset = MAX(limitedOffset, 0.0);
