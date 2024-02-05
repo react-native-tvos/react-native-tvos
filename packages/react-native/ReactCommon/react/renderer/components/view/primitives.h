@@ -286,6 +286,8 @@ struct BorderMetrics {
 
 #if TARGET_OS_TV
 
+enum class TVFocusEntryMode: uint8_t { Restore, First };
+
 struct TVParallaxProperties {
   std::optional<bool> enabled{};
   std::optional<float> shiftDistanceX{};

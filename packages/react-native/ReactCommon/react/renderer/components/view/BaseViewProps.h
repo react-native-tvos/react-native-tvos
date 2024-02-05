@@ -45,6 +45,7 @@ class BaseViewProps : public YogaStylableProps, public AccessibilityProps {
   std::optional<int> nextFocusLeft;
   std::optional<int> nextFocusRight;
   bool autoFocus{false};
+  TVFocusEntryMode entryMode{TVFocusEntryMode::Restore};
   bool trapFocusUp{false};
   bool trapFocusDown{false};
   bool trapFocusLeft{false};

@@ -559,6 +559,22 @@ static inline CascadedRectangleEdges<T> convertRawProp(
 inline void fromRawValue(
     const PropsParserContext &,
     const RawValue &value,
+    TVFocusEntryMode &result) {
+  if (value.hasType<std::string>()) {
+    auto stringVal = (std::string)value;
+    if (stringVal == "first") {
+      result = TVFocusEntryMode::First;
+      return; // handled
+    }
+  }
+  
+  // default
+  result = TVFocusEntryMode::Restore;
+}
+
+inline void fromRawValue(
+    const PropsParserContext &,
+    const RawValue &value,
     TVParallaxProperties &result) {
   auto map = (std::unordered_map<std::string, RawValue>)value;
 

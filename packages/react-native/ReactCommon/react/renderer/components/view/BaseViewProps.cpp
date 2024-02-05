@@ -103,6 +103,12 @@ BaseViewProps::BaseViewProps(
           "autoFocus",
           sourceProps.autoFocus,
           (Boolean) false)),
+      entryMode(convertRawProp(
+          context,
+          rawProps,
+          "entryMode",
+          sourceProps.entryMode,
+          TVFocusEntryMode::Restore)),
       trapFocusUp(convertRawProp(
           context,
           rawProps,
@@ -355,6 +361,12 @@ void BaseViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(collapsable);
     RAW_SET_PROP_SWITCH_CASE_BASIC(removeClippedSubviews);
     RAW_SET_PROP_SWITCH_CASE_BASIC(experimental_layoutConformance);
+
+    // TV related props
+#if TARGET_OS_TV
+    RAW_SET_PROP_SWITCH_CASE_BASIC(entryMode);
+#endif
+      
     // events field
     VIEW_EVENT_CASE(PointerEnter);
     VIEW_EVENT_CASE(PointerEnterCapture);

@@ -61,6 +61,9 @@ using namespace facebook::react;
   UIView *_nextFocusLeft;
   UIView *_nextFocusRight;
   UIView *_nextFocusActiveTarget;
+#if TARGET_OS_TV
+  TVFocusEntryMode _entryMode;
+#endif
   BOOL _autoFocus;
   BOOL _trapFocusUp;
   BOOL _trapFocusDown;
@@ -213,9 +216,15 @@ using namespace facebook::react;
   if (_focusDestinations != nil) {
     [self addFocusGuide:_focusDestinations];
   } else if (_autoFocus && _previouslyFocusedItem != nil) {
-    // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
-    // `self` helps redirecting focus to the first focusable element in that case.
-    [self addFocusGuide:@[_previouslyFocusedItem, self]];
+    if (_entryMode == TVFocusEntryMode::First) {
+      _previouslyFocusedItem = nil;
+      [self addFocusGuide:@[self]];
+    }
+    else {
+      // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
+      // `self` helps redirecting focus to the first focusable element in that case.
+      [self addFocusGuide:@[_previouslyFocusedItem, self]];
+    }
   } else if (_autoFocus) {
     [self addFocusGuide:@[self]];
   } else {
@@ -562,6 +571,16 @@ using namespace facebook::react;
     }
 }
 
+- (void)updateLastFocus:(id) target
+{
+  if ([target isKindOfClass:[UIView class]]) {
+    _previouslyFocusedItem = target;
+  } else {
+    _previouslyFocusedItem = nil;
+  }
+
+  [self handleFocusGuide];
+}
 #endif
 
 #pragma mark - Native Commands
@@ -600,6 +619,27 @@ using namespace facebook::react;
     }
 
     [self requestFocusSelf];
+#endif
+    return;
+  } else if ([commandName isEqualToString:@"updateLastFocus"]) {
+#if TARGET_OS_TV
+    if ([args count] != 1) {
+      RCTLogError(
+          @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 1);
+      return;
+    }
+
+    // first argument is nil, which means reset to first visible view
+    if (!args[0] || [args[0] isKindOfClass:NSNull.class]) {
+      [self updateLastFocus:nil];
+    }
+    else {
+      if (!RCTValidateTypeOfViewCommandArgument(args[0], [NSNumber class], @"number", @"View", commandName, @"1st")) {
+        return;
+      }
+      
+      [self updateLastFocus:(id)args[0]];
+    }
 #endif
     return;
   }
@@ -979,7 +1019,8 @@ using namespace facebook::react;
     _autoFocus = newViewProps.autoFocus;
     [self handleFocusGuide];
   }
-
+  
+  _entryMode = newViewProps.entryMode;
   _trapFocusUp = newViewProps.trapFocusUp;
   _trapFocusDown = newViewProps.trapFocusDown;
   _trapFocusLeft = newViewProps.trapFocusLeft;
