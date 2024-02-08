@@ -24,39 +24,41 @@ const {applyPackageVersions, getNpmInfo} = require('./npm-utils');
  *   * Creates a gemfile
  */
 if (require.main === module) {
-  let argv = yargs
-    .option('c', {
+  let argv =
+    //    .option('d', {
+    //      alias: 'dependency-versions',
+    //      type: 'string',
+    //      describe:
+    //        'JSON string of package versions. Ex. "{"react-native":"0.64.1"}"',
+    //      default: null,
+    //    })
+    //    .coerce('d', dependencyVersions => {
+    //      if (dependencyVersions == null) {
+    //        return null;
+    //      }
+    //      return JSON.parse(dependencyVersions);
+    //    })
+    //    .option('b', {
+    //      alias: 'build-type',
+    //      type: 'string',
+    //      choices: ['dry-run', 'nightly', 'release'],
+    //      required: true,
+    //    })
+    yargs
+      .option('c', {
         alias: 'commit',
         type: 'boolean',
         default: false,
       })
-    .option('v', {
-      alias: 'to-version',
-      type: 'string',
-      required: true,
-    })
-//    .option('d', {
-//      alias: 'dependency-versions',
-//      type: 'string',
-//      describe:
-//        'JSON string of package versions. Ex. "{"react-native":"0.64.1"}"',
-//      default: null,
-//    })
-//    .coerce('d', dependencyVersions => {
-//      if (dependencyVersions == null) {
-//        return null;
-//      }
-//      return JSON.parse(dependencyVersions);
-//    })
-//    .option('b', {
-//      alias: 'build-type',
-//      type: 'string',
-//      choices: ['dry-run', 'nightly', 'release'],
-//      required: true,
-//    })
-    .argv;
+      .option('v', {
+        alias: 'to-version',
+        type: 'string',
+        required: true,
+      }).argv;
 
-  const dependencyMap = { 'react-native': `npm:react-native-tvos@${argv.toVersion}` };
+  const dependencyMap = {
+    'react-native': `npm:react-native-tvos@${argv.toVersion}`,
+  };
   setReactNativeVersion(
     argv.toVersion,
     dependencyMap, // argv.dependencyVersions,
@@ -145,7 +147,10 @@ function setPackage({version}, dependencyVersions, argVersion) {
 
   packageJson.version = version;
 
-// Derive core version from this version, e.g. 73.0-0 uses core version 73.0
+  // Update virtualized-lists dependency
+  packageJson.dependencies['@react-native-tvos/virtualized-lists'] = version;
+
+  // Derive core version from this version, e.g. 73.0-0 uses core version 73.0
   const coreVersion = argVersion.split('-')[0];
   packageJson.devDependencies = packageJson.devDependencies ?? {};
   packageJson.devDependencies[
@@ -159,7 +164,24 @@ function setPackage({version}, dependencyVersions, argVersion) {
   );
 }
 
-function setReactNativeVersion(argVersion, dependencyVersions, buildType, commit) {
+function setVirtualizedListVersion({version}) {
+  const packageJson = JSON.parse(
+    cat('packages/virtualized-lists/package.json'),
+  );
+  packageJson.version = version;
+  fs.writeFileSync(
+    'packages/virtualized-lists/package.json',
+    JSON.stringify(packageJson, null, 2),
+    'utf-8',
+  );
+}
+
+function setReactNativeVersion(
+  argVersion,
+  dependencyVersions,
+  buildType,
+  commit,
+) {
   if (!argVersion) {
     const {version} = getNpmInfo(buildType);
     argVersion = version;
@@ -170,6 +192,8 @@ function setReactNativeVersion(argVersion, dependencyVersions, buildType, commit
 
   setSource(version);
   setPackage(version, dependencyVersions, argVersion);
+
+  setVirtualizedListVersion(version);
 
   const templateDependencyVersions = {
     'react-native': version.version,
@@ -187,6 +211,7 @@ function setReactNativeVersion(argVersion, dependencyVersions, buildType, commit
       'packages/react-native/ReactCommon/cxxreact/ReactNativeVersion.h',
       'packages/react-native/package.json',
       'packages/react-native/template/package.json',
+      'packages/virtualized-lists/package.json',
       'package.json',
       'yarn.lock',
     ];
