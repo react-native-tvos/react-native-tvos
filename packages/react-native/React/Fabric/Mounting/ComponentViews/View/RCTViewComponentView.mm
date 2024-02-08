@@ -433,6 +433,17 @@ using namespace facebook::react;
 //
 - (void)enableDirectionalFocusGuides
 {
+  [self enableNextFocusUp];
+
+  [self enableNextFocusDown];
+
+  [self enableNextFocusLeft];
+
+  [self enableNextFocusRight];
+}
+
+- (void)enableNextFocusUp
+{
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
@@ -446,7 +457,10 @@ using namespace facebook::react;
 
     self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
   }
+}
 
+- (void)enableNextFocusDown
+{
   if (self->_nextFocusDown != nil) {
     if (self.focusGuideDown == nil) {
       self.focusGuideDown = [UIFocusGuide new];
@@ -460,7 +474,10 @@ using namespace facebook::react;
 
     self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
   }
+}
 
+- (void)enableNextFocusLeft
+{
   if (self->_nextFocusLeft != nil) {
     if (self.focusGuideLeft == nil) {
       self.focusGuideLeft = [UIFocusGuide new];
@@ -474,7 +491,10 @@ using namespace facebook::react;
 
     self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
   }
+}
 
+- (void)enableNextFocusRight
+{
   if (self->_nextFocusRight != nil) {
     if (self.focusGuideRight == nil) {
       self.focusGuideRight = [UIFocusGuide new];
@@ -942,6 +962,9 @@ using namespace facebook::react;
     if (newViewProps.nextFocusUp.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
+      if (self.isFocused) {
+        [self enableNextFocusUp];
+      }
     } else {
       _nextFocusUp = nil;
     }
@@ -951,6 +974,9 @@ using namespace facebook::react;
     if (newViewProps.nextFocusDown.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
+      if (self.isFocused) {
+        [self enableNextFocusDown];
+      }
     } else {
       _nextFocusDown = nil;
     }
@@ -960,6 +986,9 @@ using namespace facebook::react;
     if (newViewProps.nextFocusLeft.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
+      if (self.isFocused) {
+        [self enableNextFocusLeft];
+      }
     } else {
       _nextFocusLeft = nil;
     }
@@ -969,6 +998,9 @@ using namespace facebook::react;
     if (newViewProps.nextFocusRight.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
+      if (self.isFocused) {
+        [self enableNextFocusRight];
+      }
     } else {
       _nextFocusRight = nil;
     }
