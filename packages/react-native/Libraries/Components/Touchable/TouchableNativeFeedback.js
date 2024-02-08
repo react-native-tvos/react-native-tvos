@@ -340,6 +340,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    this.state.pressability.configure(this._createPressabilityConfig());
     if (Platform.isTV) {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
@@ -368,10 +369,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    this.state.pressability.configure(this._createPressabilityConfig());
-  }
-
-  componentDidMount(): mixed {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 

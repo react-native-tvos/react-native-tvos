@@ -348,7 +348,9 @@ class TouchableHighlight extends React.Component<Props, State> {
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
-        isTVSelectable={this.props.isTVSelectable !== false && this.props.accessible !== false}
+        isTVSelectable={
+          this.props.isTVSelectable !== false && this.props.accessible !== false
+        }
         tvParallaxProperties={this.props.tvParallaxProperties}
         nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
         nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
@@ -376,6 +378,7 @@ class TouchableHighlight extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    this.state.pressability.configure(this._createPressabilityConfig());
     this._isMounted = true;
     if (Platform.isTV) {
       this._tvTouchable = new TVTouchable(this, {

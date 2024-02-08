@@ -192,6 +192,7 @@ class TouchableWithoutFeedback extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
+    this.state.pressability.configure(createPressabilityConfig(this.props));
     if (Platform.isTV) {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
@@ -220,10 +221,6 @@ class TouchableWithoutFeedback extends React.Component<Props, State> {
   }
 
   componentDidUpdate(): void {
-    this.state.pressability.configure(createPressabilityConfig(this.props));
-  }
-
-  componentDidMount(): mixed {
     this.state.pressability.configure(createPressabilityConfig(this.props));
   }
 
