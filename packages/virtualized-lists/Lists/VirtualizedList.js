@@ -31,6 +31,7 @@ import {
   ScrollView,
   View,
   StyleSheet,
+  TVFocusGuideView,
   findNodeHandle,
 } from 'react-native';
 import Batchinator from '../Interaction/Batchinator';
@@ -64,7 +65,6 @@ import {
   onEndReachedThresholdOrDefault,
   windowSizeOrDefault,
 } from './VirtualizedListProps';
-import TVFocusGuideView from '../../react-native/Libraries/Components/TV/TVFocusGuideView';
 
 export type {RenderItemProps, RenderItemType, Separators};
 
