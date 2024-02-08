@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.LinkedBlockingQueue;
+import android.util.Log;
+import android.os.Build;
 
 /**
  * Module that exposes interface for creating and managing animated nodes on the "native" side.
@@ -149,7 +152,18 @@ public class NativeAnimatedModule extends NativeAnimatedModuleSpec
   }
 
   private class ConcurrentOperationQueue {
-    private final Queue<UIThreadOperation> mQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<UIThreadOperation> mQueue;
+
+    public ConcurrentOperationQueue(){
+      String versionAndroid = Build.VERSION.RELEASE;
+      Log.i("VERSION12", "ConcurrentOperationQueue" + versionAndroid);
+      if (versionAndroid.equals("12")) {
+        mQueue = new LinkedBlockingQueue<>();
+      } else {
+        mQueue = new ConcurrentLinkedQueue<>();
+      }
+    }
+
     @Nullable private UIThreadOperation mPeekedOperation = null;
 
     @AnyThread

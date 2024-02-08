@@ -33,6 +33,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import android.util.Log;
+import android.os.Build;
 
 public class MountItemDispatcher {
 
@@ -44,15 +47,13 @@ public class MountItemDispatcher {
   private final ItemDispatchListener mItemDispatchListener;
 
   @NonNull
-  private final ConcurrentLinkedQueue<DispatchCommandMountItem> mViewCommandMountItems =
-      new ConcurrentLinkedQueue<>();
+  private final Queue<DispatchCommandMountItem> mViewCommandMountItems;
 
   @NonNull
-  private final ConcurrentLinkedQueue<MountItem> mMountItems = new ConcurrentLinkedQueue<>();
+  private final Queue<MountItem> mMountItems;
 
   @NonNull
-  private final ConcurrentLinkedQueue<PreAllocateViewMountItem> mPreMountItems =
-      new ConcurrentLinkedQueue<>();
+  private final Queue<PreAllocateViewMountItem> mPreMountItems;
 
   private boolean mInDispatch = false;
   private int mReDispatchCounter = 0;
@@ -62,6 +63,17 @@ public class MountItemDispatcher {
   public MountItemDispatcher(MountingManager mountingManager, ItemDispatchListener listener) {
     mMountingManager = mountingManager;
     mItemDispatchListener = listener;
+    String versionAndroid = Build.VERSION.RELEASE;
+    Log.i("VERSION12", "MountItemDispatcher" + versionAndroid);
+    if (versionAndroid.equals("12")) {
+      mViewCommandMountItems = new LinkedBlockingQueue<>();
+      mMountItems = new LinkedBlockingQueue<>();
+      mPreMountItems = new LinkedBlockingQueue<>();
+    } else {
+      mViewCommandMountItems = new ConcurrentLinkedQueue<>();
+      mMountItems = new ConcurrentLinkedQueue<>();
+      mPreMountItems = new ConcurrentLinkedQueue<>();
+    }
   }
 
   @AnyThread
@@ -363,7 +375,7 @@ public class MountItemDispatcher {
 
   @Nullable
   private static <E extends MountItem> List<E> drainConcurrentItemQueue(
-      ConcurrentLinkedQueue<E> queue) {
+      Queue<E> queue) {
     if (queue.isEmpty()) {
       return null;
     }

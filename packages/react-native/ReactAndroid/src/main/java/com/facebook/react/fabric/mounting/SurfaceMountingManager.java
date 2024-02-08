@@ -58,6 +58,9 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Nullable;
+import java.util.concurrent.LinkedBlockingQueue;
+import android.util.Log;
+import android.os.Build;
 
 public class SurfaceMountingManager {
   public static final String TAG = SurfaceMountingManager.class.getSimpleName();
@@ -72,7 +75,7 @@ public class SurfaceMountingManager {
   // These are all non-null, until StopSurface is called
   private ConcurrentHashMap<Integer, ViewState> mTagToViewState =
       new ConcurrentHashMap<>(); // any thread
-  private ConcurrentLinkedQueue<MountItem> mOnViewAttachItems = new ConcurrentLinkedQueue<>();
+  private Queue<MountItem> mOnViewAttachItems;
   private JSResponderHandler mJSResponderHandler;
   private ViewManagerRegistry mViewManagerRegistry;
   private RootViewManager mRootViewManager;
@@ -109,6 +112,14 @@ public class SurfaceMountingManager {
     mRootViewManager = rootViewManager;
     mMountItemExecutor = mountItemExecutor;
     mThemedReactContext = reactContext;
+
+    String versionAndroid = Build.VERSION.RELEASE;
+    Log.i("VERSION12", "SurfaceMountingManager" + versionAndroid);
+    if (versionAndroid.equals("12")) {
+      mOnViewAttachItems = new LinkedBlockingQueue<>();
+    } else {
+      mOnViewAttachItems = new ConcurrentLinkedQueue<>();
+    }
   }
 
   public boolean isStopped() {
