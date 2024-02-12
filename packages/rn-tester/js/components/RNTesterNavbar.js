@@ -156,11 +156,13 @@ const RNTesterNavbar = ({
           handleNavBarPress={handleNavBarPress}
           theme={theme}
         />
-        <BookmarkTab
-          isBookmarkActive={isBookmarkActive}
-          handleNavBarPress={handleNavBarPress}
-          theme={theme}
-        />
+        {!Platform.isTV ? (
+          <BookmarkTab
+            isBookmarkActive={isBookmarkActive}
+            handleNavBarPress={handleNavBarPress}
+            theme={theme}
+          />
+        ) : null}
         <APITab
           isAPIActive={isAPIActive}
           handleNavBarPress={handleNavBarPress}
