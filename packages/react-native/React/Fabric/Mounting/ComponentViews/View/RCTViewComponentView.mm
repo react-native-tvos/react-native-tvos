@@ -433,80 +433,62 @@ using namespace facebook::react;
 //
 - (void)enableDirectionalFocusGuides
 {
-  [self enableNextFocusUp];
+  if (self.isFocused) {
+    if (self->_nextFocusUp != nil) {
+      if (self.focusGuideUp == nil) {
+        self.focusGuideUp = [UIFocusGuide new];
+        [[self containingRootView] addLayoutGuide:self.focusGuideUp];
 
-  [self enableNextFocusDown];
+        [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+        [self.focusGuideUp.heightAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-  [self enableNextFocusLeft];
-
-  [self enableNextFocusRight];
-}
-
-- (void)enableNextFocusUp
-{
-  if (self->_nextFocusUp != nil) {
-    if (self.focusGuideUp == nil) {
-      self.focusGuideUp = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideUp];
-
-      [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-      [self.focusGuideUp.heightAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
     }
 
-    self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
-  }
-}
+    if (self->_nextFocusDown != nil) {
+      if (self.focusGuideDown == nil) {
+        self.focusGuideDown = [UIFocusGuide new];
+        [[self containingRootView] addLayoutGuide:self.focusGuideDown];
 
-- (void)enableNextFocusDown
-{
-  if (self->_nextFocusDown != nil) {
-    if (self.focusGuideDown == nil) {
-      self.focusGuideDown = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideDown];
+        [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+        [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+        [self.focusGuideDown.heightAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-      [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
-      [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-      [self.focusGuideDown.heightAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
     }
 
-    self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
-  }
-}
+    if (self->_nextFocusLeft != nil) {
+      if (self.focusGuideLeft == nil) {
+        self.focusGuideLeft = [UIFocusGuide new];
+        [[self containingRootView] addLayoutGuide:self.focusGuideLeft];
 
-- (void)enableNextFocusLeft
-{
-  if (self->_nextFocusLeft != nil) {
-    if (self.focusGuideLeft == nil) {
-      self.focusGuideLeft = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideLeft];
+        [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideLeft.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+        [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-      [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideLeft.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
-      [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
     }
 
-    self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
-  }
-}
+    if (self->_nextFocusRight != nil) {
+      if (self.focusGuideRight == nil) {
+        self.focusGuideRight = [UIFocusGuide new];
+        [[self containingRootView] addLayoutGuide:self.focusGuideRight];
 
-- (void)enableNextFocusRight
-{
-  if (self->_nextFocusRight != nil) {
-    if (self.focusGuideRight == nil) {
-      self.focusGuideRight = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideRight];
+        [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideRight.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+        [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
+      }
 
-      [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideRight.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
-      [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
+      self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
     }
-
-    self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
   }
 }
 // Called when focus leaves this view -- disable the directional focus guides
@@ -962,9 +944,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusUp.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
-      if (self.isFocused) {
-        [self enableNextFocusUp];
-      }
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusUp = nil;
     }
@@ -974,9 +954,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusDown.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
-      if (self.isFocused) {
-        [self enableNextFocusDown];
-      }
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusDown = nil;
     }
@@ -986,9 +964,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusLeft.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
-      if (self.isFocused) {
-        [self enableNextFocusLeft];
-      }
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusLeft = nil;
     }
@@ -998,9 +974,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusRight.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
-      if (self.isFocused) {
-        [self enableNextFocusRight];
-      }
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusRight = nil;
     }

@@ -336,80 +336,62 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 //
 - (void)enableDirectionalFocusGuides
 {
-  [self enableDirectionalFocusGuideUp];
+  if (self.isFocused) {
+    if (self->_nextFocusUp != nil) {
+      if (self.focusGuideUp == nil) {
+        self.focusGuideUp = [UIFocusGuide new];
+        [[self rootView]  addLayoutGuide:self.focusGuideUp];
 
-  [self enableDirectionalFocusGuideDown];
- 
-  [self enableDirectionalFocusGuideLeft];
+        [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+        [self.focusGuideUp.heightAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-  [self enableDirectionalFocusGuideRight];
-}
-
-- (void)enableDirectionalFocusGuideUp
-{
-  if (self->_nextFocusUp != nil) {
-    if (self.focusGuideUp == nil) {
-      self.focusGuideUp = [UIFocusGuide new];
-      [[self rootView]  addLayoutGuide:self.focusGuideUp];
-
-      [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-      [self.focusGuideUp.heightAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
     }
 
-    self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
-  }
-}
+    if (self->_nextFocusDown != nil) {
+      if (self.focusGuideDown == nil) {
+        self.focusGuideDown = [UIFocusGuide new];
+        [[self rootView]  addLayoutGuide:self.focusGuideDown];
 
-- (void)enableDirectionalFocusGuideDown
-{
-  if (self->_nextFocusDown != nil) {
-    if (self.focusGuideDown == nil) {
-      self.focusGuideDown = [UIFocusGuide new];
-      [[self rootView]  addLayoutGuide:self.focusGuideDown];
+        [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+        [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+        [self.focusGuideDown.heightAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-      [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
-      [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-      [self.focusGuideDown.heightAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
     }
 
-    self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
-  }
-}
+    if (self->_nextFocusLeft != nil) {
+      if (self.focusGuideLeft == nil) {
+        self.focusGuideLeft = [UIFocusGuide new];
+        [[self rootView]  addLayoutGuide:self.focusGuideLeft];
 
-- (void)enableDirectionalFocusGuideLeft
-{
-  if (self->_nextFocusLeft != nil) {
-    if (self.focusGuideLeft == nil) {
-      self.focusGuideLeft = [UIFocusGuide new];
-      [[self rootView]  addLayoutGuide:self.focusGuideLeft];
+        [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideLeft.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+        [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      }
 
-      [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideLeft.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
-      [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
+      self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
     }
 
-    self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
-  }
-}
+    if (self->_nextFocusRight != nil) {
+      if (self.focusGuideRight == nil) {
+        self.focusGuideRight = [UIFocusGuide new];
+        [[self rootView] addLayoutGuide:self.focusGuideRight];
 
-- (void)enableDirectionalFocusGuideRight
-{
-  if (self->_nextFocusRight != nil) {
-    if (self.focusGuideRight == nil) {
-      self.focusGuideRight = [UIFocusGuide new];
-      [[self rootView] addLayoutGuide:self.focusGuideRight];
+        [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
+        [self.focusGuideRight.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
+        [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
+      }
 
-      [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-      [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
-      [self.focusGuideRight.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
-      [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
+      self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
     }
-
-    self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
   }
 }
 
@@ -475,30 +457,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)setNextFocusUp:(NSNumber *)nextFocusUp {
   self->_nextFocusUp = [self getViewById: nextFocusUp];
-  if (self.isFocused) {
-    [self enableDirectionalFocusGuideUp];
-  }
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
   self->_nextFocusDown = [self getViewById: nextFocusDown];
-  if (self.isFocused) {
-    [self enableDirectionalFocusGuideDown];
-  }
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusLeft:(NSNumber *)nextFocusLeft {
   self->_nextFocusLeft = [self getViewById: nextFocusLeft];
-  if (self.isFocused) {
-    [self enableDirectionalFocusGuideLeft];
-  }
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
   self->_nextFocusRight = [self getViewById: nextFocusRight];
-  if (self.isFocused) {
-    [self enableDirectionalFocusGuideRight];
-  }
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setPreferredFocus:(BOOL)hasTVPreferredFocus
