@@ -433,6 +433,9 @@ using namespace facebook::react;
 //
 - (void)enableDirectionalFocusGuides
 {
+  if (!self.isFocused) {
+    return;
+  }
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
@@ -942,6 +945,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusUp.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusUp = nil;
     }
@@ -951,6 +955,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusDown.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusDown = nil;
     }
@@ -960,6 +965,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusLeft.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusLeft = nil;
     }
@@ -969,6 +975,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusRight.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusRight = nil;
     }
