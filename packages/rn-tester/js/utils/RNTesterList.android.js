@@ -310,6 +310,12 @@ const APIs: Array<RNTesterModuleInfo> = ([
     module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
   },
   {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'TVFocusGuideExample',
     module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
   },

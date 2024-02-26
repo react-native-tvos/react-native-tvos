@@ -14,8 +14,6 @@ import type {RNTesterModuleInfo} from '../types/RNTesterTypes';
 
 import ReactNativeFeatureFlags from 'react-native/Libraries/ReactNative/ReactNativeFeatureFlags';
 
-import { Platform } from 'react-native';
-
 const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'ActivityIndicatorExample',
@@ -323,6 +321,12 @@ const APIs: Array<RNTesterModuleInfo> = ([
     key: 'TVDirectionalNextFocusExample',
     category: 'TV',
     module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
     supportsTVOS: true,
   },
   {
