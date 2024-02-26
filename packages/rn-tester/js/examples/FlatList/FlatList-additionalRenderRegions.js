@@ -11,9 +11,7 @@
 import type {RenderItemType} from 'react-native/Libraries/Lists/VirtualizedList';
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 import {useRNTesterTheme} from '../../components/RNTesterTheme';
-import BaseFlatListExample from './BaseFlatListExample';
 import * as React from 'react';
-import {useRef, useState} from 'react';
 import {
   FlatList,
   Pressable,
@@ -62,9 +60,9 @@ function Row({title, children}: {title: string, children: React.Node}) {
  */
 export function FlatList_additionalRenderRegions(): React.Node {
   const theme = useRNTesterTheme();
-  const listRef = useRef<?FlatList<ItemType>>(null);
+  const listRef = React.useRef<?FlatList<ItemType>>(null);
   const [additionalRenderRegionsEnabled, setAdditionalRenderRegionsEnabled] =
-    useState(true);
+    React.useState(true);
 
   const renderItem: RenderItemType<ItemType> = ({index}) => (
     <Pressable

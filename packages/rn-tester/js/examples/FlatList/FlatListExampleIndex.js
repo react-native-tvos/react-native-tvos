@@ -19,7 +19,7 @@ import WithSeparatorsExample from './FlatList-withSeparators';
 import MultiColumnExample from './FlatList-multiColumn';
 import StickyHeadersExample from './FlatList-stickyHeaders';
 import NestedExample from './FlatList-nested';
-import AdditionalRengerRegionsExample from './FlatList-additionalRenderRegions';
+import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 
 export default ({
   framework: 'React',
@@ -39,6 +39,6 @@ export default ({
     MultiColumnExample,
     StickyHeadersExample,
     NestedExample,
-    AdditionalRengerRegionsExample,
+    AdditionalRenderRegionsExample,
   ],
 }: RNTesterModule);
