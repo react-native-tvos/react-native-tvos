@@ -1216,7 +1216,7 @@ public class ReactViewGroup extends ViewGroup
      * `mRecoverFocus` flag indicates a temporary focus recovery mode it's in which
      * requires full access to children focusable elements.
      */
-    if (isTVFocusGuide() && !mRecoverFocus) {
+    if (isTVFocusGuide() && !mRecoverFocus && this.getDescendantFocusability() != ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
       View focusedChild = getFocusedChildOfFocusGuide();
 
       /*
