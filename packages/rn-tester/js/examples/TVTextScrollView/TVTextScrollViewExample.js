@@ -13,6 +13,7 @@
 const React = require('react');
 
 const {
+  Dimensions,
   TVTextScrollView,
   StyleSheet,
   Text,
@@ -21,6 +22,9 @@ const {
 } = require('react-native');
 
 import type {ViewStyleProp} from '../../../../../Libraries/StyleSheet/StyleSheet';
+
+const screenHeight = Dimensions.get('window').height;
+const scale = screenHeight / 1080;
 
 exports.displayName = 'TVTextScrollView';
 exports.title = '<TVTextScrollView> with large text blocks';
@@ -59,7 +63,7 @@ exports.examples = [
           return (
             <View>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.rowLabel}>Scroll duration:</Text>
+                <Text style={styles.itemText}>Scroll duration:</Text>
                 {scrollDurations.map((s, i) => {
                   return (
                     <Button
@@ -76,7 +80,7 @@ exports.examples = [
                 })}
               </View>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.rowLabel}>
+                <Text style={styles.itemText}>
                   Page size (scroll distance per swipe):
                 </Text>
                 {pageSizes.map((s, i) => {
@@ -170,7 +174,12 @@ exports.examples = [
           );
         }
       }
-      return <BigTextBlock />;
+      return (
+        <View>
+          <View style={{height: 400 * scale}} />
+          <BigTextBlock />
+        </View>
+      );
     },
   },
 ];
@@ -214,7 +223,7 @@ const Button = ({label, onPress, selected}) => (
     activeOpacity={0.5}
     tvParallaxProperties={{pressMagnification: 1.1}}
     onPress={onPress}>
-    <Text>{label}</Text>
+    <Text style={styles.itemText}>{label}</Text>
   </TouchableOpacity>
 );
 
