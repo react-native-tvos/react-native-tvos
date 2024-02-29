@@ -1900,13 +1900,19 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
     first: number,
     last: number,
   }> => {
+    let nonViewportRenderRegions = [];
+
+    if (props?.additionalRenderRegions?.length) {
+      nonViewportRenderRegions = [...props.additionalRenderRegions];
+    }
+
     // Keep a viewport's worth of content around the last focused cell to allow
     // random navigation around it without any blanking. E.g. tabbing from one
     // focused item out of viewport to another.
     if (
       !(this._lastFocusedCellKey && this._cellRefs[this._lastFocusedCellKey])
     ) {
-      return [];
+      return nonViewportRenderRegions;
     }
 
     const lastFocusedCellRenderer = this._cellRefs[this._lastFocusedCellKey];
@@ -1920,7 +1926,7 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
       VirtualizedList._getItemKey(props, focusedCellIndex) !==
         this._lastFocusedCellKey
     ) {
-      return [];
+      return nonViewportRenderRegions;
     }
 
     let first = focusedCellIndex;
@@ -1952,7 +1958,7 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
       ).length;
     }
 
-    return [{first, last}];
+    return [...nonViewportRenderRegions, {first, last}];
   };
 
   _updateViewableItems(
