@@ -24,9 +24,14 @@
 #import "RCTEnhancedScrollView.h"
 #import "RCTFabricComponentsPlugins.h"
 
+#if TARGET_OS_TV
+#import "RCTTVRemoteHandler.h"
+#endif
+
 using namespace facebook::react;
 
 static const CGFloat kClippingLeeway = 44.0;
+static const float TV_DEFAULT_SWIPE_DURATION = 0.3;
 
 static UIScrollViewKeyboardDismissMode RCTUIKeyboardDismissModeFromProps(const ScrollViewProps &props)
 {
@@ -108,6 +113,9 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 
   CGFloat _endDraggingSensitivityMultiplier;
   CGFloat _endDraggingSensitivityVelocityMultiplier;
+    
+  BOOL _blockFirstTouch;
+  NSMutableDictionary *_tvRemoteGestureRecognizers;
 }
 
 + (RCTScrollViewComponentView *_Nullable)findScrollViewComponentViewForView:(UIView *)view
@@ -139,6 +147,8 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
     _scrollEventThrottle = 0;
     _endDraggingSensitivityVelocityMultiplier = 0;
     _endDraggingSensitivityMultiplier = 1;
+      
+    _tvRemoteGestureRecognizers = [NSMutableDictionary new];
   }
 
   return self;
@@ -813,6 +823,242 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
     }
   }
 }
+
+#pragma mark Apple TV swipe and focus handling
+
+#if TARGET_OS_TV
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+    if (context.previouslyFocusedView == context.nextFocusedView || !_props->isTVSelectable) {
+        return;
+    }
+    if (context.nextFocusedView == self) {
+        [self becomeFirstResponder];
+        [self addSwipeGestureRecognizers];
+        [self sendFocusNotification];
+        // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
+        _blockFirstTouch = (unsigned long)context.focusHeading != 0;
+        [self addArrowsListeners];
+    } else if (context.previouslyFocusedView == self) {
+        [self removeArrowsListeners];
+        [self sendBlurNotification];
+        [self removeSwipeGestureRecognizers];
+        [self resignFirstResponder];
+        // if we leave the scroll view and go up, then scroll to top; if going down,
+        // scroll to bottom
+        // Similarly for left and right
+        RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+        if (context.focusHeading == UIFocusHeadingUp && scrollView.snapToStart) {
+            [self swipeVerticalScrollToOffset:0.0];
+        } else if(context.focusHeading == UIFocusHeadingDown && scrollView.snapToEnd) {
+            [self swipeVerticalScrollToOffset:scrollView.contentSize.height];
+        } else if(context.focusHeading == UIFocusHeadingLeft && scrollView.snapToStart) {
+            [self swipeHorizontalScrollToOffset:0.0];
+        } else if(context.focusHeading == UIFocusHeadingRight && scrollView.snapToEnd) {
+            [self swipeHorizontalScrollToOffset:scrollView.contentSize.width];
+        }
+    }
+}
+
+- (void)addArrowsListeners
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleTVNavigationEventNotification:)
+                                                 name:@"RCTTVNavigationEventNotification"
+                                               object:nil];
+}
+
+- (void)removeArrowsListeners
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:@"RCTTVNavigationEventNotification"
+                                                  object:nil];
+}
+
+- (void)handleTVNavigationEventNotification:(NSNotification *)notif
+{
+    NSArray *supportedEvents = [NSArray arrayWithObjects:@"up", @"down", @"left", @"right", nil];
+
+    if (notif.object == nil || notif.object[@"eventType"] == nil || ![supportedEvents containsObject:notif.object[@"eventType"]] ) {
+        return;
+    }
+
+    if (_blockFirstTouch) {
+        _blockFirstTouch = NO;
+        return;
+    }
+
+    BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
+    if (!isHorizontal) {
+        if ([notif.object[@"eventType"] isEqual: @"down"]) {
+            [self swipedDown];
+            return;
+        }
+
+        if ([notif.object[@"eventType"] isEqual: @"up"]) {
+            [self swipedUp];
+            return;
+        }
+    }
+
+    if ([notif.object[@"eventType"] isEqual: @"left"]) {
+        [self swipedLeft];
+        return;
+    }
+
+    if ([notif.object[@"eventType"] isEqual: @"right"]) {
+        [self swipedRight];
+        return;
+    }
+}
+
+- (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
+{
+    BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
+    // Keep focus inside the scroll view till the end of the content
+    if (isHorizontal) {
+        if ((context.focusHeading == UIFocusHeadingLeft && self.scrollView.contentOffset.x > 0)
+            || (context.focusHeading == UIFocusHeadingRight && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - self.scrollView.visibleSize.width)
+        ) {
+            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        }
+    } else {
+        if ((context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0)
+            || (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - self.scrollView.visibleSize.height)
+        ) {
+            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        }
+    }
+
+    return [super shouldUpdateFocusInContext:context];
+}
+
+- (void)sendFocusNotification
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
+                                                        object:@{ @"eventType": @"focus", @"tag": @([self tag]) }];
+}
+
+- (void)sendBlurNotification
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
+                                                        object:@{ @"eventType": @"blur", @"tag": @([self tag]) }];
+}
+
+- (NSInteger)swipeVerticalInterval
+{
+    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+    if (scrollView.snapToInterval) {
+        return scrollView.snapToInterval;
+    }
+    return scrollView.visibleSize.height / 2;
+}
+
+- (NSInteger)swipeHorizontalInterval
+{
+    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+    if (scrollView.snapToInterval) {
+        return scrollView.snapToInterval;
+    }
+    return scrollView.visibleSize.width / 2;
+}
+
+- (NSTimeInterval)swipeDuration
+{
+    auto pressDuration = _props->tvParallaxProperties.pressDuration;
+    auto duration = pressDuration.has_value() ? pressDuration.value() : TV_DEFAULT_SWIPE_DURATION;
+    if (duration == 0.0) {
+        duration = TV_DEFAULT_SWIPE_DURATION;
+    }
+    return duration;
+}
+
+- (void)swipeVerticalScrollToOffset:(CGFloat)yOffset
+{
+    _blockFirstTouch = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat limitedOffset = yOffset;
+        limitedOffset = MAX(limitedOffset, 0.0);
+        limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.height - self.scrollView.visibleSize.height);
+        [UIView animateWithDuration:[self swipeDuration] animations:^{
+            self.scrollView.contentOffset =
+                CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+        }];
+    });
+}
+
+- (void)swipeHorizontalScrollToOffset:(CGFloat)xOffset
+{
+    _blockFirstTouch = NO;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        CGFloat limitedOffset = xOffset;
+        limitedOffset = MAX(limitedOffset, 0.0);
+        limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.width - self.scrollView.visibleSize.width);
+        [UIView animateWithDuration:[self swipeDuration] animations:^{
+            self.scrollView.contentOffset =
+                CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
+        }];
+    });
+}
+
+- (void)swipedUp
+{
+    CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
+    NSLog(@"Swiped up to %f", newOffset);
+    [self swipeVerticalScrollToOffset:newOffset];
+}
+
+- (void)swipedDown
+{
+    CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
+    NSLog(@"Swiped down to %f", newOffset);
+    [self swipeVerticalScrollToOffset:newOffset];
+}
+
+- (void)swipedLeft
+{
+    CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
+    NSLog(@"Swiped left to %f", newOffset);
+    [self swipeHorizontalScrollToOffset:newOffset];
+}
+
+- (void)swipedRight
+{
+    CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
+    NSLog(@"Swiped right to %f", newOffset);
+    [self swipeHorizontalScrollToOffset:newOffset];
+}
+
+- (void)addSwipeGestureRecognizers
+{
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp) direction:UISwipeGestureRecognizerDirectionUp name:RCTTVRemoteEventSwipeUp];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown) direction:UISwipeGestureRecognizerDirectionDown name:RCTTVRemoteEventSwipeDown];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft) direction:UISwipeGestureRecognizerDirectionLeft name:RCTTVRemoteEventSwipeLeft];
+    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight) direction:UISwipeGestureRecognizerDirectionRight name:RCTTVRemoteEventSwipeRight];
+}
+
+- (void)addSwipeGestureRecognizerWithSelector:(nonnull SEL)selector
+                                    direction:(UISwipeGestureRecognizerDirection)direction
+                                         name:(NSString *)name
+{
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
+    recognizer.direction = direction;
+
+    _tvRemoteGestureRecognizers[name] = recognizer;
+    [self.scrollView addGestureRecognizer:recognizer];
+}
+
+- (void)removeSwipeGestureRecognizers
+{
+    NSArray *names = [self->_tvRemoteGestureRecognizers allKeys];
+    for (NSString *name in names) {
+        UIGestureRecognizer *r = self->_tvRemoteGestureRecognizers[name];
+        [self.scrollView removeGestureRecognizer:r];
+        [self->_tvRemoteGestureRecognizers removeObjectForKey:name];
+    }
+}
+#endif // TARGET_OS_TV
 
 @end
 
