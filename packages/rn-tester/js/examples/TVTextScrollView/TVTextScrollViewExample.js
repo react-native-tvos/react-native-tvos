@@ -31,7 +31,7 @@ exports.examples = [
     title: '<TVTextScrollView> with long text on TV platforms\n',
     description:
       'Ensure that TV platforms can scroll through a single block of text that is greater than the screen height',
-    render: function(): React.Node {
+    render: function (): React.Node {
       class BigTextBlock extends React.Component<
         {},
         {
@@ -63,6 +63,7 @@ exports.examples = [
                 {scrollDurations.map((s, i) => {
                   return (
                     <Button
+                      key={i}
                       selected={this.state.scrollDurationIndex === i}
                       label={scrollDurationLabels[i]}
                       onPress={() => {
@@ -81,6 +82,7 @@ exports.examples = [
                 {pageSizes.map((s, i) => {
                   return (
                     <Button
+                      key={i}
                       selected={this.state.pageSizeIndex === i}
                       label={pageSizeLabels[i]}
                       onPress={() => {
