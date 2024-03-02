@@ -285,6 +285,13 @@ type OptionalProps = {|
    * The legacy implementation is no longer supported.
    */
   legacyImplementation?: empty,
+  /**
+   * Defines regions within the list that are exempt from virtualization,
+   * ensuring they remain rendered at all times. Useful for cases where
+   * users can't afford blank areas in certain parts of the list.
+   * The specified regions are lazily rendered after the initial render.
+   */
+  additionalRenderRegions?: Array<{first: number, last: number}>,
 |};
 
 export type Props = {|
