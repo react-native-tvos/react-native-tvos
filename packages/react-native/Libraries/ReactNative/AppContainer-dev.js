@@ -17,6 +17,7 @@ import type {Props} from './AppContainer';
 
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import View from '../Components/View/View';
+import Platform from '../Utilities/Platform';
 import DebuggingOverlay from '../Debugging/DebuggingOverlay';
 import useSubscribeToDebuggingOverlayRegistry from '../Debugging/useSubscribeToDebuggingOverlayRegistry';
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
@@ -152,7 +153,7 @@ const AppContainer = ({
         pointerEvents="box-none">
         {innerView}
 
-        <DebuggingOverlay ref={debuggingOverlayRef} />
+        {!Platform.isTV ? <DebuggingOverlay ref={debuggingOverlayRef} /> : null}
 
         {reactDevToolsAgent != null && (
           <ReactDevToolsOverlay

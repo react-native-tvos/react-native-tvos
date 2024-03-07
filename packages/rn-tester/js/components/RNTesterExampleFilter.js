@@ -18,7 +18,6 @@ const {
   Image,
   Platform,
   ScrollView,
-  Platform,
   StyleSheet,
   TextInput,
   View,

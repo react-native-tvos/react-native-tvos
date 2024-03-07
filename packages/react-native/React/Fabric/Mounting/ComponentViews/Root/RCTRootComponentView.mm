@@ -19,9 +19,7 @@ using namespace facebook::react;
 {
   if (self = [super initWithFrame:frame]) {
     _props = RootShadowNode::defaultSharedProps();
-#if TARGET_OS_TV
-     self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:self];
-#endif
+
   }
 
   return self;

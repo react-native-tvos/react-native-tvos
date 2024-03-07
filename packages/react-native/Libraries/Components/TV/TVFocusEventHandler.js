@@ -10,35 +10,22 @@
 
 'use strict';
 
-import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
+import TVEventHandler from './TVEventHandler';
 
 class TVFocusEventHandler {
-  __nativeTVNavigationEventListener: ?EventSubscription = null;
-  __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
+  __subscription: ?EventSubscription = null;
   __callbackMap: Map<any, Function> = new Map();
 
   constructor() {
-    if (Platform.OS === 'ios' && !NativeTVNavigationEventEmitter) {
-      return;
-    }
-
-    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
-      NativeTVNavigationEventEmitter,
-    );
-    this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(
-       // $FlowFixMe[prop-missing]
-      'onHWKeyEvent',
-      data => {
-        const callback = this.__callbackMap.get(data.tag);
-        if (callback) {
-          callback(data);
-        }
-      },
-    );
+    this.__subscription = TVEventHandler.addListener((data: TVRemoteEvent) => {
+      const callback = this.__callbackMap.get(data.tag);
+      if (callback) {
+        callback(data);
+      }
+    });
   }
 
   register(componentTag: ?any, callback: Function): void {
@@ -50,4 +37,6 @@ class TVFocusEventHandler {
   }
 }
 
-export const tvFocusEventHandler: TVFocusEventHandler | null = Platform.isTV ? new TVFocusEventHandler() : null;
+export const tvFocusEventHandler: TVFocusEventHandler | null = Platform.isTV
+  ? new TVFocusEventHandler()
+  : null;

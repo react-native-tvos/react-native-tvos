@@ -312,7 +312,6 @@ class TouchableOpacity extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.state.pressability.configure(this._createPressabilityConfig());
     if (Platform.isTV) {
       this._tvTouchable = new TVTouchable(this, {
         getDisabled: () => this.props.disabled === true,
@@ -340,6 +339,7 @@ class TouchableOpacity extends React.Component<Props, State> {
         },
       });
     }
+    this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {

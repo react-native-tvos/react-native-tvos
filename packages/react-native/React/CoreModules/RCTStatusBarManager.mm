@@ -80,7 +80,11 @@ RCT_EXPORT_MODULE()
 
 - (NSArray<NSString *> *)supportedEvents
 {
+#if TARGET_OS_TV
+  return @[];
+#else
   return @[ kStatusBarFrameDidChange, kStatusBarFrameWillChange ];
+#endif
 }
 
 #if TARGET_OS_TV

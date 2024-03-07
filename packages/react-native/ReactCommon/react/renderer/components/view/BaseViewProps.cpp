@@ -55,73 +55,73 @@ BaseViewProps::BaseViewProps(
     : YogaStylableProps(context, sourceProps, rawProps),
       AccessibilityProps(context, sourceProps, rawProps),
 #if TARGET_OS_TV
-      isTVSelectable(convertRawProp(
+      isTVSelectable(CoreFeatures::enablePropIteratorSetter ? sourceProps.isTVSelectable : convertRawProp(
           context,
           rawProps,
           "isTVSelectable",
           sourceProps.isTVSelectable,
           (Boolean) false)),
-      hasTVPreferredFocus(convertRawProp(
+      hasTVPreferredFocus(CoreFeatures::enablePropIteratorSetter ? sourceProps.hasTVPreferredFocus : convertRawProp(
           context,
           rawProps,
           "hasTVPreferredFocus",
           sourceProps.hasTVPreferredFocus,
           (Boolean) false)),
-      tvParallaxProperties(convertRawProp(
+      tvParallaxProperties(CoreFeatures::enablePropIteratorSetter ? sourceProps.tvParallaxProperties : convertRawProp(
           context,
           rawProps,
           "tvParallaxProperties",
           sourceProps.tvParallaxProperties,
           {})),
-      nextFocusUp(convertRawProp(
+      nextFocusUp(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusUp : convertRawProp(
           context,
           rawProps,
           "nextFocusUp",
           sourceProps.nextFocusUp,
           {})),
-      nextFocusDown(convertRawProp(
+      nextFocusDown(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusDown : convertRawProp(
           context,
           rawProps,
           "nextFocusDown",
           sourceProps.nextFocusDown,
           {})),
-      nextFocusLeft(convertRawProp(
+      nextFocusLeft(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusLeft : convertRawProp(
           context,
           rawProps,
           "nextFocusLeft",
           sourceProps.nextFocusLeft,
           {})),
-      nextFocusRight(convertRawProp(
+      nextFocusRight(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusRight : convertRawProp(
           context,
           rawProps,
           "nextFocusRight",
           sourceProps.nextFocusRight,
           {})),
-      autoFocus(convertRawProp(
+      autoFocus(CoreFeatures::enablePropIteratorSetter ? sourceProps.autoFocus : convertRawProp(
           context,
           rawProps,
           "autoFocus",
           sourceProps.autoFocus,
           (Boolean) false)),
-      trapFocusUp(convertRawProp(
+      trapFocusUp(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusUp : convertRawProp(
           context,
           rawProps,
           "trapFocusUp",
           sourceProps.trapFocusUp,
           false)),
-      trapFocusDown(convertRawProp(
+      trapFocusDown(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusDown : convertRawProp(
           context,
           rawProps,
           "trapFocusDown",
           sourceProps.trapFocusDown,
           false)),
-      trapFocusLeft(convertRawProp(
+      trapFocusLeft(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusLeft : convertRawProp(
           context,
           rawProps,
           "trapFocusLeft",
           sourceProps.trapFocusLeft,
           false)),
-      trapFocusRight(convertRawProp(
+      trapFocusRight(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusRight : convertRawProp(
           context,
           rawProps,
           "trapFocusRight",
@@ -364,6 +364,20 @@ void BaseViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(removeClippedSubviews);
     RAW_SET_PROP_SWITCH_CASE_BASIC(experimental_layoutConformance);
     RAW_SET_PROP_SWITCH_CASE_BASIC(cursor);
+#if TARGET_OS_TV
+      RAW_SET_PROP_SWITCH_CASE_BASIC(isTVSelectable);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(hasTVPreferredFocus);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(tvParallaxProperties);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(nextFocusUp);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(nextFocusDown);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(nextFocusLeft);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(nextFocusRight);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(autoFocus);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusUp);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusDown);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusLeft);
+      RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusRight);
+#endif
     // events field
     VIEW_EVENT_CASE(PointerEnter);
     VIEW_EVENT_CASE(PointerEnterCapture);

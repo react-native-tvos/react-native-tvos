@@ -32,9 +32,17 @@ function updateTemplatePackage(dependencyMap /*: Record<string, string> */) {
     dependencyMap,
   );
 
+  const tvPackageJson = {
+    ...updatedPackageJson,
+    dependencies: {
+      ...updatedPackageJson.dependencies,
+      'react-native': `npm:react-native-tvos@${updatedPackageJson.dependencies['react-native']}`,
+    },
+  };
+
   fs.writeFileSync(
     jsonPath,
-    JSON.stringify(updatedPackageJson, null, 2) + '\n',
+    JSON.stringify(tvPackageJson, null, 2) + '\n',
     'utf-8',
   );
 }

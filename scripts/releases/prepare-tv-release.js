@@ -25,7 +25,7 @@ const fs_extra = require('fs-extra');
 const os = require('os');
 const path = require('path');
 
-const {generateAndroidArtifacts} = require('./release-utils');
+const {generateAndroidArtifacts} = require('./utils/release-utils');
 
 let extraHermesDirectoryPath;
 
@@ -82,7 +82,7 @@ let extraHermesDirectoryPath;
   }
 }
 
-const releaseVersion = require('../packages/react-native/package.json').version;
+const releaseVersion = require('../../packages/react-native/package.json').version;
 
 // generate Maven artifacts in /tmp/maven-local
 

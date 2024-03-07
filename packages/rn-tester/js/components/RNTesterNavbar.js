@@ -26,28 +26,29 @@ const NavbarButton = ({
   handlePress,
   iconStyle,
 }) => {
-  const [isFocused, setIsFocused] = React.useState(false);
   return (
     <Pressable
       testID={testID}
       onPress={handlePress}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
       style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
-      <View
-        style={[
-          styles.pressableContent,
-          isFocused || isActive ? styles.activeBar : null,
-        ]}
-        collapsable={false}>
-        <Image
-          style={iconStyle}
-          source={isActive ? activeImage : inactiveImage}
-        />
-        <Text style={isActive ? styles.activeText : styles.inactiveText}>
-          {label}
-        </Text>
-      </View>
+      {({focused}) => {
+        return (
+          <View
+            style={[
+              styles.pressableContent,
+              focused || isActive ? styles.activeBar : null,
+            ]}
+            collapsable={false}>
+            <Image
+              style={iconStyle}
+              source={isActive ? activeImage : inactiveImage}
+            />
+            <Text style={isActive ? styles.activeText : styles.inactiveText}>
+              {label}
+            </Text>
+          </View>
+        );
+      }}
     </Pressable>
   );
 };

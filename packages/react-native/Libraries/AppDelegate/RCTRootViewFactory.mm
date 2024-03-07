@@ -156,8 +156,10 @@ static NSDictionary *updateInitialProps(NSDictionary *initialProps, BOOL isFabri
   BOOL enableFabric = self->_configuration.fabricEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
 
+#if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
-
+#endif
+  
   return rootView;
 }
 

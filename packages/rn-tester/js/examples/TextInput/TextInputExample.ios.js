@@ -22,6 +22,7 @@ const {
   Alert,
   Button,
   InputAccessoryView,
+  Platform,
   StyleSheet,
   Switch,
   Text,
