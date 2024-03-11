@@ -19,6 +19,7 @@
     "install-android-hermes": "../../gradlew :packages:rn-tester:android:app:installHermesDebug",
     "clean-android": "rm -rf android/app/build",
     "setup-ios-jsc": "bundle install && USE_HERMES=0 bundle exec pod install",
+    "setup-ios-hermes-local-artifacts": "bundle install && HERMES_ARTIFACT_FROM_MAVEN_LOCAL=1 USE_HERMES=1 bundle exec pod install",
     "setup-ios-hermes": "bundle install && USE_HERMES=1 bundle exec pod install",
     "clean-ios": "rm -rf build/generated/ios Pods Podfile.lock"
   },
