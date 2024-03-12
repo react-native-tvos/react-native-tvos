@@ -59,12 +59,12 @@ yarn create react-native-app TestApp --template https://github.com/react-native-
 cd TestApp
 # Now build and start the app in the tvOS Simulator - this will only work on a macOS machine.
 # This command can also be run via "yarn tvos".
-npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"
+npx expo run:ios --scheme TestApp-tvOS --device "Apple TV"
 # You can also build and start the app on an iOS phone simulator.
 # This command can also be run via "yarn ios".
 npx expo run:ios
 # or specify a simulator:
-npx expo run:ios --scheme MyApp --device "iPhone 15"
+npx expo run:ios --scheme TestApp --device "iPhone 15"
 # This command builds and starts the app in an Android TV emulator or a phone emulator (needs to be created in advance).
 # This command can also be run via "yarn android".
 npx expo run:android --device tv_api_31
