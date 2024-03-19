@@ -411,12 +411,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       return;
     }
     // $FlowFixMe[prop-missing]
-    const viewTag = viewRef?.current?._nativeTag;
+    const viewTag = tagForComponentOrHandle(viewRef?.current);
     tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
     return () => {
       tvFocusEventHandler.unregister(viewTag);
     };
-  }, [pressableTVFocusEventHandler]);
+  }, [pressableTVFocusEventHandler, viewRef]);
 
   return (
     <View

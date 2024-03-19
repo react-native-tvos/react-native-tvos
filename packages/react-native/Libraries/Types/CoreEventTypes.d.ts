@@ -264,3 +264,11 @@ export interface PointerEvents {
   onPointerUp?: ((event: PointerEvent) => void) | undefined;
   onPointerUpCapture?: ((event: PointerEvent) => void) | undefined;
 }
+
+export interface TVRemoteEvent {
+  tag?: number | undefined;
+  target?: number | undefined;
+  eventType: string;
+  eventKeyAction?: string | undefined;
+  body?: any | undefined;
+}

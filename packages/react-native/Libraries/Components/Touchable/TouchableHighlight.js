@@ -378,7 +378,6 @@ class TouchableHighlight extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    this.state.pressability.configure(this._createPressabilityConfig());
     this._isMounted = true;
     if (Platform.isTV) {
       this._tvTouchable = new TVTouchable(this, {

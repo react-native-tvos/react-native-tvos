@@ -4,7 +4,7 @@
 
 // TODO: make this work for Fabric
 
-// import {findNodeHandle} from '../../Renderer/shims/ReactNative';
+const findNodeHandle = require('../../ReactNative/RendererProxy').findNodeHandle;
 
 type TagForComponentOrHandleType = (
     component: ?(
@@ -19,6 +19,11 @@ const tagForComponentOrHandle: TagForComponentOrHandleType = (
     | number
   ),
 ): ?number => {
+  if (component === null || component === undefined) {
+    return undefined;
+  }
+  return findNodeHandle(component, true); // suppress warning
+/*
   if (typeof component === 'number') {
     return component;
   }
@@ -29,6 +34,7 @@ const tagForComponentOrHandle: TagForComponentOrHandleType = (
     return component?.canonical?._nativeTag;
   }
   return undefined;
+ */
 };
 
 export default tagForComponentOrHandle;

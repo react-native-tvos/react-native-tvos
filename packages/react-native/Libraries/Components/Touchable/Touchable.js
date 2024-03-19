@@ -22,6 +22,7 @@ import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import BoundingDimensions from './BoundingDimensions';
 import Position from './Position';
 import * as React from 'react';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 
 const extractSingleTouch = (nativeEvent: {
   +changedTouches: $ReadOnlyArray<PressEvent['nativeEvent']>,
@@ -382,7 +383,7 @@ const TouchableMixin = {
       return;
     }
 
-    this._componentTag = ReactNative.findNodeHandle(this);
+    this._componentTag = tagForComponentOrHandle(this);
     tvFocusEventHandler.register(this._componentTag, evt => {
       evt.dispatchConfig = {};
       if (evt.eventType === 'focus') {

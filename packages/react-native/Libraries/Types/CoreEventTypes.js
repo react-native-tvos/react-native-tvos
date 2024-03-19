@@ -292,11 +292,11 @@ export type MouseEvent = SyntheticEvent<
   |}>,
 >;
 
-export type TVRemoteEvent = 
-  $ReadOnly<{|
-    eventType: string,
-    eventKeyAction?: string,
-    // $FlowFixMe[unclear-type]
-    body?: any,
-  |}>;
-
+export type TVRemoteEvent = $ReadOnly<{|
+  tag?: number,
+  target?: number,
+  eventType: string,
+  eventKeyAction?: string,
+  // $FlowFixMe[unclear-type]
+  body?: any,
+|}>;

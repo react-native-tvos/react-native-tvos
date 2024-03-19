@@ -24540,11 +24540,11 @@ function findHostInstance_DEPRECATED(componentOrHandle) {
   return hostInstance;
 }
 
-function findNodeHandle(componentOrHandle) {
+function findNodeHandle(componentOrHandle, suppressWarning) {
   {
     var owner = ReactCurrentOwner$3.current;
 
-    if (owner !== null && owner.stateNode !== null) {
+    if (owner !== null && owner.stateNode !== null && !suppressWarning) {
       if (!owner.stateNode._warnedAboutRefsInRender) {
         error(
           "%s is accessing findNodeHandle inside its render(). " +
