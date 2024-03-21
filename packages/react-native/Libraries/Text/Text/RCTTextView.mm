@@ -240,6 +240,7 @@
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
 {
+#if !TARGET_OS_TV
   if (@available(iOS 16.0, macCatalyst 16.0, *)) {
     CGPoint location = [gesture locationInView:self];
     UIEditMenuConfiguration *config = [UIEditMenuConfiguration configurationWithIdentifier:nil sourcePoint:location];
@@ -255,6 +256,7 @@
 
     [menuController showMenuFromView:self rect:self.bounds];
   }
+#endif
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -273,6 +275,7 @@
 
 - (void)copy:(id)sender
 {
+#if !TARGET_OS_TV
   NSAttributedString *attributedText = _textStorage;
 
   NSMutableDictionary *item = [NSMutableDictionary new];
@@ -289,6 +292,7 @@
 
   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
   pasteboard.items = @[ item ];
+#endif
 }
 
 @end

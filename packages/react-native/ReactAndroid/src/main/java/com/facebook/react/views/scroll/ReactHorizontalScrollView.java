@@ -428,6 +428,14 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     return computeScrollDeltaToGetChildRectOnScreen(mTempRect);
   }
 
+  @Override
+  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+    if (!mScrollEnabled) {
+      return 0;
+    }
+    return super.computeScrollDeltaToGetChildRectOnScreen(rect);
+  }
+
   /** Returns whether the given descendent is scrolled fully in view */
   private boolean isScrolledInView(View descendent) {
     return getScrollDelta(descendent) == 0;

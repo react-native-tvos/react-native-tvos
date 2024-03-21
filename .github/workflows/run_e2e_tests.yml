@@ -1,9 +1,9 @@
 name: Run E2E Tests
 # This workflow is used to trigger E2E tests on a PR when a comment is made
 # containing the text "#run-e2e-tests".
-on:
-  issue_comment:
-    types: [created]
+#on:
+#  issue_comment:
+#    types: [created]
 permissions:
   contents: read
 jobs:

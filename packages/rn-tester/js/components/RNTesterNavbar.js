@@ -12,7 +12,7 @@ import type {RNTesterTheme} from './RNTesterTheme';
 
 import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -25,24 +25,32 @@ const NavbarButton = ({
   label,
   handlePress,
   iconStyle,
-}) => (
-  <Pressable
-    testID={testID}
-    onPress={handlePress}
-    style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
-    <View
-      style={[styles.pressableContent, isActive ? styles.activeBar : null]}
-      collapsable={false}>
-      <Image
-        style={iconStyle}
-        source={isActive ? activeImage : inactiveImage}
-      />
-      <Text style={isActive ? styles.activeText : styles.inactiveText}>
-        {label}
-      </Text>
-    </View>
-  </Pressable>
-);
+}) => {
+  const [isFocused, setIsFocused] = React.useState(false);
+  return (
+    <Pressable
+      testID={testID}
+      onPress={handlePress}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+      style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
+      <View
+        style={[
+          styles.pressableContent,
+          isFocused || isActive ? styles.activeBar : null,
+        ]}
+        collapsable={false}>
+        <Image
+          style={iconStyle}
+          source={isActive ? activeImage : inactiveImage}
+        />
+        <Text style={isActive ? styles.activeText : styles.inactiveText}>
+          {label}
+        </Text>
+      </View>
+    </Pressable>
+  );
+};
 
 const ComponentTab = ({
   isComponentActive,
@@ -182,6 +190,7 @@ const styles = StyleSheet.create({
     height: navBarHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 15,
   },
   pressableContent: {
     flex: 1,

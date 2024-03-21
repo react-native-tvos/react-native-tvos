@@ -18,6 +18,7 @@ const {
   Image,
   Platform,
   ScrollView,
+  Platform,
   StyleSheet,
   TextInput,
   View,
@@ -102,6 +103,9 @@ class RNTesterExampleFilter<T> extends React.Component<Props<T>, State> {
 
   _renderTextInput(): ?React.Element<any> {
     if (this.props.disableSearch) {
+      return null;
+    }
+    if (Platform.isTV) {
       return null;
     }
     return (

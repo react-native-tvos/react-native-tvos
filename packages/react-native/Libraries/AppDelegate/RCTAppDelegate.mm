@@ -94,9 +94,11 @@
 {
   BOOL enableFabric = self.fabricEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
-
+#if TARGET_OS_TV
+  rootView.backgroundColor = [UIColor whiteColor];
+#else
   rootView.backgroundColor = [UIColor systemBackgroundColor];
-
+#endif
   return rootView;
 }
 
@@ -132,6 +134,7 @@
 
 #pragma mark - UISceneDelegate
 
+#if !TARGET_OS_TV
 - (void)windowScene:(UIWindowScene *)windowScene
     didUpdateCoordinateSpace:(id<UICoordinateSpace>)previousCoordinateSpace
         interfaceOrientation:(UIInterfaceOrientation)previousInterfaceOrientation
@@ -139,6 +142,7 @@
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
 }
+#endif
 
 #pragma mark - New Arch Enabled settings
 

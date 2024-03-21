@@ -243,6 +243,7 @@ using namespace facebook::react;
       [_editMenuInteraction presentEditMenuWithConfiguration:config];
     }
   } else {
+#if !TARGET_OS_TV
     UIMenuController *menuController = [UIMenuController sharedMenuController];
 
     if (menuController.isMenuVisible) {
@@ -250,6 +251,7 @@ using namespace facebook::react;
     }
 
     [menuController showMenuFromView:self rect:self.bounds];
+#endif
   }
 }
 
@@ -272,6 +274,7 @@ using namespace facebook::react;
 
 - (void)copy:(id)sender
 {
+#if !TARGET_OS_TV
   NSAttributedString *attributedText = self.attributedText;
 
   NSMutableDictionary *item = [NSMutableDictionary new];
@@ -288,6 +291,7 @@ using namespace facebook::react;
 
   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
   pasteboard.items = @[ item ];
+#endif
 }
 
 @end
