@@ -10,6 +10,7 @@ package com.facebook.react.views.view;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.facebook.common.logging.FLog;
@@ -303,6 +304,9 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     setFocusable(view, focusable);
     if (!focusable) {
       view.setFocusable(false);
+      view.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+    } else {
+      view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
     }
   }
 
