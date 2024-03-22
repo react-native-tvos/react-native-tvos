@@ -10,9 +10,9 @@
 
 const React = require('react');
 const ScrollView = require('../ScrollView/ScrollView');
-const TVEventHandler = require('./TVEventHandler');
-const tagForComponentOrHandle = require('./tagForComponentOrHandle');
+const {tvFocusEventHandler} = require('./TVFocusEventHandler');
 
+import tagForComponentOrHandle from './tagForComponentOrHandle';
 import typeof Props from '../ScrollView/ScrollView';
 
 /**
@@ -64,9 +64,9 @@ class TVTextScrollView extends React.Component<{
   _subscription: any;
 
   componentDidMount() {
-    this._subscription = TVEventHandler.addListener(function (cmp, evt) {
-      const myTag = tagForComponentOrHandle(cmp);
-      evt.dispatchConfig = {};
+    const cmp = this;
+    const myTag = tagForComponentOrHandle(cmp);
+    tvFocusEventHandler.register(myTag, function (evt) {
       if (myTag === evt.tag) {
         if (evt.eventType === 'focus') {
           cmp.props.onFocus && cmp.props.onFocus(evt);
@@ -78,10 +78,8 @@ class TVTextScrollView extends React.Component<{
   }
 
   componentWillUnmount() {
-    if (this._subscription) {
-      this._subscription.remove();
-      this._subscription = null;
-    }
+    const myTag = tagForComponentOrHandle(this);
+    tvFocusEventHandler.unregister(myTag);
   }
 
   render(): React.Node | React.Element<string> {
