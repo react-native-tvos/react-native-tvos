@@ -75,7 +75,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)setIsTVSelectable:(BOOL)isTVSelectable
 {
   self->_isTVSelectable = isTVSelectable;
-  if (isTVSelectable) {
+  if (isTVSelectable && ![self isTVFocusGuide]) {
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                  action:@selector(handleSelect:)];
     recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
@@ -138,13 +138,25 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
+- (BOOL)isTVFocusGuide
+{
+  return self.focusGuide != nil;
+}
+
 - (BOOL)isUserInteractionEnabled
 {
+  if ([self isTVFocusGuide]) {
+    return (self.isTVSelectable);
+  }
   return YES;
 }
 
 - (BOOL)canBecomeFocused
 {
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
+
   return (self.isTVSelectable);
 }
 
@@ -311,7 +323,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [self handleFocusGuide];
   }
     
-  if (context.nextFocusedView == self && self.isTVSelectable ) {
+  if (context.nextFocusedView == self && ![self isTVFocusGuide] && self.isTVSelectable ) {
     [self becomeFirstResponder];
     [self enableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){

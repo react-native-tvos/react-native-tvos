@@ -188,7 +188,7 @@ const getSelectedItemPrefix = (selectedCategory: string) => {
   return `Category ${selectedCategory} - Item`;
 };
 
-const Row = ({title}) => {
+const Row = ({title, focusable}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
   const onCategoryFocused = (event, id: number) => {
@@ -197,7 +197,7 @@ const Row = ({title}) => {
 
   return (
     <View style={styles.mb5}>
-      <TVFocusGuide autoFocus style={styles.rowTop}>
+      <TVFocusGuide autoFocus style={styles.rowTop} focusable={focusable}>
         <Text style={styles.rowTitle}>{title}</Text>
         <HList
           prefix="Category"
@@ -208,7 +208,7 @@ const Row = ({title}) => {
           onItemFocused={onCategoryFocused}
         />
       </TVFocusGuide>
-      <TVFocusGuide autoFocus style={styles.mb5}>
+      <TVFocusGuide autoFocus style={styles.mb5} focusable={focusable}>
         <HList
           prefix={getSelectedItemPrefix(selectedCategory)}
           itemCount={10}
@@ -432,6 +432,7 @@ const ContentArea = React.forwardRef(
           <SlowListFocusTest />
           <Row title="Category Example 1" />
           <Row title="Category Example 2" />
+          <Row title="Disabled Focus Subviews Example" focusable={false} />
 
           <FocusableBox
             style={styles.focusToSideMenuBtn}

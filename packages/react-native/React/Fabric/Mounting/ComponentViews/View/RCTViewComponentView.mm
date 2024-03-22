@@ -415,13 +415,29 @@ using namespace facebook::react;
 }
 
 
+- (BOOL)isTVFocusGuide
+{
+  #if TARGET_OS_TV
+    return self.focusGuide != nil;
+  #endif
+  
+  return NO;
+}
+
+
 - (BOOL)isUserInteractionEnabled
 {
-    return YES;
+  if ([self isTVFocusGuide]) {
+    return _props->isTVSelectable;
+  }
+  return YES;
 }
 
 - (BOOL)canBecomeFocused
 {
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
   return _props->isTVSelectable;
 }
 
@@ -548,7 +564,7 @@ using namespace facebook::react;
       [self handleFocusGuide];
     }
 
-    if (context.nextFocusedView == self && self.isUserInteractionEnabled ) {
+    if (context.nextFocusedView == self && self.isUserInteractionEnabled && ![self isTVFocusGuide]) {
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
@@ -898,7 +914,7 @@ using namespace facebook::react;
 #if TARGET_OS_TV
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
-    if (newViewProps.isTVSelectable) {
+    if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
       UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                    action:@selector(handleSelect:)];
       recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];

@@ -8,13 +8,14 @@
  * @format
  */
 
+import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
+import type {ViewProps} from '../View/ViewPropTypes';
+
+import setAndForwardRef from '../../Utilities/setAndForwardRef';
+import {Commands} from '../View/ViewNativeComponent';
+
 const React = require('react');
 const ReactNative = require('react-native');
-
-import {Commands} from '../View/ViewNativeComponent';
-import type {ViewProps} from '../View/ViewPropTypes';
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
-import setAndForwardRef from '../../Utilities/setAndForwardRef';
 
 const {View} = ReactNative;
 
@@ -44,6 +45,11 @@ type TVFocusGuideViewProps = $ReadOnly<{
   trapFocusDown?: boolean,
   trapFocusLeft?: boolean,
   trapFocusRight?: boolean,
+
+  /**
+   * When set to false, this view and all its subviews will be NOT focusable.
+   */
+  focusable?: boolean | undefined,
 }>;
 
 export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
@@ -57,6 +63,8 @@ function TVFocusGuideView(
     enabled = true,
     safePadding,
     destinations: destinationsProp,
+    autoFocus,
+    focusable,
     ...props
   }: TVFocusGuideViewProps,
   forwardedRef,
@@ -106,6 +114,11 @@ function TVFocusGuideView(
   const enabledStyle = {display: enabled ? 'flex' : 'none'};
   const style = [styles.container, props.style, enabledStyle];
 
+  // If there are no destinations and the autoFocus is false the the default value of focusable should be false
+  // It is then properly handled by the native code
+  const tvOSSelectable =
+    destinationsProp || autoFocus ? focusable !== false : false;
+
   return (
     // $FlowFixMe[prop-missing]
     <ReactNative.View
@@ -113,6 +126,11 @@ function TVFocusGuideView(
       style={style}
       ref={_setNativeRef}
       collapsable={false}
+      autoFocus={autoFocus}
+      // tvOS only prop
+      isTVSelectable={tvOSSelectable}
+      // Android TV only prop
+      tvFocusable={focusable}
     />
   );
 }
