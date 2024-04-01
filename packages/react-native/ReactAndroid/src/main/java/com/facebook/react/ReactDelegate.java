@@ -9,6 +9,7 @@ package com.facebook.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import androidx.annotation.NonNull;
@@ -81,6 +82,20 @@ public class ReactDelegate {
     mReactNativeHost = reactNativeHost;
   }
 
+  @Nullable
+  private DevSupportManager getDevSupportManager() {
+    if (ReactFeatureFlags.enableBridgelessArchitecture
+        && mReactHost != null
+        && mReactHost.getDevSupportManager() != null) {
+      return mReactHost.getDevSupportManager();
+    } else if (getReactNativeHost().hasInstance()
+        && getReactNativeHost().getUseDeveloperSupport()) {
+      return getReactNativeHost().getReactInstanceManager().getDevSupportManager();
+    } else {
+      return null;
+    }
+  }
+
   public void onHostResume() {
     if (ReactFeatureFlags.enableBridgelessArchitecture) {
       if (mActivity instanceof DefaultHardwareBackBtnHandler) {
@@ -137,6 +152,19 @@ public class ReactDelegate {
     return false;
   }
 
+  public boolean onNewIntent(Intent intent) {
+    if (ReactFeatureFlags.enableBridgelessArchitecture) {
+      mReactHost.onNewIntent(intent);
+      return true;
+    } else {
+      if (getReactNativeHost().hasInstance()) {
+        getReactNativeHost().getReactInstanceManager().onNewIntent(intent);
+        return true;
+      }
+    }
+    return false;
+  }
+
   public void onActivityResult(
       int requestCode, int resultCode, Intent data, boolean shouldForwardToReactInstance) {
     if (ReactFeatureFlags.enableBridgelessArchitecture) {
@@ -147,6 +175,64 @@ public class ReactDelegate {
             .getReactInstanceManager()
             .onActivityResult(mActivity, requestCode, resultCode, data);
       }
+    }
+  }
+
+  public void onWindowFocusChanged(boolean hasFocus) {
+    if (ReactFeatureFlags.enableBridgelessArchitecture) {
+      mReactHost.onWindowFocusChange(hasFocus);
+    } else {
+      if (getReactNativeHost().hasInstance()) {
+        getReactNativeHost().getReactInstanceManager().onWindowFocusChange(hasFocus);
+      }
+    }
+  }
+
+  public void onConfigurationChanged(Configuration newConfig) {
+    if (ReactFeatureFlags.enableBridgelessArchitecture) {
+      mReactHost.onConfigurationChanged(Assertions.assertNotNull(mActivity));
+    } else {
+      if (getReactNativeHost().hasInstance()) {
+        getReactInstanceManager()
+            .onConfigurationChanged(Assertions.assertNotNull(mActivity), newConfig);
+      }
+    }
+  }
+
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD
+        && ((ReactFeatureFlags.enableBridgelessArchitecture
+                && mReactHost != null
+                && mReactHost.getDevSupportManager() != null)
+            || (getReactNativeHost().hasInstance()
+                && getReactNativeHost().getUseDeveloperSupport()))) {
+      event.startTracking();
+      return true;
+    }
+    return false;
+  }
+
+  public boolean onKeyLongPress(int keyCode) {
+    if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+      if (ReactFeatureFlags.enableBridgelessArchitecture
+          && mReactHost != null
+          && mReactHost.getDevSupportManager() != null) {
+        mReactHost.getDevSupportManager().showDevOptionsDialog();
+        return true;
+      } else {
+        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport()) {
+          getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public void reload() {
+    DevSupportManager devSupportManager = getDevSupportManager();
+    if (devSupportManager != null) {
+      devSupportManager.handleReloadJS();
     }
   }
 
@@ -196,15 +282,8 @@ public class ReactDelegate {
    *     application.
    */
   public boolean shouldShowDevMenuOrReload(int keyCode, KeyEvent event) {
-    DevSupportManager devSupportManager = null;
-    if (ReactFeatureFlags.enableBridgelessArchitecture
-        && mReactHost != null
-        && mReactHost.getDevSupportManager() != null) {
-      devSupportManager = mReactHost.getDevSupportManager();
-    } else if (getReactNativeHost().hasInstance()
-        && getReactNativeHost().getUseDeveloperSupport()) {
-      devSupportManager = getReactNativeHost().getReactInstanceManager().getDevSupportManager();
-    } else {
+    DevSupportManager devSupportManager = getDevSupportManager();
+    if (devSupportManager == null) {
       return false;
     }
 

@@ -120,6 +120,14 @@ public interface ReactHost {
       data: Intent?,
   )
 
+  /* To be called when focus has changed for the hosting window. */
+  public fun onWindowFocusChange(hasFocus: Boolean)
+
+  /* This method will give JS the opportunity to receive intents via Linking. */
+  public fun onNewIntent(intent: Intent)
+
+  public fun onConfigurationChanged(context: Context)
+
   public fun addBeforeDestroyListener(onBeforeDestroy: () -> Unit)
 
   public fun removeBeforeDestroyListener(onBeforeDestroy: () -> Unit)
