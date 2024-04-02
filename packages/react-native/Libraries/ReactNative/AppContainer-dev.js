@@ -21,7 +21,6 @@ import Platform from '../Utilities/Platform';
 import DebuggingOverlay from '../Debugging/DebuggingOverlay';
 import useSubscribeToDebuggingOverlayRegistry from '../Debugging/useSubscribeToDebuggingOverlayRegistry';
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
-import ReactDevToolsOverlay from '../Inspector/ReactDevToolsOverlay';
 import LogBoxNotificationContainer from '../LogBox/LogBoxNotificationContainer';
 import StyleSheet from '../StyleSheet/StyleSheet';
 import {RootTagContext, createRootTag} from './RootTag';
@@ -60,6 +59,26 @@ const InspectorDeferred = ({
     <Inspector
       inspectedViewRef={inspectedViewRef}
       onRequestRerenderApp={onInspectedViewRerenderRequest}
+      reactDevToolsAgent={reactDevToolsAgent}
+    />
+  );
+};
+
+type ReactDevToolsOverlayDeferredProps = {
+  inspectedViewRef: InspectedViewRef,
+  reactDevToolsAgent: ReactDevToolsAgent,
+};
+
+const ReactDevToolsOverlayDeferred = ({
+  inspectedViewRef,
+  reactDevToolsAgent,
+}: ReactDevToolsOverlayDeferredProps) => {
+  const ReactDevToolsOverlay =
+    require('../Inspector/ReactDevToolsOverlay').default;
+
+  return (
+    <ReactDevToolsOverlay
+      inspectedViewRef={inspectedViewRef}
       reactDevToolsAgent={reactDevToolsAgent}
     />
   );
@@ -156,7 +175,7 @@ const AppContainer = ({
         {!Platform.isTV ? <DebuggingOverlay ref={debuggingOverlayRef} /> : null}
 
         {reactDevToolsAgent != null && (
-          <ReactDevToolsOverlay
+          <ReactDevToolsOverlayDeferred
             inspectedViewRef={innerViewRef}
             reactDevToolsAgent={reactDevToolsAgent}
           />
