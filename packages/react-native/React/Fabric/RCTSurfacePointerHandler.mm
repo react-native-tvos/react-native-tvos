@@ -788,5 +788,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
     }
   }
 }
+#endif
 
 @end
