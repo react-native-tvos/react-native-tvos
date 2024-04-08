@@ -11,6 +11,7 @@
 #import <React/RCTBridge+Private.h>
 #import <React/RCTConstants.h>
 #import <React/RCTScrollEvent.h>
+#import <React/RCTTVNavigationEventNotification.h>
 
 #import <react/renderer/components/scrollview/RCTComponentViewHelpers.h>
 #import <react/renderer/components/scrollview/ScrollViewComponentDescriptor.h>
@@ -843,22 +844,22 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleTVNavigationEventNotification:)
-                                                 name:@"RCTTVNavigationEventNotification"
+                                                 name:RCTTVNavigationEventNotificationName
                                                object:nil];
 }
 
 - (void)removeArrowsListeners
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"RCTTVNavigationEventNotification"
+                                                    name:RCTTVNavigationEventNotificationName
                                                   object:nil];
 }
 
 - (void)handleTVNavigationEventNotification:(NSNotification *)notif
 {
-    NSArray *supportedEvents = [NSArray arrayWithObjects:@"up", @"down", @"left", @"right", nil];
+    NSArray *supportedEvents = @[RCTTVRemoteEventUp, RCTTVRemoteEventDown, RCTTVRemoteEventLeft, RCTTVRemoteEventRight];
 
-    if (notif.object == nil || notif.object[@"eventType"] == nil || ![supportedEvents containsObject:notif.object[@"eventType"]] ) {
+    if (notif.object == nil || notif.object[RCTTVNavigationEventNotificationKeyEventType] == nil || ![supportedEvents containsObject:notif.object[RCTTVNavigationEventNotificationKeyEventType]] ) {
         return;
     }
 
@@ -869,23 +870,23 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 
     BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
     if (!isHorizontal) {
-        if ([notif.object[@"eventType"] isEqual: @"down"]) {
+        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventDown]) {
             [self swipedDown];
             return;
         }
 
-        if ([notif.object[@"eventType"] isEqual: @"up"]) {
+        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventUp]) {
             [self swipedUp];
             return;
         }
     }
 
-    if ([notif.object[@"eventType"] isEqual: @"left"]) {
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventLeft]) {
         [self swipedLeft];
         return;
     }
 
-    if ([notif.object[@"eventType"] isEqual: @"right"]) {
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventRight]) {
         [self swipedRight];
         return;
     }
@@ -914,14 +915,12 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 
 - (void)sendFocusNotification
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                        object:@{ @"eventType": @"focus", @"tag": @([self tag]) }];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:@(self.tag) target:nil];
 }
 
 - (void)sendBlurNotification
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                        object:@{ @"eventType": @"blur", @"tag": @([self tag]) }];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:nil];
 }
 
 - (NSInteger)swipeVerticalInterval
