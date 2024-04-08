@@ -18,6 +18,7 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 #import <React/RCTUIManager.h>
+#import <React/RCTTVNavigationEventNotification.h>
 
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
@@ -98,7 +99,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handleSelect:(__unused UIGestureRecognizer *)r
+- (void)handleSelect:(UIGestureRecognizer *)r
 {
   if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
     float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
@@ -133,9 +134,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  if (r.state == UIGestureRecognizerStateBegan) {
     [self sendLongSelectNotification:r];
-  }
 }
 
 - (BOOL)isTVFocusGuide
@@ -434,32 +433,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"focus"];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"blur"];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"select"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"longSelect"];
-}
-
-- (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{
-                                                          @"eventType":eventType,
-                                                          @"tag":self.reactTag,
-                                                          @"target":self.reactTag
-                                                      }];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:self.reactTag target:self.reactTag];
 }
 
 - (RCTTVView *)getViewById:(NSNumber *)viewId {

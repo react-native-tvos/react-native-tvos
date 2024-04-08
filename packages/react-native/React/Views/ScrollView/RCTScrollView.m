@@ -12,6 +12,7 @@
 #import "RCTConvert.h"
 #import "RCTLog.h"
 #import "RCTScrollEvent.h"
+#import "RCTTVNavigationEventNotification.h"
 #import "RCTUIManager.h"
 #import "RCTUIManagerObserverCoordinator.h"
 #import "RCTUIManagerUtils.h"
@@ -1016,22 +1017,22 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 - (void) addArrowsListeners {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleTVNavigationEventNotification:)
-                                                 name:@"RCTTVNavigationEventNotification"
+                                                 name:RCTTVNavigationEventNotificationName
                                                object:nil];
 }
 
 - (void) removeArrowsListeners {
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:@"RCTTVNavigationEventNotification"
+                                                    name:RCTTVNavigationEventNotificationName
                                                   object:nil];
 }
 
 
 - (void)handleTVNavigationEventNotification:(NSNotification *)notif
 {
-    NSArray *supportedEvents = [NSArray arrayWithObjects:@"up", @"down", @"left", @"right", nil];
+    NSArray *supportedEvents = [NSArray arrayWithObjects:RCTTVRemoteEventUp, RCTTVRemoteEventDown, RCTTVRemoteEventLeft, RCTTVRemoteEventRight, nil];
 
-    if (notif.object == nil || notif.object[@"eventType"] == nil || ![supportedEvents containsObject:notif.object[@"eventType"]] ) {
+    if (notif.object == nil || notif.object[RCTTVNavigationEventNotificationKeyEventType] == nil || ![supportedEvents containsObject:notif.object[RCTTVNavigationEventNotificationKeyEventType]]) {
         return;
     }
     
@@ -1041,23 +1042,23 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
     }
 
     if (![self isHorizontal:self.scrollView]) {
-        if ([notif.object[@"eventType"]  isEqual: @"down"]) {
+        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventDown]) {
             [self swipedDown];
             return;
         }
         
-        if ([notif.object[@"eventType"]  isEqual: @"up"]) {
+        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventUp]) {
             [self swipedUp];
             return;
         }
     }
   
-    if ([notif.object[@"eventType"]  isEqual: @"left"]) {
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventLeft]) {
         [self swipedLeft];
         return;
     }
     
-    if ([notif.object[@"eventType"]  isEqual: @"right"]) {
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventRight]) {
         [self swipedRight];
         return;
     }
@@ -1085,14 +1086,12 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)sendFocusNotification
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-  object:@{@"eventType":@"focus",@"tag":self.reactTag}];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:self.reactTag target:nil];
 }
 
 - (void)sendBlurNotification
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-  object:@{@"eventType":@"blur",@"tag":self.reactTag}];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:nil];
 }
 
 - (NSInteger)swipeVerticalInterval

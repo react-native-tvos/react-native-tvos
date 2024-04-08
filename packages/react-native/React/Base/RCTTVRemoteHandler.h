@@ -16,32 +16,6 @@ extern NSString * _Nonnull const RCTTVDisablePanGestureNotification;
 extern NSString * _Nonnull const RCTTVEnableGestureHandlersCancelTouchesNotification;
 extern NSString * _Nonnull const RCTTVDisableGestureHandlersCancelTouchesNotification;
 
-extern NSString * _Nonnull const RCTTVRemoteEventMenu;
-extern NSString * _Nonnull const RCTTVRemoteEventPlayPause;
-extern NSString * _Nonnull const RCTTVRemoteEventSelect;
-
-extern NSString * _Nonnull const RCTTVRemoteEventLongPlayPause;
-extern NSString * _Nonnull const RCTTVRemoteEventLongSelect;
-extern NSString * _Nonnull const RCTTVRemoteEventLongUp;
-extern NSString * _Nonnull const RCTTVRemoteEventLongDown;
-extern NSString * _Nonnull const RCTTVRemoteEventLongLeft;
-extern NSString * _Nonnull const RCTTVRemoteEventLongRight;
-
-extern NSString * _Nonnull const RCTTVRemoteEventLeft;
-extern NSString * _Nonnull const RCTTVRemoteEventRight;
-extern NSString * _Nonnull const RCTTVRemoteEventUp;
-extern NSString * _Nonnull const RCTTVRemoteEventDown;
-
-extern NSString * _Nonnull const RCTTVRemoteEventPageUp;
-extern NSString * _Nonnull const RCTTVRemoteEventPageDown;
-
-extern NSString * _Nonnull const RCTTVRemoteEventSwipeLeft;
-extern NSString * _Nonnull const RCTTVRemoteEventSwipeRight;
-extern NSString * _Nonnull const RCTTVRemoteEventSwipeUp;
-extern NSString * _Nonnull const RCTTVRemoteEventSwipeDown;
-
-extern NSString * _Nonnull const RCTTVRemoteEventPan;
-
 @interface RCTTVRemoteHandler : NSObject
 
 - (instancetype _Nonnull )initWithView:(UIView * _Nonnull)view;

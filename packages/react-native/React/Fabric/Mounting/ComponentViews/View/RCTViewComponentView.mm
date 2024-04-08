@@ -19,6 +19,7 @@
 #import <React/RCTLog.h>
 
 #import <React/RCTSurfaceHostingProxyRootView.h>
+#import <React/RCTTVNavigationEventNotification.h>
 
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>
@@ -245,35 +246,25 @@ using namespace facebook::react;
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"focus"];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"blur"];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"select"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
 {
-  [self sendNotificationWithEventType:@"longSelect"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{
-                                                          @"eventType":eventType,
-                                                          @"tag":@([self tag]),
-                                                          @"target":@([self tag])
-                                                      }];
-}
-
-- (void)handleSelect:(__unused UIGestureRecognizer *)r
+- (void)handleSelect:(UIGestureRecognizer *)r
 {
   if (_tvParallaxProperties.enabled == YES) {
     float magnification = _tvParallaxProperties.magnification;
@@ -308,9 +299,7 @@ using namespace facebook::react;
 
 - (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  if (r.state == UIGestureRecognizerStateBegan) {
     [self sendLongSelectNotification:r];
-  }
 }
 
 - (void)addParallaxMotionEffects
