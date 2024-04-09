@@ -11,14 +11,14 @@
 'use strict';
 
 import invariant from 'invariant';
-import ReactNative from '../../Renderer/shims/ReactNative';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import type {
   BlurEvent,
   FocusEvent,
   PressEvent,
 } from '../../Types/CoreEventTypes';
 import Platform from '../../Utilities/Platform';
-import TVEventHandler from '../../Components/TV/TVEventHandler';
+import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 
 type TVTouchableConfig = $ReadOnly<{|
   getDisabled: () => boolean,
@@ -29,19 +29,22 @@ type TVTouchableConfig = $ReadOnly<{|
 |}>;
 
 export default class TVTouchable {
-  _tvEventHandler: TVEventHandler = null;
   _enabled: boolean = false;
+  _focusEventHandler: ?any = null;
+  _viewTag: ?number = null;
 
   constructor(component: any, config: TVTouchableConfig) {
     invariant(Platform.isTV, 'TVTouchable: Requires `Platform.isTV`.');
-    this._tvEventHandler = new TVEventHandler();
+    if (!Platform.isTV) {
+      return;
+    }
     const _tvtouchable = this;
-    this._tvEventHandler.enable(component, (_, tvData) => {
-      tvData.dispatchConfig = {};
+    this._viewTag = tagForComponentOrHandle(component);
+    tvFocusEventHandler.register(this._viewTag, tvData => {
       if (!_tvtouchable._enabled) {
         return;
       }
-      if (ReactNative.findNodeHandle(component) === tvData.tag) {
+      if (tagForComponentOrHandle(component) === tvData.tag) {
         if (tvData.eventType === 'focus') {
           config.onFocus(tvData);
         } else if (tvData.eventType === 'blur') {
@@ -62,7 +65,6 @@ export default class TVTouchable {
 
   destroy(): void {
     this._enabled = false;
-    this._tvEventHandler.disable();
-    this._tvEventHandler = null;
+    tvFocusEventHandler.unregister(this._viewTag);
   }
 }

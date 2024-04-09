@@ -10,10 +10,9 @@
 
 const React = require('react');
 const ScrollView = require('../ScrollView/ScrollView');
-const TVEventHandler = require('./TVEventHandler');
-const findNodeHandle = require('../../Renderer/shims/ReactNative')
-  .findNodeHandle;
+const {tvFocusEventHandler} = require('./TVFocusEventHandler');
 
+import tagForComponentOrHandle from './tagForComponentOrHandle';
 import typeof Props from '../ScrollView/ScrollView';
 
 /**
@@ -62,13 +61,12 @@ class TVTextScrollView extends React.Component<{
    */
   onBlur?: (evt: Event) => void,
 }> {
-  _tvEventHandler: ?TVEventHandler;
+  _subscription: any;
 
   componentDidMount() {
-    this._tvEventHandler = new TVEventHandler();
-    this._tvEventHandler.enable(this, function(cmp, evt) {
-      const myTag = findNodeHandle(cmp);
-      evt.dispatchConfig = {};
+    const cmp = this;
+    const myTag = tagForComponentOrHandle(cmp);
+    tvFocusEventHandler.register(myTag, function (evt) {
       if (myTag === evt.tag) {
         if (evt.eventType === 'focus') {
           cmp.props.onFocus && cmp.props.onFocus(evt);
@@ -80,10 +78,8 @@ class TVTextScrollView extends React.Component<{
   }
 
   componentWillUnmount() {
-    if (this._tvEventHandler) {
-      this._tvEventHandler.disable();
-      delete this._tvEventHandler;
-    }
+    const myTag = tagForComponentOrHandle(this);
+    tvFocusEventHandler.unregister(myTag);
   }
 
   render(): React.Node | React.Element<string> {
