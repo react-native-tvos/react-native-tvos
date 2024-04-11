@@ -73,8 +73,6 @@ const RNTesterApp = ({
 
   // Setup hardware back button press listener
   React.useEffect(() => {
-    // For RNTester, menu key back navigation needs this enabled
-    TVEventControl.enableGestureHandlersCancelTouches();
     if (activeModuleKey) {
       TVEventControl.enableTVMenuKey();
     } else {

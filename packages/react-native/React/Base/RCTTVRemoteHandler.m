@@ -324,7 +324,8 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = YES;
     }
-    [self.tvMenuKeyRecognizer setCancelsTouchesInView:YES];
+    // Issue #678: menu key should not be included
+    // [self.tvMenuKeyRecognizer setCancelsTouchesInView:YES];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:YES];
   });
 }
@@ -335,7 +336,8 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = NO;
     }
-    [self.tvMenuKeyRecognizer setCancelsTouchesInView:NO];
+    // Issue #678: menu key should not be included
+    // [self.tvMenuKeyRecognizer setCancelsTouchesInView:NO];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:NO];
   });
 }
