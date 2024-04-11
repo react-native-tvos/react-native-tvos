@@ -33,10 +33,18 @@ const PressableButton = (props: {
 }) => {
   return (
     <Pressable
-      onFocus={() => props.log(`${props.title} focus`)}
-      onBlur={() => props.log(`${props.title} blur`)}
-      onPress={() => props.log(`${props.title} pressed`)}
-      onLongPress={() => props.log(`${props.title} long press`)}
+      onFocus={(event) =>
+        props.log(`${props.title} focus action=${event.eventKeyAction}`)
+      }
+      onBlur={(event) =>
+        props.log(`${props.title} blur action=${event.eventKeyAction}`)
+      }
+      onPress={(event) =>
+        props.log(`${props.title} pressed action=${event.eventKeyAction}`)
+      }
+      onLongPress={(event) =>
+        props.log(`${props.title} long press action=${event.eventKeyAction}`)
+      }
       style={({pressed, focused}) =>
         pressed || focused ? styles.pressableFocused : styles.pressable
       }>
@@ -58,10 +66,18 @@ const TouchableOpacityButton = (props: {
   return (
     <TouchableOpacity
       style={styles.pressable}
-      onFocus={() => props.log(`${props.title} focus`)}
-      onBlur={() => props.log(`${props.title} blur`)}
-      onPress={() => props.log(`${props.title} pressed`)}
-      onLongPress={() => props.log(`${props.title} long press`)}>
+      onFocus={(event) =>
+        props.log(`${props.title} focus action=${event.eventKeyAction}`)
+      }
+      onBlur={(event) =>
+        props.log(`${props.title} blur action=${event.eventKeyAction}`)
+      }
+      onPress={(event) =>
+        props.log(`${props.title} pressed action=${event.eventKeyAction}`)
+      }
+      onLongPress={(event) =>
+        props.log(`${props.title} long press action=${event.eventKeyAction}`)
+      }
       <Text style={styles.pressableText}>{props.title}</Text>
     </TouchableOpacity>
   );
@@ -74,10 +90,18 @@ const TouchableHighlightButton = (props: {
   return (
     <TouchableHighlight
       style={styles.pressable}
-      onFocus={() => props.log(`${props.title} focus`)}
-      onBlur={() => props.log(`${props.title} blur`)}
-      onPress={() => props.log(`${props.title} pressed`)}
-      onLongPress={() => props.log(`${props.title} long press`)}>
+      onFocus={(event) =>
+        props.log(`${props.title} focus action=${event.eventKeyAction}`)
+      }
+      onBlur={(event) =>
+        props.log(`${props.title} blur action=${event.eventKeyAction}`)
+      }
+      onPress={(event) =>
+        props.log(`${props.title} pressed action=${event.eventKeyAction}`)
+      }
+      onLongPress={(event) =>
+        props.log(`${props.title} long press action=${event.eventKeyAction}`)
+      }
       <Text style={styles.pressableText}>{props.title}</Text>
     </TouchableHighlight>
   );
@@ -90,10 +114,18 @@ const TouchableNativeFeedbackButton = (props: {
   return (
     <TouchableNativeFeedback
       background={TouchableNativeFeedback.SelectableBackground()}
-      onFocus={() => props.log(`${props.title} focus`)}
-      onBlur={() => props.log(`${props.title} blur`)}
-      onPress={() => props.log(`${props.title} pressed`)}
-      onLongPress={() => props.log(`${props.title} long press`)}>
+      onFocus={(event) =>
+        props.log(`${props.title} focus action=${event.eventKeyAction}`)
+      }
+      onBlur={(event) =>
+        props.log(`${props.title} blur action=${event.eventKeyAction}`)
+      }
+      onPress={(event) =>
+        props.log(`${props.title} pressed action=${event.eventKeyAction}`)
+      }
+      onLongPress={(event) =>
+        props.log(`${props.title} long press action=${event.eventKeyAction}`)
+      }
       <View style={styles.pressable}>
         <Text style={styles.pressableText}>{props.title}</Text>
       </View>

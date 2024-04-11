@@ -91,6 +91,7 @@ public class ReactAndroidHWInputDeviceHelper {
   // These are used for long press detection
   private long mLastKeyDownTime = 0;
   private boolean longPressEventActive = false;
+  private boolean longPressEventStarted = false;
 
   public ReactAndroidHWInputDeviceHelper() {}
 
@@ -136,13 +137,16 @@ public class ReactAndroidHWInputDeviceHelper {
 
     if (shouldDispatchEvent(eventKeyCode, eventKeyAction, time)) {
       if(longPressEventActive) {
-        // If we are not sending key down events to JS, send the long press event as a key up to make sure it is received
-        dispatchEvent(
-          KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
-          mLastFocusedViewId,
-          ReactFeatureFlags.enableKeyDownEvents ? eventKeyAction : KeyEvent.ACTION_UP,
-          context
-        );
+        // For long presses, only send the first key down event (aligns with Apple TV gesture detection behavior)
+        if(!longPressEventStarted || eventKeyAction == KeyEvent.ACTION_UP) {
+          dispatchEvent(
+            KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
+            mLastFocusedViewId,
+            eventKeyAction,
+            context
+          );
+          longPressEventStarted = true;
+        }
         // Update the start time for detecting the next long press event
         mLastKeyDownTime = time;
       } else {
@@ -154,6 +158,7 @@ public class ReactAndroidHWInputDeviceHelper {
     if ((eventKeyAction == KeyEvent.ACTION_UP) && isSelectOrDPadEvent) {
       mLastKeyDownTime = 0;
       longPressEventActive = false;
+      longPressEventStarted = false;
     }
 
   }
