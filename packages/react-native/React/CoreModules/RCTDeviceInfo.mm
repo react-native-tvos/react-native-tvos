@@ -57,11 +57,6 @@ RCT_EXPORT_MODULE()
 #if !TARGET_OS_TV
   _currentInterfaceOrientation = [RCTSharedApplication() statusBarOrientation];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(interfaceOrientationDidChange)
-                                               name:UIApplicationDidChangeStatusBarOrientationNotification
-                                             object:nil];
-
   _currentInterfaceDimensions = [self _exportedDimensions];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -78,6 +73,11 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:RCTWindowFrameDidChangeNotification
                                              object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(interfaceFrameDidChange)
+                                               name:UIDeviceOrientationDidChangeNotification
+                                             object:nil];
+#endif
 
   // TODO T175901725 - Registering the RCTDeviceInfo module to the notification is a short-term fix to unblock 0.73
   // The actual behavior should be that the module is properly registered in the TurboModule/Bridge infrastructure
@@ -89,11 +89,13 @@ RCT_EXPORT_MODULE()
                                                name:RCTBridgeWillInvalidateModulesNotification
                                              object:nil];
 
-#endif
 }
 
 - (void)invalidate
 {
+  if (_invalidated) {
+    return;
+  }
   _invalidated = YES;
   [self _cleanupObservers];
 }
@@ -103,21 +105,18 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] removeObserver:self
                                                   name:RCTAccessibilityManagerDidUpdateMultiplierNotification
                                                 object:[_moduleRegistry moduleForName:"AccessibilityManager"]];
-#if !TARGET_OS_TV
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
-                                                object:nil];
-#endif
+
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillInvalidateModulesNotification object:nil];
+
+#if !TARGET_OS_TV
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTWindowFrameDidChangeNotification object:nil];
 
   [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTUserInterfaceStyleDidChangeNotification object:nil];
 
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTWindowFrameDidChangeNotification object:nil];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(invalidate)
-                                               name:RCTBridgeWillInvalidateModulesNotification
-                                             object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+#endif
 }
 
 static BOOL RCTIsIPhoneNotched()
