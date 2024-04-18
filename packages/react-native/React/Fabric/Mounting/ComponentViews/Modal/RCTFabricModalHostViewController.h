@@ -9,6 +9,10 @@
 
 @protocol RCTFabricModalHostViewControllerDelegate <NSObject>
 - (void)boundsDidChange:(CGRect)newBounds;
+#if TARGET_OS_TV
+- (void)enableEventHandlers;
+- (void)disableEventHandlers;
+#endif
 @end
 
 @interface RCTFabricModalHostViewController : UIViewController
