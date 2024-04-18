@@ -1111,22 +1111,35 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
           registerAsNestedChild: this._registerAsNestedChild,
           unregisterAsNestedChild: this._unregisterAsNestedChild,
         }}>
-        <TVFocusGuideView
-          trapFocusLeft={
-            horizontalOrDefault(this.props.horizontal) &&
-            this.state.cellsAroundViewport.first > 0
-          }
-          trapFocusRight={
-            horizontalOrDefault(this.props.horizontal) && this._hasMore
-          }
-          trapFocusUp={
-            !horizontalOrDefault(this.props.horizontal) &&
-            this.state.cellsAroundViewport.first > 0
-          }
-          trapFocusDown={
-            !horizontalOrDefault(this.props.horizontal) && this._hasMore
-          }>
-          {React.cloneElement(
+        {Platform.isTV ? (
+          <TVFocusGuideView
+            trapFocusLeft={
+              horizontalOrDefault(this.props.horizontal) &&
+              this.state.cellsAroundViewport.first > 0
+            }
+            trapFocusRight={
+              horizontalOrDefault(this.props.horizontal) && this._hasMore
+            }
+            trapFocusUp={
+              !horizontalOrDefault(this.props.horizontal) &&
+              this.state.cellsAroundViewport.first > 0
+            }
+            trapFocusDown={
+              !horizontalOrDefault(this.props.horizontal) && this._hasMore
+            }>
+            {React.cloneElement(
+              (
+                this.props.renderScrollComponent ||
+                this._defaultRenderScrollComponent
+              )(scrollProps),
+              {
+                ref: this._captureScrollRef,
+              },
+              cells,
+            )}
+          </TVFocusGuideView>
+        ) : (
+          React.cloneElement(
             (
               this.props.renderScrollComponent ||
               this._defaultRenderScrollComponent
@@ -1135,8 +1148,8 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
               ref: this._captureScrollRef,
             },
             cells,
-          )}
-        </TVFocusGuideView>
+          )
+        )}
       </VirtualizedListContextProvider>
     );
     let ret: React.Node = innerRet;
