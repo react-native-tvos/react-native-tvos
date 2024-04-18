@@ -11,7 +11,6 @@
 #import <React/RCTBridge+Private.h>
 #import <React/RCTConstants.h>
 #import <React/RCTScrollEvent.h>
-#import <React/RCTTVNavigationEventNotification.h>
 
 #import <react/renderer/components/scrollview/RCTComponentViewHelpers.h>
 #import <react/renderer/components/scrollview/ScrollViewComponentDescriptor.h>
@@ -26,7 +25,8 @@
 #import "RCTFabricComponentsPlugins.h"
 
 #if TARGET_OS_TV
-#import "RCTTVRemoteHandler.h"
+#import <React/RCTTVRemoteHandler.h>
+#import <React/RCTTVNavigationEventNotification.h>
 #endif
 
 using namespace facebook::react;
