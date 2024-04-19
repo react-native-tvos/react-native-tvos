@@ -11,7 +11,7 @@
 /* eslint-disable no-alert */
 
 import * as React from 'react';
-import {Modal, Platform, StyleSheet, Switch, Text, View} from 'react-native';
+import {Modal, Platform, StyleSheet, Text, View} from 'react-native';
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 import type {Props as ModalProps} from 'react-native/Libraries/Modal/Modal';
 import RNTOption from '../../components/RNTOption';
@@ -31,6 +31,17 @@ const supportedOrientations = [
   'landscape-left',
   'landscape-right',
 ];
+
+function Switch({value, onValueChange}) {
+  return (
+    <RNTesterButton
+      onPress={() => {
+        onValueChange(!value);
+      }}>
+      {value ? 'On' : 'Off'}
+    </RNTesterButton>
+  );
+}
 
 function ModalPresentation() {
   const onDismiss = React.useCallback(() => {
@@ -277,7 +288,7 @@ const styles = StyleSheet.create({
   inlineBlock: {
     padding: 6,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderColor: 'rgba(0,0,0, 0.1)',
     borderBottomWidth: 1,
@@ -304,6 +315,17 @@ const styles = StyleSheet.create({
     margin: 3,
     fontSize: 12,
     color: 'red',
+  },
+  switch: {
+    width: 100,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderColor: 'blue',
+    borderWidth: 2,
+  },
+  switchOn: {
+    backgroundColor: 'blue',
   },
 });
 
