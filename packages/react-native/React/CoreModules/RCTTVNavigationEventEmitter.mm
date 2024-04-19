@@ -6,7 +6,9 @@
  */
 
 #import "RCTTVNavigationEventEmitter.h"
+#if TARGET_OS_TV
 #import "RCTTVNavigationEventNotificationConstants.h"
+#endif
 
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 #import "CoreModulesPlugins.h"
@@ -28,10 +30,12 @@ RCT_EXPORT_MODULE()
 - (instancetype)init
 {
   if (self = [super init]) {
+#if TARGET_OS_TV
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleTVNavigationEventNotification:)
                                                  name:RCTTVNavigationEventNotificationName
                                                object:nil];
+#endif
   }
   return self;
 }

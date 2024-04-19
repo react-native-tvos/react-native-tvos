@@ -19,7 +19,9 @@
 #import <React/RCTLog.h>
 
 #import <React/RCTSurfaceHostingProxyRootView.h>
+#if TARGET_OS_TV
 #import <React/RCTTVNavigationEventNotification.h>
+#endif
 
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>

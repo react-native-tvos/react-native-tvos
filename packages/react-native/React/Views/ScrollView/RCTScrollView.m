@@ -12,7 +12,6 @@
 #import "RCTConvert.h"
 #import "RCTLog.h"
 #import "RCTScrollEvent.h"
-#import "RCTTVNavigationEventNotification.h"
 #import "RCTUIManager.h"
 #import "RCTUIManagerObserverCoordinator.h"
 #import "RCTUIManagerUtils.h"
@@ -23,6 +22,7 @@
 
 #if TARGET_OS_TV
 #import "RCTTVRemoteHandler.h"
+#import "RCTTVNavigationEventNotification.h"
 #endif
 
 #if !TARGET_OS_TV
