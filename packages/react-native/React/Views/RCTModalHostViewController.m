@@ -34,6 +34,32 @@
   return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView enableEventHandlers];
+#endif
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView disableEventHandlers];
+  if (self.modalHostView.onRequestClose) {
+    self.modalHostView.onRequestClose(nil);
+  }
+#endif
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  if (self.modalHostView.onDismiss) {
+    self.modalHostView.onDismiss(nil);
+  }
+#endif
+}
+
 - (void)viewDidLayoutSubviews
 {
   [super viewDidLayoutSubviews];
