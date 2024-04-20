@@ -145,12 +145,12 @@ public class BridgelessCatalystInstance(private val reactHost: ReactHostImpl) : 
   }
 
   @Deprecated(message = "This API is unsupported in the New Architecture.")
-  override fun getJavaScriptContextHolder(): JavaScriptContextHolder {
-    throw UnsupportedOperationException("Unimplemented method 'getJavaScriptContextHolder'")
+  override fun getJavaScriptContextHolder(): JavaScriptContextHolder? {
+    return reactHost.getJavaScriptContextHolder()
   }
 
-  override fun getRuntimeExecutor(): RuntimeExecutor {
-    throw UnsupportedOperationException("Unimplemented method 'getRuntimeExecutor'")
+  override fun getRuntimeExecutor(): RuntimeExecutor? {
+    return reactHost.getRuntimeExecutor()
   }
 
   override fun getRuntimeScheduler(): RuntimeScheduler {
