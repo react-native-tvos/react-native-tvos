@@ -164,6 +164,6 @@
     ]
   },
   "devDependencies": {
-    "react-native-core": "npm:react-native@0.74.0-rc.8"
+    "react-native-core": "npm:react-native@0.74.0"
   }
 }
