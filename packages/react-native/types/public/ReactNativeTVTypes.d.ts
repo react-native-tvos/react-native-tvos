@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { View, ScrollViewProps, HostComponent, TVParallaxProperties } from 'react-native';
+import type { View, ScrollViewProps, HostComponent, TVParallaxProperties, EventSubscription } from 'react-native';
 
 declare module 'react-native' {
   interface ViewProps {
@@ -59,13 +59,9 @@ declare module 'react-native' {
     } | undefined
   };
 
-  export class TVEventHandler {
-    enable<T extends React.Component<unknown>>(
-      component?: T,
-      callback?: (component: T, data: HWEvent) => void
-    ): void;
-    disable(): void;
-  }
+  export const TVEventHandler:  {
+    addListener: (listener: (event: HWEvent) => void) => EventSubscription | undefined
+  };
 
   export interface FocusGuideProps extends ViewProps {
      /**
