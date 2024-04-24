@@ -7,6 +7,7 @@
 
 package com.facebook.react.views.textinput;
 
+import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.util.TypedValue;
 import android.widget.EditText;
@@ -29,7 +30,12 @@ public final class ReactTextInputLocalData {
     mPlaceholder = editText.getHint();
     mMinLines = editText.getMinLines();
     mMaxLines = editText.getMaxLines();
-    mBreakStrategy = editText.getBreakStrategy();
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      mBreakStrategy = editText.getBreakStrategy();
+    } else {
+      mBreakStrategy = 0;
+    }
   }
 
   public void apply(EditText editText) {
@@ -39,6 +45,8 @@ public final class ReactTextInputLocalData {
     editText.setMaxLines(mMaxLines);
     editText.setInputType(mInputType);
     editText.setHint(mPlaceholder);
-    editText.setBreakStrategy(mBreakStrategy);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      editText.setBreakStrategy(mBreakStrategy);
+    }
   }
 }
