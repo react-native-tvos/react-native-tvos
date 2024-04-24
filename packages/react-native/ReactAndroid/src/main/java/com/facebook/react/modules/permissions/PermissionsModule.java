@@ -10,6 +10,8 @@ package com.facebook.react.modules.permissions;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Process;
 import android.util.SparseArray;
 import com.facebook.common.logging.FLog;
 import com.facebook.fbreact.specs.NativePermissionsAndroidSpec;
@@ -47,6 +49,12 @@ public class PermissionsModule extends NativePermissionsAndroidSpec implements P
   @Override
   public void checkPermission(final String permission, final Promise promise) {
     Context context = getReactApplicationContext().getBaseContext();
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      promise.resolve(
+          context.checkPermission(permission, Process.myPid(), Process.myUid())
+              == PackageManager.PERMISSION_GRANTED);
+      return;
+    }
     promise.resolve(context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
   }
 
@@ -60,6 +68,10 @@ public class PermissionsModule extends NativePermissionsAndroidSpec implements P
    */
   @Override
   public void shouldShowRequestPermissionRationale(final String permission, final Promise promise) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      promise.resolve(false);
+      return;
+    }
     try {
       promise.resolve(
           getPermissionAwareActivity().shouldShowRequestPermissionRationale(permission));
@@ -77,6 +89,14 @@ public class PermissionsModule extends NativePermissionsAndroidSpec implements P
   @Override
   public void requestPermission(final String permission, final Promise promise) {
     Context context = getReactApplicationContext().getBaseContext();
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      promise.resolve(
+          context.checkPermission(permission, Process.myPid(), Process.myUid())
+                  == PackageManager.PERMISSION_GRANTED
+              ? GRANTED
+              : DENIED);
+      return;
+    }
     if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
       promise.resolve(GRANTED);
       return;
@@ -122,7 +142,15 @@ public class PermissionsModule extends NativePermissionsAndroidSpec implements P
     for (int i = 0; i < permissions.size(); i++) {
       String perm = permissions.getString(i);
 
-      if (context.checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED) {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        grantedPermissions.putString(
+            perm,
+            context.checkPermission(perm, Process.myPid(), Process.myUid())
+                    == PackageManager.PERMISSION_GRANTED
+                ? GRANTED
+                : DENIED);
+        checkedPermissionsCount++;
+      } else if (context.checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED) {
         grantedPermissions.putString(perm, GRANTED);
         checkedPermissionsCount++;
       } else {
