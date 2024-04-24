@@ -194,7 +194,7 @@ public class StatusBarModule extends NativeStatusBarManagerAndroidSpec {
                 insetsController.setSystemBarsAppearance(
                     0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
               }
-            } else {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
               View decorView = activity.getWindow().getDecorView();
               int systemUiVisibilityFlags = decorView.getSystemUiVisibility();
               if ("dark-content".equals(style)) {
