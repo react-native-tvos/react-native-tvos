@@ -7,6 +7,7 @@
 
 package com.facebook.react.views.text;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -65,6 +66,7 @@ import java.util.Map;
  * <p>This also node calculates {@link Spannable} object based on subnodes of the same type, which
  * can be used in concrete classes to feed native views and compute layout.
  */
+@TargetApi(Build.VERSION_CODES.M)
 public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
     implements BasicTextAttributeProvider {
 
@@ -89,9 +91,9 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
       ReactBaseTextShadowNode textShadowNode,
       SpannableStringBuilder sb,
       List<SetSpanOperation> ops,
-      @Nullable TextAttributes parentTextAttributes,
+      TextAttributes parentTextAttributes,
       boolean supportsInlineViews,
-      @Nullable Map<Integer, ReactShadowNode> inlineViews,
+      Map<Integer, ReactShadowNode> inlineViews,
       int start) {
     if (ReactNativeFeatureFlags.enableSpannableBuildingUnification()) {
       buildSpannedFromShadowNodeUnified(
@@ -350,7 +352,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
   // `nativeViewHierarchyOptimizer` can be `null` as long as `supportsInlineViews` is `false`.
   protected Spannable spannedFromShadowNode(
       ReactBaseTextShadowNode textShadowNode,
-      @Nullable String text,
+      String text,
       boolean supportsInlineViews,
       NativeViewHierarchyOptimizer nativeViewHierarchyOptimizer) {
     Assertions.assertCondition(
@@ -364,7 +366,8 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
     // up-to-bottom, otherwise all the spannables that are within the region for which one may set
     // a new spannable will be wiped out
     List<SetSpanOperation> ops = new ArrayList<>();
-    Map<Integer, ReactShadowNode> inlineViews = supportsInlineViews ? new HashMap<>() : null;
+    Map<Integer, ReactShadowNode> inlineViews =
+        supportsInlineViews ? new HashMap<Integer, ReactShadowNode>() : null;
 
     if (text != null) {
       // Handle text that is provided via a prop (e.g. the `value` and `defaultValue` props on
@@ -436,8 +439,10 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
 
   protected int mNumberOfLines = ReactConstants.UNSET;
   protected int mTextAlign = Gravity.NO_GRAVITY;
-  protected int mTextBreakStrategy = Layout.BREAK_STRATEGY_HIGH_QUALITY;
-  protected int mHyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE;
+  protected int mTextBreakStrategy =
+      (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? 0 : Layout.BREAK_STRATEGY_HIGH_QUALITY;
+  protected int mHyphenationFrequency =
+      (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? 0 : Layout.HYPHENATION_FREQUENCY_NONE;
   protected int mJustificationMode =
       (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) ? 0 : Layout.JUSTIFICATION_MODE_NONE;
 
@@ -736,6 +741,10 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode
 
   @ReactProp(name = ViewProps.TEXT_BREAK_STRATEGY)
   public void setTextBreakStrategy(@Nullable String textBreakStrategy) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return;
+    }
+
     if (textBreakStrategy == null || "highQuality".equals(textBreakStrategy)) {
       mTextBreakStrategy = Layout.BREAK_STRATEGY_HIGH_QUALITY;
     } else if ("simple".equals(textBreakStrategy)) {
