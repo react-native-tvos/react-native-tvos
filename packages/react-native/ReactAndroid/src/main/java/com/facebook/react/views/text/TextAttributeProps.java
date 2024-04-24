@@ -75,8 +75,10 @@ public class TextAttributeProps implements EffectiveTextAttributeProvider {
   private static final int DEFAULT_TEXT_SHADOW_COLOR = 0x55000000;
   private static final int DEFAULT_JUSTIFICATION_MODE =
       (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) ? 0 : Layout.JUSTIFICATION_MODE_NONE;
-  private static final int DEFAULT_BREAK_STRATEGY = Layout.BREAK_STRATEGY_HIGH_QUALITY;
-  private static final int DEFAULT_HYPHENATION_FREQUENCY = Layout.HYPHENATION_FREQUENCY_NONE;
+  private static final int DEFAULT_BREAK_STRATEGY =
+      (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? 0 : Layout.BREAK_STRATEGY_HIGH_QUALITY;
+  private static final int DEFAULT_HYPHENATION_FREQUENCY =
+      (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? 0 : Layout.HYPHENATION_FREQUENCY_NONE;
 
   protected float mLineHeight = Float.NaN;
   protected boolean mIsColorSet = false;
