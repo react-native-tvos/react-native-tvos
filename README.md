@@ -2,7 +2,7 @@
 
 Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.72.4-0 release of this package will be derived from the 0.72.4 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.74.0-0 release of this package will be derived from the 0.74.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -41,7 +41,7 @@ You should also install `yarn` globally, as it should be used instead of `npm` f
 ## Build changes
 
 - _Native layer for Apple TV_: React Native Xcode projects all now have Apple TV build targets, with names ending in the string '-tvOS'.  Changes in the React Native podspecs in 0.73 now require that your application `Podfile` only have one target. This repo supports either an iOS target or a tvOS target, but both targets should not be active at the same time. The new app template now has the iOS target commented out.
-- _Maven artifacts for Android TV_: In 0.71, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
+- _Maven artifacts for Android TV_: In 0.71 and later releases, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
 ## _(New)_ Project creation using the Expo CLI
 
@@ -104,8 +104,6 @@ var running_on_tv = Platform.isTV;
 var running_on_apple_tv = Platform.isTVOS;
 ```
 
-
-
 - _Common codebase for iOS and tvOS_: Since tvOS and iOS share most Objective-C and JavaScript code in common, most documentation for iOS applies equally to tvOS. Apple TV specific changes in native code are all wrapped by the TARGET_OS_TV define. These include changes to suppress APIs that are not supported on tvOS (e.g. web views, sliders, switches, status bar, etc.), and changes to support user input from the TV remote or keyboard.
 
 - _Common codebase for Android phone and Android TV_: Apps built for Android using this repo will run on both Android phone and Android TV. Most of the changes for TV are specific to handling focus-based navigation on a TV using the D-Pad on the remote control.
@@ -114,9 +112,10 @@ var running_on_apple_tv = Platform.isTVOS;
 
   - `onFocus` will be executed when the touchable view goes into focus
   - `onBlur` will be executed when the touchable view goes out of focus
-  - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote.
+  - `onPress` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote (center button on Apple TV remote, or center button on Android TV DPad).
+  - `onLongPress` will be executed twice if the "select" button is held down for a length of time. The two events passed into `onLongPress()` will have different values for their `eventKeyAction` property, 0 for key down (start) and 1 for key up (end).
 
-- _Pressable controls_: The `Pressable` API works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately.
+- _Pressable controls_: The `Pressable` API works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately. The `onPress()` and `onLongPress()` methods work the same way as with `Touchable` components.
 
 - _TV remote/keyboard input_: Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  For a more convenient API, we provide `useTVEventHandler`.
 
@@ -189,7 +188,7 @@ class Game2048 extends React.Component {
 
 - _Flipper_: We do not support Flipper.
 
-- _LogBox_: The new LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected on TV platforms, after a few adjustments to make the controls accessible to the focus engine.
+- _LogBox_: The LogBox error/warning display (which replaced YellowBox in 0.63) is working as expected on TV platforms, after a few adjustments to make the controls accessible to the focus engine.
 
 - _Dev Menu support_: On the Apple TV simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) ). Android TV dev menu behavior is the same as on Android phone.
 
