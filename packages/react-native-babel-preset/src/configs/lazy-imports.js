@@ -42,6 +42,7 @@ module.exports = new Set([
   'TouchableHighlight',
   'TouchableNativeFeedback',
   'TouchableOpacity',
+  'TouchableTV',
   'TouchableWithoutFeedback',
   'View',
   'VirtualizedList',

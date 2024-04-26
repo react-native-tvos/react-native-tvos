@@ -98,6 +98,7 @@ export * from '../Libraries/Components/Touchable/Touchable';
 export * from '../Libraries/Components/Touchable/TouchableHighlight';
 export * from '../Libraries/Components/Touchable/TouchableNativeFeedback';
 export * from '../Libraries/Components/Touchable/TouchableOpacity';
+export * from '../Libraries/Components/Touchable/TouchableTV';
 export * from '../Libraries/Components/Touchable/TouchableWithoutFeedback';
 export * from '../Libraries/Components/View/View';
 export * from '../Libraries/Components/View/ViewAccessibility';

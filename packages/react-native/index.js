@@ -35,6 +35,7 @@ import typeof Touchable from './Libraries/Components/Touchable/Touchable';
 import typeof TouchableHighlight from './Libraries/Components/Touchable/TouchableHighlight';
 import typeof TouchableNativeFeedback from './Libraries/Components/Touchable/TouchableNativeFeedback';
 import typeof TouchableOpacity from './Libraries/Components/Touchable/TouchableOpacity';
+import typeof TouchableTV from './Libraries/Components/Touchable/TouchableTV';
 import typeof TouchableWithoutFeedback from './Libraries/Components/Touchable/TouchableWithoutFeedback';
 import typeof View from './Libraries/Components/View/View';
 import typeof VirtualizedList from './Libraries/Lists/VirtualizedList';
@@ -194,6 +195,9 @@ module.exports = {
   },
   get TouchableOpacity(): TouchableOpacity {
     return require('./Libraries/Components/Touchable/TouchableOpacity');
+  },
+  get TouchableTV(): TouchableTV {
+    return require('./Libraries/Components/Touchable/TouchableTV');
   },
   get TouchableWithoutFeedback(): TouchableWithoutFeedback {
     return require('./Libraries/Components/Touchable/TouchableWithoutFeedback');

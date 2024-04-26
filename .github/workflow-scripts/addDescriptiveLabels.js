@@ -83,6 +83,7 @@ const components = [
   'TouchableHighlight',
   'TouchableNativeFeedback',
   'TouchableOpacity',
+  'TouchableTV',
   'TouchableWithoutFeedback',
   'ViewPagerAndroid',
   'VirtualizedList',
