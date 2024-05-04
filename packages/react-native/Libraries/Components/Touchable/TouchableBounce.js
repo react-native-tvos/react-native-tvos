@@ -245,6 +245,7 @@ class TouchableBounce extends React.Component<Props, State> {
       }
     }
     this.state.pressability.reset();
+    this.state.scale.resetAnimation();
   }
 }
 

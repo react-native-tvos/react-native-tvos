@@ -364,6 +364,7 @@ class TouchableOpacity extends React.Component<Props, State> {
       }
     }
     this.state.pressability.reset();
+    this.state.anim.resetAnimation();
   }
 }
 
