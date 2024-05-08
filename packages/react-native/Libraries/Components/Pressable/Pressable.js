@@ -271,6 +271,10 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const android_rippleConfig = useAndroidRippleForView(android_ripple, viewRef);
 
+  const isStyleAFunction = typeof style === 'function';
+  const isChildrenAFunction = typeof children === 'function';
+  const shouldUpdateStates = isStyleAFunction || isChildrenAFunction;
+
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
 
   const [focused, setFocused] = useState(false);
@@ -334,7 +338,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         if (android_rippleConfig != null) {
           android_rippleConfig.onPressIn(event);
         }
-        setPressed(true);
+        shouldUpdateStates && setPressed(true);
         if (onPressIn != null) {
           onPressIn(event);
         }
@@ -344,7 +348,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         if (android_rippleConfig != null) {
           android_rippleConfig.onPressOut(event);
         }
-        setPressed(false);
+        shouldUpdateStates && setPressed(false);
         if (onPressOut != null) {
           onPressOut(event);
         }
@@ -370,6 +374,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
       pressRetentionOffset,
       setPressed,
       unstable_pressDelay,
+      shouldUpdateStates,
     ],
   );
   // $FlowFixMe[incompatible-call]
@@ -380,12 +385,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       if (isTVSelectable !== false || focusable !== false) {
         // $FlowFixMe[prop-missing]
         if (evt?.eventType === 'focus') {
-          setFocused(true);
+          shouldUpdateStates && setFocused(true);
           onFocus && onFocus(evt);
           // $FlowFixMe[prop-missing]
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
-          setFocused(false);
+          shouldUpdateStates && setFocused(false);
         }
       }
       // $FlowFixMe[prop-missing]
@@ -399,7 +404,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         onLongPress && onLongPress(evt);
       }
     },
-    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
+    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable, shouldUpdateStates],
   );
 
   React.useEffect(() => {
@@ -430,10 +435,10 @@ function Pressable(props: Props, forwardedRef): React.Node {
         disabled !== true &&
         ariaDisabled !== true
       }
-      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      style={isStyleAFunction ? style({pressed, focused}) : style}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed, focused}) : children}
+      {isChildrenAFunction ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );
