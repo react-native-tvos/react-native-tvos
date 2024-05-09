@@ -16,6 +16,7 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.SystemClock;
 import com.facebook.react.config.ReactFeatureFlags;
+import com.facebook.react.uimanager.ThemedReactContext;
 
 import java.util.Map;
 
@@ -209,7 +210,9 @@ public class ReactAndroidHWInputDeviceHelper {
 
   public void emitNamedEvent(String eventName, WritableMap event, ReactContext context) {
     if (context != null) {
-      context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      ((ThemedReactContext)context)
+        .getReactApplicationContext()
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit(eventName, event);
     }
   }
