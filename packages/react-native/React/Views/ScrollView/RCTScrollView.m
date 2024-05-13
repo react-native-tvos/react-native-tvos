@@ -1149,6 +1149,10 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)swipedUp
 {
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
     CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
     NSLog(@"Swiped up to %f", newOffset);
     [self scrollToVerticalOffset:newOffset];
@@ -1156,6 +1160,10 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)swipedDown
 {
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
     CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
     NSLog(@"Swiped down to %f", newOffset);
     [self scrollToVerticalOffset:newOffset];
@@ -1163,16 +1171,24 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
 
 - (void)swipedLeft
 {
-  CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
-  NSLog(@"Swiped left to %f", newOffset);
-  [self scrollToHorizontalOffset:newOffset];
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
+    CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
+    NSLog(@"Swiped left to %f", newOffset);
+    [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)swipedRight
 {
-  CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
-  NSLog(@"Swiped right to %f", newOffset);
-  [self scrollToHorizontalOffset:newOffset];
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
+    CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
+    NSLog(@"Swiped right to %f", newOffset);
+    [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)addSwipeGestureRecognizers
