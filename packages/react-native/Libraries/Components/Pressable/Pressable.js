@@ -275,6 +275,9 @@ function Pressable(props: Props, forwardedRef): React.Node {
 
   const [focused, setFocused] = useState(false);
 
+  const shouldUpdatePressed =
+    typeof children === 'function' || typeof style === 'function';
+
   let _accessibilityState = {
     busy: ariaBusy ?? accessibilityState?.busy,
     checked: ariaChecked ?? accessibilityState?.checked,
@@ -334,7 +337,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         if (android_rippleConfig != null) {
           android_rippleConfig.onPressIn(event);
         }
-        setPressed(true);
+        shouldUpdatePressed && setPressed(true);
         if (onPressIn != null) {
           onPressIn(event);
         }
@@ -344,7 +347,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         if (android_rippleConfig != null) {
           android_rippleConfig.onPressOut(event);
         }
-        setPressed(false);
+        shouldUpdatePressed && setPressed(false);
         if (onPressOut != null) {
           onPressOut(event);
         }
@@ -369,6 +372,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
       onPressOut,
       pressRetentionOffset,
       setPressed,
+      shouldUpdatePressed,
       unstable_pressDelay,
     ],
   );
@@ -380,12 +384,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       if (isTVSelectable !== false || focusable !== false) {
         // $FlowFixMe[prop-missing]
         if (evt?.eventType === 'focus') {
-          setFocused(true);
+          shouldUpdatePressed && setFocused(true);
           onFocus && onFocus(evt);
           // $FlowFixMe[prop-missing]
         } else if (evt.eventType === 'blur') {
           onBlur && onBlur(evt);
-          setFocused(false);
+          shouldUpdatePressed && setFocused(false);
         }
       }
       // $FlowFixMe[prop-missing]
@@ -399,7 +403,7 @@ function Pressable(props: Props, forwardedRef): React.Node {
         onLongPress && onLongPress(evt);
       }
     },
-    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
+    [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable, shouldUpdatePressed],
   );
 
   React.useEffect(() => {
