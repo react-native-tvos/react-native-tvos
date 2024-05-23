@@ -54,8 +54,8 @@ declare module 'react-native' {
       state: 'Began' | 'Changed' | 'Ended',
       x: number,
       y: number,
-      velocityx: number,
-      velocityy: number
+      velocityX: number,
+      velocityY: number
     } | undefined
   };
 
