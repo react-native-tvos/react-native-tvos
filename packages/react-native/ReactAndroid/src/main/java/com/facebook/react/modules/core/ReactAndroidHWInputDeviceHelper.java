@@ -75,6 +75,9 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_DPAD_RIGHT, "longRight")
           .put(KeyEvent.KEYCODE_DPAD_DOWN, "longDown")
           .put(KeyEvent.KEYCODE_DPAD_LEFT, "longLeft")
+          .put(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, "longPlayPause")
+          .put(KeyEvent.KEYCODE_MEDIA_REWIND, "longRewind")
+          .put(KeyEvent.KEYCODE_MEDIA_FAST_FORWARD, "longFastForward")
           .build();
 
   /**
