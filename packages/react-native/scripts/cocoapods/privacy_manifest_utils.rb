@@ -67,7 +67,7 @@ module PrivacyManifestUtils
     end
 
     def self.ensure_reference(file_path, user_project, target)
-        reference_exists = target.resources_build_phase.files_references.any? { |file_ref| file_ref.path.end_with? "PrivacyInfo.xcprivacy" }
+        reference_exists = target.resources_build_phase.files_references.any? { |file_ref| file_ref.path&.end_with? "PrivacyInfo.xcprivacy" }
         unless reference_exists
             # We try to find the main group, but if it doesn't exist, we default to adding the file to the project root – both work
             file_root = user_project.root_object.main_group.children.find { |group|
@@ -80,7 +80,7 @@ module PrivacyManifestUtils
 
     def self.get_privacyinfo_file_path(user_project, targets)
         file_refs = targets.flat_map { |target| target.resources_build_phase.files_references }
-        existing_file = file_refs.find { |file_ref| file_ref.path.end_with? "PrivacyInfo.xcprivacy" }
+        existing_file = file_refs.find { |file_ref| file_ref.path&.end_with? "PrivacyInfo.xcprivacy" }
         if existing_file
             return existing_file.real_path
         end
@@ -108,11 +108,12 @@ module PrivacyManifestUtils
                 if File.basename(file_path) == 'PrivacyInfo.xcprivacy'
                     content = Xcodeproj::Plist.read_from_path(file_path)
                     accessed_api_types = content["NSPrivacyAccessedAPITypes"]
-                    accessed_api_types.each do |accessed_api|
-                    api_type = accessed_api["NSPrivacyAccessedAPIType"]
-                    reasons = accessed_api["NSPrivacyAccessedAPITypeReasons"]
-                    used_apis[api_type] ||= []
-                    used_apis[api_type] += reasons
+                    accessed_api_types&.each do |accessed_api|
+                      api_type = accessed_api["NSPrivacyAccessedAPIType"]
+                      reasons = accessed_api["NSPrivacyAccessedAPITypeReasons"]
+                      next unless api_type
+                      used_apis[api_type] ||= []
+                      used_apis[api_type] += reasons
                     end
                 end
                 end

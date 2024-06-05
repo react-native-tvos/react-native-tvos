@@ -17,6 +17,7 @@ const {get} = require('https');
 const {URL} = require('url');
 
 const isNpxRuntime = process.env.npm_lifecycle_event === 'npx';
+const isInitCommand = process.argv[2] === 'init';
 const DEFAULT_REGISTRY_HOST =
   process.env.npm_config_registry ?? 'https://registry.npmjs.org/';
 const HEAD = '1000.0.0';
@@ -44,8 +45,10 @@ async function getLatestVersion(registryHost = DEFAULT_REGISTRY_HOST) {
  * @see https://github.com/react-native-community/discussions-and-proposals/tree/main/proposals/0759-react-native-frameworks.md
  */
 function warnWhenRunningInit() {
-  if (process.argv[2] === 'init') {
-    console.warn('\nRunning: npx @react-native-community/cli init\n');
+  if (isInitCommand) {
+    console.warn(
+      `\nRunning: ${chalk.grey.bold('npx @react-native-community/cli init')}\n`,
+    );
   }
 }
 
@@ -59,7 +62,12 @@ function warnWhenRunningInit() {
  *
  */
 async function main() {
-  if (isNpxRuntime && !process.env.SKIP && currentVersion !== HEAD) {
+  if (
+    isNpxRuntime &&
+    !process.env.SKIP &&
+    currentVersion !== HEAD &&
+    isInitCommand
+  ) {
     try {
       const latest = await getLatestVersion();
       if (latest !== currentVersion) {
