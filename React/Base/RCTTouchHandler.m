@@ -338,7 +338,22 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
 {
   // We fail in favour of other external gesture recognizers.
   // iOS will ask `delegate`'s opinion about this gesture recognizer little bit later.
-  return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
+  
+  // IMPORTANT
+  // return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
+
+  // Why is this override here
+  // https://aferian.atlassian.net/browse/PRDSAPPSTV-751
+  // Somehow on tvOS 17 the focus is lost when we use React-Native-Screens 3.13.1
+    #if TARGET_OS_TV
+        if (@available(tvOS 17.0, *)) {
+            return NO;
+        } else {
+            return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
+        }
+    #else
+      return ![preventingGestureRecognizer.view isDescendantOfView:self.view];
+    #endif
 }
 
 - (void)reset

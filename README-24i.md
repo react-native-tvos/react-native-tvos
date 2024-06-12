@@ -65,6 +65,15 @@ It's important to list all changes we have done in order to keep track of them a
 
 - Changed how snapping to offset is being calculated. Ticket related https://aferian.atlassian.net/browse/PRDSAPPSTV-675. ([link to PR](https://github.com/24i/react-native-tvos/pull/3))
 
+### ./React/Base/RCTTouchHandler.m
+
+- Changed how touch events are bubbling. It affects swipe. 
+This is needed when used in conjuction with "react-native-screens": "3.13.1"
+Remove if updating it.
+Ticket related https://aferian.atlassian.net/browse/PRDSAPPSTV-751
+Ticket related https://aferian.atlassian.net/browse/PRDSAPPSRN-12649
+([link to PR](https://github.com/24i/react-native-tvos/pull/5))
+
 ### ./ReactCommon/yoga/yoga/Yoga.cpp
 
 - Use of bitwise '|' with boolean operands ([link to PR](https://github.com/24i/react-native-tvos/pull/6))
