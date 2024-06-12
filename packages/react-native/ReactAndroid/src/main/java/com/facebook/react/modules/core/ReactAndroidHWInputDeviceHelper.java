@@ -78,6 +78,8 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE, "longPlayPause")
           .put(KeyEvent.KEYCODE_MEDIA_REWIND, "longRewind")
           .put(KeyEvent.KEYCODE_MEDIA_FAST_FORWARD, "longFastForward")
+          .put(KeyEvent.KEYCODE_CHANNEL_DOWN, "longChannelDown")
+          .put(KeyEvent.KEYCODE_CHANNEL_UP, "longChannelUp")
           .build();
 
   /**
