@@ -63,6 +63,21 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_9, "9")
           .put(KeyEvent.KEYCODE_CHANNEL_DOWN, "channelDown")
           .put(KeyEvent.KEYCODE_CHANNEL_UP, "channelUp")
+          .put(KeyEvent.KEYCODE_BOOKMARK, "bookmark")
+          .put(KeyEvent.KEYCODE_AVR_INPUT, "avrInput")
+          .put(KeyEvent.KEYCODE_AVR_POWER, "avrPower")
+          .put(KeyEvent.KEYCODE_DVR, "dvr")
+          .put(KeyEvent.KEYCODE_GUIDE, "guide")
+          .put(KeyEvent.KEYCODE_PROG_RED, "red")
+          .put(KeyEvent.KEYCODE_PROG_GREEN, "green")
+          .put(KeyEvent.KEYCODE_PROG_BLUE, "blue")
+          .put(KeyEvent.KEYCODE_PROG_YELLOW, "yellow")
+          .put(KeyEvent.KEYCODE_STB_INPUT, "stbInput")
+          .put(KeyEvent.KEYCODE_STB_POWER, "stbPower")
+          .put(KeyEvent.KEYCODE_TV, "tv")
+          .put(KeyEvent.KEYCODE_TV_INPUT, "tvInput")
+          .put(KeyEvent.KEYCODE_WINDOW, "window")
+          .put(KeyEvent.KEYCODE_TV_TELETEXT, "teletext")
           .build();
 
   private static final Map<Integer, String> KEY_EVENTS_LONG_PRESS_ACTIONS =
