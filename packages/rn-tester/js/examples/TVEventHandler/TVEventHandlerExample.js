@@ -30,8 +30,13 @@ const {
 const PressableButton = (props: {
   title: string,
   log: (entry: string) => void,
+  functional?: boolean,
 }) => {
-  return (
+  // Set functional=false to have no functional style or children
+  // and test the fix for #744
+  const [userFocused, setUserFocused] = useState(false);
+  const functional = props?.functional ?? true;
+  return functional ? (
     <Pressable
       onFocus={event =>
         props.log(`${props.title} focus action=${event.eventKeyAction}`)
@@ -55,6 +60,25 @@ const PressableButton = (props: {
           </Text>
         );
       }}
+    </Pressable>
+  ) : (
+    <Pressable
+      onFocus={event => {
+        props.log(`${props.title} focus action=${event.eventKeyAction}`);
+        setUserFocused(true);
+      }}
+      onBlur={event => {
+        props.log(`${props.title} blur action=${event.eventKeyAction}`);
+        setUserFocused(false);
+      }}
+      onPress={() =>
+        props.log(`${props.title} pressed action=${event.eventKeyAction}`)
+      }
+      onLongPress={event =>
+        props.log(`${props.title} long press action=${event.eventKeyAction}`)
+      }
+      style={userFocused ? styles.pressableFocused : styles.pressable}>
+      <Text style={styles.pressableText}>{`${props.title} nonfunctional`}</Text>
     </Pressable>
   );
 };
@@ -225,6 +249,11 @@ const TVEventHandlerView: () => React.Node = () => {
   return (
     <View style={styles.container}>
       <PressableButton title="Pressable" log={updatePressableLog} />
+      <PressableButton
+        title="Pressable"
+        log={updatePressableLog}
+        functional={false}
+      />
       <TouchableOpacityButton
         title="TouchableOpacity"
         log={updatePressableLog}
