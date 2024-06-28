@@ -1013,28 +1013,28 @@ static void RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrol
 - (void)swipedUp
 {
     CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
-    NSLog(@"Swiped up to %f", newOffset);
+    // NSLog(@"Swiped up to %f", newOffset);
     [self swipeVerticalScrollToOffset:newOffset];
 }
 
 - (void)swipedDown
 {
     CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
-    NSLog(@"Swiped down to %f", newOffset);
+    // NSLog(@"Swiped down to %f", newOffset);
     [self swipeVerticalScrollToOffset:newOffset];
 }
 
 - (void)swipedLeft
 {
     CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
-    NSLog(@"Swiped left to %f", newOffset);
+    // NSLog(@"Swiped left to %f", newOffset);
     [self swipeHorizontalScrollToOffset:newOffset];
 }
 
 - (void)swipedRight
 {
     CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
-    NSLog(@"Swiped right to %f", newOffset);
+    // NSLog(@"Swiped right to %f", newOffset);
     [self swipeHorizontalScrollToOffset:newOffset];
 }
 

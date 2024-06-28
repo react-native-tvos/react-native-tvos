@@ -1154,7 +1154,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
     }
 
     CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
-    NSLog(@"Swiped up to %f", newOffset);
+    // NSLog(@"Swiped up to %f", newOffset);
     [self scrollToVerticalOffset:newOffset];
 }
 
@@ -1165,7 +1165,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
     }
 
     CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
-    NSLog(@"Swiped down to %f", newOffset);
+    // NSLog(@"Swiped down to %f", newOffset);
     [self scrollToVerticalOffset:newOffset];
 }
 
@@ -1176,7 +1176,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
     }
 
     CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
-    NSLog(@"Swiped left to %f", newOffset);
+    // NSLog(@"Swiped left to %f", newOffset);
     [self scrollToHorizontalOffset:newOffset];
 }
 
@@ -1187,7 +1187,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
     }
 
     CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
-    NSLog(@"Swiped right to %f", newOffset);
+    // NSLog(@"Swiped right to %f", newOffset);
     [self scrollToHorizontalOffset:newOffset];
 }
 
