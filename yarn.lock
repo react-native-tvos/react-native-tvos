@@ -2539,10 +2539,10 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
-"@react-native/virtualized-lists@0.74.84":
-  version "0.74.84"
-  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.74.84.tgz#cf32fffc93072942532c9c81bd7e4c01a2949626"
-  integrity sha512-XcV+qdqt2WihaY4iRm/M1FdSy+18lecU9mRXNmy9YK8g9Th/8XbNtmmKI0qWBx3KxyuXMH/zd0ps05YTrX16kw==
+"@react-native/virtualized-lists@0.74.85":
+  version "0.74.85"
+  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.74.85.tgz#a6178c7168953807b3b610c9f8d208a6f758407d"
+  integrity sha512-jx2Zw0qlZteoQ+0KxRc7s4drsljLBEP534FaNZ950e9+CN9nVkLsV6rigcTjDR8wjKMSBWhKf0C0C3egYz7Ehg==
   dependencies:
     invariant "^2.2.4"
     nullthrows "^1.1.1"
@@ -8158,22 +8158,22 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-"react-native-core@npm:react-native@0.74.2":
-  version "0.74.2"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.74.2.tgz#172e64e4e79861e2b3da99b86999e4a4c55b8321"
-  integrity sha512-EBMBjPPL4/GjHMP4NqsZabT3gI5WU9cSmduABGAGrd8uIcmTZ5F2Ng9k6gFmRm7n8e8CULxDNu98ZpQfBjl7Bw==
+"react-native-core@npm:react-native@0.74.3":
+  version "0.74.3"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.74.3.tgz#eef32cd10afb1f4b26f75b79eefd6b220c63953c"
+  integrity sha512-UFutCC6WEw6HkxlcpQ2BemKqi0JkwrgDchYB5Svi8Sp4Xwt4HA6LGEjNQgZ+3KM44bjyFRpofQym0uh0jACGng==
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
-    "@react-native-community/cli" "13.6.8"
-    "@react-native-community/cli-platform-android" "13.6.8"
-    "@react-native-community/cli-platform-ios" "13.6.8"
-    "@react-native/assets-registry" "0.74.84"
-    "@react-native/codegen" "0.74.84"
-    "@react-native/community-cli-plugin" "0.74.84"
-    "@react-native/gradle-plugin" "0.74.84"
-    "@react-native/js-polyfills" "0.74.84"
-    "@react-native/normalize-colors" "0.74.84"
-    "@react-native/virtualized-lists" "0.74.84"
+    "@react-native-community/cli" "13.6.9"
+    "@react-native-community/cli-platform-android" "13.6.9"
+    "@react-native-community/cli-platform-ios" "13.6.9"
+    "@react-native/assets-registry" "0.74.85"
+    "@react-native/codegen" "0.74.85"
+    "@react-native/community-cli-plugin" "0.74.85"
+    "@react-native/gradle-plugin" "0.74.85"
+    "@react-native/js-polyfills" "0.74.85"
+    "@react-native/normalize-colors" "0.74.85"
+    "@react-native/virtualized-lists" "0.74.85"
     abort-controller "^3.0.0"
     anser "^1.4.9"
     ansi-regex "^5.0.0"
