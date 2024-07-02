@@ -34,7 +34,7 @@ const PressableButton = (props: {
 }) => {
   // Set functional=false to have no functional style or children
   // and test the fix for #744
-  const [userFocused, setUserFocused] = useState(false);
+  const [userFocused, setUserFocused] = React.useState(false);
   const functional = props?.functional ?? true;
   return functional ? (
     <Pressable
@@ -71,7 +71,7 @@ const PressableButton = (props: {
         props.log(`${props.title} blur action=${event.eventKeyAction}`);
         setUserFocused(false);
       }}
-      onPress={() =>
+      onPress={event =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
       onLongPress={event =>
