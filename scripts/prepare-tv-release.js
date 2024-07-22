@@ -82,7 +82,7 @@ let extraHermesDirectoryPath;
   }
 }
 
-const releaseVersion = require('../package.json').version;
+const releaseVersion = require('../packages/react-native/package.json').version;
 
 // generate Maven artifacts in /tmp/maven-local
 

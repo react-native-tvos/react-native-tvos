@@ -25,7 +25,14 @@ import {
   initialNavigationState,
 } from './utils/testerStateUtils';
 import * as React from 'react';
-import {BackHandler, Platform, StyleSheet, useColorScheme, TVEventControl, View} from 'react-native';
+import {
+  BackHandler,
+  Platform,
+  StyleSheet,
+  useColorScheme,
+  TVEventControl,
+  View,
+} from 'react-native';
 
 // RNTester App currently uses in memory storage for storing navigation state
 
@@ -59,8 +66,6 @@ const RNTesterApp = (): React.Node => {
 
   // Setup hardware back button press listener
   React.useEffect(() => {
-    // For RNTester, menu key back navigation needs this enabled
-    TVEventControl.enableGestureHandlersCancelTouches();
     if (activeModuleKey) {
       TVEventControl.enableTVMenuKey();
     } else {
@@ -154,6 +159,15 @@ const RNTesterApp = (): React.Node => {
 
   return (
     <RNTesterThemeContext.Provider value={theme}>
+      {Platform.isTV ? (
+        <View style={styles.tvNavBar}>
+          <RNTesterNavBar
+            screen={screen || Screens.COMPONENTS}
+            isExamplePageOpen={!!activeModule}
+            handleNavBarPress={handleNavBarPress}
+          />
+        </View>
+      ) : null}
       <RNTTitleBar
         title={title}
         theme={theme}
@@ -181,13 +195,15 @@ const RNTesterApp = (): React.Node => {
           />
         )}
       </View>
-      <View style={Platform.isTV ? styles.tvNavBar : styles.bottomNavbar}>
-        <RNTesterNavBar
-          screen={screen || Screens.COMPONENTS}
-          isExamplePageOpen={!!activeModule}
-          handleNavBarPress={handleNavBarPress}
-        />
-      </View>
+      {!Platform.isTV ? (
+        <View style={styles.bottomNavbar}>
+          <RNTesterNavBar
+            screen={screen || Screens.COMPONENTS}
+            isExamplePageOpen={!!activeModule}
+            handleNavBarPress={handleNavBarPress}
+          />
+        </View>
+      ) : null}
     </RNTesterThemeContext.Provider>
   );
 };
@@ -197,14 +213,12 @@ export default RNTesterApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
   },
   tvNavBar: {
-    top: 20,
-    left: '5%',
-    width: '90%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
-    position: 'absolute',
     height: navBarHeight,
   },
   bottomNavbar: {

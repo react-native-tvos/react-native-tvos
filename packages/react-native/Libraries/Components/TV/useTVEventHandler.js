@@ -2,15 +2,16 @@
 import React from 'react';
 import TVEventHandler from './TVEventHandler';
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
+import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
+
 
 const useTVEventHandler = (handleEvent: (evt: TVRemoteEvent) => void) => {
   React.useEffect(() => {
-    const handler: TVEventHandler = new TVEventHandler();
-    handler.enable(null, function(cmp, evt) {
-        handleEvent(evt);
+    const subscription: EventSubscription = TVEventHandler.addListener(function(evt) {
+      handleEvent(evt);
     });
     return () => {
-      handler.disable();
+      subscription.remove();
     };
   }, [handleEvent]);
 };

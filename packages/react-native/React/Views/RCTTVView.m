@@ -18,6 +18,7 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 #import <React/RCTUIManager.h>
+#import <React/RCTTVNavigationEventNotification.h>
 
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
@@ -75,7 +76,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)setIsTVSelectable:(BOOL)isTVSelectable
 {
   self->_isTVSelectable = isTVSelectable;
-  if (isTVSelectable) {
+  if (isTVSelectable && ![self isTVFocusGuide]) {
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                  action:@selector(handleSelect:)];
     recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
@@ -98,7 +99,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handleSelect:(__unused UIGestureRecognizer *)r
+- (void)handleSelect:(UIGestureRecognizer *)r
 {
   if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
     float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
@@ -133,18 +134,28 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  if (r.state == UIGestureRecognizerStateBegan) {
     [self sendLongSelectNotification:r];
-  }
+}
+
+- (BOOL)isTVFocusGuide
+{
+  return self.focusGuide != nil;
 }
 
 - (BOOL)isUserInteractionEnabled
 {
+  if ([self isTVFocusGuide]) {
+    return (self.isTVSelectable);
+  }
   return YES;
 }
 
 - (BOOL)canBecomeFocused
 {
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
+
   return (self.isTVSelectable);
 }
 
@@ -311,7 +322,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [self handleFocusGuide];
   }
     
-  if (context.nextFocusedView == self && self.isTVSelectable ) {
+  if (context.nextFocusedView == self && ![self isTVFocusGuide] && self.isTVSelectable ) {
     [self becomeFirstResponder];
     [self enableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
@@ -336,6 +347,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 //
 - (void)enableDirectionalFocusGuides
 {
+  if (!self.isFocused) {
+    return;
+  }
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
@@ -419,32 +433,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"focus"];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"blur"];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"select"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"longSelect"];
-}
-
-- (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{
-                                                          @"eventType":eventType,
-                                                          @"tag":self.reactTag,
-                                                          @"target":self.reactTag
-                                                      }];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:self.reactTag target:self.reactTag];
 }
 
 - (RCTTVView *)getViewById:(NSNumber *)viewId {
@@ -455,18 +459,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
 - (void)setNextFocusUp:(NSNumber *)nextFocusUp {
   self->_nextFocusUp = [self getViewById: nextFocusUp];
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
   self->_nextFocusDown = [self getViewById: nextFocusDown];
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusLeft:(NSNumber *)nextFocusLeft {
   self->_nextFocusLeft = [self getViewById: nextFocusLeft];
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
   self->_nextFocusRight = [self getViewById: nextFocusRight];
+  [self enableDirectionalFocusGuides];
 }
 
 - (void)setPreferredFocus:(BOOL)hasTVPreferredFocus

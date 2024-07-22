@@ -16,38 +16,30 @@ import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
 import NativeTVNavigationEventEmitter from './NativeTVNavigationEventEmitter';
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
-class TVEventHandler {
-  __nativeTVNavigationEventListener: ?EventSubscription = null;
-  __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
+let __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
 
-  enable(component: ?any, callback: Function): void {
+const TVEventHandler = {
+  addListener: (callback: Function) => {
     if (Platform.OS === 'ios' && !NativeTVNavigationEventEmitter) {
       return;
     }
-
-    this.__nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
-      NativeTVNavigationEventEmitter,
-    );
-    this.__nativeTVNavigationEventListener = this.__nativeTVNavigationEventEmitter.addListener(
-      // $FlowFixMe[prop-missing]
-      'onHWKeyEvent',
-      data => {
-        if (callback) {
-          callback(component, data);
-        }
-      },
-    );
-  }
-
-  disable(): void {
-    if (this.__nativeTVNavigationEventListener) {
-      this.__nativeTVNavigationEventListener.remove();
-      delete this.__nativeTVNavigationEventListener;
+    if (!__nativeTVNavigationEventEmitter) {
+      __nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
+        NativeTVNavigationEventEmitter,
+      );
     }
-    if (this.__nativeTVNavigationEventEmitter) {
-      delete this.__nativeTVNavigationEventEmitter;
-    }
-  }
-}
+    const subscription: EventSubscription =
+      __nativeTVNavigationEventEmitter.addListener(
+        // $FlowFixMe[prop-missing]
+        'onHWKeyEvent',
+        data => {
+          if (callback) {
+            callback(data);
+          }
+        },
+      );
+    return subscription;
+  },
+};
 
 module.exports = TVEventHandler;

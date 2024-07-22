@@ -328,17 +328,18 @@ class TouchableOpacity extends React.Component<Props, State> {
           }
         },
         onPress: event => {
-          if (this.props.onPress != null && Platform.OS !== 'android') {
+          if (this.props.onPress != null) {
             this.props.onPress(event);
           }
         },
         onLongPress: event => {
-          if (this.props.onLongPress != null && Platform.OS !== 'android') {
+          if (this.props.onLongPress != null) {
             this.props.onLongPress(event);
           }
         },
       });
     }
+    this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {

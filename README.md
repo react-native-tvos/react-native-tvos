@@ -59,12 +59,12 @@ yarn create react-native-app TestApp --template https://github.com/react-native-
 cd TestApp
 # Now build and start the app in the tvOS Simulator - this will only work on a macOS machine.
 # This command can also be run via "yarn tvos".
-npx expo run:ios --scheme MyApp-tvOS --device "Apple TV"
+npx expo run:ios --scheme TestApp-tvOS --device "Apple TV"
 # You can also build and start the app on an iOS phone simulator.
 # This command can also be run via "yarn ios".
 npx expo run:ios
 # or specify a simulator:
-npx expo run:ios --scheme MyApp --device "iPhone 15"
+npx expo run:ios --scheme TestApp --device "iPhone 15"
 # This command builds and starts the app in an Android TV emulator or a phone emulator (needs to be created in advance).
 # This command can also be run via "yarn android".
 npx expo run:android --device tv_api_31
@@ -202,18 +202,29 @@ class Game2048 extends React.Component {
   - `enableTVPanGesture`/`disableTVPanGesture`: Methods to enable and disable detection of finger touches that pan across the touch surface of the Siri remote. See `TVEventHandlerExample` in the `RNTester` app for a demo.
   - `enableGestureHandlersCancelTouches`/`disableGestureHandlersCancelTouches`: Methods to turn on and turn off cancellation of touches by the gesture handlers in `RCTTVRemoteHandler` (see #366). Cancellation of touches is turned on (enabled) by default in 0.69 and earlier releases.
 
+- Accessibility: We have an additional `accessibilityFocus` [accessibility action](https://reactnative.dev/docs/accessibility#accessibility-actions) on Android that you can use for detecting focus changes on every *accessible* element (like a regular `Text`) when `TalkBack` is enabled.
+
 - _TVFocusGuideView_: This component provides support for Apple's `UIFocusGuide` API and is implemented in the same way for Android TV, to help ensure that focusable controls can be navigated to, even if they are not directly in line with other controls.  An example is provided in `RNTester` that shows two different ways of using this component.
 
-| Prop | Value | Description | 
-|---|---|---|
-| destinations | any[]? | Array of `Component`s to register as destinations of the FocusGuideView |
-| autoFocus | boolean? | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. `destinations` prop takes precedence over this prop when used together. |
-| trapFocus* (Up, Down, Left, Right) | Prevents focus escaping from the container for the given directions. |
+  | Prop | Value | Description | 
+  |---|---|---|
+  | destinations | any[]? | Array of `Component`s to register as destinations of the FocusGuideView |
+  | autoFocus | boolean? | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. `destinations` prop takes precedence over this prop when used together. |
+  | focusable | boolean? | When set to false, this view and all its subviews will be NOT focusable. |
+  | trapFocus* (Up, Down, Left, Right) | Prevents focus escaping from the container for the given directions. |
+  
+  More information on the focus handling improvements above can be found in [this article](https://medium.com/xite-engineering/revolutionizing-focus-management-in-tv-applications-with-react-native-10ba69bd90).
+  
+  - _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
+  
+  - _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component wraps ScrollView and uses tvOS-specific native code to allow scrolling using swipe gestures from the remote control.
 
-More information on the focus handling improvements above can be found in [this article](https://medium.com/xite-engineering/revolutionizing-focus-management-in-tv-applications-with-react-native-10ba69bd90).
+- VirtualizedList: We extend `VirtualizedList` to make virtualization work well with focus management in mind. All of the improvements that we made are automatically available to all the VirtualizedList based components such as `FlatList`.
+  - Defaults
+    - VirtualizeList contents are automatically wrapped with a `TVFocusGuideView` with `trapFocus*` properties enabled depending on the orientation of the list. This default makes sure that focus doesn't leave the list accidentally due to a virtualization issue etc. until reaching the beginning or the end of the list.
 
-- _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
+  New Props:
 
-- _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component wraps ScrollView and uses tvOS-specific native code to allow scrolling using swipe gestures from the remote control.
-
-- Accessibility: We have an additional `accessibilityFocus` [accessibility action](https://reactnative.dev/docs/accessibility#accessibility-actions) on Android that you can use for detecting focus changes on every *accessible* element (like a regular `Text`) when `TalkBack` is enabled.
+  | Prop | Value | Description | 
+  |---|---|---|
+  | additionalRenderRegions | {first: number; last: number;}[]? | Array of `RenderRegions` that allows you to define regions in the list that are not subject to virtualization, ensuring they are always rendered. This is particularly useful for preventing blank areas in critical parts of the list. These regions are rendered lazily after the initial render and are specified as an array of objects, each with `first` and `last` indices marking the beginning and end of the non-virtualized region based on index. See the [feature proposal](https://github.com/react-native-tvos/react-native-tvos/discussions/663) for more context. |

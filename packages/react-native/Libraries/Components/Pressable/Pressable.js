@@ -388,19 +388,15 @@ function Pressable(props: Props, forwardedRef): React.Node {
           setFocused(false);
         }
       }
-      // Use these on tvOS only. Android press events go to onClick() so we don't
-      // need to call onPress() again here
-      if (Platform.isTVOS) {
-        // $FlowFixMe[prop-missing]
-        if (focused && evt.eventType === 'select') {
-          // $FlowFixMe[incompatible-exact]
-          onPress && onPress(evt);
-        }
-        // $FlowFixMe[prop-missing]
-        if (focused && evt.eventType === 'longSelect') {
-          // $FlowFixMe[incompatible-exact]
-          onLongPress && onLongPress(evt);
-        }
+      // $FlowFixMe[prop-missing]
+      if (focused && evt.eventType === 'select') {
+        // $FlowFixMe[incompatible-exact]
+        onPress && onPress(evt);
+      }
+      // $FlowFixMe[prop-missing]
+      if (focused && evt.eventType === 'longSelect') {
+        // $FlowFixMe[incompatible-exact]
+        onLongPress && onLongPress(evt);
       }
     },
     [focused, onBlur, onFocus, onLongPress, onPress, focusable, isTVSelectable],
@@ -411,12 +407,12 @@ function Pressable(props: Props, forwardedRef): React.Node {
       return;
     }
     // $FlowFixMe[prop-missing]
-    const viewTag = viewRef?.current?._nativeTag;
+    const viewTag = tagForComponentOrHandle(viewRef?.current);
     tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
     return () => {
       tvFocusEventHandler.unregister(viewTag);
     };
-  }, [pressableTVFocusEventHandler]);
+  }, [pressableTVFocusEventHandler, viewRef]);
 
   return (
     <View

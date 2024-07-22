@@ -19,6 +19,9 @@
 #import <React/RCTLog.h>
 
 #import <React/RCTRootComponentView.h>
+#if TARGET_OS_TV
+#import <React/RCTTVNavigationEventNotification.h>
+#endif
 
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>
@@ -45,7 +48,7 @@ using namespace facebook::react;
 
 @implementation RCTViewComponentView {
   UIColor *_backgroundColor;
-  CALayer *_borderLayer;
+  __weak CALayer *_borderLayer;
   BOOL _needsInvalidateLayer;
   BOOL _isJSResponder;
   BOOL _removeClippedSubviews;
@@ -237,35 +240,25 @@ using namespace facebook::react;
 
 - (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"focus"];
+    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
-    [self sendNotificationWithEventType:@"blur"];
+    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
 {
-    [self sendNotificationWithEventType:@"select"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
 {
-  [self sendNotificationWithEventType:@"longSelect"];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendNotificationWithEventType:(NSString * __nonnull)eventType
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTTVNavigationEventNotification"
-                                                      object:@{
-                                                          @"eventType":eventType,
-                                                          @"tag":@([self tag]),
-                                                          @"target":@([self tag])
-                                                      }];
-}
-
-- (void)handleSelect:(__unused UIGestureRecognizer *)r
+- (void)handleSelect:(UIGestureRecognizer *)r
 {
   if (_tvParallaxProperties.enabled == YES) {
     float magnification = _tvParallaxProperties.magnification;
@@ -300,9 +293,7 @@ using namespace facebook::react;
 
 - (void)handleLongSelect:(UIGestureRecognizer *)r
 {
-  if (r.state == UIGestureRecognizerStateBegan) {
     [self sendLongSelectNotification:r];
-  }
 }
 
 - (void)addParallaxMotionEffects
@@ -415,13 +406,29 @@ using namespace facebook::react;
 }
 
 
+- (BOOL)isTVFocusGuide
+{
+  #if TARGET_OS_TV
+    return self.focusGuide != nil;
+  #endif
+  
+  return NO;
+}
+
+
 - (BOOL)isUserInteractionEnabled
 {
-    return YES;
+  if ([self isTVFocusGuide]) {
+    return _props->isTVSelectable;
+  }
+  return YES;
 }
 
 - (BOOL)canBecomeFocused
 {
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
   return _props->isTVSelectable;
 }
 
@@ -433,6 +440,9 @@ using namespace facebook::react;
 //
 - (void)enableDirectionalFocusGuides
 {
+  if (!self.isFocused) {
+    return;
+  }
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
@@ -545,7 +555,7 @@ using namespace facebook::react;
       [self handleFocusGuide];
     }
 
-    if (context.nextFocusedView == self && self.isUserInteractionEnabled ) {
+    if (context.nextFocusedView == self && self.isUserInteractionEnabled && ![self isTVFocusGuide]) {
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
@@ -895,7 +905,7 @@ using namespace facebook::react;
 #if TARGET_OS_TV
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
-    if (newViewProps.isTVSelectable) {
+    if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
       UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                    action:@selector(handleSelect:)];
       recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
@@ -942,6 +952,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusUp.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusUp = nil;
     }
@@ -951,6 +962,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusDown.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusDown = nil;
     }
@@ -960,6 +972,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusLeft.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusLeft = nil;
     }
@@ -969,6 +982,7 @@ using namespace facebook::react;
     if (newViewProps.nextFocusRight.has_value()) {
       UIView *rootView = [self containingRootView];
       _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
+      [self enableDirectionalFocusGuides];
     } else {
       _nextFocusRight = nil;
     }
@@ -1013,9 +1027,7 @@ using namespace facebook::react;
   _layoutMetrics = layoutMetrics;
   _needsInvalidateLayer = YES;
 
-  if (_borderLayer) {
-    _borderLayer.frame = self.layer.bounds;
-  }
+  _borderLayer.frame = self.layer.bounds;
 
   if (_contentView) {
     _contentView.frame = RCTCGRectFromRect(_layoutMetrics.getContentFrame());
@@ -1232,10 +1244,7 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
 
   if (useCoreAnimationBorderRendering) {
     layer.mask = nil;
-    if (_borderLayer) {
-      [_borderLayer removeFromSuperlayer];
-      _borderLayer = nil;
-    }
+    [_borderLayer removeFromSuperlayer];
 
     layer.borderWidth = (CGFloat)borderMetrics.borderWidths.left;
     CGColorRef borderColor = RCTCreateCGColorRefFromSharedColor(borderMetrics.borderColors.left);
@@ -1248,11 +1257,12 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
     layer.backgroundColor = _backgroundColor.CGColor;
   } else {
     if (!_borderLayer) {
-      _borderLayer = [CALayer new];
-      _borderLayer.zPosition = -1024.0f;
-      _borderLayer.frame = layer.bounds;
-      _borderLayer.magnificationFilter = kCAFilterNearest;
-      [layer addSublayer:_borderLayer];
+      CALayer *borderLayer = [CALayer new];
+      borderLayer.zPosition = -1024.0f;
+      borderLayer.frame = layer.bounds;
+      borderLayer.magnificationFilter = kCAFilterNearest;
+      [layer addSublayer:borderLayer];
+      _borderLayer = borderLayer;
     }
 
     layer.backgroundColor = nil;
@@ -1292,6 +1302,10 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
         _borderLayer.contentsCenter = CGRect{CGPoint{0.0, 0.0}, CGSize{1.0, 1.0}};
       }
     }
+
+    // If mutations are applied inside of Animation block, it may cause _borderLayer to be animated.
+    // To stop that, imperatively remove all animations from _borderLayer.
+    [_borderLayer removeAllAnimations];
 
     // Stage 2.5. Custom Clipping Mask
     CAShapeLayer *maskLayer = nil;

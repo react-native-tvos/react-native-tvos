@@ -13,6 +13,7 @@
 const React = require('react');
 
 const {
+  Dimensions,
   TVTextScrollView,
   StyleSheet,
   Text,
@@ -21,6 +22,9 @@ const {
 } = require('react-native');
 
 import type {ViewStyleProp} from '../../../../../Libraries/StyleSheet/StyleSheet';
+
+const screenHeight = Dimensions.get('window').height;
+const scale = screenHeight / 1080;
 
 exports.displayName = 'TVTextScrollView';
 exports.title = '<TVTextScrollView> with large text blocks';
@@ -31,7 +35,7 @@ exports.examples = [
     title: '<TVTextScrollView> with long text on TV platforms\n',
     description:
       'Ensure that TV platforms can scroll through a single block of text that is greater than the screen height',
-    render: function(): React.Node {
+    render: function (): React.Node {
       class BigTextBlock extends React.Component<
         {},
         {
@@ -59,10 +63,11 @@ exports.examples = [
           return (
             <View>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.rowLabel}>Scroll duration:</Text>
+                <Text style={styles.itemText}>Scroll duration:</Text>
                 {scrollDurations.map((s, i) => {
                   return (
                     <Button
+                      key={i}
                       selected={this.state.scrollDurationIndex === i}
                       label={scrollDurationLabels[i]}
                       onPress={() => {
@@ -75,12 +80,13 @@ exports.examples = [
                 })}
               </View>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.rowLabel}>
+                <Text style={styles.itemText}>
                   Page size (scroll distance per swipe):
                 </Text>
                 {pageSizes.map((s, i) => {
                   return (
                     <Button
+                      key={i}
                       selected={this.state.pageSizeIndex === i}
                       label={pageSizeLabels[i]}
                       onPress={() => {
@@ -168,7 +174,12 @@ exports.examples = [
           );
         }
       }
-      return <BigTextBlock />;
+      return (
+        <View>
+          <View style={{height: 400 * scale}} />
+          <BigTextBlock />
+        </View>
+      );
     },
   },
 ];
@@ -212,7 +223,7 @@ const Button = ({label, onPress, selected}) => (
     activeOpacity={0.5}
     tvParallaxProperties={{pressMagnification: 1.1}}
     onPress={onPress}>
-    <Text>{label}</Text>
+    <Text style={styles.itemText}>{label}</Text>
   </TouchableOpacity>
 );
 

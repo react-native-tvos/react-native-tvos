@@ -312,8 +312,9 @@ def react_native_post_install(
   ReactNativePodsUtils.set_node_modules_user_settings(installer, react_native_path)
   ReactNativePodsUtils.apply_flags_for_fabric(installer, fabric_enabled: fabric_enabled)
   ReactNativePodsUtils.apply_xcode_15_patch(installer)
-  ReactNativePodsUtils.apply_ats_config(installer)
   ReactNativePodsUtils.updateOSDeploymentTarget(installer)
+  ReactNativePodsUtils.fix_flipper_for_xcode_15_3(installer)
+  ReactNativePodsUtils.add_privacy_manifest_if_needed(installer)
 
   NewArchitectureHelper.set_clang_cxx_language_standard_if_needed(installer)
   NewArchitectureHelper.modify_flags_for_new_architecture(installer, NewArchitectureHelper.new_arch_enabled)

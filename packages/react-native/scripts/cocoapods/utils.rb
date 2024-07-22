@@ -86,6 +86,27 @@ class ReactNativePodsUtils
         end
     end
 
+    def self.fix_flipper_for_xcode_15_3(installer)
+        installer.pods_project.targets.each do |target|
+            if target.name == 'Flipper'
+                file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
+                if !File.exist?(file_path)
+                    return
+                end
+
+                contents = File.read(file_path)
+                if contents.include?('#include <functional>')
+                    return
+                end
+                mod_content = contents.gsub("#pragma once", "#pragma once\n#include <functional>")
+                File.chmod(0755, file_path)
+                File.open(file_path, 'w') do |file|
+                    file.puts(mod_content)
+                end
+            end
+        end
+    end
+
     def self.set_use_hermes_build_setting(installer, hermes_enabled)
         Pod::UI.puts("Setting USE_HERMES build settings")
         projects = self.extract_projects(installer)
@@ -162,7 +183,7 @@ class ReactNativePodsUtils
             project.build_configurations.each do |config|
                 # fix for weak linking
                 self.safe_init(config, other_ld_flags_key)
-                if self.is_using_xcode15_or_greater(:xcodebuild_manager => xcodebuild_manager)
+                if self.is_using_xcode15_0(:xcodebuild_manager => xcodebuild_manager)
                     self.add_value_to_setting_if_missing(config, other_ld_flags_key, xcode15_compatibility_flags)
                 else
                     self.remove_value_to_setting_if_present(config, other_ld_flags_key, xcode15_compatibility_flags)
@@ -188,7 +209,7 @@ class ReactNativePodsUtils
         installer.target_installation_results.pod_target_installation_results.each do |pod_name, target_installation_result|
             if pod_name.to_s == target_pod_name
                 target_installation_result.native_target.build_configurations.each do |config|
-                        if configuration == nil || (configuration != nil && configuration == config.name)
+                        if configuration == nil || (configuration != nil && config.name.include?(configuration))
                             config.build_settings[settings_name] ||= '$(inherited) '
                             config.build_settings[settings_name] << settings_value
                         end
@@ -391,7 +412,7 @@ class ReactNativePodsUtils
         end
     end
 
-    def self.is_using_xcode15_or_greater(xcodebuild_manager: Xcodebuild)
+    def self.is_using_xcode15_0(xcodebuild_manager: Xcodebuild)
         xcodebuild_version = xcodebuild_manager.version
 
         # The output of xcodebuild -version is something like
@@ -402,7 +423,8 @@ class ReactNativePodsUtils
         regex = /(\d+)\.(\d+)(?:\.(\d+))?/
         if match_data = xcodebuild_version.match(regex)
             major = match_data[1].to_i
-            return major >= 15
+            minor = match_data[2].to_i
+            return major == 15 && minor == 0
         end
 
         return false
@@ -542,41 +564,42 @@ class ReactNativePodsUtils
         ReactNativePodsUtils.update_header_paths_if_depends_on(target_installation_result, "React-ImageManager", header_search_paths)
     end
 
-    def self.get_plist_paths_from(user_project)
-        info_plists = user_project
-          .files
-          .select { |p|
-            p.name&.end_with?('Info.plist')
-          }
-        return info_plists
-      end
-
-    def self.update_ats_in_plist(plistPaths, parent)
-        plistPaths.each do |plistPath|
-            fullPlistPath = File.join(parent, plistPath.path)
-            plist = Xcodeproj::Plist.read_from_path(fullPlistPath)
-            ats_configs = {
-                "NSAllowsArbitraryLoads" => false,
-                "NSAllowsLocalNetworking" => true,
+    def self.get_privacy_manifest_paths_from(user_project)
+        privacy_manifests = user_project
+            .files
+            .select { |p|
+                p.path&.end_with?('PrivacyInfo.xcprivacy')
             }
-            if plist.nil?
-                plist = {
-                    "NSAppTransportSecurity" => ats_configs
-                }
-            else
-                plist["NSAppTransportSecurity"] ||= {}
-                plist["NSAppTransportSecurity"] = plist["NSAppTransportSecurity"].merge(ats_configs)
-            end
-            Xcodeproj::Plist.write_to_path(plist, fullPlistPath)
-        end
+        return privacy_manifests
     end
 
-    def self.apply_ats_config(installer)
+    def self.add_privacy_manifest_if_needed(installer)
         user_project = installer.aggregate_targets
                     .map{ |t| t.user_project }
                     .first
-        plistPaths = self.get_plist_paths_from(user_project)
-        self.update_ats_in_plist(plistPaths, user_project.path.parent)
+        privacy_manifest = self.get_privacy_manifest_paths_from(user_project).first
+        if privacy_manifest.nil?
+            file_timestamp_reason = {
+                "NSPrivacyAccessedAPIType" => "NSPrivacyAccessedAPICategoryFileTimestamp",
+                "NSPrivacyAccessedAPITypeReasons" => ["C617.1"],
+            }
+            user_defaults_reason = {
+                "NSPrivacyAccessedAPIType" => "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons" => ["CA92.1"],
+            }
+            boot_time_reason = {
+                "NSPrivacyAccessedAPIType" => "NSPrivacyAccessedAPICategorySystemBootTime",
+                "NSPrivacyAccessedAPITypeReasons" => ["35F9.1"],
+            }
+            privacy_manifest = {
+                "NSPrivacyCollectedDataTypes" => [],
+                "NSPrivacyTracking" => false,
+                "NSPrivacyAccessedAPITypes" => [file_timestamp_reason, user_defaults_reason, boot_time_reason]
+            }
+            path = File.join(user_project.path.parent, "PrivacyInfo.xcprivacy")
+            Xcodeproj::Plist.write_to_path(privacy_manifest, path)
+            Pod::UI.puts "Your app does not have a privacy manifest! A template has been generated containing Required Reasons API usage in the core React Native library. Please add the PrivacyInfo.xcprivacy file to your project and complete data use, tracking and any additional required reasons your app is using according to Apple's guidance: https://developer.apple.com/.../privacy_manifest_files. Then, you will need to manually add this file to your project in Xcode.".red
+        end
     end
 
     def self.react_native_pods
