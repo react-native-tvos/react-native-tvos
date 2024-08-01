@@ -6,7 +6,7 @@ declare module 'react-native' {
   /**
    * Android TV only prop
    */
-  tvFocusable?: number | undefined,
+  tvFocusable?: boolean | undefined,
   /**
    * TV next focus down (see documentation for the View component).
    */
