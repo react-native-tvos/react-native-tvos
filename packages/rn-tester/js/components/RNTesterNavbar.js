@@ -12,7 +12,8 @@ import type {RNTesterTheme} from './RNTesterTheme';
 
 import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
-import {Image, Platform, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Platform, Pressable, StyleSheet, Text, View, TVFocusGuideView} from 'react-native';
+
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */
@@ -26,6 +27,7 @@ const NavbarButton = ({
   handlePress,
   iconStyle,
 }) => {
+  
   return (
     <Pressable
       testID={testID}
@@ -36,7 +38,8 @@ const NavbarButton = ({
           <View
             style={[
               styles.pressableContent,
-              focused || isActive ? styles.activeBar : null,
+              focused ? styles.focusedBar : null,
+              isActive ? styles.activeBar : null,
             ]}
             collapsable={false}>
             <Image
@@ -112,7 +115,7 @@ const RNTesterNavbar = ({
   const isComponentActive = screen === 'components' && !isExamplePageOpen;
 
   return (
-    <View>
+    <TVFocusGuideView autoFocus>
       <View style={styles.buttonContainer}>
         <ComponentTab
           isComponentActive={isComponentActive}
@@ -125,7 +128,7 @@ const RNTesterNavbar = ({
           theme={theme}
         />
       </View>
-    </View>
+    </TVFocusGuideView>
   );
 };
 
@@ -171,6 +174,9 @@ const styles = StyleSheet.create({
   },
   inactiveText: {
     color: '#B1B4BA',
+  },
+  focusedBar: {
+    backgroundColor: '#DDDDDD',
   },
   activeBar: {
     borderTopWidth: 2,
