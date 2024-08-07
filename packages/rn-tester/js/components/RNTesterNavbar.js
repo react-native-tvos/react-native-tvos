@@ -12,7 +12,7 @@ import type {RNTesterTheme} from './RNTesterTheme';
 
 import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
-import {Image, Platform, Pressable, StyleSheet, Text, View, TVFocusGuideView} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, TVFocusGuideView, View} from 'react-native';
 
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
