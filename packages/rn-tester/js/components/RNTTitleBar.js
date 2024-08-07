@@ -43,7 +43,7 @@ const HeaderIOS = ({
             <RNTesterDocumentationURL documentationURL={documentationURL} />
           )}
         </View>
-        {onBack != null && (
+        {!Platform.isTV && onBack != null && (
           <View>
             <Button
               title="Back"
