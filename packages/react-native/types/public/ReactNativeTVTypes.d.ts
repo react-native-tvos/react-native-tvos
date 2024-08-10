@@ -4,6 +4,10 @@ import type { View, ScrollViewProps, HostComponent, TVParallaxProperties, EventS
 declare module 'react-native' {
   interface ViewProps {
   /**
+   * Android TV only prop
+   */
+  tvFocusable?: boolean | undefined,
+  /**
    * TV next focus down (see documentation for the View component).
    */
   nextFocusDown?: number | undefined,
