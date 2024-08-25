@@ -543,6 +543,11 @@ export default class Pressability {
           return;
         }
 
+        // Remove spurious onClick events with empty event object generated on Android TV
+        if (Platform.isTV && !event?.eventType) {
+          return;
+        }
+
         const {onPress, disabled} = this._config;
         if (onPress != null && disabled !== true) {
           onPress(event);

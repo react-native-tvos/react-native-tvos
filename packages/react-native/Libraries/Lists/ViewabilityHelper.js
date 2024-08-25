@@ -14,11 +14,11 @@ export type {
   ViewToken,
   ViewabilityConfig,
   ViewabilityConfigCallbackPair,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 
-import {typeof ViewabilityHelper as ViewabilityHelperType} from '@react-native/virtualized-lists';
+import {typeof ViewabilityHelper as ViewabilityHelperType} from '@react-native-tvos/virtualized-lists';
 
 const ViewabilityHelper: ViewabilityHelperType =
-  require('@react-native/virtualized-lists').ViewabilityHelper;
+  require('@react-native-tvos/virtualized-lists').ViewabilityHelper;
 
 module.exports = ViewabilityHelper;

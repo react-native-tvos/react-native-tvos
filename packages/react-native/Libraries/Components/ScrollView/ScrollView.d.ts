@@ -528,6 +528,13 @@ export interface ScrollViewPropsIOS {
    * The current scale of the scroll view content. The default value is 1.0.
    */
   zoomScale?: number | undefined;
+
+  /**
+   * (TvOS only)
+   * Defines if UIScrollView index should be shown when fast scrolling.
+   * Defaults to true.
+   */
+  showsScrollIndex?: boolean;
 }
 
 export interface ScrollViewPropsAndroid {
