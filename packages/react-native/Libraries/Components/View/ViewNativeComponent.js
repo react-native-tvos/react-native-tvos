@@ -117,10 +117,21 @@ interface NativeCommands {
     viewRef: React.ElementRef<HostComponent<mixed>>,
     pressed: boolean,
   ) => void;
+  // Focus Guide API
+  +setDestinations: (
+    viewRef: React.ElementRef<HostComponent<mixed>>,
+    destinations: Array<number>, // Node handles are basically integers
+  ) => void;
+  +requestTVFocus: (viewRef: React.ElementRef<HostComponent<mixed>>) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-  supportedCommands: ['hotspotUpdate', 'setPressed'],
+  supportedCommands: [
+    'hotspotUpdate',
+    'setPressed',
+    'setDestinations',
+    'requestTVFocus',
+  ],
 });
 
 export default ViewNativeComponent;
