@@ -20,8 +20,11 @@
 
 using namespace facebook::react;
 
+#if TARGET_OS_TV
+@interface RCTActionSheetManager ()
+#else
 @interface RCTActionSheetManager () <NativeActionSheetManagerSpec>
-
+#endif
 @property (nonatomic, strong) NSMutableArray<UIAlertController *> *alertControllers;
 
 @end
@@ -46,13 +49,15 @@ RCT_EXPORT_MODULE()
 
 @synthesize viewRegistry_DEPRECATED = _viewRegistry_DEPRECATED;
 
+#if TARGET_OS_TV
+#else
+
 - (void)presentViewController:(UIViewController *)alertController
        onParentViewController:(UIViewController *)parentViewController
                 anchorViewTag:(NSNumber *)anchorViewTag
 {
   alertController.modalPresentationStyle = UIModalPresentationPopover;
   UIView *sourceView = parentViewController.view;
-
   if (anchorViewTag) {
     sourceView = [self.viewRegistry_DEPRECATED viewForReactTag:anchorViewTag];
   } else {
@@ -286,6 +291,8 @@ RCT_EXPORT_METHOD(showShareActionSheetWithOptions
 {
   return std::make_shared<NativeActionSheetManagerSpecJSI>(params);
 }
+
+#endif // TARGET_OS_TV
 
 @end
 
