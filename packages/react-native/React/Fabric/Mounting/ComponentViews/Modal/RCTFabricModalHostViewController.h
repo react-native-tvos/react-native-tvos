@@ -9,12 +9,18 @@
 
 @protocol RCTFabricModalHostViewControllerDelegate <NSObject>
 - (void)boundsDidChange:(CGRect)newBounds;
+#if TARGET_OS_TV
+- (void)enableEventHandlers;
+- (void)disableEventHandlers;
+#endif
 @end
 
 @interface RCTFabricModalHostViewController : UIViewController
 
 @property (nonatomic, weak) id<RCTFabricModalHostViewControllerDelegate> delegate;
 
+#if !TARGET_OS_TV
 @property (nonatomic, assign) UIInterfaceOrientationMask supportedInterfaceOrientations;
+#endif
 
 @end

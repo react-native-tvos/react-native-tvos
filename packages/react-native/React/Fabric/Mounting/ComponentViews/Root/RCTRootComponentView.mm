@@ -28,6 +28,22 @@ using namespace facebook::react;
   return self;
 }
 
+#if TARGET_OS_TV
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
+  if (self.reactPreferredFocusEnvironments != nil) {
+    NSArray<id<UIFocusEnvironment>> *tempReactPreferredFocusEnvironments = self.reactPreferredFocusEnvironments;
+    self.reactPreferredFocusEnvironments = nil;
+    return tempReactPreferredFocusEnvironments;
+  }
+
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
+    return @[self.reactPreferredFocusedView];
+  }
+  return [super preferredFocusEnvironments];
+}
+#endif
+
+
 #pragma mark - RCTComponentViewProtocol
 
 - (void)prepareForRecycle
