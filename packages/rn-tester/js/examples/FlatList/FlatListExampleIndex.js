@@ -26,6 +26,7 @@ import onViewableItemsChanged_horizontal_waitForInteraction from './FlatList-onV
 import onViewableItemsChanged_horizontal_offScreen from './FlatList-onViewableItemsChanged-horizontal-offScreen';
 import StickyHeadersExample from './FlatList-stickyHeaders';
 import WithSeparatorsExample from './FlatList-withSeparators';
+import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 
 export default ({
   framework: 'React',
@@ -51,5 +52,6 @@ export default ({
     onViewableItemsChanged_horizontal_noWaitForInteraction,
     onViewableItemsChanged_offScreen,
     onViewableItemsChanged_horizontal_offScreen,
+    AdditionalRenderRegionsExample,
   ],
 }: RNTesterModule);
