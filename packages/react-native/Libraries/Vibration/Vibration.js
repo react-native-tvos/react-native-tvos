@@ -9,9 +9,9 @@
  * @jsdoc
  */
 
-import NativeVibration from './NativeVibration';
-
+// import NativeVibration from './NativeVibration';
 const Platform = require('../Utilities/Platform');
+const NativeVibration = require('./NativeVibration');
 
 /**
  * Vibration API
@@ -75,6 +75,9 @@ const Vibration = {
     pattern: number | Array<number> = _default_vibration_length,
     repeat: boolean = false,
   ) {
+    if (Platform.isTV) {
+      return;
+    }
     if (Platform.OS === 'android') {
       if (typeof pattern === 'number') {
         NativeVibration.vibrate(pattern);
@@ -102,6 +105,9 @@ const Vibration = {
    * See https://reactnative.dev/docs/vibration#cancel
    */
   cancel: function () {
+    if (Platform.isTV) {
+      return;
+    }
     if (Platform.OS === 'ios') {
       _vibrating = false;
     } else {
