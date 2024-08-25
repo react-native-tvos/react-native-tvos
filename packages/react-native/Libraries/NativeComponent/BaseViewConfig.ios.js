@@ -10,6 +10,8 @@
 
 import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
+import {validAttributesForTVProps} from './TVViewConfig';
+
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import {
   ConditionallyIgnoredEventHandlers,
@@ -400,6 +402,7 @@ const PlatformBaseViewConfigIos: PartialViewConfigWithoutName = {
   validAttributes: {
     ...validAttributesForNonEventProps,
     ...validAttributesForEventProps,
+    ...validAttributesForTVProps,
   },
 };
 

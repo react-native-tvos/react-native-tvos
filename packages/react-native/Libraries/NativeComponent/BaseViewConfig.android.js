@@ -10,6 +10,8 @@
 
 import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
+import {validAttributesForTVProps} from './TVViewConfig';
+
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import {DynamicallyInjectedByGestureHandler} from './ViewConfigIgnore';
 
@@ -338,6 +340,7 @@ const PlatformBaseViewConfigAndroid: PartialViewConfigWithoutName = {
   validAttributes: {
     ...validAttributesForNonEventProps,
     ...validAttributesForEventProps,
+    ...validAttributesForTVProps,
   },
 };
 

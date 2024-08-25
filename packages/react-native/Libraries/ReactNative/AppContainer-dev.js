@@ -17,8 +17,12 @@ import type {Props} from './AppContainer';
 
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import View from '../Components/View/View';
+import Platform from '../Utilities/Platform';
+/*
+// Stub out DebuggingOverlay from TV for now
 import DebuggingOverlay from '../Debugging/DebuggingOverlay';
 import useSubscribeToDebuggingOverlayRegistry from '../Debugging/useSubscribeToDebuggingOverlayRegistry';
+ */
 import RCTDeviceEventEmitter from '../EventEmitter/RCTDeviceEventEmitter';
 import LogBoxNotificationContainer from '../LogBox/LogBoxNotificationContainer';
 import StyleSheet from '../StyleSheet/StyleSheet';
@@ -96,12 +100,14 @@ const AppContainer = ({
 }: Props): React.Node => {
   const appContainerRootViewRef: AppContainerRootViewRef = React.useRef(null);
   const innerViewRef: InspectedViewRef = React.useRef(null);
+/*
   const debuggingOverlayRef: DebuggingOverlayRef = React.useRef(null);
 
   useSubscribeToDebuggingOverlayRegistry(
     appContainerRootViewRef,
     debuggingOverlayRef,
   );
+ */
 
   const [key, setKey] = useState(0);
   const [shouldRenderInspector, setShouldRenderInspector] = useState(false);
@@ -172,7 +178,7 @@ const AppContainer = ({
         pointerEvents="box-none">
         {innerView}
 
-        <DebuggingOverlay ref={debuggingOverlayRef} />
+        {/* <DebuggingOverlay ref={debuggingOverlayRef} /> */}
 
         {reactDevToolsAgent != null && (
           <ReactDevToolsOverlayDeferred
