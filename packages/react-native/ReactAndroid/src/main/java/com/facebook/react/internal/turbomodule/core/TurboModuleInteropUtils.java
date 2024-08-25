@@ -161,9 +161,12 @@ class TurboModuleInteropUtils {
         || paramClass == Callback.class
         || paramClass == Promise.class
         || paramClass == ReadableMap.class
-        || paramClass == ReadableArray.class
-        || paramClass == Dynamic.class) {
+        || paramClass == ReadableArray.class) {
       return convertClassToJniType(paramClass);
+    }
+
+    if (paramClass == Dynamic.class) {
+      // TODO(T145105887): Output warnings that TurboModules doesn't yet support Dynamic arguments
     }
 
     throw new ParsingException(
