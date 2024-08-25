@@ -20,6 +20,7 @@ import OnStartReachedExample from './FlatList-onStartReached';
 import onViewableItemsChangedExample from './FlatList-onViewableItemsChanged';
 import StickyHeadersExample from './FlatList-stickyHeaders';
 import WithSeparatorsExample from './FlatList-withSeparators';
+import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 
 export default ({
   framework: 'React',
@@ -39,5 +40,6 @@ export default ({
     MultiColumnExample,
     StickyHeadersExample,
     NestedExample,
+    AdditionalRenderRegionsExample,
   ],
 }: RNTesterModule);

@@ -88,15 +88,16 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'ScrollViewIndicatorInsetsExample',
     module: require('../examples/ScrollView/ScrollViewIndicatorInsetsIOSExample'),
-  },
-  {
-    key: 'ScrollViewKeyboardInsetsExample',
-    module: require('../examples/ScrollView/ScrollViewKeyboardInsetsIOSExample'),
+    supportsTVOS: true,
   },
   {
     key: 'SectionListIndex',
     module: require('../examples/SectionList/SectionListIndex'),
-    category: 'ListView',
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVTextScrollViewExample',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
   },
   {
     key: 'StatusBarExample',
@@ -321,6 +322,36 @@ const APIs: Array<RNTesterModuleInfo> = ([
   {
     key: 'XHRExample',
     module: require('../examples/XHR/XHRExample'),
+  },
+  {
+    key: 'TVEventHandlerExample',
+    category: 'TV',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+    supportsTVOS: true,
   },
   {
     key: 'PerformanceApiExample',

@@ -104,6 +104,9 @@ class RNTesterExampleFilter<T> extends React.Component<Props<T>, State> {
     if (this.props.disableSearch) {
       return null;
     }
+    if (Platform.isTV) {
+      return null;
+    }
     return (
       <RNTesterThemeContext.Consumer>
         {theme => {

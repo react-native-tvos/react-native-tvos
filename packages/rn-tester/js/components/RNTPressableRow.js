@@ -45,10 +45,10 @@ export default function RNTPressableRow({
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       accessibilityLabel={label}
-      style={({pressed}) => [
+      style={({pressed, focused}) => [
         styles.row,
-        typeof style === 'function' ? style(pressed) : style,
-        pressed
+        typeof style === 'function' ? style(pressed || focused) : style,
+        pressed || focused
           ? {backgroundColor: theme.SecondarySystemFillColor}
           : {backgroundColor: theme.SecondaryGroupedBackgroundColor},
       ]}
