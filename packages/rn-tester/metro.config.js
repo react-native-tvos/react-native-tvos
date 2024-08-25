@@ -37,6 +37,8 @@ const config = {
     blockList: [/..\/react-native\/sdks\/hermes/],
     extraNodeModules: {
       'react-native': path.resolve(__dirname, '../react-native'),
+      '@react-native-tvos/virtualized-lists': path.resolve(__dirname, '../virtualized-lists'),
+      '@react-native/virtualized-lists': path.resolve(__dirname, '../virtualized-lists'),
     },
   },
 };
