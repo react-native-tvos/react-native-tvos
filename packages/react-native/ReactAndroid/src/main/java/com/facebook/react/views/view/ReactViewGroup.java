@@ -22,11 +22,15 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.view.FocusFinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewStructure;
 import android.view.animation.Animation;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
@@ -70,6 +74,9 @@ import com.facebook.react.uimanager.style.LogicalEdge;
 import com.facebook.react.uimanager.style.Overflow;
 import java.util.List;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
 /**
  * Backing for a React View. Has support for borders, but since borders aren't common, lazy
  * initializes most of the storage needed for them.
@@ -88,6 +95,16 @@ public class ReactViewGroup extends ViewGroup
   private final Rect mOverflowInset = new Rect();
   /* should only be used in {@link #updateClippingToRect} */
   private static final Rect sHelperRect = new Rect();
+
+  private @NonNull int[] focusDestinations = new int[0];
+  private boolean autoFocus = false;
+  private WeakReference<View> lastFocusedElement;
+  private boolean mRecoverFocus = false;
+  private boolean trapFocusUp = false;
+  private boolean trapFocusDown = false;
+  private boolean trapFocusLeft = false;
+  private boolean trapFocusRight = false;
+
 
   /**
    * This listener will be set for child views when removeClippedSubview property is enabled. When
@@ -351,7 +368,7 @@ public class ReactViewGroup extends ViewGroup
   }
 
   /**
-   * @deprecated Use {@link #setBorderRadius(BorderRadiusProp, Float)} instead.
+   * @deprecated Use {@link #setBorderRadius(BorderRadiusProp, LengthPercentage)} instead.
    */
   @Deprecated(since = "0.75.0", forRemoval = true)
   public void setBorderRadius(float borderRadius) {
@@ -359,7 +376,7 @@ public class ReactViewGroup extends ViewGroup
   }
 
   /**
-   * @deprecated Use {@link #setBorderRadius(BorderRadiusProp, Float)} instead.
+   * @deprecated Use {@link #setBorderRadius(BorderRadiusProp, LengthPercentage)} instead.
    */
   @Deprecated(since = "0.75.0", forRemoval = true)
   public void setBorderRadius(float borderRadius, int position) {
@@ -481,6 +498,7 @@ public class ReactViewGroup extends ViewGroup
     Animation animation = child.getAnimation();
     boolean isAnimating = animation != null && !animation.hasEnded();
     if (!intersects && child.getParent() != null && !isAnimating) {
+      recoverFocus(child);
       // We can try saving on invalidate call here as the view that we remove is out of visible area
       // therefore invalidation is not necessary.
       removeViewInLayout(child);
@@ -539,6 +557,83 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public boolean getChildVisibleRect(View child, Rect r, android.graphics.Point offset) {
     return super.getChildVisibleRect(child, r, offset);
+  }
+
+  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+    ArrayList<View> focusables = new ArrayList<View>(0);
+    /**
+     * `addFocusables` is the method used by `FocusFinder` to determine
+     * which elements are `focusable` within the given view.
+     * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
+     * Focus direction (FOCUS_DOWN) doesn't matter at all because
+     * it's not being used by the underlying implementation.
+     *
+     * Here we intentionally call `super` method to bypass `ReactViewGroup`'s
+     * overriden `addFocusables` logic.
+     */
+    super.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL);
+    /**
+     * Depending on ViewGroup's `descendantFocusability` property,
+     * the first element can be the ViewGroup itself.
+     * The other ones on the list can be non-focusable as well.
+     * So, we run a loop till finding the first real focusable element.
+     */
+    if (focusables.size() <= 0) return false;
+
+    View firstFocusableElement = null;
+    Integer index = 0;
+    while (firstFocusableElement == null && index < focusables.size()) {
+      View elem = focusables.get(index);
+      if (elem != viewGroup) {
+        firstFocusableElement = elem;
+        break;
+      }
+      index++;
+    }
+
+    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
+
+    return false;
+  }
+
+  void recoverFocus(View view) {
+    if (!view.hasFocus() || !(view instanceof ReactViewGroup)) return;
+
+    ReactViewGroup parentFocusGuide = findParentFocusGuide(view);
+    if (parentFocusGuide == null) return;
+
+    /**
+     * Making `parentFocusGuide` focusable for a brief time to
+     * temporarily move the focus to it. We do this to prevent
+     * Android from moving the focus to top-left-most element of the screen.
+     */
+    parentFocusGuide.mRecoverFocus = true;
+    parentFocusGuide.setFocusable(true);
+    parentFocusGuide.requestFocus();
+
+    /**
+     * We set a Runnable to wait and make sure every layout related action gets completed
+     * before trying to find a new focus candidate inside the `parentFocusGuide`.
+     */
+    UiThreadUtil.runOnUiThread(
+      new Runnable() {
+        @Override
+        public void run() {
+          /**
+           * Focus can move to an another element while waiting for the next frame.
+           * E.g: An element with `hasTVPreferredFocus` can appear.
+           *
+           * We check here to make sure `parentFocusGuide` still remains the focus
+           * before recovering the focus to make sure we don't accidentally override it.
+           */
+          if (parentFocusGuide.isFocused()) {
+            moveFocusToFirstFocusable(parentFocusGuide);
+          }
+
+          parentFocusGuide.setFocusable(false);
+          parentFocusGuide.mRecoverFocus = false;
+        }
+      });
   }
 
   @Override
@@ -618,12 +713,14 @@ public class ReactViewGroup extends ViewGroup
   @Override
   public void removeView(View view) {
     handleRemoveView(view);
+    recoverFocus(view);
     super.removeView(view);
   }
 
   @Override
   public void removeViewAt(int index) {
     handleRemoveView(getChildAt(index));
+    recoverFocus(getChildAt(index));
     super.removeViewAt(index);
   }
 
@@ -1145,5 +1242,214 @@ public class ReactViewGroup extends ViewGroup
     }
 
     setAlpha(0);
+  }
+
+  private View findDestinationView() {
+    for (int focusDestination : focusDestinations) {
+      View childViewWithTag = findViewById(focusDestination);
+      if (childViewWithTag != null) return childViewWithTag;
+      View viewWithTag = getRootView().findViewById(focusDestination);
+      if (viewWithTag != null) return viewWithTag;
+    }
+    return null;
+  }
+
+  private static boolean requestFocusViewOrAncestor(View destination) {
+    View v = destination;
+    while (v != null) {
+      if (v.requestFocus()) {
+        return true;
+      }
+      ViewParent parent = v.getParent();
+      if (parent instanceof View) {
+        v = (View) parent;
+      } else {
+        v = null;
+      }
+    }
+    return false;
+  }
+
+  private boolean isFocusDestinationsSet() {
+    return focusDestinations.length > 0;
+  }
+
+  private boolean isTVFocusGuide() {
+    /**
+     * We don't count a view as `TVFocusGuide` if it has `trapFocus*` props enabled.
+     * The reason is, it's a seperate functionality that has nothing to do with other
+     * TVFocusGuide features that involves heavy focus management. So, the feature
+     * is not directly tied to `TVFocusGuide`.
+     */
+    return isFocusDestinationsSet() || autoFocus;
+  }
+
+  @Nullable
+  private ReactViewGroup findParentFocusGuide(View view) {
+    ViewParent parent = view.getParent();
+
+    while (parent != null) {
+      if (parent instanceof ReactViewGroup) {
+        ReactViewGroup elem = (ReactViewGroup) parent;
+        if (elem.isTVFocusGuide()) return elem;
+      }
+      parent = parent.getParent();
+    }
+
+    return null;
+  }
+
+  /***
+   * This is meant to be used only for TVFocusGuide.
+   * @return View | null
+   */
+  @Nullable
+  private View getFocusedChildOfFocusGuide() {
+    if (!isTVFocusGuide()) return null;
+
+    /*
+     * We can have nested `TVFocusGuide`s, this is a typical scenario.
+     * The problem is, returned element from `getFocusedChild` can be
+     * either a direct `child` of the `TVFocusGuide` or a `descendant` of it.
+     * Let's say if we run `getFocusedChild` for the Root element, it will always
+     * give us an element even though the Root element is not the direct parent
+     * of the focused element.
+     * So, we need to find the closest `TVFocusGuide` to the focused child
+     * to make sure the focused element's closest `TVFocusGuide` is "this" one.
+     */
+    View focusedChild = this.getFocusedChild();
+    if (focusedChild == null) return null;
+
+    ReactViewGroup parentFocusGuide = findParentFocusGuide(focusedChild);
+    if (parentFocusGuide == this) return focusedChild;
+
+    return null;
+  }
+
+  @Override
+  public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+    /**
+     * TVFocusGuides should reveral their children when `mRecoverFocus` is set.
+     * `mRecoverFocus` flag indicates a temporary focus recovery mode it's in which
+     * requires full access to children focusable elements.
+     */
+    if (isTVFocusGuide() && !mRecoverFocus && this.getDescendantFocusability() != ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+      View focusedChild = getFocusedChildOfFocusGuide();
+
+      /*
+       * We only include the view's (TVFocusGuide) itself if it doesn't have a child that currently has the focus.
+       * Otherwise, it means focus is already in the `TVFocusGuide` and all of it's descendants should be included
+       * for focus calculations.
+       */
+      if (focusedChild == null) {
+        views.add(this);
+        return;
+      }
+    }
+
+    super.addFocusables(views, direction, focusableMode);
+  }
+
+  @Override
+  public void requestChildFocus(View child, View focused) {
+    super.requestChildFocus(child, focused);
+
+    if (autoFocus) {
+      lastFocusedElement = new WeakReference<View>(focused);
+    }
+  }
+
+  @Override
+  protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+  }
+
+  @Override
+  public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+    if (!isTVFocusGuide() || mRecoverFocus) {
+      return super.requestFocus(direction, previouslyFocusedRect);
+    }
+
+    if (isFocusDestinationsSet()) {
+      View destination = findDestinationView();
+
+      if (destination != null && requestFocusViewOrAncestor(destination)) {
+        return true;
+      }
+    }
+
+    if (this.autoFocus) {
+      View lastFocusedElem = lastFocusedElement.get();
+
+      if (lastFocusedElem != null) {
+
+        if (lastFocusedElem.isAttachedToWindow()) {
+          lastFocusedElem.requestFocus();
+          return true;
+        }
+
+        /**
+         * `lastFocusedElem` can get detached based on application logic.
+         * If the code reaches here, that means we're dealing with that case.
+         * We should set `lastFocusedElem` to null and let the focus determination
+         * logic below to do its magic and redirect focus to the first element.
+         */
+        lastFocusedElement = new WeakReference<View>(null);
+      }
+
+      // Try moving the focus to the first focusable element otherwise.
+      if (moveFocusToFirstFocusable(this)) {
+        return true;
+      }
+    }
+
+    return super.requestFocus(direction, previouslyFocusedRect);
+  }
+
+  @Override
+  public View focusSearch(View focused, int direction) {
+    /**
+     * FocusSearch recursively goes all the way up to the Root view
+     * and runs `FocusFinder.findNextFocus()` to determine the next focusable.
+     * It finds the next focusable by accounting *every* focusable elements on the screen.
+     *
+     * That is exactly the thing we want to prevent if the view has a `focusTrap` enabled
+     * matching the `direction`. We interrupt `focusSearch` to make the `FocusFinder` run
+     * the algorithm only accounting the children elements of the focus trap.
+     * This ensures that focus will always stay inside the container until trap gets disabled.
+     */
+    if ((trapFocusUp && direction == FOCUS_UP)
+      || (trapFocusDown && direction == FOCUS_DOWN)
+      || (trapFocusLeft && direction == FOCUS_LEFT)
+      || (trapFocusRight && direction == FOCUS_RIGHT)) {
+      return FocusFinder.getInstance().findNextFocus(this, focused, direction);
+    }
+
+    return super.focusSearch(focused, direction);
+  }
+
+  public void setFocusDestinations(@NonNull int[] focusDestinations) {
+    this.focusDestinations = focusDestinations;
+  }
+
+  public void setAutoFocusTV(boolean autoFocus) {
+    this.autoFocus = autoFocus;
+    lastFocusedElement = new WeakReference<View>(null);
+  }
+
+  public void setTrapFocusUp(boolean enabled) {
+    this.trapFocusUp = enabled;
+  }
+
+  public void setTrapFocusDown(boolean enabled) {
+    this.trapFocusDown = enabled;
+  }
+
+  public void setTrapFocusLeft(boolean enabled) {
+    this.trapFocusLeft = enabled;
+  }
+
+  public void setTrapFocusRight(boolean enabled) {
+    this.trapFocusRight = enabled;
   }
 }

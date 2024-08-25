@@ -8,6 +8,7 @@
 package com.facebook.react.views.scroll;
 
 import android.content.Context;
+import android.widget.HorizontalScrollView;
 import androidx.core.view.ViewCompat;
 import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
@@ -19,6 +20,12 @@ import com.facebook.react.views.view.ReactViewGroup;
 public class ReactHorizontalScrollContainerView extends ReactViewGroup {
 
   private int mLayoutDirection;
+  private int mLastWidth = 0;
+  private Listener rtlListener = null;
+
+  public interface Listener {
+    void onLayout();
+  }
 
   public ReactHorizontalScrollContainerView(Context context) {
     super(context);
@@ -64,5 +71,12 @@ public class ReactHorizontalScrollContainerView extends ReactViewGroup {
       setRight(newRight);
       setBottom(bottom);
     }
+  }
+  public int getLastWidth() {
+    return mLastWidth;
+  }
+
+  public void setListener(Listener rtlListener) {
+    this.rtlListener = rtlListener;
   }
 }
