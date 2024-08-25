@@ -15,7 +15,9 @@ plugins {
   alias(libs.plugins.download)
 }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 version = parent?.properties?.get("publishing_version")?.toString()!!
 

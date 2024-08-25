@@ -9,8 +9,13 @@ package com.facebook.react.views.textinput;
 
 import static com.facebook.react.uimanager.UIManagerHelper.getReactContext;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -143,6 +148,8 @@ public class ReactEditText extends AppCompatEditText {
   private static final KeyListener sKeyListener = QwertyKeyListener.getInstanceForFullKeyboard();
   private @Nullable EventDispatcher mEventDispatcher;
 
+  private boolean isKeyboardOpened;
+
   public ReactEditText(Context context) {
     super(context);
     setFocusableInTouchMode(false);
@@ -235,6 +242,23 @@ public class ReactEditText extends AppCompatEditText {
     TextLayoutManager.deleteCachedSpannableForTag(getId());
   }
 
+  // Not currently used, but leaving in as a comment in case it's needed later
+
+  // private boolean isTVDevice() {
+  //   UiModeManager uiModeManager = (UiModeManager) getContext().getSystemService(Context.UI_MODE_SERVICE);
+  //   return uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+  // }
+
+  public void showKeyboard() {
+    isKeyboardOpened = true;
+    showSoftKeyboard();
+  }
+
+  public void hideKeyboard() {
+    isKeyboardOpened = false;
+    hideSoftKeyboard();
+  }
+
   // After the text changes inside an EditText, TextView checks if a layout() has been requested.
   // If it has, it will not scroll the text to the end of the new text inserted, but wait for the
   // next layout() to be called. However, we do not perform a layout() after a requestLayout(), so
@@ -265,6 +289,7 @@ public class ReactEditText extends AppCompatEditText {
         // Disallow parent views to intercept touch events, until we can detect if we should be
         // capturing these touches or not.
         this.getParent().requestDisallowInterceptTouchEvent(true);
+        isKeyboardOpened = !isKeyboardOpened;
         break;
       case MotionEvent.ACTION_MOVE:
         if (mDetectScrollMovement) {
@@ -289,6 +314,9 @@ public class ReactEditText extends AppCompatEditText {
     if (keyCode == KeyEvent.KEYCODE_ENTER && !isMultiline()) {
       hideSoftKeyboard();
       return true;
+    }
+    if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_BACK) {
+      isKeyboardOpened = !isKeyboardOpened;
     }
     return super.onKeyUp(keyCode, event);
   }
@@ -341,6 +369,7 @@ public class ReactEditText extends AppCompatEditText {
   public void clearFocus() {
     setFocusableInTouchMode(false);
     super.clearFocus();
+    isKeyboardOpened = false;
     hideSoftKeyboard();
   }
 
@@ -350,16 +379,22 @@ public class ReactEditText extends AppCompatEditText {
     // is a controlled component, which means its focus is controlled by JS, with two exceptions:
     // autofocus when it's attached to the window, and responding to accessibility events. In both
     // of these cases, we call requestFocusInternal() directly.
+    // Always return true if we are already focused. This is used by android in certain places,
+    // such as text selection.
     return isFocused();
   }
 
   private boolean requestFocusInternal() {
     setFocusableInTouchMode(true);
-    // We must explicitly call this method on the super class; if we call requestFocus() without
-    // any arguments, it will call into the overridden requestFocus(int, Rect) above, which no-ops.
     boolean focused = super.requestFocus(View.FOCUS_DOWN, null);
     if (getShowSoftInputOnFocus()) {
       showSoftKeyboard();
+    } else {
+      if (isKeyboardOpened) {
+        showSoftKeyboard();
+      } else {
+        hideSoftKeyboard();
+      }
     }
     return focused;
   }
@@ -447,6 +482,10 @@ public class ReactEditText extends AppCompatEditText {
     super.onFocusChanged(focused, direction, previouslyFocusedRect);
     if (focused && mSelectionWatcher != null) {
       mSelectionWatcher.onSelectionChanged(getSelectionStart(), getSelectionEnd());
+    }
+
+    if (!focused) {
+      isKeyboardOpened = false;
     }
   }
 
@@ -657,6 +696,7 @@ public class ReactEditText extends AppCompatEditText {
   }
 
   // VisibleForTesting from {@link TextInputEventsTestCase}.
+  @SuppressLint("WrongConstant")
   public void maybeSetText(ReactTextUpdate reactTextUpdate) {
     if (isSecureText() && TextUtils.equals(getText(), reactTextUpdate.getText())) {
       return;
@@ -866,6 +906,27 @@ public class ReactEditText extends AppCompatEditText {
     float lineHeight = mTextAttributes.getEffectiveLineHeight();
     if (!Float.isNaN(lineHeight)) {
       workingText.setSpan(new CustomLineHeightSpan(lineHeight), 0, workingText.length(), spanFlags);
+    }
+  }
+
+  private void stripAbsoluteSizeSpans(SpannableStringBuilder sb) {
+    // We have already set a font size on the EditText itself. We can safely remove sizing spans
+    // which are the same as the set font size, and not otherwise overlapped.
+    final int effectiveFontSize = mTextAttributes.getEffectiveFontSize();
+    ReactAbsoluteSizeSpan[] spans = sb.getSpans(0, sb.length(), ReactAbsoluteSizeSpan.class);
+
+    outerLoop:
+    for (ReactAbsoluteSizeSpan span : spans) {
+      ReactAbsoluteSizeSpan[] overlappingSpans =
+          sb.getSpans(sb.getSpanStart(span), sb.getSpanEnd(span), ReactAbsoluteSizeSpan.class);
+
+      for (ReactAbsoluteSizeSpan overlappingSpan : overlappingSpans) {
+        if (span.getSize() != effectiveFontSize) {
+          continue outerLoop;
+        }
+      }
+
+      sb.removeSpan(span);
     }
   }
 
