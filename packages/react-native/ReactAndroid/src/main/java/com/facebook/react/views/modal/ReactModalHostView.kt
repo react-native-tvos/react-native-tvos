@@ -14,6 +14,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Rect
 import android.os.Build
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -35,6 +36,7 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.annotations.VisibleForTesting
 import com.facebook.react.config.ReactFeatureFlags
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper
 import com.facebook.react.uimanager.JSPointerDispatcher
 import com.facebook.react.uimanager.JSTouchDispatcher
 import com.facebook.react.uimanager.PixelUtil.pxToDp
@@ -45,8 +47,10 @@ import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.views.common.ContextUtils
 import com.facebook.react.views.view.setStatusBarTranslucency
+import com.facebook.react.views.modal.ReactModalHostView.DialogRootViewGroup
 import com.facebook.react.views.view.ReactViewGroup
 import java.util.Objects
+
 
 /**
  * ReactModalHostView is a view that sits in the view hierarchy representing a Modal view.
@@ -249,6 +253,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
     newDialog.setOnKeyListener(
         object : DialogInterface.OnKeyListener {
           override fun onKey(dialog: DialogInterface, keyCode: Int, event: KeyEvent): Boolean {
+            // Modal needs to send the key event to its own TV event handler
+            // https://github.com/react-native-tvos/react-native-tvos/issues/609
+            dialogRootViewGroup.androidHWInputDeviceHelper.handleKeyEvent(event, dialogRootViewGroup.reactContext)
             if (event.action == KeyEvent.ACTION_UP) {
               // We need to stop the BACK button and ESCAPE key from closing the dialog by default
               // so we capture that event and instead inform JS so that it can make the decision as
@@ -384,8 +391,10 @@ public class ReactModalHostView(context: ThemedReactContext) :
     private var viewHeight = 0
     private val jSTouchDispatcher: JSTouchDispatcher = JSTouchDispatcher(this)
     private var jSPointerDispatcher: JSPointerDispatcher? = null
+    internal val androidHWInputDeviceHelper: ReactAndroidHWInputDeviceHelper
+      get() = ReactAndroidHWInputDeviceHelper()
 
-    private val reactContext: ThemedReactContext
+    internal val reactContext: ThemedReactContext
       get() = context as ThemedReactContext
 
     init {
@@ -400,6 +409,41 @@ public class ReactModalHostView(context: ThemedReactContext) :
       viewHeight = h
 
       updateState(viewWidth, viewHeight)
+    }
+
+    protected override fun onFocusChanged(
+      gainFocus: Boolean,
+      direction: Int,
+      previouslyFocusedRect: Rect?
+    ) {
+      androidHWInputDeviceHelper.clearFocus(reactContext)
+      super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+    }
+
+    public override fun requestChildFocus(child: View?, focused: View?) {
+      androidHWInputDeviceHelper.onFocusChanged(focused, reactContext)
+      super.requestChildFocus(child, focused)
+    }
+
+    private fun updateFirstChildView() {
+      if (childCount > 0) {
+        val viewTag: Int = getChildAt(0).id
+        if (stateWrapper != null) {
+          // This will only be called under Fabric
+          updateState(viewWidth, viewHeight)
+        } else {
+          // TODO: T44725185 remove after full migration to Fabric
+          val reactContext: ReactContext = reactContext
+          reactContext.runOnNativeModulesQueueThread(
+              object : GuardedRunnable(reactContext) {
+                override fun runGuarded() {
+                  this@DialogRootViewGroup.reactContext.reactApplicationContext
+                      .getNativeModule(UIManagerModule::class.java)
+                      ?.updateNodeSize(viewTag, viewWidth, viewHeight)
+                }
+              })
+        }
+      }
     }
 
     @UiThread
