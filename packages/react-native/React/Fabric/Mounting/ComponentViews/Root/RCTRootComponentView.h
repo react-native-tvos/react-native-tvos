@@ -9,12 +9,22 @@
 
 #import <React/RCTViewComponentView.h>
 
+#if TARGET_OS_TV
+#import "RCTTVRemoteHandler.h"
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
  * UIView class for root <View> component.
  */
 @interface RCTRootComponentView : RCTViewComponentView
+
+#if TARGET_OS_TV
+@property (nonatomic, strong, nullable) RCTTVRemoteHandler *tvRemoteHandler;
+@property (nonatomic, weak, nullable) UIView *reactPreferredFocusedView;
+@property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
+#endif
 
 @end
 
