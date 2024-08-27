@@ -14,6 +14,7 @@ import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
 import {
   Image,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -120,7 +121,7 @@ const RNTesterNavbar = ({
   const isComponentActive = screen === 'components' && !isExamplePageOpen;
 
   return (
-    <TVFocusGuideView autoFocus>
+    <TVFocusGuideView autoFocus={Platform.OS === 'android'}>
       <View style={styles.buttonContainer}>
         <ComponentTab
           isComponentActive={isComponentActive}
