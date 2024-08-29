@@ -5,7 +5,7 @@ export const validAttributesForTVProps = {
   tvParallaxProperties: true,
   destinations: true,
   enabled: true,
-  autofocus: true,
+  autoFocus: true,
   safePadding: true,
   focusable: true,
   nextFocusDown: true,
