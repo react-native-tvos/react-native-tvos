@@ -62,13 +62,13 @@ BaseViewProps::BaseViewProps(
           rawProps,
           "isTVSelectable",
           sourceProps.isTVSelectable,
-          (Boolean) false)),
+          false)),
       hasTVPreferredFocus(CoreFeatures::enablePropIteratorSetter ? sourceProps.hasTVPreferredFocus : convertRawProp(
           context,
           rawProps,
           "hasTVPreferredFocus",
           sourceProps.hasTVPreferredFocus,
-          (Boolean) false)),
+          false)),
       tvParallaxProperties(CoreFeatures::enablePropIteratorSetter ? sourceProps.tvParallaxProperties : convertRawProp(
           context,
           rawProps,
@@ -104,7 +104,7 @@ BaseViewProps::BaseViewProps(
           rawProps,
           "autoFocus",
           sourceProps.autoFocus,
-          (Boolean) false)),
+          false)),
       trapFocusUp(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusUp : convertRawProp(
           context,
           rawProps,
