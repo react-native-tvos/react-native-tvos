@@ -1,6 +1,6 @@
 {
   "name": "@react-native/tester",
-  "version": "0.75.2",
+  "version": "0.75.2-0",
   "private": true,
   "description": "React Native tester app.",
   "license": "MIT",
@@ -27,12 +27,12 @@
     "flow-enums-runtime": "^0.0.6",
     "invariant": "^2.2.4",
     "nullthrows": "^1.1.1",
-    "@react-native/oss-library-example": "0.75.2",
-    "@react-native/popup-menu-android": "0.75.2"
+    "@react-native/oss-library-example": "0.75.2-0",
+    "@react-native/popup-menu-android": "0.75.2-0"
   },
   "peerDependencies": {
     "react": "18.3.1",
-    "react-native": "*"
+    "react-native-tvos": "*"
   },
   "codegenConfig": {
     "name": "AppSpecs",

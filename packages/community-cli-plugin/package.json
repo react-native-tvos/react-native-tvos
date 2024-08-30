@@ -24,7 +24,7 @@
   "dependencies": {
     "@react-native-community/cli-server-api": "14.0.0-alpha.11",
     "@react-native-community/cli-tools": "14.0.0-alpha.11",
-    "@react-native/dev-middleware": "0.75.2",
+    "@react-native/dev-middleware": "0.75.2-0",
     "@react-native/metro-babel-transformer": "0.75.2",
     "chalk": "^4.0.0",
     "execa": "^5.1.1",
