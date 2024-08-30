@@ -216,7 +216,7 @@ const TVEventHandlerView: () => React.Node = () => {
 // Class based component
 
 class Game2048 extends React.Component {
-  _tvEventHandlerSubscription: any;
+  _tvEventHandlerSubscription: EventSubscription || undefined;
 
   _enableTVEventHandler() {
     this._tvEventHandlerSubscription = TVEventHandler.addListener(function(evt) {
