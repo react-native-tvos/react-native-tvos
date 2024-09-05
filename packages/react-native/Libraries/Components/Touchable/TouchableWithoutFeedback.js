@@ -8,7 +8,6 @@
  * @format
  */
 
-import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import type {
   AccessibilityActionEvent,
   AccessibilityActionInfo,
@@ -23,14 +22,14 @@ import type {
   LayoutEvent,
   PressEvent,
 } from '../../Types/CoreEventTypes';
-import {Platform} from '../../Utilities/Platform';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 
 import View from '../../Components/View/View';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import usePressability from '../../Pressability/usePressability';
+import useTVEventHandler from '../TV/useTVEventHandler';
 import * as React from 'react';
 import {useMemo} from 'react';
-import useTVEventHandler from '../TV/useTVEventHandler';
 
 type Props = $ReadOnly<{|
   accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,
@@ -204,7 +203,7 @@ module.exports = function TouchableWithoutFeedback(props: Props): React.Node {
     eventHandlers || {};
 
   useTVEventHandler(evt => {
-    if (props.disabled || props.ariaDisabled) {
+    if (props.disabled === true || props['aria-disabled'] === true) {
       return;
     }
     if (evt.eventType === 'focus') {

@@ -14,7 +14,6 @@ const {execSync, spawnSync} = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const {stdin} = require('process');
 
 /*::
 type BuildType = 'dry-run' | 'release' | 'nightly' | 'prealpha';

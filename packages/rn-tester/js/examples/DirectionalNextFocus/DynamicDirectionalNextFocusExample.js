@@ -10,10 +10,10 @@
 
 'use strict';
 
+import {useRNTesterTheme} from '../../components/RNTesterTheme';
+
 const React = require('react');
 const ReactNative = require('react-native');
-
-import {useRNTesterTheme} from '../../components/RNTesterTheme';
 
 const {View, StyleSheet, Pressable, Text, TVFocusGuideView} = ReactNative;
 
@@ -36,7 +36,7 @@ exports.examples = [
 ];
 
 const Button = React.memo((props: $FlowFixMeProps) => {
-  const onRefAssign = ref => {
+  const onRefAssign = (ref: $FlowFixMe) => {
     props.onRefAssign?.(props.index, ref);
   };
 
@@ -57,23 +57,22 @@ const Button = React.memo((props: $FlowFixMeProps) => {
 });
 
 const DynamicNextFocusExample = () => {
-  const [nextFocusIndex, setNextFocusIndex] = React.useState(undefined);
+  const [nextFocusIndex, setNextFocusIndex] = React.useState<$FlowFixMe>(0);
 
   const refs = React.useRef({});
-  const onRefAssign = React.useCallback((index, ref) => {
-    refs.current[index] = ref;
-  }, []);
-
-  React.useEffect(() => {
-    setNextFocusIndex(0);
-  }, []);
+  const onRefAssign = React.useCallback(
+    (index: $FlowFixMe, ref: React$Node) => {
+      refs.current[index] = ref;
+    },
+    [],
+  );
 
   return (
     <View style={styles.rowContainer}>
       <TVFocusGuideView autoFocus>
         <Button
           label={`Focus to ${nextFocusIndex}`}
-          nextFocusRight={refs.current[nextFocusIndex]}
+          nextFocusRight={refs.current[nextFocusIndex] /*  */}
           onPress={() => {
             setNextFocusIndex((nextFocusIndex + 1) % 4);
           }}

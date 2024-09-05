@@ -10,15 +10,18 @@
 
 'use strict';
 
+import type {TabBarIOSProps} from './TabBarIOSProps';
+
 import React from 'react';
+
 const StyleSheet = require('../../StyleSheet/StyleSheet');
-const TabBarItemIOS = require('./TabBarItemIOS');
 const View = require('../View/View');
+const TabBarItemIOS = require('./TabBarItemIOS');
 
 let showedDeprecationWarning = false;
 
-class DummyTabBarIOS extends React.Component<$FlowFixMeProps> {
-  static Item = TabBarItemIOS;
+class TabBarIOS extends React.Component<TabBarIOSProps> {
+  static Item: any = TabBarItemIOS;
 
   componentDidMount() {
     if (!showedDeprecationWarning) {
@@ -31,7 +34,7 @@ class DummyTabBarIOS extends React.Component<$FlowFixMeProps> {
     }
   }
 
-  render() {
+  render(): React.Node {
     return (
       <View style={[this.props.style, styles.tabGroup]}>
         {this.props.children}
@@ -46,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = DummyTabBarIOS;
+module.exports = TabBarIOS;

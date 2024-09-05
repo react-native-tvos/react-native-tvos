@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ * @flow
  * @format
  */
 
@@ -529,7 +529,7 @@ export default class Pressability {
         return cancelable ?? true;
       },
 
-      onClick: (event: PressEvent): void => {
+      onClick: (event: any): void => {
         // If event has `pointerType`, it was emitted from a PointerEvent and
         // we should ignore it to avoid triggering `onPress` twice.
         if (event?.nativeEvent?.hasOwnProperty?.('pointerType')) {
@@ -544,7 +544,10 @@ export default class Pressability {
         }
 
         // Remove spurious onClick events with empty event object generated on Android TV
-        if (Platform.isTV && !event?.eventType) {
+        if (
+          Platform.isTV &&
+          (event?.eventType === null || event?.eventType === undefined)
+        ) {
           return;
         }
 

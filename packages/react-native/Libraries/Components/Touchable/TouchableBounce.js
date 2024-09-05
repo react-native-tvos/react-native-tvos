@@ -16,8 +16,8 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import TVTouchable from './TVTouchable';
 import Platform from '../../Utilities/Platform';
+import TVTouchable from './TVTouchable';
 import * as React from 'react';
 
 type Props = $ReadOnly<{|
@@ -228,13 +228,10 @@ class TouchableBounce extends React.Component<Props, State> {
         },
       });
     }
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
-  componentDidMount(): mixed {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
