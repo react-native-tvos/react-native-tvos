@@ -10,9 +10,8 @@
 
 import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
-import {validAttributesForTVProps} from './TVViewConfig';
-
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
+import {validAttributesForTVProps} from './TVViewConfig';
 import {DynamicallyInjectedByGestureHandler} from './ViewConfigIgnore';
 
 const bubblingEventTypes = {

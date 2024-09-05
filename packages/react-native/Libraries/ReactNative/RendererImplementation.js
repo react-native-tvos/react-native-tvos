@@ -69,11 +69,11 @@ export function findHostInstance_DEPRECATED<TElementType: ElementType>(
 
 export function findNodeHandle<TElementType: ElementType>(
   componentOrHandle: ?(ElementRef<TElementType> | number),
-  suppressWarning: ?Boolean,
+  suppressWarning: ?boolean,
 ): ?number {
   return require('../Renderer/shims/ReactNative').findNodeHandle(
     componentOrHandle,
-    suppressWarning,
+    suppressWarning ?? false,
   );
 }
 

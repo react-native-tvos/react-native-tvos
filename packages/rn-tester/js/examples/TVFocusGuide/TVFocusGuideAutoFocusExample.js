@@ -10,20 +10,21 @@
 
 'use strict';
 
-const React = require('react');
-const ReactNative = require('react-native');
+import type {FocusEvent} from '../../../../react-native/Libraries/Types/CoreEventTypes';
 
 import {useRNTesterTheme} from '../../components/RNTesterTheme';
-
-const {
-  View,
-  StyleSheet,
-  Pressable,
-  Text: RNText,
-  TVFocusGuideView,
+import React from 'react';
+import type {Ref} from 'react';
+import {
+  Dimensions,
   FlatList,
+  Pressable,
   ScrollView,
-} = ReactNative;
+  StyleSheet,
+  Text as RNText,
+  TVFocusGuideView,
+  View,
+} from 'react-native';
 
 exports.framework = 'React';
 exports.title = 'TVFocusGuide autoFocus example';
@@ -41,10 +42,10 @@ exports.examples = [
 // Set it to false to see the behavior without TVFocusGuide.
 const FOCUS_GUIDE_ENABLED = true;
 
-const screenHeight = ReactNative.Dimensions.get('window').height;
+const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
 
-const generateData = (length = 10, randomize = false) => {
+const generateData = (length: number = 10, randomize: boolean = false) => {
   return Array.from({length}).map((item, index) => {
     if (randomize) {
       return Math.floor(Math.random() * 999);
@@ -54,7 +55,7 @@ const generateData = (length = 10, randomize = false) => {
   });
 };
 
-const TVFocusGuide = React.forwardRef((props: any, forwardedRef) => {
+const TVFocusGuide = React.forwardRef((props: any, forwardedRef: any) => {
   if (!FOCUS_GUIDE_ENABLED) {
     return <View {...props} />;
   }
@@ -62,7 +63,7 @@ const TVFocusGuide = React.forwardRef((props: any, forwardedRef) => {
   return <TVFocusGuideView {...props} ref={forwardedRef} />;
 });
 
-const Text = ({style, children}) => {
+const Text = ({style, children}: {style: any, children: any}) => {
   const theme = useRNTesterTheme();
   return (
     <RNText style={[styles.text, {color: theme.LabelColor}, style]}>
@@ -72,44 +73,58 @@ const Text = ({style, children}) => {
 };
 
 const FocusableBox = React.memo(
-  React.forwardRef(({id, width, height, text, slow, ...props}, forwardRef) => {
-    const theme = useRNTesterTheme();
+  React.forwardRef(
+    (
+      props: {
+        id?: number,
+        width?: number,
+        height?: number,
+        text?: string,
+        slow?: boolean,
+        onFocus?: ?(e: FocusEvent, id?: number) => void,
+        onPress?: any,
+        style: $FlowFixMe,
+        hasTVPreferredFocus?: boolean,
+      },
+      forwardRef,
+    ) => {
+      const theme = useRNTesterTheme();
+      const {id, width, height, text, slow, style} = props;
 
-    if (slow) {
-      // eslint-disable-next-line no-undef
-      const now = performance.now();
-      // eslint-disable-next-line no-undef
-      while (performance.now() - now < 200) {}
-    }
+      if (slow) {
+        const now = performance.now();
 
-    const onFocus = e => props?.onFocus?.(e, id);
+        while (performance.now() - now < 200) {}
+      }
 
-    return (
-      <Pressable
-        {...props}
-        ref={forwardRef}
-        onFocus={onFocus}
-        style={state => [
-          {
-            width,
-            height,
-            backgroundColor: theme.TertiarySystemFillColor,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 4,
-          },
-          state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
-          props.style,
-        ]}>
-        {text !== undefined ? (
-          <Text style={{fontSize: 24 * scale}}>{text}</Text>
-        ) : null}
-      </Pressable>
-    );
-  }),
+      const onFocus = (e: any) => props?.onFocus?.(e, id);
+
+      return (
+        <Pressable
+          ref={forwardRef}
+          onFocus={onFocus}
+          style={state => [
+            {
+              width,
+              height,
+              backgroundColor: theme.TertiarySystemFillColor,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 4,
+            },
+            state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
+            style,
+          ]}>
+          {text !== undefined ? (
+            <Text style={{fontSize: 24 * scale}}>{text}</Text>
+          ) : null}
+        </Pressable>
+      );
+    },
+  ),
 );
 
-const SideMenu = React.forwardRef((props, forwardedRef) => {
+const SideMenu = React.forwardRef((props: any, forwardedRef: any) => {
   const theme = useRNTesterTheme();
   const sideMenuItemStyle = [
     styles.sideMenuItem,
@@ -130,7 +145,7 @@ const SideMenu = React.forwardRef((props, forwardedRef) => {
   );
 });
 
-const getItemText = ({item, prefix}) => {
+const getItemText = ({item, prefix}: {item: number, prefix: string}) => {
   return prefix ? `${prefix}-${item}` : `${item}`;
 };
 
@@ -145,12 +160,25 @@ const HList = React.forwardRef(
       prefix = '',
       slow,
       ...props
+    }: {
+      itemCount?: number,
+      itemWidth?: number,
+      itemHeight?: number,
+      onItemFocused?: any,
+      onItemPressed?: any,
+      prefix?: string,
+      slow?: boolean,
+      onPress?: any,
+      data?: any,
+      initialNumToRender?: number,
+      maxToRenderPerBatch?: number,
+      windowSize?: number,
     },
-    forwardedRef,
+    forwardedRef: any,
   ) => {
     const data = React.useMemo(() => generateData(itemCount), [itemCount]);
 
-    const renderItem = ({item, index}) => {
+    const renderItem: any = ({item, index}: {item: number, index: number}) => {
       return (
         <FocusableBox
           id={item}
@@ -188,10 +216,10 @@ const getSelectedItemPrefix = (selectedCategory: string) => {
   return `Category ${selectedCategory} - Item`;
 };
 
-const Row = ({title, focusable}) => {
+const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
-  const onCategoryFocused = (event, id: number) => {
+  const onCategoryFocused = (event: any, id: number) => {
     setSelectedCategory(id.toString());
   };
 
@@ -218,7 +246,7 @@ const Row = ({title, focusable}) => {
   );
 };
 
-const Col = ({title}) => {
+const Col = ({title}: {title: string}) => {
   return (
     <TVFocusGuide autoFocus style={styles.col}>
       <Text style={styles.colTitle}>{title}</Text>
@@ -231,7 +259,7 @@ const Col = ({title}) => {
 };
 
 const FocusToTheSameDestinationTest = () => {
-  const [destinationItem, setDestinationItem] = React.useState(null);
+  const [destinationItem, setDestinationItem] = React.useState<any>(null);
 
   return (
     <TVFocusGuide destinations={[destinationItem]} style={styles.col}>
@@ -254,7 +282,7 @@ const FocusToTheDestinationOnlyOnceTest = () => {
   const visited = React.useRef(false);
   const focusGuideRef =
     React.useRef<?React.ElementRef<typeof TVFocusGuideView>>(null);
-  const destinationItemRef = React.useRef<?React.ElementRef<typeof View>>(null);
+  const destinationItemRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     focusGuideRef.current?.setDestinations([destinationItemRef.current]);
@@ -324,7 +352,7 @@ const RestoreFocusTestList = () => {
    * We force the list to re-render by toggling the `randomize` state. It invalidates
    * the `data` and causes the list to re-render with random or regular data.
    */
-  const onItemPressed = ({item}) => setRandomize(r => !r);
+  const onItemPressed = ({item}: {item: number}) => setRandomize(r => !r);
   return (
     <TVFocusGuide autoFocus style={styles.mb5}>
       <Text
@@ -343,20 +371,20 @@ const RestoreFocusOnSingleDeletionTestList = () => {
   const [data, setData] = React.useState(() => generateData(10, false));
   const itemNeedsToBeFocusedRef = React.useRef<?number>(undefined);
 
-  const onItemPressed = (id, index) => {
+  const onItemPressed = (id: number, index: number) => {
     // We practially set the focus to the previous item here
     itemNeedsToBeFocusedRef.current = index - 1;
     setData(d => d.filter(i => i !== id));
   };
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({item, index}: {item: any, index: number}) => {
     return (
       <FocusableBox
         id={item}
         width={300 * scale}
         height={100 * scale}
         style={styles.mr5}
-        text={item}
+        text={`${item}`}
         onPress={() => onItemPressed(item, index)}
         hasTVPreferredFocus={index === itemNeedsToBeFocusedRef.current}
       />
@@ -375,7 +403,7 @@ const RestoreFocusOnSingleDeletionTestList = () => {
 
       <FlatList
         data={data}
-        renderItem={renderItem}
+        renderItem={({item, index}) => renderItem({item, index})}
         horizontal
         contentContainerStyle={styles.hListContainer}
         keyExtractor={item => item.toString()}
@@ -415,11 +443,11 @@ const SlowListFocusTest = () => {
 };
 
 type ContentAreaProps = $ReadOnly<{|
-  sideMenuRef: {current: ?React.ElementRef<typeof View>},
+  sideMenuRef: {current: any},
 |}>;
 
 const ContentArea = React.forwardRef(
-  ({sideMenuRef}: ContentAreaProps, forwardedRef) => {
+  ({sideMenuRef}: ContentAreaProps, forwardedRef: any) => {
     return (
       <TVFocusGuide ref={forwardedRef} autoFocus style={{flex: 1}}>
         <ScrollView>

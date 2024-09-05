@@ -1,3 +1,6 @@
+/*
+ * @flow
+ */
 
 export const validAttributesForTVProps = {
   isTVSelectable: true,

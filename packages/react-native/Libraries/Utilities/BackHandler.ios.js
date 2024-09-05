@@ -13,8 +13,8 @@
 
 'use strict';
 
-const Platform = require('./Platform');
 const TVEventHandler = require('../Components/TV/TVEventHandler');
+const Platform = require('./Platform');
 
 type BackPressEventName = 'backPress' | 'hardwareBackPress';
 
@@ -50,6 +50,7 @@ function emptyFunction(): void {}
  * });
  * ```
  */
+
 type TBackHandler = {|
   +exitApp: () => void,
   +addEventListener: (
@@ -62,10 +63,24 @@ type TBackHandler = {|
   ) => void,
 |};
 
-let BackHandler: TBackHandler;
+let BackHandler: TBackHandler = {
+  exitApp: emptyFunction,
+  addEventListener: function (
+    _eventName: BackPressEventName,
+    _handler: () => ?boolean,
+  ): {remove: () => void, ...} {
+    return {
+      remove: emptyFunction,
+    };
+  },
+  removeEventListener: function (
+    _eventName: BackPressEventName,
+    _handler: () => ?boolean,
+  ) {},
+};
 
 if (Platform.isTV) {
-  const _backPressSubscriptions = new Set();
+  const _backPressSubscriptions = new Set<() => ?boolean>();
 
   TVEventHandler.addListener(function (evt) {
     if (evt && evt.eventType === 'menu') {
@@ -91,34 +106,21 @@ if (Platform.isTV) {
     exitApp: emptyFunction,
 
     addEventListener: function (
-      eventName: BackPressEventName,
-      handler: () => ?boolean,
+      _eventName: BackPressEventName,
+      _handler: () => ?boolean,
     ): {remove: () => void, ...} {
-      _backPressSubscriptions.add(handler);
+      _backPressSubscriptions.add(_handler);
       return {
-        remove: () => BackHandler.removeEventListener(eventName, handler),
+        remove: () => BackHandler.removeEventListener(_eventName, _handler),
       };
     },
 
     removeEventListener: function (
-      eventName: BackPressEventName,
-      handler: () => ?boolean,
-    ): void {
-      _backPressSubscriptions.delete(handler);
-    },
-  };
-} else {
-  BackHandler = {
-    exitApp: emptyFunction,
-    addEventListener(_eventName: BackPressEventName, _handler: () => ?boolean) {
-      return {
-        remove: emptyFunction,
-      };
-    },
-    removeEventListener(
       _eventName: BackPressEventName,
       _handler: () => ?boolean,
-    ) {},
+    ) {
+      _backPressSubscriptions.delete(_handler);
+    },
   };
 }
 

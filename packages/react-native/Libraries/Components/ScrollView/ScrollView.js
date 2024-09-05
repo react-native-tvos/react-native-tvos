@@ -151,7 +151,7 @@ export type ScrollViewImperativeMethods = $ReadOnly<{|
 export type DecelerationRateType = 'fast' | 'normal' | number;
 export type ScrollResponderType = ScrollViewImperativeMethods;
 
-type PublicScrollViewInstance = $ReadOnly<{|
+export type PublicScrollViewInstance = $ReadOnly<{|
   ...$Exact<TScrollViewNativeComponentInstance>,
   ...ScrollViewImperativeMethods,
 |}>;
@@ -1957,6 +1957,7 @@ Wrapper.displayName = 'ScrollView';
 // $FlowExpectedError[prop-missing]
 Wrapper.Context = ScrollViewContext;
 
+/* $FlowFixMe[not-an-object]  (fix for TVTextScrollView flow issue) */
 module.exports = ((Wrapper: $FlowFixMe): React.AbstractComponent<
   React.ElementConfig<typeof ScrollView>,
   PublicScrollViewInstance,

@@ -12,7 +12,6 @@
 
 import * as React from 'react';
 import ReactNative from 'react-native';
-import type {TVRemoteEvent} from '../../../../../Libraries/Types/CoreEventTypes';
 
 const {
   StyleSheet,
@@ -38,16 +37,12 @@ const PressableButton = (props: {
   const functional = props?.functional ?? true;
   return functional ? (
     <Pressable
-      onFocus={event =>
-        props.log(`${props.title} focus action=${event.eventKeyAction}`)
-      }
-      onBlur={event =>
-        props.log(`${props.title} blur action=${event.eventKeyAction}`)
-      }
-      onPress={event =>
+      onFocus={(event: any) => props.log(`${props.title} focus`)}
+      onBlur={(event: any) => props.log(`${props.title} blur`)}
+      onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
-      onLongPress={event =>
+      onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }
       style={({pressed, focused}) =>
@@ -63,18 +58,18 @@ const PressableButton = (props: {
     </Pressable>
   ) : (
     <Pressable
-      onFocus={event => {
-        props.log(`${props.title} focus action=${event.eventKeyAction}`);
+      onFocus={(event: any) => {
+        props.log(`${props.title} focus`);
         setUserFocused(true);
       }}
-      onBlur={event => {
-        props.log(`${props.title} blur action=${event.eventKeyAction}`);
+      onBlur={(event: any) => {
+        props.log(`${props.title} blur`);
         setUserFocused(false);
       }}
-      onPress={event =>
+      onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
-      onLongPress={event =>
+      onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }
       style={userFocused ? styles.pressableFocused : styles.pressable}>
@@ -90,16 +85,12 @@ const TouchableOpacityButton = (props: {
   return (
     <TouchableOpacity
       style={styles.pressable}
-      onFocus={event =>
-        props.log(`${props.title} focus action=${event.eventKeyAction}`)
-      }
-      onBlur={event =>
-        props.log(`${props.title} blur action=${event.eventKeyAction}`)
-      }
-      onPress={event =>
+      onFocus={(event: any) => props.log(`${props.title} focus`)}
+      onBlur={(event: any) => props.log(`${props.title} blur`)}
+      onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
-      onLongPress={event =>
+      onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }>
       <Text style={styles.pressableText}>{props.title}</Text>
@@ -114,16 +105,12 @@ const TouchableHighlightButton = (props: {
   return (
     <TouchableHighlight
       style={styles.pressable}
-      onFocus={event =>
-        props.log(`${props.title} focus action=${event.eventKeyAction}`)
-      }
-      onBlur={event =>
-        props.log(`${props.title} blur action=${event.eventKeyAction}`)
-      }
-      onPress={event =>
+      onFocus={event => props.log(`${props.title} focus`)}
+      onBlur={event => props.log(`${props.title} blur`)}
+      onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
-      onLongPress={event =>
+      onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }>
       <Text style={styles.pressableText}>{props.title}</Text>
@@ -138,16 +125,12 @@ const TouchableNativeFeedbackButton = (props: {
   return (
     <TouchableNativeFeedback
       background={TouchableNativeFeedback.SelectableBackground()}
-      onFocus={event =>
-        props.log(`${props.title} focus action=${event.eventKeyAction}`)
-      }
-      onBlur={event =>
-        props.log(`${props.title} blur action=${event.eventKeyAction}`)
-      }
-      onPress={event =>
+      onFocus={event => props.log(`${props.title} focus`)}
+      onBlur={event => props.log(`${props.title} blur`)}
+      onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
-      onLongPress={event =>
+      onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }>
       <View style={styles.pressable}>
@@ -232,6 +215,12 @@ const TVEventHandlerView: () => React.Node = () => {
     }
   });
 
+  // Apple TV: enable detection of pan gesture events (and disable on unmount)
+  React.useEffect(() => {
+    TVEventControl.enableTVPanGesture();
+    return () => TVEventControl.disableTVPanGesture();
+  }, []);
+
   if (!Platform.isTV) {
     return (
       <View>
@@ -239,12 +228,6 @@ const TVEventHandlerView: () => React.Node = () => {
       </View>
     );
   }
-
-  // Apple TV: enable detection of pan gesture events (and disable on unmount)
-  React.useEffect(() => {
-    TVEventControl.enableTVPanGesture();
-    return () => TVEventControl.disableTVPanGesture();
-  }, []);
 
   return (
     <View style={styles.container}>

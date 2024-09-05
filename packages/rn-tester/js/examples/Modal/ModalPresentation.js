@@ -34,13 +34,19 @@ const supportedOrientations = [
   'landscape-right',
 ];
 
-function Switch({value, onValueChange}) {
+function Switch({
+  value,
+  onValueChange,
+}: {
+  value: boolean | void | null,
+  onValueChange: boolean => void,
+}) {
   return (
     <RNTesterButton
       onPress={() => {
         onValueChange(!value);
       }}>
-      {value ? 'On' : 'Off'}
+      {value === true ? 'On' : 'Off'}
     </RNTesterButton>
   );
 }

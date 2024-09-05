@@ -10,14 +10,15 @@
 
 import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
+import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
 import {Commands} from '../View/ViewNativeComponent';
+import tagForComponentOrHandle from './tagForComponentOrHandle';
 
+const StyleSheet = require('../../StyleSheet/StyleSheet');
+const View = require('../View/View');
 const React = require('react');
-const ReactNative = require('react-native');
-
-const {View} = ReactNative;
 
 type TVFocusGuideViewProps = $ReadOnly<{
   ...ViewProps,
@@ -32,7 +33,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
   /**
    * The views the focus should go to
    */
-  destinations?: (?React.ElementRef<HostComponent<mixed>>)[],
+  destinations?: ComponentOrHandleType[],
 
   /**
    * @deprecated Don't use it, no longer necessary.
@@ -49,7 +50,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
   /**
    * When set to false, this view and all its subviews will be NOT focusable.
    */
-  focusable?: boolean | undefined,
+  focusable?: boolean | void,
 }>;
 
 export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
@@ -67,16 +68,16 @@ function TVFocusGuideView(
     focusable,
     ...props
   }: TVFocusGuideViewProps,
-  forwardedRef,
+  forwardedRef: any,
 ): React.Node {
-  const focusGuideRef = React.useRef<React.ElementRef<
-    typeof ReactNative.View,
-  > | null>(null);
+  const focusGuideRef = React.useRef<React.ElementRef<typeof View> | null>(
+    null,
+  );
 
   const setDestinations = React.useCallback(
-    (destinations: (?React.ElementRef<HostComponent<mixed>>)[]) => {
+    (destinations: ?(ComponentOrHandleType[])) => {
       const dests: number[] = (destinations || [])
-        .map(ReactNative.findNodeHandle)
+        .map((destination: any) => tagForComponentOrHandle(destination))
         .filter(Boolean);
 
       if (focusGuideRef.current != null) {
@@ -106,8 +107,8 @@ function TVFocusGuideView(
   });
 
   React.useEffect(() => {
-    if (destinationsProp != null) {
-      setDestinations(destinationsProp);
+    if (destinationsProp !== null && destinationsProp !== undefined) {
+      setDestinations(destinationsProp); // $FlowFixMe[incompatible-call]
     }
   }, [setDestinations, destinationsProp]);
 
@@ -121,7 +122,7 @@ function TVFocusGuideView(
 
   return (
     // $FlowFixMe[prop-missing]
-    <ReactNative.View
+    <View
       {...props}
       style={style}
       ref={_setNativeRef}
@@ -135,7 +136,7 @@ function TVFocusGuideView(
   );
 }
 
-const styles = ReactNative.StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     minWidth: 1,
     minHeight: 1,

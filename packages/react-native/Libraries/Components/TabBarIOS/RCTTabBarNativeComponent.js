@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * @noflow
  */
 
 'use strict';
 
-const requireNativeComponent = require('../../ReactNative/requireNativeComponent').default;
+const requireNativeComponent =
+  require('../../ReactNative/requireNativeComponent').default;
 
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';

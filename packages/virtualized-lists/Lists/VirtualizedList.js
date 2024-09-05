@@ -1863,7 +1863,7 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
   _updateCellsToRender = () => {
     this._updateViewableItems(this.props, this.state.cellsAroundViewport);
 
-    this.setState((state, props) => {
+    this.setState((state, props: any) => {
       const cellsAroundViewport = this._adjustCellsAroundViewport(
         props,
         state.cellsAroundViewport,
@@ -1908,12 +1908,14 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
   }
 
   _getNonViewportRenderRegions = (
-    props: CellMetricProps,
+    props: CellMetricProps & {
+      additionalRenderRegions?: {first: number, last: number}[],
+    },
   ): $ReadOnlyArray<{
     first: number,
     last: number,
   }> => {
-    let nonViewportRenderRegions = [];
+    let nonViewportRenderRegions: {first: number, last: number}[] = [];
 
     if (props?.additionalRenderRegions?.length) {
       nonViewportRenderRegions = [...props.additionalRenderRegions];
