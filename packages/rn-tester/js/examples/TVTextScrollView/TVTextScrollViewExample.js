@@ -11,17 +11,14 @@
 'use strict';
 
 const React = require('react');
-
 const {
   Dimensions,
-  TVTextScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TVTextScrollView,
   View,
 } = require('react-native');
-
-import type {ViewStyleProp} from '../../../../../Libraries/StyleSheet/StyleSheet';
 
 const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
@@ -59,7 +56,7 @@ exports.examples = [
           };
         }
 
-        render() {
+        render(): React.Node {
           return (
             <View>
               <View style={{flexDirection: 'row'}}>
@@ -186,9 +183,9 @@ exports.examples = [
 
 class Item extends React.PureComponent<{|
   msg?: string,
-  style?: ViewStyleProp,
+  style?: any,
 |}> {
-  render() {
+  render(): React.Node {
     return (
       <View style={[styles.item, this.props.style]}>
         <Text style={styles.itemText}>{this.props.msg}</Text>
@@ -217,7 +214,15 @@ const ITEMS = [...Array(12)].map(
 
 const ITEMCOMPONENTS = ITEMS.map((m, i) => <Item key={i} msg={m} />);
 
-const Button = ({label, onPress, selected}) => (
+const Button = ({
+  label,
+  onPress,
+  selected,
+}: {
+  label: string,
+  onPress?: () => void,
+  selected?: boolean,
+}) => (
   <TouchableOpacity
     style={selected ? styles.buttonSelected : styles.button}
     activeOpacity={0.5}

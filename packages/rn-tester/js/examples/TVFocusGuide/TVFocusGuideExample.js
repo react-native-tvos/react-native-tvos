@@ -10,13 +10,12 @@
 
 'use strict';
 
+import {useRNTesterTheme} from '../../components/RNTesterTheme';
+
 const React = require('react');
 const ReactNative = require('react-native');
 
-import {useRNTesterTheme} from '../../components/RNTesterTheme';
-
-const {Platform, View, StyleSheet, Pressable, Text, TVFocusGuideView} =
-  ReactNative;
+const {View, StyleSheet, Pressable, Text, TVFocusGuideView} = ReactNative;
 
 exports.framework = 'React';
 exports.title = 'TVFocusGuide example';
@@ -36,7 +35,7 @@ const scale = screenHeight / 1080;
 const width = 200 * scale;
 const height = 120 * scale;
 
-const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
+const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
   const theme = useRNTesterTheme();
   return (
     <Pressable
@@ -67,17 +66,17 @@ const ThemedView = (props: $FlowFixMeProps) => {
 const TVFocusGuideExample = () => {
   const [destination, setDestination] = React.useState(null);
   const [destinationText, setDestinationText] = React.useState('');
-  const destinations = destination?.current ? [destination?.current] : [];
+  const destinations: any = destination?.current ? [destination?.current] : [];
 
   const buttonTopRight = React.useRef(null);
   const buttonBottomLeft = React.useRef(null);
 
   const rightButtonInFocusViewContainer = React.useRef(null);
-  const containerDestinations = rightButtonInFocusViewContainer?.current
+  const containerDestinations: any = rightButtonInFocusViewContainer?.current
     ? [rightButtonInFocusViewContainer?.current]
     : [];
 
-  const _setDestination = (o: ?Object, text: string) => {
+  const _setDestination = (o: any, text: string) => {
     setDestination(o);
     setDestinationText(text);
   };

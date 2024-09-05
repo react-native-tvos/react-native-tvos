@@ -11,11 +11,19 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import * as React from 'react';
-import {Modal, Platform, Pressable, StyleSheet, Text, useTVEventHandler, View} from 'react-native';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useTVEventHandler,
+} from 'react-native';
 
 function TVEventView(): React.Node {
   const [lastEventType, setLastEventType] = React.useState('');
-  const myTVEventHandler = evt => {
+  const myTVEventHandler = (evt: {eventType: string}) => {
     setLastEventType(evt.eventType);
   };
   useTVEventHandler(myTVEventHandler);
@@ -34,7 +42,8 @@ function ModalOnShowOnDismiss(): React.Node {
 
   const [lastEvent, setLastEvent] = React.useState('');
 
-  const buttonOpacity = (pressed, focused) => (pressed || focused ? 0.7 : 1.0);
+  const buttonOpacity = (pressed: boolean, focused: boolean) =>
+    pressed || focused ? 0.7 : 1.0;
 
   useTVEventHandler(evt => {
     setLastEvent(evt.eventType);
