@@ -5,13 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
+ * @noflow
  */
 
 'use strict';
 
 import React from 'react';
-const View = require('../View/View');
+
 const StyleSheet = require('../../StyleSheet/StyleSheet');
+const View = require('../View/View');
 
 let showedDeprecationWarning = false;
 

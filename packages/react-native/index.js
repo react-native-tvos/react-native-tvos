@@ -89,7 +89,7 @@ import typeof DevSettings from './Libraries/Utilities/DevSettings';
 import typeof Dimensions from './Libraries/Utilities/Dimensions';
 import typeof PixelRatio from './Libraries/Utilities/PixelRatio';
 import typeof Platform from './Libraries/Utilities/Platform';
-import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
+// import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/TV/TVEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/TV/TVFocusGuideView';
 import typeof TVEventControl from './Libraries/Components/TV/TVEventControl';
@@ -176,7 +176,7 @@ module.exports = {
   get Switch(): Switch {
     return require('./Libraries/Components/Switch/Switch').default;
   },
-  get TabBarIOS(): TabBarIOS {
+  get TabBarIOS(): any {
     return require('./Libraries/Components/TabBarIOS/TabBarIOS');
   },
   get Text(): Text {
@@ -336,7 +336,7 @@ module.exports = {
   get TVMenuControl(): TVEventControl {
     warnOnce(
       'TVMenuControl-moved',
-      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.'
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
     );
     return require('./Libraries/Components/TV/TVEventControl');
   },

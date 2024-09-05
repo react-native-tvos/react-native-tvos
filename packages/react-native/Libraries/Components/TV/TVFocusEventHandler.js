@@ -10,9 +10,10 @@
 
 'use strict';
 
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
+
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 import TVEventHandler from './TVEventHandler';
 
 class TVFocusEventHandler {

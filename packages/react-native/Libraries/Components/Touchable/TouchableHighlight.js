@@ -9,6 +9,7 @@
  */
 
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 
 import View from '../../Components/View/View';
@@ -17,10 +18,9 @@ import Pressability, {
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import TVTouchable from './TVTouchable';
 import Platform from '../../Utilities/Platform';
-import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
+import TVTouchable from './TVTouchable';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -46,8 +46,7 @@ type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
   ...TVProps,
-  ...ViewProps,
-
+  //...ViewProps,
   activeOpacity?: ?number,
   underlayColor?: ?ColorValue,
   style?: ?ViewStyleProp,

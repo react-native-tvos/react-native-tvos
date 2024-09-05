@@ -17,7 +17,6 @@ import type {Props} from './AppContainer';
 
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
 import View from '../Components/View/View';
-import Platform from '../Utilities/Platform';
 /*
 // Stub out DebuggingOverlay from TV for now
 import DebuggingOverlay from '../Debugging/DebuggingOverlay';
@@ -28,6 +27,7 @@ import LogBoxNotificationContainer from '../LogBox/LogBoxNotificationContainer';
 import StyleSheet from '../StyleSheet/StyleSheet';
 import {RootTagContext, createRootTag} from './RootTag';
 import * as React from 'react';
+// import DebuggingOverlay from 'react-native/Libraries/Debugging/DebuggingOverlay';
 
 const {useEffect, useState, useCallback} = React;
 
@@ -99,7 +99,7 @@ const AppContainer = ({
 }: Props): React.Node => {
   const appContainerRootViewRef: AppContainerRootViewRef = React.useRef(null);
   const innerViewRef: InspectedViewRef = React.useRef(null);
-/*
+  /*
   const debuggingOverlayRef: DebuggingOverlayRef = React.useRef(null);
 
   useSubscribeToDebuggingOverlayRegistry(
@@ -207,8 +207,9 @@ export type AppContainerRootViewRef = React.RefObject<React.ElementRef<
 export type InspectedViewRef = React.RefObject<React.ElementRef<
   typeof View,
 > | null>;
+/*
 export type DebuggingOverlayRef = React.RefObject<React.ElementRef<
   typeof DebuggingOverlay,
 > | null>;
-
+ */
 export default AppContainer;

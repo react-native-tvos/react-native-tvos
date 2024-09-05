@@ -5,15 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow strict-local
+ * @flow
  */
 
-const React = require('react');
-const ScrollView = require('../ScrollView/ScrollView');
-const {tvFocusEventHandler} = require('./TVFocusEventHandler');
+import typeof Props from '../ScrollView/ScrollView';
 
 import tagForComponentOrHandle from './tagForComponentOrHandle';
-import typeof Props from '../ScrollView/ScrollView';
+
+const ScrollView = require('../ScrollView/ScrollView');
+const {tvFocusEventHandler} = require('./TVFocusEventHandler');
+const React = require('react');
 
 /**
  * Convenience wrapper to create a scroll view that will scroll correctly
@@ -64,9 +65,9 @@ class TVTextScrollView extends React.Component<{
   _subscription: any;
 
   componentDidMount() {
-    const cmp = this;
-    const myTag = tagForComponentOrHandle(cmp);
-    tvFocusEventHandler.register(myTag, function (evt) {
+    const cmp = this; // eslint-disable-line consistent-this
+    const myTag = tagForComponentOrHandle(this);
+    tvFocusEventHandler?.register(myTag, function (evt) {
       if (myTag === evt.tag) {
         if (evt.eventType === 'focus') {
           cmp.props.onFocus && cmp.props.onFocus(evt);
@@ -79,10 +80,10 @@ class TVTextScrollView extends React.Component<{
 
   componentWillUnmount() {
     const myTag = tagForComponentOrHandle(this);
-    tvFocusEventHandler.unregister(myTag);
+    tvFocusEventHandler?.unregister(myTag);
   }
 
-  render(): React.Node | React.Element<string> {
+  render(): $FlowFixMe {
     const props: $FlowFixMe = {
       ...this.props,
       tvParallaxProperties: {

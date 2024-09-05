@@ -11,7 +11,7 @@
 
 // import NativeVibration from './NativeVibration';
 const Platform = require('../Utilities/Platform');
-const NativeVibration = require('./NativeVibration');
+const NativeVibration: $FlowFixMe = require('./NativeVibration');
 
 /**
  * Vibration API
