@@ -10,10 +10,10 @@
 
 'use strict';
 
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
+
 const React = require('react');
 const ReactNative = require('react-native');
-
-import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
 const {Platform, View, StyleSheet, TouchableOpacity, Text} = ReactNative;
 
@@ -31,10 +31,10 @@ exports.examples = [
 
 const scale = Platform.OS === 'android' ? 0.5 : 1.0;
 
-const width = 200*scale;
-const height = 120*scale;
+const width = 200 * scale;
+const height = 120 * scale;
 
-const Button = React.forwardRef((props: $FlowFixMeProps, ref) => {
+const Button = React.forwardRef((props: $FlowFixMeProps, ref: $FlowFixMe) => {
   return (
     <RNTesterThemeContext.Consumer>
       {theme => {
@@ -75,10 +75,14 @@ const ThemedView = (props: $FlowFixMeProps) => (
 );
 
 const DirectionalNextFocusExample = () => {
-  const [upDestination, setUpDestination]: [any, (any) => void] = React.useState(null);
-  const [downDestination, setDownDestination]: [any, (any) => void] = React.useState(null);
-  const [leftDestination, setLeftDestination]: [any, (any) => void] = React.useState(null);
-  const [rightDestination, setRightDestination]: [any, (any) => void] = React.useState(null);
+  const [upDestination, setUpDestination]: [any, (any) => void] =
+    React.useState(null);
+  const [downDestination, setDownDestination]: [any, (any) => void] =
+    React.useState(null);
+  const [leftDestination, setLeftDestination]: [any, (any) => void] =
+    React.useState(null);
+  const [rightDestination, setRightDestination]: [any, (any) => void] =
+    React.useState(null);
 
   return (
     <View style={styles.container}>
@@ -126,15 +130,15 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    padding: 0.5*width,
+    padding: 0.5 * width,
   },
   buttonText: {
-    fontSize: 30*scale,
+    fontSize: 30 * scale,
   },
   buttonStyle: {
     width,
     height,
-    margin: 20*scale,
+    margin: 20 * scale,
   },
   focusGuide: {
     width,

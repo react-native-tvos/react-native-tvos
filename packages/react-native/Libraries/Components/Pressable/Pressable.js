@@ -4,11 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ * @flow
  * @format
  */
 
 import type {
+  FocusEvent,
   LayoutEvent,
   MouseEvent,
   PressEvent,
@@ -332,13 +333,13 @@ function Pressable(
       delayPressIn: unstable_pressDelay,
       onHoverIn,
       onHoverOut,
-      onBlur(event: HWEvent): void {
+      onBlur(event: FocusEvent): void {
         shouldUpdatePressed && setFocused(false);
         if (onBlur != null) {
           onBlur(event);
         }
       },
-      onFocus(event: HWEvent): void {
+      onFocus(event: FocusEvent): void {
         shouldUpdatePressed && setFocused(true);
         if (onFocus != null) {
           onFocus(event);
@@ -393,7 +394,7 @@ function Pressable(
   const eventHandlers = usePressability(config);
 
   const pressableTVFocusEventHandler = React.useCallback(
-    (evt: FocusEvent) => {
+    (evt: any) => {
       if (isTVSelectable !== false || focusable !== false) {
         // $FlowFixMe[prop-missing]
         if (evt?.eventType === 'focus') {
@@ -417,7 +418,6 @@ function Pressable(
       }
     },
     [
-      focused,
       onBlur,
       onFocus,
       onLongPress,

@@ -10,15 +10,16 @@
 
 'use strict';
 
-import invariant from 'invariant';
-import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import type {
   BlurEvent,
   FocusEvent,
   PressEvent,
 } from '../../Types/CoreEventTypes';
+
 import Platform from '../../Utilities/Platform';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
+import invariant from 'invariant';
 
 type TVTouchableConfig = $ReadOnly<{|
   getDisabled: () => boolean,
@@ -38,9 +39,9 @@ export default class TVTouchable {
     if (!Platform.isTV) {
       return;
     }
-    const _tvtouchable = this;
+    const _tvtouchable = this; // eslint-disable-line consistent-this
     this._viewTag = tagForComponentOrHandle(component);
-    tvFocusEventHandler.register(this._viewTag, tvData => {
+    tvFocusEventHandler?.register(this._viewTag, tvData => {
       if (!_tvtouchable._enabled) {
         return;
       }
@@ -65,6 +66,6 @@ export default class TVTouchable {
 
   destroy(): void {
     this._enabled = false;
-    tvFocusEventHandler.unregister(this._viewTag);
+    tvFocusEventHandler?.unregister(this._viewTag);
   }
 }

@@ -10,18 +10,23 @@
 
 'use strict';
 
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
+
+import NativeTVNavigationEventEmitter from '../../../src/private/specs/modules/NativeTVNavigationEventEmitter';
 import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import NativeTVNavigationEventEmitter from '../../../src/private/specs/modules/NativeTVNavigationEventEmitter';
-import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 let __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
 
-const TVEventHandler = {
-  addListener: (callback: Function) => {
+const TVEventHandler: {
+  addListener: (
+    callback: (event: any) => void,
+  ) => EventSubscription | {remove: () => void},
+} = {
+  addListener: callback => {
     if (Platform.OS === 'ios' && !NativeTVNavigationEventEmitter) {
-      return;
+      return {remove: () => {}};
     }
     if (!__nativeTVNavigationEventEmitter) {
       __nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
@@ -32,7 +37,7 @@ const TVEventHandler = {
       __nativeTVNavigationEventEmitter.addListener(
         // $FlowFixMe[prop-missing]
         'onHWKeyEvent',
-        data => {
+        (data: any) => {
           if (callback) {
             callback(data);
           }

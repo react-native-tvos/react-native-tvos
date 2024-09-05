@@ -5,70 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
+ * @noflow
  */
 
 'use strict';
 
-const React = require('react');
+import type {TabBarIOSProps} from './TabBarIOSProps';
+
 const StyleSheet = require('../../StyleSheet/StyleSheet');
-const TabBarItemIOS = require('./TabBarItemIOS');
-
 const RCTTabBar = require('./RCTTabBarNativeComponent');
-
-import type {ViewProps} from '../View/ViewPropTypes';
-import type {ColorValue} from '../../StyleSheet/StyleSheetTypes';
-
-type Props = $ReadOnly<{|
-  ...ViewProps,
-
-  /**
-   * Color of text on unselected tabs
-   */
-  unselectedTintColor?: ColorValue,
-
-  /**
-   * Color of the currently selected tab icon
-   */
-  tintColor?: ColorValue,
-
-  /**
-   * Color of unselected tab icons. Available since iOS 10.
-   */
-  unselectedItemTintColor?: ColorValue,
-
-  /**
-   * Background color of the tab bar
-   */
-  barTintColor?: ColorValue,
-
-  /**
-   * The style of the tab bar. Supported values are 'default', 'black'.
-   * Use 'black' instead of setting `barTintColor` to black. This produces
-   * a tab bar with the native iOS style with higher translucency.
-   */
-  barStyle?: ?('default' | 'black'),
-
-  /**
-   * A Boolean value that indicates whether the tab bar is translucent
-   */
-  translucent?: ?boolean,
-
-  /**
-   * Specifies tab bar item positioning. Available values are:
-   * - fill - distributes items across the entire width of the tab bar
-   * - center - centers item in the available tab bar space
-   * - auto (default) - distributes items dynamically according to the
-   * user interface idiom. In a horizontally compact environment (e.g. iPhone 5)
-   * this value defaults to `fill`, in a horizontally regular one (e.g. iPad)
-   * it defaults to center.
-   */
-  itemPositioning?: ?('fill' | 'center' | 'auto'),
-|}>;
+const TabBarItemIOS = require('./TabBarItemIOS');
+const React = require('react');
 
 let showedDeprecationWarning = true;
 
-class TabBarIOS extends React.Component<Props> {
+class TabBarIOS extends React.Component<TabBarIOSProps> {
   static Item: React.Node = TabBarItemIOS;
 
   componentDidMount() {
