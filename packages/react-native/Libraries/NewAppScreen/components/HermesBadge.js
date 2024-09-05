@@ -10,23 +10,20 @@
 
 import type {Node} from 'react';
 
-import Platform from '../../Utilities/Platform';
 import useTVEventHandler from '../../Components/TV/useTVEventHandler';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import Text from '../../Text/Text';
+import Platform from '../../Utilities/Platform';
 import useColorScheme from '../../Utilities/useColorScheme';
 import Colors from './Colors';
 import React from 'react';
 
 const HermesBadge = (): Node => {
   const [lastEventType, setLastEventType] = React.useState('');
-  const myTVEventHandler = evt => {
+  useTVEventHandler(evt => {
     setLastEventType(evt.eventType);
-  };
-  if (Platform.isTV) {
-    useTVEventHandler(myTVEventHandler);
-  }
+  });
   const isDarkMode = useColorScheme() === 'dark';
   const version =
     global.HermesInternal?.getRuntimeProperties?.()['OSS Release Version'] ??

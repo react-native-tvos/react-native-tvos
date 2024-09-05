@@ -1,24 +1,24 @@
-// Replacement for findNodeHandle, since we need this for converting
-// components to tags when rendering nextFocus props
-// @flow
+/*
+ * Replacement for findNodeHandle, since we need this for converting
+ * components to tags when rendering nextFocus props
+ * @flow
+ */
 
 // TODO: make this work for Fabric
 
+import type {ElementRef, ElementType} from 'react';
+
 const findNodeHandle = require('../../ReactNative/RendererProxy').findNodeHandle;
 
-type TagForComponentOrHandleType = (
-    component: ?(
-      | {_nativeTag: ?number, canonical: ?{_nativeTag: ?number}}
-      | number
-    ),
+export type ComponentOrHandleType = ?(ElementRef<ElementType> | number);
+
+export type TagForComponentOrHandleType = (
+    component: ComponentOrHandleType,
   ) => ?number;
 
 const tagForComponentOrHandle: TagForComponentOrHandleType = (
-  component: ?(
-    | {_nativeTag: ?number, canonical: ?{_nativeTag: ?number}}
-    | number
-  ),
-): ?number => {
+  component
+) => {
   if (component === null || component === undefined) {
     return undefined;
   }
