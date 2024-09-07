@@ -15,8 +15,7 @@ import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 const React = require('react');
 const ReactNative = require('react-native');
 
-const {Platform, View, StyleSheet, TouchableOpacity, Text, findNodeHandle} =
-  ReactNative;
+const {Platform, View, StyleSheet, TouchableOpacity, Text} = ReactNative;
 
 exports.framework = 'React';
 exports.title = 'DirectionalNextFocus example';
@@ -85,16 +84,13 @@ const DirectionalNextFocusExample = () => {
   const [rightDestination, setRightDestination]: [any, (any) => void] =
     React.useState(null);
 
-  const tagForDestination = (destination: ?React.Node) =>
-    destination ? findNodeHandle(destination) : undefined;
-
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
         <Button
-          nextFocusUp={tagForDestination(upDestination)}
+          nextFocusUp={upDestination}
           nextFocusDown={downDestination}
-          nextFocusLeft={tagForDestination(leftDestination)}
+          nextFocusLeft={leftDestination}
           nextFocusRight={rightDestination}
           label="Starting point"
         />

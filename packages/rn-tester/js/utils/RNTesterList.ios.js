@@ -154,6 +154,36 @@ const Components: Array<RNTesterModuleInfo> = [
 
 const APIs: Array<RNTesterModuleInfo> = ([
   {
+    key: 'TVEventHandlerExample',
+    category: 'TV',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'AccessibilityExample',
     module: require('../examples/Accessibility/AccessibilityExample'),
   },
@@ -322,36 +352,6 @@ const APIs: Array<RNTesterModuleInfo> = ([
   {
     key: 'XHRExample',
     module: require('../examples/XHR/XHRExample'),
-  },
-  {
-    key: 'TVEventHandlerExample',
-    category: 'TV',
-    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVDirectionalNextFocusExample',
-    category: 'TV',
-    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVDynamicDirectionalNextFocusExample',
-    category: 'TV',
-    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVFocusGuideExample',
-    category: 'TV',
-    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVFocusGuideAutoFocusExample',
-    category: 'TV',
-    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
-    supportsTVOS: true,
   },
   {
     key: 'PerformanceApiExample',
