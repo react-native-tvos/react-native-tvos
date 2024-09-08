@@ -534,7 +534,7 @@ export interface ScrollViewPropsIOS {
    * Defines if UIScrollView index should be shown when fast scrolling.
    * Defaults to true.
    */
-  showsScrollIndex?: boolean;
+  showsScrollIndex?: boolean | undefined;
 }
 
 export interface ScrollViewPropsAndroid {

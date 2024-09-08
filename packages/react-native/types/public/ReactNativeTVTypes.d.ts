@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { View, ScrollViewProps, HostComponent, TVParallaxProperties, EventSubscription } from 'react-native';
+import type { View, ScrollViewProps, HostComponent, EventSubscription } from 'react-native';
 
 declare module 'react-native' {
   interface ViewProps {
@@ -63,7 +63,49 @@ declare module 'react-native' {
     } | undefined
   };
 
-  export const TVEventHandler:  {
+  export type TVParallaxProperties = {
+    /**
+     * If true, parallax effects are enabled.  Defaults to true.
+     */
+    enabled?: boolean | undefined,
+
+    /**
+     * Defaults to 2.0.
+     */
+    shiftDistanceX?: number | undefined,
+
+    /**
+     * Defaults to 2.0.
+     */
+    shiftDistanceY?: number | undefined,
+
+    /**
+     * Defaults to 0.05.
+     */
+    tiltAngle?: number | undefined,
+
+    /**
+     * Defaults to 1.0
+     */
+    magnification?: number | undefined,
+
+    /**
+     * Defaults to 1.0
+     */
+    pressMagnification?: number | undefined,
+
+    /**
+     * Defaults to 0.3
+     */
+    pressDuration?: number | undefined,
+
+    /**
+     * Defaults to 0.3
+     */
+    pressDelay?: number | undefined,
+  };
+
+  export const TVEventHandler: {
     addListener: (listener: (event: HWEvent) => void) => EventSubscription | undefined
   };
 
@@ -188,5 +230,4 @@ declare module 'react-native' {
      */
     tvParallaxProperties?: TVParallaxProperties | undefined;
   }
-
 }
