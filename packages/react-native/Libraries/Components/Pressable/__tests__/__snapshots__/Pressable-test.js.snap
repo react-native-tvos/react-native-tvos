@@ -95,8 +95,8 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -132,8 +132,8 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -169,8 +169,8 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -206,8 +206,8 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -243,8 +243,8 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -280,8 +280,8 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -317,8 +317,8 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -354,8 +354,8 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   }
   accessible={true}
   collapsable={false}
-  focusable={true}
-  isTVSelectable={true}
+  focusable={false}
+  isTVSelectable={false}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
