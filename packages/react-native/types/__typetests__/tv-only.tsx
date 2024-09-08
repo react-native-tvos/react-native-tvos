@@ -1,6 +1,6 @@
 import {TVEventHandler} from 'react-native';
 
-function testTVEventHandler(){
+function testTVEventHandler() {
   TVEventHandler.addListener(event => {
     const eventType: string = event.eventType;
     // @ts-expect-error - eventType is a string not a boolean

@@ -28,7 +28,6 @@ import {type RectOrSize} from '../../StyleSheet/Rect';
 import useMergeRefs from '../../Utilities/useMergeRefs';
 import View from '../View/View';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
-import Platform from '../../Utilities/Platform';
 import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import useAndroidRippleForView, {
