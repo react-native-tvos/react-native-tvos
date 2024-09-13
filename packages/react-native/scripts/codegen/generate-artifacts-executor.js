@@ -225,7 +225,7 @@ function extractSupportedApplePlatforms(dependency, dependencyPath) {
   return supportedPlatformsMap;
 }
 
-function findExternalLibraries(pkgJson) {
+function findExternalLibraries(pkgJson, projectRoot) {
   const dependencies = {
     ...pkgJson.dependencies,
     ...pkgJson.devDependencies,
@@ -241,6 +241,7 @@ function findExternalLibraries(pkgJson) {
     try {
       const configFilePath = require.resolve(
         path.join(dependency, 'package.json'),
+        {paths: [projectRoot]},
       );
       const configFile = JSON.parse(fs.readFileSync(configFilePath));
       const codegenConfigFileDir = path.dirname(configFilePath);
@@ -534,7 +535,7 @@ function findCodegenEnabledLibraries(pkgJson, projectRoot) {
   } else {
     return [
       ...projectLibraries,
-      ...findExternalLibraries(pkgJson),
+      ...findExternalLibraries(pkgJson, projectRoot),
       ...findLibrariesFromReactNativeConfig(projectRoot),
     ];
   }
