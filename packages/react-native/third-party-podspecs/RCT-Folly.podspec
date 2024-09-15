@@ -6,7 +6,7 @@
 folly_config = get_folly_config()
 folly_compiler_flags = folly_config[:compiler_flags]
 folly_release_version = folly_config[:version]
-// folly_git_url = folly_config[:git]
+# folly_git_url = folly_config[:git]
 folly_git_url = 'https://github.com/react-native-tvos/folly.git'
 
 Pod::Spec.new do |spec|
