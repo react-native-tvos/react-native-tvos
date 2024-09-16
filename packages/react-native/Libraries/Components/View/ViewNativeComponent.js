@@ -35,6 +35,11 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           nextFocusLeft: true,
           nextFocusRight: true,
           nextFocusUp: true,
+          tvFocusable: true,
+          trapFocusUp: true,
+          trapFocusDown: true,
+          trapFocusLeft: true,
+          trapFocusRight: true,
 
           borderRadius: true,
           borderTopLeftRadius: true,
