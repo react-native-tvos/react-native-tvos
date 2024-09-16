@@ -122,7 +122,7 @@ function configure_apple_framework {
       -DHERMES_BUILD_APPLE_DSYM:BOOLEAN=true \
       -DIMPORT_HERMESC:PATH="$IMPORT_HERMESC_PATH" \
       -DJSI_DIR="$JSI_PATH" \
-      -DHERMES_RELEASE_VERSION="for RN $(get_release_version)" \
+      -DHERMES_RELEASE_VERSION="for RNTV $(get_release_version)" \
       -DCMAKE_BUILD_TYPE="$cmake_build_type"
     popd > /dev/null || exit 1
 }
