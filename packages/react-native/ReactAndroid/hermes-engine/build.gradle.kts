@@ -230,7 +230,7 @@ android {
             "-DJSI_DIR=${jsiDir}",
             "-DHERMES_SLOW_DEBUG=False",
             "-DHERMES_BUILD_SHARED_JSI=True",
-            "-DHERMES_RELEASE_VERSION=for RN ${version}",
+            "-DHERMES_RELEASE_VERSION=for RNTV ${version}",
             // We intentionally build Hermes with Intl support only. This is to simplify
             // the build setup and to avoid overcomplicating the build-type matrix.
             "-DHERMES_ENABLE_INTL=True",
