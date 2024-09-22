@@ -8,7 +8,7 @@ require_relative "./hermes-utils.rb"
 
 react_native_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
-  "react-native-tvos",
+  "react-native",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 )
