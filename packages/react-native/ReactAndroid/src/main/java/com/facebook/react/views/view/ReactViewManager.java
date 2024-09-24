@@ -423,14 +423,6 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     root.drawableHotspotChanged(x, y);
   }
 
-  /**
-   * Utility function to help capture Android TV/ Fire TV Devices with Touch Support
-   */
-  private boolean hasTouchScreen(Context context) {
-    PackageManager pm = context.getPackageManager();
-    return pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
-  }
-
   private void handleSetDestinations(ReactViewGroup root, @Nullable ReadableArray args) {
     if (args == null || args.size() != 1) {
       throw new JSApplicationIllegalArgumentException(
@@ -443,6 +435,14 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       fd[i] = destinations.getInt(i);
     }
     root.setFocusDestinations(fd);
+  }
+
+  /**
+   * Utility function to help capture Android TV/ Fire TV Devices with Touch Support
+   */
+  private boolean hasTouchScreen(Context context) {
+    PackageManager pm = context.getPackageManager();
+    return pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
   }
 
   @ReactProp(name = "autoFocus")
