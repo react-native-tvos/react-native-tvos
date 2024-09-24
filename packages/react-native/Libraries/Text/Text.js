@@ -262,13 +262,15 @@ const Text: React.AbstractComponent<
       <NativeText
         {...restProps}
         {...eventHandlersForText}
-        accessibilityLabel={ariaLabel ?? accessibilityLabel}
-        accessibilityState={nativeTextAccessibilityState}
         accessible={
           accessible == null && Platform.OS === 'android'
             ? _hasOnPressOrOnLongPress
             : _accessible
         }
+        accessibilityState={_accessibilityState}
+        selectable={_selectable}
+        accessibilityLabel={ariaLabel ?? accessibilityLabel}
+        accessibilityState={nativeTextAccessibilityState}
         allowFontScaling={allowFontScaling !== false}
         disabled={_disabled}
         ellipsizeMode={ellipsizeMode ?? 'tail'}

@@ -28,10 +28,12 @@ import {
 import * as React from 'react';
 import {
   BackHandler,
+  Platform,
   Linking,
   StyleSheet,
-  View,
   useColorScheme,
+  TVEventControl,
+  View,
 } from 'react-native';
 
 // RNTester App currently uses in memory storage for storing navigation state
@@ -71,6 +73,11 @@ const RNTesterApp = ({
 
   // Setup hardware back button press listener
   React.useEffect(() => {
+    if (activeModuleKey) {
+      TVEventControl.enableTVMenuKey();
+    } else {
+      TVEventControl.disableTVMenuKey();
+    }
     const handleHardwareBackPress = () => {
       if (activeModuleKey) {
         handleBackPress();
@@ -225,6 +232,15 @@ const RNTesterApp = ({
 
   return (
     <RNTesterThemeContext.Provider value={theme}>
+      {Platform.isTV ? (
+        <View style={styles.tvNavBar}>
+          <RNTesterNavBar
+            screen={screen || Screens.COMPONENTS}
+            isExamplePageOpen={!!activeModule}
+            handleNavBarPress={handleNavBarPress}
+          />
+        </View>
+      ) : null}
       <RNTTitleBar
         title={title}
         theme={theme}
@@ -248,13 +264,15 @@ const RNTesterApp = ({
           />
         )}
       </View>
-      <View style={styles.bottomNavbar}>
-        <RNTesterNavBar
-          screen={screen || Screens.COMPONENTS}
-          isExamplePageOpen={!!activeModule}
-          handleNavBarPress={handleNavBarPress}
-        />
-      </View>
+      {!Platform.isTV ? (
+        <View style={styles.bottomNavbar}>
+          <RNTesterNavBar
+            screen={screen || Screens.COMPONENTS}
+            isExamplePageOpen={!!activeModule}
+            handleNavBarPress={handleNavBarPress}
+          />
+        </View>
+      ) : null}
     </RNTesterThemeContext.Provider>
   );
 };
@@ -264,8 +282,21 @@ export default RNTesterApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+  },
+  tvNavBar: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    height: navBarHeight,
   },
   bottomNavbar: {
+    bottom: 0,
+    left: 20,
+    width: '30%',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'absolute',
     height: navBarHeight,
   },
   hidden: {

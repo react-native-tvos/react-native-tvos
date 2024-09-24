@@ -19,6 +19,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifndef _RCT_VIEW_COMPONENT_VIEW_
+#define _RCT_VIEW_COMPONENT_VIEW_
+
 /**
  * UIView class for <View> component.
  */
@@ -63,6 +66,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) UIEdgeInsets hitTestEdgeInsets;
 
+#if TARGET_OS_TV
+@property(nonatomic, nullable) UIFocusGuide *focusGuide;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideUp;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideDown;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideLeft;
+@property(nonatomic, nullable) UIFocusGuide *focusGuideRight;
+#endif
+
 /**
  * Enforcing `call super` semantic for overridden methods from `RCTComponentViewProtocol`.
  * The methods update the instance variables.
@@ -81,5 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)componentViewName_DO_NOT_USE_THIS_IS_BROKEN;
 
 @end
+
+#endif // _RCT_VIEW_COMPONENT_VIEW_
 
 NS_ASSUME_NONNULL_END

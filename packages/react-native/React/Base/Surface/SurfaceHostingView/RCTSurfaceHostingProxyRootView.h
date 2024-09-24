@@ -12,6 +12,10 @@
 
 #import "RCTSurfaceHostingView.h"
 
+#if TARGET_OS_TV
+#import <React/RCTTVRemoteHandler.h>
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -38,6 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSTimeInterval loadingViewFadeDelay;
 @property (nonatomic, assign) NSTimeInterval loadingViewFadeDuration;
 @property (nonatomic, assign) CGSize minimumSize;
+#if TARGET_OS_TV
+@property (nonatomic, strong, nullable) RCTTVRemoteHandler *tvRemoteHandler;
+@property (nonatomic, weak, nullable) UIView *reactPreferredFocusedView;
+@property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
+#endif
 
 - (instancetype)initWithSurface:(id<RCTSurfaceProtocol>)surface NS_DESIGNATED_INITIALIZER;
 

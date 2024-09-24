@@ -25,8 +25,10 @@ using namespace facebook::react;
 @end
 
 @implementation RCTDeviceInfo {
+#if !TARGET_OS_TV
   UIInterfaceOrientation _currentInterfaceOrientation;
   NSDictionary *_currentInterfaceDimensions;
+#endif
   BOOL _isFullscreen;
   BOOL _invalidated;
 }
@@ -52,6 +54,7 @@ RCT_EXPORT_MODULE()
                                                name:RCTAccessibilityManagerDidUpdateMultiplierNotification
                                              object:[_moduleRegistry moduleForName:"AccessibilityManager"]];
 
+#if !TARGET_OS_TV
   _currentInterfaceOrientation = [RCTSharedApplication() statusBarOrientation];
 
   _currentInterfaceDimensions = [self _exportedDimensions];
@@ -74,6 +77,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:UIDeviceOrientationDidChangeNotification
                                              object:nil];
+#endif
 
   // TODO T175901725 - Registering the RCTDeviceInfo module to the notification is a short-term fix to unblock 0.73
   // The actual behavior should be that the module is properly registered in the TurboModule/Bridge infrastructure
@@ -84,6 +88,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(invalidate)
                                                name:RCTBridgeWillInvalidateModulesNotification
                                              object:nil];
+
 }
 
 - (void)invalidate
@@ -103,13 +108,15 @@ RCT_EXPORT_MODULE()
 
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTUserInterfaceStyleDidChangeNotification object:nil];
-
-  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTWindowFrameDidChangeNotification object:nil];
-
   [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillInvalidateModulesNotification object:nil];
 
+#if !TARGET_OS_TV
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTWindowFrameDidChangeNotification object:nil];
+
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTUserInterfaceStyleDidChangeNotification object:nil];
+
   [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+#endif
 }
 
 static BOOL RCTIsIPhoneNotched()
@@ -196,6 +203,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
   });
 }
 
+#if !TARGET_OS_TV
+
 - (void)interfaceOrientationDidChange
 {
   __weak __typeof(self) weakSelf = self;
@@ -261,6 +270,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 #pragma clang diagnostic pop
   }
 }
+
+#endif // TARGET_OS_TV
 
 - (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
 {

@@ -1,21 +1,21 @@
 {
-  "name": "@react-native/virtualized-lists",
-  "version": "0.74.87",
-  "description": "Virtualized lists for React Native.",
+  "name": "@react-native-tvos/virtualized-lists",
+  "version": "0.74.5-0",
+  "description": "Virtualized lists for React Native with TV focus engine support.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/facebook/react-native.git",
+    "url": "https://github.com/react-native-tvos/react-native-tvos.git",
     "directory": "packages/virtualized-lists"
   },
-  "homepage": "https://github.com/facebook/react-native/tree/HEAD/packages/virtualized-lists#readme",
+  "homepage": "https://github.com/react-native-tvos/react-native-tvos/tree/HEAD/packages/virtualized-lists#readme",
   "keywords": [
     "lists",
     "virtualized-lists",
     "section-lists",
     "react-native"
   ],
-  "bugs": "https://github.com/facebook/react-native/issues",
+  "bugs": "https://github.com/react-native-tvos/react-native-tvos/issues",
   "engines": {
     "node": ">=18"
   },

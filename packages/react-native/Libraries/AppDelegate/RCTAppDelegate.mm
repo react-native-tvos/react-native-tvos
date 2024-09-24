@@ -70,6 +70,14 @@
   UIViewController *rootViewController = [self createRootViewController];
   [self setRootView:rootView toRootViewController:rootViewController];
   self.window.rootViewController = rootViewController;
+#if TARGET_OS_TV
+  UIUserInterfaceStyle style = rootViewController.traitCollection.userInterfaceStyle;
+  if (style == UIUserInterfaceStyleDark) {
+    rootView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+  } else {
+    rootView.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+  }
+#endif
   self.window.windowScene.delegate = self;
   [self.window makeKeyAndVisible];
 
@@ -99,9 +107,9 @@
 {
   BOOL enableFabric = self.fabricEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
-
+#if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
-
+#endif
   return rootView;
 }
 
@@ -137,6 +145,7 @@
 
 #pragma mark - UISceneDelegate
 
+#if !TARGET_OS_TV
 - (void)windowScene:(UIWindowScene *)windowScene
     didUpdateCoordinateSpace:(id<UICoordinateSpace>)previousCoordinateSpace
         interfaceOrientation:(UIInterfaceOrientation)previousInterfaceOrientation
@@ -144,6 +153,7 @@
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
 }
+#endif
 
 #pragma mark - New Arch Enabled settings
 

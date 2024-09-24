@@ -15,15 +15,15 @@ Pod::Spec.new do |spec|
   spec.homepage = 'https://github.com/facebook/folly'
   spec.summary = 'An open-source C++ library developed and used at Facebook.'
   spec.authors = 'Facebook'
-  spec.source = { :git => 'https://github.com/facebook/folly.git',
-                  :tag => "v#{folly_release_version}" }
+  spec.source = { :git => 'https://github.com/react-native-tvos/folly.git',
+                  :tag => "tv-v#{folly_release_version}" }
   spec.module_name = 'folly'
   spec.header_mappings_dir = '.'
   spec.dependency 'boost'
   spec.dependency 'DoubleConversion'
   spec.dependency 'glog'
   spec.dependency "fmt", "9.1.0"
-  spec.compiler_flags = folly_compiler_flags + ' -DFOLLY_HAVE_PTHREAD=1 -Wno-documentation -faligned-new'
+  spec.compiler_flags = folly_compiler_flags
   spec.source_files = 'folly/String.cpp',
                       'folly/Conv.cpp',
                       'folly/Demangle.cpp',
