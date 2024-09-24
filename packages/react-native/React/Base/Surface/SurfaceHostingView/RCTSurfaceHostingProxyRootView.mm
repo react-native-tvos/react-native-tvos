@@ -63,6 +63,27 @@ static RCTRootViewSizeFlexibility convertToRootViewSizeFlexibility(RCTSurfaceSiz
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
+#if TARGET_OS_TV
+- (void)dealloc
+{
+  self.tvRemoteHandler = nil;
+}
+
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
+  if (self.reactPreferredFocusEnvironments != nil) {
+    NSArray<id<UIFocusEnvironment>> *tempReactPreferredFocusEnvironments = self.reactPreferredFocusEnvironments;
+    self.reactPreferredFocusEnvironments = nil;
+    return tempReactPreferredFocusEnvironments;
+  }
+
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
+    return @[self.reactPreferredFocusedView];
+  }
+  return [super preferredFocusEnvironments];
+}
+#endif
+
+
 #pragma mark proxy methods to RCTSurfaceHostingView
 
 - (NSString *)moduleName
@@ -124,6 +145,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   [super surface:surface didChangeStage:stage];
   if (RCTSurfaceStageIsRunning(stage)) {
     [_bridge.performanceLogger markStopForTag:RCTPLTTI];
+    dispatch_async(dispatch_get_main_queue(), ^{
+#if TARGET_OS_TV
+     self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:[self contentView]];
+#endif
+    });
   }
 }
 

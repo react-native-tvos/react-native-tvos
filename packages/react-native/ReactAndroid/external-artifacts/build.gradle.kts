@@ -9,7 +9,9 @@ import org.jetbrains.kotlin.gradle.plugin.extraProperties
 
 plugins { id("maven-publish") }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 version =
     parent?.extraProperties?.get("publishing_version")

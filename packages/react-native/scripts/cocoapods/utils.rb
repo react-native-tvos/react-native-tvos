@@ -242,7 +242,7 @@ class ReactNativePodsUtils
             node_binary = `type -a node`.split("\n").map { |path|
                 path.gsub!("node is ", "")
             }.select { |b|
-                !b.start_with?("/var")
+                return !b.start_with?("/var")
             }
 
             node_binary = node_binary[0]
@@ -358,6 +358,10 @@ class ReactNativePodsUtils
                         config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] :
                         Helpers::Constants.min_ios_version_supported
                     config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = [Helpers::Constants.min_ios_version_supported.to_f, old_iphone_deploy_target.to_f].max.to_s
+                    old_iphone_deploy_target = config.build_settings["TVOS_DEPLOYMENT_TARGET"] ?
+                        config.build_settings["TVOS_DEPLOYMENT_TARGET"] :
+                        Helpers::Constants.min_ios_version_supported
+                    config.build_settings["TVOS_DEPLOYMENT_TARGET"] = [Helpers::Constants.min_ios_version_supported.to_f, old_iphone_deploy_target.to_f].max.to_s
                 end
             end
     end
@@ -696,10 +700,18 @@ class ReactNativePodsUtils
             map[field] = "$(inherited)" + flag
         else
             unless map[field].include?(flag)
-                map[field] = map[field] + flag
+                if map[field].instance_of? String
+                    map[field] = map[field] + flag
+                elsif map[field].instance_of? Array
+                    map[field].push(flag)
+                end
             end
             unless map[field].include?("$(inherited)")
-                map[field] = "$(inherited) " + map[field]
+                if map[field].instance_of? String
+                    map[field] = "$(inherited) " + map[field]
+                elsif map[field].instance_of? Array
+                    map[field].unshift("$(inherited)")
+                end
             end
         end
     end

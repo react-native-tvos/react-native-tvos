@@ -15,14 +15,14 @@ import type {
   RenderItemType,
   ViewabilityConfigCallbackPair,
   ViewToken,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 
 import * as ReactNativeFeatureFlags from '../../src/private/featureflags/ReactNativeFeatureFlags';
 import {type ScrollResponderType} from '../Components/ScrollView/ScrollView';
 import {
   VirtualizedList,
   keyExtractor as defaultKeyExtractor,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 import memoizeOne from 'memoize-one';
 
 const View = require('../Components/View/View');

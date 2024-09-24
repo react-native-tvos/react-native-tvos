@@ -13,6 +13,9 @@ import type {ViewProps} from './ViewPropTypes';
 import TextAncestor from '../../Text/TextAncestor';
 import ViewNativeComponent from './ViewNativeComponent';
 import * as React from 'react';
+import {Commands} from './ViewNativeComponent';
+
+import setAndForwardRef from '../../Utilities/setAndForwardRef';
 
 export type Props = ViewProps;
 
@@ -23,6 +26,10 @@ export type Props = ViewProps;
  *
  * @see https://reactnative.dev/docs/view
  */
+type ViewImperativeMethods = $ReadOnly<{
+  requestTVFocus: () => void,
+}>;
+
 const View: React.AbstractComponent<
   ViewProps,
   React.ElementRef<typeof ViewNativeComponent>,
@@ -94,6 +101,33 @@ const View: React.AbstractComponent<
       };
     }
 
+    const viewRef = React.useRef<?React.ElementRef<typeof View>>(null);
+
+    const requestTVFocus = React.useCallback(() => {
+      if (viewRef.current) {
+        Commands.requestTVFocus(viewRef.current);
+      }
+    }, []);
+
+    const _setNativeRef = setAndForwardRef({
+      getForwardedRef: () => forwardedRef,
+      setLocalRef: ref => {
+        viewRef.current = ref;
+
+        // This is a hack. Ideally we would forwardRef to the underlying
+        // host component. However, since TVFocusGuide has its own methods that can be
+        // called as well, if we used the standard forwardRef then these
+        // methods wouldn't be accessible
+        //
+        // Here we mutate the ref, so that the user can use the standart native
+        // methods like `measureLayout()` etc. while also having access to
+        // imperative methods of this component like `requestTVFocus()`.
+        if (ref) {
+          ref.requestTVFocus = requestTVFocus;
+        }
+      },
+    });
+
     const actualView = (
       <ViewNativeComponent
         {...otherProps}
@@ -112,7 +146,7 @@ const View: React.AbstractComponent<
             : importantForAccessibility
         }
         nativeID={id ?? nativeID}
-        ref={forwardedRef}
+        ref={_setNativeRef}
       />
     );
 

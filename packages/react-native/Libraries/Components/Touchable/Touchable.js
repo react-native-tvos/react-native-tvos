@@ -16,6 +16,8 @@ import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import UIManager from '../../ReactNative/UIManager';
 import Platform from '../../Utilities/Platform';
 import SoundManager from '../Sound/SoundManager';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
+import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import BoundingDimensions from './BoundingDimensions';
 import Position from './Position';
 import * as React from 'react';
@@ -371,10 +373,31 @@ const LONG_PRESS_ALLOWED_MOVEMENT = 10;
  * @lends Touchable.prototype
  */
 const TouchableMixin = {
-  componentDidMount: function () {
+  componentDidMount: function (this: any) {
     if (!Platform.isTV) {
       return;
     }
+    if (!tvFocusEventHandler) {
+      return;
+    }
+
+    this._componentTag = tagForComponentOrHandle(this);
+    tvFocusEventHandler.register(this._componentTag, evt => {
+      evt.dispatchConfig = {};
+      if (evt.eventType === 'focus') {
+        this.touchableHandleFocus(evt);
+      } else if (evt.eventType === 'blur') {
+        this.touchableHandleBlur(evt);
+      } else if (evt.eventType === 'select' && Platform.OS !== 'android') {
+        this.touchableHandlePress &&
+          !this.props.disabled &&
+          this.touchableHandlePress(evt);
+      } else if (evt.eventType === 'longSelect') {
+        this.touchableHandleLongPress &&
+          !this.props.disabled &&
+          this.touchableHandleLongPress();
+      }
+    });
   },
 
   /**
@@ -383,6 +406,9 @@ const TouchableMixin = {
   /* $FlowFixMe[missing-this-annot] The 'this' type annotation(s) required by
    * Flow's LTI update could not be added via codemod */
   componentWillUnmount: function () {
+    if (tvFocusEventHandler) {
+      tvFocusEventHandler.unregister(this._componentTag);
+    }
     this.touchableDelayTimeout && clearTimeout(this.touchableDelayTimeout);
     this.longPressDelayTimeout && clearTimeout(this.longPressDelayTimeout);
     this.pressOutDelayTimeout && clearTimeout(this.pressOutDelayTimeout);

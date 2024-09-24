@@ -34,9 +34,10 @@
     ]];
     self.keyLabel.textColor = [UIColor whiteColor];
     self.keyLabel.numberOfLines = 0;
+#if !TARGET_OS_TV
     self.keyLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.keyLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:12.0f];
-
+#endif
     self.valueLabel = [UILabel new];
     [self.contentView addSubview:self.valueLabel];
     self.valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -48,8 +49,10 @@
     ]];
     self.valueLabel.textColor = [UIColor whiteColor];
     self.valueLabel.numberOfLines = 0;
+#if !TARGET_OS_TV
     self.valueLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.valueLabel.font = [UIFont fontWithName:@"Menlo-Regular" size:12.0f];
+#endif
   }
   return self;
 }
@@ -108,7 +111,9 @@
   _tableView.delegate = self;
   _tableView.dataSource = self;
   _tableView.backgroundColor = [UIColor colorWithRed:0.8 green:0 blue:0 alpha:1];
+#if !TARGET_OS_TV
   _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+#endif
   _tableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
   _tableView.allowsSelection = NO;
   [self.view addSubview:_tableView];
