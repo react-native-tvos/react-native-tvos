@@ -47,8 +47,8 @@ function ContentPress() {
           onPress={() => {
             setTimesPressed(current => current + 1);
           }}>
-          {({pressed}) => (
-            <Text testID="one_press_me_button" style={styles.text}>
+          {({pressed, focused}) => (
+            <Text testID="one_press_me_button" style={[styles.text, {opacity: focused ? 0.5 : 1.0}]}>
               {pressed ? 'Pressed!' : 'Press Me'}
             </Text>
           )}
@@ -61,6 +61,34 @@ function ContentPress() {
   );
 }
 
+function TVFocusContentPress() {
+  const [timesPressed, setTimesPressed] = useState(0);
+
+  let textLog = '';
+  if (timesPressed > 1) {
+    textLog = timesPressed + 'x onPress';
+  } else if (timesPressed > 0) {
+    textLog = 'onPress';
+  }
+
+  return (
+    <>
+      <View style={styles.row}>
+        <Pressable
+          onPress={() => {
+            setTimesPressed(current => current + 1);
+          }}>
+          {({focused}) => (
+            <Text style={styles.text}>{focused ? 'Focused!' : 'Press Me'}</Text>
+          )}
+        </Pressable>
+      </View>
+      <View style={styles.logBox}>
+        <Text testID="focusable_press_console">{textLog}</Text>
+      </View>
+    </>
+  );
+}
 function TextOnPressBox() {
   const [timesPressed, setTimesPressed] = useState(0);
 
@@ -116,10 +144,15 @@ function PressableFeedbackEvents() {
     <View testID="pressable_feedback_events">
       <View style={[styles.row, styles.centered]}>
         <Pressable
-          style={styles.wrapper}
+          style={({focused}) => [
+            styles.wrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           testID="pressable_feedback_events_button"
           accessibilityLabel="pressable feedback events"
           accessibilityRole="button"
+          onBlur={() => appendEvent('blur')}
+          onFocus={() => appendEvent('focus')}
           onPress={() => appendEvent('press')}
           onPressIn={() => appendEvent('pressIn')}
           onPressOut={() => appendEvent('pressOut')}
@@ -152,7 +185,10 @@ function PressableDelayEvents() {
     <View testID="pressable_delay_events">
       <View style={[styles.row, styles.centered]}>
         <Pressable
-          style={styles.wrapper}
+          style={({focused}) => [
+            styles.wrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           testID="pressable_delay_events_button"
           onPress={() => appendEvent('press')}
           onPressIn={() => appendEvent('pressIn')}
@@ -213,7 +249,10 @@ function PressableHitSlop() {
       <View style={[styles.row, styles.centered]}>
         <Pressable
           onPress={() => setTimesPressed(num => num + 1)}
-          style={styles.hitSlopWrapper}
+          style={({focused}) => [
+            styles.hitSlopWrapper,
+            {opacity: focused ? 0.5 : 1.0},
+          ]}
           hitSlop={{top: 30, bottom: 30, left: 60, right: 60}}
           testID="pressable_hit_slop_button">
           <Text style={styles.hitSlopButton}>Press Outside This View</Text>
@@ -255,14 +294,25 @@ function PressableNativeMethods() {
 function PressableDisabled() {
   return (
     <>
-      <Pressable disabled={true} style={[styles.row, styles.block]}>
+      <Pressable
+        disabled={true}
+        onPress={() => console.warn('Disabled pressable was pressed!')}
+        style={({pressed, focused}) => [
+          {opacity: pressed || focused ? 0.5 : 1},
+          styles.row,
+          styles.block,
+        ]}>
         <Text style={styles.disabledButton}>Disabled Pressable</Text>
       </Pressable>
 
       <Pressable
         disabled={false}
-        style={({pressed}) => [
-          {opacity: pressed ? 0.5 : 1},
+        tvParallaxProperties={{
+          enabled: true,
+          pressMagnification: 1.1,
+        }}
+        style={({pressed, focused}) => [
+          {opacity: pressed || focused ? 0.5 : 1},
           styles.row,
           styles.block,
         ]}>
@@ -284,7 +334,9 @@ function PressableHoverStyle() {
           styles.wrapperCustom,
         ]}
         onHoverIn={() => setHovered(true)}
-        onHoverOut={() => setHovered(false)}>
+        onHoverOut={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}>
         <Text style={styles.text}>Hover Me</Text>
       </Pressable>
     </View>
@@ -301,6 +353,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    color: '#808080',
   },
   block: {
     padding: 10,
@@ -373,14 +426,28 @@ const examples = [
     },
   },
   {
-    title: 'Change style based on Press',
+    title: 'Change content based on focus',
+    render(): React.Node {
+      return <TVFocusContentPress />;
+    },
+  },
+  {
+    title: 'Change style based on Press and Focus',
     render(): React.Node {
       return (
         <View style={styles.row}>
           <Pressable
-            style={({pressed}) => [
+            tvParallaxProperties={{
+              enabled: true,
+              pressMagnification: 1.1,
+            }}
+            style={({pressed, focused}) => [
               {
-                backgroundColor: pressed ? 'rgb(210, 230, 255)' : 'white',
+                backgroundColor: pressed
+                  ? 'rgb(210, 230, 255)'
+                  : focused
+                  ? 'rgb(255, 230, 210)'
+                  : 'white',
               },
               styles.wrapperCustom,
             ]}>

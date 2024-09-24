@@ -11,13 +11,43 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import * as React from 'react';
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useTVEventHandler,
+} from 'react-native';
+
+function TVEventView(): React.Node {
+  const [lastEventType, setLastEventType] = React.useState('');
+  const myTVEventHandler = (evt: {eventType: string}) => {
+    setLastEventType(evt.eventType);
+  };
+  useTVEventHandler(myTVEventHandler);
+  if (Platform.isTV) {
+    return <Text>TVEvent: {lastEventType}</Text>;
+  } else {
+    return <View />;
+  }
+}
 
 function ModalOnShowOnDismiss(): React.Node {
   const [modalShowComponent, setModalShowComponent] = React.useState(true);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [onShowCount, setOnShowCount] = React.useState(0);
   const [onDismissCount, setOnDismissCount] = React.useState(0);
+
+  const [lastEvent, setLastEvent] = React.useState('');
+
+  const buttonOpacity = (pressed: boolean, focused: boolean) =>
+    pressed || focused ? 0.7 : 1.0;
+
+  useTVEventHandler(evt => {
+    setLastEvent(evt.eventType);
+  });
 
   return (
     <View style={styles.container}>
@@ -37,6 +67,7 @@ function ModalOnShowOnDismiss(): React.Node {
           }}>
           <View style={[styles.centeredView, styles.modalBackdrop]}>
             <View style={styles.modalView}>
+              <TVEventView />
               <Text testID="modal-on-show-count">
                 onShow is called {onShowCount} times
               </Text>
@@ -44,14 +75,22 @@ function ModalOnShowOnDismiss(): React.Node {
                 onDismiss is called {onDismissCount} times
               </Text>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={({pressed, focused}) => [
+                  styles.button,
+                  styles.buttonClose,
+                  {opacity: buttonOpacity(pressed, focused)},
+                ]}
                 onPress={() => setModalVisible(false)}>
                 <Text testID="dismiss-modal" style={styles.textStyle}>
                   Hide modal by setting visible to false
                 </Text>
               </Pressable>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={({pressed, focused}) => [
+                  styles.button,
+                  styles.buttonClose,
+                  {opacity: buttonOpacity(pressed, focused)},
+                ]}
                 onPress={() => setModalShowComponent(false)}>
                 <Text
                   testID="dismiss-modal-by-removing-component"
@@ -67,8 +106,13 @@ function ModalOnShowOnDismiss(): React.Node {
       <Text testID="on-dismiss-count">
         onDismiss is called {onDismissCount} times
       </Text>
+      <Text> Last event = {lastEvent}</Text>
       <Pressable
-        style={[styles.button, styles.buttonOpen]}
+        style={({pressed, focused}) => [
+          styles.button,
+          styles.buttonOpen,
+          {opacity: buttonOpacity(pressed, focused)},
+        ]}
         onPress={() => {
           setModalShowComponent(true);
           setModalVisible(true);
@@ -84,7 +128,7 @@ function ModalOnShowOnDismiss(): React.Node {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingVertical: 30,
   },
   centeredView: {

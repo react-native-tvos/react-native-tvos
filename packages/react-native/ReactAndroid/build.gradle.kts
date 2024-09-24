@@ -22,7 +22,9 @@ plugins {
 
 version = project.findProperty("VERSION_NAME")?.toString()!!
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 // We download various C++ open-source dependencies into downloads.
 // We then copy both the downloaded code and our custom makefiles and headers into third-party-ndk.

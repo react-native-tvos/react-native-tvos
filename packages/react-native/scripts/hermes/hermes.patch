@@ -1,0 +1,207 @@
+diff --git a/API/hermes/CMakeLists.txt b/API/hermes/CMakeLists.txt
+index da8b4f202..16ab217d2 100644
+--- a/API/hermes/CMakeLists.txt
++++ b/API/hermes/CMakeLists.txt
+@@ -141,6 +141,10 @@ if(APPLE AND HERMES_BUILD_APPLE_FRAMEWORK)
+     add_custom_command(TARGET libhermes POST_BUILD
+       COMMAND /usr/libexec/PlistBuddy -c "Add :MinimumOSVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:libhermes>/Info.plist
+     )
++  elseif(HERMES_APPLE_TARGET_PLATFORM MATCHES "appletv")
++    add_custom_command(TARGET libhermes POST_BUILD
++      COMMAND /usr/libexec/PlistBuddy -c "Add :MinimumOSVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:libhermes>/Info.plist
++    )
+   elseif(HERMES_APPLE_TARGET_PLATFORM MATCHES "catalyst")
+     add_custom_command(TARGET libhermes POST_BUILD
+       COMMAND /usr/libexec/PlistBuddy -c "Add :LSMinimumSystemVersion string ${CMAKE_OSX_DEPLOYMENT_TARGET}" $<TARGET_FILE_DIR:libhermes>/Resources/Info.plist
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4373048de..18a0435ae 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -57,6 +57,14 @@ if(HERMES_APPLE_TARGET_PLATFORM MATCHES "catalyst")
+   set(THREADS_PREFER_PTHREAD_FLAG ON)
+ endif()
+ 
++if(HERMES_APPLE_TARGET_PLATFORM MATCHES "appletvos")
++  add_definitions(-DTARGET_OS_TV=1)
++endif()
++
++if(HERMES_APPLE_TARGET_PLATFORM MATCHES "appletvsimulator")
++  add_definitions(-DTARGET_OS_TV=1)
++endif()
++
+ # This must be consistent with the release_version in:
+ # - android/build.gradle
+ # - npm/package.json
+diff --git a/external/icu_decls/unicode/platform.h b/external/icu_decls/unicode/platform.h
+index 1b2ab306e..42342e804 100644
+--- a/external/icu_decls/unicode/platform.h
++++ b/external/icu_decls/unicode/platform.h
+@@ -148,6 +148,8 @@
+ #   include <TargetConditionals.h>
+ #   if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE  /* variant of TARGET_OS_MAC */
+ #       define U_PLATFORM U_PF_IPHONE
++#   elif defined(TARGET_OS_TV) && TARGET_OS_TV  /* variant of TARGET_OS_MAC */
++#       define U_PLATFORM U_PF_IPHONE
+ #   else
+ #       define U_PLATFORM U_PF_DARWIN
+ #   endif
+diff --git a/external/llvh/lib/Support/Unix/Process.inc b/external/llvh/lib/Support/Unix/Process.inc
+index c5945f197..7c6d43369 100644
+--- a/external/llvh/lib/Support/Unix/Process.inc
++++ b/external/llvh/lib/Support/Unix/Process.inc
+@@ -133,7 +133,7 @@ void Process::PreventCoreFiles() {
+   setrlimit(RLIMIT_CORE, &rlim);
+ #endif
+ 
+-#if defined(HAVE_MACH_MACH_H) && !defined(__GNU__)
++#if defined(HAVE_MACH_MACH_H) && !defined(__GNU__) && !(defined(TARGET_OS_TV) && TARGET_OS_TV)
+   // Disable crash reporting on Mac OS X 10.0-10.4
+ 
+   // get information about the original set of exception ports for the task
+diff --git a/external/llvh/lib/Support/Unix/Program.inc b/external/llvh/lib/Support/Unix/Program.inc
+index 8a10a88e9..72f715609 100644
+--- a/external/llvh/lib/Support/Unix/Program.inc
++++ b/external/llvh/lib/Support/Unix/Program.inc
+@@ -47,7 +47,7 @@
+ #include <TargetConditionals.h>
+ #endif
+ 
+-#if defined(__APPLE__) && !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE)
++#if defined(__APPLE__) && !(defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE) && !(defined(TARGET_OS_TV) && TARGET_OS_TV)
+ #define USE_NSGETENVIRON 1
+ #else
+ #define USE_NSGETENVIRON 0
+@@ -200,7 +200,11 @@ static bool Execute(ProcessInfo &PI, StringRef Program,
+   // If this OS has posix_spawn and there is no memory limit being implied, use
+   // posix_spawn.  It is more efficient than fork/exec.
+ #ifdef HAVE_POSIX_SPAWN
++#if defined(TARGET_OS_TV) && TARGET_OS_TV
++  {
++#else
+   if (MemoryLimit == 0) {
++#endif
+     posix_spawn_file_actions_t FileActionsStore;
+     posix_spawn_file_actions_t *FileActions = nullptr;
+ 
+@@ -266,6 +270,7 @@ static bool Execute(ProcessInfo &PI, StringRef Program,
+   }
+ #endif
+ 
++#if !(defined(TARGET_OS_TV) && TARGET_OS_TV)
+   // Create a child process.
+   int child = fork();
+   switch (child) {
+@@ -325,6 +330,7 @@ static bool Execute(ProcessInfo &PI, StringRef Program,
+   PI.Process = child;
+ 
+   return true;
++#endif // TARGET_OS_TV
+ }
+ 
+ namespace llvh {
+diff --git a/hermes-engine.podspec b/hermes-engine.podspec
+index 164d02385..50c3a903c 100644
+--- a/hermes-engine.podspec
++++ b/hermes-engine.podspec
+@@ -24,7 +24,7 @@ Pod::Spec.new do |spec|
+   # The podspec would be serialized to JSON and people will download prebuilt binaries instead of the source.
+   # TODO(use the hash field as a validation mechanism when the process is stable)
+   spec.source      = ENV['hermes-artifact-url'] ? { http: ENV['hermes-artifact-url'] } : { git: "https://github.com/facebook/hermes.git", tag: "v#{spec.version}" }
+-  spec.platforms   = { :osx => "10.13", :ios => "12.0", :visionos => "1.0" }
++  spec.platforms   = { :osx => "10.13", :ios => "12.0", :visionos => "1.0", :tvos => "12.0" }
+ 
+   spec.preserve_paths      = ["destroot/bin/*"].concat(HermesHelper::BUILD_TYPE == :debug ? ["**/*.{h,c,cpp}"] : [])
+   spec.source_files        = "destroot/include/**/*.h"
+@@ -32,6 +32,7 @@ Pod::Spec.new do |spec|
+ 
+   spec.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
+   spec.visionos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
++  spec.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
+   spec.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
+ 
+   spec.xcconfig            = { "CLANG_CXX_LANGUAGE_STANDARD" => "c++17", "CLANG_CXX_LIBRARY" => "compiler-default", "GCC_PREPROCESSOR_DEFINITIONS" => "HERMES_ENABLE_DEBUGGER=1" }
+diff --git a/lib/Platform/Logging.cpp b/lib/Platform/Logging.cpp
+index c6f9f8086..f1ac8d7b1 100644
+--- a/lib/Platform/Logging.cpp
++++ b/lib/Platform/Logging.cpp
+@@ -27,6 +27,8 @@ void hermesLog(const char *componentName, const char *fmt, ...) {
+ #ifdef __ANDROID__
+   __android_log_vprint(ANDROID_LOG_INFO, componentName, fmt, args);
+ #elif defined(__APPLE__)
++// Xcode 15.3 introduced an issue where vsnprintf seems to be removed from tvOS
++#if !(defined(TARGET_OS_TV) && TARGET_OS_TV)
+   static os_log_t hermesLogger = os_log_create("dev.hermesengine", "Default");
+   // Need to make a copy in order to do the vsprintf trick.
+   va_list argsCopy;
+@@ -43,6 +45,7 @@ void hermesLog(const char *componentName, const char *fmt, ...) {
+       "%{public}s: %{public}s",
+       componentName,
+       buffer.get());
++#endif
+ #else
+   fprintf(stderr, "%s: ", componentName);
+   vfprintf(stderr, fmt, args);
+diff --git a/lib/Support/OSCompatPosix.cpp b/lib/Support/OSCompatPosix.cpp
+index 015342ccf..36dc5dccf 100644
+--- a/lib/Support/OSCompatPosix.cpp
++++ b/lib/Support/OSCompatPosix.cpp
+@@ -819,10 +819,12 @@ bool unset_env(const char *name) {
+ void *SigAltStackLeakSuppressor::stackRoot_{nullptr};
+ 
+ SigAltStackLeakSuppressor::~SigAltStackLeakSuppressor() {
++#if !(defined(TARGET_OS_TV) && TARGET_OS_TV)
+   stack_t oldAltStack;
+   if (sigaltstack(nullptr, &oldAltStack) == 0) {
+     stackRoot_ = oldAltStack.ss_sp;
+   }
++#endif
+ }
+ 
+ } // namespace oscompat
+diff --git a/utils/build-apple-framework.sh b/utils/build-apple-framework.sh
+index bcc4f51e9..c307c4f83 100755
+--- a/utils/build-apple-framework.sh
++++ b/utils/build-apple-framework.sh
+@@ -37,6 +37,10 @@ function get_visionos_deployment_target {
+   ruby -rcocoapods-core -rjson -e "puts Pod::Specification.from_file('hermes-engine.podspec').deployment_target('visionos')"
+ }
+ 
++function get_tvos_deployment_target {
++  ruby -rcocoapods-core -rjson -e "puts Pod::Specification.from_file('hermes-engine.podspec').deployment_target('tvos')"
++}
++
+ function get_mac_deployment_target {
+   ruby -rcocoapods-core -rjson -e "puts Pod::Specification.from_file('hermes-engine.podspec').deployment_target('osx')"
+ }
+@@ -51,7 +55,7 @@ function build_host_hermesc {
+ function configure_apple_framework {
+   local build_cli_tools enable_bitcode
+ 
+-  if [[ $1 == iphoneos || $1 == catalyst || $1 == visionos ]]; then
++  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst || $1 == visionos ]]; then
+     enable_bitcode="true"
+   else
+     enable_bitcode="false"
+diff --git a/utils/build-ios-framework.sh b/utils/build-ios-framework.sh
+index 8b6eed900..227f54440 100755
+--- a/utils/build-ios-framework.sh
++++ b/utils/build-ios-framework.sh
+@@ -9,14 +9,17 @@
+ if [ ! -d destroot/Library/Frameworks/universal/hermes.xcframework ]; then
+     ios_deployment_target=$(get_ios_deployment_target)
+     visionos_deployment_target=$(get_visionos_deployment_target)
++    tvos_deployment_target=$(get_tvos_deployment_target)
+ 
+     build_apple_framework "iphoneos" "arm64" "$ios_deployment_target"
+     build_apple_framework "iphonesimulator" "x86_64;arm64" "$ios_deployment_target"
+     build_apple_framework "catalyst" "x86_64;arm64" "$ios_deployment_target"
+     build_apple_framework "xros" "arm64" "$visionos_deployment_target"
+     build_apple_framework "xrsimulator" "arm64" "$visionos_deployment_target"
++    build_apple_framework "appletvos" "arm64" "$tvos_deployment_target"
++    build_apple_framework "appletvsimulator" "x86_64;arm64" "$tvos_deployment_target"
+ 
+-    create_universal_framework "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator"
++    create_universal_framework "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator" "appletvos" "appletvsimulator"
+ else
+     echo "Skipping; Clean \"destroot\" to rebuild".
+ fi

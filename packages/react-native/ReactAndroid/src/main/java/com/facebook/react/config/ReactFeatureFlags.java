@@ -72,6 +72,17 @@ public class ReactFeatureFlags {
   /** Feature flag to configure eager attachment of the root view/initialisation of the JS code */
   public static boolean enableEagerRootViewAttachment = false;
 
+  /**
+   * Android TV: Send key down events as well as key up events. 
+   * Enabling this flag will result in two 'select' TVRemoteEventHandler events
+   * (one with key action 0 and one with key action 1) for each press of the center
+   * DPad button. (Similarly for arrow keys.)
+   * Note: If you enable this flag, long presses of the select or center button will
+   * result in an initial 'select' with eventKeyAction = 0 (ACTION_DOWN), before
+   * the expected 'longSelect' events are fired. (Similarly for arrow keys.)
+   */
+  public static boolean enableKeyDownEvents = false;
+
   public static boolean dispatchPointerEvents = false;
 
   /**

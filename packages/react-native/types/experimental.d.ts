@@ -32,7 +32,7 @@
  * Either the import or the reference only needs to appear once, anywhere in the project.
  */
 
-import {DimensionValue} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import {DimensionValue} from '../Libraries/StyleSheet/StyleSheetTypes';
 
 export {};
 

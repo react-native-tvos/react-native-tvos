@@ -10,31 +10,50 @@
 
 import type {Node} from 'react';
 
+import useTVEventHandler from '../../Components/TV/useTVEventHandler';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import Text from '../../Text/Text';
+import Platform from '../../Utilities/Platform';
 import useColorScheme from '../../Utilities/useColorScheme';
 import Colors from './Colors';
 import React from 'react';
 
 const HermesBadge = (): Node => {
+  const [lastEventType, setLastEventType] = React.useState('');
+  useTVEventHandler(evt => {
+    setLastEventType(evt.eventType);
+  });
   const isDarkMode = useColorScheme() === 'dark';
   const version =
     global.HermesInternal?.getRuntimeProperties?.()['OSS Release Version'] ??
     '';
-  return global.HermesInternal ? (
+  return (
     <View style={styles.badge}>
-      <Text
-        style={[
-          styles.badgeText,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {`Engine: Hermes ${version}`}
-      </Text>
+      {global.HermesInternal ? (
+        <Text
+          style={[
+            styles.badgeText,
+            {
+              color: isDarkMode ? Colors.light : Colors.dark,
+            },
+          ]}>
+          {`Engine: Hermes ${version}`}
+        </Text>
+      ) : null}
+      {Platform.isTV ? (
+        <Text
+          style={[
+            styles.badgeText,
+            {
+              color: isDarkMode ? Colors.light : Colors.dark,
+            },
+          ]}>
+          TVEvent: {lastEventType}
+        </Text>
+      ) : null}
     </View>
-  ) : null;
+  );
 };
 
 const styles = StyleSheet.create({

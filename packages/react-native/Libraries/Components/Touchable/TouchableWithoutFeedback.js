@@ -22,10 +22,12 @@ import type {
   LayoutEvent,
   PressEvent,
 } from '../../Types/CoreEventTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 
 import View from '../../Components/View/View';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import usePressability from '../../Pressability/usePressability';
+import useTVEventHandler from '../TV/useTVEventHandler';
 import * as React from 'react';
 import {useMemo} from 'react';
 
@@ -82,6 +84,7 @@ type Props = $ReadOnly<{|
   rejectResponderTermination?: ?boolean,
   testID?: ?string,
   touchSoundDisabled?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
 |}>;
 
 const PASSTHROUGH_PROPS = [
@@ -108,6 +111,7 @@ const PASSTHROUGH_PROPS = [
   'onFocus',
   'onLayout',
   'testID',
+  'tvParallaxProperties',
 ];
 
 module.exports = function TouchableWithoutFeedback(props: Props): React.Node {
@@ -197,6 +201,24 @@ module.exports = function TouchableWithoutFeedback(props: Props): React.Node {
   // adopting `Pressability`, so preserve that behavior.
   const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
     eventHandlers || {};
+
+  useTVEventHandler(evt => {
+    if (props.disabled === true || props['aria-disabled'] === true) {
+      return;
+    }
+    if (evt.eventType === 'focus') {
+      props.onFocus && props.onFocus(evt);
+    }
+    if (evt.eventType === 'blur') {
+      props.onBlur && props.onBlur(evt);
+    }
+    if (evt.eventType === 'select') {
+      props.onPress && props.onPress(evt);
+    }
+    if (evt.eventType === 'longSelect') {
+      props.onLongPress && props.onLongPress(evt);
+    }
+  });
 
   const elementProps: {[string]: mixed, ...} = {
     ...eventHandlersWithoutBlurAndFocus,

@@ -29,6 +29,7 @@ type PlatformConstants = {
 };
 interface PlatformStatic {
   isTV: boolean;
+  isTVOS: boolean;
   isTesting: boolean;
   Version: number | string;
   constants: PlatformConstants;

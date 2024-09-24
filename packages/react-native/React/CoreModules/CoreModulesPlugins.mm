@@ -20,7 +20,9 @@ Class RCTCoreModulesClassProvider(const char *name) {
   // Intentionally leak to avoid crashing after static destructors are run.
   static const auto sCoreModuleClassMap = new const std::unordered_map<std::string, Class (*)(void)>{
     {"AccessibilityManager", RCTAccessibilityManagerCls},
+#if !TARGET_OS_TV
     {"ActionSheetManager", RCTActionSheetManagerCls},
+#endif
     {"AlertManager", RCTAlertManagerCls},
     {"AppState", RCTAppStateCls},
     {"Appearance", RCTAppearanceCls},
@@ -40,6 +42,7 @@ Class RCTCoreModulesClassProvider(const char *name) {
     {"SourceCode", RCTSourceCodeCls},
     {"StatusBarManager", RCTStatusBarManagerCls},
     {"Timing", RCTTimingCls},
+    {"TVNavigationEventEmitter", RCTTVNavigationEventEmitterCls},
     {"WebSocketExecutor", RCTWebSocketExecutorCls},
     {"WebSocketModule", RCTWebSocketModuleCls},
     {"BlobModule", RCTBlobManagerCls},

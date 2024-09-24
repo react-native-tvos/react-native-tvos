@@ -17,7 +17,7 @@ REACT_NATIVE_PATH=${REACT_NATIVE_PATH:-$CURR_SCRIPT_DIR/../../..}
 
 NUM_CORES=$(sysctl -n hw.ncpu)
 
-PLATFORMS=("macosx" "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator")
+PLATFORMS=("macosx" "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator" "appletvos" "appletvsimulator")
 
 if [[ -z "$JSI_PATH" ]]; then
   JSI_PATH="$REACT_NATIVE_PATH/ReactCommon/jsi"
@@ -43,6 +43,10 @@ function get_visionos_deployment_target {
   use_env_var_or_ruby_prop "${XROS_DEPLOYMENT_TARGET}" "deployment_target('visionos')"
 }
 
+function get_tvos_deployment_target {
+  use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('tvos')"
+}
+
 function get_mac_deployment_target {
   use_env_var_or_ruby_prop "${MAC_DEPLOYMENT_TARGET}" "deployment_target('osx')"
 }
@@ -60,6 +64,19 @@ function build_host_hermesc {
 function configure_apple_framework {
   local enable_debugger cmake_build_type xcode_15_flags xcode_major_version
 
+#  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
+#    enable_bitcode="true"
+#  else
+#    enable_bitcode="false"
+#  fi
+#
+# Xcode 14 deprecates bitcode, so we turn this off
+  enable_bitcode="false"
+  if [[ $1 == macosx ]]; then
+    build_cli_tools="true"
+  else
+    build_cli_tools="false"
+  fi
   if [[ $BUILD_TYPE == "Debug" ]]; then
     enable_debugger="true"
   else
