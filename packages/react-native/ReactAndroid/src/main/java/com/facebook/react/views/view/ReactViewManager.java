@@ -472,4 +472,5 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
     public void trapFocusRight(ReactViewGroup view, boolean enabled) {
     view.setTrapFocusRight(enabled);
   }
+
 }
