@@ -17,7 +17,7 @@ const version: $ReadOnly<{
   major: 0,
   minor: 75,
   patch: 3,
-  prerelease: null,
+  prerelease: '0',
 };
 
 module.exports = {version};
