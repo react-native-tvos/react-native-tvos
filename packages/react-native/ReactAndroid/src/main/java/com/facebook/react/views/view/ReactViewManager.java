@@ -7,6 +7,8 @@
 
 package com.facebook.react.views.view;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
