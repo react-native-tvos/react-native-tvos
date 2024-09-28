@@ -94,6 +94,14 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   @ReactProp(name = "accessible")
   public void setAccessible(ReactViewGroup view, boolean accessible) {
     view.setFocusable(accessible);
+    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as LeanBack
+    // https://developer.android.com/reference/android/view/View#requestFocus(int,%20android.graphics.Rect)
+    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false), **
+    // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
+    // ** while the device is in touch mode.  **
+    if (hasTouchScreen(view.getContext())) {
+      view.setFocusableInTouchMode(accessible);
+    }
   }
 
   @ReactProp(name = "hasTVPreferredFocus")
@@ -497,6 +505,14 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       fd[i] = destinations.getInt(i);
     }
     root.setFocusDestinations(fd);
+  }
+  
+  /**
+   * Utility function to help capture Android TV/ Fire TV Devices with Touch Support
+   */
+  private boolean hasTouchScreen(Context context) {
+    PackageManager pm = context.getPackageManager();
+    return pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN);
   }
 
   @ReactProp(name = "autoFocus")
