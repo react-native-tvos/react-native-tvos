@@ -1,14 +1,14 @@
 {
   "name": "@react-native/tester-e2e",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.73.7-2",
   "license": "MIT",
   "description": "React Native E2E tester app.",
   "homepage": "https://github.com/facebook/react-native/tree/HEAD/packages/rn-tester-e2e",
   "repository": {
-  "type": "git",
-  "url": "git@github.com:facebook/react-native.git",
-  "directory": "packages/rn-tester-e2e"
+    "type": "git",
+    "url": "git@github.com:facebook/react-native.git",
+    "directory": "packages/rn-tester-e2e"
   },
   "scripts": {
     "test-e2e": "node ./../../scripts/e2e/run-e2e-tests.js"

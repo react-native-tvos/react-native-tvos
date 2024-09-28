@@ -1,6 +1,6 @@
 {
   "name": "@react-native-tvos/virtualized-lists",
-  "version": "0.73.7-1",
+  "version": "0.73.7-2",
   "description": "Virtualized lists for React Native with TV focus engine support.",
   "license": "MIT",
   "repository": {
@@ -27,6 +27,6 @@
     "react-test-renderer": "18.2.0"
   },
   "peerDependencies": {
-    "react-native": "*"
+    "react-native-tvos": "*"
   }
 }

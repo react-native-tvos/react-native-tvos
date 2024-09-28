@@ -1,6 +1,6 @@
 {
   "name": "@react-native/tester",
-  "version": "0.0.1",
+  "version": "0.73.7-2",
   "private": true,
   "description": "React Native tester app.",
   "license": "MIT",
@@ -30,7 +30,7 @@
   },
   "peerDependencies": {
     "react": "18.2.0",
-    "react-native": "*"
+    "react-native-tvos": "*"
   },
   "codegenConfig": {
     "name": "AppSpecs",
