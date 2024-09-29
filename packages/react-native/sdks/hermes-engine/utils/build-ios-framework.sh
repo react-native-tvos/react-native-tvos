@@ -52,10 +52,24 @@ function build_framework {
   fi
 }
 
+# Allows RNTV CI to optionally build Vision OS framework
+function set_include_vision {
+    if [[ "$INCLUDE_VISION_OS" == "0" || "$INCLUDE_VISION_OS" == "false" || "$INCLUDE_VISION_OS" == "FALSE" ]]; then
+        include_vision=0
+    else
+        include_vision=1
+    fi
+}
+
 # group the frameworks together to create a universal framework
 function build_universal_framework {
     if [ ! -d destroot/Library/Frameworks/universal/hermes.xcframework ]; then
-        create_universal_framework "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator" "appletvos" "appletvsimulator"
+        set_include_vision
+        if [[ $include_vision == 1 ]]; then
+            create_universal_framework "iphoneos" "iphonesimulator" "catalyst" "xros" "xrsimulator" "appletvos" "appletvsimulator"
+        else
+            create_universal_framework "iphoneos" "iphonesimulator" "catalyst" "appletvos" "appletvsimulator"
+        fi
     else
         echo "Skipping; Clean \"destroot\" to rebuild".
     fi
@@ -65,14 +79,17 @@ function build_universal_framework {
 # this is used to preserve backward compatibility
 function create_framework {
     if [ ! -d destroot/Library/Frameworks/universal/hermes.xcframework ]; then
+        set_include_vision
+
         build_framework "iphoneos"
         build_framework "iphonesimulator"
         build_framework "appletvos"
         build_framework "appletvsimulator"
         build_framework "catalyst"
-        build_framework "xros"
-        build_framework "xrsimulator"
-
+        if [[ $include_vision == 1 ]]; then
+            build_framework "xros"
+            build_framework "xrsimulator"
+        fi
         build_universal_framework
     else
         echo "Skipping; Clean \"destroot\" to rebuild".
