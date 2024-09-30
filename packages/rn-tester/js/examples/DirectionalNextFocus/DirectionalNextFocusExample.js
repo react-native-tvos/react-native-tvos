@@ -18,8 +18,9 @@ const ReactNative = require('react-native');
 const {Platform, View, StyleSheet, TouchableOpacity, Text} = ReactNative;
 
 exports.framework = 'React';
-exports.title = 'DirectionalNextFocus example';
+exports.title = 'TVDirectionalNextFocus example';
 exports.description = 'tvOS nextFocus';
+exports.displayName = 'TV Directional nextFocus example';
 exports.examples = [
   {
     title: 'DirectionalNextFocus',
