@@ -84,6 +84,18 @@ const DirectionalNextFocusExample = () => {
   const [rightDestination, setRightDestination]: [any, (any) => void] =
     React.useState(null);
 
+  const nextUpDestinationRef = React.useRef(null);
+  const nextDownDestinationRef = React.useRef(null);
+  const nextLeftDestinationRef = React.useRef(null);
+  const nextRightDestinationRef = React.useRef(null);
+
+  React.useEffect(() => {
+    setUpDestination(nextUpDestinationRef?.current);
+    setDownDestination(nextDownDestinationRef?.current);
+    setLeftDestination(nextLeftDestinationRef?.current);
+    setRightDestination(nextRightDestinationRef?.current);
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
@@ -94,27 +106,18 @@ const DirectionalNextFocusExample = () => {
           nextFocusRight={rightDestination}
           label="Starting point"
         />
-        <Button
-          ref={component => setUpDestination(component)}
-          label="nextUp destination"
-        />
+        <Button ref={nextUpDestinationRef} label="nextUp destination" />
         <View style={styles.containerFocusGuide}>
           <Button label="Wrapped button 1" />
-          <Button
-            ref={component => setDownDestination(component)}
-            label="nextDown destination"
-          />
+          <Button ref={nextDownDestinationRef} label="nextDown destination" />
           <Button label="Wrapped button 3" />
         </View>
       </View>
       <View style={styles.rowContainer}>
-        <Button
-          ref={component => setRightDestination(component)}
-          label="nextRight destination"
-        />
+        <Button ref={nextRightDestinationRef} label="nextRight destination" />
         <ThemedView label="" />
         <Button
-          ref={component => setLeftDestination(component)}
+          ref={nextLeftDestinationRef}
           hasTVPreferredFocus={true}
           style={{width: width * 3}}
           label="nextLeft destination"
