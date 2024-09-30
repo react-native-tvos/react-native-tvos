@@ -104,7 +104,7 @@ export default function RNTesterModuleContainer(props: Props): React.Node {
         <RNTesterExampleFilter
           testID="example_search"
           page="examples_page"
-          hideFilterPills={true}
+          hideFilterPills={false}
           sections={sections}
           filter={filter}
           render={({filteredSections}) =>

@@ -16,6 +16,11 @@ import ReactNativeFeatureFlags from 'react-native/Libraries/ReactNative/ReactNat
 
 const Components: Array<RNTesterModuleInfo> = [
   {
+    key: 'TVTextScrollViewExample',
+    category: 'TV',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
+  },
+  {
     key: 'DrawerLayoutAndroid',
     category: 'UI',
     module: require('../examples/DrawerLayoutAndroid/DrawerLayoutAndroidExample'),
@@ -87,10 +92,6 @@ const Components: Array<RNTesterModuleInfo> = [
     module: require('../examples/ScrollView/ScrollViewAnimatedExample'),
   },
   {
-    key: 'TVTextScrollViewExample',
-    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
-  },
-  {
     key: 'SectionListExample',
     category: 'ListView',
     module: require('../examples/SectionList/SectionListIndex'),
@@ -151,6 +152,32 @@ const Components: Array<RNTesterModuleInfo> = [
 ];
 
 const APIs: Array<RNTesterModuleInfo> = ([
+  {
+    key: 'TVEventHandlerExample',
+    category: 'TV',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+  },
+  {
+    key: 'TVDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+  },
+  {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+  },
+  {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+  },
   {
     key: 'AccessibilityExample',
     category: 'Basic',
@@ -314,29 +341,6 @@ const APIs: Array<RNTesterModuleInfo> = ([
     key: 'FilterExample',
     category: 'UI',
     module: require('../examples/Filter/FilterExample'),
-  },
-  {
-    key: 'TVEventHandlerExample',
-    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
-  },
-  {
-    key: 'DirectionalNextFocusExample',
-    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
-  },
-  {
-    key: 'TVDynamicDirectionalNextFocusExample',
-    category: 'TV',
-    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
-    supportsTVOS: true,
-  },
-  {
-    key: 'TVFocusGuideExample',
-    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
-  },
-  {
-    key: 'TVFocusGuideAutoFocusExample',
-    category: 'TV',
-    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
   },
   {
     key: 'VibrationExample',

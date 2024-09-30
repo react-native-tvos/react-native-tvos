@@ -23,9 +23,9 @@ const width = 200 * scale;
 const height = 120 * scale;
 
 exports.framework = 'React';
-exports.title = 'DynamicNextFocus example';
+exports.title = 'TVDynamicNextFocus example';
 exports.description = 'Dynamic NextFocus API';
-exports.displayName = 'Dynamic NextFocus example';
+exports.displayName = 'TV Dynamic NextFocus example';
 exports.examples = [
   {
     title: 'DynamicNextFocus',

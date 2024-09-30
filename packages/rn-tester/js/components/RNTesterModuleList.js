@@ -115,7 +115,7 @@ const RNTesterModuleList: React$AbstractComponent<any, void> = React.memo(
           page="components_page"
           sections={sections}
           filter={filter}
-          hideFilterPills={true}
+          hideFilterPills={false}
           render={({filteredSections}) => (
             <SectionList
               sections={filteredSections}

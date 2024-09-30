@@ -13,6 +13,7 @@
 const React = require('react');
 const {
   Dimensions,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -235,55 +236,55 @@ const Button = ({
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: '#eeeeee',
-    height: 300,
+    height: 300 * scale,
   },
   bigScrollView: {
     backgroundColor: '#eeeeee',
-    height: 600,
+    height: 600 * scale,
   },
   bigScrollViewFocused: {
     backgroundColor: '#ccffcc',
-    height: 600,
+    height: 600 * scale,
   },
   horizontalScrollView: {
-    height: 106,
+    height: 106 * scale,
   },
   text: {
-    fontSize: 16,
+    fontSize: 16 * scale,
     fontWeight: 'bold',
-    margin: 5,
+    margin: 6,
   },
   rowLabel: {
-    margin: 5,
-    padding: 5,
+    margin: 6 * scale,
+    padding: 6 * scale,
     alignItems: 'center',
   },
   button: {
-    margin: 5,
-    padding: 5,
+    margin: 6 * scale,
+    padding: 6 * scale,
     alignItems: 'center',
     backgroundColor: '#cccccc',
-    borderRadius: 3,
+    borderRadius: 3 * scale,
   },
   buttonSelected: {
-    margin: 5,
-    padding: 5,
+    margin: 6 * scale,
+    padding: 6 * scale,
     alignItems: 'center',
     backgroundColor: '#ccccff',
-    borderRadius: 3,
+    borderRadius: 4 * scale,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
   item: {
-    margin: 5,
-    padding: 5,
+    margin: 6 * scale,
+    padding: 6 * scale,
     backgroundColor: '#cccccc',
-    borderRadius: 3,
-    width: 300,
+    borderRadius: 4 * scale,
+    width: 300 * scale,
   },
   itemText: {
-    fontSize: 30,
+    fontSize: 30 * scale,
   },
 });
