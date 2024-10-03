@@ -16,5 +16,9 @@ export const validAttributesForTVProps = {
   nextFocusLeft: true,
   nextFocusRight: true,
   nextFocusUp: true,
+  trapFocusLeft: true,
+  trapFocusRight: true,
+  trapFocusDown: true,
+  trapFocusUp: true,
 };
 
