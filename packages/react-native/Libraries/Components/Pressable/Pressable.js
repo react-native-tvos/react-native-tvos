@@ -408,17 +408,12 @@ function Pressable(
       // $FlowFixMe[prop-missing]
       if (evt.eventType === 'select') {
         // $FlowFixMe[incompatible-exact]
-        onPressIn(evt);
         onPress && onPress(evt);
-        setTimeout(() => {
-          onPressOut(evt)
-        }, unstable_pressDelay ?? 100);
       }
       // $FlowFixMe[prop-missing]
       if (evt.eventType === 'longSelect') {
         // $FlowFixMe[incompatible-exact]
-        evt.eventKeyAction === 0 ? onPressIn(evt) : onPressOut(evt);
-        // onLongPress && onLongPress(evt);
+        onLongPress && onLongPress(evt);
       }
     },
     [
