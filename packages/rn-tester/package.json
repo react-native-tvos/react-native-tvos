@@ -14,6 +14,8 @@
   },
   "scripts": {
     "start": "react-native start",
+    "codegen-jsc": "./modify-hermes-engine-for-rn-tester.sh; USE_HERMES=0 ../react-native-codegen/scripts/oss/build.sh",
+    "codegen-hermes": "./modify-hermes-engine-for-rn-tester.sh; RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 ../react-native-codegen/scripts/oss/build.sh",
     "android": "react-native run-android --mode HermesDebug",
     "install-android-jsc": "../../gradlew :packages:rn-tester:android:app:installJscDebug",
     "install-android-hermes": "../../gradlew :packages:rn-tester:android:app:installHermesDebug",
