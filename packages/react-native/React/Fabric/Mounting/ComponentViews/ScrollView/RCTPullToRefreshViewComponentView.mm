@@ -112,11 +112,11 @@ using namespace facebook::react;
     needsUpdateTitle = YES;
   }
 
+  [super updateProps:props oldProps:oldProps];
+
   if (needsUpdateTitle) {
     [self _updateTitle];
   }
-
-  [super updateProps:props oldProps:oldProps];
 }
 
 #pragma mark -
