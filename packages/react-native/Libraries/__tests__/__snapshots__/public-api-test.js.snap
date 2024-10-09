@@ -6644,6 +6644,10 @@ exports[`public API should not change unintentionally Libraries/NativeComponent/
   nextFocusLeft: true,
   nextFocusRight: true,
   nextFocusUp: true,
+  trapFocusLeft: true,
+  trapFocusRight: true,
+  trapFocusDown: true,
+  trapFocusUp: true,
 };
 "
 `;
