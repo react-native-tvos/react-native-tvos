@@ -56,6 +56,7 @@ RCT_EXPORT_MODULE()
 
   _currentInterfaceDimensions = [self _exportedDimensions];
 
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(interfaceOrientationDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
@@ -70,6 +71,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:RCTWindowFrameDidChangeNotification
                                              object:nil];
+#endif
 
 #if TARGET_OS_IOS
 
