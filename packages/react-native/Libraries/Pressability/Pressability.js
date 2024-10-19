@@ -132,6 +132,11 @@ export type PressabilityConfig = $ReadOnly<{|
   onPressOut?: ?(event: PressEvent) => mixed,
 
   /**
+   * Called when a TV event is passed to the config.
+   */
+  onTVEvent?: ?(event: any) => void,
+
+  /**
    * Whether to prevent any other native components from becoming responder
    * while this pressable is responder.
    */
@@ -152,6 +157,7 @@ export type EventHandlers = $ReadOnly<{|
   onResponderTerminate: (event: PressEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
+  onTVEvent: (event: any) => void,
 |}>;
 
 type TouchState =
@@ -430,6 +436,35 @@ export default class Pressability {
   }
 
   _createEventHandlers(): EventHandlers {
+    const tvEventHandlers = {
+      onTVEvent: (evt: any): void => {
+        if (this._config.disabled !== false) {
+          // $FlowFixMe[prop-missing]
+          if (evt?.eventType === 'focus') {
+            const {onFocus} = this._config;
+            onFocus && onFocus(evt);
+            // $FlowFixMe[prop-missing]
+          } else if (evt.eventType === 'blur') {
+            const {onBlur} = this._config;
+            onBlur && onBlur(evt);
+          } else if (evt.eventType === 'select') {
+            const {onPress, onPressIn, onPressOut} = this._config;
+            // $FlowFixMe[incompatible-exact]
+            onPressIn && onPressIn(evt);
+            onPress && onPress(evt);
+            setTimeout(() => {
+              onPressOut && onPressOut(evt);
+            }, this._config.minPressDuration ?? DEFAULT_MIN_PRESS_DURATION);
+          } else if (evt.eventType === 'longSelect') {
+            const {onLongPress, onPressIn, onPressOut} = this._config;
+            onLongPress && onLongPress(evt);
+            evt?.eventKeyAction === 0
+              ? onPressIn && onPressIn(evt)
+              : onPressOut && onPressOut(evt);
+          }
+        }
+      },
+    };
     const focusEventHandlers = {
       onBlur: (event: BlurEvent): void => {
         const {onBlur} = this._config;
@@ -610,6 +645,7 @@ export default class Pressability {
         };
       }
       return {
+        ...tvEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...hoverPointerEvents,
@@ -662,6 +698,7 @@ export default class Pressability {
               },
             };
       return {
+        ...tvEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...mouseEventHandlers,
