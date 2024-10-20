@@ -22,16 +22,20 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.FocusFinder;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewStructure;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.R;
@@ -53,6 +57,7 @@ import com.facebook.react.uimanager.LengthPercentageType;
 import com.facebook.react.uimanager.MeasureSpecAssertions;
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.PointerEvents;
+import com.facebook.react.uimanager.ReactAccessibilityDelegate;
 import com.facebook.react.uimanager.ReactClippingProhibitedView;
 import com.facebook.react.uimanager.ReactClippingViewGroup;
 import com.facebook.react.uimanager.ReactClippingViewGroupHelper;
@@ -98,8 +103,10 @@ public class ReactViewGroup extends ViewGroup
 
   private @NonNull int[] focusDestinations = new int[0];
   private boolean autoFocus = false;
+  private boolean isFocusGuideTalkbackAccessibilityDelegateSet = false;
   private WeakReference<View> lastFocusedElement;
   private boolean mRecoverFocus = false;
+  private boolean originalIsFocusable = false;
   private boolean trapFocusUp = false;
   private boolean trapFocusDown = false;
   private boolean trapFocusLeft = false;
@@ -213,6 +220,8 @@ public class ReactViewGroup extends ViewGroup
     updateBackgroundDrawable(null);
 
     resetPointerEvents();
+
+    cleanupFocusGuideTalkbackAccessibilityDelegate();
   }
 
   private ViewGroupDrawingOrderHelper getDrawingOrderHelper() {
@@ -559,7 +568,7 @@ public class ReactViewGroup extends ViewGroup
     return super.getChildVisibleRect(child, r, offset);
   }
 
-  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+  private View getFirstFocusableView(ReactViewGroup viewGroup) {
     ArrayList<View> focusables = new ArrayList<View>(0);
     /**
      * `addFocusables` is the method used by `FocusFinder` to determine
@@ -578,10 +587,10 @@ public class ReactViewGroup extends ViewGroup
      * The other ones on the list can be non-focusable as well.
      * So, we run a loop till finding the first real focusable element.
      */
-    if (focusables.size() <= 0) return false;
+    if (focusables.size() <= 0) return null;
 
     View firstFocusableElement = null;
-    Integer index = 0;
+    int index = 0;
     while (firstFocusableElement == null && index < focusables.size()) {
       View elem = focusables.get(index);
       if (elem != viewGroup) {
@@ -590,6 +599,12 @@ public class ReactViewGroup extends ViewGroup
       }
       index++;
     }
+
+    return firstFocusableElement;
+  }
+
+  boolean moveFocusToFirstFocusable(ReactViewGroup viewGroup) {
+    View firstFocusableElement = this.getFirstFocusableView(viewGroup);
 
     if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
 
@@ -1244,6 +1259,101 @@ public class ReactViewGroup extends ViewGroup
     setAlpha(0);
   }
 
+  public void initializeFocusGuideTalkbackAccessibilityDelegate() {
+    if (!this.isTVFocusGuide()) {
+      return;
+    }
+
+    this.originalIsFocusable = this.isFocusable();
+
+    ReactAccessibilityDelegate viewAccessibilityDelegate = new ReactAccessibilityDelegate(
+      this, originalIsFocusable, this.getImportantForAccessibility()
+    ) {
+      @Override
+      public boolean performAccessibilityAction(View host, int action, Bundle args) {
+        if (!(host instanceof ReactViewGroup self)) {
+          return super.performAccessibilityAction(host, action, args);
+        }
+        if (action == AccessibilityNodeInfo.ACTION_FOCUS) {
+          if (self.interceptAccessibilityEvents(action, args)) {
+            return true;
+          }
+          return super.performAccessibilityAction(host, action, args);
+        }
+        if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
+          if (self.interceptAccessibilityEvents(action, args)) {
+            return true;
+          }
+          return super.performAccessibilityAction(host, action, args);
+        }
+        return super.performAccessibilityAction(host, action, args);
+      }
+    };
+    ViewCompat.setAccessibilityDelegate(this, viewAccessibilityDelegate);
+    this.setFocusable(true);
+    this.setFocusableInTouchMode(true);
+    // To force Talkback to give the a11y event to the FocusGuide
+    // we need to make it look like it has some a11y label to be announced.
+    // Because FocusGuide should always have at least one focusable child view,
+    // which will receive forwarded a11y event from this FocusGuide,
+    // the following fake label will never be announced
+    this.setContentDescription("FocusGuide");
+    this.isFocusGuideTalkbackAccessibilityDelegateSet = true;
+  }
+
+  public void cleanupFocusGuideTalkbackAccessibilityDelegate() {
+    ViewCompat.setAccessibilityDelegate(this, null);
+    this.setFocusable(this.originalIsFocusable);
+    this.setFocusableInTouchMode(this.originalIsFocusable);
+    this.originalIsFocusable = false;
+    this.setContentDescription(null);
+    this.isFocusGuideTalkbackAccessibilityDelegateSet = false;
+  }
+
+  public boolean hasFocusGuideTalkbackAccessibilityDelegate() {
+    return this.isFocusGuideTalkbackAccessibilityDelegateSet;
+  }
+
+  private boolean interceptAccessibilityEvents(int action, Bundle args) {
+    if (!this.isTVFocusGuide()) {
+      return false;
+    }
+
+    // If it's "FocusGuide", we want to intercept
+    // the event and redirect it to either:
+    // 1) first available destination view from "destinations" prop
+    // 2) last focused element saved when "autoFocus" prop is `true`
+    // 3) first focusable child view
+    View destinationView = this.findDestinationView();
+    if (destinationView != null) {
+      try {
+        destinationView.performAccessibilityAction(action, args);
+        return true;
+      } catch (Exception e) {
+        FLog.e(TAG, "Exception when performing accessibility action on destination view - falling back to next case (last focused view): " + e);
+      }
+    }
+    View lastFocusedView = this.lastFocusedElement.get();
+    if (lastFocusedView != null) {
+      try {
+        lastFocusedView.performAccessibilityAction(action, args);
+        return true;
+      } catch (Exception e) {
+        FLog.e(TAG, "Exception when performing accessibility action on last focused view - falling back to next case (first focusable view): " + e);
+      }
+    }
+    View firstFocusableView = this.getFirstFocusableView(this);
+    if (firstFocusableView != null) {
+      try {
+        firstFocusableView.performAccessibilityAction(action, args);
+        return true;
+      } catch (Exception e) {
+        FLog.e(TAG, "Exception when performing accessibility action on first focusable view - focus guide will not handle focus: " + e);
+      }
+    }
+    return false;
+  }
+
   private View findDestinationView() {
     for (int focusDestination : focusDestinations) {
       View childViewWithTag = findViewById(focusDestination);
@@ -1274,7 +1384,7 @@ public class ReactViewGroup extends ViewGroup
     return focusDestinations.length > 0;
   }
 
-  private boolean isTVFocusGuide() {
+  boolean isTVFocusGuide() {
     /**
      * We don't count a view as `TVFocusGuide` if it has `trapFocus*` props enabled.
      * The reason is, it's a seperate functionality that has nothing to do with other
