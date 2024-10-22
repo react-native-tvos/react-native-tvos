@@ -1278,10 +1278,48 @@ public class ReactViewGroup extends ViewGroup
           if (self.interceptAccessibilityEvents(action, args)) {
             return true;
           }
+          // Handle case when focus guide cannot find any focusable child
+          if (self.isTVFocusGuide() && self.getFirstFocusableView(self) == null) {
+            if (self.getChildCount() > 0) {
+              View child = self.getChildAt(0);
+              ArrayList<View> childFocusables = new ArrayList<>(0);
+              child.addFocusables(childFocusables, FOCUS_DOWN, 0);
+              if (!childFocusables.isEmpty()) {
+                childFocusables.get(0).performAccessibilityAction(action, args);
+                return true;
+              }
+            }
+          }
           return super.performAccessibilityAction(host, action, args);
         }
         if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
           if (self.interceptAccessibilityEvents(action, args)) {
+            return true;
+          }
+          // Handle case when focus guide cannot find any focusable child
+          if (self.isTVFocusGuide() && self.getFirstFocusableView(self) == null) {
+            if (self.getChildCount() > 0) {
+              View child = self.getChildAt(0);
+              ArrayList<View> childFocusables = new ArrayList<>(0);
+              child.addFocusables(childFocusables, FOCUS_DOWN, 0);
+              if (!childFocusables.isEmpty()) {
+                /*
+                 * Instead of forwarding AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
+                 * let's invoke AccessibilityNodeInfo.ACTION_FOCUS
+                 * to trigger focus events on JS side - the AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS
+                 * will be automatically invoked later
+                 */
+                childFocusables.get(0).performAccessibilityAction(
+                    AccessibilityNodeInfo.ACTION_FOCUS,
+                    args
+                );
+                return true;
+              }
+            }
+            /*
+             * Let's consume event here, otherwise there might be an issue with
+             * FocusGuide receiving focus instead of one of its child views
+             */
             return true;
           }
           return super.performAccessibilityAction(host, action, args);
