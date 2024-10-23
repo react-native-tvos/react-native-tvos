@@ -46,14 +46,20 @@ const PressableButton = (props: {
       onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }
+      onPressIn={() => props.log(`${props.title} onPressIn`)}
+      onPressOut={() => props.log(`${props.title} onPressOut`)}
       tvPressDuration={props.tvPressDuration}
       style={({pressed, focused}) =>
         pressed || focused ? styles.pressableFocused : styles.pressable
       }>
-      {({focused}) => {
+      {({focused, pressed}) => {
         return (
           <Text style={styles.pressableText}>
-            {focused ? `${props.title} focused` : props.title}
+            {pressed
+              ? `${props.title} pressed`
+              : focused
+                ? `${props.title} focused`
+                : props.title}
           </Text>
         );
       }}
@@ -74,6 +80,8 @@ const PressableButton = (props: {
       onLongPress={(event: any) =>
         props.log(`${props.title} long press action=${event.eventKeyAction}`)
       }
+      onPressIn={() => props.log(`${props.title} onPressIn`)}
+      onPressOut={() => props.log(`${props.title} onPressOut`)}
       tvPressDuration={props.tvPressDuration}
       style={userFocused ? styles.pressableFocused : styles.pressable}>
       <Text style={styles.pressableText}>{`${props.title} nonfunctional`}</Text>
@@ -161,7 +169,7 @@ const styles = StyleSheet.create({
   },
   logText: {
     height: 100 * scale,
-    width: 150 * scale,
+    width: 300 * scale,
     fontSize: 10 * scale,
     margin: 5 * scale,
     alignSelf: 'flex-start',
@@ -243,7 +251,6 @@ const TVEventHandlerView: () => React.Node = () => {
       <PressableButton
         title="Pressable with 1 second press time"
         log={updatePressableLog}
-        functional={false}
         tvPressDuration={1000}
       />
       <TouchableOpacityButton
