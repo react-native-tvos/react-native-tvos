@@ -50,6 +50,13 @@ declare module 'react-native' {
     disableGestureHandlersCancelTouches(): void;
   };
 
+  export interface PressableProps {
+    /*
+     * Duration of the press ("select") event on a Pressable on the TV platform
+     */
+    tvPressDuration?: number;
+  }
+
   export type HWEvent = {
     eventType: 'up' | 'down' | 'right' | 'left' | 'longUp' | 'longDown' | 'longRight' | 'longLeft' | 'blur' | 'focus' | 'pan' | string;
     eventKeyAction?: -1 | 1 | 0 | number | undefined;
