@@ -102,5 +102,8 @@
     "supports-color": "^7.1.0",
     "typescript": "5.0.4",
     "ws": "^6.2.3"
+  },
+  "dependencies": {
+    "yarn.lock": "^0.0.1-security"
   }
 }
