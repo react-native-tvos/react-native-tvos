@@ -1789,6 +1789,7 @@ type TVProps = $ReadOnly<{|
   nextFocusUp?: ?number,
   onFocus?: ?(event: FocusEvent) => mixed,
   onBlur?: ?(event: FocusEvent) => mixed,
+  tvPressDuration?: number,
 |}>;
 type Props = $ReadOnly<{|
   accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,

@@ -54,7 +54,7 @@ declare module 'react-native' {
     /*
      * Duration of the press ("select") event on a Pressable on the TV platform
      */
-    tvPressDuration?: number;
+    tvPressDuration?: number | undefined;
   }
 
   export type HWEvent = {
