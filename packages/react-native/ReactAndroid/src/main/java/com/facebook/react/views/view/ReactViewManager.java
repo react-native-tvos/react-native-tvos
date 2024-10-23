@@ -7,15 +7,18 @@
 
 package com.facebook.react.views.view;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.ColorInt;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.react.bridge.Dynamic;
@@ -425,6 +428,13 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   }
 
   @Override
+  protected void onAfterUpdateTransaction(@NonNull ReactViewGroup view) {
+    super.onAfterUpdateTransaction(view);
+
+    manageFocusGuideAccessibilityDelegate(view);
+  }
+
+  @Override
   public Map<String, Integer> getCommandsMap() {
     return MapBuilder.of(HOTSPOT_UPDATE_KEY, CMD_HOTSPOT_UPDATE, "setPressed", CMD_SET_PRESSED, "setDestinations", CMD_SET_DESTINATIONS);
   }
@@ -507,6 +517,28 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
       fd[i] = destinations.getInt(i);
     }
     root.setFocusDestinations(fd);
+    this.manageFocusGuideAccessibilityDelegate(root);
+  }
+
+  private void manageFocusGuideAccessibilityDelegate(ReactViewGroup view) {
+    AccessibilityManager accessibilityManager = ((AccessibilityManager) view.getContext()
+      .getSystemService(Context.ACCESSIBILITY_SERVICE));
+    List<AccessibilityServiceInfo> a11yServiceList = accessibilityManager
+      .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_SPOKEN);
+    boolean isTalkbackInstalledAndEnabled = false;
+    for (int i = 0; i < a11yServiceList.size(); i++) {
+      String a11yServiceId = a11yServiceList.get(i).getId();
+      if (a11yServiceId != null && a11yServiceId.contains("talkback")) {
+        isTalkbackInstalledAndEnabled = true;
+      }
+    }
+    // Custom accessibility delegate is needed only for Talkback,
+    // as it's not handling TV focus guide scenarios as well as e.g. Amazon's VoiceView
+    if (view.isTVFocusGuide() && !view.hasFocusGuideTalkbackAccessibilityDelegate() && isTalkbackInstalledAndEnabled) {
+      view.initializeFocusGuideTalkbackAccessibilityDelegate();
+    } else if (!view.isTVFocusGuide() && view.hasFocusGuideTalkbackAccessibilityDelegate()) {
+      view.cleanupFocusGuideTalkbackAccessibilityDelegate();
+    }
   }
   
   /**
@@ -528,17 +560,17 @@ public class ReactViewManager extends ReactClippingViewManager<ReactViewGroup> {
   }
 
   @ReactProp(name = "trapFocusDown")
-    public void trapFocusDown(ReactViewGroup view, boolean enabled) {
+  public void trapFocusDown(ReactViewGroup view, boolean enabled) {
     view.setTrapFocusDown(enabled);
   }
 
   @ReactProp(name = "trapFocusLeft")
-    public void trapFocusLeft(ReactViewGroup view, boolean enabled) {
+  public void trapFocusLeft(ReactViewGroup view, boolean enabled) {
     view.setTrapFocusLeft(enabled);
   }
 
   @ReactProp(name = "trapFocusRight")
-    public void trapFocusRight(ReactViewGroup view, boolean enabled) {
+  public void trapFocusRight(ReactViewGroup view, boolean enabled) {
     view.setTrapFocusRight(enabled);
   }
 

@@ -568,6 +568,26 @@ public class ReactAccessibilityDelegate extends ExploreByTouchHelper {
     if (action == AccessibilityNodeInfoCompat.ACTION_EXPAND) {
       host.setTag(R.id.accessibility_state_expanded, true);
     }
+    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+      final WritableMap payload = Arguments.createMap();
+      final int reactTag = host.getId();
+      payload.putString("eventType", "select");
+      payload.putInt("eventKeyAction", 1);
+      payload.putInt("tag", reactTag);
+      payload.putInt("target", reactTag);
+      ReactContext reactContext = (ReactContext) host.getContext();
+      reactContext.emitDeviceEvent("onHWKeyEvent", payload);
+    }
+    if (action == AccessibilityNodeInfoCompat.ACTION_LONG_CLICK) {
+      final WritableMap payload = Arguments.createMap();
+      final int reactTag = host.getId();
+      payload.putString("eventType", "longSelect");
+      payload.putInt("eventKeyAction", 1);
+      payload.putInt("tag", reactTag);
+      payload.putInt("target", reactTag);
+      ReactContext reactContext = (ReactContext) host.getContext();
+      reactContext.emitDeviceEvent("onHWKeyEvent", payload);
+    }
     if (mAccessibilityActionsMap.containsKey(action)) {
       final WritableMap event = Arguments.createMap();
       event.putString("actionName", mAccessibilityActionsMap.get(action));

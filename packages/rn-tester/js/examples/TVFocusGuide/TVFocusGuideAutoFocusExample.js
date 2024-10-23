@@ -14,7 +14,6 @@ import type {FocusEvent} from '../../../../react-native/Libraries/Types/CoreEven
 
 import {useRNTesterTheme} from '../../components/RNTesterTheme';
 import React from 'react';
-import type {Ref} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -98,11 +97,13 @@ const FocusableBox = React.memo(
       }
 
       const onFocus = (e: any) => props?.onFocus?.(e, id);
+      const onPress = (e: any) => props?.onPress?.(e, id);
 
       return (
         <Pressable
           ref={forwardRef}
           onFocus={onFocus}
+          onPress={onPress}
           style={state => [
             {
               width,
