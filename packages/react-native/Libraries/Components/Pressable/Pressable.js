@@ -54,7 +54,6 @@ type TVProps = $ReadOnly<{|
   nextFocusUp?: ?number,
   onFocus?: ?(event: FocusEvent) => mixed,
   onBlur?: ?(event: FocusEvent) => mixed,
-  tvPressDuration?: number,
 |}>;
 
 type Props = $ReadOnly<{|
@@ -266,7 +265,6 @@ function Pressable(
     style,
     testOnly_pressed,
     tvParallaxProperties,
-    tvPressDuration,
     unstable_pressDelay,
     ...restProps
   } = props;
@@ -332,7 +330,6 @@ function Pressable(
       delayHoverOut,
       delayLongPress,
       delayPressIn: unstable_pressDelay,
-      minPressDuration: tvPressDuration,
       onHoverIn,
       onHoverOut,
       onBlur(event: FocusEvent): void {
@@ -389,7 +386,6 @@ function Pressable(
       pressRetentionOffset,
       setPressed,
       shouldUpdatePressed,
-      tvPressDuration,
       unstable_pressDelay,
     ],
   );

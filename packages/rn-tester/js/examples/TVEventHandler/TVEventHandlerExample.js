@@ -30,7 +30,6 @@ const PressableButton = (props: {
   title: string,
   log: (entry: string) => void,
   functional?: boolean,
-  tvPressDuration?: number,
 }) => {
   // Set functional=false to have no functional style or children
   // and test the fix for #744
@@ -48,7 +47,6 @@ const PressableButton = (props: {
       }
       onPressIn={() => props.log(`${props.title} onPressIn`)}
       onPressOut={() => props.log(`${props.title} onPressOut`)}
-      tvPressDuration={props.tvPressDuration}
       style={({pressed, focused}) =>
         pressed || focused ? styles.pressableFocused : styles.pressable
       }>
@@ -82,7 +80,6 @@ const PressableButton = (props: {
       }
       onPressIn={() => props.log(`${props.title} onPressIn`)}
       onPressOut={() => props.log(`${props.title} onPressOut`)}
-      tvPressDuration={props.tvPressDuration}
       style={userFocused ? styles.pressableFocused : styles.pressable}>
       <Text style={styles.pressableText}>{`${props.title} nonfunctional`}</Text>
     </Pressable>
@@ -247,11 +244,6 @@ const TVEventHandlerView: () => React.Node = () => {
         title="Pressable"
         log={updatePressableLog}
         functional={false}
-      />
-      <PressableButton
-        title="Pressable with 1 second press time"
-        log={updatePressableLog}
-        tvPressDuration={1000}
       />
       <TouchableOpacityButton
         title="TouchableOpacity"
