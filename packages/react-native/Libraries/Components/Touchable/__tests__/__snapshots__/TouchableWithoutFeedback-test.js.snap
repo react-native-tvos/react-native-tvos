@@ -20,6 +20,7 @@ exports[`TouchableWithoutFeedback renders correctly 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   Touchable
 </Text>
@@ -45,6 +46,7 @@ exports[`TouchableWithoutFeedback with disabled state should be disabled when di
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -68,6 +70,7 @@ exports[`TouchableWithoutFeedback with disabled state should be disabled when di
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -91,6 +94,7 @@ exports[`TouchableWithoutFeedback with disabled state should disable button when
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -114,6 +118,7 @@ exports[`TouchableWithoutFeedback with disabled state should keep accessibilityS
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -137,5 +142,6 @@ exports[`TouchableWithoutFeedback with disabled state should overwrite accessibi
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;

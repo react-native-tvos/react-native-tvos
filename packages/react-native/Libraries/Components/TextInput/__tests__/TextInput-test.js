@@ -207,6 +207,7 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -252,6 +253,7 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -297,6 +299,7 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -428,6 +431,7 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         rejectResponderTermination={true}
         role="main"
         selection={null}
@@ -470,6 +474,7 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         style={

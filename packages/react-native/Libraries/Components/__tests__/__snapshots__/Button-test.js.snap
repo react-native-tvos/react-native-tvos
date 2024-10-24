@@ -32,6 +32,7 @@ exports[`<Button /> should be disabled and it should set accessibilityState to d
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -100,6 +101,7 @@ exports[`<Button /> should be disabled when disabled is empty and accessibilityS
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -168,6 +170,7 @@ exports[`<Button /> should be disabled when disabled={true} and accessibilitySta
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -237,6 +240,7 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -301,6 +305,7 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -364,6 +369,7 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -428,6 +434,7 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -492,6 +499,7 @@ exports[`<Button /> should overwrite accessibilityState with value of disabled p
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -560,6 +568,7 @@ exports[`<Button /> should render as expected 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,

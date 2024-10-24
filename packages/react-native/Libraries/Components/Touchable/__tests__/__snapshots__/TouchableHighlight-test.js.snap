@@ -21,6 +21,7 @@ exports[`TouchableHighlight renders correctly 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={Object {}}
 >
   <Text>
@@ -55,6 +56,7 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -86,6 +88,7 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -117,6 +120,7 @@ exports[`TouchableHighlight with disabled state should disable button when acces
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -149,6 +153,7 @@ exports[`TouchableHighlight with disabled state should keep accessibilityState w
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -180,6 +185,7 @@ exports[`TouchableHighlight with disabled state should overwrite accessibilitySt
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   <View />
 </View>

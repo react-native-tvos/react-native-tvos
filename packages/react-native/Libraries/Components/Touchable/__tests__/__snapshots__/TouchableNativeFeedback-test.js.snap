@@ -28,6 +28,7 @@ exports[`<TouchableNativeFeedback /> should render as expected 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -59,6 +60,7 @@ exports[`<TouchableNativeFeedback disabled={false} accessibilityState={{disabled
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -90,6 +92,7 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{}}> shoul
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -121,6 +124,7 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{checked: 
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -152,6 +156,7 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{disabled:
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -183,6 +188,7 @@ exports[`<TouchableNativeFeedback disabled={true}> should be disabled when disab
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 />
 `;
 
@@ -214,6 +220,7 @@ exports[`TouchableWithoutFeedback renders correctly 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
 >
   Touchable
 </Text>

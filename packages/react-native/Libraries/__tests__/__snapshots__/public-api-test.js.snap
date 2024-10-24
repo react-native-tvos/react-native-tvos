@@ -2602,6 +2602,7 @@ export type TVViewProps = $ReadOnly<{|
   enabled?: boolean,
   autoFocus?: boolean,
   safePadding?: string | null,
+  onTVEvent?: (event: any) => void,
 |}>;
 "
 `;
@@ -7139,6 +7140,7 @@ exports[`public API should not change unintentionally Libraries/Pressability/Pre
   onPressIn?: ?(event: PressEvent) => mixed,
   onPressMove?: ?(event: PressEvent) => mixed,
   onPressOut?: ?(event: PressEvent) => mixed,
+  onTVEvent?: ?(event: any) => void,
   blockNativeResponder?: ?boolean,
 |}>;
 export type EventHandlers = $ReadOnly<{|
@@ -7155,6 +7157,7 @@ export type EventHandlers = $ReadOnly<{|
   onResponderTerminate: (event: PressEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
+  onTVEvent: (event: any) => void,
 |}>;
 type TouchState =
   | \\"NOT_RESPONDER\\"
