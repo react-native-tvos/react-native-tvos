@@ -157,6 +157,7 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        onTVEvent={[Function]}
         style={
           Array [
             Object {

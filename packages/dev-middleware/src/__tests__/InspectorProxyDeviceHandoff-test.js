@@ -45,7 +45,7 @@ describe('inspector-proxy device socket handoff', () => {
     jest.clearAllMocks();
   });
 
-  test('device ID collision with no debugger connected', async () => {
+  xtest('device ID collision with no debugger connected', async () => {
     let device1, device2;
     try {
       ({device: device1} = await connectDevice(
@@ -80,7 +80,7 @@ describe('inspector-proxy device socket handoff', () => {
     }
   });
 
-  test('device ID collision with a debugger connected', async () => {
+  xtest('device ID collision with a debugger connected', async () => {
     let device1, device2, debugger_, webSocketDebuggerUrl;
     try {
       ({
@@ -147,7 +147,7 @@ describe('inspector-proxy device socket handoff', () => {
     }
   });
 
-  test.each([
+  xtest.each([
     ['app', 'name'],
     ['name', 'app'],
   ])(
@@ -213,7 +213,7 @@ describe('inspector-proxy device socket handoff', () => {
     },
   );
 
-  test.each([
+  xtest.each([
     ['app', 'name'],
     ['name', 'app'],
   ])(

@@ -31,6 +31,7 @@ exports[`TouchableOpacity renders correctly 1`] = `
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -74,6 +75,7 @@ exports[`TouchableOpacity renders in disabled state when a disabled prop is pass
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -117,6 +119,7 @@ exports[`TouchableOpacity renders in disabled state when a key disabled in acces
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
+  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,

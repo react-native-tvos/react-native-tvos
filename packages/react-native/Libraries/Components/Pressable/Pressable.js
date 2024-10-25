@@ -392,52 +392,19 @@ function Pressable(
   // $FlowFixMe[incompatible-call]
   const eventHandlers = usePressability(config);
 
-  const pressableTVFocusEventHandler = React.useCallback(
-    (evt: any) => {
-      if (isTVSelectable !== false || focusable !== false) {
-        // $FlowFixMe[prop-missing]
-        if (evt?.eventType === 'focus') {
-          shouldUpdatePressed && setFocused(true);
-          onFocus && onFocus(evt);
-          // $FlowFixMe[prop-missing]
-        } else if (evt.eventType === 'blur') {
-          onBlur && onBlur(evt);
-          shouldUpdatePressed && setFocused(false);
-        }
-      }
-      // $FlowFixMe[prop-missing]
-      if (evt.eventType === 'select') {
-        // $FlowFixMe[incompatible-exact]
-        onPress && onPress(evt);
-      }
-      // $FlowFixMe[prop-missing]
-      if (evt.eventType === 'longSelect') {
-        // $FlowFixMe[incompatible-exact]
-        onLongPress && onLongPress(evt);
-      }
-    },
-    [
-      onBlur,
-      onFocus,
-      onLongPress,
-      onPress,
-      focusable,
-      isTVSelectable,
-      shouldUpdatePressed,
-    ],
-  );
-
   React.useEffect(() => {
     if (!tvFocusEventHandler) {
       return;
     }
+    const pressableTVFocusEventHandler = (evt: any) =>
+      eventHandlers?.onTVEvent(evt);
     // $FlowFixMe[prop-missing]
     const viewTag = tagForComponentOrHandle(viewRef?.current);
     tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
     return () => {
       tvFocusEventHandler.unregister(viewTag);
     };
-  }, [pressableTVFocusEventHandler, viewRef]);
+  }, [eventHandlers, viewRef]);
 
   return (
     <View
