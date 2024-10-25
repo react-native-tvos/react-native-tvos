@@ -33,7 +33,7 @@ If, for any reason, the New Architecture is not behaving properly in your applic
 
 To opt-out from the New Architecture:
 
-- _Expo apps_: RN 0.76 will be supported in SDK 52, where you should use the [`newArchEnabled` property of the Expo config](https://docs.expo.dev/versions/unversioned/config/app/#newarchenabled).
+- _Expo apps_: RN 0.76 will be supported in SDK 52. See the [SDK 52 beta release notes](https://expo.dev/changelog/2024/10-24-sdk-52-beta) for more information on new arch support in Expo.
 
 - _Apple TV_: You can reinstall the dependencies by running the command:
 
@@ -186,7 +186,7 @@ var running_on_apple_tv = Platform.isTVOS;
 - _Pressable controls_: The `Pressable` API works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately. The `onPress()` and `onLongPress()` methods work the same way as with `Touchable` components.
 
 - _Tailwind styles for Pressable controls_: For the 0.76 release, the `Pressable` component also generates the `onPressIn()` and `onPressOut()` events needed to support the [`active:` pseudo class for Tailwind styles](https://www.nativewind.dev/v4/core-concepts/states#hover-focus-and-active-).
-  - For `onPress()` events (the "select" button on the remote is pressed once), `onPressIn()` is generated, then `onPressOut()` is generated a short time later. The time can be adjusted with a new `tvPressDuration` prop on the `Pressable` component.
+  - For `onPress()` events (the "select" button on the remote is pressed once), `onPressIn()` is generated, then `onPressOut()` is generated a short time later.
   - For `onLongPress()` events (the "select" button on the remote is held down for a length of time), `onPressIn()` is generated once the press down is detected, and `onPressOut()` is generated when the button is released.
   - The `focus:` pseudo class is also supported via the `onFocus()` and `onBlur()` events.
 
