@@ -80,8 +80,8 @@ export default function useAndroidRippleForView(
           if (view != null) {
             Commands.hotspotUpdate(
               view,
-              event.nativeEvent.locationX ?? 0,
-              event.nativeEvent.locationY ?? 0,
+              event.nativeEvent?.locationX ?? 0,
+              event.nativeEvent?.locationY ?? 0,
             );
             Commands.setPressed(view, true);
           }
@@ -91,8 +91,8 @@ export default function useAndroidRippleForView(
           if (view != null) {
             Commands.hotspotUpdate(
               view,
-              event.nativeEvent.locationX ?? 0,
-              event.nativeEvent.locationY ?? 0,
+              event.nativeEvent?.locationX ?? 0,
+              event.nativeEvent?.locationY ?? 0,
             );
           }
         },
