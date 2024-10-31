@@ -47,6 +47,10 @@ const PressableButton = (props: {
       }
       onPressIn={() => props.log(`${props.title} onPressIn`)}
       onPressOut={() => props.log(`${props.title} onPressOut`)}
+      android_ripple={{
+        color: '#cccccc',
+        radius: 50,
+      }}
       style={({pressed, focused}) =>
         pressed || focused ? styles.pressableFocused : styles.pressable
       }>
@@ -67,6 +71,10 @@ const PressableButton = (props: {
       onFocus={(event: any) => {
         props.log(`${props.title} focus`);
         setUserFocused(true);
+      }}
+      android_ripple={{
+        color: '#cccccc',
+        radius: 50,
       }}
       onBlur={(event: any) => {
         props.log(`${props.title} blur`);
