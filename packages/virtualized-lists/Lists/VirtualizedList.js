@@ -1101,6 +1101,22 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
 
     this._hasMore = this.state.cellsAroundViewport.last < itemCount - 1;
 
+    const trapFocusHorizontal = I18nManager.isRTL
+      ? {
+          trapFocusRight:
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0,
+          trapFocusLeft:
+            horizontalOrDefault(this.props.horizontal) && this._hasMore,
+        }
+      : {
+          trapFocusLeft:
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0,
+          trapFocusRight:
+            horizontalOrDefault(this.props.horizontal) && this._hasMore,
+        };
+
     const innerRet = (
       <VirtualizedListContextProvider
         value={{
@@ -1113,13 +1129,7 @@ class VirtualizedList extends StateSafePureComponent<Props, State> {
         }}>
         {Platform.isTV ? (
           <TVFocusGuideView
-            trapFocusLeft={
-              horizontalOrDefault(this.props.horizontal) &&
-              this.state.cellsAroundViewport.first > 0
-            }
-            trapFocusRight={
-              horizontalOrDefault(this.props.horizontal) && this._hasMore
-            }
+            {...trapFocusHorizontal}
             trapFocusUp={
               !horizontalOrDefault(this.props.horizontal) &&
               this.state.cellsAroundViewport.first > 0
