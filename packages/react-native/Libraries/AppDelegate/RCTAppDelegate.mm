@@ -76,7 +76,8 @@
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [self createRootViewController];
   [self setRootView:rootView toRootViewController:rootViewController];
-  self.window.rootViewController = rootViewController;
+  _window.windowScene.delegate = self;
+  _window.rootViewController = rootViewController;
 #if TARGET_OS_TV
   UIUserInterfaceStyle style = rootViewController.traitCollection.userInterfaceStyle;
   if (style == UIUserInterfaceStyleDark) {
@@ -85,7 +86,7 @@
     rootView.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
   }
 #endif
-  [self.window makeKeyAndVisible];
+  [_window makeKeyAndVisible];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

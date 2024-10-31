@@ -1479,6 +1479,8 @@ static RCTBorderStyle RCTBorderStyleFromBorderStyle(BorderStyle borderStyle)
       _backgroundColorLayer.mask = maskLayer;
       _backgroundColorLayer.cornerRadius = 0;
     }
+
+    [_backgroundColorLayer removeAllAnimations];
   }
 
   // borders
