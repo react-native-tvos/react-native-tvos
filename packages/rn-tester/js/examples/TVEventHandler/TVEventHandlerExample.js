@@ -103,6 +103,8 @@ const TouchableOpacityButton = (props: {
       style={styles.pressable}
       onFocus={(event: any) => props.log(`${props.title} focus`)}
       onBlur={(event: any) => props.log(`${props.title} blur`)}
+      onPressIn={() => props.log(`${props.title} onPressIn`)}
+      onPressOut={() => props.log(`${props.title} onPressOut`)}
       onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }
@@ -123,6 +125,8 @@ const TouchableHighlightButton = (props: {
       style={styles.pressable}
       onFocus={event => props.log(`${props.title} focus`)}
       onBlur={event => props.log(`${props.title} blur`)}
+      onPressIn={() => props.log(`${props.title} onPressIn`)}
+      onPressOut={() => props.log(`${props.title} onPressOut`)}
       onPress={(event: any) =>
         props.log(`${props.title} pressed action=${event.eventKeyAction}`)
       }

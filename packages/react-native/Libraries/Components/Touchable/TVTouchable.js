@@ -10,56 +10,32 @@
 
 'use strict';
 
-import type {
-  BlurEvent,
-  FocusEvent,
-  PressEvent,
-} from '../../Types/CoreEventTypes';
-
 import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import invariant from 'invariant';
-
-type TVTouchableConfig = $ReadOnly<{|
-  getDisabled: () => boolean,
-  onBlur: (event: BlurEvent) => mixed,
-  onFocus: (event: FocusEvent) => mixed,
-  onPress: (event: PressEvent) => mixed,
-  onLongPress: (event: PressEvent) => mixed,
-|}>;
+import Pressability from '../../Pressability/Pressability';
 
 export default class TVTouchable {
   _enabled: boolean = false;
   _focusEventHandler: ?any = null;
   _viewTag: ?number = null;
+  _pressability: ?Pressability = null;
 
-  constructor(component: any, config: TVTouchableConfig) {
+  constructor(component: any, pressability: Pressability) {
     invariant(Platform.isTV, 'TVTouchable: Requires `Platform.isTV`.');
     if (!Platform.isTV) {
       return;
     }
     const _tvtouchable = this; // eslint-disable-line consistent-this
+    this._pressability = pressability;
+
     this._viewTag = tagForComponentOrHandle(component);
     tvFocusEventHandler?.register(this._viewTag, tvData => {
       if (!_tvtouchable._enabled) {
         return;
       }
-      if (tagForComponentOrHandle(component) === tvData.tag) {
-        if (tvData.eventType === 'focus') {
-          config.onFocus(tvData);
-        } else if (tvData.eventType === 'blur') {
-          config.onBlur(tvData);
-        } else if (tvData.eventType === 'select') {
-          if (!config.getDisabled()) {
-            config.onPress(tvData);
-          }
-        } else if (tvData.eventType === 'longSelect') {
-          if (!config.getDisabled()) {
-            config.onLongPress(tvData);
-          }
-        }
-      }
+      this._pressability?.getEventHandlers()?.onTVEvent(tvData);
     });
     this._enabled = true;
   }
@@ -67,5 +43,6 @@ export default class TVTouchable {
   destroy(): void {
     this._enabled = false;
     tvFocusEventHandler?.unregister(this._viewTag);
+    this._pressability?.reset();
   }
 }
