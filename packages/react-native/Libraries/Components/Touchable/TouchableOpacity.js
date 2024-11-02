@@ -175,7 +175,7 @@ class TouchableOpacity extends React.Component<Props, State> {
       onLongPress: this.props.onLongPress,
       onPress: this.props.onPress,
       onPressIn: event => {
-        if (!Platform.isTV) {
+        if (event.nativeEvent) {
           this._opacityActive(
             event.dispatchConfig?.registrationName === 'onResponderGrant'
               ? 0
@@ -187,7 +187,7 @@ class TouchableOpacity extends React.Component<Props, State> {
         }
       },
       onPressOut: event => {
-        if (!Platform.isTV) {
+        if (event.nativeEvent) {
           this._opacityInactive(250);
         }
         if (this.props.onPressOut != null) {

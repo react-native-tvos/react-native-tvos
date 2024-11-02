@@ -209,7 +209,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         if (this._hideTimeout != null) {
           clearTimeout(this._hideTimeout);
         }
-        if (!Platform.isTV) {
+        if (event.nativeEvent) {
           this._showUnderlay();
           this._hideTimeout = setTimeout(() => {
             this._hideUnderlay();
@@ -220,7 +220,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         }
       },
       onPressIn: event => {
-        if (!Platform.isTV) {
+        if (event.nativeEvent) {
           if (this._hideTimeout != null) {
             clearTimeout(this._hideTimeout);
             this._hideTimeout = null;
@@ -232,7 +232,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         }
       },
       onPressOut: event => {
-        if (!Platform.isTV) {
+        if (event.nativeEvent) {
           if (this._hideTimeout == null) {
             this._hideUnderlay();
           }
