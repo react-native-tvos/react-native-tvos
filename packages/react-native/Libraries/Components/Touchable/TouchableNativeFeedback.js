@@ -185,6 +185,8 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
       android_disableSound: this.props.touchSoundDisabled,
       onLongPress: this.props.onLongPress,
       onPress: this.props.onPress,
+      onFocus: this.props.onFocus,
+      onBlur: this.props.onBlur,
       onPressIn: event => {
         if (Platform.OS === 'android') {
           this._dispatchHotspotUpdate(event);
@@ -226,7 +228,8 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
 
   _dispatchHotspotUpdate(event: PressEvent): void {
     if (Platform.OS === 'android') {
-      const {locationX, locationY} = event.nativeEvent;
+      const locationX = event.nativeEvent?.locationX ?? 0;
+      const locationY = event.nativeEvent?.locationY ?? 0;
       const hostComponentRef = findHostInstance_DEPRECATED(this);
       if (hostComponentRef == null) {
         console.warn(
@@ -234,11 +237,7 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
             'Has your Touchable component been unmounted?',
         );
       } else {
-        Commands.hotspotUpdate(
-          hostComponentRef,
-          locationX ?? 0,
-          locationY ?? 0,
-        );
+        Commands.hotspotUpdate(hostComponentRef, locationX, locationY);
       }
     }
   }
