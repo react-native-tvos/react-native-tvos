@@ -220,18 +220,22 @@ class TouchableHighlight extends React.Component<Props, State> {
         }
       },
       onPressIn: event => {
-        if (this._hideTimeout != null) {
-          clearTimeout(this._hideTimeout);
-          this._hideTimeout = null;
+        if (!Platform.isTV) {
+          if (this._hideTimeout != null) {
+            clearTimeout(this._hideTimeout);
+            this._hideTimeout = null;
+          }
+          this._showUnderlay();
         }
-        this._showUnderlay();
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        if (this._hideTimeout == null) {
-          this._hideUnderlay();
+        if (!Platform.isTV) {
+          if (this._hideTimeout == null) {
+            this._hideUnderlay();
+          }
         }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
@@ -381,35 +385,7 @@ class TouchableHighlight extends React.Component<Props, State> {
   componentDidMount(): void {
     this._isMounted = true;
     if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, {
-        getDisabled: () => this.props.disabled === true,
-        onBlur: event => {
-          if (Platform.isTV) {
-            this._hideUnderlay();
-          }
-          if (this.props.onBlur != null) {
-            this.props.onBlur(event);
-          }
-        },
-        onFocus: event => {
-          if (Platform.isTV) {
-            this._showUnderlay();
-          }
-          if (this.props.onFocus != null) {
-            this.props.onFocus(event);
-          }
-        },
-        onPress: event => {
-          if (this.props.onPress != null) {
-            this.props.onPress(event);
-          }
-        },
-        onLongPress: event => {
-          if (this.props.onLongPress != null) {
-            this.props.onLongPress(event);
-          }
-        },
-      });
+      this._tvTouchable = new TVTouchable(this, this.state.pressability);
     }
     this.state.pressability.configure(this._createPressabilityConfig());
   }

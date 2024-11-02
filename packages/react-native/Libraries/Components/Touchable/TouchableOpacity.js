@@ -175,17 +175,21 @@ class TouchableOpacity extends React.Component<Props, State> {
       onLongPress: this.props.onLongPress,
       onPress: this.props.onPress,
       onPressIn: event => {
-        this._opacityActive(
-          event.dispatchConfig.registrationName === 'onResponderGrant'
-            ? 0
-            : 150,
-        );
+        if (!Platform.isTV) {
+          this._opacityActive(
+            event.dispatchConfig?.registrationName === 'onResponderGrant'
+              ? 0
+              : 150,
+          );
+        }
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        this._opacityInactive(250);
+        if (!Platform.isTV) {
+          this._opacityInactive(250);
+        }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
         }
@@ -315,31 +319,7 @@ class TouchableOpacity extends React.Component<Props, State> {
 
   componentDidMount(): void {
     if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, {
-        getDisabled: () => this.props.disabled === true,
-        onBlur: event => {
-          this._opacityInactive(250);
-          if (this.props.onBlur != null) {
-            this.props.onBlur(event);
-          }
-        },
-        onFocus: event => {
-          this._opacityActive(150);
-          if (this.props.onFocus != null) {
-            this.props.onFocus(event);
-          }
-        },
-        onPress: event => {
-          if (this.props.onPress != null) {
-            this.props.onPress(event);
-          }
-        },
-        onLongPress: event => {
-          if (this.props.onLongPress != null) {
-            this.props.onLongPress(event);
-          }
-        },
-      });
+      this._tvTouchable = new TVTouchable(this, this.state.pressability);
     }
     this.state.pressability.configure(this._createPressabilityConfig());
   }
