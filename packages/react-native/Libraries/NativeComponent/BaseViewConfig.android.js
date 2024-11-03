@@ -110,6 +110,18 @@ const bubblingEventTypes = {
       bubbled: 'onClick',
     },
   },
+  topFocus: {
+    phasedRegistrationNames: {
+      captured: 'onFocusCapture',
+      bubbled: 'onFocus',
+    },
+  },
+  topBlur: {
+    phasedRegistrationNames: {
+      captured: 'onBlurCapture',
+      bubbled: 'onBlur',
+    },
+  },
 };
 
 const directEventTypes = {
@@ -122,6 +134,13 @@ const directEventTypes = {
   onGestureHandlerStateChange: DynamicallyInjectedByGestureHandler({
     registrationName: 'onGestureHandlerStateChange',
   }),
+
+  topPressIn: {
+    registrationName: 'onPressIn',
+  },
+  topPressOut: {
+    registrationName: 'onPressOut',
+  },
 
   // Direct events from UIManagerModuleConstants.java
   topContentSizeChange: {
