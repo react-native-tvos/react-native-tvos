@@ -246,6 +246,12 @@ export interface GestureResponderEvent
 
 export interface MouseEvent extends NativeSyntheticEvent<NativeMouseEvent> {}
 
+export interface NativeFocusEvent {}
+export interface FocusEvent extends NativeSyntheticEvent<NativeFocusEvent> {}
+
+export interface NativeBlurEvent {}
+export interface BlurEvent extends NativeSyntheticEvent<NativeBlurEvent> {}
+
 export interface TargetedEvent {
   target: number;
 }

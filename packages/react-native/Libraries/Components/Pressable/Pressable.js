@@ -28,7 +28,6 @@ import {type RectOrSize} from '../../StyleSheet/Rect';
 import useMergeRefs from '../../Utilities/useMergeRefs';
 import View from '../View/View';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
-import {tvFocusEventHandler} from '../TV/TVFocusEventHandler';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import useAndroidRippleForView, {
   type RippleConfig,
@@ -391,20 +390,6 @@ function Pressable(
   );
   // $FlowFixMe[incompatible-call]
   const eventHandlers = usePressability(config);
-
-  React.useEffect(() => {
-    if (!tvFocusEventHandler) {
-      return;
-    }
-    const pressableTVFocusEventHandler = (evt: any) =>
-      eventHandlers?.onTVEvent(evt);
-    // $FlowFixMe[prop-missing]
-    const viewTag = tagForComponentOrHandle(viewRef?.current);
-    tvFocusEventHandler.register(viewTag, pressableTVFocusEventHandler);
-    return () => {
-      tvFocusEventHandler.unregister(viewTag);
-    };
-  }, [eventHandlers, viewRef]);
 
   return (
     <View
