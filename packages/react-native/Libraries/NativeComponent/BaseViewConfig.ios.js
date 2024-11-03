@@ -181,6 +181,12 @@ const directEventTypes = {
   onGestureHandlerStateChange: DynamicallyInjectedByGestureHandler({
     registrationName: 'onGestureHandlerStateChange',
   }),
+  topPressIn: {
+    registrationName: 'onPressIn',
+  },
+  topPressOut: {
+    registrationName: 'onPressOut',
+  },
 };
 
 const validAttributesForNonEventProps = {
