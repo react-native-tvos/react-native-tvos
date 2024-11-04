@@ -26,13 +26,14 @@ exports[`<Button /> should be disabled and it should set accessibilityState to d
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -95,13 +96,14 @@ exports[`<Button /> should be disabled when disabled is empty and accessibilityS
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -164,13 +166,14 @@ exports[`<Button /> should be disabled when disabled={true} and accessibilitySta
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -234,13 +237,14 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   importantForAccessibility="no-hide-descendants"
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -299,13 +303,14 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   importantForAccessibility="no-hide-descendants"
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -363,13 +368,14 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -428,13 +434,14 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -493,13 +500,14 @@ exports[`<Button /> should overwrite accessibilityState with value of disabled p
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -562,13 +570,14 @@ exports[`<Button /> should render as expected 1`] = `
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,

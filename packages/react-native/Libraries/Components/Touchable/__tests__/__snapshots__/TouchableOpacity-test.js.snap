@@ -25,13 +25,14 @@ exports[`TouchableOpacity renders correctly 1`] = `
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -69,13 +70,14 @@ exports[`TouchableOpacity renders in disabled state when a disabled prop is pass
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,
@@ -113,13 +115,14 @@ exports[`TouchableOpacity renders in disabled state when a key disabled in acces
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={
     Object {
       "opacity": 1,

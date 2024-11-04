@@ -16,7 +16,6 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import TVTouchable from './TVTouchable';
 import {findHostInstance_DEPRECATED} from '../../ReactNative/RendererProxy';
 import processColor from '../../StyleSheet/processColor';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
@@ -160,8 +159,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
    */
   static canUseNativeForeground: () => boolean = () =>
     Platform.OS === 'android';
-
-  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -341,9 +338,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, this.state.pressability);
-    }
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
@@ -352,11 +346,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   }
 
   componentWillUnmount(): void {
-    if (Platform.isTV) {
-      if (this._tvTouchable != null) {
-        this._tvTouchable.destroy();
-      }
-    }
     this.state.pressability.reset();
   }
 }

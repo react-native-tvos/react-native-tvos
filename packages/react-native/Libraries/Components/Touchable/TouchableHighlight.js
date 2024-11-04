@@ -20,7 +20,6 @@ import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
-import TVTouchable from './TVTouchable';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -166,7 +165,6 @@ type State = $ReadOnly<{|
 class TouchableHighlight extends React.Component<Props, State> {
   _hideTimeout: ?TimeoutID;
   _isMounted: boolean = false;
-  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -296,8 +294,7 @@ class TouchableHighlight extends React.Component<Props, State> {
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
-      this.state.pressability.getEventHandlers();
+    const eventHandlers = this.state.pressability.getEventHandlers();
 
     const accessibilityState =
       this.props.disabled != null
@@ -368,7 +365,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         ref={this.props.hostRef}
-        {...eventHandlersWithoutBlurAndFocus}>
+        {...eventHandlers}>
         {React.cloneElement(child, {
           style: StyleSheet.compose(
             child.props.style,
@@ -384,9 +381,6 @@ class TouchableHighlight extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this._isMounted = true;
-    if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, this.state.pressability);
-    }
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
@@ -398,11 +392,6 @@ class TouchableHighlight extends React.Component<Props, State> {
     this._isMounted = false;
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
-    }
-    if (Platform.isTV) {
-      if (this._tvTouchable != null) {
-        this._tvTouchable.destroy();
-      }
     }
     this.state.pressability.reset();
   }

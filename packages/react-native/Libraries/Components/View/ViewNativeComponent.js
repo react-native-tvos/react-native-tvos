@@ -29,6 +29,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
 
           // ReactViewManager @ReactProps
           accessible: true,
+
+          // TV props
           hasTVPreferredFocus: true,
           nextFocusDown: true,
           nextFocusForward: true,
@@ -40,6 +42,10 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           trapFocusDown: true,
           trapFocusLeft: true,
           trapFocusRight: true,
+          onFocus: true,
+          onBlur: true,
+          onPressIn: true,
+          onPressOut: true,
 
           borderRadius: true,
           borderTopLeftRadius: true,

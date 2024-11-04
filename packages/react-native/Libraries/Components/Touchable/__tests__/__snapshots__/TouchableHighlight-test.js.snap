@@ -15,13 +15,14 @@ exports[`TouchableHighlight renders correctly 1`] = `
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
   style={Object {}}
 >
   <Text>
@@ -50,13 +51,14 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -82,13 +84,14 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -114,13 +117,14 @@ exports[`TouchableHighlight with disabled state should disable button when acces
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -147,13 +151,14 @@ exports[`TouchableHighlight with disabled state should keep accessibilityState w
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -179,13 +184,14 @@ exports[`TouchableHighlight with disabled state should overwrite accessibilitySt
   hasTVPreferredFocus={false}
   isTVSelectable={true}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>

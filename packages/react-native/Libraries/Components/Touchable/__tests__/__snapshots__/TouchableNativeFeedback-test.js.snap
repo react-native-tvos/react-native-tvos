@@ -214,13 +214,14 @@ exports[`TouchableWithoutFeedback renders correctly 1`] = `
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   Touchable
 </Text>
