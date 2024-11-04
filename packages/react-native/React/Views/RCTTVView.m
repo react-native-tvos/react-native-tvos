@@ -22,8 +22,7 @@
 
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
-  UITapGestureRecognizer *_selectRecognizer;
-  UILongPressGestureRecognizer * _longSelectRecognizer;
+  UILongPressGestureRecognizer * _pressRecognizer;
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;
@@ -77,29 +76,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   self->_isTVSelectable = isTVSelectable;
   if (isTVSelectable && ![self isTVFocusGuide]) {
-    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                 action:@selector(handleSelect:)];
-    recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-    _selectRecognizer = recognizer;
+    UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+    pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+    pressRecognizer.minimumPressDuration = 0;
 
-    UILongPressGestureRecognizer *longRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongSelect:)];
-    recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-    [self addGestureRecognizer:longRecognizer];
-    _longSelectRecognizer = longRecognizer;
+    _pressRecognizer = pressRecognizer;
 
-    [self addGestureRecognizer:_selectRecognizer];
-    [self addGestureRecognizer:_longSelectRecognizer];
+    [self addGestureRecognizer:_pressRecognizer];
   } else {
-    if (_selectRecognizer) {
-      [self removeGestureRecognizer:_selectRecognizer];
-    }
-    if (_longSelectRecognizer) {
-      [self removeGestureRecognizer:_longSelectRecognizer];
+    if (_pressRecognizer) {
+      [self removeGestureRecognizer:_pressRecognizer];
     }
   }
 }
 
-- (void)handleSelect:(UIGestureRecognizer *)r
+- (void)animatePress
 {
   if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
     float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
@@ -123,18 +114,25 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
         self.transform = CGAffineTransformMakeScale(magnification, magnification);
       }
                        completion:^(__unused BOOL finished2) {
-        [self sendSelectNotification:r];
       }];
     }];
-    
-  } else {
-    [self sendSelectNotification:r];
   }
 }
 
-- (void)handleLongSelect:(UIGestureRecognizer *)r
+- (void)handlePress:(UIGestureRecognizer *)r
 {
-    [self sendLongSelectNotification:r];
+  switch (r.state) {
+      case UIGestureRecognizerStateBegan:
+      if (self.onPressIn) self.onPressIn(nil);
+          break;
+      case UIGestureRecognizerStateEnded:
+      case UIGestureRecognizerStateCancelled:
+      [self animatePress];
+      if (self.onPressOut) self.onPressOut(nil);
+          break;
+      default:
+          break;
+  }
 }
 
 - (BOOL)isTVFocusGuide
@@ -323,6 +321,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
     
   if (context.nextFocusedView == self && ![self isTVFocusGuide] && self.isTVSelectable ) {
+    if (self.onFocus) self.onFocus(nil);
     [self becomeFirstResponder];
     [self enableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
@@ -330,6 +329,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
       [self sendFocusNotification:context];
     } completion:^(void){}];
   } else {
+    if (self.onBlur) self.onBlur(nil);
     [self disableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
       [self sendBlurNotification:context];
