@@ -19,11 +19,11 @@
 #import "RCTViewUtils.h"
 #import "UIView+Private.h"
 #import "UIView+React.h"
-#import "React/RCTI18nUtil.h"
 
 #if TARGET_OS_TV
 #import "RCTTVRemoteHandler.h"
 #import "RCTTVNavigationEventNotification.h"
+#import "React/RCTI18nUtil.h"
 #endif
 
 #if !TARGET_OS_TV
