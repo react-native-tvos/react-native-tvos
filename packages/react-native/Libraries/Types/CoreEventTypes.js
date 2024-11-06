@@ -282,6 +282,12 @@ export type FocusEvent = SyntheticEvent<
   |}>,
 >;
 
+export type RemotePressEvent = SyntheticEvent<
+  $ReadOnly<{|
+    target: number,
+  |}>,
+>;
+
 export type MouseEvent = SyntheticEvent<
   $ReadOnly<{|
     clientX: number,

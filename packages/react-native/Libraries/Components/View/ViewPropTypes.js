@@ -20,6 +20,7 @@ import type {
   MouseEvent,
   PointerEvent,
   PressEvent,
+  RemotePressEvent,
 } from '../../Types/CoreEventTypes';
 import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {
@@ -128,6 +129,11 @@ type TouchEventProps = $ReadOnly<{|
   onTouchMoveCapture?: ?(e: PressEvent) => void,
   onTouchStart?: ?(e: PressEvent) => void,
   onTouchStartCapture?: ?(e: PressEvent) => void,
+|}>;
+
+type PressEventProps = $ReadOnly<{|
+  onPressIn?: ?(e: RemotePressEvent) => void,
+  onPressOut?: ?(e: RemotePressEvent) => void,
 |}>;
 
 /**
@@ -470,6 +476,7 @@ export type ViewProps = $ReadOnly<{|
   ...IOSViewProps,
   ...TVViewProps,
   ...NextFocusProps,
+  ...PressEventProps,
 
   children?: Node,
   style?: ?ViewStyleProp,
