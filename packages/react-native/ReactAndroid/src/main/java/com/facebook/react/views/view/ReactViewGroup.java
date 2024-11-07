@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.view.FocusFinder;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,10 +62,16 @@ import com.facebook.react.uimanager.ReactPointerEventsView;
 import com.facebook.react.uimanager.ReactZIndexedViewGroup;
 import com.facebook.react.uimanager.RootView;
 import com.facebook.react.uimanager.RootViewUtil;
+import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.ViewGroupDrawingOrderHelper;
 import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.react.uimanager.drawable.CSSBackgroundDrawable;
+import com.facebook.react.uimanager.events.BlurEvent;
+import com.facebook.react.uimanager.events.EventDispatcher;
+import com.facebook.react.uimanager.events.FocusEvent;
+import com.facebook.react.uimanager.events.PressInEvent;
+import com.facebook.react.uimanager.events.PressOutEvent;
 import com.facebook.react.uimanager.style.BackgroundImageLayer;
 import com.facebook.react.uimanager.style.BorderRadiusProp;
 import com.facebook.react.uimanager.style.BorderStyle;
@@ -1362,6 +1369,59 @@ public class ReactViewGroup extends ViewGroup
   @Override
   protected void onFocusChanged(boolean gainFocus, int direction, @Nullable Rect previouslyFocusedRect) {
     super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+
+    final EventDispatcher mEventDispatcher =
+      UIManagerHelper.getEventDispatcherForReactTag(
+        (ReactContext) this.getContext(), this.getId());
+
+    if (mEventDispatcher == null) {
+      return;
+    }
+
+    if (gainFocus) {
+      mEventDispatcher.dispatchEvent(
+        new FocusEvent(
+          UIManagerHelper.getSurfaceId(this.getContext()), this.getId()));
+    } else {
+      mEventDispatcher.dispatchEvent(
+        new BlurEvent(
+          UIManagerHelper.getSurfaceId(this.getContext()), this.getId()));
+    }
+  }
+
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && event.getRepeatCount() == 0 && !this.isTVFocusGuide()) {
+      final EventDispatcher mEventDispatcher =
+        UIManagerHelper.getEventDispatcherForReactTag(
+          (ReactContext) this.getContext(), this.getId());
+
+      if (mEventDispatcher == null) {
+        return super.onKeyDown(keyCode, event);
+      }
+
+      mEventDispatcher.dispatchEvent(new PressInEvent(UIManagerHelper.getSurfaceId(this.getContext()), this.getId()));
+    }
+
+
+    return super.onKeyDown(keyCode, event);
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && !this.isTVFocusGuide()) {
+      final EventDispatcher mEventDispatcher =
+        UIManagerHelper.getEventDispatcherForReactTag(
+          (ReactContext) this.getContext(), this.getId());
+
+      if (mEventDispatcher == null) {
+        return super.onKeyUp(keyCode, event);
+      }
+
+      mEventDispatcher.dispatchEvent(new PressOutEvent(UIManagerHelper.getSurfaceId(this.getContext()), this.getId()));
+    }
+
+    return super.onKeyUp(keyCode, event);
   }
 
   @Override

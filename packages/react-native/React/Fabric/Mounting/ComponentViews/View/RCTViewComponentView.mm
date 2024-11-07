@@ -63,8 +63,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   BOOL _removeClippedSubviews;
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _motionEffectsAdded;
-  UITapGestureRecognizer *_selectRecognizer;
-  UILongPressGestureRecognizer * _longSelectRecognizer;
+  UILongPressGestureRecognizer * _pressRecognizer;
   NSSet<NSString *> *_Nullable _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN;
   UIView *_containerView;
   BOOL _useCustomContainerView;
@@ -278,7 +277,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)handleSelect:(UIGestureRecognizer *)r
+- (void)animatePress
 {
   if (_tvParallaxProperties.enabled == YES) {
     float magnification = _tvParallaxProperties.magnification;
@@ -302,18 +301,26 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
         self.transform = CGAffineTransformMakeScale(magnification, magnification);
       }
                        completion:^(__unused BOOL finished2) {
-        [self sendSelectNotification:r];
       }];
     }];
 
-  } else {
-    [self sendSelectNotification:r];
   }
 }
 
-- (void)handleLongSelect:(UIGestureRecognizer *)r
+- (void)handlePress:(UIGestureRecognizer *)r
 {
-    [self sendLongSelectNotification:r];
+  switch (r.state) {
+      case UIGestureRecognizerStateBegan:
+      _eventEmitter->onPressIn();
+          break;
+      case UIGestureRecognizerStateEnded:
+      case UIGestureRecognizerStateCancelled:
+      [self animatePress];
+      _eventEmitter->onPressOut();
+          break;
+      default:
+          break;
+  }
 }
 
 - (void)addParallaxMotionEffects
@@ -576,6 +583,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     }
 
     if (context.nextFocusedView == self && self.isUserInteractionEnabled && ![self isTVFocusGuide]) {
+      if(_eventEmitter) _eventEmitter->onFocus();
+
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
@@ -583,6 +592,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
           [self sendFocusNotification:context];
       } completion:^(void){}];
     } else {
+      if (_eventEmitter) _eventEmitter->onBlur();
+
       [self disableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
           [self removeParallaxMotionEffects];
@@ -1029,24 +1040,15 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                   action:@selector(handleSelect:)];
-      recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-      _selectRecognizer = recognizer;
-
-      UILongPressGestureRecognizer *longRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongSelect:)];
-      recognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-      [self addGestureRecognizer:longRecognizer];
-      _longSelectRecognizer = longRecognizer;
-
-      [self addGestureRecognizer:_selectRecognizer];
-      [self addGestureRecognizer:_longSelectRecognizer];
+      UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+      pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+      pressRecognizer.minimumPressDuration = 0;
+      
+      [self addGestureRecognizer:pressRecognizer];
+      _pressRecognizer = pressRecognizer;
     } else {
-      if (_selectRecognizer) {
-        [self removeGestureRecognizer:_selectRecognizer];
-      }
-      if (_longSelectRecognizer) {
-        [self removeGestureRecognizer:_longSelectRecognizer];
+      if (_pressRecognizer) {
+        [self removeGestureRecognizer:_pressRecognizer];
       }
     }
   }

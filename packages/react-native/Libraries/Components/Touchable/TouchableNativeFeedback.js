@@ -16,7 +16,6 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import TVTouchable from './TVTouchable';
 import {findHostInstance_DEPRECATED} from '../../ReactNative/RendererProxy';
 import processColor from '../../StyleSheet/processColor';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
@@ -160,8 +159,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
    */
   static canUseNativeForeground: () => boolean = () =>
     Platform.OS === 'android';
-
-  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -342,31 +339,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this.state.pressability.configure(this._createPressabilityConfig());
-    if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, {
-        getDisabled: () => this.props.disabled === true,
-        onBlur: event => {
-          if (this.props.onBlur != null) {
-            this.props.onBlur(event);
-          }
-        },
-        onFocus: event => {
-          if (this.props.onFocus != null) {
-            this.props.onFocus(event);
-          }
-        },
-        onPress: event => {
-          if (this.props.onPress != null) {
-            this.props.onPress(event);
-          }
-        },
-        onLongPress: event => {
-          if (this.props.onLongPress != null) {
-            this.props.onLongPress(event);
-          }
-        },
-      });
-    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -374,11 +346,6 @@ class TouchableNativeFeedback extends React.Component<Props, State> {
   }
 
   componentWillUnmount(): void {
-    if (Platform.isTV) {
-      if (this._tvTouchable != null) {
-        this._tvTouchable.destroy();
-      }
-    }
     this.state.pressability.reset();
   }
 }

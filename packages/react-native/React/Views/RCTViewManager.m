@@ -197,6 +197,10 @@ RCT_EXPORT_VIEW_PROPERTY(trapFocusUp, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(trapFocusDown, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(trapFocusLeft, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(trapFocusRight, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(onFocus, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onBlur, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPressIn, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPressOut, RCTDirectEventBlock)
 #endif
 
 // Accessibility related properties

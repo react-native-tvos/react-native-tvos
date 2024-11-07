@@ -20,7 +20,6 @@ import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
-import TVTouchable from './TVTouchable';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -166,7 +165,6 @@ type State = $ReadOnly<{|
 class TouchableHighlight extends React.Component<Props, State> {
   _hideTimeout: ?TimeoutID;
   _isMounted: boolean = false;
-  _tvTouchable: ?TVTouchable;
 
   state: State = {
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -220,18 +218,22 @@ class TouchableHighlight extends React.Component<Props, State> {
         }
       },
       onPressIn: event => {
-        if (this._hideTimeout != null) {
-          clearTimeout(this._hideTimeout);
-          this._hideTimeout = null;
+        if (!Platform.isTV) {
+          if (this._hideTimeout != null) {
+            clearTimeout(this._hideTimeout);
+            this._hideTimeout = null;
+          }
+          this._showUnderlay();
         }
-        this._showUnderlay();
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        if (this._hideTimeout == null) {
-          this._hideUnderlay();
+        if (!Platform.isTV) {
+          if (this._hideTimeout == null) {
+            this._hideUnderlay();
+          }
         }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
@@ -292,8 +294,7 @@ class TouchableHighlight extends React.Component<Props, State> {
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
-      this.state.pressability.getEventHandlers();
+    const eventHandlers = this.state.pressability.getEventHandlers();
 
     const accessibilityState =
       this.props.disabled != null
@@ -364,7 +365,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         ref={this.props.hostRef}
-        {...eventHandlersWithoutBlurAndFocus}>
+        {...eventHandlers}>
         {React.cloneElement(child, {
           style: StyleSheet.compose(
             child.props.style,
@@ -380,37 +381,6 @@ class TouchableHighlight extends React.Component<Props, State> {
 
   componentDidMount(): void {
     this._isMounted = true;
-    if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, {
-        getDisabled: () => this.props.disabled === true,
-        onBlur: event => {
-          if (Platform.isTV) {
-            this._hideUnderlay();
-          }
-          if (this.props.onBlur != null) {
-            this.props.onBlur(event);
-          }
-        },
-        onFocus: event => {
-          if (Platform.isTV) {
-            this._showUnderlay();
-          }
-          if (this.props.onFocus != null) {
-            this.props.onFocus(event);
-          }
-        },
-        onPress: event => {
-          if (this.props.onPress != null) {
-            this.props.onPress(event);
-          }
-        },
-        onLongPress: event => {
-          if (this.props.onLongPress != null) {
-            this.props.onLongPress(event);
-          }
-        },
-      });
-    }
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
@@ -422,11 +392,6 @@ class TouchableHighlight extends React.Component<Props, State> {
     this._isMounted = false;
     if (this._hideTimeout != null) {
       clearTimeout(this._hideTimeout);
-    }
-    if (Platform.isTV) {
-      if (this._tvTouchable != null) {
-        this._tvTouchable.destroy();
-      }
     }
     this.state.pressability.reset();
   }

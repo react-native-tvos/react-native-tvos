@@ -157,7 +157,8 @@ export type EventHandlers = $ReadOnly<{|
   onResponderTerminate: (event: PressEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
-  onTVEvent: (event: any) => void,
+  onPressIn: (event: any) => void,
+  onPressOut: (event: any) => void,
 |}>;
 
 type TouchState =
@@ -397,6 +398,7 @@ export default class Pressability {
   |}>;
   _touchActivateTime: ?number;
   _touchState: TouchState = 'NOT_RESPONDER';
+  _longPressSent: boolean = false;
 
   constructor(config: PressabilityConfig) {
     this.configure(config);
@@ -436,35 +438,50 @@ export default class Pressability {
   }
 
   _createEventHandlers(): EventHandlers {
-    const tvEventHandlers = {
-      onTVEvent: (evt: any): void => {
-        if (this._config.disabled !== false) {
-          // $FlowFixMe[prop-missing]
-          if (evt?.eventType === 'focus') {
-            const {onFocus} = this._config;
-            onFocus && onFocus(evt);
-            // $FlowFixMe[prop-missing]
-          } else if (evt.eventType === 'blur') {
-            const {onBlur} = this._config;
-            onBlur && onBlur(evt);
-          } else if (evt.eventType === 'select') {
-            const {onPress, onPressIn, onPressOut} = this._config;
-            // $FlowFixMe[incompatible-exact]
-            onPressIn && onPressIn(evt);
-            onPress && onPress(evt);
-            setTimeout(() => {
-              onPressOut && onPressOut(evt);
-            }, this._config.minPressDuration ?? DEFAULT_MIN_PRESS_DURATION);
-          } else if (evt.eventType === 'longSelect') {
-            const {onLongPress, onPressIn, onPressOut} = this._config;
-            onLongPress && onLongPress(evt);
-            evt?.eventKeyAction === 0
-              ? onPressIn && onPressIn(evt)
-              : onPressOut && onPressOut(evt);
+    const tvPressEventHandlers = {
+      onPressIn: (evt: any): void => {
+        if (this._config.disabled === false) {
+          return;
+        }
+
+        this._longPressSent = false;
+
+        const {onPressIn, onLongPress} = this._config;
+        onPressIn && onPressIn(evt);
+
+        const delayPressIn = normalizeDelay(this._config.delayPressIn);
+        const delayLongPress = normalizeDelay(
+          this._config.delayLongPress,
+          10,
+          DEFAULT_LONG_PRESS_DELAY_MS - delayPressIn,
+        );
+        this._longPressDelayTimeout = setTimeout(() => {
+          onLongPress && onLongPress(evt);
+          this._longPressSent = true;
+        }, delayLongPress + delayPressIn);
+      },
+      onPressOut: (evt: any): void => {
+        if (this._config.disabled === false) {
+          return;
+        }
+        this._cancelLongPressDelayTimeout();
+        const {onPress, onLongPress, onPressOut, android_disableSound} =
+          this._config;
+        onPressOut && onPressOut(evt);
+
+        if (onPress != null) {
+          const isPressCanceledByLongPress =
+            onLongPress != null && this._longPressSent;
+          if (!isPressCanceledByLongPress) {
+            if (Platform.OS === 'android' && android_disableSound !== true) {
+              SoundManager.playTouchSound();
+            }
+            onPress(evt);
           }
         }
       },
     };
+
     const focusEventHandlers = {
       onBlur: (event: BlurEvent): void => {
         const {onBlur} = this._config;
@@ -567,6 +584,7 @@ export default class Pressability {
       onClick: (event: any): void => {
         // If event has `pointerType`, it was emitted from a PointerEvent and
         // we should ignore it to avoid triggering `onPress` twice.
+        debugger;
         if (event?.nativeEvent?.hasOwnProperty?.('pointerType')) {
           return;
         }
@@ -645,7 +663,7 @@ export default class Pressability {
         };
       }
       return {
-        ...tvEventHandlers,
+        ...tvPressEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...hoverPointerEvents,
@@ -698,7 +716,7 @@ export default class Pressability {
               },
             };
       return {
-        ...tvEventHandlers,
+        ...tvPressEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...mouseEventHandlers,

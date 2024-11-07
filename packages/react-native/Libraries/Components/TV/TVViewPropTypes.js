@@ -85,5 +85,6 @@ export type TVViewProps = $ReadOnly<{|
   enabled?: boolean,
   autoFocus?: boolean,
   safePadding?: string | null,
-  onTVEvent?: (event: any) => void,
+  onPressIn?: (event: any) => void,
+  onPressOut?: (event: any) => void,
 |}>;

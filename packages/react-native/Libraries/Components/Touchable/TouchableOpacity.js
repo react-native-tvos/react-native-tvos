@@ -17,7 +17,6 @@ import Pressability, {
   type PressabilityConfig,
 } from '../../Pressability/Pressability';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import TVTouchable from './TVTouchable';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
@@ -136,8 +135,6 @@ type State = $ReadOnly<{|
  *
  */
 class TouchableOpacity extends React.Component<Props, State> {
-  _tvTouchable: ?TVTouchable;
-
   state: State = {
     anim: new Animated.Value(this._getChildStyleOpacityWithDefault()),
     pressability: new Pressability(this._createPressabilityConfig()),
@@ -175,17 +172,21 @@ class TouchableOpacity extends React.Component<Props, State> {
       onLongPress: this.props.onLongPress,
       onPress: this.props.onPress,
       onPressIn: event => {
-        this._opacityActive(
-          event.dispatchConfig.registrationName === 'onResponderGrant'
-            ? 0
-            : 150,
-        );
+        if (!Platform.isTV) {
+          this._opacityActive(
+            event.dispatchConfig?.registrationName === 'onResponderGrant'
+              ? 0
+              : 150,
+          );
+        }
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        this._opacityInactive(250);
+        if (!Platform.isTV) {
+          this._opacityInactive(250);
+        }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
         }
@@ -223,8 +224,7 @@ class TouchableOpacity extends React.Component<Props, State> {
   render(): React.Node {
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
-      this.state.pressability.getEventHandlers();
+    const eventHandlers = this.state.pressability.getEventHandlers();
 
     let _accessibilityState = {
       busy: this.props['aria-busy'] ?? this.props.accessibilityState?.busy,
@@ -304,7 +304,7 @@ class TouchableOpacity extends React.Component<Props, State> {
           !this.props.disabled
         }
         ref={this.props.hostRef}
-        {...eventHandlersWithoutBlurAndFocus}>
+        {...eventHandlers}>
         {this.props.children}
         {__DEV__ ? (
           <PressabilityDebugView color="cyan" hitSlop={this.props.hitSlop} />
@@ -314,33 +314,6 @@ class TouchableOpacity extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    if (Platform.isTV) {
-      this._tvTouchable = new TVTouchable(this, {
-        getDisabled: () => this.props.disabled === true,
-        onBlur: event => {
-          this._opacityInactive(250);
-          if (this.props.onBlur != null) {
-            this.props.onBlur(event);
-          }
-        },
-        onFocus: event => {
-          this._opacityActive(150);
-          if (this.props.onFocus != null) {
-            this.props.onFocus(event);
-          }
-        },
-        onPress: event => {
-          if (this.props.onPress != null) {
-            this.props.onPress(event);
-          }
-        },
-        onLongPress: event => {
-          if (this.props.onLongPress != null) {
-            this.props.onLongPress(event);
-          }
-        },
-      });
-    }
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 
@@ -360,11 +333,6 @@ class TouchableOpacity extends React.Component<Props, State> {
   }
 
   componentWillUnmount(): void {
-    if (Platform.isTV) {
-      if (this._tvTouchable != null) {
-        this._tvTouchable.destroy();
-      }
-    }
     this.state.pressability.reset();
     this.state.anim.resetAnimation();
   }
