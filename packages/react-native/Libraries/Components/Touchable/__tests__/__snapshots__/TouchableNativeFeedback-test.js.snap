@@ -22,13 +22,14 @@ exports[`<TouchableNativeFeedback /> should render as expected 1`] = `
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 
@@ -54,13 +55,14 @@ exports[`<TouchableNativeFeedback disabled={false} accessibilityState={{disabled
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 
@@ -86,13 +88,14 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{}}> shoul
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 
@@ -118,13 +121,14 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{checked: 
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 
@@ -150,13 +154,14 @@ exports[`<TouchableNativeFeedback disabled={true} accessibilityState={{disabled:
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 
@@ -182,13 +187,14 @@ exports[`<TouchableNativeFeedback disabled={true}> should be disabled when disab
   accessible={true}
   focusable={false}
   onClick={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 />
 `;
 

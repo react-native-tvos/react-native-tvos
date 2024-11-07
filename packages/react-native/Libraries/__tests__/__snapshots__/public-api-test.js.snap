@@ -2602,7 +2602,8 @@ export type TVViewProps = $ReadOnly<{|
   enabled?: boolean,
   autoFocus?: boolean,
   safePadding?: string | null,
-  onTVEvent?: (event: any) => void,
+  onPressIn?: (event: any) => void,
+  onPressOut?: (event: any) => void,
 |}>;
 "
 `;
@@ -3663,24 +3664,6 @@ declare module.exports: PooledClass;
 
 exports[`public API should not change unintentionally Libraries/Components/Touchable/Position.js 1`] = `"UNTYPED MODULE"`;
 
-exports[`public API should not change unintentionally Libraries/Components/Touchable/TVTouchable.js 1`] = `
-"type TVTouchableConfig = $ReadOnly<{|
-  getDisabled: () => boolean,
-  onBlur: (event: BlurEvent) => mixed,
-  onFocus: (event: FocusEvent) => mixed,
-  onPress: (event: PressEvent) => mixed,
-  onLongPress: (event: PressEvent) => mixed,
-|}>;
-declare export default class TVTouchable {
-  _enabled: boolean;
-  _focusEventHandler: ?any;
-  _viewTag: ?number;
-  constructor(component: any, config: TVTouchableConfig): void;
-  destroy(): void;
-}
-"
-`;
-
 exports[`public API should not change unintentionally Libraries/Components/Touchable/Touchable.js 1`] = `
 "declare const States: {
   NOT_RESPONDER: \\"NOT_RESPONDER\\",
@@ -3719,8 +3702,6 @@ type Signal =
   | typeof Signals.LEAVE_PRESS_RECT
   | typeof Signals.LONG_PRESS_DETECTED;
 declare const TouchableMixin: {
-  componentDidMount: (this: any) => void,
-  componentWillUnmount: () => void,
   touchableGetInitialState: () => {
     touchable: {
       touchState: ?State,
@@ -3884,7 +3865,6 @@ declare class TouchableNativeFeedback extends React.Component<Props, State> {
     type: \\"RippleAndroid\\",
   |}>;
   static canUseNativeForeground: () => boolean;
-  _tvTouchable: ?TVTouchable;
   state: State;
   _createPressabilityConfig(): PressabilityConfig;
   _dispatchPressedStateChange(pressed: boolean): void;
@@ -4257,6 +4237,10 @@ type TouchEventProps = $ReadOnly<{|
   onTouchStart?: ?(e: PressEvent) => void,
   onTouchStartCapture?: ?(e: PressEvent) => void,
 |}>;
+type PressEventProps = $ReadOnly<{|
+  onPressIn?: ?(e: RemotePressEvent) => void,
+  onPressOut?: ?(e: RemotePressEvent) => void,
+|}>;
 type GestureResponderEventProps = $ReadOnly<{|
   onMoveShouldSetResponder?: ?(e: PressEvent) => boolean,
   onMoveShouldSetResponderCapture?: ?(e: PressEvent) => boolean,
@@ -4323,6 +4307,7 @@ export type ViewProps = $ReadOnly<{|
   ...IOSViewProps,
   ...TVViewProps,
   ...NextFocusProps,
+  ...PressEventProps,
   children?: Node,
   style?: ?ViewStyleProp,
   accessible?: ?boolean,
@@ -6645,6 +6630,10 @@ exports[`public API should not change unintentionally Libraries/NativeComponent/
   nextFocusLeft: true,
   nextFocusRight: true,
   nextFocusUp: true,
+  onFocus: true,
+  onBlur: true,
+  onPressIn: true,
+  onPressOut: true,
   trapFocusLeft: true,
   trapFocusRight: true,
   trapFocusDown: true,
@@ -7157,7 +7146,8 @@ export type EventHandlers = $ReadOnly<{|
   onResponderTerminate: (event: PressEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
-  onTVEvent: (event: any) => void,
+  onPressIn: (event: any) => void,
+  onPressOut: (event: any) => void,
 |}>;
 type TouchState =
   | \\"NOT_RESPONDER\\"
@@ -7190,6 +7180,7 @@ declare export default class Pressability {
   |}>;
   _touchActivateTime: ?number;
   _touchState: TouchState;
+  _longPressSent: boolean;
   constructor(config: PressabilityConfig): void;
   configure(config: PressabilityConfig): void;
   reset(): void;
@@ -9191,6 +9182,11 @@ export type BlurEvent = SyntheticEvent<
   |}>,
 >;
 export type FocusEvent = SyntheticEvent<
+  $ReadOnly<{|
+    target: number,
+  |}>,
+>;
+export type RemotePressEvent = SyntheticEvent<
   $ReadOnly<{|
     target: number,
   |}>,

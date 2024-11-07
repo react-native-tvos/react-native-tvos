@@ -26,13 +26,14 @@ exports[`<Pressable /> should render as expected: should deep render when mocked
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -64,13 +65,14 @@ exports[`<Pressable /> should render as expected: should deep render when not mo
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -102,13 +104,14 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -140,13 +143,14 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -178,13 +182,14 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -216,13 +221,14 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -254,13 +260,14 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -292,13 +299,14 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -330,13 +338,14 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
@@ -368,13 +377,14 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
   onResponderTerminate={[Function]}
   onResponderTerminationRequest={[Function]}
   onStartShouldSetResponder={[Function]}
-  onTVEvent={[Function]}
 >
   <View />
 </View>
