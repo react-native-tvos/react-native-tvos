@@ -1079,6 +1079,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
       [self enableDirectionalFocusGuides];
     } else {
+      if (self.focusGuideUp != nil) {
+        [[self containingRootView] removeLayoutGuide:self.focusGuideUp];
+      }
       _nextFocusUp = nil;
     }
   }
@@ -1089,6 +1092,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
       [self enableDirectionalFocusGuides];
     } else {
+      if (self.focusGuideDown != nil) {
+        [[self containingRootView] removeLayoutGuide:self.focusGuideDown];
+      }
       _nextFocusDown = nil;
     }
   }
@@ -1099,6 +1105,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
       [self enableDirectionalFocusGuides];
     } else {
+      if (self.focusGuideLeft != nil) {
+        [[self containingRootView] removeLayoutGuide:self.focusGuideLeft];
+      }
       _nextFocusLeft = nil;
     }
   }
@@ -1109,6 +1118,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
       [self enableDirectionalFocusGuides];
     } else {
+      if (self.focusGuideRight != nil) {
+        [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
+      }
       _nextFocusRight = nil;
     }
   }
