@@ -584,7 +584,6 @@ export default class Pressability {
       onClick: (event: any): void => {
         // If event has `pointerType`, it was emitted from a PointerEvent and
         // we should ignore it to avoid triggering `onPress` twice.
-        debugger;
         if (event?.nativeEvent?.hasOwnProperty?.('pointerType')) {
           return;
         }

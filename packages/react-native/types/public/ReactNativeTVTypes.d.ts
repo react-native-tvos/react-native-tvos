@@ -166,7 +166,7 @@ declare module 'react-native' {
    * https://github.com/react-native-tvos/react-native-tvos/blob/tvos-v0.69.8/packages/rn-tester/js/examples/TVFocusGuide/TVFocusGuideAutoFocusExample.js
    */
   export const TVFocusGuideView: React.ForwardRefExoticComponent<FocusGuideProps & React.RefAttributes<View & FocusGuideMethods>>;
-  export interface TVTextScrollViewProps extends ScrollViewProps {
+  export interface TVTextScrollViewProps extends Omit<ScrollViewProps, 'onFocus' | 'onBlur'> {
     /**
      * The duration of the scroll animation when a swipe is detected.
      * Default value is 0.3 s

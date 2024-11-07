@@ -198,6 +198,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -207,7 +209,6 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
-        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -244,6 +245,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -253,7 +256,6 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
-        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -290,6 +292,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -299,7 +303,6 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
-        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         submitBehavior="blurAndSubmit"
@@ -422,6 +425,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -431,7 +436,6 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
-        onTVEvent={[Function]}
         rejectResponderTermination={true}
         role="main"
         selection={null}
@@ -465,6 +469,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -474,7 +480,6 @@ jest.unmock('../TextInput');
         onSelectionChange={[Function]}
         onSelectionChangeShouldSetResponder={[Function]}
         onStartShouldSetResponder={[Function]}
-        onTVEvent={[Function]}
         rejectResponderTermination={true}
         selection={null}
         style={
