@@ -458,23 +458,43 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)setNextFocusUp:(NSNumber *)nextFocusUp {
-  self->_nextFocusUp = [self getViewById: nextFocusUp];
-  [self enableDirectionalFocusGuides];
+  if (self.focusGuideUp != nil && nextFocusUp == nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideUp];
+    self.focusGuideUp = nil;
+  } else {
+    self->_nextFocusUp = [self getViewById: nextFocusUp];
+    [self enableDirectionalFocusGuides];
+  }
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
-  self->_nextFocusDown = [self getViewById: nextFocusDown];
-  [self enableDirectionalFocusGuides];
+  if (self.focusGuideDown != nil && nextFocusDown) {
+    [[self rootView] removeLayoutGuide:self.focusGuideDown];
+    self.focusGuideDown = nil;
+  } else {
+    self->_nextFocusDown = [self getViewById: nextFocusDown];
+    [self enableDirectionalFocusGuides];
+  }
 }
 
 - (void)setNextFocusLeft:(NSNumber *)nextFocusLeft {
-  self->_nextFocusLeft = [self getViewById: nextFocusLeft];
-  [self enableDirectionalFocusGuides];
+  if (self.focusGuideLeft != nil && nextFocusLeft == nil) {
+    [[self rootView] removeLayoutGuide:self.focusGuideLeft];
+    self.focusGuideLeft = nil;
+  } else {
+    self->_nextFocusLeft = [self getViewById: nextFocusLeft];
+    [self enableDirectionalFocusGuides];
+  }
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
-  self->_nextFocusRight = [self getViewById: nextFocusRight];
-  [self enableDirectionalFocusGuides];
+  if (self.focusGuideRight != nil && nextFocusRight) {
+    [[self rootView] removeLayoutGuide:self.focusGuideRight];
+    self.focusGuideRight = nil;
+  } else {
+    self->_nextFocusRight = [self getViewById: nextFocusRight];
+    [self enableDirectionalFocusGuides];
+  }
 }
 
 - (void)setPreferredFocus:(BOOL)hasTVPreferredFocus
