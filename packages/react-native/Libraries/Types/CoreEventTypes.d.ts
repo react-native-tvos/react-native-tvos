@@ -246,13 +246,13 @@ export interface GestureResponderEvent
 
 export interface MouseEvent extends NativeSyntheticEvent<NativeMouseEvent> {}
 
-export interface NativeFocusEvent {}
+export interface NativeFocusEvent extends TargetedEvent {}
 export interface FocusEvent extends NativeSyntheticEvent<NativeFocusEvent> {}
 
-export interface NativeBlurEvent {}
+export interface NativeBlurEvent extends TargetedEvent {}
 export interface BlurEvent extends NativeSyntheticEvent<NativeBlurEvent> {}
 
-export interface NativePressEvent {}
+export interface NativePressEvent extends TargetedEvent {}
 export interface PressEvent extends NativeSyntheticEvent<NativePressEvent> {}
 
 export interface TargetedEvent {
