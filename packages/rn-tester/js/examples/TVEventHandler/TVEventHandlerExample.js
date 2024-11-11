@@ -339,11 +339,9 @@ const TVEventHandlerView: () => React.Node = () => {
             updatePressableLog(
               `Focus bubbled from ${event.nativeEvent.target}`,
             );
-            event.preventDefault();
           }}
           onBlur={(event: BlurEvent) => {
             updatePressableLog(`Blur bubbled from ${event.nativeEvent.target}`);
-            event.preventDefault();
           }}>
           <Text style={{fontSize: 12 * scale}}>
             TextInput wrapped with TouchableOpacity
