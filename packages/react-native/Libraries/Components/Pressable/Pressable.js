@@ -10,6 +10,7 @@
 
 import type {
   FocusEvent,
+  BlurEvent,
   LayoutEvent,
   MouseEvent,
   PressEvent,
@@ -52,7 +53,9 @@ type TVProps = $ReadOnly<{|
   nextFocusRight?: ?number,
   nextFocusUp?: ?number,
   onFocus?: ?(event: FocusEvent) => mixed,
-  onBlur?: ?(event: FocusEvent) => mixed,
+  onBlur?: ?(event: BlurEvent) => mixed,
+  onFocusCapture?: ?(event: FocusEvent) => void,
+  onBlurCapture?: ?(event: BlurEvent) => void,
 |}>;
 
 type Props = $ReadOnly<{|

@@ -176,19 +176,21 @@ var running_on_apple_tv = Platform.isTVOS;
 
 - _Common codebase for Android phone and Android TV_: Apps built for Android using this repo will run on both Android phone and Android TV. Most of the changes for TV are specific to handling focus-based navigation on a TV using the D-Pad on the remote control.
 
-- _Access to touchable controls_:  The `Touchable` mixin has code added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `TouchableWithoutFeedback`, `TouchableHighlight` and `TouchableOpacity` will "just work" on both Apple TV and Android TV. In particular:
+- _Pressable and Touchable controls_:  In RNTV 0.76.1-1 and later, TV controls are supported with fully native events.
+Code has been added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `Pressable`, `TouchableHighlight` and `TouchableOpacity` will "just work" on both Apple TV and Android TV. In particular:
 
   - `onFocus()` will be executed when the touchable view goes into focus
   - `onBlur()` will be executed when the touchable view goes out of focus
   - `onPress()` will be executed when the touchable view is actually selected by pressing the "select" button on the TV remote (center button on Apple TV remote, or center button on Android TV DPad).
-  - `onLongPress()` will be executed twice if the "select" button is held down for a length of time. The two events passed into `onLongPress()` will have different values for their `eventKeyAction` property, 0 for key down (start) and 1 for key up (end).
+  - `onPressIn()` will be executed when the TV remote "select" button is pressed down (center button on Apple TV remote, or center button on Android TV DPad)
+  - `onPressOut()` will be executed when the TV remote "select" button is released
+  - `onLongPress()` will be executed if the "select" button is held down for a length of time (this event is generated in the `Pressability` module, the same as for touchscreen long press events).
 
-- _Pressable controls_: The `Pressable` API works with TV.  Additional `onFocus` and `onBlur` props are provided to allow you to customize behavior when a Pressable enters or leaves focus. Similar to the `pressed` state that is true while a user is pressing the component on a touchscreen, the `focused` state will be true when it is focused on TV.  `PressableExample` in RNTester has been modified appropriately. The `onPress()` and `onLongPress()` methods work the same way as with `Touchable` components.
+  `TouchableNativeFeedback` and `TouchableWithoutFeedback` respond to press events, but do not respond to focus and blur events, and are not recommended for TV.
 
-- _Tailwind styles for Pressable controls_: For the 0.76 release, the `Pressable` component also generates the `onPressIn()` and `onPressOut()` events needed to support the [`active:` pseudo class for Tailwind styles](https://www.nativewind.dev/v4/core-concepts/states#hover-focus-and-active-).
-  - For `onPress()` events (the "select" button on the remote is pressed once), `onPressIn()` is generated, then `onPressOut()` is generated a short time later.
-  - For `onLongPress()` events (the "select" button on the remote is held down for a length of time), `onPressIn()` is generated once the press down is detected, and `onPressOut()` is generated when the button is released.
-  - The `focus:` pseudo class is also supported via the `onFocus()` and `onBlur()` events.
+Because focus and blur events are now fully native core events, they will respond correctly to capturing and bubbling event handlers in `View` components. A demo of this has been added to the TVEventHandlerExample in RNTester.
+
+- _Tailwind styles for Pressable and Touchable controls_: The above events allow RNTV to support the [`focus:` and `active:` pseudo classes for Tailwind styles](https://www.nativewind.dev/v4/core-concepts/states#hover-focus-and-active-).
 
 - _TV remote/keyboard input_: Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  For a more convenient API, we provide `useTVEventHandler`.
 
