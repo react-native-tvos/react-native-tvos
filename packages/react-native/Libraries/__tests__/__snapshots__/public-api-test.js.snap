@@ -2626,36 +2626,6 @@ declare module.exports: useTVEventHandler;
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Components/TabBarIOS/RCTTabBarItemNativeComponent.js 1`] = `"UNTYPED MODULE"`;
-
-exports[`public API should not change unintentionally Libraries/Components/TabBarIOS/RCTTabBarNativeComponent.js 1`] = `"UNTYPED MODULE"`;
-
-exports[`public API should not change unintentionally Libraries/Components/TabBarIOS/TabBarIOS.js 1`] = `
-"declare class TabBarIOS extends React.Component<TabBarIOSProps> {
-  static Item: any;
-  componentDidMount(): void;
-  render(): React.Node;
-}
-declare module.exports: TabBarIOS;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Components/TabBarIOS/TabBarIOSProps.js 1`] = `
-"export type TabBarIOSProps = $ReadOnly<{|
-  ...ViewProps,
-  unselectedTintColor?: string,
-  tintColor?: string,
-  unselectedItemTintColor?: string,
-  barTintColor?: string,
-  barStyle?: ?(\\"default\\" | \\"black\\"),
-  translucent?: ?boolean,
-  itemPositioning?: ?(\\"fill\\" | \\"center\\" | \\"auto\\"),
-|}>;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Components/TabBarIOS/TabBarItemIOS.js 1`] = `"UNTYPED MODULE"`;
-
 exports[`public API should not change unintentionally Libraries/Components/TextInput/AndroidTextInputNativeComponent.js 1`] = `
 "export type KeyboardType =
   | \\"default\\"
@@ -10024,7 +9994,6 @@ declare module.exports: {
   get SectionList(): SectionList,
   get StatusBar(): StatusBar,
   get Switch(): Switch,
-  get TabBarIOS(): any,
   get Text(): Text,
   get TextInput(): TextInput,
   get Touchable(): Touchable,
