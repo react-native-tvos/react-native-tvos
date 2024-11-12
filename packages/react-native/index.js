@@ -89,7 +89,6 @@ import typeof DevSettings from './Libraries/Utilities/DevSettings';
 import typeof Dimensions from './Libraries/Utilities/Dimensions';
 import typeof PixelRatio from './Libraries/Utilities/PixelRatio';
 import typeof Platform from './Libraries/Utilities/Platform';
-// import typeof TabBarIOS from './Libraries/Components/TabBarIOS/TabBarIOS';
 import typeof TVEventHandler from './Libraries/Components/TV/TVEventHandler';
 import typeof TVFocusGuideView from './Libraries/Components/TV/TVFocusGuideView';
 import typeof TVEventControl from './Libraries/Components/TV/TVEventControl';
@@ -175,9 +174,6 @@ module.exports = {
   },
   get Switch(): Switch {
     return require('./Libraries/Components/Switch/Switch').default;
-  },
-  get TabBarIOS(): any {
-    return require('./Libraries/Components/TabBarIOS/TabBarIOS');
   },
   get Text(): Text {
     return require('./Libraries/Text/Text');
