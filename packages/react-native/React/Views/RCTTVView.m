@@ -90,32 +90,30 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)animatePress
+- (void)animatePressIn
 {
   if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
-    float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
     float pressMagnification = [self.tvParallaxProperties[@"pressMagnification"] floatValue];
-    
-    // Duration of press animation
     float pressDuration = [self.tvParallaxProperties[@"pressDuration"] floatValue];
-    
-    // Delay of press animation
-    float pressDelay = [self.tvParallaxProperties[@"pressDelay"] floatValue];
-    
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:pressDelay]];
-    
     [UIView animateWithDuration:(pressDuration/2)
                      animations:^{
       self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
     }
-                     completion:^(__unused BOOL finished1){
-      [UIView animateWithDuration:(pressDuration/2)
-                       animations:^{
-        self.transform = CGAffineTransformMakeScale(magnification, magnification);
-      }
-                       completion:^(__unused BOOL finished2) {
-      }];
-    }];
+                     completion:^(__unused BOOL finished){}];
+  }
+}
+
+- (void) animatePressOut
+{
+  if ([self.tvParallaxProperties[@"enabled"] boolValue] == YES) {
+    float magnification = [self.tvParallaxProperties[@"magnification"] floatValue];
+    float pressDuration = [self.tvParallaxProperties[@"pressDuration"] floatValue];
+
+    [UIView animateWithDuration:(pressDuration/2)
+                     animations:^{
+      self.transform = CGAffineTransformMakeScale(magnification, magnification);
+    }
+                     completion:^(__unused BOOL finished){}];
   }
 }
 
@@ -124,10 +122,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   switch (r.state) {
       case UIGestureRecognizerStateBegan:
       if (self.onPressIn) self.onPressIn(nil);
+      [self animatePressIn];
           break;
       case UIGestureRecognizerStateEnded:
       case UIGestureRecognizerStateCancelled:
-      [self animatePress];
+      [self animatePressOut];
       if (self.onPressOut) self.onPressOut(nil);
           break;
       default:
