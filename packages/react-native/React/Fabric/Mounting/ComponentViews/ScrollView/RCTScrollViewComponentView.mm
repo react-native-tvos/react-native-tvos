@@ -27,6 +27,7 @@
 #if TARGET_OS_TV
 #import <React/RCTTVRemoteHandler.h>
 #import <React/RCTTVNavigationEventNotification.h>
+#import "React/RCTI18nUtil.h"
 #endif
 
 using namespace facebook::react;
@@ -1100,22 +1101,25 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
+    // Determine if the layout is Right-to-Left
+    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
     BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
-    // Keep focus inside the scroll view till the end of the content
+    // Adjust for horizontal scrolling with RTL support
     if (isHorizontal) {
-        if ((context.focusHeading == UIFocusHeadingLeft && self.scrollView.contentOffset.x > 0)
-            || (context.focusHeading == UIFocusHeadingRight && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - self.scrollView.visibleSize.width)
-        ) {
+        BOOL isNavigatingToEnd = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
+        BOOL isNavigatingToStart = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+
+        if ((isNavigatingToEnd && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - self.scrollView.visibleSize.width) ||
+            (isNavigatingToStart && self.scrollView.contentOffset.x > 0)) {
             return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
         }
     } else {
-        if ((context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0)
-            || (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - self.scrollView.visibleSize.height)
-        ) {
+        // Handle vertical scrolling as before
+        if ((context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0) ||
+            (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - self.scrollView.visibleSize.height)) {
             return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
         }
     }
-
     return [super shouldUpdateFocusInContext:context];
 }
 
