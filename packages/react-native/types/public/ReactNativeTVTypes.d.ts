@@ -100,7 +100,7 @@ declare module 'react-native' {
     pressDuration?: number | undefined,
 
     /**
-     * Defaults to 0.3
+     * @deprecated No longer used
      */
     pressDelay?: number | undefined,
   };

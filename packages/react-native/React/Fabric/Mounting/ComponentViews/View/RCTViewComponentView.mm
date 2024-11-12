@@ -277,33 +277,35 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)animatePress
+- (void)animatePressIn
 {
   if (_tvParallaxProperties.enabled == YES) {
-    float magnification = _tvParallaxProperties.magnification;
     float pressMagnification = _tvParallaxProperties.pressMagnification;
 
     // Duration of press animation
     float pressDuration = _tvParallaxProperties.pressDuration;
 
-    // Delay of press animation
-    float pressDelay = _tvParallaxProperties.pressDelay;
-
-    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:pressDelay]];
-
     [UIView animateWithDuration:(pressDuration/2)
                      animations:^{
       self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
     }
-                     completion:^(__unused BOOL finished1){
-      [UIView animateWithDuration:(pressDuration/2)
-                       animations:^{
-        self.transform = CGAffineTransformMakeScale(magnification, magnification);
-      }
-                       completion:^(__unused BOOL finished2) {
-      }];
-    }];
+                     completion:^(__unused BOOL finished){}];
+  }
+}
 
+- (void) animatePressOut
+{
+  if (_tvParallaxProperties.enabled == YES) {
+    float magnification = _tvParallaxProperties.magnification;
+
+    // Duration of press animation
+    float pressDuration = _tvParallaxProperties.pressDuration;
+
+    [UIView animateWithDuration:(pressDuration/2)
+                     animations:^{
+      self.transform = CGAffineTransformMakeScale(magnification, magnification);
+    }
+                     completion:^(__unused BOOL finished){}];
   }
 }
 
@@ -312,10 +314,11 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   switch (r.state) {
       case UIGestureRecognizerStateBegan:
       _eventEmitter->onPressIn();
+      [self animatePressIn];
           break;
       case UIGestureRecognizerStateEnded:
       case UIGestureRecognizerStateCancelled:
-      [self animatePress];
+      [self animatePressOut];
       _eventEmitter->onPressOut();
           break;
       default:
