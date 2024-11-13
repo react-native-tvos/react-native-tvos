@@ -401,8 +401,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
     private var viewHeight = 0
     private val jSTouchDispatcher: JSTouchDispatcher = JSTouchDispatcher(this)
     private var jSPointerDispatcher: JSPointerDispatcher? = null
-    internal val androidHWInputDeviceHelper: ReactAndroidHWInputDeviceHelper
-      get() = ReactAndroidHWInputDeviceHelper()
+    internal val androidHWInputDeviceHelper: ReactAndroidHWInputDeviceHelper by lazy {
+      ReactAndroidHWInputDeviceHelper()
+    }
 
     internal val reactContext: ThemedReactContext
       get() = context as ThemedReactContext
