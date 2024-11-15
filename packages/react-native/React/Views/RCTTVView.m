@@ -23,6 +23,7 @@
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
   UILongPressGestureRecognizer * _pressRecognizer;
+  UILongPressGestureRecognizer * _longPressRecognizer;
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;
@@ -76,17 +77,42 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   self->_isTVSelectable = isTVSelectable;
   if (isTVSelectable && ![self isTVFocusGuide]) {
-    UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-    pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-    pressRecognizer.minimumPressDuration = 0;
-
-    _pressRecognizer = pressRecognizer;
-
-    [self addGestureRecognizer:_pressRecognizer];
+    [self setUpTVGestureRecognizers];
   } else {
-    if (_pressRecognizer) {
-      [self removeGestureRecognizer:_pressRecognizer];
-    }
+    [self tearDownTVGestureRecognizers];
+  }
+}
+
+// Press recognizer should allow long press recognizer to work (but not the reverse)
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  return gestureRecognizer == _pressRecognizer;
+}
+
+- (void)setUpTVGestureRecognizers {
+  UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+  pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+  pressRecognizer.minimumPressDuration = 0.0;
+  pressRecognizer.delegate = self; // Press recognizer allows other recognizers to run
+
+  [self addGestureRecognizer:pressRecognizer];
+  _pressRecognizer = pressRecognizer;
+
+  UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+  longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+  longPressRecognizer.minimumPressDuration = 0.5;
+
+  [self addGestureRecognizer:longPressRecognizer];
+  _longPressRecognizer = longPressRecognizer;
+}
+
+- (void)tearDownTVGestureRecognizers {
+  if (_pressRecognizer) {
+    [self removeGestureRecognizer:_pressRecognizer];
+    _pressRecognizer = nil;
+  }
+  if (_longPressRecognizer) {
+    [self removeGestureRecognizer:_longPressRecognizer];
+    _longPressRecognizer = nil;
   }
 }
 
@@ -131,6 +157,21 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
           break;
       default:
           break;
+  }
+}
+
+- (void)handleLongPress:(UIGestureRecognizer *)r
+{
+  switch (r.state) {
+    case UIGestureRecognizerStateBegan:
+      [self sendLongSelectStartNotification];
+      break;
+    case UIGestureRecognizerStateEnded:
+    case UIGestureRecognizerStateCancelled:
+      [self sendLongSelectEndNotification];
+      break;
+    default:
+      break;
   }
 }
 
@@ -440,14 +481,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectStartNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectEndNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:self.reactTag target:self.reactTag];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
 - (RCTTVView *)getViewById:(NSNumber *)viewId {
@@ -467,7 +508,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
-  if (self.focusGuideDown != nil && nextFocusDown == nil) {
+  if (self.focusGuideDown != nil && nextFocusDown) {
     [[self rootView] removeLayoutGuide:self.focusGuideDown];
     self.focusGuideDown = nil;
   } else {
@@ -487,7 +528,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
-  if (self.focusGuideRight != nil && nextFocusRight == nil) {
+  if (self.focusGuideRight != nil && nextFocusRight) {
     [[self rootView] removeLayoutGuide:self.focusGuideRight];
     self.focusGuideRight = nil;
   } else {

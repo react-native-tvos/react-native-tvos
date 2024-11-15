@@ -64,6 +64,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _motionEffectsAdded;
   UILongPressGestureRecognizer * _pressRecognizer;
+  UILongPressGestureRecognizer * _longPressRecognizer;
   NSSet<NSString *> *_Nullable _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN;
   UIView *_containerView;
   BOOL _useCustomContainerView;
@@ -156,6 +157,11 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) {
     [self invalidateLayer];
   }
+}
+
+// Press recognizer should allow long press recognizer to work (but not the reverse)
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+  return gestureRecognizer == _pressRecognizer;
 }
 
 #if TARGET_OS_TV
@@ -267,14 +273,14 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectStartNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectEndNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)animatePressIn
@@ -309,20 +315,64 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   }
 }
 
+- (void)setUpTVGestureRecognizers {
+  UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+  pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+  pressRecognizer.minimumPressDuration = 0.0;
+  pressRecognizer.delegate = self; // Press recognizer allows other recognizers to run
+
+  [self addGestureRecognizer:pressRecognizer];
+  _pressRecognizer = pressRecognizer;
+
+  UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+  longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
+  longPressRecognizer.minimumPressDuration = 0.5;
+
+  [self addGestureRecognizer:longPressRecognizer];
+  _longPressRecognizer = longPressRecognizer;
+}
+
+- (void)tearDownTVGestureRecognizers {
+  if (_pressRecognizer) {
+    [self removeGestureRecognizer:_pressRecognizer];
+    _pressRecognizer = nil;
+  }
+  if (_longPressRecognizer) {
+    [self removeGestureRecognizer:_longPressRecognizer];
+    _longPressRecognizer = nil;
+  }
+}
+
+
 - (void)handlePress:(UIGestureRecognizer *)r
 {
   switch (r.state) {
-      case UIGestureRecognizerStateBegan:
+    case UIGestureRecognizerStateBegan:
       _eventEmitter->onPressIn();
       [self animatePressIn];
-          break;
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
+      break;
+    case UIGestureRecognizerStateCancelled:
+    case UIGestureRecognizerStateEnded:
       [self animatePressOut];
       _eventEmitter->onPressOut();
-          break;
-      default:
-          break;
+      break;
+    default:
+      break;
+  }
+}
+
+- (void)handleLongPress:(UIGestureRecognizer *)r
+{
+  switch (r.state) {
+    case UIGestureRecognizerStateBegan:
+      [self sendLongSelectStartNotification];
+      break;
+    case UIGestureRecognizerStateEnded:
+    case UIGestureRecognizerStateCancelled:
+      [self sendLongSelectEndNotification];
+      break;
+    default:
+      break;
   }
 }
 
@@ -1043,16 +1093,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-      pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-      pressRecognizer.minimumPressDuration = 0;
-      
-      [self addGestureRecognizer:pressRecognizer];
-      _pressRecognizer = pressRecognizer;
+      [self setUpTVGestureRecognizers];
     } else {
-      if (_pressRecognizer) {
-        [self removeGestureRecognizer:_pressRecognizer];
-      }
+      [self tearDownTVGestureRecognizers];
     }
   }
   // `tvParallaxProperties

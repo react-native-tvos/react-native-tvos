@@ -12,7 +12,7 @@
 #import <React/RCTBridge.h>
 
 //  A RCTView with additional properties and methods for user interaction using the Apple TV focus engine.
-@interface RCTTVView : RCTView
+@interface RCTTVView : RCTView <UIGestureRecognizerDelegate>
 
 /**
  * TV event handlers
@@ -76,11 +76,6 @@
  * Send Blur Notifications to listeners
  */
 - (void)sendBlurNotification:(UIFocusUpdateContext *)context;
-
-/**
- * Send Select Notification to listeners
- */
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer;
 
 /**
  * Adds Parallax Motion Effects if tvParallaxProperty is enabled
