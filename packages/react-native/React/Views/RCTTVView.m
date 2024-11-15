@@ -508,7 +508,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)setNextFocusDown:(NSNumber *)nextFocusDown {
-  if (self.focusGuideDown != nil && nextFocusDown) {
+  if (self.focusGuideDown != nil && nextFocusDown == nil) {
     [[self rootView] removeLayoutGuide:self.focusGuideDown];
     self.focusGuideDown = nil;
   } else {
@@ -528,7 +528,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 - (void)setNextFocusRight:(NSNumber *)nextFocusRight {
-  if (self.focusGuideRight != nil && nextFocusRight) {
+  if (self.focusGuideRight != nil && nextFocusRight == nil) {
     [[self rootView] removeLayoutGuide:self.focusGuideRight];
     self.focusGuideRight = nil;
   } else {
