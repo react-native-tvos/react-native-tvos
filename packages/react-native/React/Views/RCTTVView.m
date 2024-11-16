@@ -108,29 +108,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)selectGestureBegan
+- (void)emitPressInEvent
 {
   if (self.onPressIn) self.onPressIn(nil);
-  [self animatePressIn];
 }
 
-- (void)selectGestureEnded
+- (void)emitPressOutEvent
 {
-  [self animatePressOut];
   if (self.onPressOut) self.onPressOut(nil);
-  [self sendSelectNotification];
-}
-
-- (void)longSelectGestureBegan
-{
-  [self sendLongSelectStartNotification];
-}
-
-- (void)longSelectGestureEnded
-{
-  [self animatePressOut];
-  if (self.onPressOut) self.onPressOut(nil);
-  [self sendLongSelectEndNotification];
 }
 
 - (BOOL)isTVFocusGuide
@@ -444,12 +429,12 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendLongSelectStartNotification
+- (void)sendLongSelectBeganNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendLongSelectEndNotification
+- (void)sendLongSelectEndedNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }

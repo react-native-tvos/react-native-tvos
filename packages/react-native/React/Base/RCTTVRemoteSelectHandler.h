@@ -5,11 +5,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol RCTTVRemoteSelectHandlerDelegate <NSObject>
 
-- (void)selectGestureBegan;
-- (void)selectGestureEnded;
+- (void)animatePressIn;
+- (void)animatePressOut;
 
-- (void)longSelectGestureBegan;
-- (void)longSelectGestureEnded;
+- (void)emitPressInEvent;
+- (void)emitPressOutEvent;
+
+- (void)sendSelectNotification;
+- (void)sendLongSelectBeganNotification;
+- (void)sendLongSelectEndedNotification;
 
 @end
 

@@ -271,12 +271,12 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendLongSelectStartNotification
+- (void)sendLongSelectBeganNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendLongSelectEndNotification
+- (void)sendLongSelectEndedNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
@@ -313,29 +313,14 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   }
 }
 
-- (void)selectGestureBegan
+- (void)emitPressInEvent
 {
   _eventEmitter->onPressIn();
-  [self animatePressIn];
 }
 
-- (void)selectGestureEnded
+- (void)emitPressOutEvent
 {
-  [self animatePressOut];
   _eventEmitter->onPressOut();
-  [self sendSelectNotification];
-}
-
-- (void)longSelectGestureBegan
-{
-  [self sendLongSelectStartNotification];
-}
-
-- (void)longSelectGestureEnded
-{
-  [self animatePressOut];
-  _eventEmitter->onPressOut();
-  [self sendLongSelectEndNotification];
 }
 
 - (void)addParallaxMotionEffects

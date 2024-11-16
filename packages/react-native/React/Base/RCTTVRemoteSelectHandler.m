@@ -74,12 +74,15 @@
 {
   switch (r.state) {
     case UIGestureRecognizerStateBegan:
-      [self.view selectGestureBegan];
+      [self.view emitPressInEvent];
+      [self.view animatePressIn];
       break;
     case UIGestureRecognizerStateCancelled:
     case UIGestureRecognizerStateEnded:
       if (r.enabled) {
-        [self.view selectGestureEnded];
+        [self.view animatePressOut];
+        [self.view emitPressOutEvent];
+        [self.view sendSelectNotification];
       }
       break;
     default:
@@ -87,16 +90,26 @@
   }
 }
 
+/*
+ When a long press starts, the press recognizer has already started
+ and called selectGestureBegan(). We disable the press recognizer
+ when the long press starts. At the end of the gesture, we execute the
+ code for pressOut (since the press recognizer cannot), and then reenable
+ the press recgonizer. This guarantees
+ only one pressIn and one pressOut, and only longSelect notifications.
+ */
 - (void)handleLongPress:(UIGestureRecognizer *)r
 {
   switch (r.state) {
     case UIGestureRecognizerStateBegan:
       self.pressRecognizer.enabled = NO;
-      [self.view longSelectGestureBegan];
+      [self.view sendLongSelectBeganNotification];
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateCancelled:
-      [self.view longSelectGestureEnded];
+      [self.view animatePressOut];
+      [self.view emitPressOutEvent];
+      [self.view sendLongSelectEndedNotification];
       self.pressRecognizer.enabled = YES;
       break;
     default:
