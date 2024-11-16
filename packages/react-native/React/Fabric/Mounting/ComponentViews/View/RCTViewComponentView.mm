@@ -322,7 +322,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
 - (void)selectGestureBegan
 {
-  _eventEmitter->onPressOut();
+  _eventEmitter->onPressIn();
   [self animatePressIn];
 }
 
@@ -340,6 +340,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
 - (void)longSelectGestureEnded
 {
+  [self animatePressOut];
+  _eventEmitter->onPressOut();
   [self sendLongSelectEndNotification];
 }
 
@@ -1060,7 +1062,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      self.tvRemoteSelectHandler = [RCTTVRemoteSelectHandler initWithView:self];
+      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc]initWithView:self];
     } else {
       self.tvRemoteSelectHandler = nil;
     }

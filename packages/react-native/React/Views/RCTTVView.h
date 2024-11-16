@@ -10,9 +10,10 @@
 
 #import <React/RCTView.h>
 #import <React/RCTBridge.h>
+#import <React/RCTTVRemoteSelectHandler.h>
 
 //  A RCTView with additional properties and methods for user interaction using the Apple TV focus engine.
-@interface RCTTVView : RCTView <UIGestureRecognizerDelegate>
+@interface RCTTVView : RCTView <RCTTVRemoteSelectHandlerDelegate>
 
 /**
  * TV event handlers
@@ -29,6 +30,10 @@
  */
 @property (nonatomic, assign) BOOL hasTVPreferredFocus;
 
+/**
+  * Select and longSelect event handler
+ */
+@property (nonatomic, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 /**
  * Focus direction tags
  */

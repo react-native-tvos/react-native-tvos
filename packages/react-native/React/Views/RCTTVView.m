@@ -77,42 +77,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   self->_isTVSelectable = isTVSelectable;
   if (isTVSelectable && ![self isTVFocusGuide]) {
-    [self setUpTVGestureRecognizers];
+    self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
   } else {
-    [self tearDownTVGestureRecognizers];
-  }
-}
-
-// Press recognizer should allow long press recognizer to work (but not the reverse)
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-  return gestureRecognizer == _pressRecognizer;
-}
-
-- (void)setUpTVGestureRecognizers {
-  UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-  pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-  pressRecognizer.minimumPressDuration = 0.0;
-  pressRecognizer.delegate = self; // Press recognizer allows other recognizers to run
-
-  [self addGestureRecognizer:pressRecognizer];
-  _pressRecognizer = pressRecognizer;
-
-  UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-  longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-  longPressRecognizer.minimumPressDuration = 0.5;
-
-  [self addGestureRecognizer:longPressRecognizer];
-  _longPressRecognizer = longPressRecognizer;
-}
-
-- (void)tearDownTVGestureRecognizers {
-  if (_pressRecognizer) {
-    [self removeGestureRecognizer:_pressRecognizer];
-    _pressRecognizer = nil;
-  }
-  if (_longPressRecognizer) {
-    [self removeGestureRecognizer:_longPressRecognizer];
-    _longPressRecognizer = nil;
+    self.tvRemoteSelectHandler = nil;
   }
 }
 
@@ -143,36 +110,29 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handlePress:(UIGestureRecognizer *)r
+- (void)selectGestureBegan
 {
-  switch (r.state) {
-      case UIGestureRecognizerStateBegan:
-      if (self.onPressIn) self.onPressIn(nil);
-      [self animatePressIn];
-          break;
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
-      [self animatePressOut];
-      if (self.onPressOut) self.onPressOut(nil);
-          break;
-      default:
-          break;
-  }
+  if (self.onPressIn) self.onPressIn(nil);
+  [self animatePressIn];
 }
 
-- (void)handleLongPress:(UIGestureRecognizer *)r
+- (void)selectGestureEnded
 {
-  switch (r.state) {
-    case UIGestureRecognizerStateBegan:
-      [self sendLongSelectStartNotification];
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateCancelled:
-      [self sendLongSelectEndNotification];
-      break;
-    default:
-      break;
-  }
+  [self animatePressOut];
+  if (self.onPressOut) self.onPressOut(nil);
+  [self sendSelectNotification];
+}
+
+- (void)longSelectGestureBegan
+{
+  [self sendLongSelectStartNotification];
+}
+
+- (void)longSelectGestureEnded
+{
+  [self animatePressOut];
+  if (self.onPressOut) self.onPressOut(nil);
+  [self sendLongSelectEndNotification];
 }
 
 - (BOOL)isTVFocusGuide
@@ -479,6 +439,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 - (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
 {
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendSelectNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
 - (void)sendLongSelectStartNotification

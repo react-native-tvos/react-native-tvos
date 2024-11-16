@@ -74,11 +74,15 @@
 {
   switch (r.state) {
     case UIGestureRecognizerStateBegan:
+      NSLog(@"selectGestureBegan");
       [self.view selectGestureBegan];
       break;
     case UIGestureRecognizerStateCancelled:
     case UIGestureRecognizerStateEnded:
-      [self.view selectGestureEnded];
+      if (r.enabled) {
+        NSLog(@"selectGestureEnded");
+        [self.view selectGestureEnded];
+      }
       break;
     default:
       break;
@@ -89,11 +93,15 @@
 {
   switch (r.state) {
     case UIGestureRecognizerStateBegan:
+      self.pressRecognizer.enabled = NO;
+      NSLog(@"longSelectGestureBegan");
       [self.view longSelectGestureBegan];
       break;
     case UIGestureRecognizerStateEnded:
     case UIGestureRecognizerStateCancelled:
+      NSLog(@"longSelectGestureEnded");
       [self.view longSelectGestureEnded];
+      self.pressRecognizer.enabled = YES;
       break;
     default:
       break;
