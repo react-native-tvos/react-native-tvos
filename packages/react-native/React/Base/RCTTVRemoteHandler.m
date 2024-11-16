@@ -119,11 +119,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
                                   pressType:UIPressTypePlayPause
                                        name:RCTTVRemoteEventPlayPause];
 
-  // Select
-  [self addTapGestureRecognizerWithSelector:@selector(selectPressed:)
-                                  pressType:UIPressTypeSelect
-                                       name:RCTTVRemoteEventSelect];
-    
   // Page Up/Down
   if (@available(tvOS 14.3, *)) {
       [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
@@ -161,10 +156,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
   [self addLongPressGestureRecognizerWithSelector:@selector(longPlayPausePressed:)
                                         pressType:UIPressTypePlayPause
                                              name:RCTTVRemoteEventLongPlayPause];
-
-  [self addLongPressGestureRecognizerWithSelector:@selector(longSelectPressed:)
-                                        pressType:UIPressTypeSelect
-                                             name:RCTTVRemoteEventLongSelect];
 
   [self addLongPressGestureRecognizerWithSelector:@selector(longUpPressed:)
                                         pressType:UIPressTypeUpArrow
@@ -355,11 +346,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventMenu keyAction:r.eventKeyAction tag:nil target:nil];
 }
 
-- (void)selectPressed:(UIGestureRecognizer *)r
-{
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:r.eventKeyAction tag:nil target:nil];
-}
-
 - (void)longPlayPausePressed:(UIGestureRecognizer *)r
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongPlayPause keyAction:r.eventKeyAction tag:nil target:nil];
@@ -368,11 +354,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     // If shake to show is enabled on device, use long play/pause event to show dev menu
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTShowDevMenuNotification" object:nil];
 #endif
-}
-
-- (void)longSelectPressed:(UIGestureRecognizer *)r
-{
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:r.eventKeyAction tag:nil target:nil];
 }
 
 - (void)longUpPressed:(UIGestureRecognizer *)r

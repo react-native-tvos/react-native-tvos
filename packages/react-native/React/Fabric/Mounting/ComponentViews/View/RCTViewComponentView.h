@@ -11,6 +11,7 @@
 #import <React/RCTConstants.h>
 #import <React/RCTTouchableComponentViewProtocol.h>
 #import <React/UIView+ComponentViewProtocol.h>
+#import <React/RCTTVRemoteSelectHandler.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>
 #import <react/renderer/components/view/ViewProps.h>
 #import <react/renderer/core/EventEmitter.h>
@@ -25,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * UIView class for <View> component.
  */
-@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, UIGestureRecognizerDelegate> {
+@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, RCTTVRemoteSelectHandlerDelegate, UIGestureRecognizerDelegate> {
  @protected
   facebook::react::LayoutMetrics _layoutMetrics;
   facebook::react::SharedViewProps _props;
@@ -72,6 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, nullable) UIFocusGuide *focusGuideDown;
 @property(nonatomic, nullable) UIFocusGuide *focusGuideLeft;
 @property(nonatomic, nullable) UIFocusGuide *focusGuideRight;
+@property(nonatomic, nullable, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 #endif
 
 /**

@@ -273,6 +273,11 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
+- (void)sendSelectNotification
+{
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
+}
+
 - (void)sendLongSelectStartNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:@(self.tag) target:@(self.tag)];
@@ -315,65 +320,29 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   }
 }
 
-- (void)setUpTVGestureRecognizers {
-  UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-  pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-  pressRecognizer.minimumPressDuration = 0.0;
-  pressRecognizer.delegate = self; // Press recognizer allows other recognizers to run
-
-  [self addGestureRecognizer:pressRecognizer];
-  _pressRecognizer = pressRecognizer;
-
-  UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-  longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-  longPressRecognizer.minimumPressDuration = 0.5;
-
-  [self addGestureRecognizer:longPressRecognizer];
-  _longPressRecognizer = longPressRecognizer;
-}
-
-- (void)tearDownTVGestureRecognizers {
-  if (_pressRecognizer) {
-    [self removeGestureRecognizer:_pressRecognizer];
-    _pressRecognizer = nil;
-  }
-  if (_longPressRecognizer) {
-    [self removeGestureRecognizer:_longPressRecognizer];
-    _longPressRecognizer = nil;
-  }
-}
-
-
-- (void)handlePress:(UIGestureRecognizer *)r
+- (void)selectGestureBegan
 {
-  switch (r.state) {
-    case UIGestureRecognizerStateBegan:
-      _eventEmitter->onPressIn();
-      [self animatePressIn];
-      break;
-    case UIGestureRecognizerStateCancelled:
-    case UIGestureRecognizerStateEnded:
-      [self animatePressOut];
-      _eventEmitter->onPressOut();
-      break;
-    default:
-      break;
-  }
+  _eventEmitter->onPressIn();
+  [self animatePressIn];
 }
 
-- (void)handleLongPress:(UIGestureRecognizer *)r
+- (void)selectGestureEnded
 {
-  switch (r.state) {
-    case UIGestureRecognizerStateBegan:
-      [self sendLongSelectStartNotification];
-      break;
-    case UIGestureRecognizerStateEnded:
-    case UIGestureRecognizerStateCancelled:
-      [self sendLongSelectEndNotification];
-      break;
-    default:
-      break;
-  }
+  [self animatePressOut];
+  _eventEmitter->onPressOut();
+  [self sendSelectNotification];
+}
+
+- (void)longSelectGestureBegan
+{
+  [self sendLongSelectStartNotification];
+}
+
+- (void)longSelectGestureEnded
+{
+  [self animatePressOut];
+  _eventEmitter->onPressOut();
+  [self sendLongSelectEndNotification];
 }
 
 - (void)addParallaxMotionEffects
@@ -1093,9 +1062,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      [self setUpTVGestureRecognizers];
+      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc]initWithView:self];
     } else {
-      [self tearDownTVGestureRecognizers];
+      self.tvRemoteSelectHandler = nil;
     }
   }
   // `tvParallaxProperties
