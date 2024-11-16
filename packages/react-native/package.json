@@ -1,6 +1,6 @@
 {
   "name": "react-native-tvos",
-  "version": "0.76.1",
+  "version": "0.76.2",
   "description": "A framework for building native apps using React",
   "license": "MIT",
   "repository": {
@@ -53,7 +53,6 @@
     "ReactApple",
     "ReactCommon",
     "README.md",
-    "README-core.md",
     "rn-get-polyfills.js",
     "scripts/compose-source-maps.js",
     "scripts/find-node-for-xcode.sh",
@@ -95,7 +94,7 @@
     "types"
   ],
   "scripts": {
-    "prepack": "node ./scripts/prepack.js; cp ../../README.md ./README.md; cp ../../README-core.md ./README-core.md",
+    "prepack": "node ./scripts/prepack.js",
     "featureflags-check": "node ./scripts/featureflags/index.js --verify-unchanged",
     "featureflags-update": "node ./scripts/featureflags/index.js"
   },
@@ -110,13 +109,13 @@
   },
   "dependencies": {
     "@jest/create-cache-key-function": "^29.6.3",
-    "@react-native/assets-registry": "0.76.1",
-    "@react-native/codegen": "0.76.1",
-    "@react-native/community-cli-plugin": "0.76.1",
-    "@react-native/gradle-plugin": "0.76.1",
-    "@react-native/js-polyfills": "0.76.1",
-    "@react-native/normalize-colors": "0.76.1",
-    "@react-native-tvos/virtualized-lists": "0.76.1",
+    "@react-native/assets-registry": "0.76.2",
+    "@react-native/codegen": "0.76.2",
+    "@react-native/community-cli-plugin": "0.76.2",
+    "@react-native/gradle-plugin": "0.76.2",
+    "@react-native/js-polyfills": "0.76.2",
+    "@react-native/normalize-colors": "0.76.2",
+    "@react-native-tvos/virtualized-lists": "0.76.2",
     "abort-controller": "^3.0.0",
     "anser": "^1.4.9",
     "ansi-regex": "^5.0.0",
