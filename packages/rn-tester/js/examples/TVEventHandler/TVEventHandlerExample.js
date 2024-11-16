@@ -10,11 +10,6 @@
 
 'use strict';
 
-import type {
-  FocusEvent,
-  BlurEvent,
-} from '../../../../react-native/Libraries/Types/CoreEventTypes';
-
 import * as React from 'react';
 import ReactNative from 'react-native';
 
@@ -32,7 +27,7 @@ const {
   TVEventControl,
 } = ReactNative;
 
-const focusHandler = (event: FocusEvent & {name?: string}, props: any) => {
+const focusHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
     event.name = undefined;
     event.stopPropagation();
@@ -42,7 +37,7 @@ const focusHandler = (event: FocusEvent & {name?: string}, props: any) => {
   props.log(`Focus on ${props.title} at ${event.nativeEvent?.target}`);
 };
 
-const blurHandler = (event: BlurEvent & {name: string}, props: any) => {
+const blurHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
     event.stopPropagation();
   } else {
@@ -60,20 +55,22 @@ const PressableButton = (props: {
   log: (entry: string) => void,
   functional?: boolean,
   noBubbledEvents?: boolean,
+  tvParallaxProperties?: $FlowFixMe,
 }) => {
   // Set functional=false to have no functional style or children
   // and test the fix for #744
+  const {functional, log, noBubbledEvents, title, ...pressableProps} = props;
   const [userFocused, setUserFocused] = React.useState(false);
-  const functional = props?.functional ?? true;
-  return functional ? (
+  return functional !== false ? (
     <Pressable
-      {...props}
-      onFocus={(event: FocusEvent) => focusHandler(event, props)}
-      onBlur={(event: BlurEvent) => blurHandler(event, props)}
+      {...pressableProps}
+      onFocus={(event: $FlowFixMe) => focusHandler(event, props)}
+      onBlur={(event: $FlowFixMe) => blurHandler(event, props)}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
       onPressIn={() => pressEventHandler('onPressIn', props)}
       onPressOut={() => pressEventHandler('onPressOut', props)}
+      tvParallaxProperties={props.tvParallaxProperties}
       android_ripple={{
         color: '#cccccc',
         radius: 50,
@@ -95,15 +92,16 @@ const PressableButton = (props: {
     </Pressable>
   ) : (
     <Pressable
-      {...props}
-      onFocus={(event: FocusEvent) => {
+      {...pressableProps}
+      onFocus={(event: $FlowFixMe) => {
         focusHandler(event, props);
         setUserFocused(true);
       }}
-      onBlur={(event: BlurEvent) => {
+      onBlur={(event: $FlowFixMe) => {
         blurHandler(event, props);
         setUserFocused(false);
       }}
+      tvParallaxProperties={props.tvParallaxProperties}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
       onPressIn={() => pressEventHandler('onPressIn', props)}
@@ -283,6 +281,15 @@ const TVEventHandlerView: () => React.Node = () => {
             log={updatePressableLog}
             functional={false}
           />
+          <PressableButton
+            title="Pressable tvOS expand"
+            log={updatePressableLog}
+            tvParallaxProperties={{
+              enabled: true,
+              magnification: 1.05,
+              pressMagnification: 1.1,
+            }}
+          />
           <TouchableOpacityButton
             title="TouchableOpacity"
             log={updatePressableLog}
@@ -335,12 +342,12 @@ const TVEventHandlerView: () => React.Node = () => {
         </View>
         <View
           style={styles.containerView}
-          onFocus={(event: FocusEvent) => {
+          onFocus={(event: $FlowFixMe) => {
             updatePressableLog(
               `Focus bubbled from ${event.nativeEvent.target}`,
             );
           }}
-          onBlur={(event: BlurEvent) => {
+          onBlur={(event: $FlowFixMe) => {
             updatePressableLog(`Blur bubbled from ${event.nativeEvent.target}`);
           }}>
           <Text style={{fontSize: 12 * scale}}>
@@ -358,12 +365,12 @@ const TVEventHandlerView: () => React.Node = () => {
             <View>
               <TextInput
                 ref={textInputRef}
-                onFocus={(event: FocusEvent) =>
+                onFocus={(event: $FlowFixMe) =>
                   updatePressableLog(
                     `TextInput ${event.nativeEvent.target} is focused`,
                   )
                 }
-                onBlur={(event: BlurEvent) =>
+                onBlur={(event: $FlowFixMe) =>
                   updatePressableLog(
                     `TextInput ${event.nativeEvent.target} is blurred`,
                   )

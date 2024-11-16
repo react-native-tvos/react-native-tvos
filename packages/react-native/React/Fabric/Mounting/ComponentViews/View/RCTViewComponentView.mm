@@ -63,7 +63,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   BOOL _removeClippedSubviews;
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _motionEffectsAdded;
-  UILongPressGestureRecognizer * _pressRecognizer;
   NSSet<NSString *> *_Nullable _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN;
   UIView *_containerView;
   BOOL _useCustomContainerView;
@@ -267,14 +266,19 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendSelectNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
-- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectBeganNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:@(self.tag) target:@(self.tag)];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:@(self.tag) target:@(self.tag)];
+}
+
+- (void)sendLongSelectEndedNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
 }
 
 - (void)animatePressIn
@@ -309,21 +313,14 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   }
 }
 
-- (void)handlePress:(UIGestureRecognizer *)r
+- (void)emitPressInEvent
 {
-  switch (r.state) {
-      case UIGestureRecognizerStateBegan:
-      _eventEmitter->onPressIn();
-      [self animatePressIn];
-          break;
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
-      [self animatePressOut];
-      _eventEmitter->onPressOut();
-          break;
-      default:
-          break;
-  }
+  _eventEmitter->onPressIn();
+}
+
+- (void)emitPressOutEvent
+{
+  _eventEmitter->onPressOut();
 }
 
 - (void)addParallaxMotionEffects
@@ -1043,16 +1040,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-      pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-      pressRecognizer.minimumPressDuration = 0;
-      
-      [self addGestureRecognizer:pressRecognizer];
-      _pressRecognizer = pressRecognizer;
+      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc]initWithView:self];
     } else {
-      if (_pressRecognizer) {
-        [self removeGestureRecognizer:_pressRecognizer];
-      }
+      self.tvRemoteSelectHandler = nil;
     }
   }
   // `tvParallaxProperties

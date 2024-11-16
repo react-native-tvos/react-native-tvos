@@ -10,9 +10,10 @@
 
 #import <React/RCTView.h>
 #import <React/RCTBridge.h>
+#import <React/RCTTVRemoteSelectHandler.h>
 
 //  A RCTView with additional properties and methods for user interaction using the Apple TV focus engine.
-@interface RCTTVView : RCTView
+@interface RCTTVView : RCTView <RCTTVRemoteSelectHandlerDelegate>
 
 /**
  * TV event handlers
@@ -29,6 +30,10 @@
  */
 @property (nonatomic, assign) BOOL hasTVPreferredFocus;
 
+/**
+  * Select and longSelect event handler
+ */
+@property (nonatomic, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 /**
  * Focus direction tags
  */
@@ -76,11 +81,6 @@
  * Send Blur Notifications to listeners
  */
 - (void)sendBlurNotification:(UIFocusUpdateContext *)context;
-
-/**
- * Send Select Notification to listeners
- */
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer;
 
 /**
  * Adds Parallax Motion Effects if tvParallaxProperty is enabled

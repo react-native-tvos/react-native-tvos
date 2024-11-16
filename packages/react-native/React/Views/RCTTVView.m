@@ -22,7 +22,6 @@
 
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
-  UILongPressGestureRecognizer * _pressRecognizer;
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;
@@ -76,17 +75,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 {
   self->_isTVSelectable = isTVSelectable;
   if (isTVSelectable && ![self isTVFocusGuide]) {
-    UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
-    pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
-    pressRecognizer.minimumPressDuration = 0;
-
-    _pressRecognizer = pressRecognizer;
-
-    [self addGestureRecognizer:_pressRecognizer];
+    self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
   } else {
-    if (_pressRecognizer) {
-      [self removeGestureRecognizer:_pressRecognizer];
-    }
+    self.tvRemoteSelectHandler = nil;
   }
 }
 
@@ -117,21 +108,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   }
 }
 
-- (void)handlePress:(UIGestureRecognizer *)r
+- (void)emitPressInEvent
 {
-  switch (r.state) {
-      case UIGestureRecognizerStateBegan:
-      if (self.onPressIn) self.onPressIn(nil);
-      [self animatePressIn];
-          break;
-      case UIGestureRecognizerStateEnded:
-      case UIGestureRecognizerStateCancelled:
-      [self animatePressOut];
-      if (self.onPressOut) self.onPressOut(nil);
-          break;
-      default:
-          break;
-  }
+  if (self.onPressIn) self.onPressIn(nil);
+}
+
+- (void)emitPressOutEvent
+{
+  if (self.onPressOut) self.onPressOut(nil);
 }
 
 - (BOOL)isTVFocusGuide
@@ -440,14 +424,19 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendSelectNotification
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
-- (void)sendLongSelectNotification:(UIGestureRecognizer *)recognizer
+- (void)sendLongSelectBeganNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:recognizer.eventKeyAction tag:self.reactTag target:self.reactTag];
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendLongSelectEndedNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 
 - (RCTTVView *)getViewById:(NSNumber *)viewId {
