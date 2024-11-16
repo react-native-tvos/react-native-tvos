@@ -22,8 +22,6 @@
 
 @implementation RCTTVView {
   __weak RCTBridge *_bridge;
-  UILongPressGestureRecognizer * _pressRecognizer;
-  UILongPressGestureRecognizer * _longPressRecognizer;
   BOOL motionEffectsAdded;
   NSArray* focusDestinations;
   id<UIFocusItem> previouslyFocusedItem;

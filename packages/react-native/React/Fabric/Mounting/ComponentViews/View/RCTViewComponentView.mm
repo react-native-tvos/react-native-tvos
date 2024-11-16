@@ -63,8 +63,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   BOOL _removeClippedSubviews;
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _motionEffectsAdded;
-  UILongPressGestureRecognizer * _pressRecognizer;
-  UILongPressGestureRecognizer * _longPressRecognizer;
   NSSet<NSString *> *_Nullable _propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN;
   UIView *_containerView;
   BOOL _useCustomContainerView;
@@ -157,11 +155,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) {
     [self invalidateLayer];
   }
-}
-
-// Press recognizer should allow long press recognizer to work (but not the reverse)
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-  return gestureRecognizer == _pressRecognizer;
 }
 
 #if TARGET_OS_TV

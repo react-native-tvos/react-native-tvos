@@ -11,7 +11,9 @@
 #import <React/RCTConstants.h>
 #import <React/RCTTouchableComponentViewProtocol.h>
 #import <React/UIView+ComponentViewProtocol.h>
+#if TARGET_OS_TV
 #import <React/RCTTVRemoteSelectHandler.h>
+#endif
 #import <react/renderer/components/view/ViewEventEmitter.h>
 #import <react/renderer/components/view/ViewProps.h>
 #import <react/renderer/core/EventEmitter.h>
@@ -26,7 +28,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * UIView class for <View> component.
  */
-@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, RCTTVRemoteSelectHandlerDelegate, UIGestureRecognizerDelegate> {
+#if TARGET_OS_TV
+@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, RCTTVRemoteSelectHandlerDelegate> {
+#else
+@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol> {
+#endif
  @protected
   facebook::react::LayoutMetrics _layoutMetrics;
   facebook::react::SharedViewProps _props;
