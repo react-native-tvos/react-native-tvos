@@ -57,18 +57,13 @@
 @property (nonatomic, assign) BOOL trapFocusLeft;
 @property (nonatomic, assign) BOOL trapFocusRight;
 
-
-/**
- * Focus
- */
+// These handlers are defined in RCTView
+/*
 @property (nonatomic, copy) RCTBubblingEventBlock onFocus;
 @property (nonatomic, copy) RCTBubblingEventBlock onBlur;
-
-/**
- * TV Press Handlers
- */
 @property (nonatomic, copy) RCTDirectEventBlock onPressIn;
 @property (nonatomic, copy) RCTDirectEventBlock onPressOut;
+ */
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 
