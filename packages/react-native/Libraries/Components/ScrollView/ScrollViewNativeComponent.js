@@ -155,6 +155,7 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           scrollsToTop: true,
           showsHorizontalScrollIndicator: true,
           showsVerticalScrollIndicator: true,
+          showsScrollIndex: true,
           snapToAlignment: true,
           snapToEnd: true,
           snapToInterval: true,

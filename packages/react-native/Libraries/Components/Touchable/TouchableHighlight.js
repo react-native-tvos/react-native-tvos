@@ -9,6 +9,7 @@
  */
 
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import typeof TouchableWithoutFeedback from './TouchableWithoutFeedback';
 
 import View from '../../Components/View/View';
@@ -18,6 +19,7 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
 type AndroidProps = $ReadOnly<{|
@@ -28,15 +30,22 @@ type AndroidProps = $ReadOnly<{|
   nextFocusUp?: ?number,
 |}>;
 
-type IOSProps = $ReadOnly<{|
+type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
 |}>;
 
 type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
-  ...IOSProps,
-
+  ...TVProps,
+  //...ViewProps,
   activeOpacity?: ?number,
   underlayColor?: ?ColorValue,
   style?: ?ViewStyleProp,
@@ -209,18 +218,22 @@ class TouchableHighlight extends React.Component<Props, State> {
         }
       },
       onPressIn: event => {
-        if (this._hideTimeout != null) {
-          clearTimeout(this._hideTimeout);
-          this._hideTimeout = null;
+        if (!Platform.isTV) {
+          if (this._hideTimeout != null) {
+            clearTimeout(this._hideTimeout);
+            this._hideTimeout = null;
+          }
+          this._showUnderlay();
         }
-        this._showUnderlay();
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        if (this._hideTimeout == null) {
-          this._hideUnderlay();
+        if (!Platform.isTV) {
+          if (this._hideTimeout == null) {
+            this._hideUnderlay();
+          }
         }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
@@ -281,8 +294,7 @@ class TouchableHighlight extends React.Component<Props, State> {
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
-      this.state.pressability.getEventHandlers();
+    const eventHandlers = this.state.pressability.getEventHandlers();
 
     const accessibilityState =
       this.props.disabled != null
@@ -335,12 +347,16 @@ class TouchableHighlight extends React.Component<Props, State> {
         )}
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={
+          this.props.isTVSelectable !== false && this.props.accessible !== false
+        }
+        tvParallaxProperties={this.props.tvParallaxProperties}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         focusable={
           this.props.focusable !== false &&
           this.props.onPress !== undefined &&
@@ -349,7 +365,7 @@ class TouchableHighlight extends React.Component<Props, State> {
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         ref={this.props.hostRef}
-        {...eventHandlersWithoutBlurAndFocus}>
+        {...eventHandlers}>
         {React.cloneElement(child, {
           style: StyleSheet.compose(
             child.props.style,

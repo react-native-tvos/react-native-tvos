@@ -22,6 +22,7 @@ import type {
   LayoutEvent,
   PressEvent,
 } from '../../Types/CoreEventTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 
 import View from '../../Components/View/View';
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
@@ -82,6 +83,7 @@ type Props = $ReadOnly<{|
   rejectResponderTermination?: ?boolean,
   testID?: ?string,
   touchSoundDisabled?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
 |}>;
 
 const PASSTHROUGH_PROPS = [
@@ -108,6 +110,7 @@ const PASSTHROUGH_PROPS = [
   'onFocus',
   'onLayout',
   'testID',
+  'tvParallaxProperties',
 ];
 
 module.exports = function TouchableWithoutFeedback(props: Props): React.Node {

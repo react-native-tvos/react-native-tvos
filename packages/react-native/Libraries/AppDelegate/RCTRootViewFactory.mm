@@ -162,8 +162,9 @@ static NSDictionary *updateInitialProps(NSDictionary *initialProps, BOOL isFabri
     RCTSurfaceHostingProxyRootView *surfaceHostingProxyRootView = [[RCTSurfaceHostingProxyRootView alloc]
         initWithSurface:surface
         sizeMeasureMode:RCTSurfaceSizeMeasureModeWidthExact | RCTSurfaceSizeMeasureModeHeightExact];
-
+#if !TARGET_OS_TV
     surfaceHostingProxyRootView.backgroundColor = [UIColor systemBackgroundColor];
+#endif
     if (self->_configuration.customizeRootView != nil) {
       self->_configuration.customizeRootView(surfaceHostingProxyRootView);
     }
@@ -197,8 +198,10 @@ static NSDictionary *updateInitialProps(NSDictionary *initialProps, BOOL isFabri
   BOOL enableFabric = self->_configuration.fabricEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
 
+#if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
-
+#endif
+  
   return rootView;
 }
 

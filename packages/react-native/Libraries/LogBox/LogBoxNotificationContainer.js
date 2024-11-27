@@ -9,6 +9,7 @@
  */
 
 import View from '../Components/View/View';
+import Platform from '../Utilities/Platform';
 import StyleSheet from '../StyleSheet/StyleSheet';
 import * as LogBoxData from './Data/LogBoxData';
 import LogBoxLog from './Data/LogBoxLog';
@@ -59,7 +60,7 @@ export function _LogBoxNotificationContainer(props: Props): React.Node {
     log => log.level === 'error' || log.level === 'fatal',
   );
   return (
-    <SafeAreaView style={styles.list}>
+    <SafeAreaView style={Platform.isTV ? styles.tvlist : styles.list}>
       {warnings.length > 0 && (
         <View style={styles.toast}>
           <LogBoxLogNotification
@@ -89,6 +90,12 @@ export function _LogBoxNotificationContainer(props: Props): React.Node {
 const styles = StyleSheet.create({
   list: {
     bottom: 20,
+    left: 10,
+    right: 10,
+    position: 'absolute',
+  },
+  tvlist: {
+    top: 20,
     left: 10,
     right: 10,
     position: 'absolute',
