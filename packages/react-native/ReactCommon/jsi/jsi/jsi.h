@@ -1071,7 +1071,7 @@ class JSI_EXPORT Array : public Object {
       Runtime& runtime,
       std::initializer_list<Value> elements);
 
- private:
+ public:
   friend class Object;
   friend class Value;
   friend class Runtime;
@@ -1108,7 +1108,7 @@ class JSI_EXPORT ArrayBuffer : public Object {
     return runtime.data(*this);
   }
 
- private:
+ public:
   friend class Object;
   friend class Value;
   friend class Runtime;
@@ -1222,7 +1222,7 @@ class JSI_EXPORT Function : public Object {
     return runtime.getHostFunction(*this);
   }
 
- private:
+ public:
   friend class Object;
   friend class Value;
   friend class Runtime;
