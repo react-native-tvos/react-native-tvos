@@ -67,6 +67,36 @@ HostPlatformViewProps::HostPlatformViewProps(
                     "hasTVPreferredFocus",
                     sourceProps.hasTVPreferredFocus,
                     {})),
+      autoFocus(convertRawProp(
+          context,
+          rawProps,
+          "autoFocus",
+          sourceProps.autoFocus,
+          false)),
+      trapFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusUp",
+          sourceProps.trapFocusUp,
+          false)),
+      trapFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusDown",
+          sourceProps.trapFocusDown,
+          false)),
+      trapFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusLeft",
+          sourceProps.trapFocusLeft,
+          false)),
+      trapFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "trapFocusRight",
+          sourceProps.trapFocusRight,
+          false)),
       needsOffscreenAlphaCompositing(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
               ? sourceProps.needsOffscreenAlphaCompositing
@@ -85,7 +115,6 @@ HostPlatformViewProps::HostPlatformViewProps(
                     "renderToHardwareTextureAndroid",
                     sourceProps.renderToHardwareTextureAndroid,
                     {})) {}
-
 #define VIEW_EVENT_CASE(eventType)                      \
   case CONSTEXPR_RAW_PROPS_KEY_HASH("on" #eventType): { \
     const auto offset = ViewEvents::Offset::eventType;  \
