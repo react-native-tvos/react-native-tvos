@@ -13,6 +13,7 @@
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
 
+#if !TARGET_OS_TV
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 
 static NSString *const kStatusBarFrameDidChange = @"statusBarFrameDidChange";
@@ -47,6 +48,13 @@ RCT_ENUM_CONVERTER(
     integerValue);
 
 @end
+#endif
+
+#if TARGET_OS_TV
+
+@implementation RCTStatusBarManager
+
+#else
 
 @interface RCTStatusBarManager () <NativeStatusBarManagerIOSSpec, RCTInitializing>
 @end
@@ -54,6 +62,8 @@ RCT_ENUM_CONVERTER(
 @implementation RCTStatusBarManager {
   facebook::react::ModuleConstants<JS::NativeStatusBarManagerIOS::Constants> _constants;
 }
+
+#endif
 
 static BOOL RCTViewControllerBasedStatusBarAppearance()
 {
@@ -85,8 +95,23 @@ RCT_EXPORT_MODULE()
 
 - (NSArray<NSString *> *)supportedEvents
 {
+#if TARGET_OS_TV
+  return @[];
+#else
   return @[ kStatusBarFrameDidChange, kStatusBarFrameWillChange ];
+#endif
 }
+
+#if TARGET_OS_TV
+
+RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
+{
+  callback(@[ @{
+    @"height" : @(0),
+  } ]);
+}
+
+#else
 
 - (void)startObserving
 {
@@ -201,6 +226,8 @@ RCT_EXPORT_METHOD(setNetworkActivityIndicatorVisible : (BOOL)visible)
 {
   return std::make_shared<facebook::react::NativeStatusBarManagerIOSSpecJSI>(params);
 }
+
+#endif // TARGET_OS_TV
 
 @end
 

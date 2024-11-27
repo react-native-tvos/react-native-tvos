@@ -19,8 +19,13 @@
 
 #import "RCTFabricModalHostViewController.h"
 
+#if TARGET_OS_TV
+#import <React/RCTTVRemoteHandler.h>
+#endif
+
 using namespace facebook::react;
 
+#if !TARGET_OS_TV
 static UIInterfaceOrientationMask supportedOrientationsMask(ModalHostViewSupportedOrientationsMask mask)
 {
   UIInterfaceOrientationMask supportedOrientations = 0;
@@ -55,6 +60,7 @@ static UIInterfaceOrientationMask supportedOrientationsMask(ModalHostViewSupport
 
   return supportedOrientations;
 }
+#endif
 
 static std::tuple<BOOL, UIModalTransitionStyle> animationConfiguration(const ModalHostViewAnimationType animation)
 {
@@ -77,9 +83,17 @@ static UIModalPresentationStyle presentationConfiguration(const ModalHostViewPro
     case ModalHostViewPresentationStyle::FullScreen:
       return UIModalPresentationFullScreen;
     case ModalHostViewPresentationStyle::PageSheet:
+#if TARGET_OS_TV
+      return UIModalPresentationOverFullScreen;
+#else
       return UIModalPresentationPageSheet;
+#endif
     case ModalHostViewPresentationStyle::FormSheet:
+#if TARGET_OS_TV
+      return UIModalPresentationOverFullScreen;
+#else
       return UIModalPresentationFormSheet;
+#endif
     case ModalHostViewPresentationStyle::OverFullScreen:
       return UIModalPresentationOverFullScreen;
   }
@@ -104,6 +118,11 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   BOOL _shouldAnimatePresentation;
   BOOL _shouldPresent;
   BOOL _isPresented;
+#if TARGET_OS_TV
+  UIView *_modalContentsSnapshot;
+  UITapGestureRecognizer *_menuButtonGestureRecognizer;
+  RCTTVRemoteHandler *_tvRemoteHandler;
+#endif
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -111,12 +130,49 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   if (self = [super initWithFrame:frame]) {
     _props = ModalHostViewShadowNode::defaultSharedProps();
     _shouldAnimatePresentation = YES;
+#if TARGET_OS_TV
+    _menuButtonGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                           action:@selector(menuButtonPressed)];
+    _menuButtonGestureRecognizer.allowedPressTypes = @[ @(UIPressTypeMenu) ];
+#endif
 
     _isPresented = NO;
   }
 
   return self;
 }
+
+#if TARGET_OS_TV
+- (void)menuButtonPressed {
+  UIView *snapshot = _modalContentsSnapshot;
+  [self.viewController.view addSubview:snapshot];
+  [self dismissViewController:self.viewController
+                     animated:_shouldAnimatePresentation
+                   completion:^{
+                     [snapshot removeFromSuperview];
+                     auto eventEmitter = [self modalEventEmitter];
+                     if (eventEmitter) {
+                       eventEmitter->onDismiss(ModalHostViewEventEmitter::OnDismiss{});
+                       eventEmitter->onRequestClose(ModalHostViewEventEmitter::OnRequestClose{});
+                     }
+                   }];
+}
+
+- (void)enableEventHandlers
+{
+  _tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:_viewController.view];
+  [_tvRemoteHandler disableTVMenuKey];
+
+  [_viewController.view addGestureRecognizer:_menuButtonGestureRecognizer];
+}
+
+- (void)disableEventHandlers
+{
+  _tvRemoteHandler = nil;
+  [_viewController.view removeGestureRecognizer:_menuButtonGestureRecognizer];
+}
+
+#endif
 
 - (RCTFabricModalHostViewController *)viewController
 {

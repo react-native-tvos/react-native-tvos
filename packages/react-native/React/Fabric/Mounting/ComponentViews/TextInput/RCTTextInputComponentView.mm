@@ -592,6 +592,8 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 - (NSString *)returnKeyTypeToString:(UIReturnKeyType)returnKeyType
 {
   switch (returnKeyType) {
+    case UIReturnKeyDefault:
+      return @"Default";
     case UIReturnKeyGo:
       return @"Go";
     case UIReturnKeyNext:
@@ -619,6 +621,7 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 {
   returnKeyTypesSet = [NSSet setWithObjects:@(UIReturnKeyDone),
                                             @(UIReturnKeyGo),
+                                            @(UIReturnKeyDefault),
                                             @(UIReturnKeyNext),
                                             @(UIReturnKeySearch),
                                             @(UIReturnKeySend),
@@ -661,6 +664,7 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 
   _hasInputAccessoryView = shouldHaveInputAccessoryView;
 
+#if !TARGET_OS_TV
   if (shouldHaveInputAccessoryView) {
     NSString *buttonLabel = inputAccessoryViewButtonLabel != nil ? inputAccessoryViewButtonLabel
                                                                  : [self returnKeyTypeToString:returnKeyType];
@@ -675,7 +679,9 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
                                                                   action:@selector(handleInputAccessoryDoneButton)];
     toolbarView.items = @[ flexibleSpace, doneButton ];
     _backedTextInputView.inputAccessoryView = toolbarView;
-  } else {
+  } else
+#endif
+  {
     _backedTextInputView.inputAccessoryView = nil;
   }
 

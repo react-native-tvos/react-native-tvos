@@ -11,11 +11,19 @@
 #import <React/RCTDefines.h>
 #import <React/RCTEventDispatcherProtocol.h>
 #import <React/RCTScrollableProtocol.h>
+#if TARGET_OS_TV
+#import <React/RCTTVView.h>
+#else
 #import <React/RCTView.h>
+#endif
 
 @protocol UIScrollViewDelegate;
 
+#if TARGET_OS_TV
+@interface RCTScrollView : RCTTVView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
+#else
 @interface RCTScrollView : RCTView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
+#endif
 
 - (instancetype)initWithEventDispatcher:(id<RCTEventDispatcherProtocol>)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
@@ -52,6 +60,7 @@
 @property (nonatomic, assign) CGRect firstResponderFocus;
 /** newly-activated text input outside of the scroll view */
 @property (nonatomic, weak) UIView *firstResponderViewOutsideScrollView;
+@property (nonatomic, assign) BOOL showsScrollIndex;
 
 // NOTE: currently these event props are only declared so we can export the
 // event names to JS - we don't call the blocks directly because scroll events
