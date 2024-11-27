@@ -20,7 +20,7 @@ const Switch = require('../Components/Switch/Switch').default;
 const TextInput = require('../Components/TextInput/TextInput').default;
 const View = require('../Components/View/View').default;
 const Text = require('../Text/Text').default;
-const {VirtualizedList} = require('@react-native/virtualized-lists').default;
+const {VirtualizedList} = require('@react-native-tvos/virtualized-lists').default;
 
 export type ReactTestInstance = $PropertyType<ReactTestRendererType, 'root'>;
 export type Predicate = (node: ReactTestInstance) => boolean;

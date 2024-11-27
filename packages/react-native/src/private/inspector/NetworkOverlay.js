@@ -11,7 +11,7 @@
 'use strict';
 
 import type XMLHttpRequest from '../../../Libraries/Network/XMLHttpRequest';
-import type {ListRenderItemInfo} from '@react-native/virtualized-lists';
+import type {ListRenderItemInfo} from '@react-native-tvos/virtualized-lists';
 
 import ScrollView from '../../../Libraries/Components/ScrollView/ScrollView';
 import React from 'react';

@@ -20,7 +20,9 @@ import type {
   MouseEvent,
   PointerEvent,
   GestureResponderEvent,
+  RemotePressEvent,
 } from '../../Types/CoreEventTypes';
+import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {
   AccessibilityActionEvent,
   AccessibilityProps,
@@ -123,6 +125,11 @@ type TouchEventProps = $ReadOnly<{
   onTouchMoveCapture?: ?(e: GestureResponderEvent) => void,
   onTouchStart?: ?(e: GestureResponderEvent) => void,
   onTouchStartCapture?: ?(e: GestureResponderEvent) => void,
+}>;
+
+type PressEventProps = $ReadOnly<{
+  onPressIn?: ?(e: RemotePressEvent) => void,
+  onPressOut?: ?(e: RemotePressEvent) => void,
 }>;
 
 /**
@@ -276,46 +283,11 @@ export type ViewPropsAndroid = $ReadOnly<{
   renderToHardwareTextureAndroid?: ?boolean,
 
   /**
-   * Whether to force the Android TV focus engine to move focus to this view.
-   *
-   * @platform android
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
-   * TV next focus down (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusDown?: ?number,
-
-  /**
    * TV next focus forward (see documentation for the View component).
    *
    * @platform android
    */
   nextFocusForward?: ?number,
-
-  /**
-   * TV next focus left (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * TV next focus right (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * TV next focus up (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusUp?: ?number,
 
   /**
    * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
@@ -354,6 +326,32 @@ export type ViewPropsIOS = $ReadOnly<{
    * See https://reactnative.dev/docs/view#shouldrasterizeios
    */
   shouldRasterizeIOS?: ?boolean,
+}>;
+
+type NextFocusProps = $ReadOnly<{
+  /**
+   * TV next focus down (see documentation for the View component).
+   *
+   */
+  nextFocusDown?: ?number,
+
+  /**
+   * TV next focus left (see documentation for the View component).
+   *
+   */
+  nextFocusLeft?: ?number,
+
+  /**
+   * TV next focus right (see documentation for the View component).
+   *
+   */
+  nextFocusRight?: ?number,
+
+  /**
+   * TV next focus up (see documentation for the View component).
+   *
+   */
+  nextFocusUp?: ?number,
 }>;
 
 type ViewBaseProps = $ReadOnly<{
@@ -456,4 +454,7 @@ export type ViewProps = $ReadOnly<{
   ...ViewPropsIOS,
   ...AccessibilityProps,
   ...ViewBaseProps,
+  ...TVViewProps,
+  ...NextFocusProps,
+  ...PressEventProps,
 }>;
