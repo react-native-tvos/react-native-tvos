@@ -104,6 +104,16 @@ Pod::Spec.new do |s|
     end
 
     ss.exclude_files = exclude_files
+    ss.ios.exclude_files      = "React/**/RCTTV*.*",
+                                "React/Base/RCTTouchHandlerTV.m"
+    ss.tvos.exclude_files     = "React/Modules/RCTClipboard*",
+                                "React/Views/RCTActionSheet*",
+                                "React/Views/RCTDatePicker*",
+                                "React/Views/RCTPicker*",
+                                "React/Views/RefreshControl/*",
+                                "React/Views/RCTSlider*",
+                                "React/Views/RCTSwitch*",
+                                "React/Base/RCTTouchHandler.m"
     ss.private_header_files   = "React/Cxx*/*.h"
   end
 

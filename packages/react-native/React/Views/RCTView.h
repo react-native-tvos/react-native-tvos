@@ -123,6 +123,25 @@ extern const UIAccessibilityTraits SwitchAccessibilityTrait;
 
 @property (nonatomic, assign) RCTCursor cursor;
 
+#if TARGET_OS_TV
+// For Paper, all views on TV might have focus, blur, pressIn, pressOut handlers,
+// so we need to add these properties here and not in RCTTVView,
+// since some views do not inherit from RCTTVView.
+
+/**
+ * Focus
+ */
+@property (nonatomic, copy) RCTBubblingEventBlock onFocus;
+@property (nonatomic, copy) RCTBubblingEventBlock onBlur;
+
+/**
+ * TV Press Handlers
+ */
+@property (nonatomic, copy) RCTDirectEventBlock onPressIn;
+@property (nonatomic, copy) RCTDirectEventBlock onPressOut;
+
+#endif // TARGET_OS_TV
+
 /**
  * (Experimental and unused for Paper) Pointer event handlers.
  */
