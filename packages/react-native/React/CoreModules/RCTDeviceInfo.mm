@@ -25,7 +25,9 @@ using namespace facebook::react;
 @end
 
 @implementation RCTDeviceInfo {
+#if !TARGET_OS_TV
   UIInterfaceOrientation _currentInterfaceOrientation;
+#endif
   NSDictionary *_currentInterfaceDimensions;
   BOOL _isFullscreen;
   BOOL _invalidated;
@@ -54,6 +56,7 @@ RCT_EXPORT_MODULE()
 
   _currentInterfaceDimensions = [self _exportedDimensions];
 
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(interfaceOrientationDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
@@ -72,6 +75,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
                                              object:nil];
+#endif
 
 #if TARGET_OS_IOS
 
@@ -211,6 +215,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
   });
 }
 
+#if !TARGET_OS_TV
+
 - (void)interfaceOrientationDidChange
 {
   __weak __typeof(self) weakSelf = self;
@@ -278,6 +284,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 #pragma clang diagnostic pop
   }
 }
+
+#endif // TARGET_OS_TV
 
 - (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
 {
