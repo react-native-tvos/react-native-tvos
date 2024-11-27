@@ -28,7 +28,11 @@ class RNTesterButton extends React.Component<Props> {
       <Pressable
         testID={this.props.testID}
         onPress={this.props.onPress}
-        style={({pressed}) => [styles.button, pressed && styles.pressed]}>
+        style={({pressed, focused}) => [
+          styles.button,
+          focused && styles.focused,
+          pressed && styles.pressed,
+        ]}>
         <Text testID={this.props.textTestID}>{this.props.children}</Text>
       </Pressable>
     );
@@ -48,6 +52,9 @@ const styles = StyleSheet.create({
   },
   pressed: {
     backgroundColor: '#a9a9a9',
+  },
+  focused: {
+    opacity: 0.6,
   },
 });
 
