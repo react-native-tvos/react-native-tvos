@@ -52,6 +52,10 @@ function get_visionos_deployment_target {
   use_env_var "${XROS_DEPLOYMENT_TARGET}" "XROS_DEPLOYMENT_TARGET"
 }
 
+function get_tvos_deployment_target {
+  use_env_var_or_ruby_prop "${IOS_DEPLOYMENT_TARGET}" "deployment_target('tvos')"
+}
+
 function get_mac_deployment_target {
   use_env_var "${MAC_DEPLOYMENT_TARGET}" "MAC_DEPLOYMENT_TARGET"
 }
@@ -69,6 +73,19 @@ function build_host_hermesc {
 function configure_apple_framework {
   local enable_debugger cmake_build_type xcode_15_flags xcode_major_version
 
+#  if [[ $1 == appletvos || $1 == iphoneos || $1 == catalyst ]]; then
+#    enable_bitcode="true"
+#  else
+#    enable_bitcode="false"
+#  fi
+#
+# Xcode 14 deprecates bitcode, so we turn this off
+  enable_bitcode="false"
+  if [[ $1 == macosx ]]; then
+    build_cli_tools="true"
+  else
+    build_cli_tools="false"
+  fi
   if [[ $BUILD_TYPE == "Debug" ]]; then
     enable_debugger="true"
   else
@@ -105,7 +122,7 @@ function configure_apple_framework {
       -DHERMES_BUILD_APPLE_DSYM:BOOLEAN=true \
       -DIMPORT_HERMESC:PATH="$IMPORT_HERMESC_PATH" \
       -DJSI_DIR="$JSI_PATH" \
-      -DHERMES_RELEASE_VERSION="for RN $(get_release_version)" \
+      -DHERMES_RELEASE_VERSION="for RNTV $(get_release_version)" \
       -DCMAKE_BUILD_TYPE="$cmake_build_type"
     popd > /dev/null || exit 1
 }
