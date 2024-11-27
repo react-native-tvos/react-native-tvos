@@ -14,6 +14,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Rect
 import android.os.Build
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -37,6 +38,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.ReactConstants
 import com.facebook.react.common.annotations.VisibleForTesting
 import com.facebook.react.config.ReactFeatureFlags
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper
 import com.facebook.react.uimanager.JSPointerDispatcher
 import com.facebook.react.uimanager.JSTouchDispatcher
 import com.facebook.react.uimanager.PixelUtil.pxToDp
@@ -46,10 +48,11 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.views.common.ContextUtils
-import com.facebook.react.views.view.ReactViewGroup
 import com.facebook.react.views.view.setStatusBarTranslucency
-import com.facebook.react.views.view.setSystemBarsTranslucency
+import com.facebook.react.views.modal.ReactModalHostView.DialogRootViewGroup
+import com.facebook.react.views.view.ReactViewGroup
 import java.util.Objects
+
 
 /**
  * ReactModalHostView is a view that sits in the view hierarchy representing a Modal view.
@@ -75,12 +78,6 @@ public class ReactModalHostView(context: ThemedReactContext) :
   public var onShowListener: DialogInterface.OnShowListener? = null
   public var onRequestCloseListener: OnRequestCloseListener? = null
   public var statusBarTranslucent: Boolean = false
-    set(value) {
-      field = value
-      createNewDialog = true
-    }
-
-  public var navigationBarTranslucent: Boolean = false
     set(value) {
       field = value
       createNewDialog = true
@@ -119,6 +116,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
   private var createNewDialog = false
 
   init {
+    context.addLifecycleEventListener(this)
     dialogRootViewGroup = DialogRootViewGroup(context)
   }
 
@@ -137,14 +135,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
     dialogRootViewGroup.id = id
   }
 
-  protected override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    (context as ThemedReactContext).addLifecycleEventListener(this)
-  }
-
   protected override fun onDetachedFromWindow() {
     super.onDetachedFromWindow()
-    onDropInstance()
+    dismiss()
   }
 
   public override fun addView(child: View?, index: Int) {
@@ -262,6 +255,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
     newDialog.setOnKeyListener(
         object : DialogInterface.OnKeyListener {
           override fun onKey(dialog: DialogInterface, keyCode: Int, event: KeyEvent): Boolean {
+            // Modal needs to send the key event to its own TV event handler
+            // https://github.com/react-native-tvos/react-native-tvos/issues/609
+            dialogRootViewGroup.androidHWInputDeviceHelper.handleKeyEvent(event, dialogRootViewGroup.reactContext)
             if (event.action == KeyEvent.ACTION_UP) {
               // We need to stop the BACK button and ESCAPE key from closing the dialog by default
               // so we capture that event and instead inform JS so that it can make the decision as
@@ -342,12 +338,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
         }
       }
 
-      // Navigation bar cannot be translucent without status bar being translucent too
-      dialogWindow.setSystemBarsTranslucency(navigationBarTranslucent)
-
-      if (!navigationBarTranslucent) {
-        dialogWindow.setStatusBarTranslucency(statusBarTranslucent)
-      }
+      dialogWindow.setStatusBarTranslucency(statusBarTranslucent)
 
       if (transparent) {
         dialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -408,7 +399,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
    * styleHeight on the LayoutShadowNode to be the window size. This is done through the
    * UIManagerModule, and will then cause the children to layout as if they can fill the window.
    */
-  public class DialogRootViewGroup internal constructor(context: Context) :
+  public class DialogRootViewGroup internal constructor(context: Context?) :
       ReactViewGroup(context), RootView {
     internal var stateWrapper: StateWrapper? = null
     internal var eventDispatcher: EventDispatcher? = null
@@ -417,8 +408,11 @@ public class ReactModalHostView(context: ThemedReactContext) :
     private var viewHeight = 0
     private val jSTouchDispatcher: JSTouchDispatcher = JSTouchDispatcher(this)
     private var jSPointerDispatcher: JSPointerDispatcher? = null
+    internal val androidHWInputDeviceHelper: ReactAndroidHWInputDeviceHelper by lazy {
+      ReactAndroidHWInputDeviceHelper()
+    }
 
-    private val reactContext: ThemedReactContext
+    internal val reactContext: ThemedReactContext
       get() = context as ThemedReactContext
 
     init {
@@ -435,6 +429,41 @@ public class ReactModalHostView(context: ThemedReactContext) :
       updateState(viewWidth, viewHeight)
     }
 
+    protected override fun onFocusChanged(
+      gainFocus: Boolean,
+      direction: Int,
+      previouslyFocusedRect: Rect?
+    ) {
+      androidHWInputDeviceHelper.clearFocus(reactContext)
+      super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+    }
+
+    public override fun requestChildFocus(child: View?, focused: View?) {
+      androidHWInputDeviceHelper.onFocusChanged(focused, reactContext)
+      super.requestChildFocus(child, focused)
+    }
+
+    private fun updateFirstChildView() {
+      if (childCount > 0) {
+        val viewTag: Int = getChildAt(0).id
+        if (stateWrapper != null) {
+          // This will only be called under Fabric
+          updateState(viewWidth, viewHeight)
+        } else {
+          // TODO: T44725185 remove after full migration to Fabric
+          val reactContext: ReactContext = reactContext
+          reactContext.runOnNativeModulesQueueThread(
+              object : GuardedRunnable(reactContext) {
+                override fun runGuarded() {
+                  this@DialogRootViewGroup.reactContext.reactApplicationContext
+                      .getNativeModule(UIManagerModule::class.java)
+                      ?.updateNodeSize(viewTag, viewWidth, viewHeight)
+                }
+              })
+        }
+      }
+    }
+
     @UiThread
     public fun updateState(width: Int, height: Int) {
       val realWidth: Float = width.toFloat().pxToDp()
@@ -446,19 +475,18 @@ public class ReactModalHostView(context: ThemedReactContext) :
         newStateData.putDouble("screenWidth", realWidth.toDouble())
         newStateData.putDouble("screenHeight", realHeight.toDouble())
         sw.updateState(newStateData)
-      }
-          ?: run {
-            // old architecture
-            // TODO: T44725185 remove after full migration to Fabric
-            reactContext.runOnNativeModulesQueueThread(
-                object : GuardedRunnable(reactContext) {
-                  override fun runGuarded() {
-                    reactContext.reactApplicationContext
-                        .getNativeModule(UIManagerModule::class.java)
-                        ?.updateNodeSize(id, viewWidth, viewHeight)
-                  }
-                })
-          }
+      } ?: run {
+          // old architecture
+          // TODO: T44725185 remove after full migration to Fabric
+          reactContext.runOnNativeModulesQueueThread(
+              object : GuardedRunnable(reactContext) {
+                override fun runGuarded() {
+                  reactContext.reactApplicationContext
+                      .getNativeModule(UIManagerModule::class.java)
+                      ?.updateNodeSize(id, viewWidth, viewHeight)
+                }
+              })
+        }
     }
 
     override fun handleException(t: Throwable) {
