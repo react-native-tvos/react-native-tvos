@@ -160,6 +160,7 @@ export type ReactNativeType = {
   ): ?PublicInstance,
   findNodeHandle<TElementType: ElementType>(
     componentOrHandle: ?(ElementRef<TElementType> | number),
+    suppressWarning?: boolean,
   ): ?number,
   isChildPublicInstance(parent: PublicInstance, child: PublicInstance): boolean,
   dispatchCommand(

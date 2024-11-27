@@ -10,7 +10,7 @@
 
 'use strict';
 
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 
 type KeyExtractorType = typeof VirtualizedLists.keyExtractor;
 export const keyExtractor: KeyExtractorType = VirtualizedLists.keyExtractor;

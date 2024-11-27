@@ -82,6 +82,21 @@ type TextLayoutEventData = $ReadOnly<{
 
 export type TextLayoutEvent = NativeSyntheticEvent<TextLayoutEventData>;
 
+export type RemotePressEvent = SyntheticEvent<
+  $ReadOnly<{
+    target: number,
+  }>,
+>;
+
+export type TVRemoteEvent = $ReadOnly<{
+  tag?: number,
+  target?: number,
+  eventType: string,
+  eventKeyAction?: string,
+  // $FlowFixMe[unclear-type]
+  body?: any,
+}>;
+
 /**
  * https://developer.mozilla.org/en-US/docs/Web/API/UIEvent
  */

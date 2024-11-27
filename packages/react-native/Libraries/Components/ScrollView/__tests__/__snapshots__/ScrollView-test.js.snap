@@ -35,6 +35,7 @@ exports[`ScrollView renders its children: should deep render when not mocked (pl
   onTouchStart={[Function]}
   pagingEnabled={false}
   sendMomentumEvents={false}
+  showsScrollIndex={true}
   snapToEnd={true}
   snapToStart={true}
   style={
