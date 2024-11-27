@@ -160,6 +160,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
       self.backedTextInputView.markedTextRange || self.backedTextInputView.isSecureTextEntry ||
       fontHasBeenUpdatedBySystem;
 
+#if TARGET_OS_TV
+  shouldFallbackToBareTextComparison = YES;
+#endif
+
   if (shouldFallbackToBareTextComparison) {
     return ([newText.string isEqualToString:oldText.string]);
   } else {
@@ -307,7 +311,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
     }
 
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000 /* __IPHONE_17_0 */
-    if (@available(iOS 17.0, *)) {
+    if (@available(iOS 17.0, tvOS 17.0, *)) {
       [mutableContentTypeMap addEntriesFromDictionary:@{
         @"creditCardExpiration" : UITextContentTypeCreditCardExpiration,
         @"creditCardExpirationMonth" : UITextContentTypeCreditCardExpirationMonth,
@@ -663,6 +667,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 
 - (void)setCustomInputAccessoryViewWithNativeID:(NSString *)nativeID
 {
+  #if !TARGET_OS_TV
   __weak RCTBaseTextInputView *weakSelf = self;
   [_bridge.uiManager rootViewForReactTag:self.reactTag
                           withCompletion:^(UIView *rootView) {
@@ -677,11 +682,14 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
                               }
                             }
                           }];
+  #endif /* !TARGET_OS_TV */
 }
 
 - (NSString *)returnKeyTypeToString:(UIReturnKeyType)returnKeyType
 {
   switch (returnKeyType) {
+    case UIReturnKeyDefault:
+      return @"Default";
     case UIReturnKeyGo:
       return @"Go";
     case UIReturnKeyNext:
@@ -709,6 +717,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 {
   returnKeyTypesSet = [NSSet setWithObjects:@(UIReturnKeyDone),
                                             @(UIReturnKeyGo),
+                                            @(UIReturnKeyDefault),
                                             @(UIReturnKeyNext),
                                             @(UIReturnKeySearch),
                                             @(UIReturnKeySend),
@@ -723,6 +732,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 
 - (void)setDefaultInputAccessoryView
 {
+  #if !TARGET_OS_TV
   UIView<RCTBackedTextInputViewProtocol> *textInputView = self.backedTextInputView;
   UIKeyboardType keyboardType = textInputView.keyboardType;
   NSString *inputAccessoryViewButtonLabel = textInputView.inputAccessoryViewButtonLabel;
@@ -764,6 +774,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
     textInputView.inputAccessoryView = nil;
   }
   [self reloadInputViewsIfNecessary];
+  #endif /* !TARGET_OS_TV */
 }
 
 - (void)reloadInputViewsIfNecessary

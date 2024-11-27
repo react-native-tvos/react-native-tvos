@@ -10,14 +10,14 @@
 
 'use strict';
 
-import {typeof VirtualizedList as VirtualizedListType} from '@react-native/virtualized-lists';
+import {typeof VirtualizedList as VirtualizedListType} from '@react-native-tvos/virtualized-lists';
 
 const VirtualizedList: VirtualizedListType =
-  require('@react-native/virtualized-lists').VirtualizedList;
+  require('@react-native-tvos/virtualized-lists').VirtualizedList;
 
 export type {
   RenderItemProps,
   RenderItemType,
   Separators,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 module.exports = VirtualizedList;

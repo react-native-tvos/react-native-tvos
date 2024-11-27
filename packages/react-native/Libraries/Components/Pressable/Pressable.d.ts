@@ -20,6 +20,7 @@ import {
 import {View} from '../View/View';
 import {AccessibilityProps} from '../View/ViewAccessibility';
 import {ViewProps} from '../View/ViewPropTypes';
+import {TVParallaxProperties} from '../../../types/public/ReactNativeTVTypes';
 
 export interface PressableStateCallbackType {
   readonly pressed: boolean;
@@ -34,7 +35,7 @@ export interface PressableAndroidRippleConfig {
 
 export interface PressableProps
   extends AccessibilityProps,
-    Omit<ViewProps, 'children' | 'style' | 'hitSlop'> {
+    Omit<ViewProps, 'children' | 'style' | 'hitSlop' | 'onFocus' | 'onBlur' | 'onPressIn' | 'onPressOut'> {
   /**
    * Called when the hover is activated to provide visual feedback.
    */
@@ -159,6 +160,13 @@ export interface PressableProps
    * Duration (in milliseconds) to wait after press down before calling onPressIn.
    */
   unstable_pressDelay?: number | undefined;
+
+  /**
+   * *(Apple TV only)* Object with properties to control Apple TV parallax effects.
+   *
+   * @platform ios
+   */
+  tvParallaxProperties?: TVParallaxProperties;
 }
 
 // TODO use React.AbstractComponent when available

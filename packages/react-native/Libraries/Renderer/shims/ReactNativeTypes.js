@@ -204,6 +204,7 @@ export type ReactNativeType = {
   ): ?HostInstance,
   findNodeHandle<TElementType: ElementType>(
     componentOrHandle: ?(ElementRef<TElementType> | number),
+    suppressWarning?: boolean,
   ): ?number,
   isChildPublicInstance(
     // eslint-disable-next-line no-undef
