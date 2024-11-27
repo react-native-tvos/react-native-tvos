@@ -7,8 +7,13 @@
 
 package com.facebook.react.views.view
 
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Rect
 import android.view.View
+import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
 import com.facebook.common.logging.FLog
 import com.facebook.react.bridge.Dynamic
 import com.facebook.react.bridge.DynamicFromObject
@@ -60,6 +65,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
         )
     private const val CMD_HOTSPOT_UPDATE = 1
     private const val CMD_SET_PRESSED = 2
+    private const val CMD_SET_DESTINATIONS = 3
     private const val HOTSPOT_UPDATE_KEY = "hotspotUpdate"
   }
 
@@ -82,6 +88,26 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   @ReactProp(name = "accessible")
   public open fun setAccessible(view: ReactViewGroup, accessible: Boolean) {
     view.isFocusable = accessible
+    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as LeanBack
+    // https://developer.android.com/reference/android/view/View#requestFocus(int,%20android.graphics.Rect)
+    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false), **
+    // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
+    // ** while the device is in touch mode.  **
+    if (hasTouchScreen(view.context)) {
+      view.setFocusableInTouchMode(accessible);
+    }
+
+  }
+
+  @ReactProp(name = "tvFocusable")
+  public open fun setTvFocusable(view: ReactViewGroup, focusable: Boolean) {
+    setFocusable(view, focusable);
+    if (!focusable) {
+      view.setFocusable(false);
+      view.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+    } else {
+      view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+    }
   }
 
   @ReactProp(name = "hasTVPreferredFocus")
@@ -93,6 +119,32 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     }
   }
 
+  @ReactProp(name = "autoFocus")
+  public open fun setAutoFocusTV(view: ReactViewGroup, autoFocus: Boolean) {
+    view.setAutoFocusTV(autoFocus)
+  }
+
+  @ReactProp(name = "trapFocusUp")
+  public open fun trapFocusUp(view: ReactViewGroup, enabled: Boolean) {
+    view.setTrapFocusUp(enabled)
+  }
+
+  @ReactProp(name = "trapFocusDown")
+  public open fun trapFocusDown(view: ReactViewGroup, enabled: Boolean) {
+    view.setTrapFocusDown(enabled)
+  }
+
+  @ReactProp(name = "trapFocusLeft")
+  public open fun trapFocusLeft(view: ReactViewGroup, enabled: Boolean) {
+    view.setTrapFocusLeft(enabled)
+  }
+
+  @ReactProp(name = "trapFocusRight")
+  public open fun trapFocusRight(view: ReactViewGroup, enabled: Boolean) {
+    view.setTrapFocusRight(enabled)
+  }
+
+
   @ReactProp(name = ViewProps.BACKGROUND_IMAGE, customType = "BackgroundImage")
   public open fun setBackgroundImage(view: ReactViewGroup, backgroundImage: ReadableArray?) {
     if (ViewUtil.getUIManagerType(view) == UIManagerType.FABRIC) {
@@ -100,7 +152,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
         val backgroundImageLayers = ArrayList<BackgroundImageLayer>(backgroundImage.size())
         for (i in 0 until backgroundImage.size()) {
           val backgroundImageMap = backgroundImage.getMap(i)
-          val layer = BackgroundImageLayer(backgroundImageMap, view.context)
+          val layer = BackgroundImageLayer(backgroundImageMap)
           backgroundImageLayers.add(layer)
         }
         BackgroundStyleApplicator.setBackgroundImage(view, backgroundImageLayers)
@@ -333,7 +385,10 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       ReactViewGroup(context)
 
   override fun getCommandsMap(): MutableMap<String, Int> =
-      mutableMapOf(HOTSPOT_UPDATE_KEY to CMD_HOTSPOT_UPDATE, "setPressed" to CMD_SET_PRESSED)
+      mutableMapOf(HOTSPOT_UPDATE_KEY to CMD_HOTSPOT_UPDATE,
+        "setPressed" to CMD_SET_PRESSED,
+        "setDestinations" to CMD_SET_DESTINATIONS
+      )
 
   @Deprecated(
       "Use receiveCommand(View, String, ReadableArray)",
@@ -342,6 +397,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     when (commandId) {
       CMD_HOTSPOT_UPDATE -> handleHotspotUpdate(root, args)
       CMD_SET_PRESSED -> handleSetPressed(root, args)
+      CMD_SET_DESTINATIONS -> handleSetDestinations(root, args)
       else -> {}
     }
   }
@@ -350,8 +406,15 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     when (commandId) {
       HOTSPOT_UPDATE_KEY -> handleHotspotUpdate(root, args)
       "setPressed" -> handleSetPressed(root, args)
+      "setDestinations" -> handleSetDestinations(root, args)
+      "requestTVFocus" -> root.requestFocus()
       else -> {}
     }
+  }
+
+  override fun onAfterUpdateTransaction(view: ReactViewGroup) {
+    super.onAfterUpdateTransaction(view)
+    manageFocusGuideAccessibilityDelegate(view)
   }
 
   private fun handleSetPressed(root: ReactViewGroup, args: ReadableArray?) {
@@ -371,5 +434,57 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     val x = args.getDouble(0).dpToPx()
     val y = args.getDouble(1).dpToPx()
     root.drawableHotspotChanged(x, y)
+  }
+
+  private fun handleSetDestinations(root: ReactViewGroup, args: ReadableArray?) {
+    if (args == null || args.size() != 1) {
+      throw JSApplicationIllegalArgumentException(
+        "Illegal number of arguments for 'setPressed' command")
+    }
+
+    val destinations: ReadableArray = args.getArray(0)
+    val fd = IntArray(destinations.size())
+    for (i in fd.indices) {
+      fd[i] = destinations.getInt(i)
+    }
+    root.setFocusDestinations(fd);
+    this.manageFocusGuideAccessibilityDelegate(root);
+  }
+
+  private fun manageFocusGuideAccessibilityDelegate(view: ReactViewGroup) {
+    val accessibilityManager = view.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    val a11yServiceList = accessibilityManager.getEnabledAccessibilityServiceList(
+      AccessibilityServiceInfo.FEEDBACK_SPOKEN)
+    var isTalkbackInstalledAndEnabled = false
+
+    for (serviceInfo in a11yServiceList) {
+      val a11yServiceId = serviceInfo.id
+      if (a11yServiceId != null && a11yServiceId.contains("talkback")) {
+        isTalkbackInstalledAndEnabled = true
+      }
+    }
+
+    val isTVFocusable = view.descendantFocusability != ViewGroup.FOCUS_BLOCK_DESCENDANTS
+    if (!view.hasFocusGuideTalkbackAccessibilityDelegate()) {
+      if (view.isTVFocusGuide() && isTVFocusable && isTalkbackInstalledAndEnabled) {
+        // Custom accessibility delegate is needed only for Talkback,
+        // as it's not handling TV focus guide scenarios as well as e.g. Amazon's VoiceView
+        //
+        // Delegate should only be set if TVFocusGuideView is focusable
+        view.initializeFocusGuideTalkbackAccessibilityDelegate()
+      }
+    } else {
+      if (!view.isTVFocusGuide() || !isTVFocusable || !isTalkbackInstalledAndEnabled) {
+        // If this view had delegate set, but is no longer a "focus guide"
+        // or is no longer focusable
+        // or talkback is no longer enabled
+        // then the delegate should be cleared
+        view.cleanupFocusGuideTalkbackAccessibilityDelegate()
+      }
+    }
+  }
+
+  private fun hasTouchScreen(context: Context): Boolean {
+    return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
   }
 }
