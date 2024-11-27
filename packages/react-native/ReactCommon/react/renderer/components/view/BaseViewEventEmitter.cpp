@@ -32,6 +32,24 @@ void BaseViewEventEmitter::onAccessibilityEscape() const {
   dispatchEvent("accessibilityEscape");
 }
 
+#pragma mark - Focus
+void BaseViewEventEmitter::onFocus() const {
+  dispatchEvent("focus");
+}
+
+void BaseViewEventEmitter::onBlur() const {
+  dispatchEvent("blur");
+}
+
+#pragma mark - Press
+void BaseViewEventEmitter::onPressIn() const {
+  dispatchEvent("pressIn");
+}
+
+void BaseViewEventEmitter::onPressOut() const {
+  dispatchEvent("pressOut");
+}
+
 #pragma mark - Layout
 
 void BaseViewEventEmitter::onLayout(const LayoutMetrics& layoutMetrics) const {
