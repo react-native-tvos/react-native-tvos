@@ -239,6 +239,15 @@ export interface GestureResponderEvent
 
 export interface MouseEvent extends NativeSyntheticEvent<NativeMouseEvent> {}
 
+export interface NativeFocusEvent extends TargetedEvent {}
+export interface FocusEvent extends NativeSyntheticEvent<NativeFocusEvent> {}
+
+export interface NativeBlurEvent extends TargetedEvent {}
+export interface BlurEvent extends NativeSyntheticEvent<NativeBlurEvent> {}
+
+export interface NativePressEvent extends TargetedEvent {}
+export interface PressEvent extends NativeSyntheticEvent<NativePressEvent> {}
+
 export interface TargetedEvent {
   target: number;
 }
@@ -256,4 +265,24 @@ export interface PointerEvents {
   onPointerDownCapture?: ((event: PointerEvent) => void) | undefined;
   onPointerUp?: ((event: PointerEvent) => void) | undefined;
   onPointerUpCapture?: ((event: PointerEvent) => void) | undefined;
+}
+
+export interface PressEvents {
+  onPressIn?: ((event: PressEvent) => void) | undefined;
+  onPressOut?: ((event: PressEvent) => void) | undefined;
+}
+
+export interface FocusEvents {
+  onFocus?: ((event: FocusEvent) => void) | undefined;
+  onFocusCapture?: ((event: FocusEvent) => void) | undefined;
+  onBlur?: ((event: BlurEvent) => void) | undefined;
+  onBlurCapture?: ((event: BlurEvent) => void) | undefined;
+}
+
+export interface TVRemoteEvent {
+  tag?: number | undefined;
+  target?: number | undefined;
+  eventType: string;
+  eventKeyAction?: string | undefined;
+  body?: any | undefined;
 }

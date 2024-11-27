@@ -12,9 +12,15 @@ import {Insets} from '../../../types/public/Insets';
 import {GestureResponderHandlers} from '../../../types/public/ReactNativeRenderer';
 import {StyleProp} from '../../StyleSheet/StyleSheet';
 import {ViewStyle} from '../../StyleSheet/StyleSheetTypes';
-import {LayoutChangeEvent, PointerEvents} from '../../Types/CoreEventTypes';
+import {
+  LayoutChangeEvent,
+  PointerEvents,
+  FocusEvents,
+  PressEvents,
+} from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
+import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 
 export interface TVViewPropsIOS {
   /**
@@ -125,6 +131,8 @@ export interface ViewProps
     GestureResponderHandlers,
     Touchable,
     PointerEvents,
+    FocusEvents,
+    PressEvents,
     AccessibilityProps {
   children?: React.ReactNode | undefined;
   /**
@@ -218,4 +226,7 @@ export interface ViewProps
    * React Native code which may rely on incorrect behavior ('classic').
    */
   experimental_layoutConformance?: 'strict' | 'classic' | undefined;
+
+  readonly onFocus?: BubblingEventHandler<Event> | undefined;
+  readonly onBlur?: BubblingEventHandler<Event> | undefined;
 }

@@ -11,6 +11,7 @@
 import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
+import {validAttributesForTVProps} from './TVViewConfig';
 import {DynamicallyInjectedByGestureHandler} from './ViewConfigIgnore';
 
 const bubblingEventTypes = {
@@ -109,6 +110,18 @@ const bubblingEventTypes = {
       bubbled: 'onClick',
     },
   },
+  topFocus: {
+    phasedRegistrationNames: {
+      captured: 'onFocusCapture',
+      bubbled: 'onFocus',
+    },
+  },
+  topBlur: {
+    phasedRegistrationNames: {
+      captured: 'onBlurCapture',
+      bubbled: 'onBlur',
+    },
+  },
 };
 
 const directEventTypes = {
@@ -121,6 +134,13 @@ const directEventTypes = {
   onGestureHandlerStateChange: DynamicallyInjectedByGestureHandler({
     registrationName: 'onGestureHandlerStateChange',
   }),
+
+  topPressIn: {
+    registrationName: 'onPressIn',
+  },
+  topPressOut: {
+    registrationName: 'onPressOut',
+  },
 
   // Direct events from UIManagerModuleConstants.java
   topContentSizeChange: {
@@ -417,6 +437,7 @@ const PlatformBaseViewConfigAndroid: PartialViewConfigWithoutName = {
   validAttributes: {
     ...validAttributesForNonEventProps,
     ...validAttributesForEventProps,
+    ...validAttributesForTVProps,
   },
 };
 
