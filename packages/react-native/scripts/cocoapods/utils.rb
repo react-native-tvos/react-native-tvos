@@ -358,6 +358,10 @@ class ReactNativePodsUtils
                         config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] :
                         Helpers::Constants.min_ios_version_supported
                     config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = [Helpers::Constants.min_ios_version_supported.to_f, old_iphone_deploy_target.to_f].max.to_s
+                    old_iphone_deploy_target = config.build_settings["TVOS_DEPLOYMENT_TARGET"] ?
+                        config.build_settings["TVOS_DEPLOYMENT_TARGET"] :
+                        Helpers::Constants.min_ios_version_supported
+                    config.build_settings["TVOS_DEPLOYMENT_TARGET"] = [Helpers::Constants.min_ios_version_supported.to_f, old_iphone_deploy_target.to_f].max.to_s
                 end
             end
     end
