@@ -104,6 +104,7 @@
     "ReactApple",
     "ReactCommon",
     "README.md",
+    "README-core.md",
     "rn-get-polyfills.js",
     "scripts/bundle.js",
     "scripts/cocoapods",
@@ -145,8 +146,8 @@
     "!**/__typetests__/**"
   ],
   "scripts": {
-    "prepack": "node ./scripts/prepack.js",
-    "featureflags": "node ./scripts/featureflags/index.js"
+    "prepack": "node ./scripts/prepack.js; cp ../../README.md ./README.md; cp ../../README-core.md ./README-core.md",
+    "featureflags-check": "node ./scripts/featureflags/index.js --verify-unchanged"
   },
   "peerDependencies": {
     "@types/react": "^19.1.0",
