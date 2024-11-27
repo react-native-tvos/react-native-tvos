@@ -1,7 +1,8 @@
 require_relative '../react-native/scripts/react_native_pods'
 
+source 'https://github.com/react-native-tvos/react-native-tvos-podspecs.git'
 source 'https://cdn.cocoapods.org/'
-platform :ios, min_ios_version_supported
+platform :tvos, min_ios_version_supported
 
 cmake_path = `command -v cmake`
 
@@ -33,6 +34,7 @@ if USE_FRAMEWORKS
 end
 
 def pods(target_name, options = {})
+
   project 'RNTesterPods.xcodeproj'
 
   fabric_enabled = true
