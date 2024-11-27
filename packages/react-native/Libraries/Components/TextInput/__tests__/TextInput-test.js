@@ -259,6 +259,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -303,6 +305,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -347,6 +351,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -477,6 +483,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}
@@ -518,6 +526,8 @@ jest.unmock('../TextInput');
         onChange={[Function]}
         onClick={[Function]}
         onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
         onResponderGrant={[Function]}
         onResponderMove={[Function]}
         onResponderRelease={[Function]}

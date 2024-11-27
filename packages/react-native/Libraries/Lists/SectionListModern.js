@@ -15,11 +15,11 @@ import type {
   ScrollToLocationParamsType,
   SectionBase as _SectionBase,
   VirtualizedSectionListProps,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 import type {ElementRef} from 'react';
 
 import Platform from '../Utilities/Platform';
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 import React, {forwardRef, useImperativeHandle, useRef} from 'react';
 
 const VirtualizedSectionList = VirtualizedLists.VirtualizedSectionList;

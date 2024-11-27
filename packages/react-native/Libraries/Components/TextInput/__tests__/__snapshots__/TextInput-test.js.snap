@@ -11,6 +11,8 @@ exports[`TextInput tests (useRefsForTextInputState = false) useTextChildren = fa
   onChange={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -38,6 +40,8 @@ exports[`TextInput tests (useRefsForTextInputState = false) useTextChildren = fa
   onChange={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -65,6 +69,8 @@ exports[`TextInput tests (useRefsForTextInputState = false) useTextChildren = tr
   onChange={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -200,6 +206,8 @@ exports[`TextInput tests (useRefsForTextInputState = true) useTextChildren = tru
   onChange={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}

@@ -15,12 +15,12 @@ import type {
   ListRenderItemInfo,
   ViewabilityConfigCallbackPair,
   ViewToken,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 
 import * as ReactNativeFeatureFlags from '../../src/private/featureflags/ReactNativeFeatureFlags';
 import {type ScrollResponderType} from '../Components/ScrollView/ScrollView';
 import View from '../Components/View/View';
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 import memoizeOne from 'memoize-one';
 import React from 'react';
 

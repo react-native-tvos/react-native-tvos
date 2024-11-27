@@ -19,6 +19,9 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
+
 import * as React from 'react';
 
 export type TVProps = $ReadOnly<{
@@ -28,6 +31,8 @@ export type TVProps = $ReadOnly<{
    * @platform ios
    */
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
 
   /**
    * Designates the next view to receive focus when the user navigates down. See the Android documentation.
@@ -209,17 +214,21 @@ class TouchableOpacity extends React.Component<TouchableOpacityProps, State> {
       onLongPress: this.props.onLongPress,
       onPress: this.props.onPress,
       onPressIn: event => {
-        this._opacityActive(
-          event.dispatchConfig.registrationName === 'onResponderGrant'
-            ? 0
-            : 150,
-        );
+        if (!Platform.isTV) {
+          this._opacityActive(
+            event.dispatchConfig?.registrationName === 'onResponderGrant'
+              ? 0
+              : 150,
+          );
+        }
         if (this.props.onPressIn != null) {
           this.props.onPressIn(event);
         }
       },
       onPressOut: event => {
-        this._opacityInactive(250);
+        if (!Platform.isTV) {
+          this._opacityInactive(250);
+        }
         if (this.props.onPressOut != null) {
           this.props.onPressOut(event);
         }
@@ -257,8 +266,7 @@ class TouchableOpacity extends React.Component<TouchableOpacityProps, State> {
   render(): React.Node {
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
-      this.state.pressability.getEventHandlers();
+    const eventHandlers = this.state.pressability.getEventHandlers();
 
     let _accessibilityState = {
       busy: this.props['aria-busy'] ?? this.props.accessibilityState?.busy,
@@ -321,12 +329,16 @@ class TouchableOpacity extends React.Component<TouchableOpacityProps, State> {
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         onLayout={this.props.onLayout}
-        nextFocusDown={this.props.nextFocusDown}
-        nextFocusForward={this.props.nextFocusForward}
-        nextFocusLeft={this.props.nextFocusLeft}
-        nextFocusRight={this.props.nextFocusRight}
-        nextFocusUp={this.props.nextFocusUp}
-        hasTVPreferredFocus={this.props.hasTVPreferredFocus}
+        nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
+        nextFocusForward={tagForComponentOrHandle(this.props.nextFocusForward)}
+        nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
+        nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
+        nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
+        hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
+        isTVSelectable={
+          this.props.isTVSelectable !== false && this.props.accessible !== false
+        }
+        tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
         focusable={
           this.props.focusable !== false &&
@@ -335,13 +347,17 @@ class TouchableOpacity extends React.Component<TouchableOpacityProps, State> {
         }
         // $FlowFixMe[prop-missing]
         ref={this.props.hostRef}
-        {...eventHandlersWithoutBlurAndFocus}>
+        {...eventHandlers}>
         {this.props.children}
         {__DEV__ ? (
           <PressabilityDebugView color="cyan" hitSlop={this.props.hitSlop} />
         ) : null}
       </Animated.View>
     );
+  }
+
+  componentDidMount(): void {
+    this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentDidUpdate(prevProps: TouchableOpacityProps, prevState: State) {
@@ -357,10 +373,6 @@ class TouchableOpacity extends React.Component<TouchableOpacityProps, State> {
     ) {
       this._opacityInactive(250);
     }
-  }
-
-  componentDidMount(): void {
-    this.state.pressability.configure(this._createPressabilityConfig());
   }
 
   componentWillUnmount(): void {

@@ -13,6 +13,7 @@ import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 import * as ReactNativeFeatureFlags from '../../src/private/featureflags/ReactNativeFeatureFlags';
 import NativeReactNativeFeatureFlags from '../../src/private/featureflags/specs/NativeReactNativeFeatureFlags';
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
+import {validAttributesForTVProps} from './TVViewConfig';
 import {
   ConditionallyIgnoredEventHandlers,
   DynamicallyInjectedByGestureHandler,
@@ -182,6 +183,12 @@ const directEventTypes = {
   onGestureHandlerStateChange: DynamicallyInjectedByGestureHandler({
     registrationName: 'onGestureHandlerStateChange',
   }),
+  topPressIn: {
+    registrationName: 'onPressIn',
+  },
+  topPressOut: {
+    registrationName: 'onPressOut',
+  },
 };
 
 const validAttributesForNonEventProps = {
@@ -425,6 +432,7 @@ const PlatformBaseViewConfigIos: PartialViewConfigWithoutName = {
   validAttributes: {
     ...validAttributesForNonEventProps,
     ...validAttributesForEventProps,
+    ...validAttributesForTVProps,
   },
 };
 
