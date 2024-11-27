@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   spec.license     = package['license']
   spec.author      = "Facebook"
   spec.source      = source
-  spec.platforms   = { :osx => "10.13", :ios => "15.1", :visionos => "1.0" }
+  spec.platforms   = { :osx => "10.13", :ios => "15.1", :visionos => "1.0", :tvos => "15.1" }
 
   spec.preserve_paths      = '**/*.*'
   spec.source_files        = ''
@@ -39,7 +39,8 @@ Pod::Spec.new do |spec|
                     "CLANG_CXX_LIBRARY" => "compiler-default"
                   }
 
-  spec.ios.vendored_frameworks = "destroot/Library/Frameworks/ios/hermes.framework"
+  spec.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.framework"
+  spec.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.framework"
   spec.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
   spec.visionos.vendored_frameworks = "destroot/Library/Frameworks/xros/hermes.framework"
 
@@ -51,6 +52,7 @@ Pod::Spec.new do |spec|
       ss.header_mappings_dir = "destroot/include"
       ss.ios.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
       ss.visionos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
+      ss.tvos.vendored_frameworks = "destroot/Library/Frameworks/universal/hermes.xcframework"
       ss.osx.vendored_frameworks = "destroot/Library/Frameworks/macosx/hermes.framework"
     end
 
