@@ -42,7 +42,7 @@ version =
       reactAndroidProperties.getProperty("VERSION_NAME")
     }
 
-group = "com.facebook.react"
+group = "io.github.react-native-tvos"
 
 val ndkPath by extra(System.getenv("ANDROID_NDK"))
 val ndkVersion by extra(System.getenv("ANDROID_NDK_VERSION") ?: libs.versions.ndkVersion.get())
@@ -52,6 +52,7 @@ val sonatypePassword = findProperty("SONATYPE_PASSWORD")?.toString()
 nexusPublishing {
   repositories {
     sonatype {
+      nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
       username.set(sonatypeUsername)
       password.set(sonatypePassword)
     }
