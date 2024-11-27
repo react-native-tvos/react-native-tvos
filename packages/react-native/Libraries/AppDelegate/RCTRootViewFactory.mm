@@ -153,7 +153,9 @@
     RCTSurfaceHostingProxyRootView *surfaceHostingProxyRootView =
         [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:surface];
 
+#if !TARGET_OS_TV
     surfaceHostingProxyRootView.backgroundColor = [UIColor systemBackgroundColor];
+#endif
     if (_configuration.customizeRootView != nil) {
       _configuration.customizeRootView(surfaceHostingProxyRootView);
     }
@@ -186,7 +188,11 @@
 {
   BOOL enableFabric = _configuration.fabricEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
+
+#if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
+#endif
+  
   return rootView;
 }
 

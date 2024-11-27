@@ -146,7 +146,7 @@ export type ScrollViewImperativeMethods = $ReadOnly<{|
 export type DecelerationRateType = 'fast' | 'normal' | number;
 export type ScrollResponderType = ScrollViewImperativeMethods;
 
-type PublicScrollViewInstance = $ReadOnly<{|
+export type PublicScrollViewInstance = $ReadOnly<{|
   ...HostInstance,
   ...ScrollViewImperativeMethods,
 |}>;
@@ -307,6 +307,12 @@ type IOSProps = $ReadOnly<{|
     | 'never'
     | 'always'
   ),
+  /**
+   * (TvOS only)
+   * Defines if UIScrollView index should be shown when fast scrolling.
+   * Defaults to true.
+   */
+  showsScrollIndex?: ?boolean,
 |}>;
 
 type AndroidProps = $ReadOnly<{|
@@ -1768,6 +1774,8 @@ class ScrollView extends React.Component<Props, State> {
       snapToStart: this.props.snapToStart !== false,
       // default to true
       snapToEnd: this.props.snapToEnd !== false,
+      // default to true
+      showsScrollIndex: this.props.showsScrollIndex !== false,
       // pagingEnabled is overridden by snapToInterval / snapToOffsets
       pagingEnabled: Platform.select({
         // on iOS, pagingEnabled must be set to false to have snapToInterval / snapToOffsets work
@@ -1796,10 +1804,10 @@ class ScrollView extends React.Component<Props, State> {
     if (refreshControl) {
       if (Platform.OS === 'ios') {
         // On iOS the RefreshControl is a child of the ScrollView.
+        // tvOS lacks native support for RefreshControl, so don't include it in that case
         return (
-          // $FlowFixMe[incompatible-type] - Flow only knows element refs.
           <NativeScrollView {...props} ref={scrollViewRef}>
-            {refreshControl}
+            {Platform.isTV ? null : refreshControl}
             {contentContainer}
           </NativeScrollView>
         );

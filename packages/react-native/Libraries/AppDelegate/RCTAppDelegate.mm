@@ -64,11 +64,20 @@ using namespace facebook::react;
   [self setRootView:rootView toRootViewController:rootViewController];
   _window.windowScene.delegate = self;
   _window.rootViewController = rootViewController;
+#if TARGET_OS_TV
+  UIUserInterfaceStyle style = rootViewController.traitCollection.userInterfaceStyle;
+  if (style == UIUserInterfaceStyleDark) {
+    rootView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+  } else {
+    rootView.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+  }
+#endif
   [_window makeKeyAndVisible];
 }
 
 #pragma mark - UISceneDelegate
 
+#if !TARGET_OS_TV
 - (void)windowScene:(UIWindowScene *)windowScene
     didUpdateCoordinateSpace:(id<UICoordinateSpace>)previousCoordinateSpace
         interfaceOrientation:(UIInterfaceOrientation)previousInterfaceOrientation
@@ -76,6 +85,7 @@ using namespace facebook::react;
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
 }
+#endif
 
 - (RCTRootViewFactory *)rootViewFactory
 {

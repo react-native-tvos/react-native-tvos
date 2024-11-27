@@ -12,9 +12,15 @@ import {Insets} from '../../../types/public/Insets';
 import {GestureResponderHandlers} from '../../../types/public/ReactNativeRenderer';
 import {StyleProp} from '../../StyleSheet/StyleSheet';
 import {ViewStyle} from '../../StyleSheet/StyleSheetTypes';
-import {LayoutChangeEvent, PointerEvents} from '../../Types/CoreEventTypes';
+import {
+  LayoutChangeEvent,
+  PointerEvents,
+  FocusEvents,
+  PressEvents,
+} from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
+import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 
 export interface TVViewPropsIOS {
   /**
@@ -125,6 +131,8 @@ export interface ViewProps
     GestureResponderHandlers,
     Touchable,
     PointerEvents,
+    FocusEvents,
+    PressEvents,
     AccessibilityProps {
   children?: React.ReactNode | undefined;
   /**
@@ -211,4 +219,13 @@ export interface ViewProps
    * Used to reference react managed views from native code.
    */
   nativeID?: string | undefined;
+
+  /**
+   * Invoked on TV focus
+   */
+  readonly onFocus?: BubblingEventHandler<Event> | undefined;
+  /**
+   * Invoked on TV blur
+   */
+  readonly onBlur?: BubblingEventHandler<Event> | undefined;
 }

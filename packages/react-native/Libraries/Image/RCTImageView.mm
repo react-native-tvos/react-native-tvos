@@ -101,7 +101,6 @@ static NSDictionary *onLoadParamsForSource(RCTImageSource *source)
                  object:nil];
     [center addObserver:self
                selector:@selector(clearImageIfDetached)
-
                    name:UISceneDidEnterBackgroundNotification
                  object:nil];
   }

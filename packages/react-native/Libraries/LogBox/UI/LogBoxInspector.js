@@ -71,12 +71,13 @@ export default function LogBoxInspector(props: Props): React.Node {
         total={logs.length}
         level={log.level}
       />
-      <LogBoxInspectorBody log={log} onRetry={_handleRetry} />
+      {/* In the TV repo, place the footer above the body for easier navigation */}
       <LogBoxInspectorFooter
         onDismiss={props.onDismiss}
         onMinimize={props.onMinimize}
         level={log.level}
       />
+      <LogBoxInspectorBody log={log} onRetry={_handleRetry} />
     </View>
   );
 }

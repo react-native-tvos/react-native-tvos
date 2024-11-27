@@ -47,6 +47,7 @@ export default function LogBoxInspectorFooter(props: Props): React.Node {
 const styles = StyleSheet.create({
   root: {
     backgroundColor: LogBoxStyle.getBackgroundColor(1),
+    minHeight: 30,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: -2},
     shadowRadius: 2,

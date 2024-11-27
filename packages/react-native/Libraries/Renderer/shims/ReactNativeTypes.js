@@ -205,6 +205,7 @@ export type ReactNativeType = {
   ): ?HostInstance,
   findNodeHandle<TElementType: ElementType>(
     componentOrHandle: ?(ElementRef<TElementType> | number),
+    suppressWarning?: boolean,
   ): ?number,
   isChildPublicInstance(
     parent: PublicInstance | HostComponent<empty>,
