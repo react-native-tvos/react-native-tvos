@@ -16,7 +16,9 @@ plugins {
   alias(libs.plugins.download)
 }
 
-group = "com.facebook.react"
+// group = "com.facebook.react"
+// Group for the TV repo
+group = "io.github.react-native-tvos"
 
 version = parent?.properties?.get("publishing_version")?.toString()!!
 
@@ -240,6 +242,7 @@ android {
             "-DIMPORT_HERMESC=${File(hermesBuildDir, "ImportHermesc.cmake").toString()}",
             "-DJSI_DIR=${jsiDir}",
             "-DHERMES_BUILD_SHARED_JSI=True",
+            "-DHERMES_RELEASE_VERSION=for RNTV ${version}",
             "-DHERMES_RELEASE_VERSION=for RN ${version}",
             "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=True",
             // We intentionally build Hermes with Intl support only. This is to simplify
