@@ -35,7 +35,7 @@ end
 # By using this function, you won't have to manually change your Podfile
 # when we change the minimum version supported by the framework.
 def min_supported_versions
-  return  { :ios => min_ios_version_supported }
+  return  { :ios => min_ios_version_supported, :tvos => min_ios_version_supported }
 end
 
 # This function prepares the project for React Native, before processing
@@ -105,8 +105,8 @@ def use_react_native! (
   pod 'React', :path => "#{prefix}/"
   pod 'React-Core', :path => "#{prefix}/"
   pod 'React-CoreModules', :path => "#{prefix}/React/CoreModules"
-  pod 'React-RCTAppDelegate', :path => "#{prefix}/Libraries/AppDelegate"
   pod 'React-RCTActionSheet', :path => "#{prefix}/Libraries/ActionSheetIOS"
+  pod 'React-RCTAppDelegate', :path => "#{prefix}/Libraries/AppDelegate"
   pod 'React-RCTAnimation', :path => "#{prefix}/Libraries/NativeAnimation"
   pod 'React-RCTBlob', :path => "#{prefix}/Libraries/Blob"
   pod 'React-RCTImage', :path => "#{prefix}/Libraries/Image"
@@ -160,6 +160,7 @@ def use_react_native! (
   pod 'fast_float', :podspec => "#{prefix}/third-party-podspecs/fast_float.podspec"
   pod 'fmt', :podspec => "#{prefix}/third-party-podspecs/fmt.podspec"
   pod 'RCT-Folly', :podspec => "#{prefix}/third-party-podspecs/RCT-Folly.podspec", :modular_headers => true
+  pod 'fmt', :podspec => "#{prefix}/third-party-podspecs/fmt.podspec"
 
   folly_config = get_folly_config()
   run_codegen!(

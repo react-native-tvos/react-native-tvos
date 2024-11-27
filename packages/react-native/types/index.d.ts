@@ -116,7 +116,7 @@ export * from '../Libraries/LayoutAnimation/LayoutAnimation';
 export * from '../Libraries/Linking/Linking';
 export * from '../Libraries/Lists/FlatList';
 export * from '../Libraries/Lists/SectionList';
-export * from '@react-native/virtualized-lists';
+export * from '@react-native-tvos/virtualized-lists';
 export * from '../Libraries/LogBox/LogBox';
 export * from '../Libraries/Modal/Modal';
 export * as Systrace from '../Libraries/Performance/Systrace';
@@ -158,6 +158,7 @@ export * from './public/DeprecatedPropertiesAlias';
 export * from './public/Insets';
 export * from './public/ReactNativeRenderer';
 export * from './public/ReactNativeTypes';
+export * from './public/ReactNativeTVTypes';
 
 import type {ErrorUtils} from '../Libraries/vendor/core/ErrorUtils';
 

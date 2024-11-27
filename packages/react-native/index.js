@@ -92,8 +92,13 @@ import typeof DevSettings from './Libraries/Utilities/DevSettings';
 import typeof Dimensions from './Libraries/Utilities/Dimensions';
 import typeof PixelRatio from './Libraries/Utilities/PixelRatio';
 import typeof Platform from './Libraries/Utilities/Platform';
+import typeof TVEventHandler from './Libraries/Components/TV/TVEventHandler';
+import typeof TVFocusGuideView from './Libraries/Components/TV/TVFocusGuideView';
+import typeof TVEventControl from './Libraries/Components/TV/TVEventControl';
+import typeof TVTextScrollView from './Libraries/Components/TV/TVTextScrollView';
 import typeof useColorScheme from './Libraries/Utilities/useColorScheme';
 import typeof useWindowDimensions from './Libraries/Utilities/useWindowDimensions';
+import typeof useTVEventHandler from './Libraries/Components/TV/useTVEventHandler';
 import typeof Vibration from './Libraries/Vibration/Vibration';
 import typeof YellowBox from './Libraries/YellowBox/YellowBoxDeprecated';
 import typeof DevMenu from './src/private/devmenu/DevMenu';
@@ -322,6 +327,25 @@ module.exports = {
   get TurboModuleRegistry(): TurboModuleRegistry {
     return require('./Libraries/TurboModule/TurboModuleRegistry');
   },
+  get TVEventControl(): TVEventControl {
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVEventHandler(): TVEventHandler {
+    return require('./Libraries/Components/TV/TVEventHandler');
+  },
+  get TVFocusGuideView(): TVFocusGuideView {
+    return require('./Libraries/Components/TV/TVFocusGuideView');
+  },
+  get TVMenuControl(): TVEventControl {
+    warnOnce(
+      'TVMenuControl-moved',
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
+    );
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVTextScrollView(): TVTextScrollView {
+    return require('./Libraries/Components/TV/TVTextScrollView');
+  },
   get UIManager(): UIManager {
     return require('./Libraries/ReactNative/UIManager');
   },
@@ -340,6 +364,9 @@ module.exports = {
   },
   get useWindowDimensions(): useWindowDimensions {
     return require('./Libraries/Utilities/useWindowDimensions').default;
+  },
+  get useTVEventHandler(): useTVEventHandler {
+    return require('./Libraries/Components/TV/useTVEventHandler');
   },
   get UTFSequence(): UTFSequence {
     return require('./Libraries/UTFSequence').default;
