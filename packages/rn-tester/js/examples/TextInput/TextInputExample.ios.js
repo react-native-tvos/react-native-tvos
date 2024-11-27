@@ -24,6 +24,7 @@ const {
   Alert,
   Button,
   InputAccessoryView,
+  Platform,
   StyleSheet,
   Switch,
   Text,
@@ -281,7 +282,7 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontWeight: 'bold',
     fontSize: 18,
-    fontFamily: 'Cochin',
+    fontFamily: Platform.isTVOS ? 'Helvetica' : 'Cochin',
     height: 60,
   },
   singlelinePlaceholderStyles: {
