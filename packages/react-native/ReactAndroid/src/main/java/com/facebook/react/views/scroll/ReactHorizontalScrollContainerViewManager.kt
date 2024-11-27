@@ -14,13 +14,13 @@ import com.facebook.react.views.view.ReactClippingViewManager
 /** View manager for {@link ReactHorizontalScrollContainerView} components. */
 @ReactModule(name = ReactHorizontalScrollContainerViewManager.REACT_CLASS)
 public class ReactHorizontalScrollContainerViewManager :
-    ReactClippingViewManager<ReactHorizontalScrollContainerView>() {
+    ReactClippingViewManager<ReactHorizontalScrollContainerLegacyView>() {
 
   override public fun getName(): String = REACT_CLASS
 
   override public fun createViewInstance(
       context: ThemedReactContext
-  ): ReactHorizontalScrollContainerView = ReactHorizontalScrollContainerView(context)
+  ): ReactHorizontalScrollContainerLegacyView = ReactHorizontalScrollContainerLegacyView(context)
 
   public companion object {
     public const val REACT_CLASS: String = "AndroidHorizontalScrollContentView"
