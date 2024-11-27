@@ -1801,6 +1801,14 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
+"@react-native/virtualized-lists@0.76.2":
+  version "0.76.2"
+  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.76.2.tgz#2b9f720323d828cdd0f1ef5d26f700cfd44b5e89"
+  integrity sha512-FzXvkHgKvJGf0pSuLy6878cxJ6mxWKgZsH9s2kO4LWJocI8Bi3ViDx7IGAWYuvN+Fnue5TKaqGPhfD+4XrKtYQ==
+  dependencies:
+    invariant "^2.2.4"
+    nullthrows "^1.1.1"
+
 "@rnx-kit/rn-changelog-generator@^0.4.0":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@rnx-kit/rn-changelog-generator/-/rn-changelog-generator-0.4.1.tgz#a43a7259fb64ca059f174c4bd263f137ec568358"
@@ -7078,6 +7086,50 @@ react-is@19.1.0, react-is@^16.13.1, react-is@^16.8.4, react-is@^17.0.1, react-is
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.1.0.tgz#805bce321546b7e14c084989c77022351bbdd11b"
   integrity sha512-Oe56aUPnkHyyDxxkvqtd7KkdQP5uIUfHxd5XTb3wE9d/kRnZLmKbDB0GWk919tdQ+mxxPtG6EAs6RMT6i1qtHg==
+
+react-native@0.76.2:
+  version "0.76.2"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.76.2.tgz#966c7c61bd089002540ce668d9fbe544f2f9ea96"
+  integrity sha512-mkEBKGOmJxhfq8IOsvmk0QuTzlBt9vS+uo0gwbqfUmEDqoC359v80zhUf94WimYBrBkpRQWFbEu5iqMDHrYzlQ==
+  dependencies:
+    "@jest/create-cache-key-function" "^29.6.3"
+    "@react-native/assets-registry" "0.76.2"
+    "@react-native/codegen" "0.76.2"
+    "@react-native/community-cli-plugin" "0.76.2"
+    "@react-native/gradle-plugin" "0.76.2"
+    "@react-native/js-polyfills" "0.76.2"
+    "@react-native/normalize-colors" "0.76.2"
+    "@react-native/virtualized-lists" "0.76.2"
+    abort-controller "^3.0.0"
+    anser "^1.4.9"
+    ansi-regex "^5.0.0"
+    babel-jest "^29.7.0"
+    babel-plugin-syntax-hermes-parser "^0.23.1"
+    base64-js "^1.5.1"
+    chalk "^4.0.0"
+    commander "^12.0.0"
+    event-target-shim "^5.0.1"
+    flow-enums-runtime "^0.0.6"
+    glob "^7.1.1"
+    invariant "^2.2.4"
+    jest-environment-node "^29.6.3"
+    jsc-android "^250231.0.0"
+    memoize-one "^5.0.0"
+    metro-runtime "^0.81.0"
+    metro-source-map "^0.81.0"
+    mkdirp "^0.5.1"
+    nullthrows "^1.1.1"
+    pretty-format "^29.7.0"
+    promise "^8.3.0"
+    react-devtools-core "^5.3.1"
+    react-refresh "^0.14.0"
+    regenerator-runtime "^0.13.2"
+    scheduler "0.24.0-canary-efb381bbf-20230505"
+    semver "^7.1.3"
+    stacktrace-parser "^0.1.10"
+    whatwg-fetch "^3.0.0"
+    ws "^6.2.3"
+    yargs "^17.6.2"
 
 react-refresh@^0.14.0:
   version "0.14.2"
