@@ -245,6 +245,9 @@ end
 # - version: the version of React Native
 # - build_type: debug or release
 def hermes_artifact_exists(tarball_url)
+    if tarball_url.start_with?("file:") == true
+      return true
+    end
     # -L is used to follow redirects, useful for the nightlies
     # I also needed to wrap the url in quotes to avoid escaping & and ?.
     return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
