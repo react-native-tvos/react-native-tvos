@@ -77,6 +77,7 @@ public class ReactAccessibilityDelegate extends ExploreByTouchHelper {
     sActionIdMap.put("decrement", AccessibilityActionCompat.ACTION_SCROLL_BACKWARD.getId());
     sActionIdMap.put("expand", AccessibilityActionCompat.ACTION_EXPAND.getId());
     sActionIdMap.put("collapse", AccessibilityActionCompat.ACTION_COLLAPSE.getId());
+    sActionIdMap.put("accessibilityFocus", AccessibilityActionCompat.ACTION_ACCESSIBILITY_FOCUS.getId());
   }
 
   public ReactAccessibilityDelegate(
@@ -289,6 +290,26 @@ public class ReactAccessibilityDelegate extends ExploreByTouchHelper {
     if (action == AccessibilityNodeInfoCompat.ACTION_EXPAND) {
       host.setTag(R.id.accessibility_state_expanded, true);
     }
+    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
+      final WritableMap payload = Arguments.createMap();
+      final int reactTag = host.getId();
+      payload.putString("eventType", "select");
+      payload.putInt("eventKeyAction", 1);
+      payload.putInt("tag", reactTag);
+      payload.putInt("target", reactTag);
+      ReactContext reactContext = (ReactContext) host.getContext();
+      reactContext.emitDeviceEvent("onHWKeyEvent", payload);
+    }
+    if (action == AccessibilityNodeInfoCompat.ACTION_LONG_CLICK) {
+      final WritableMap payload = Arguments.createMap();
+      final int reactTag = host.getId();
+      payload.putString("eventType", "longSelect");
+      payload.putInt("eventKeyAction", 1);
+      payload.putInt("tag", reactTag);
+      payload.putInt("target", reactTag);
+      ReactContext reactContext = (ReactContext) host.getContext();
+      reactContext.emitDeviceEvent("onHWKeyEvent", payload);
+    }
     if (mAccessibilityActionsMap.containsKey(action)) {
       final WritableMap event = Arguments.createMap();
       event.putString("actionName", mAccessibilityActionsMap.get(action));
@@ -329,6 +350,11 @@ public class ReactAccessibilityDelegate extends ExploreByTouchHelper {
         if (accessibilityValue != null && !accessibilityValue.hasKey("text")) {
           scheduleAccessibilityEventSender(host);
         }
+        return super.performAccessibilityAction(host, action, args);
+      }
+      // When checking the accessibility focus action, we don't want to intercept the native event
+      // otherwise it would intercept the change of focus
+      if (action == AccessibilityActionCompat.ACTION_ACCESSIBILITY_FOCUS.getId()) {
         return super.performAccessibilityAction(host, action, args);
       }
       return true;
