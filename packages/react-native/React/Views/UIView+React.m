@@ -47,12 +47,17 @@
 
 - (BOOL)shouldAccessibilityIgnoresInvertColors
 {
+#if !TARGET_OS_TV
   return self.accessibilityIgnoresInvertColors;
+#endif
+  return NO;
 }
 
 - (void)setShouldAccessibilityIgnoresInvertColors:(BOOL)shouldAccessibilityIgnoresInvertColors
 {
+#if !TARGET_OS_TV
   self.accessibilityIgnoresInvertColors = shouldAccessibilityIgnoresInvertColors;
+#endif
 }
 
 - (BOOL)isReactRootView

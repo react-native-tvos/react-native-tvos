@@ -18,6 +18,14 @@
 
 using namespace facebook::react;
 
+#if TARGET_OS_TV
+
+@implementation RCTSwitchComponentView
+
+@end
+
+#else
+
 @interface RCTSwitchComponentView () <RCTSwitchViewProtocol>
 @end
 
@@ -113,6 +121,8 @@ using namespace facebook::react;
 }
 
 @end
+
+#endif // TARGET_OS_TV
 
 Class<RCTComponentViewProtocol> RCTSwitchCls(void)
 {
