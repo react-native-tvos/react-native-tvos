@@ -2543,6 +2543,134 @@ declare export default typeof SwitchNativeComponent;
 "
 `;
 
+exports[`public API should not change unintentionally Libraries/Components/TV/TVEventControl.js 1`] = `
+"declare module.exports: {
+  enableTVMenuKey: () => void,
+  disableTVMenuKey: () => void,
+  enableTVPanGesture: () => void,
+  disableTVPanGesture: () => void,
+  enableGestureHandlersCancelTouches: () => void,
+  disableGestureHandlersCancelTouches: () => void,
+};
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/TVEventHandler.js 1`] = `
+"declare const TVEventHandler: {
+  addListener: (
+    callback: (event: any) => void
+  ) => EventSubscription | { remove: () => void },
+};
+declare module.exports: TVEventHandler;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/TVFocusEventHandler.js 1`] = `
+"declare class TVFocusEventHandler {
+  __subscription: ?EventSubscription;
+  __callbackMap: Map<any, Function>;
+  constructor(): void;
+  register(componentTag: ?any, callback: Function): void;
+  unregister(componentTag: ?any): void;
+}
+declare export const tvFocusEventHandler: TVFocusEventHandler | null;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/TVFocusGuideView.js 1`] = `
+"declare const View: $FlowFixMe;
+declare const React: $FlowFixMe;
+type TVFocusGuideViewProps = $ReadOnly<{
+  ...ViewProps,
+  enabled?: boolean,
+  destinations?: ComponentOrHandleType[],
+  safePadding?: \\"vertical\\" | \\"horizontal\\" | \\"both\\" | null,
+  autoFocus?: boolean,
+  trapFocusUp?: boolean,
+  trapFocusDown?: boolean,
+  trapFocusLeft?: boolean,
+  trapFocusRight?: boolean,
+  focusable?: boolean | void,
+}>;
+export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
+  setDestinations: (
+    destinations: (?React.ElementRef<HostComponent<mixed>>)[]
+  ) => void,
+}>;
+declare const ForwardedTVFocusGuideView: React.AbstractComponent<
+  TVFocusGuideViewProps,
+  React.ElementRef<typeof View> & TVFocusGuideViewImperativeMethods,
+>;
+declare module.exports: ForwardedTVFocusGuideView;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/TVTextScrollView.js 1`] = `
+"declare const React: $FlowFixMe;
+declare class TVTextScrollView
+  extends
+    React.Component<{
+      ...Props,
+      scrollDuration?: number,
+      pageSize?: number,
+      snapToStart?: boolean,
+      snapToEnd?: boolean,
+      onFocus?: (evt: Event) => void,
+      onBlur?: (evt: Event) => void,
+    }>
+{
+  _subscription: any;
+  componentDidMount(): void;
+  componentWillUnmount(): void;
+  render(): $FlowFixMe;
+}
+declare module.exports: TVTextScrollView;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/TVViewPropTypes.js 1`] = `
+"export type TVParallaxPropertiesType = $ReadOnly<{|
+  enabled?: boolean,
+  shiftDistanceX?: number,
+  shiftDistanceY?: number,
+  tiltAngle?: number,
+  magnification?: number,
+  pressMagnification?: number,
+  pressDuration?: number,
+  pressDelay?: number,
+|}>;
+export type TVViewProps = $ReadOnly<{|
+  isTVSelectable?: boolean,
+  hasTVPreferredFocus?: boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  destinations?: ?(Object[]),
+  enabled?: boolean,
+  autoFocus?: boolean,
+  safePadding?: string | null,
+  onPressIn?: (event: any) => void,
+  onPressOut?: (event: any) => void,
+|}>;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/tagForComponentOrHandle.js 1`] = `
+"export type ComponentOrHandleType = ?(ElementRef<ElementType> | number);
+export type TagForComponentOrHandleType = (
+  component: ComponentOrHandleType
+) => ?number;
+declare const tagForComponentOrHandle: TagForComponentOrHandleType;
+declare export default typeof tagForComponentOrHandle;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Components/TV/useTVEventHandler.js 1`] = `
+"declare const useTVEventHandler: (
+  handleEvent: (evt: TVRemoteEvent) => void
+) => void;
+declare module.exports: useTVEventHandler;
+"
+`;
+
 exports[`public API should not change unintentionally Libraries/Components/TextInput/AndroidTextInputNativeComponent.js 1`] = `
 "export type KeyboardType =
   | \\"default\\"
@@ -6571,6 +6699,33 @@ declare export function stringifyValidationResult(
 "
 `;
 
+exports[`public API should not change unintentionally Libraries/NativeComponent/TVViewConfig.js 1`] = `
+"declare export const validAttributesForTVProps: {
+  isTVSelectable: true,
+  hasTVPreferredFocus: true,
+  tvParallaxProperties: true,
+  destinations: true,
+  enabled: true,
+  autoFocus: true,
+  safePadding: true,
+  focusable: true,
+  nextFocusDown: true,
+  nextFocusForward: true,
+  nextFocusLeft: true,
+  nextFocusRight: true,
+  nextFocusUp: true,
+  onFocus: true,
+  onBlur: true,
+  onPressIn: true,
+  onPressOut: true,
+  trapFocusLeft: true,
+  trapFocusRight: true,
+  trapFocusDown: true,
+  trapFocusUp: true,
+};
+"
+`;
+
 exports[`public API should not change unintentionally Libraries/NativeComponent/ViewConfig.js 1`] = `
 "declare export function createViewConfig(
   partialViewConfig: PartialViewConfig
@@ -9341,6 +9496,16 @@ exports[`public API should not change unintentionally Libraries/Utilities/mapWit
   spacerRenderer: (index: number) => TTo
 ): Array<TTo>;
 declare module.exports: mapWithSeparator;
+"
+`;
+
+exports[`public API should not change unintentionally Libraries/Utilities/setAndForwardRef.js 1`] = `
+"type Args = $ReadOnly<{|
+  getForwardedRef: () => ?Ref<any>,
+  setLocalRef: (ref: ElementRef<any>) => mixed,
+|}>;
+declare function setAndForwardRef(Args): (ref: ElementRef<any>) => void;
+declare module.exports: setAndForwardRef;
 "
 `;
 
