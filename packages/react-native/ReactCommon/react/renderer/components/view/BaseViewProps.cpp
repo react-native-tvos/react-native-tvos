@@ -58,73 +58,73 @@ BaseViewProps::BaseViewProps(
     : YogaStylableProps(context, sourceProps, rawProps, filterObjectKeys),
       AccessibilityProps(context, sourceProps, rawProps),
 #if TARGET_OS_TV
-      isTVSelectable(CoreFeatures::enablePropIteratorSetter ? sourceProps.isTVSelectable : convertRawProp(
+      isTVSelectable(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.isTVSelectable : convertRawProp(
           context,
           rawProps,
           "isTVSelectable",
           sourceProps.isTVSelectable,
           false)),
-      hasTVPreferredFocus(CoreFeatures::enablePropIteratorSetter ? sourceProps.hasTVPreferredFocus : convertRawProp(
+      hasTVPreferredFocus(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.hasTVPreferredFocus : convertRawProp(
           context,
           rawProps,
           "hasTVPreferredFocus",
           sourceProps.hasTVPreferredFocus,
           false)),
-      tvParallaxProperties(CoreFeatures::enablePropIteratorSetter ? sourceProps.tvParallaxProperties : convertRawProp(
+      tvParallaxProperties(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.tvParallaxProperties : convertRawProp(
           context,
           rawProps,
           "tvParallaxProperties",
           sourceProps.tvParallaxProperties,
           {})),
-      nextFocusUp(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusUp : convertRawProp(
+      nextFocusUp(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.nextFocusUp : convertRawProp(
           context,
           rawProps,
           "nextFocusUp",
           sourceProps.nextFocusUp,
           {})),
-      nextFocusDown(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusDown : convertRawProp(
+      nextFocusDown(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.nextFocusDown : convertRawProp(
           context,
           rawProps,
           "nextFocusDown",
           sourceProps.nextFocusDown,
           {})),
-      nextFocusLeft(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusLeft : convertRawProp(
+      nextFocusLeft(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.nextFocusLeft : convertRawProp(
           context,
           rawProps,
           "nextFocusLeft",
           sourceProps.nextFocusLeft,
           {})),
-      nextFocusRight(CoreFeatures::enablePropIteratorSetter ? sourceProps.nextFocusRight : convertRawProp(
+      nextFocusRight(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.nextFocusRight : convertRawProp(
           context,
           rawProps,
           "nextFocusRight",
           sourceProps.nextFocusRight,
           {})),
-      autoFocus(CoreFeatures::enablePropIteratorSetter ? sourceProps.autoFocus : convertRawProp(
+      autoFocus(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.autoFocus : convertRawProp(
           context,
           rawProps,
           "autoFocus",
           sourceProps.autoFocus,
           false)),
-      trapFocusUp(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusUp : convertRawProp(
+      trapFocusUp(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.trapFocusUp : convertRawProp(
           context,
           rawProps,
           "trapFocusUp",
           sourceProps.trapFocusUp,
           false)),
-      trapFocusDown(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusDown : convertRawProp(
+      trapFocusDown(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.trapFocusDown : convertRawProp(
           context,
           rawProps,
           "trapFocusDown",
           sourceProps.trapFocusDown,
           false)),
-      trapFocusLeft(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusLeft : convertRawProp(
+      trapFocusLeft(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.trapFocusLeft : convertRawProp(
           context,
           rawProps,
           "trapFocusLeft",
           sourceProps.trapFocusLeft,
           false)),
-      trapFocusRight(CoreFeatures::enablePropIteratorSetter ? sourceProps.trapFocusRight : convertRawProp(
+      trapFocusRight(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.trapFocusRight : convertRawProp(
           context,
           rawProps,
           "trapFocusRight",

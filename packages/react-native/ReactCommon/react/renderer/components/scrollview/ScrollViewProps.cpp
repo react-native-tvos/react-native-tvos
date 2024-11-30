@@ -373,7 +373,7 @@ ScrollViewProps::ScrollViewProps(
                     sourceProps.isInvertedVirtualizedList,
                     {})),
       showsScrollIndex(
-          CoreFeatures::enablePropIteratorSetter
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
               ? sourceProps.showsScrollIndex
               : convertRawProp(
                     context,
