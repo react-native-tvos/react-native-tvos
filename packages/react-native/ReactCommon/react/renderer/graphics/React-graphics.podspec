@@ -65,7 +65,7 @@ Pod::Spec.new do |s|
   s.dependency "React-utils"
   s.dependency "DoubleConversion"
   s.dependency "fast_float", "6.1.4"
-  s.dependency "fmt", "11.0.2"
+  s.dependency "fmt", "9.1.0"
   
   if ENV["USE_HERMES"] == nil || ENV["USE_HERMES"] == "1"
     s.dependency "hermes-engine"
