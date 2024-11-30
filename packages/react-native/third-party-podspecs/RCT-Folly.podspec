@@ -6,8 +6,7 @@
 folly_config = get_folly_config()
 folly_compiler_flags = folly_config[:compiler_flags]
 folly_release_version = folly_config[:version]
-# folly_git_url = folly_config[:git]
-folly_git_url = 'https://github.com/react-native-tvos/folly.git'
+folly_git_url = folly_config[:git]
 
 Pod::Spec.new do |spec|
   spec.name = 'RCT-Folly'
@@ -18,7 +17,7 @@ Pod::Spec.new do |spec|
   spec.summary = 'An open-source C++ library developed and used at Facebook.'
   spec.authors = 'Facebook'
   spec.source = { :git => folly_git_url,
-                  :tag => "tv-v#{folly_release_version}" }
+                  :tag => "v#{folly_release_version}" }
   spec.module_name = 'folly'
   spec.header_mappings_dir = '.'
   spec.dependency 'boost'
@@ -26,7 +25,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'glog'
   spec.dependency "fast_float", "6.1.4"
   spec.dependency "fmt", "9.1.0"
-  spec.compiler_flags = folly_compiler_flags
+  spec.compiler_flags = folly_compiler_flags + ' -DFOLLY_HAVE_PTHREAD=1 -Wno-documentation -faligned-new'
   spec.source_files = 'folly/String.cpp',
                       'folly/Conv.cpp',
                       'folly/Demangle.cpp',

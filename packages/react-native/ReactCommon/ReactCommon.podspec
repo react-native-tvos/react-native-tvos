@@ -55,7 +55,7 @@ Pod::Spec.new do |s|
     ss.dependency "React-logger", version
     ss.dependency "DoubleConversion"
     ss.dependency "fast_float", "6.1.4"
-    ss.dependency "fmt", "11.0.2"
+    ss.dependency "fmt", "9.1.0"
     ss.dependency "glog"
     if using_hermes
       ss.dependency "hermes-engine"
