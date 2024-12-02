@@ -19,6 +19,7 @@
     "android": "react-native run-android --mode HermesDebug",
     "install-android-jsc": "../../gradlew :packages:rn-tester:android:app:installJscDebug",
     "install-android-hermes": "../../gradlew :packages:rn-tester:android:app:installHermesDebug",
+    "build-android-hermes": "../../gradlew :packages:rn-tester:android:app:assembleHermesDebug",
     "clean-android": "rm -rf android/app/build",
     "prepare-ios": "node ./cli.js bootstrap ios",
     "clean-ios": "rm -rf build/generated/ios Pods Podfile.lock RNTesterPods.xcworkspace/ ../react-native-codegen/lib/",
