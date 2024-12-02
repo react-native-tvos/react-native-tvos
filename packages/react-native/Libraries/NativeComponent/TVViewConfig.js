@@ -6,6 +6,7 @@ export const validAttributesForTVProps = {
   isTVSelectable: true,
   hasTVPreferredFocus: true,
   tvParallaxProperties: true,
+  tvFocusable: true,
   destinations: true,
   enabled: true,
   autoFocus: true,
