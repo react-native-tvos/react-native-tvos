@@ -401,14 +401,6 @@ public class ReactScrollView extends ScrollView
   }
 
   @Override
-  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-    if (!mScrollEnabled) {
-      return 0;
-    }
-    return super.computeScrollDeltaToGetChildRectOnScreen(rect);
-  }
-
-  @Override
   protected void onScrollChanged(int x, int y, int oldX, int oldY) {
     Systrace.beginSection(Systrace.TRACE_TAG_REACT_JAVA_BRIDGE, "ReactScrollView.onScrollChanged");
     try {
