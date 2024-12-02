@@ -454,10 +454,6 @@ public class ReactModalHostView(context: ThemedReactContext) :
     public fun onRequestClose(dialog: DialogInterface?)
   }
 
-  private companion object {
-    private const val TAG = "ReactModalHost"
-  }
-
   /**
    * DialogRootViewGroup is the ViewGroup which contains all the children of a Modal. It gets all
    * child information forwarded from [ReactModalHostView] and uses that to create children. It is
@@ -517,6 +513,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
       super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
     }
 
+    /*
     public override fun requestChildFocus(child: View?, focused: View?) {
       androidHWInputDeviceHelper.onFocusChanged(focused, reactContext)
       super.requestChildFocus(child, focused)
@@ -542,6 +539,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
         }
       }
     }
+     */
 
     @UiThread
     public fun updateState(width: Int, height: Int) {

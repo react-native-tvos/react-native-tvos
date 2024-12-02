@@ -98,19 +98,19 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
     // ** while the device is in touch mode.  **
     if (hasTouchScreen(view.context)) {
-      view.setFocusableInTouchMode(accessible);
+      view.isFocusableInTouchMode = accessible
     }
 
   }
 
   @ReactProp(name = "tvFocusable")
   public open fun setTvFocusable(view: ReactViewGroup, focusable: Boolean) {
-    setFocusable(view, focusable);
+    setFocusable(view, focusable)
     if (!focusable) {
-      view.setFocusable(false);
-      view.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+      view.isFocusable = false
+      view.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
     } else {
-      view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+      view.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
     }
   }
 
@@ -452,13 +452,15 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
         "Illegal number of arguments for 'setPressed' command")
     }
 
-    val destinations: ReadableArray = args.getArray(0)
-    val fd = IntArray(destinations.size())
-    for (i in fd.indices) {
-      fd[i] = destinations.getInt(i)
+    val destinations: ReadableArray? = args.getArray(0)
+    if (destinations != null) {
+      val fd = IntArray(destinations.size())
+      for (i in fd.indices) {
+        fd[i] = destinations.getInt(i)
+      }
+      root.setFocusDestinations(fd)
+      this.manageFocusGuideAccessibilityDelegate(root)
     }
-    root.setFocusDestinations(fd);
-    this.manageFocusGuideAccessibilityDelegate(root);
   }
 
   private fun manageFocusGuideAccessibilityDelegate(view: ReactViewGroup) {
@@ -476,7 +478,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
     val isTVFocusable = view.descendantFocusability != ViewGroup.FOCUS_BLOCK_DESCENDANTS
     if (!view.hasFocusGuideTalkbackAccessibilityDelegate()) {
-      if (view.isTVFocusGuide() && isTVFocusable && isTalkbackInstalledAndEnabled) {
+      if (view.isTVFocusGuide && isTVFocusable && isTalkbackInstalledAndEnabled) {
         // Custom accessibility delegate is needed only for Talkback,
         // as it's not handling TV focus guide scenarios as well as e.g. Amazon's VoiceView
         //
@@ -484,7 +486,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
         view.initializeFocusGuideTalkbackAccessibilityDelegate()
       }
     } else {
-      if (!view.isTVFocusGuide() || !isTVFocusable || !isTalkbackInstalledAndEnabled) {
+      if (!view.isTVFocusGuide || !isTVFocusable || !isTalkbackInstalledAndEnabled) {
         // If this view had delegate set, but is no longer a "focus guide"
         // or is no longer focusable
         // or talkback is no longer enabled

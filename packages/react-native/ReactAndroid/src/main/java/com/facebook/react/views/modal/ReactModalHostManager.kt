@@ -59,7 +59,7 @@ internal class ReactModalHostManager :
       view: ReactModalHostView,
       navigationBarTranslucent: Boolean
   ) {
-    view.navigationBarTranslucent = navigationBarTranslucent
+    // view.navigationBarTranslucent = navigationBarTranslucent
   }
 
   @ReactProp(name = "hardwareAccelerated")
