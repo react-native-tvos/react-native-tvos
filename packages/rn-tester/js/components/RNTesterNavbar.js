@@ -15,7 +15,6 @@ import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
 import {
   Image,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -36,34 +35,37 @@ const NavbarButton = ({
   label,
   handlePress,
   iconStyle,
-}) => {
-  return (
-    <Pressable
-      testID={testID}
-      onPress={handlePress}
-      style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
-      {({focused}) => {
-        return (
-          <View
-            style={[
-              styles.pressableContent,
-              focused ? styles.focusedBar : null,
-              isActive ? styles.activeBar : null,
-            ]}
-            collapsable={false}>
-            <Image
-              style={iconStyle}
-              source={isActive ? activeImage : inactiveImage}
-            />
-            <Text style={isActive ? styles.activeText : styles.inactiveText}>
-              {label}
-            </Text>
-          </View>
-        );
-      }}
-    </Pressable>
-  );
-};
+}) => (
+  <Pressable
+    testID={testID}
+    onPress={handlePress}
+    style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
+    {({focused}) => {
+      return (
+        <View
+          style={[
+            styles.pressableContent,
+            focused ? styles.focusedBar : null,
+            isActive ? styles.activeBar : null,
+          ]}
+          collapsable={false}>
+          <Image
+            style={iconStyle}
+            source={isActive ? activeImage : inactiveImage}
+          />
+          <Text
+            style={
+              isActive
+                ? theme.NavBarLabelActiveColor
+                : theme.NavBarLabelInactiveColor
+            }>
+            {label}
+          </Text>
+        </View>
+      );
+    }}
+  </Pressable>
+);
 
 const ComponentTab = ({
   isComponentActive,
@@ -146,7 +148,7 @@ const RNTesterNavbar = ({
   const isPlaygroundActive = screen === 'playgrounds';
 
   return (
-    <TVFocusGuideView autoFocus={Platform.OS === 'android'}>
+    <TVFocusGuideView autoFocus={true}>
       <View style={styles.buttonContainer}>
         <ComponentTab
           isComponentActive={isComponentActive}
