@@ -19,6 +19,7 @@
     "android": "react-native run-android --mode HermesDebug",
     "install-android-jsc": "../../gradlew :packages:rn-tester:android:app:installJscDebug",
     "install-android-hermes": "../../gradlew :packages:rn-tester:android:app:installHermesDebug",
+    "build-android-hermes": "../../gradlew :packages:rn-tester:android:app:assembleHermesDebug",
     "setup-ios-jsc": "./modify-hermes-engine-for-rn-tester.sh; bundle install && USE_HERMES=0 bundle exec pod install",
     "setup-ios-hermes-local-artifacts": "./modify-hermes-engine-for-rn-tester.sh; bundle install && RCT_NEW_ARCH_ENABLED=1 HERMES_ARTIFACT_FROM_MAVEN_LOCAL=1 USE_HERMES=1 bundle exec pod install",
     "setup-ios-hermes": "./modify-hermes-engine-for-rn-tester.sh; bundle install && RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 bundle exec pod install",
