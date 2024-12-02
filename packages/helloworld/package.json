@@ -12,8 +12,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "19.0.0",
-    "react-native": "0.79.0-rc.2"
+    "react": "19.0.0"
+  },
+  "peerDependencies": {
+    "react-native": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
