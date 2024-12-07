@@ -9,7 +9,7 @@ require_relative "./hermes-utils.rb"
 begin
   react_native_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
     'require.resolve(
-    "react-native-tvos",
+    "react-native",
     {paths: [process.argv[1]]},
     )', __dir__]).strip
   )
@@ -20,7 +20,7 @@ end
 
 # package.json
 package = JSON.parse(File.read(File.join(react_native_path, "package.json")))
-version = package['version']
+version = core_version(package['version'])
 
 source_type = hermes_source_type(version, react_native_path)
 source = podspec_source(source_type, version, react_native_path)
