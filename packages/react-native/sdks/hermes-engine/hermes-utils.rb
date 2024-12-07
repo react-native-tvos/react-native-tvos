@@ -101,6 +101,27 @@ def nightly_artifact_exists(version)
     return hermes_artifact_exists(nightly_tarball_url(version).gsub("\\", ""))
 end
 
+# Computes the core release version on which this TV release version is based
+def core_version(version)
+    match = version.match(/(.+)-(.+)/)
+    if match.nil?
+      hermes_log("core_version = #{version}")
+      return version
+    end
+
+    core_base_version = match[1]
+    prerelease = match[2]
+    prerelease_match = prerelease.match(/0rc(\d+)/)
+    if prerelease_match.nil?
+        hermes_log("core_version = #{version}")
+        return version
+    end
+
+    cv = "#{core_base_version}-rc.#{prerelease_match[1]}"
+    hermes_log("core_version = #{cv}")
+    return cv
+end
+
 def podspec_source(source_type, version, react_native_path)
     case source_type
     when HermesEngineSourceType::BUILD_FROM_LOCAL_SOURCE_DIR
