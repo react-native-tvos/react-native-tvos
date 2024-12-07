@@ -152,6 +152,14 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     return mScrollEnabled && super.canScrollHorizontally(direction);
   }
 
+  @Override
+  protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+    if (mScrollEnabled) {
+      return 0;
+    }
+    return super.computeScrollDeltaToGetChildRectOnScreen(rect);
+  }
+
   @Nullable
   private OverScroller getOverScrollerFromParent() {
     OverScroller scroller;
