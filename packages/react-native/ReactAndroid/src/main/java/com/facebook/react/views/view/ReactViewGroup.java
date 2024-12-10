@@ -532,7 +532,6 @@ public class ReactViewGroup extends ViewGroup
           }
           index--;
       }
-      if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
     } else {
       while (firstFocusableElement == null && index < focusables.size()) {
         View elem = focusables.get(index);
@@ -542,8 +541,8 @@ public class ReactViewGroup extends ViewGroup
         }
         index++;
       }
-      if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
     }
+    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
     return false;
   }
 
