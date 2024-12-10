@@ -519,11 +519,6 @@ public class ReactViewGroup extends ViewGroup
     boolean elementsHorizontallyAligned = isHorizontallyLaidOut(focusables);
     boolean shouldSwapIndexing = isRtl && elementsHorizontallyAligned;
 
-    // Determine start and end indices based on layout direction
-    int startIndex = shouldSwapIndexing ? focusables.size() - 1 : 0;
-    int endIndex = shouldSwapIndexing ? -1 : focusables.size();
-    int step = shouldSwapIndexing ? -1 : 1;
-
     View firstFocusableElement = null;
     Integer index = 0;
 
