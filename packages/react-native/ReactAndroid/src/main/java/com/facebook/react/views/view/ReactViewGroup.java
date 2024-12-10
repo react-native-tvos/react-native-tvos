@@ -514,20 +514,57 @@ public class ReactViewGroup extends ViewGroup
      */
     if (focusables.size() <= 0) return false;
 
+    // Check layout direction
+    boolean isRtl = I18nUtil.getInstance().isRTL(getContext());
+    boolean elementsHorizontallyAligned = isHorizontallyLaidOut(focusables);
+    boolean shouldSwapIndexing = isRtl && elementsHorizontallyAligned;
+
+    // Determine start and end indices based on layout direction
+    int startIndex = shouldSwapIndexing ? focusables.size() - 1 : 0;
+    int endIndex = shouldSwapIndexing ? -1 : focusables.size();
+    int step = shouldSwapIndexing ? -1 : 1;
+
     View firstFocusableElement = null;
     Integer index = 0;
-    while (firstFocusableElement == null && index < focusables.size()) {
-      View elem = focusables.get(index);
-      if (elem != viewGroup) {
-        firstFocusableElement = elem;
-        break;
+
+    if (shouldSwapIndexing) {
+      index = focusables.size() - 1;  // Start from the last element
+      while (firstFocusableElement == null && index >= 0) {  // Ensure we don’t go out of bounds
+          View elem = focusables.get(index);
+          if (elem != viewGroup) {
+              firstFocusableElement = elem;
+              break;
+          }
+          index--;
       }
-      index++;
+      if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
+    } else {
+      while (firstFocusableElement == null && index < focusables.size()) {
+        View elem = focusables.get(index);
+        if (elem != viewGroup) {
+          firstFocusableElement = elem;
+          break;
+        }
+        index++;
+      }
+      if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
     }
-
-    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
-
     return false;
+  }
+
+  private boolean isHorizontallyLaidOut(ArrayList<View> focusables) {
+    if (focusables.size() <= 1) return false;
+
+    // Use the y-coordinate of the first focusable as a reference
+    int referenceY = focusables.get(0).getTop();
+
+    // Check if all focusables share the same y-coordinate
+    for (View view : focusables) {
+        if (view.getTop() != referenceY) {
+            return false; // Not horizontally laid out
+        }
+    }
+    return true; // All on the same horizontal axis
   }
 
   void recoverFocus(View view) {
