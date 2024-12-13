@@ -514,20 +514,42 @@ public class ReactViewGroup extends ViewGroup
      */
     if (focusables.size() <= 0) return false;
 
-    View firstFocusableElement = null;
-    Integer index = 0;
-    while (firstFocusableElement == null && index < focusables.size()) {
-      View elem = focusables.get(index);
-      if (elem != viewGroup) {
-        firstFocusableElement = elem;
-        break;
-      }
-      index++;
+    /**
+     * We want to swap the while loop if RTL is enabled and the items
+     * are horizontally aligned. This means autoFocus will focus the element
+     * on the right hand side of the screen rather than left, creating a better
+     * UX on RTL applications.
+     */ 
+    boolean isRtl = I18nUtil.getInstance().isRTL(getContext());
+    boolean elementsHorizontallyAligned = isHorizontallyLaidOut(focusables);
+    boolean shouldReverse = isRtl && elementsHorizontallyAligned;
+
+    Integer index = shouldReverse ? focusables.size() - 1 : 0;
+
+    while (shouldReverse ? index >= 0 : index < focusables.size()) {
+        View elem = focusables.get(index);
+        if (elem != viewGroup) {
+            return elem.requestFocus();
+        }
+        index += shouldReverse ? -1 : 1;
     }
 
-    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
-
     return false;
+  }
+
+  private boolean isHorizontallyLaidOut(ArrayList<View> focusables) {
+    if (focusables.size() <= 1) return false;
+
+    // Use the y-coordinate of the first focusable as a reference
+    int referenceY = focusables.get(0).getTop();
+
+    // Check if all focusables share the same y-coordinate
+    for (View view : focusables) {
+        if (view.getTop() != referenceY) {
+            return false; // Not horizontally laid out
+        }
+    }
+    return true; // All on the same horizontal axis
   }
 
   void recoverFocus(View view) {
