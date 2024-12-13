@@ -514,35 +514,26 @@ public class ReactViewGroup extends ViewGroup
      */
     if (focusables.size() <= 0) return false;
 
-    // Check layout direction
+    /**
+     * We want to swap the while loop if RTL is enabled and the items
+     * are horizontally aligned. This means autoFocus will focus the element
+     * on the right hand side of the screen rather than left, creating a better
+     * UX on RTL applications.
+     */ 
     boolean isRtl = I18nUtil.getInstance().isRTL(getContext());
     boolean elementsHorizontallyAligned = isHorizontallyLaidOut(focusables);
-    boolean shouldSwapIndexing = isRtl && elementsHorizontallyAligned;
+    boolean shouldReverse = isRtl && elementsHorizontallyAligned;
 
-    View firstFocusableElement = null;
-    Integer index = 0;
+    Integer index = shouldReverse ? focusables.size() - 1 : 0;
 
-    if (shouldSwapIndexing) {
-      index = focusables.size() - 1;  // Start from the last element
-      while (firstFocusableElement == null && index >= 0) {  // Ensure we don’t go out of bounds
-          View elem = focusables.get(index);
-          if (elem != viewGroup) {
-              firstFocusableElement = elem;
-              break;
-          }
-          index--;
-      }
-    } else {
-      while (firstFocusableElement == null && index < focusables.size()) {
+    while (shouldReverse ? index >= 0 : index < focusables.size()) {
         View elem = focusables.get(index);
         if (elem != viewGroup) {
-          firstFocusableElement = elem;
-          break;
+            return elem.requestFocus();
         }
-        index++;
-      }
+        index += shouldReverse ? -1 : 1;
     }
-    if (firstFocusableElement != null) return firstFocusableElement.requestFocus();
+
     return false;
   }
 
