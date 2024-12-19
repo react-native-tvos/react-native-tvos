@@ -199,6 +199,14 @@ public class ReactActivityDelegate {
     return mReactDelegate.onBackPressed();
   }
 
+  public boolean onDialogKeyUp(int keyCode, KeyEvent event) {
+    return mReactDelegate != null && mReactDelegate.onDialogKeyUp(keyCode, event);
+  }
+
+  public boolean onDialogKeyDown(int keyCode, KeyEvent event) {
+    return mReactDelegate != null && mReactDelegate.onDialogKeyDown(keyCode, event);
+  }
+
   public boolean onNewIntent(Intent intent) {
     return mReactDelegate.onNewIntent(intent);
   }
