@@ -280,7 +280,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
                 val innerCurrentActivity =
                     (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
                 if (innerCurrentActivity != null) {
-                  return innerCurrentActivity.onKeyUp(keyCode, event)
+                  return innerCurrentActivity.onDialogKeyUp(keyCode, event)
                 }
               }
             }
@@ -298,7 +298,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
               val innerCurrentActivity =
                 (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
               if (innerCurrentActivity != null) {
-                return innerCurrentActivity.onKeyDown(keyCode, event)
+                return innerCurrentActivity.onDialogKeyDown(keyCode, event)
               }
             }
 
