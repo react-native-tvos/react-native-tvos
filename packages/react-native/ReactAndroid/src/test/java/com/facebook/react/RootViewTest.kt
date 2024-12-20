@@ -25,6 +25,7 @@ import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.common.SystemClock
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsForTests
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.facebook.react.uimanager.DisplayMetricsHolder
 import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.events.EventDispatcher
@@ -49,9 +50,18 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import java.util.Date
+import org.mockito.Mockito.`when` as whenever
 
 @RunWith(RobolectricTestRunner::class)
 class RootViewTest {
@@ -207,6 +217,11 @@ class RootViewTest {
     val instanceManager: ReactInstanceManager = mock()
     val activity = Robolectric.buildActivity(Activity::class.java).create().get()
     whenever(instanceManager.currentReactContext).thenReturn(reactContext)
+
+    val deviceEventEmitterMock = mock(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+    whenever(reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java))
+      .thenReturn(deviceEventEmitterMock)
+
     val rootView: ReactRootView =
         object : ReactRootView(activity) {
           override fun getWindowVisibleDisplayFrame(outRect: Rect) {
@@ -241,6 +256,6 @@ class RootViewTest {
     endCoordinates.putDouble("screenY", keyboardHeight)
     params.putMap("endCoordinates", endCoordinates)
     params.putString("easing", "keyboard")
-    verify(reactContext, times(1)).emitDeviceEvent("keyboardDidShow", params)
+    verify(deviceEventEmitterMock, times(1)).emit("keyboardDidShow", params)
   }
 }
