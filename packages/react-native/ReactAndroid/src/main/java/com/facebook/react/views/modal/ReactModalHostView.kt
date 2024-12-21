@@ -12,10 +12,8 @@ package com.facebook.react.views.modal
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.UiModeManager
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Build
 import android.view.KeyEvent
