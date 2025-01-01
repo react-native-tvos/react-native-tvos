@@ -2,6 +2,8 @@ import * as React from 'react';
 import type { View, ScrollViewProps, HostComponent, EventSubscription } from 'react-native';
 
 declare module 'react-native' {
+  export type FocusDestination = null | number | React.Component<any, any> | React.ComponentClass<any>;
+
   interface ViewProps {
   /**
    * Android TV only prop
@@ -10,29 +12,29 @@ declare module 'react-native' {
   /**
    * TV next focus down (see documentation for the View component).
    */
-  nextFocusDown?: number | undefined,
+  nextFocusDown?: FocusDestination | undefined,
 
   /**
    * TV next focus forward (see documentation for the View component).
    *
    * @platform android
    */
-  nextFocusForward?: number | undefined,
+  nextFocusForward?: FocusDestination | undefined,
 
   /**
    * TV next focus left (see documentation for the View component).
    */
-  nextFocusLeft?: number | undefined,
+  nextFocusLeft?: FocusDestination | undefined,
 
   /**
    * TV next focus right (see documentation for the View component).
    */
-  nextFocusRight?: number | undefined,
+  nextFocusRight?: FocusDestination | undefined,
 
   /**
    * TV next focus up (see documentation for the View component).
    */
-  nextFocusUp?: number | undefined,
+  nextFocusUp?: FocusDestination | undefined,
   }
 
   export interface NativeMethods {
@@ -76,7 +78,7 @@ declare module 'react-native' {
     /**
      * Array of `Component`s to register as destinations with `UIFocusGuide`
      */
-    destinations?: (null | number | React.Component<any, any> | React.ComponentClass<any>)[] | undefined;
+    destinations?: FocusDestination[] | undefined;
     /**
      * If true, `TVFocusGuide` will automatically manage focus for you.
      * It will redirect the focus to the first focusable child on the first visit.
@@ -112,7 +114,7 @@ declare module 'react-native' {
 
   export type FocusGuideMethods = {
     setDestinations: (
-      destinations: (React.ElementRef<HostComponent<unknown>> | null | undefined)[],
+      destinations: FocusDestination[],
     ) => void;
   }
 
