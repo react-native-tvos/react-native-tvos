@@ -20,7 +20,7 @@ import {
 import {View} from '../View/View';
 import {AccessibilityProps} from '../View/ViewAccessibility';
 import {ViewProps} from '../View/ViewPropTypes';
-import {TVParallaxProperties} from '../../../types/public/ReactNativeTVTypes';
+import {TVParallaxProperties} from '../../../types/index';
 
 export interface PressableStateCallbackType {
   readonly pressed: boolean;
