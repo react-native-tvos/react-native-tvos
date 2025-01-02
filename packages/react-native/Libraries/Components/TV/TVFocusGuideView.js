@@ -8,7 +8,6 @@
  * @format
  */
 
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
@@ -55,7 +54,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
 
 export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
   setDestinations: (
-    destinations: (?React.ElementRef<HostComponent<mixed>>)[],
+    destinations: ComponentOrHandleType[],
   ) => void,
 }>;
 
@@ -143,10 +142,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ForwardedTVFocusGuideView: React.AbstractComponent<
-  TVFocusGuideViewProps,
-  React.ElementRef<typeof View> & TVFocusGuideViewImperativeMethods,
-> = React.forwardRef(TVFocusGuideView);
+const ForwardedTVFocusGuideView: $FlowFixMe = React.forwardRef(TVFocusGuideView);
 ForwardedTVFocusGuideView.displayName = 'TVFocusGuideView';
 
 module.exports = ForwardedTVFocusGuideView;

@@ -33,9 +33,9 @@ import {
   Linking,
   Platform,
   StyleSheet,
-  useColorScheme,
   TVEventControl,
   View,
+  useColorScheme,
 } from 'react-native';
 import * as NativeComponentRegistry from 'react-native/Libraries/NativeComponent/NativeComponentRegistry';
 

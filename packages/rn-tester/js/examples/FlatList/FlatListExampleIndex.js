@@ -10,6 +10,7 @@
 
 import type {RNTesterModule} from '../../types/RNTesterTypes';
 
+import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 import BasicExample from './FlatList-basic';
 import ContentInsetExample from './FlatList-contentInset';
 import InvertedExample from './FlatList-inverted';
@@ -27,7 +28,6 @@ import onViewableItemsChanged_offScreen from './FlatList-onViewableItemsChanged-
 import onViewableItemsChanged_waitForInteractionExample from './FlatList-onViewableItemsChanged-waitForInteraction';
 import StickyHeadersExample from './FlatList-stickyHeaders';
 import WithSeparatorsExample from './FlatList-withSeparators';
-import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 
 export default ({
   framework: 'React',
