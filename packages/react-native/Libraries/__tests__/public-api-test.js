@@ -39,6 +39,7 @@ const JS_LIBRARIES_FILES_IGNORE_PATTERNS = [
   'Libraries/Renderer/shims/**',
   // ReactNativePrivateInterface
   'Libraries/ReactPrivate/**',
+  'Libraries/Debugging/DebuggingOverlayRegistry.js',
 ];
 const JS_PRIVATE_FILES_INCLUDE_PATTERNS = [
   'setup/**/*.js',

@@ -34,6 +34,7 @@ import {
   Linking,
   Platform,
   StyleSheet,
+  TVEventControl,
   View,
   useColorScheme,
   useWindowDimensions,
