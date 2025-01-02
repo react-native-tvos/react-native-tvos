@@ -9,6 +9,7 @@
  * @oncall react_native
  */
 
+// eslint-disable-next-line lint/sort-imports
 import type MutationObserverType from '../MutationObserver';
 import type MutationRecordType from '../MutationRecord';
 
