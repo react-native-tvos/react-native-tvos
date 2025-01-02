@@ -103,15 +103,10 @@ if (Platform.isTV) {
     ): {remove: () => void, ...} {
       _backPressSubscriptions.add(_handler);
       return {
-        remove: () => BackHandler.removeEventListener(_eventName, _handler),
+        remove: (): void => {
+          _backPressSubscriptions.delete(_handler);
+        },
       };
-    },
-
-    removeEventListener: function (
-      _eventName: BackPressEventName,
-      _handler: () => ?boolean,
-    ) {
-      _backPressSubscriptions.delete(_handler);
     },
   };
 }

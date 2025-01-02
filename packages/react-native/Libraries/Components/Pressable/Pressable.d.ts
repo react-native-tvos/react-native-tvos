@@ -166,7 +166,7 @@ export interface PressableProps
    *
    * @platform ios
    */
-  tvParallaxProperties?: TVParallaxProperties;
+  tvParallaxProperties?: TVParallaxProperties | undefined;
 }
 
 // TODO use React.AbstractComponent when available

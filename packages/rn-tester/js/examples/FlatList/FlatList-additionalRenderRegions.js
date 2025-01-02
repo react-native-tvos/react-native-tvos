@@ -8,18 +8,19 @@
  * @format
  */
 
-import type {RenderItemType} from 'react-native/Libraries/Lists/VirtualizedList';
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+import type {RenderItemType} from 'react-native/Libraries/Lists/VirtualizedList';
+
 import {useRNTesterTheme} from '../../components/RNTesterTheme';
 import * as React from 'react';
 import {
+  Dimensions,
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  Dimensions,
-  TVFocusGuideView,
   Switch,
+  Text,
+  TVFocusGuideView,
 } from 'react-native';
 
 const screenHeight = Dimensions.get('window').height;
