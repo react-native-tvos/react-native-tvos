@@ -32,6 +32,7 @@ const IGNORE_PATTERNS = [
   'Libraries/Renderer/shims/**',
   // ReactNativePrivateInterface
   'Libraries/ReactPrivate/**',
+  'Libraries/Debugging/DebuggingOverlayRegistry.js',
 ];
 
 const sourceFiles = [

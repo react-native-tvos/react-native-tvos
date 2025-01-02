@@ -1840,6 +1840,21 @@ exports[`public API should not change unintentionally Libraries/Components/Press
 "type ViewStyleProp = $ElementType<React.ElementConfig<typeof View>, \\"style\\">;
 export type StateCallbackType = $ReadOnly<{|
   pressed: boolean,
+  focused: boolean,
+|}>;
+type TVProps = $ReadOnly<{|
+  hasTVPreferredFocus?: boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
+  onFocus?: ?(event: FocusEvent) => mixed,
+  onBlur?: ?(event: BlurEvent) => mixed,
+  onFocusCapture?: ?(event: FocusEvent) => void,
+  onBlurCapture?: ?(event: BlurEvent) => void,
 |}>;
 type Props = $ReadOnly<{|
   accessibilityActions?: ?$ReadOnlyArray<AccessibilityActionInfo>,
@@ -1890,6 +1905,7 @@ type Props = $ReadOnly<{|
   android_ripple?: ?RippleConfig,
   testOnly_pressed?: ?boolean,
   unstable_pressDelay?: ?number,
+  ...TVProps,
   \\"aria-label\\"?: ?string,
 |}>;
 declare export default component(
@@ -2042,7 +2058,7 @@ exports[`public API should not change unintentionally Libraries/Components/Scrol
 |}>;
 export type DecelerationRateType = \\"fast\\" | \\"normal\\" | number;
 export type ScrollResponderType = ScrollViewImperativeMethods;
-type PublicScrollViewInstance = $ReadOnly<{|
+export type PublicScrollViewInstance = $ReadOnly<{|
   ...HostInstance,
   ...ScrollViewImperativeMethods,
 |}>;
@@ -2076,6 +2092,7 @@ type IOSProps = $ReadOnly<{|
     | \\"never\\"
     | \\"always\\"
   ),
+  showsScrollIndex?: ?boolean,
 |}>;
 type AndroidProps = $ReadOnly<{|
   nestedScrollEnabled?: ?boolean,
@@ -2255,11 +2272,7 @@ type RefForwarder<TNativeInstance, TPublicInstance> = {
   nativeInstance: TNativeInstance | null,
   publicInstance: TPublicInstance | null,
 };
-declare const Wrapper: component(
-  ref: React.RefSetter<PublicScrollViewInstance>,
-  ...props: Props
-);
-declare module.exports: typeof Wrapper & ScrollViewComponentStatics;
+declare module.exports: $FlowFixMe;
 "
 `;
 
@@ -2364,6 +2377,7 @@ exports[`public API should not change unintentionally Libraries/Components/Scrol
   scrollsToTop?: ?boolean,
   sendMomentumEvents?: ?boolean,
   showsHorizontalScrollIndicator?: ?boolean,
+  showsScrollIndex?: ?boolean,
   showsVerticalScrollIndicator?: ?boolean,
   snapToAlignment?: ?(\\"start\\" | \\"center\\" | \\"end\\"),
   snapToEnd?: ?boolean,
@@ -2578,29 +2592,10 @@ declare export const tvFocusEventHandler: TVFocusEventHandler | null;
 `;
 
 exports[`public API should not change unintentionally Libraries/Components/TV/TVFocusGuideView.js 1`] = `
-"declare const View: $FlowFixMe;
-declare const React: $FlowFixMe;
-type TVFocusGuideViewProps = $ReadOnly<{
-  ...ViewProps,
-  enabled?: boolean,
-  destinations?: ComponentOrHandleType[],
-  safePadding?: \\"vertical\\" | \\"horizontal\\" | \\"both\\" | null,
-  autoFocus?: boolean,
-  trapFocusUp?: boolean,
-  trapFocusDown?: boolean,
-  trapFocusLeft?: boolean,
-  trapFocusRight?: boolean,
-  focusable?: boolean | void,
+"export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
+  setDestinations: (destinations: ComponentOrHandleType[]) => void,
 }>;
-export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
-  setDestinations: (
-    destinations: (?React.ElementRef<HostComponent<mixed>>)[]
-  ) => void,
-}>;
-declare const ForwardedTVFocusGuideView: React.AbstractComponent<
-  TVFocusGuideViewProps,
-  React.ElementRef<typeof View> & TVFocusGuideViewImperativeMethods,
->;
+declare const ForwardedTVFocusGuideView: $FlowFixMe;
 declare module.exports: ForwardedTVFocusGuideView;
 "
 `;
@@ -3744,8 +3739,6 @@ type Signal =
   | typeof Signals.LEAVE_PRESS_RECT
   | typeof Signals.LONG_PRESS_DETECTED;
 declare const TouchableMixin: {
-  componentDidMount: () => void,
-  componentWillUnmount: () => void,
   touchableGetInitialState: () => {
     touchable: {
       touchState: ?State,
@@ -3829,13 +3822,20 @@ exports[`public API should not change unintentionally Libraries/Components/Touch
   nextFocusRight?: ?number,
   nextFocusUp?: ?number,
 |}>;
-type IOSProps = $ReadOnly<{|
+type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
 |}>;
 type Props = $ReadOnly<{|
   ...React.ElementConfig<TouchableWithoutFeedback>,
   ...AndroidProps,
-  ...IOSProps,
+  ...TVProps,
   activeOpacity?: ?number,
   underlayColor?: ?ColorValue,
   style?: ?ViewStyleProp,
@@ -3908,8 +3908,8 @@ declare class TouchableNativeFeedback extends React.Component<Props, State> {
   _dispatchPressedStateChange(pressed: boolean): void;
   _dispatchHotspotUpdate(event: PressEvent): void;
   render(): React.Node;
+  componentDidMount(): void;
   componentDidUpdate(prevProps: Props, prevState: State): void;
-  componentDidMount(): mixed;
   componentWillUnmount(): void;
 }
 declare module.exports: TouchableNativeFeedback;
@@ -3919,6 +3919,8 @@ declare module.exports: TouchableNativeFeedback;
 exports[`public API should not change unintentionally Libraries/Components/Touchable/TouchableOpacity.js 1`] = `
 "type TVProps = $ReadOnly<{|
   hasTVPreferredFocus?: ?boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
   nextFocusDown?: ?number,
   nextFocusForward?: ?number,
   nextFocusLeft?: ?number,
@@ -3989,6 +3991,7 @@ exports[`public API should not change unintentionally Libraries/Components/Touch
   rejectResponderTermination?: ?boolean,
   testID?: ?string,
   touchSoundDisabled?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
 |}>;
 declare module.exports: (props: Props) => React.Node;
 "
@@ -4198,6 +4201,8 @@ exports[`public API should not change unintentionally Libraries/Components/View/
 interface NativeCommands {
   +hotspotUpdate: (viewRef: HostInstance, x: number, y: number) => void;
   +setPressed: (viewRef: HostInstance, pressed: boolean) => void;
+  +setDestinations: (viewRef: $FlowFixMe, destinations: Array<number>) => void;
+  +requestTVFocus: (viewRef: $FlowFixMe) => void;
 }
 declare export const Commands: NativeCommands;
 declare export default typeof ViewNativeComponent;
@@ -4259,6 +4264,10 @@ type TouchEventProps = $ReadOnly<{|
   onTouchStart?: ?(e: PressEvent) => void,
   onTouchStartCapture?: ?(e: PressEvent) => void,
 |}>;
+type PressEventProps = $ReadOnly<{|
+  onPressIn?: ?(e: RemotePressEvent) => void,
+  onPressOut?: ?(e: RemotePressEvent) => void,
+|}>;
 type GestureResponderEventProps = $ReadOnly<{|
   onMoveShouldSetResponder?: ?(e: PressEvent) => boolean,
   onMoveShouldSetResponderCapture?: ?(e: PressEvent) => boolean,
@@ -4293,12 +4302,7 @@ type AndroidViewProps = $ReadOnly<{|
   nativeForegroundAndroid?: ?AndroidDrawable,
   renderToHardwareTextureAndroid?: ?boolean,
   importantForAccessibility?: ?(\\"auto\\" | \\"yes\\" | \\"no\\" | \\"no-hide-descendants\\"),
-  hasTVPreferredFocus?: ?boolean,
-  nextFocusDown?: ?number,
   nextFocusForward?: ?number,
-  nextFocusLeft?: ?number,
-  nextFocusRight?: ?number,
-  nextFocusUp?: ?number,
   focusable?: boolean,
   tabIndex?: 0 | -1,
   onClick?: ?(event: PressEvent) => mixed,
@@ -4313,6 +4317,12 @@ type IOSViewProps = $ReadOnly<{|
   accessibilityLanguage?: ?Stringish,
   shouldRasterizeIOS?: ?boolean,
 |}>;
+type NextFocusProps = $ReadOnly<{|
+  nextFocusDown?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
+|}>;
 export type ViewProps = $ReadOnly<{|
   ...DirectEventProps,
   ...GestureResponderEventProps,
@@ -4322,6 +4332,9 @@ export type ViewProps = $ReadOnly<{|
   ...TouchEventProps,
   ...AndroidViewProps,
   ...IOSViewProps,
+  ...TVViewProps,
+  ...NextFocusProps,
+  ...PressEventProps,
   children?: Node,
   style?: ?ViewStyleProp,
   accessible?: ?boolean,
@@ -4679,29 +4692,7 @@ declare export default typeof DebuggingOverlayNativeComponent;
 "
 `;
 
-exports[`public API should not change unintentionally Libraries/Debugging/DebuggingOverlayRegistry.js 1`] = `
-"export type DebuggingOverlayRegistrySubscriberProtocol = {
-  rootViewRef: AppContainerRootViewRef,
-  debuggingOverlayRef: DebuggingOverlayRef,
-};
-declare class DebuggingOverlayRegistry {
-  constructor(): void;
-  subscribe(subscriber: DebuggingOverlayRegistrySubscriberProtocol): void;
-  unsubscribe(subscriber: DebuggingOverlayRegistrySubscriberProtocol): void;
-}
-declare const debuggingOverlayRegistryInstance: DebuggingOverlayRegistry;
-declare export default typeof debuggingOverlayRegistryInstance;
-"
-`;
-
-exports[`public API should not change unintentionally Libraries/Debugging/useSubscribeToDebuggingOverlayRegistry.js 1`] = `
-"declare const useSubscribeToDebuggingOverlayRegistry: (
-  rootViewRef: AppContainerRootViewRef,
-  debuggingOverlayRef: DebuggingOverlayRef
-) => void;
-declare export default typeof useSubscribeToDebuggingOverlayRegistry;
-"
-`;
+exports[`public API should not change unintentionally Libraries/Debugging/useSubscribeToDebuggingOverlayRegistry.js 1`] = `""`;
 
 exports[`public API should not change unintentionally Libraries/EventEmitter/NativeEventEmitter.js 1`] = `
 "interface NativeModule {
@@ -5803,7 +5794,7 @@ declare export default typeof NativeLinkingManager;
 
 exports[`public API should not change unintentionally Libraries/Lists/FillRateHelper.js 1`] = `
 "declare const FillRateHelper: FillRateHelperType;
-export type { FillRateInfo } from \\"@react-native/virtualized-lists\\";
+export type { FillRateInfo } from \\"@react-native-tvos/virtualized-lists\\";
 declare module.exports: FillRateHelper;
 "
 `;
@@ -6035,7 +6026,7 @@ exports[`public API should not change unintentionally Libraries/Lists/Viewabilit
   ViewToken,
   ViewabilityConfig,
   ViewabilityConfigCallbackPair,
-} from \\"@react-native/virtualized-lists\\";
+} from \\"@react-native-tvos/virtualized-lists\\";
 declare const ViewabilityHelper: ViewabilityHelperType;
 declare module.exports: ViewabilityHelper;
 "
@@ -6053,7 +6044,7 @@ export type {
   RenderItemProps,
   RenderItemType,
   Separators,
-} from \\"@react-native/virtualized-lists\\";
+} from \\"@react-native-tvos/virtualized-lists\\";
 declare module.exports: VirtualizedList;
 "
 `;
@@ -6071,7 +6062,7 @@ exports[`public API should not change unintentionally Libraries/Lists/Virtualize
 export type {
   SectionBase,
   ScrollToLocationParamsType,
-} from \\"@react-native/virtualized-lists\\";
+} from \\"@react-native-tvos/virtualized-lists\\";
 declare module.exports: VirtualizedSectionList;
 "
 `;
@@ -6704,6 +6695,7 @@ exports[`public API should not change unintentionally Libraries/NativeComponent/
   isTVSelectable: true,
   hasTVPreferredFocus: true,
   tvParallaxProperties: true,
+  tvFocusable: true,
   destinations: true,
   enabled: true,
   autoFocus: true,
@@ -7217,6 +7209,7 @@ exports[`public API should not change unintentionally Libraries/Pressability/Pre
   onPressIn?: ?(event: PressEvent) => mixed,
   onPressMove?: ?(event: PressEvent) => mixed,
   onPressOut?: ?(event: PressEvent) => mixed,
+  onTVEvent?: ?(event: any) => void,
   blockNativeResponder?: ?boolean,
 |}>;
 export type EventHandlers = $ReadOnly<{|
@@ -7233,6 +7226,8 @@ export type EventHandlers = $ReadOnly<{|
   onResponderTerminate: (event: PressEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
+  onPressIn: (event: any) => void,
+  onPressOut: (event: any) => void,
 |}>;
 type TouchState =
   | \\"NOT_RESPONDER\\"
@@ -7265,6 +7260,7 @@ declare export default class Pressability {
   |}>;
   _touchActivateTime: ?number;
   _touchState: TouchState;
+  _longPressSent: boolean;
   constructor(config: PressabilityConfig): void;
   configure(config: PressabilityConfig): void;
   reset(): void;
@@ -7461,9 +7457,6 @@ export type AppContainerRootViewRef = React.RefObject<React.ElementRef<
 > | null>;
 export type InspectedViewRef = React.RefObject<React.ElementRef<
   typeof View,
-> | null>;
-export type DebuggingOverlayRef = React.RefObject<React.ElementRef<
-  typeof DebuggingOverlay,
 > | null>;
 declare export default typeof AppContainer;
 "
@@ -7774,7 +7767,8 @@ declare export function findHostInstance_DEPRECATED<TElementType: ElementType>(
   componentOrHandle: ?(ElementRef<TElementType> | number)
 ): ?HostInstance;
 declare export function findNodeHandle<TElementType: ElementType>(
-  componentOrHandle: ?(ElementRef<TElementType> | number)
+  componentOrHandle: ?(ElementRef<TElementType> | number),
+  suppressWarning: ?boolean
 ): ?number;
 declare export function dispatchCommand(
   handle: HostInstance,
@@ -8906,6 +8900,11 @@ export type FocusEvent = SyntheticEvent<
     target: number,
   |}>,
 >;
+export type RemotePressEvent = SyntheticEvent<
+  $ReadOnly<{|
+    target: number,
+  |}>,
+>;
 export type MouseEvent = SyntheticEvent<
   $ReadOnly<{|
     clientX: number,
@@ -8915,6 +8914,13 @@ export type MouseEvent = SyntheticEvent<
     timestamp: number,
   |}>,
 >;
+export type TVRemoteEvent = $ReadOnly<{|
+  tag?: number,
+  target?: number,
+  eventType: string,
+  eventKeyAction?: string,
+  body?: any,
+|}>;
 "
 `;
 
@@ -9227,6 +9233,7 @@ type IOSPlatform = {
   |},
   get isPad(): boolean,
   get isTV(): boolean,
+  get isTVOS(): boolean,
   get isVision(): boolean,
   get isTesting(): boolean,
   get isDisableAnimations(): boolean,
@@ -9501,7 +9508,7 @@ declare module.exports: mapWithSeparator;
 
 exports[`public API should not change unintentionally Libraries/Utilities/setAndForwardRef.js 1`] = `
 "type Args = $ReadOnly<{|
-  getForwardedRef: () => ?Ref<any>,
+  getForwardedRef: () => ?ElementRef<any>,
   setLocalRef: (ref: ElementRef<any>) => mixed,
 |}>;
 declare function setAndForwardRef(Args): (ref: ElementRef<any>) => void;
@@ -9795,6 +9802,11 @@ declare module.exports: {
   get Systrace(): Systrace,
   get ToastAndroid(): ToastAndroid,
   get TurboModuleRegistry(): TurboModuleRegistry,
+  get TVEventControl(): TVEventControl,
+  get TVEventHandler(): TVEventHandler,
+  get TVFocusGuideView(): TVFocusGuideView,
+  get TVMenuControl(): TVEventControl,
+  get TVTextScrollView(): TVTextScrollView,
   get UIManager(): UIManager,
   get unstable_batchedUpdates(): $PropertyType<
     ReactNative,
@@ -9803,6 +9815,7 @@ declare module.exports: {
   get useAnimatedValue(): useAnimatedValue,
   get useColorScheme(): useColorScheme,
   get useWindowDimensions(): useWindowDimensions,
+  get useTVEventHandler(): useTVEventHandler,
   get UTFSequence(): UTFSequence,
   get Vibration(): Vibration,
   get YellowBox(): YellowBox,
