@@ -12,8 +12,9 @@ import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import RNTesterText from '../../components/RNTesterText';
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
+  DeviceEventEmitter,
   Modal,
   Platform,
   Pressable,
@@ -43,6 +44,8 @@ function ModalOnShowOnDismiss(): React.Node {
   const [onDismissCount, setOnDismissCount] = useState(0);
 
   const [lastEvent, setLastEvent] = React.useState('');
+  const [lastDialogKeyUpEvent, setLastDialogKeyUpEvent] = React.useState('');
+  const [lastDialogKeyDownEvent, setLastDialogKeyDownEvent] = React.useState('');
 
   const buttonOpacity = (pressed: boolean, focused: boolean) =>
     pressed || focused ? 0.7 : 1.0;
@@ -50,6 +53,21 @@ function ModalOnShowOnDismiss(): React.Node {
   useTVEventHandler(evt => {
     setLastEvent(evt.eventType);
   });
+
+  useEffect(() => {
+    const onDialogKeyUpEventSubscription = DeviceEventEmitter.addListener('onDialogKeyUpEvent', (event) => {
+      setLastDialogKeyUpEvent(event.keyCode);
+    });
+
+    const onDialogKeyDownEventSubscription = DeviceEventEmitter.addListener('onDialogKeyDownEvent', (event) => {
+      setLastDialogKeyDownEvent(event.keyCode);
+    });
+
+    return () => {
+      onDialogKeyUpEventSubscription.remove();
+      onDialogKeyDownEventSubscription.remove();
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -76,6 +94,11 @@ function ModalOnShowOnDismiss(): React.Node {
               <Text testID="modal-on-dismiss-count">
                 onDismiss is called {onDismissCount} times
               </Text>
+              {Platform.OS === 'android' && (
+                <Text>
+                  Delegated to MainActivity: keyUp={lastDialogKeyUpEvent}, keyDown={lastDialogKeyDownEvent}
+                </Text>
+              )}
               <Pressable
                 style={({pressed, focused}) => [
                   styles.button,
@@ -145,6 +168,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
