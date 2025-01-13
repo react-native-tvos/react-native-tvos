@@ -440,7 +440,7 @@ export default class Pressability {
   _createEventHandlers(): EventHandlers {
     const tvPressEventHandlers = {
       onPressIn: (evt: any): void => {
-        if (this._config.disabled === false) {
+        if (this._config.disabled === true) {
           return;
         }
 
@@ -461,7 +461,7 @@ export default class Pressability {
         }, delayLongPress + delayPressIn);
       },
       onPressOut: (evt: any): void => {
-        if (this._config.disabled === false) {
+        if (this._config.disabled === true) {
           return;
         }
         this._cancelLongPressDelayTimeout();
