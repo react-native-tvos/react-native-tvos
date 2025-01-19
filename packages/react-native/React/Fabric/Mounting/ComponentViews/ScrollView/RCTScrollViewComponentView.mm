@@ -1023,18 +1023,23 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [self sendBlurNotification];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
-        // if we leave the scroll view and go up, then scroll to top; if going down,
-        // scroll to bottom
-        // Similarly for left and right
+        // If scrolling is enabled:
+        // - Scroll to the top when moving up and to the bottom when moving down.
+        // - Similarly, scroll towards leading edge when moving towards leading edge and to the trailing edge when moving towards the trailing edge.
+        BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+        BOOL isMovingTowardsLeadingEdge = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+        BOOL isMovingTowardsTrailingEdge = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
         RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-        if (context.focusHeading == UIFocusHeadingUp && scrollView.snapToStart) {
-            [self swipeVerticalScrollToOffset:0.0];
-        } else if(context.focusHeading == UIFocusHeadingDown && scrollView.snapToEnd) {
-            [self swipeVerticalScrollToOffset:scrollView.contentSize.height];
-        } else if(context.focusHeading == UIFocusHeadingLeft && scrollView.snapToStart) {
-            [self swipeHorizontalScrollToOffset:0.0];
-        } else if(context.focusHeading == UIFocusHeadingRight && scrollView.snapToEnd) {
-            [self swipeHorizontalScrollToOffset:scrollView.contentSize.width];
+        if (scrollView.isScrollEnabled) {
+            if (context.focusHeading == UIFocusHeadingUp && scrollView.snapToStart) {
+                [self scrollToVerticalOffset:0.0];
+            } else if(context.focusHeading == UIFocusHeadingDown && scrollView.snapToEnd) {
+                [self scrollToVerticalOffset:scrollView.contentSize.height];
+            } else if(isMovingTowardsLeadingEdge && scrollView.snapToStart) {
+                [self scrollToHorizontalOffset:0.0];
+            } else if(isMovingTowardsTrailingEdge && scrollView.snapToEnd) {
+                [self scrollToHorizontalOffset:scrollView.contentSize.width];
+            }
         }
     }
 }
@@ -1093,23 +1098,32 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
+    // If the previously focused item is this view and scrolling is disabled, defer to the superclass
+    if (context.previouslyFocusedItem == self && !self.scrollView.isScrollEnabled) {
+        return [super shouldUpdateFocusInContext:context];
+    }
+
     // Determine if the layout is Right-to-Left
     BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
     BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
     // Adjust for horizontal scrolling with RTL support
     if (isHorizontal) {
-        BOOL isNavigatingToEnd = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
-        BOOL isNavigatingToStart = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+        BOOL isMovingTowardsLeadingEdge = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+        BOOL isMovingTowardsTrailingEdge = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
 
-        if ((isNavigatingToEnd && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - self.scrollView.visibleSize.width) ||
-            (isNavigatingToStart && self.scrollView.contentOffset.x > 0)) {
-            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        BOOL isScrollingToLeading = (isMovingTowardsLeadingEdge && self.scrollView.contentOffset.x > 0);
+        BOOL isScrollingToTrailing = (isMovingTowardsTrailingEdge && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - MAX(self.scrollView.visibleSize.width, 1));
+
+        if (isScrollingToLeading || isScrollingToTrailing) {
+            return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
         }
     } else {
         // Handle vertical scrolling as before
-        if ((context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0) ||
-            (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - self.scrollView.visibleSize.height)) {
-            return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
+        BOOL isMovingUp = (context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0);
+        BOOL isMovingDown = (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - MAX(self.scrollView.visibleSize.height, 1));
+
+        if (isMovingUp || isMovingDown) {
+            return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
         }
     }
     return [super shouldUpdateFocusInContext:context];
@@ -1153,60 +1167,100 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     return duration;
 }
 
-- (void)swipeVerticalScrollToOffset:(CGFloat)yOffset
+- (void)scrollToVerticalOffset:(CGFloat)yOffset
 {
     _blockFirstTouch = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat limitedOffset = yOffset;
+
+        // Ensure content size and visible size are non-negative
+        CGFloat contentHeight = MAX(self.scrollView.contentSize.height, 0.0);
+        CGFloat visibleHeight = MAX(self.scrollView.visibleSize.height, 0.0);
+
+        // Compute the maximum offset, ensuring it's non-negative
+        CGFloat maxOffset = MAX(contentHeight - visibleHeight, 0.0);
+
+        // Clamp the offset within valid bounds
         limitedOffset = MAX(limitedOffset, 0.0);
-        limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.height - self.scrollView.visibleSize.height);
+        limitedOffset = MIN(limitedOffset, maxOffset);
+
         [UIView animateWithDuration:[self swipeDuration] animations:^{
             self.scrollView.contentOffset =
-                CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+            CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
         }];
     });
 }
 
-- (void)swipeHorizontalScrollToOffset:(CGFloat)xOffset
+- (void)scrollToHorizontalOffset:(CGFloat)xOffset
 {
     _blockFirstTouch = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         CGFloat limitedOffset = xOffset;
+
+        // Ensure content size and visible size are non-negative
+        CGFloat contentWidth = MAX(self.scrollView.contentSize.width, 0.0);
+        CGFloat visibleWidth = MAX(self.scrollView.visibleSize.width, 0.0);
+
+        // Compute the maximum offset, ensuring it's non-negative
+        CGFloat maxOffset = MAX(contentWidth - visibleWidth, 0.0);
+
+        // Clamp the offset within valid bounds
         limitedOffset = MAX(limitedOffset, 0.0);
-        limitedOffset = MIN(limitedOffset, self.scrollView.contentSize.width - self.scrollView.visibleSize.width);
+        limitedOffset = MIN(limitedOffset, maxOffset);
+
         [UIView animateWithDuration:[self swipeDuration] animations:^{
             self.scrollView.contentOffset =
-                CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
+            CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
         }];
     });
 }
 
 - (void)swipedUp
 {
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
     CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
     // NSLog(@"Swiped up to %f", newOffset);
-    [self swipeVerticalScrollToOffset:newOffset];
+    [self scrollToVerticalOffset:newOffset];
 }
 
 - (void)swipedDown
 {
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
     CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
     // NSLog(@"Swiped down to %f", newOffset);
-    [self swipeVerticalScrollToOffset:newOffset];
+    [self scrollToVerticalOffset:newOffset];
 }
 
 - (void)swipedLeft
 {
-    CGFloat newOffset = self.scrollView.contentOffset.x - [self swipeHorizontalInterval];
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
+    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+    NSInteger horizontalInterval = [self swipeHorizontalInterval];
+    CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? horizontalInterval : -horizontalInterval);
     // NSLog(@"Swiped left to %f", newOffset);
-    [self swipeHorizontalScrollToOffset:newOffset];
+    [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)swipedRight
 {
-    CGFloat newOffset = self.scrollView.contentOffset.x + [self swipeHorizontalInterval];
+    if (!self.scrollView.scrollEnabled) {
+        return;
+    }
+
+    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+    NSInteger horizontalInterval = [self swipeHorizontalInterval];
+    CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? -horizontalInterval : horizontalInterval);
     // NSLog(@"Swiped right to %f", newOffset);
-    [self swipeHorizontalScrollToOffset:newOffset];
+    [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)addSwipeGestureRecognizers
