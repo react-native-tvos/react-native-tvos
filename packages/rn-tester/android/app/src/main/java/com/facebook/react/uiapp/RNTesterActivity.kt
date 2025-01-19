@@ -10,12 +10,14 @@ package com.facebook.react.uiapp
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.facebook.react.FBRNTesterEndToEndHelper
 import com.facebook.react.ReactActivity
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 import java.io.FileDescriptor
@@ -80,5 +82,27 @@ internal class RNTesterActivity : ReactActivity() {
       args: Array<String>?
   ) {
     FBRNTesterEndToEndHelper.maybeDump(prefix, writer, args)
+  }
+
+  override fun onDialogKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+    val data = Arguments.createMap()
+    data.putString("keyCode", KeyEvent.keyCodeToString(keyCode))
+
+    reactActivityDelegate.currentReactContext
+      ?.getJSModule(com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+      ?.emit(::onDialogKeyUp.name + "Event", data)
+
+    return super.onDialogKeyUp(keyCode, event)
+  }
+
+  override fun onDialogKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+    val data = Arguments.createMap()
+    data.putString("keyCode", KeyEvent.keyCodeToString(keyCode))
+
+    reactActivityDelegate.currentReactContext
+      ?.getJSModule(com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+      ?.emit(::onDialogKeyDown.name + "Event", data)
+
+    return super.onDialogKeyDown(keyCode, event)
   }
 }

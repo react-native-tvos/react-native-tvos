@@ -164,6 +164,14 @@ public abstract class ReactActivity extends AppCompatActivity
     mDelegate.onConfigurationChanged(newConfig);
   }
 
+  public boolean onDialogKeyUp(int keyCode, KeyEvent event) {
+    return mDelegate != null && mDelegate.onDialogKeyUp(keyCode, event);
+  }
+
+  public boolean onDialogKeyDown(int keyCode, KeyEvent event) {
+    return mDelegate != null && mDelegate.onDialogKeyDown(keyCode, event);
+  }
+
   protected final ReactNativeHost getReactNativeHost() {
     return mDelegate.getReactNativeHost();
   }
