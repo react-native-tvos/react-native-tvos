@@ -247,6 +247,43 @@ public class ReactDelegate {
     return false;
   }
 
+  /**
+   * Handles key up events for a dialog.
+   * <p>
+   * This method currently does not perform any action and always returns {@code false}. Subclasses
+   * can override this method to provide custom behavior.
+   * </p>
+   *
+   * @param keyCode the code of the key that was released
+   * @param event the {@link KeyEvent} object containing full information about the event
+   * @return {@code true} if the event was handled, {@code false} otherwise
+   *
+   * @see KeyEvent
+   * @see <a href="https://github.com/react-native-tvos/react-native-tvos/issues/829">GitHub Issue #829</a>
+   */
+  public boolean onDialogKeyUp(int keyCode, KeyEvent event) {
+    return false;
+  }
+
+  /**
+   * Handles key down events for a dialog.
+   * <p>
+   * This method currently does not perform any action and always returns {@code false}. Subclasses
+   * can override this method to provide custom behavior.
+   * </p>
+   *
+   * @param keyCode the code of the key that was pressed
+   * @param event the {@link KeyEvent} object containing full information about the event
+   * @return {@code false} indicating the event was not handled
+   *
+   * @see KeyEvent
+   * @see <a href="https://github.com/react-native-tvos/react-native-tvos/issues/829">GitHub Issue #829</a>
+   */
+  public boolean onDialogKeyDown(int keyCode, KeyEvent event) {
+    return false;
+  }
+
+
   public void reload() {
     DevSupportManager devSupportManager = getDevSupportManager();
     if (devSupportManager == null) {
