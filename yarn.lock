@@ -1123,20 +1123,7 @@
     "@babel/parser" "^7.25.0"
     "@babel/types" "^7.25.0"
 
-"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3":
-  version "7.25.6"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.25.6.tgz#04fad980e444f182ecf1520504941940a90fea41"
-  integrity sha512-9Vrcx5ZW6UwK5tvqsj0nGpp/XzqthkT0dqIc9g1AdtygFToNtTF67XzYS//dm+SAK9cp3B9R4ZO/46p63SCjlQ==
-  dependencies:
-    "@babel/code-frame" "^7.24.7"
-    "@babel/generator" "^7.25.6"
-    "@babel/parser" "^7.25.6"
-    "@babel/template" "^7.25.0"
-    "@babel/types" "^7.25.6"
-    debug "^4.3.1"
-    globals "^11.1.0"
-
-"@babel/traverse@^7.24.7", "@babel/traverse@^7.24.8", "@babel/traverse@^7.25.0", "@babel/traverse@^7.25.1", "@babel/traverse@^7.25.2", "@babel/traverse@^7.25.3", "@babel/traverse@^7.25.4":
+"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3", "@babel/traverse@^7.24.7", "@babel/traverse@^7.24.8", "@babel/traverse@^7.25.0", "@babel/traverse@^7.25.1", "@babel/traverse@^7.25.2", "@babel/traverse@^7.25.3", "@babel/traverse@^7.25.4":
   version "7.25.6"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.25.6.tgz#04fad980e444f182ecf1520504941940a90fea41"
   integrity sha512-9Vrcx5ZW6UwK5tvqsj0nGpp/XzqthkT0dqIc9g1AdtygFToNtTF67XzYS//dm+SAK9cp3B9R4ZO/46p63SCjlQ==
@@ -1896,14 +1883,6 @@
     graceful-fs "^4.1.3"
     prompts "^2.4.2"
     semver "^7.5.2"
-
-"@react-native/virtualized-lists@0.77.0-rc.0":
-  version "0.77.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.77.0-rc.0.tgz#58dd6590c0d88e1039a7537e2a4799f520ebb883"
-  integrity sha512-36A+HW6qsN+WZlf2WAhjvrXF9wtxN7k/FbIgIARm9fsRkYr1ofU8eFX3CK3LA1NOkYXBDgjMBQhGngY1jvE6Pg==
-  dependencies:
-    invariant "^2.2.4"
-    nullthrows "^1.1.1"
 
 "@rnx-kit/rn-changelog-generator@^0.4.0":
   version "0.4.1"
@@ -7418,49 +7397,6 @@ react-is@18.3.1, "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^16.13.1, r
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-native@0.77.0-rc.0:
-  version "0.77.0-rc.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.77.0-rc.0.tgz#5b8d02c189287957e5477c5510715446bdaaf8b1"
-  integrity sha512-zEW2/uWad2GGVo1GR9r8x8wHWAheXkd6fgnmUowgNMsvdU2IA26Z7apa2E+SZFZVjGYn8cyduxvXbaOVkJ28Pg==
-  dependencies:
-    "@jest/create-cache-key-function" "^29.6.3"
-    "@react-native/assets-registry" "0.77.0-rc.0"
-    "@react-native/codegen" "0.77.0-rc.0"
-    "@react-native/community-cli-plugin" "0.77.0-rc.0"
-    "@react-native/gradle-plugin" "0.77.0-rc.0"
-    "@react-native/js-polyfills" "0.77.0-rc.0"
-    "@react-native/normalize-colors" "0.77.0-rc.0"
-    "@react-native/virtualized-lists" "0.77.0-rc.0"
-    abort-controller "^3.0.0"
-    anser "^1.4.9"
-    ansi-regex "^5.0.0"
-    babel-jest "^29.7.0"
-    babel-plugin-syntax-hermes-parser "0.25.1"
-    base64-js "^1.5.1"
-    chalk "^4.0.0"
-    commander "^12.0.0"
-    event-target-shim "^5.0.1"
-    flow-enums-runtime "^0.0.6"
-    glob "^7.1.1"
-    invariant "^2.2.4"
-    jest-environment-node "^29.6.3"
-    jsc-android "^250231.0.0"
-    memoize-one "^5.0.0"
-    metro-runtime "^0.81.0"
-    metro-source-map "^0.81.0"
-    nullthrows "^1.1.1"
-    pretty-format "^29.7.0"
-    promise "^8.3.0"
-    react-devtools-core "^6.0.1"
-    react-refresh "^0.14.0"
-    regenerator-runtime "^0.13.2"
-    scheduler "0.24.0-canary-efb381bbf-20230505"
-    semver "^7.1.3"
-    stacktrace-parser "^0.1.10"
-    whatwg-fetch "^3.0.0"
-    ws "^6.2.3"
-    yargs "^17.6.2"
-
 react-refresh@^0.14.0:
   version "0.14.2"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.14.2.tgz#3833da01ce32da470f1f936b9d477da5c7028bf9"
@@ -9111,6 +9047,11 @@ yargs@^17.3.1, yargs@^17.6.2:
     string-width "^4.2.3"
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
+
+yarn.lock@^0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/yarn.lock/-/yarn.lock-0.0.1-security.tgz#8e7117924bfe916671b21f14212ba1bb49dfe0c7"
+  integrity sha512-ZRX6v5zGCJMI1T2aO+BQxJggy1vvorXEwonQhWXIC+brO7lkDB3zWelVNAti183ddH6FmJP8z4UDCJnJlioK4Q==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
