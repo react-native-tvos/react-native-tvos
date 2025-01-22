@@ -113,8 +113,8 @@ def core_version(version)
     prerelease = match[2]
     prerelease_match = prerelease.match(/0rc(\d+)/)
     if prerelease_match.nil?
-        hermes_log("core_version = #{version}")
-        return version
+        hermes_log("core_version = #{core_base_version}")
+        return core_base_version
     end
 
     cv = "#{core_base_version}-rc.#{prerelease_match[1]}"
