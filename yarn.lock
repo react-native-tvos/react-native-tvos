@@ -1897,14 +1897,6 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
-"@react-native/virtualized-lists@0.77.0-rc.0":
-  version "0.77.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@react-native/virtualized-lists/-/virtualized-lists-0.77.0-rc.0.tgz#58dd6590c0d88e1039a7537e2a4799f520ebb883"
-  integrity sha512-36A+HW6qsN+WZlf2WAhjvrXF9wtxN7k/FbIgIARm9fsRkYr1ofU8eFX3CK3LA1NOkYXBDgjMBQhGngY1jvE6Pg==
-  dependencies:
-    invariant "^2.2.4"
-    nullthrows "^1.1.1"
-
 "@rnx-kit/rn-changelog-generator@^0.4.0":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@rnx-kit/rn-changelog-generator/-/rn-changelog-generator-0.4.1.tgz#a43a7259fb64ca059f174c4bd263f137ec568358"
@@ -7418,49 +7410,6 @@ react-is@18.3.1, "react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^16.13.1, r
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-native@0.77.0-rc.0:
-  version "0.77.0-rc.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.77.0-rc.0.tgz#5b8d02c189287957e5477c5510715446bdaaf8b1"
-  integrity sha512-zEW2/uWad2GGVo1GR9r8x8wHWAheXkd6fgnmUowgNMsvdU2IA26Z7apa2E+SZFZVjGYn8cyduxvXbaOVkJ28Pg==
-  dependencies:
-    "@jest/create-cache-key-function" "^29.6.3"
-    "@react-native/assets-registry" "0.77.0-rc.0"
-    "@react-native/codegen" "0.77.0-rc.0"
-    "@react-native/community-cli-plugin" "0.77.0-rc.0"
-    "@react-native/gradle-plugin" "0.77.0-rc.0"
-    "@react-native/js-polyfills" "0.77.0-rc.0"
-    "@react-native/normalize-colors" "0.77.0-rc.0"
-    "@react-native/virtualized-lists" "0.77.0-rc.0"
-    abort-controller "^3.0.0"
-    anser "^1.4.9"
-    ansi-regex "^5.0.0"
-    babel-jest "^29.7.0"
-    babel-plugin-syntax-hermes-parser "0.25.1"
-    base64-js "^1.5.1"
-    chalk "^4.0.0"
-    commander "^12.0.0"
-    event-target-shim "^5.0.1"
-    flow-enums-runtime "^0.0.6"
-    glob "^7.1.1"
-    invariant "^2.2.4"
-    jest-environment-node "^29.6.3"
-    jsc-android "^250231.0.0"
-    memoize-one "^5.0.0"
-    metro-runtime "^0.81.0"
-    metro-source-map "^0.81.0"
-    nullthrows "^1.1.1"
-    pretty-format "^29.7.0"
-    promise "^8.3.0"
-    react-devtools-core "^6.0.1"
-    react-refresh "^0.14.0"
-    regenerator-runtime "^0.13.2"
-    scheduler "0.24.0-canary-efb381bbf-20230505"
-    semver "^7.1.3"
-    stacktrace-parser "^0.1.10"
-    whatwg-fetch "^3.0.0"
-    ws "^6.2.3"
-    yargs "^17.6.2"
-
 react-refresh@^0.14.0:
   version "0.14.2"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.14.2.tgz#3833da01ce32da470f1f936b9d477da5c7028bf9"
@@ -8726,10 +8675,10 @@ undici-types@~6.19.2:
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
   integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
-undici@^5.27.2:
-  version "5.28.4"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.4.tgz#6b280408edb6a1a604a9b20340f45b422e373068"
-  integrity sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==
+undici@^5.28.5:
+  version "5.28.5"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.5.tgz#b2b94b6bf8f1d919bc5a6f31f2c01deb02e54d4b"
+  integrity sha512-zICwjrDrcrUE0pyyJc1I2QzBkLM8FINsgOrt6WjA+BgajVq9Nxu2PbFFXUrAggLfDXlZGZBVZYw7WNV5KiBiBA==
   dependencies:
     "@fastify/busboy" "^2.0.0"
 
