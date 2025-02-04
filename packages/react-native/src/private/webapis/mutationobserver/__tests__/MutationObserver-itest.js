@@ -10,6 +10,7 @@
  * @fantom_flags enableAccessToHostTreeInFabric:true
  */
 
+// eslint-disable-next-line lint/sort-imports
 import type MutationObserverType from '../MutationObserver';
 
 import View from '../../../../../Libraries/Components/View/View';
