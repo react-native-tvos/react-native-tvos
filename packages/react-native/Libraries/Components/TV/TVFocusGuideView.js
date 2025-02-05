@@ -8,7 +8,6 @@
  * @format
  */
 
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
