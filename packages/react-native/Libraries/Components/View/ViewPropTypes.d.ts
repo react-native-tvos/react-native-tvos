@@ -13,10 +13,12 @@ import {GestureResponderHandlers} from '../../../types/public/ReactNativeRendere
 import {StyleProp} from '../../StyleSheet/StyleSheet';
 import {ViewStyle} from '../../StyleSheet/StyleSheetTypes';
 import {
-  BlurEvent,
-  FocusEvent,
   LayoutChangeEvent,
   PointerEvents,
+  FocusEvents,
+  PressEvents,
+  NativeFocusEvent,
+  NativeBlurEvent,
 } from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
@@ -237,9 +239,9 @@ export interface ViewProps
   /**
    * Invoked on TV focus
    */
-  readonly onFocus?: BubblingEventHandler<Event> | undefined;
+  readonly onFocus?: BubblingEventHandler<NativeFocusEvent> | undefined;
   /**
    * Invoked on TV blur
    */
-  readonly onBlur?: BubblingEventHandler<Event> | undefined;
+  readonly onBlur?: BubblingEventHandler<NativeBlurEvent> | undefined;
 }
