@@ -585,7 +585,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       [self handleFocusGuide];
     }
 
-    if (context.nextFocusedView == self && self.isUserInteractionEnabled && ![self isTVFocusGuide]) {
+    if (context.nextFocusedView == self) {
       if(_eventEmitter) _eventEmitter->onFocus();
 
       [self becomeFirstResponder];
@@ -594,7 +594,10 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
           [self addParallaxMotionEffects];
           [self sendFocusNotification:context];
       } completion:^(void){}];
-    } else {
+      // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
+      // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
+      // Generally speaking, it would happen for any non-collapsable `View`.
+    } else if (context.previouslyFocusedView == self) {
       if (_eventEmitter) _eventEmitter->onBlur();
 
       [self disableDirectionalFocusGuides];
