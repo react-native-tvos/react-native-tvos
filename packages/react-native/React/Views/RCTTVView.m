@@ -303,7 +303,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     [self handleFocusGuide];
   }
     
-  if (context.nextFocusedView == self && ![self isTVFocusGuide] && self.isTVSelectable ) {
+  if (context.nextFocusedView == self) {
     if (self.onFocus) self.onFocus(nil);
     [self becomeFirstResponder];
     [self enableDirectionalFocusGuides];
@@ -311,7 +311,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
       [self addParallaxMotionEffects];
       [self sendFocusNotification:context];
     } completion:^(void){}];
-  } else {
+    // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
+    // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
+    // Generally speaking, it would happen for any non-collapsable `View`.
+  } else if (context.previouslyFocusedView == self ) {
     if (self.onBlur) self.onBlur(nil);
     [self disableDirectionalFocusGuides];
     [coordinator addCoordinatedAnimations:^(void){
