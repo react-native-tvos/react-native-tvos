@@ -25,6 +25,7 @@ const {
   TouchableNativeFeedback,
   TouchableOpacity,
   TVEventControl,
+  TVFocusGuideView,
 } = ReactNative;
 
 const focusHandler = (event: $FlowFixMe, props: any) => {
@@ -228,6 +229,8 @@ const TVEventHandlerView: () => React.Node = () => {
   const [pressableEventLog, setPressableEventLog] = React.useState<string[]>(
     [],
   );
+  const [isContainerFocused, setIsContainerFocused] =
+    React.useState<boolean>(false);
 
   const textInputRef = React.useRef<any>(undefined);
   const [textInputValue, setTextInputValue] = React.useState<string>('');
@@ -305,8 +308,11 @@ const TVEventHandlerView: () => React.Node = () => {
             />
           ) : null}
         </View>
-        <View
-          style={styles.containerView}
+        <TVFocusGuideView
+          style={[
+            styles.containerView,
+            isContainerFocused ? {backgroundColor: '#cccccc'} : {},
+          ]}
           onBlurCapture={(event: any) => {
             updatePressableLog(
               `Container captured blur event for ${event.nativeEvent.target}`,
@@ -317,16 +323,18 @@ const TVEventHandlerView: () => React.Node = () => {
               `Container captured focus event for ${event.nativeEvent.target}`,
             );
           }}
-          onBlur={(event: any) =>
+          onBlur={(event: any) => {
             updatePressableLog(
               `Container received bubbled blur event from ${event.name} at ${event.nativeEvent.target}`,
-            )
-          }
-          onFocus={(event: any) =>
+            );
+            setIsContainerFocused(false);
+          }}
+          onFocus={(event: any) => {
             updatePressableLog(
               `Container received bubbled focus event from ${event.name} at ${event.nativeEvent?.target}`,
-            )
-          }>
+            );
+            setIsContainerFocused(true);
+          }}>
           <Text style={{fontSize: 12 * scale}}>
             Container receives bubbled events
           </Text>
@@ -339,7 +347,7 @@ const TVEventHandlerView: () => React.Node = () => {
             log={updatePressableLog}
             noBubbledEvents
           />
-        </View>
+        </TVFocusGuideView>
         <View
           style={styles.containerView}
           onFocus={(event: $FlowFixMe) => {
