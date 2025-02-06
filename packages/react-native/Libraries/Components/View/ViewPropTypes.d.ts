@@ -12,7 +12,14 @@ import {Insets} from '../../../types/public/Insets';
 import {GestureResponderHandlers} from '../../../types/public/ReactNativeRenderer';
 import {StyleProp} from '../../StyleSheet/StyleSheet';
 import {ViewStyle} from '../../StyleSheet/StyleSheetTypes';
-import {LayoutChangeEvent, PointerEvents} from '../../Types/CoreEventTypes';
+import {
+  LayoutChangeEvent,
+  PointerEvents,
+  FocusEvents,
+  PressEvents,
+  NativeFocusEvent,
+  NativeBlurEvent,
+} from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
 import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
@@ -218,9 +225,9 @@ export interface ViewProps
   /**
    * Invoked on TV focus
    */
-  readonly onFocus?: BubblingEventHandler<Event> | undefined;
+  readonly onFocus?: BubblingEventHandler<NativeFocusEvent> | undefined;
   /**
    * Invoked on TV blur
    */
-  readonly onBlur?: BubblingEventHandler<Event> | undefined;
+  readonly onBlur?: BubblingEventHandler<NativeBlurEvent> | undefined;
 }
