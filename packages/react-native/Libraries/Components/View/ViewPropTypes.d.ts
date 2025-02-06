@@ -17,6 +17,8 @@ import {
   PointerEvents,
   FocusEvents,
   PressEvents,
+  NativeFocusEvent,
+  NativeBlurEvent,
 } from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
@@ -220,6 +222,6 @@ export interface ViewProps
    */
   nativeID?: string | undefined;
 
-  readonly onFocus?: BubblingEventHandler<Event> | undefined;
-  readonly onBlur?: BubblingEventHandler<Event> | undefined;
+  readonly onFocus?: BubblingEventHandler<NativeFocusEvent> | undefined;
+  readonly onBlur?: BubblingEventHandler<NativeBlurEvent> | undefined;
 }
