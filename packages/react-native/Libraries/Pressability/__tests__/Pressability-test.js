@@ -241,6 +241,34 @@ describe('Pressability', () => {
     jest.spyOn(HoverState, 'isHoverEnabled');
   });
 
+  describe('disabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('returns false from onStartShouldSetResponder if disabled is true', () => {
+      const {handlers} = createMockPressability({
+        disabled: true,
+      });
+
+      expect(handlers.onStartShouldSetResponder()).toBe(false);
+    });
+
+    it('prevents press callbacks from being called when disabled is true', () => {
+      const {config, handlers} = createMockPressability({
+        disabled: true,
+      });
+
+      const shouldSetResponder = handlers.onStartShouldSetResponder();
+      expect(shouldSetResponder).toBe(false);
+
+      expect(config.onPressIn).not.toBeCalled();
+      expect(config.onPress).not.toBeCalled();
+      expect(config.onLongPress).not.toBeCalled();
+      expect(config.onPressOut).not.toBeCalled();
+    });
+  });
+
   describe('onBlur', () => {
     it('is called if provided in config', () => {
       const {config, handlers} = createMockPressability();
