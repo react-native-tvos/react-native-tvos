@@ -5,15 +5,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/facebook/react-native.git",
+    "url": "git+https://github.com/react-native-tvos/react-native-tvos.git",
     "directory": "packages/react-native"
   },
-  "homepage": "https://reactnative.dev/",
+  "homepage": "https://github.com/react-native-tvos/react-native-tvos/wiki",
   "keywords": [
     "react",
     "react-native",
     "android",
     "ios",
+    "tvos",
+    "apple tv",
+    "android tv",
     "mobile",
     "cross-platform",
     "app-framework",
