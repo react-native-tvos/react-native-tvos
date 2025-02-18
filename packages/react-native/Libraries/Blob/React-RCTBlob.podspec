@@ -50,7 +50,7 @@ Pod::Spec.new do |s|
 
   s.dependency "DoubleConversion"
   s.dependency "fast_float", "6.1.4"
-  s.dependency "fmt", "9.1.0"
+  s.dependency "fmt", "11.0.2"
   s.dependency "RCT-Folly", folly_version
   s.dependency "React-jsi"
   s.dependency "React-Core/RCTBlobHeaders"
