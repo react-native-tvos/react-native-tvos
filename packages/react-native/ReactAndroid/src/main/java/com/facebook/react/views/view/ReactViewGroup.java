@@ -110,6 +110,7 @@ public class ReactViewGroup extends ViewGroup
   private boolean trapFocusDown = false;
   private boolean trapFocusLeft = false;
   private boolean trapFocusRight = false;
+  public boolean hasTVPreferredFocus = false;
 
 
   /**
