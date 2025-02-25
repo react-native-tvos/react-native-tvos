@@ -22,7 +22,7 @@
     "dist"
   ],
   "dependencies": {
-    "@react-native/dev-middleware": "0.77.1",
+    "@react-native/dev-middleware": "0.77.1-0",
     "@react-native/metro-babel-transformer": "0.77.1",
     "chalk": "^4.0.0",
     "debug": "^2.2.0",
