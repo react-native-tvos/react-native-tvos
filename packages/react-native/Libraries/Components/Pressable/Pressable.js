@@ -357,6 +357,7 @@ function Pressable(
       onPressOut,
       pressRetentionOffset,
       setPressed,
+      setFocused,
       shouldUpdatePressed,
       unstable_pressDelay,
     ],

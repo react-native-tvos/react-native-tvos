@@ -58,7 +58,7 @@ type TBackHandler = {
   ): {remove: () => void, ...},
 };
 
-const BackHandler: TBackHandler = {
+let BackHandler: TBackHandler = {
   exitApp: emptyFunction,
   addEventListener: function (
     _eventName: BackPressEventName,
