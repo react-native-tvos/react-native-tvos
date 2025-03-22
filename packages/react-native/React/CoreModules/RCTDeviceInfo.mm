@@ -132,9 +132,9 @@ RCT_EXPORT_MODULE()
 static BOOL RCTIsIPhoneNotched()
 {
   static BOOL isIPhoneNotched = NO;
-  static dispatch_once_t onceToken;
 
 #if TARGET_OS_IOS
+  static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     // 20pt is the top safeArea value in non-notched devices
     isIPhoneNotched = [RCTWindowSafeAreaProxy sharedInstance].currentSafeAreaInsets.top > 20;

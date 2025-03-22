@@ -14,7 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 @property (assign, readonly) CGSize windowSize;
+#if !TARGET_OS_TV
 @property (assign, readonly) UIInterfaceOrientation currentInterfaceOrientation;
+#endif
 
 - (void)startObservingWindowSizeIfNecessary;
 
