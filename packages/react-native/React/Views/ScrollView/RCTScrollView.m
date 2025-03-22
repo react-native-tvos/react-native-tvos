@@ -292,6 +292,7 @@
 #endif
 }
 
+#if !TARGET_OS_TV
 static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCurve curve)
 {
   // UIViewAnimationCurve #7 is used for keyboard and therefore private - so we can't use switch/case here.
@@ -301,8 +302,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
       @"Unexpected implementation of UIViewAnimationCurve");
   return curve << 16;
 }
-
-#if !TARGET_OS_TV
 
 - (void)_keyboardWillChangeFrame:(NSNotification *)notification
 {
@@ -1065,7 +1064,7 @@ RCT_SCROLL_EVENT_HANDLER(scrollViewDidScrollToTop, onScrollToTop)
                 [self scrollToVerticalOffset:self.scrollView.contentSize.height];
             } else if(isMovingTowardsLeadingEdge && self.snapToStart) {
                 [self scrollToHorizontalOffset:0.0];
-            } else if(isMovingTowardsLeadingEdge && self.snapToEnd) {
+            } else if(isMovingTowardsTrailingEdge && self.snapToEnd) {
                 [self scrollToHorizontalOffset:self.scrollView.contentSize.width];
             }
         }

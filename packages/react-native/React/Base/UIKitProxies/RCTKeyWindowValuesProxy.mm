@@ -18,7 +18,9 @@ static NSString *const kFrameKeyPath = @"frame";
   BOOL _isObserving;
   std::mutex _mutex;
   CGSize _currentWindowSize;
+#if !TARGET_OS_TV
   UIInterfaceOrientation _currentInterfaceOrientation;
+#endif
 }
 
 + (instancetype)sharedInstance
@@ -62,10 +64,12 @@ static NSString *const kFrameKeyPath = @"frame";
     [RCTKeyWindow() addObserver:self forKeyPath:kFrameKeyPath options:NSKeyValueObservingOptionNew context:nil];
   });
 
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(_interfaceOrientationDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
                                              object:nil];
+#endif
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath
@@ -98,6 +102,7 @@ static NSString *const kFrameKeyPath = @"frame";
   return size;
 }
 
+#if !TARGET_OS_TV
 - (UIInterfaceOrientation)currentInterfaceOrientation
 {
   {
@@ -119,5 +124,6 @@ static NSString *const kFrameKeyPath = @"frame";
   std::lock_guard<std::mutex> lock(_mutex);
   _currentInterfaceOrientation = RCTKeyWindow().windowScene.interfaceOrientation;
 }
+#endif
 
 @end
