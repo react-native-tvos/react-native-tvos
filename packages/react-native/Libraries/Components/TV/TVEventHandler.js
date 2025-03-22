@@ -12,7 +12,7 @@
 
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
-import NativeTVNavigationEventEmitter from '../../../src/private/specs/modules/NativeTVNavigationEventEmitter';
+import NativeTVNavigationEventEmitter from '../../../src/private/specs_DEPRECATED/modules/NativeTVNavigationEventEmitter';
 import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
