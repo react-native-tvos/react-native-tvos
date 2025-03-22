@@ -309,7 +309,7 @@ static UIColor *defaultPlaceholderColor(void)
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder
 {
 #if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000
-  if (@available(iOS 17.0, *)) {
+  if (@available(iOS 17.0, tvOS 17.0, *)) {
     if (_contextMenuHidden) {
       [builder removeMenuForIdentifier:UIMenuAutoFill];
     }
