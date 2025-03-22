@@ -12,7 +12,7 @@ import typeof Props from '../ScrollView/ScrollView';
 
 import tagForComponentOrHandle from './tagForComponentOrHandle';
 
-const ScrollView = require('../ScrollView/ScrollView');
+const ScrollView = require('../ScrollView/ScrollView').default;
 const {tvFocusEventHandler} = require('./TVFocusEventHandler');
 const React = require('react');
 
@@ -98,4 +98,4 @@ class TVTextScrollView extends React.Component<{
   }
 }
 
-module.exports = TVTextScrollView;
+export default TVTextScrollView;

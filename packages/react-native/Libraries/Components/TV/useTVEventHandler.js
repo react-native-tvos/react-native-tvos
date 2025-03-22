@@ -20,4 +20,4 @@ const useTVEventHandler = (handleEvent: (evt: TVRemoteEvent) => void) => {
   }, [handleEvent]);
 };
 
-module.exports = useTVEventHandler;
+export default useTVEventHandler;
