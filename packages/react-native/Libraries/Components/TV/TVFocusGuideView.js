@@ -15,8 +15,8 @@ import setAndForwardRef from '../../Utilities/setAndForwardRef';
 import {Commands} from '../View/ViewNativeComponent';
 import tagForComponentOrHandle from './tagForComponentOrHandle';
 
-const StyleSheet = require('../../StyleSheet/StyleSheet');
-const View = require('../View/View');
+const StyleSheet = require('../../StyleSheet/StyleSheet').default;
+const View = require('../View/View').default;
 const React = require('react');
 
 type TVFocusGuideViewProps = $ReadOnly<{
@@ -145,4 +145,4 @@ const styles = StyleSheet.create({
 const ForwardedTVFocusGuideView: $FlowFixMe = React.forwardRef(TVFocusGuideView);
 ForwardedTVFocusGuideView.displayName = 'TVFocusGuideView';
 
-module.exports = ForwardedTVFocusGuideView;
+export default ForwardedTVFocusGuideView;
