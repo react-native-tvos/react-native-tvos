@@ -58,7 +58,7 @@ exports.examples = [
 
         render(): React.Node {
           return (
-            <View>
+            <View style={styles.container}>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.itemText}>Scroll duration:</Text>
                 {scrollDurations.map((s, i) => {
@@ -233,6 +233,10 @@ const Button = ({
 );
 
 const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+    marginTop: -300 * scale,
+  },
   scrollView: {
     backgroundColor: '#eeeeee',
     height: 300 * scale,
