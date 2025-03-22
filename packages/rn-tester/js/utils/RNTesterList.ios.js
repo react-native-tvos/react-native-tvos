@@ -16,11 +16,6 @@ import ReactNativeFeatureFlags from 'react-native/Libraries/ReactNative/ReactNat
 
 const Components: Array<RNTesterModuleInfo> = [
   {
-    key: 'TVTextScrollViewExample',
-    category: 'TV',
-    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
-  },
-  {
     key: 'ActivityIndicatorExample',
     category: 'UI',
     module: require('../examples/ActivityIndicator/ActivityIndicatorExample'),
@@ -136,6 +131,11 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'TransparentHitTestExample',
     module: require('../examples/TransparentHitTest/TransparentHitTestExample'),
+  },
+  {
+    key: 'TVTextScrollViewExample',
+    category: 'TV',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
   },
   {
     key: 'ViewExample',
