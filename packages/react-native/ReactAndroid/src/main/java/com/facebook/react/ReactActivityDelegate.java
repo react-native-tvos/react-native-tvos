@@ -222,7 +222,10 @@ public class ReactActivityDelegate {
   public void requestPermissions(
       String[] permissions, int requestCode, PermissionListener listener) {
     mPermissionListener = listener;
-    getPlainActivity().requestPermissions(permissions, requestCode);
+    // For Android API < 23, permissions are granted at install time.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      getPlainActivity().requestPermissions(permissions, requestCode);
+    }
   }
 
   public void onRequestPermissionsResult(

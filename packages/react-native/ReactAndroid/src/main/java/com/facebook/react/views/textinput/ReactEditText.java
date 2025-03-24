@@ -232,7 +232,9 @@ public class ReactEditText extends AppCompatEditText {
           public void onDestroyActionMode(ActionMode mode) {}
         };
     setCustomSelectionActionModeCallback(customActionModeCallback);
-    setCustomInsertionActionModeCallback(customActionModeCallback);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      setCustomInsertionActionModeCallback(customActionModeCallback);
+    }
   }
 
   @Override
@@ -753,7 +755,7 @@ public class ReactEditText extends AppCompatEditText {
     }
     mDisableTextDiffing = false;
 
-    if (getBreakStrategy() != reactTextUpdate.getTextBreakStrategy()) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getBreakStrategy() != reactTextUpdate.getTextBreakStrategy()) {
       setBreakStrategy(reactTextUpdate.getTextBreakStrategy());
     }
 

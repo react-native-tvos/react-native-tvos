@@ -11,6 +11,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
@@ -271,6 +272,9 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   @ReactProp(name = "nativeForegroundAndroid")
   public open fun setNativeForeground(view: ReactViewGroup, foreground: ReadableMap?) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return;
+    }
     view.foreground =
         foreground?.let { ReactDrawableHelper.createDrawableFromJSDescription(view.context, it) }
   }

@@ -8,7 +8,10 @@
 package com.facebook.react.modules.permissions
 
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Process
 import android.util.SparseArray
 import com.facebook.common.logging.FLog
 import com.facebook.fbreact.specs.NativePermissionsAndroidSpec
@@ -20,7 +23,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.PermissionAwareActivity
 import com.facebook.react.modules.core.PermissionListener
-import java.util.ArrayList
+
 
 /** Module that exposes the Android M Permission system to JS. */
 @ReactModule(name = NativePermissionsAndroidSpec.NAME)
@@ -33,13 +36,21 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
   private val DENIED = "denied"
   private val NEVER_ASK_AGAIN = "never_ask_again"
 
+  private fun checkSelfPermission(context: Context, permission: String): Int {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return context.checkSelfPermission(permission)
+    }
+
+    return context.checkPermission(permission, Process.myPid(), Process.myUid())
+  }
+
   /**
    * Check if the app has the permission given. successCallback is called with true if the
    * permission had been granted, false otherwise. See [Activity.checkSelfPermission].
    */
   override public fun checkPermission(permission: String, promise: Promise): Unit {
     val context = getReactApplicationContext().getBaseContext()
-    promise.resolve(context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
+    promise.resolve(checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
   }
 
   /**
@@ -69,7 +80,7 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
    */
   override public fun requestPermission(permission: String, promise: Promise): Unit {
     val context = getReactApplicationContext().getBaseContext()
-    if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+    if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
       promise.resolve(GRANTED)
       return
     }
@@ -109,7 +120,7 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
     val context = getReactApplicationContext().getBaseContext()
     for (i in 0 until permissions.size()) {
       val perm = permissions.getString(i) ?: continue
-      if (context.checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED) {
+      if (checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
         grantedPermissions.putString(perm, GRANTED)
         checkedPermissionsCount++
       } else {

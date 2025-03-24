@@ -13,7 +13,6 @@ import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
@@ -54,7 +53,7 @@ public object BackgroundStyleApplicator {
   public fun setBackgroundColor(view: View, @ColorInt color: Int?): Unit {
     // No color to set, and no color already set
     if ((color == null || color == Color.TRANSPARENT) &&
-        view.background !is CompositeBackgroundDrawable) {
+      view.background !is CompositeBackgroundDrawable) {
       return
     }
 
@@ -67,8 +66,8 @@ public object BackgroundStyleApplicator {
 
   @JvmStatic
   public fun setBackgroundImage(
-      view: View,
-      backgroundImageLayers: List<BackgroundImageLayer>?
+    view: View,
+    backgroundImageLayers: List<BackgroundImageLayer>?
   ): Unit {
     if (ReactNativeFeatureFlags.enableNewBackgroundAndBorderDrawables()) {
       ensureBackgroundDrawable(view).backgroundImageLayers = backgroundImageLayers
@@ -106,14 +105,10 @@ public object BackgroundStyleApplicator {
 
     composite.borderInsets = composite.borderInsets ?: BorderInsets()
     composite.borderInsets?.setBorderWidth(edge, width)
+
     if (Build.VERSION.SDK_INT >= MIN_INSET_BOX_SHADOW_SDK_VERSION) {
-      val innerShadows = composite.innerShadows
-      if (innerShadows != null) {
-        for (i in 0 until innerShadows.numberOfLayers) {
-          val shadow = innerShadows.getDrawable(i)
-          (shadow as InsetBoxShadowDrawable).borderInsets = composite.borderInsets
-          shadow.invalidateSelf()
-        }
+      for (shadow in composite.innerShadows.filterIsInstance<InsetBoxShadowDrawable>()) {
+        shadow.borderInsets = composite.borderInsets
       }
     }
   }
@@ -150,13 +145,13 @@ public object BackgroundStyleApplicator {
 
   @JvmStatic
   public fun setBorderRadius(
-      view: View,
-      corner: BorderRadiusProp,
-      radius: LengthPercentage?
+    view: View,
+    corner: BorderRadiusProp,
+    radius: LengthPercentage?
   ): Unit {
     val compositeBackgroundDrawable = ensureCompositeBackgroundDrawable(view)
     compositeBackgroundDrawable.borderRadius =
-        compositeBackgroundDrawable.borderRadius ?: BorderRadiusStyle()
+      compositeBackgroundDrawable.borderRadius ?: BorderRadiusStyle()
     compositeBackgroundDrawable.borderRadius?.set(corner, radius)
 
     if (ReactNativeFeatureFlags.enableNewBackgroundAndBorderDrawables()) {
@@ -164,7 +159,7 @@ public object BackgroundStyleApplicator {
         ensureBackgroundDrawable(view)
       }
       compositeBackgroundDrawable.background?.borderRadius =
-          compositeBackgroundDrawable.borderRadius
+        compositeBackgroundDrawable.borderRadius
       compositeBackgroundDrawable.border?.borderRadius = compositeBackgroundDrawable.borderRadius
 
       compositeBackgroundDrawable.background?.invalidateSelf()
@@ -174,30 +169,16 @@ public object BackgroundStyleApplicator {
     }
 
     if (Build.VERSION.SDK_INT >= MIN_OUTSET_BOX_SHADOW_SDK_VERSION) {
-      val outerShadows = compositeBackgroundDrawable.outerShadows
-      if (outerShadows != null) {
-        for (i in 0 until outerShadows.numberOfLayers) {
-          val shadow = outerShadows.getDrawable(i)
-          if (shadow is OutsetBoxShadowDrawable) {
-            shadow.borderRadius = shadow.borderRadius ?: BorderRadiusStyle()
-            shadow.borderRadius?.set(corner, radius)
-            shadow.invalidateSelf()
-          }
-        }
+      for (shadow in
+      compositeBackgroundDrawable.outerShadows.filterIsInstance<OutsetBoxShadowDrawable>()) {
+        shadow.borderRadius = compositeBackgroundDrawable.borderRadius
       }
     }
 
     if (Build.VERSION.SDK_INT >= MIN_INSET_BOX_SHADOW_SDK_VERSION) {
-      val innerShadows = compositeBackgroundDrawable.innerShadows
-      if (innerShadows != null) {
-        for (i in 0 until innerShadows.numberOfLayers) {
-          val shadow = innerShadows.getDrawable(i)
-          if (shadow is InsetBoxShadowDrawable) {
-            shadow.borderRadius = shadow.borderRadius ?: BorderRadiusStyle()
-            shadow.borderRadius?.set(corner, radius)
-            shadow.invalidateSelf()
-          }
-        }
+      for (shadow in
+      compositeBackgroundDrawable.innerShadows.filterIsInstance<InsetBoxShadowDrawable>()) {
+        shadow.borderRadius = compositeBackgroundDrawable.borderRadius
       }
     }
 
@@ -291,14 +272,18 @@ public object BackgroundStyleApplicator {
       return
     }
 
-    var innerShadows: LayerDrawable? = null
-    var outerShadows: LayerDrawable? = null
+    var innerShadows = mutableListOf<InsetBoxShadowDrawable>()
+    var outerShadows = mutableListOf<OutsetBoxShadowDrawable>()
 
     val compositeBackgroundDrawable = ensureCompositeBackgroundDrawable(view)
     val borderInsets = compositeBackgroundDrawable.borderInsets
     val borderRadius = compositeBackgroundDrawable.borderRadius
 
-    for (boxShadow in shadows.asReversed()) {
+    /**
+     * z-ordering of user-provided shadow-list is opposite direction of LayerDrawable z-ordering
+     * https://drafts.csswg.org/css-backgrounds/#shadow-layers
+     */
+    for (boxShadow in shadows) {
       val offsetX = boxShadow.offsetX
       val offsetY = boxShadow.offsetY
       val color = boxShadow.color ?: Color.BLACK
@@ -307,37 +292,32 @@ public object BackgroundStyleApplicator {
       val inset = boxShadow.inset ?: false
 
       if (inset && Build.VERSION.SDK_INT >= MIN_INSET_BOX_SHADOW_SDK_VERSION) {
-        if (innerShadows == null) {
-          innerShadows = LayerDrawable(emptyArray())
-        }
-        innerShadows.addLayer(
-            InsetBoxShadowDrawable(
-                context = view.context,
-                borderRadius = borderRadius,
-                borderInsets = borderInsets,
-                shadowColor = color,
-                offsetX = offsetX,
-                offsetY = offsetY,
-                blurRadius = blurRadius,
-                spread = spreadDistance))
+        innerShadows.add(
+          InsetBoxShadowDrawable(
+            context = view.context,
+            borderRadius = borderRadius,
+            borderInsets = borderInsets,
+            shadowColor = color,
+            offsetX = offsetX,
+            offsetY = offsetY,
+            blurRadius = blurRadius,
+            spread = spreadDistance))
       } else if (!inset && Build.VERSION.SDK_INT >= MIN_OUTSET_BOX_SHADOW_SDK_VERSION) {
-        if (outerShadows == null) {
-          outerShadows = LayerDrawable(emptyArray())
-        }
-        outerShadows.addLayer(
-            OutsetBoxShadowDrawable(
-                context = view.context,
-                borderRadius = borderRadius,
-                shadowColor = color,
-                offsetX = offsetX,
-                offsetY = offsetY,
-                blurRadius = blurRadius,
-                spread = spreadDistance))
+        outerShadows.add(
+          OutsetBoxShadowDrawable(
+            context = view.context,
+            borderRadius = borderRadius,
+            shadowColor = color,
+            offsetX = offsetX,
+            offsetY = offsetY,
+            blurRadius = blurRadius,
+            spread = spreadDistance))
       }
     }
 
-    view.background = ensureCompositeBackgroundDrawable(view).withNewOuterShadow(outerShadows)
-    view.background = ensureCompositeBackgroundDrawable(view).withNewInnerShadow(innerShadows)
+    view.background =
+      ensureCompositeBackgroundDrawable(view)
+        .withNewShadows(outerShadows = outerShadows, innerShadows = innerShadows)
   }
 
   @JvmStatic
@@ -374,22 +354,22 @@ public object BackgroundStyleApplicator {
       val paddingBoxRect = RectF()
 
       val computedBorderInsets =
-          composite.borderInsets?.resolve(composite.layoutDirection, view.context)
+        composite.borderInsets?.resolve(composite.layoutDirection, view.context)
 
       paddingBoxRect.left = composite.bounds.left + (computedBorderInsets?.left?.dpToPx() ?: 0f)
       paddingBoxRect.top = composite.bounds.top + (computedBorderInsets?.top?.dpToPx() ?: 0f)
       paddingBoxRect.right = composite.bounds.right - (computedBorderInsets?.right?.dpToPx() ?: 0f)
       paddingBoxRect.bottom =
-          composite.bounds.bottom - (computedBorderInsets?.bottom?.dpToPx() ?: 0f)
+        composite.bounds.bottom - (computedBorderInsets?.bottom?.dpToPx() ?: 0f)
 
       if (composite.borderRadius?.hasRoundedBorders() == true) {
         val paddingBoxPath =
-            createPaddingBoxPath(
-                view,
-                composite,
-                paddingBoxRect,
-                computedBorderInsets,
-            )
+          createPaddingBoxPath(
+            view,
+            composite,
+            paddingBoxRect,
+            computedBorderInsets,
+          )
 
         paddingBoxPath.offset(drawingRect.left.toFloat(), drawingRect.top.toFloat())
         canvas.clipPath(paddingBoxPath)
@@ -432,13 +412,13 @@ public object BackgroundStyleApplicator {
     }
 
     val compositeDrawable =
-        CompositeBackgroundDrawable(context = view.context, originalBackground = view.background)
+      CompositeBackgroundDrawable(context = view.context, originalBackground = view.background)
     view.background = compositeDrawable
     return compositeDrawable
   }
 
   private fun getCompositeBackgroundDrawable(view: View): CompositeBackgroundDrawable? =
-      view.background as? CompositeBackgroundDrawable
+    view.background as? CompositeBackgroundDrawable
 
   private fun ensureCSSBackground(view: View): CSSBackgroundDrawable {
     val compositeBackgroundDrawable = ensureCompositeBackgroundDrawable(view)
@@ -461,20 +441,20 @@ public object BackgroundStyleApplicator {
       background
     } else {
       background =
-          BackgroundDrawable(
-              view.context,
-              compositeBackgroundDrawable.borderRadius,
-              compositeBackgroundDrawable.borderInsets)
+        BackgroundDrawable(
+          view.context,
+          compositeBackgroundDrawable.borderRadius,
+          compositeBackgroundDrawable.borderInsets)
       view.background = compositeBackgroundDrawable.withNewBackground(background)
       background
     }
   }
 
   private fun getCSSBackground(view: View): CSSBackgroundDrawable? =
-      getCompositeBackgroundDrawable(view)?.cssBackground
+    getCompositeBackgroundDrawable(view)?.cssBackground
 
   private fun getBackground(view: View): BackgroundDrawable? =
-      getCompositeBackgroundDrawable(view)?.background
+    getCompositeBackgroundDrawable(view)?.background
 
   private fun getBorder(view: View): BorderDrawable? = getCompositeBackgroundDrawable(view)?.border
 
@@ -483,13 +463,13 @@ public object BackgroundStyleApplicator {
     var border = compositeBackgroundDrawable.border
     if (border == null) {
       border =
-          BorderDrawable(
-              context = view.context,
-              borderRadius = compositeBackgroundDrawable.borderRadius,
-              borderWidth = Spacing(0f),
-              borderStyle = BorderStyle.SOLID,
-              borderInsets = compositeBackgroundDrawable.borderInsets,
-          )
+        BorderDrawable(
+          context = view.context,
+          borderRadius = compositeBackgroundDrawable.borderRadius,
+          borderWidth = Spacing(0f),
+          borderStyle = BorderStyle.SOLID,
+          borderInsets = compositeBackgroundDrawable.borderInsets,
+        )
       view.background = compositeBackgroundDrawable.withNewBorder(border)
     }
 
@@ -501,21 +481,21 @@ public object BackgroundStyleApplicator {
     var outline = compositeBackgroundDrawable.outline
     if (outline == null) {
       val borderRadius =
-          if (ReactNativeFeatureFlags.enableNewBackgroundAndBorderDrawables()) {
-            compositeBackgroundDrawable.borderRadius
-          } else {
-            ensureCSSBackground(view).borderRadius
-          }
+        if (ReactNativeFeatureFlags.enableNewBackgroundAndBorderDrawables()) {
+          compositeBackgroundDrawable.borderRadius
+        } else {
+          ensureCSSBackground(view).borderRadius
+        }
 
       outline =
-          OutlineDrawable(
-              context = view.context,
-              borderRadius = borderRadius,
-              outlineColor = Color.BLACK,
-              outlineOffset = 0f,
-              outlineStyle = OutlineStyle.SOLID,
-              outlineWidth = 0f,
-          )
+        OutlineDrawable(
+          context = view.context,
+          borderRadius = borderRadius,
+          outlineColor = Color.BLACK,
+          outlineOffset = 0f,
+          outlineStyle = OutlineStyle.SOLID,
+          outlineWidth = 0f,
+        )
 
       view.background = compositeBackgroundDrawable.withNewOutline(outline)
     }
@@ -524,7 +504,7 @@ public object BackgroundStyleApplicator {
   }
 
   private fun getOutlineDrawable(view: View): OutlineDrawable? =
-      getCompositeBackgroundDrawable(view)?.outline
+    getCompositeBackgroundDrawable(view)?.outline
 
   /**
    * Here, "inner" refers to the border radius on the inside of the border. So it ends up being the
@@ -535,65 +515,65 @@ public object BackgroundStyleApplicator {
   }
 
   private fun createPaddingBoxPath(
-      view: View,
-      composite: CompositeBackgroundDrawable,
-      paddingBoxRect: RectF,
-      computedBorderInsets: RectF?
+    view: View,
+    composite: CompositeBackgroundDrawable,
+    paddingBoxRect: RectF,
+    computedBorderInsets: RectF?
   ): Path {
     val computedBorderRadius =
-        composite.borderRadius?.resolve(
-            composite.layoutDirection,
-            view.context,
-            PixelUtil.toDIPFromPixel(composite.bounds.width().toFloat()),
-            PixelUtil.toDIPFromPixel(composite.bounds.height().toFloat()),
-        )
+      composite.borderRadius?.resolve(
+        composite.layoutDirection,
+        view.context,
+        PixelUtil.toDIPFromPixel(composite.bounds.width().toFloat()),
+        PixelUtil.toDIPFromPixel(composite.bounds.height().toFloat()),
+      )
 
     val paddingBoxPath = Path()
 
     val innerTopLeftRadiusX =
-        getInnerBorderRadius(
-            computedBorderRadius?.topLeft?.horizontal?.dpToPx(),
-            computedBorderInsets?.left?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.topLeft?.horizontal?.dpToPx(),
+        computedBorderInsets?.left?.dpToPx())
     val innerTopLeftRadiusY =
-        getInnerBorderRadius(
-            computedBorderRadius?.topLeft?.vertical?.dpToPx(), computedBorderInsets?.top?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.topLeft?.vertical?.dpToPx(), computedBorderInsets?.top?.dpToPx())
     val innerTopRightRadiusX =
-        getInnerBorderRadius(
-            computedBorderRadius?.topRight?.horizontal?.dpToPx(),
-            computedBorderInsets?.right?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.topRight?.horizontal?.dpToPx(),
+        computedBorderInsets?.right?.dpToPx())
     val innerTopRightRadiusY =
-        getInnerBorderRadius(
-            computedBorderRadius?.topRight?.vertical?.dpToPx(), computedBorderInsets?.top?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.topRight?.vertical?.dpToPx(), computedBorderInsets?.top?.dpToPx())
     val innerBottomRightRadiusX =
-        getInnerBorderRadius(
-            computedBorderRadius?.bottomRight?.horizontal?.dpToPx(),
-            computedBorderInsets?.right?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.bottomRight?.horizontal?.dpToPx(),
+        computedBorderInsets?.right?.dpToPx())
     val innerBottomRightRadiusY =
-        getInnerBorderRadius(
-            computedBorderRadius?.bottomRight?.vertical?.dpToPx(),
-            computedBorderInsets?.bottom?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.bottomRight?.vertical?.dpToPx(),
+        computedBorderInsets?.bottom?.dpToPx())
     val innerBottomLeftRadiusX =
-        getInnerBorderRadius(
-            computedBorderRadius?.bottomLeft?.horizontal?.dpToPx(),
-            computedBorderInsets?.left?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.bottomLeft?.horizontal?.dpToPx(),
+        computedBorderInsets?.left?.dpToPx())
     val innerBottomLeftRadiusY =
-        getInnerBorderRadius(
-            computedBorderRadius?.bottomLeft?.vertical?.dpToPx(),
-            computedBorderInsets?.bottom?.dpToPx())
+      getInnerBorderRadius(
+        computedBorderRadius?.bottomLeft?.vertical?.dpToPx(),
+        computedBorderInsets?.bottom?.dpToPx())
 
     paddingBoxPath.addRoundRect(
-        paddingBoxRect,
-        floatArrayOf(
-            innerTopLeftRadiusX,
-            innerTopLeftRadiusY,
-            innerTopRightRadiusX,
-            innerTopRightRadiusY,
-            innerBottomRightRadiusX,
-            innerBottomRightRadiusY,
-            innerBottomLeftRadiusX,
-            innerBottomLeftRadiusY,
-        ),
-        Path.Direction.CW)
+      paddingBoxRect,
+      floatArrayOf(
+        innerTopLeftRadiusX,
+        innerTopLeftRadiusY,
+        innerTopRightRadiusX,
+        innerTopRightRadiusY,
+        innerBottomRightRadiusX,
+        innerBottomRightRadiusY,
+        innerBottomLeftRadiusX,
+        innerBottomLeftRadiusY,
+      ),
+      Path.Direction.CW)
     return paddingBoxPath
   }
 }

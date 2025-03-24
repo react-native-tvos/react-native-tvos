@@ -9,6 +9,7 @@ package com.facebook.react;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -213,7 +214,11 @@ public class ReactFragment extends Fragment implements PermissionAwareActivity {
 
   @Override
   public int checkSelfPermission(String permission) {
-    return getActivity().checkSelfPermission(permission);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return getActivity().checkSelfPermission(permission);
+    }
+
+    return getContext().checkPermission(permission, android.os.Process.myPid(), android.os.Process.myUid());
   }
 
   @Override

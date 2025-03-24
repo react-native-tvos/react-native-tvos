@@ -20,7 +20,6 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Region
-import android.graphics.drawable.Drawable
 import android.os.Build
 import com.facebook.react.uimanager.FloatUtil.floatsEqual
 import com.facebook.react.uimanager.LengthPercentage

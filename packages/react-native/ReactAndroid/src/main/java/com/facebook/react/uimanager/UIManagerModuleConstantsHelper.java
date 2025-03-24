@@ -229,7 +229,7 @@ public class UIManagerModuleConstantsHelper {
         // Since event maps are client based Map interface, it could be immutable
         if (!(destValue instanceof HashMap)) {
           destValue = new HashMap((Map) destValue);
-          dest.replace(key, (Map) destValue);
+          dest.put(key, (Map) destValue);
         }
         recursiveMerge((Map) destValue, (Map) sourceValue);
       } else {
