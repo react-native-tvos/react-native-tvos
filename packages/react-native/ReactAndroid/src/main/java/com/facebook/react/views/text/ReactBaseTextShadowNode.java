@@ -7,6 +7,7 @@
 
 package com.facebook.react.views.text;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -66,6 +67,7 @@ import java.util.Map;
  * <p>This also node calculates {@link Spannable} object based on subnodes of the same type, which
  * can be used in concrete classes to feed native views and compute layout.
  */
+@TargetApi(Build.VERSION_CODES.M)
 public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
 
   // Use a direction weak character so the placeholder doesn't change the direction of the previous
@@ -330,8 +332,10 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
 
   protected int mNumberOfLines = ReactConstants.UNSET;
   protected int mTextAlign = Gravity.NO_GRAVITY;
-  protected int mTextBreakStrategy = Layout.BREAK_STRATEGY_HIGH_QUALITY;
-  protected int mHyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE;
+  protected int mTextBreakStrategy =
+    (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? Layout.BREAK_STRATEGY_SIMPLE : Layout.BREAK_STRATEGY_HIGH_QUALITY;
+  protected int mHyphenationFrequency =
+    (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? Layout.BREAK_STRATEGY_SIMPLE : Layout.HYPHENATION_FREQUENCY_NONE;
   protected int mJustificationMode =
       (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) ? 0 : Layout.JUSTIFICATION_MODE_NONE;
 
@@ -573,6 +577,10 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
 
   @ReactProp(name = ViewProps.TEXT_BREAK_STRATEGY)
   public void setTextBreakStrategy(@Nullable String textBreakStrategy) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return;
+    }
+
     if (textBreakStrategy == null || "highQuality".equals(textBreakStrategy)) {
       mTextBreakStrategy = Layout.BREAK_STRATEGY_HIGH_QUALITY;
     } else if ("simple".equals(textBreakStrategy)) {

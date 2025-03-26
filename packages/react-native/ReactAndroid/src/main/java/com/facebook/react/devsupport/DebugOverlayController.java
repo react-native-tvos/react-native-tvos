@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -30,7 +31,7 @@ import com.facebook.react.common.ReactConstants;
 
   public static void requestPermission(Context context) {
     // Get permission to show debug overlay in dev builds.
-    if (!Settings.canDrawOverlays(context)) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
       Intent intent =
           new Intent(
               Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -49,7 +50,11 @@ import com.facebook.react.common.ReactConstants;
   private static boolean permissionCheck(Context context) {
     // Get permission to show debug overlay in dev builds.
     // overlay permission not yet granted
-    return Settings.canDrawOverlays(context);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return Settings.canDrawOverlays(context);
+    }
+
+    return true;
   }
 
   private static boolean hasPermission(Context context, String permission) {

@@ -224,21 +224,26 @@ public class ReactTextShadowNode extends ReactBaseTextShadowNode {
       // Is used when the width is not known and the text is not boring, ie. if it contains
       // unicode characters.
       int hintWidth = (int) Math.ceil(desiredWidth);
-      StaticLayout.Builder builder =
-          StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, hintWidth)
-              .setAlignment(alignment)
-              .setLineSpacing(0.f, 1.f)
-              .setIncludePad(mIncludeFontPadding)
-              .setBreakStrategy(mTextBreakStrategy)
-              .setHyphenationFrequency(mHyphenationFrequency);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        StaticLayout.Builder builder =
+          StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, (int) width)
+            .setAlignment(alignment)
+            .setLineSpacing(0.f, 1.f)
+            .setIncludePad(mIncludeFontPadding)
+            .setBreakStrategy(mTextBreakStrategy)
+            .setHyphenationFrequency(mHyphenationFrequency);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        builder.setJustificationMode(mJustificationMode);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          builder.setJustificationMode(mJustificationMode);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+          builder.setUseLineSpacingFromFallbacks(true);
+        }
+        layout = builder.build();
+      } else {
+        layout = new StaticLayout(text, textPaint, (int) width, alignment, 1.f, 0.f, mIncludeFontPadding);
       }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        builder.setUseLineSpacingFromFallbacks(true);
-      }
-      layout = builder.build();
 
     } else if (boring != null && (unconstrainedWidth || boring.width <= width)) {
       // Is used for single-line, boring text when the width is either unknown or bigger
@@ -262,22 +267,26 @@ public class ReactTextShadowNode extends ReactBaseTextShadowNode {
         width = (float) Math.ceil(width);
       }
 
-      StaticLayout.Builder builder =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        StaticLayout.Builder builder =
           StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, (int) width)
-              .setAlignment(alignment)
-              .setLineSpacing(0.f, 1.f)
-              .setIncludePad(mIncludeFontPadding)
-              .setBreakStrategy(mTextBreakStrategy)
-              .setHyphenationFrequency(mHyphenationFrequency);
+            .setAlignment(alignment)
+            .setLineSpacing(0.f, 1.f)
+            .setIncludePad(mIncludeFontPadding)
+            .setBreakStrategy(mTextBreakStrategy)
+            .setHyphenationFrequency(mHyphenationFrequency);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        builder.setJustificationMode(mJustificationMode);
-      }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          builder.setJustificationMode(mJustificationMode);
+        }
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        builder.setUseLineSpacingFromFallbacks(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+          builder.setUseLineSpacingFromFallbacks(true);
+        }
+        layout = builder.build();
+      } else {
+        layout = new StaticLayout(text, textPaint, (int) width, alignment, 1.f, 0.f, mIncludeFontPadding);
       }
-      layout = builder.build();
     }
     return layout;
   }
