@@ -25,55 +25,55 @@ import com.facebook.react.uimanager.style.BorderRadiusStyle
  */
 @OptIn(UnstableReactNativeAPI::class)
 internal class CompositeBackgroundDrawable(
-  private val context: Context,
-  /**
-   * Any non-react-managed background already part of the view, like one set as Android style on a
-   * TextInput
-   */
-  val originalBackground: Drawable? = null,
+    private val context: Context,
+    /**
+     * Any non-react-managed background already part of the view, like one set as Android style on a
+     * TextInput
+     */
+    val originalBackground: Drawable? = null,
 
-  /** Non-inset box shadows */
-  val outerShadows: List<Drawable> = emptyList(),
+    /** Non-inset box shadows */
+    val outerShadows: List<Drawable> = emptyList(),
 
-  /**
-   * CSS background layer and border rendering
-   *
-   * TODO: we should extract path logic from here, and fast-path to using simpler drawables like
-   *   ColorDrawable in the common cases
-   */
-  val cssBackground: CSSBackgroundDrawable? = null,
+    /**
+     * CSS background layer and border rendering
+     *
+     * TODO: we should extract path logic from here, and fast-path to using simpler drawables like
+     *   ColorDrawable in the common cases
+     */
+    val cssBackground: CSSBackgroundDrawable? = null,
 
-  /** Background rendering Layer */
-  val background: BackgroundDrawable? = null,
+    /** Background rendering Layer */
+    val background: BackgroundDrawable? = null,
 
-  /** Border rendering Layer */
-  val border: BorderDrawable? = null,
+    /** Border rendering Layer */
+    val border: BorderDrawable? = null,
 
-  /** TouchableNativeFeeback set selection background, like "SelectableBackground" */
-  val feedbackUnderlay: Drawable? = null,
+    /** TouchableNativeFeeback set selection background, like "SelectableBackground" */
+    val feedbackUnderlay: Drawable? = null,
 
-  /** Inset box-shadows */
-  val innerShadows: List<Drawable> = emptyList(),
+    /** Inset box-shadows */
+    val innerShadows: List<Drawable> = emptyList(),
 
-  /** Outline */
-  val outline: OutlineDrawable? = null,
+    /** Outline */
+    val outline: OutlineDrawable? = null,
 
-  // Holder value for currently set insets
-  var borderInsets: BorderInsets? = null,
+    // Holder value for currently set insets
+    var borderInsets: BorderInsets? = null,
 
-  // Holder value for currently set border radius
-  var borderRadius: BorderRadiusStyle? = null,
+    // Holder value for currently set border radius
+    var borderRadius: BorderRadiusStyle? = null,
 ) :
   com.facebook.react.uimanager.drawable.LayerDrawable(
-    createLayersArray(
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline)) {
+        createLayersArray(
+            originalBackground,
+            outerShadows,
+            cssBackground,
+            background,
+            border,
+            feedbackUnderlay,
+            innerShadows,
+            outline)) {
 
   init {
     // We want to overlay drawables, instead of placing future drawables within the content area of
@@ -84,100 +84,100 @@ internal class CompositeBackgroundDrawable(
 
   fun withNewCssBackground(cssBackground: CSSBackgroundDrawable?): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        feedbackUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
   fun withNewBackground(background: BackgroundDrawable?): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        feedbackUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
   fun withNewShadows(
-    outerShadows: List<Drawable>,
-    innerShadows: List<Drawable>
+      outerShadows: List<Drawable>,
+      innerShadows: List<Drawable>
   ): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        feedbackUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
   fun withNewBorder(border: BorderDrawable): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        feedbackUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
   fun withNewOutline(outline: OutlineDrawable): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      feedbackUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        feedbackUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
   fun withNewFeedbackUnderlay(newUnderlay: Drawable?): CompositeBackgroundDrawable {
     return CompositeBackgroundDrawable(
-      context,
-      originalBackground,
-      outerShadows,
-      cssBackground,
-      background,
-      border,
-      newUnderlay,
-      innerShadows,
-      outline,
-      borderInsets,
-      borderRadius,
+        context,
+        originalBackground,
+        outerShadows,
+        cssBackground,
+        background,
+        border,
+        newUnderlay,
+        innerShadows,
+        outline,
+        borderInsets,
+        borderRadius,
     )
   }
 
@@ -188,24 +188,24 @@ internal class CompositeBackgroundDrawable(
       val pathForOutline = Path()
 
       val computedBorderRadius =
-        borderRadius?.resolve(
-          layoutDirection, context, bounds.width().toFloat(), bounds.height().toFloat())
+          borderRadius?.resolve(
+              layoutDirection, context, bounds.width().toFloat(), bounds.height().toFloat())
 
       val computedBorderInsets = borderInsets?.resolve(layoutDirection, context)
 
       computedBorderRadius?.let {
         pathForOutline.addRoundRect(
-          RectF(bounds),
-          floatArrayOf(
-            (it.topLeft.horizontal + (computedBorderInsets?.left ?: 0f)).dpToPx(),
-            (it.topLeft.vertical + (computedBorderInsets?.top ?: 0f)).dpToPx(),
-            (it.topRight.horizontal + (computedBorderInsets?.right ?: 0f)).dpToPx(),
-            (it.topRight.vertical + (computedBorderInsets?.top ?: 0f)).dpToPx(),
-            (it.bottomRight.horizontal + (computedBorderInsets?.right ?: 0f)).dpToPx(),
-            (it.bottomRight.vertical + (computedBorderInsets?.bottom ?: 0f)).dpToPx(),
-            (it.bottomLeft.horizontal + (computedBorderInsets?.left ?: 0f)).dpToPx(),
-            (it.bottomLeft.vertical + (computedBorderInsets?.bottom ?: 0f)).dpToPx()),
-          Path.Direction.CW)
+            RectF(bounds),
+            floatArrayOf(
+                (it.topLeft.horizontal + (computedBorderInsets?.left ?: 0f)).dpToPx(),
+                (it.topLeft.vertical + (computedBorderInsets?.top ?: 0f)).dpToPx(),
+                (it.topRight.horizontal + (computedBorderInsets?.right ?: 0f)).dpToPx(),
+                (it.topRight.vertical + (computedBorderInsets?.top ?: 0f)).dpToPx(),
+                (it.bottomRight.horizontal + (computedBorderInsets?.right ?: 0f)).dpToPx(),
+                (it.bottomRight.vertical + (computedBorderInsets?.bottom ?: 0f)).dpToPx(),
+                (it.bottomLeft.horizontal + (computedBorderInsets?.left ?: 0f)).dpToPx(),
+                (it.bottomLeft.vertical + (computedBorderInsets?.bottom ?: 0f)).dpToPx()),
+            Path.Direction.CW)
       }
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -220,14 +220,14 @@ internal class CompositeBackgroundDrawable(
 
   companion object {
     private fun createLayersArray(
-      originalBackground: Drawable?,
-      outerShadows: List<Drawable>,
-      cssBackground: CSSBackgroundDrawable?,
-      background: BackgroundDrawable?,
-      border: BorderDrawable?,
-      feedbackUnderlay: Drawable?,
-      innerShadows: List<Drawable>,
-      outline: OutlineDrawable?
+        originalBackground: Drawable?,
+        outerShadows: List<Drawable>,
+        cssBackground: CSSBackgroundDrawable?,
+        background: BackgroundDrawable?,
+        border: BorderDrawable?,
+        feedbackUnderlay: Drawable?,
+        innerShadows: List<Drawable>,
+        outline: OutlineDrawable?
     ): Array<Drawable?> {
       val layers = mutableListOf<Drawable?>()
       originalBackground?.let { layers.add(it) }
