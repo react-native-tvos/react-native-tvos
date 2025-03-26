@@ -7,7 +7,6 @@
 
 package com.facebook.react.modules.i18nmanager
 
-import android.annotation.TargetApi
 import android.os.Build
 import com.facebook.fbreact.specs.NativeI18nManagerSpec
 import com.facebook.react.bridge.ReactApplicationContext
