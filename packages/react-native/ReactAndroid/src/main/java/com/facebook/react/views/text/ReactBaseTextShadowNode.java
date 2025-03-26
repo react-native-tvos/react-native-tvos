@@ -337,7 +337,7 @@ public abstract class ReactBaseTextShadowNode extends LayoutShadowNode {
   protected int mHyphenationFrequency =
     (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? Layout.BREAK_STRATEGY_SIMPLE : Layout.HYPHENATION_FREQUENCY_NONE;
   protected int mJustificationMode =
-      (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) ? Layout.BREAK_STRATEGY_SIMPLE : Layout.JUSTIFICATION_MODE_NONE;
+      (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) ? 0 : Layout.JUSTIFICATION_MODE_NONE;
 
   protected float mTextShadowOffsetDx = 0;
   protected float mTextShadowOffsetDy = 0;

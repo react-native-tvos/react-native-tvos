@@ -8,6 +8,7 @@
 package com.facebook.react.views.view
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
@@ -282,11 +283,9 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     BackgroundStyleApplicator.setFeedbackUnderlay(view, bg)
   }
 
+  @TargetApi(Build.VERSION_CODES.M)
   @ReactProp(name = "nativeForegroundAndroid")
   public open fun setNativeForeground(view: ReactViewGroup, foreground: ReadableMap?) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-      return;
-    }
     view.foreground =
         foreground?.let { ReactDrawableHelper.createDrawableFromJSDescription(view.context, it) }
   }
