@@ -2412,7 +2412,7 @@ exports[`public API should not change unintentionally Libraries/Components/TV/TV
   setDestinations: (destinations: ComponentOrHandleType[]) => void,
 }>;
 declare const ForwardedTVFocusGuideView: $FlowFixMe;
-declare module.exports: ForwardedTVFocusGuideView;
+declare export default typeof ForwardedTVFocusGuideView;
 "
 `;
 
@@ -2434,7 +2434,7 @@ declare class TVTextScrollView
   componentWillUnmount(): void;
   render(): $FlowFixMe;
 }
-declare module.exports: TVTextScrollView;
+declare export default typeof TVTextScrollView;
 "
 `;
 
@@ -2477,7 +2477,7 @@ exports[`public API should not change unintentionally Libraries/Components/TV/us
 "declare const useTVEventHandler: (
   handleEvent: (evt: TVRemoteEvent) => void
 ) => void;
-declare module.exports: useTVEventHandler;
+declare export default typeof useTVEventHandler;
 "
 `;
 
