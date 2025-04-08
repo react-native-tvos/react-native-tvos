@@ -109,5 +109,8 @@
   },
   "resolutions": {
     "react-is": "19.0.0"
+  },
+  "dependencies": {
+    "yarn.lock": "^0.0.1-security"
   }
 }
