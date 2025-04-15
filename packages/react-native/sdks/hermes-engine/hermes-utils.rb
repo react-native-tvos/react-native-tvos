@@ -208,7 +208,9 @@ def release_tarball_url(version, build_type)
     # React Native core URL
     #return "https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
     # React Native TV URL
-    return "https://repo1.maven.org/maven2/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+    # return "https://repo1.maven.org/maven2/io/github/react-native-tvos/react-native-artifacts/#{version}/react-native-artifacts-#{version}-hermes-ios-#{build_type.to_s}.tar.gz"
+    # For RNTV 0.76.9-0, we can use the same Hermes artifacts as 0.76.7-0
+    return "https://repo1.maven.org/maven2/io/github/react-native-tvos/react-native-artifacts/0.76.7-0/react-native-artifacts-0.76.7-0-hermes-ios-#{build_type.to_s}.tar.gz"
 end
 
 def download_stable_hermes(react_native_path, version, configuration)
