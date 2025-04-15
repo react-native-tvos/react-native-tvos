@@ -568,6 +568,7 @@ class ReactNativePodsUtils
         ReactNativePodsUtils.update_header_paths_if_depends_on(target_installation_result, "RCT-Folly", [
             "\"$(PODS_ROOT)/RCT-Folly\"",
             "\"$(PODS_ROOT)/DoubleConversion\"",
+            "\"$(PODS_ROOT)/fast_float/include\"",
             "\"$(PODS_ROOT)/fmt/include\"",
             "\"$(PODS_ROOT)/boost\""
         ])
@@ -643,6 +644,7 @@ class ReactNativePodsUtils
             "ReactCommon",
             "Yoga",
             "boost",
+            "fast_float",
             "fmt",
             "glog",
             "hermes-engine",
