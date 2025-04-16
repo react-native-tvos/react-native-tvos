@@ -67,7 +67,7 @@
                               method:@"emit"
                             withArgs:body ? @[ eventName, body ] : @[ eventName ]];
   } else {
-    RCTLogWarn(@"Sending `%@` with no listeners registered.", eventName);
+    RCTLogInfo(@"Sending `%@` with no listeners registered.", eventName);
   }
 }
 
