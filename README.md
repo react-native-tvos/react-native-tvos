@@ -148,7 +148,7 @@ npx react-native run:android --device tv_api_31
 
 ## How to support TV specific file extensions
 
-The template contains an [example Metro configuration](./packages/react-native/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`). The config will work the same way with the other standard source file extensions (`.js`, etc.), as documented in [Metro docs](https://metrobundler.dev/docs/configuration/#sourceexts)
+The template contains an [example Metro configuration](https://github.com/react-native-tvos/react-native-template-typescript-tv/blob/main/template/metro.config.js) that allows Metro to resolve application source files with TV-specific code, indicated by specific file extensions (e.g. `*.ios.tv.tsx`, `*.android.tv.tsx`, `*.tv.tsx`). The config will work the same way with the other standard source file extensions (`.js`, etc.), as documented in [Metro docs](https://metrobundler.dev/docs/configuration/#sourceexts)
 
 When this is enabled, Metro will resolve files in the following order of preference (and similarly for the other supported file extensions):
 
@@ -190,7 +190,7 @@ Code has been added to detect focus changes and use existing methods to style th
 
 Because focus and blur events are now fully native core events, they will respond correctly to capturing and bubbling event handlers in `View` components. A demo of this has been added to the TVEventHandlerExample in RNTester.
 
-- _Tailwind styles for Pressable and Touchable controls_: The above events allow RNTV to support the [`focus:` and `active:` pseudo classes for Tailwind styles](https://www.nativewind.dev/v4/core-concepts/states#hover-focus-and-active-).
+- _Tailwind styles for Pressable and Touchable controls_: The above events allow RNTV to support the [`focus:` and `active:` pseudo classes for Tailwind styles](https://www.nativewind.dev/core-concepts/states#hover-focus-and-active-).
 
 - _TV remote/keyboard input_: Application code that needs to implement custom handling of TV remote events can create an instance of `TVEventHandler` and listen for these events.  For a more convenient API, we provide `useTVEventHandler`.
 
