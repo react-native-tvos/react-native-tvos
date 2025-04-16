@@ -7,25 +7,31 @@
 
 'use strict';
 
-const TVMenuBridge = require('../../BatchedBridge/NativeModules').TVMenuBridge;
+import NativeTVNavigationEventEmitter from '../../../src/private/specs_DEPRECATED/modules/NativeTVNavigationEventEmitter';
 
 module.exports = {
   enableTVMenuKey: () => {
-    TVMenuBridge && TVMenuBridge.enableTVMenuKey();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.enableTVMenuKey();
   },
   disableTVMenuKey: () => {
-    TVMenuBridge && TVMenuBridge.disableTVMenuKey();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.disableTVMenuKey();
   },
   enableTVPanGesture: () => {
-    TVMenuBridge && TVMenuBridge.enableTVPanGesture();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.enableTVPanGesture();
   },
   disableTVPanGesture: () => {
-    TVMenuBridge && TVMenuBridge.disableTVPanGesture();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.disableTVPanGesture();
   },
   enableGestureHandlersCancelTouches: () => {
-    TVMenuBridge && TVMenuBridge.enableGestureHandlersCancelTouches();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.enableGestureHandlersCancelTouches();
   },
   disableGestureHandlersCancelTouches: () => {
-    TVMenuBridge && TVMenuBridge.disableGestureHandlersCancelTouches();
+    NativeTVNavigationEventEmitter &&
+      NativeTVNavigationEventEmitter.disableGestureHandlersCancelTouches();
   },
 };
