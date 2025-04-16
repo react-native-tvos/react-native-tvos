@@ -15,6 +15,12 @@ import * as TurboModuleRegistry from '../../../../Libraries/TurboModule/TurboMod
 export interface Spec extends TurboModule {
   +addListener: (eventName: string) => void;
   +removeListeners: (count: number) => void;
+  +enableTVMenuKey: () => void;
+  +disableTVMenuKey: () => void;
+  +enableTVPanGesture: () => void;
+  +disableTVPanGesture: () => void;
+  +enableGestureHandlersCancelTouches: () => void;
+  +disableGestureHandlersCancelTouches: () => void;
 }
 
 export default (TurboModuleRegistry.get<Spec>('TVNavigationEventEmitter'): ?Spec);

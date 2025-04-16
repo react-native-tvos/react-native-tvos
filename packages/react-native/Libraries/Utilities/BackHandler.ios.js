@@ -12,7 +12,7 @@
 // On iOS, this just implements a stub.
 
 const TVEventHandler = require('../Components/TV/TVEventHandler');
-const Platform = require('./Platform');
+const Platform = require('./Platform').default;
 
 type BackPressEventName = 'backPress' | 'hardwareBackPress';
 type BackPressHandler = () => ?boolean;
