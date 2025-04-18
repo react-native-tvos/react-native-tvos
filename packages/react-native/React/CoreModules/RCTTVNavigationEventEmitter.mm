@@ -59,6 +59,7 @@ RCT_EXPORT_MODULE()
 #pragma mark -
 #pragma mark Methods moved from old RCTTVMenuBridge
 
+#if TARGET_OS_TV
 RCT_EXPORT_METHOD(enableTVMenuKey)
 {
     [RCTTVRemoteHandler setUseMenuKey:YES];
@@ -92,6 +93,7 @@ RCT_EXPORT_METHOD(disableGestureHandlersCancelTouches) {
   [RCTTVRemoteHandler setGestureHandlersCancelTouches:NO];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableGestureHandlersCancelTouchesNotification object:nil];
 }
+#endif
 
 @end
 
