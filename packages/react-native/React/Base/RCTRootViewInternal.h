@@ -26,6 +26,7 @@
  */
 #if TARGET_OS_TV
 @property (nonatomic, strong, nullable) RCTTVRemoteHandler *tvRemoteHandler;
+@property (nonatomic, strong, nullable) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 @property (nonatomic, weak) UIView *reactPreferredFocusedView;
 @property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
 #endif

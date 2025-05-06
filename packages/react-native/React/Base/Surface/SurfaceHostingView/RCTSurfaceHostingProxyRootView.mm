@@ -20,6 +20,10 @@
 #import "RCTSurface.h"
 #import "UIView+React.h"
 
+#if TARGET_OS_TV
+#import <React/RCTTVNavigationEventNotification.h>
+#endif
+
 static RCTSurfaceSizeMeasureMode convertToSurfaceSizeMeasureMode(RCTRootViewSizeFlexibility sizeFlexibility)
 {
   switch (sizeFlexibility) {
@@ -61,9 +65,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithFrame : (CGRect)frame)
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 #if TARGET_OS_TV
+
 - (void)dealloc
 {
   self.tvRemoteHandler = nil;
+  self.tvRemoteSelectHandler = nil;
 }
 
 - (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
@@ -77,6 +83,36 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
     return @[self.reactPreferredFocusedView];
   }
   return [super preferredFocusEnvironments];
+}
+
+#pragma mark -
+#pragma mark RCTTVRemoteSelectHandlerDelegate methods
+
+- (void)animatePressIn {
+}
+
+- (void)animatePressOut {
+}
+
+- (void)emitPressInEvent {
+}
+
+- (void)emitPressOutEvent {
+}
+
+- (void)sendSelectNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendLongSelectBeganNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendLongSelectEndedNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
 }
 #endif
 
@@ -145,6 +181,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
     dispatch_async(dispatch_get_main_queue(), ^{
 #if TARGET_OS_TV
      self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:[self contentView]];
+     self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
 #endif
     });
   }
