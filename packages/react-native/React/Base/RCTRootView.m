@@ -31,6 +31,8 @@
 #if TARGET_OS_TV
 #import "RCTTVNavigationEventEmitter.h"
 #import "RCTTVRemoteHandler.h"
+#import "RCTTVRemoteSelectHandler.h"
+#import <React/RCTTVNavigationEventNotification.h>
 #endif
 
 #if RCT_DEV
@@ -98,6 +100,7 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 #endif
       
     self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:self];
+    self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
 #endif
 
     [self showLoadingView];
@@ -424,9 +427,44 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 {
 #if TARGET_OS_TV
   self.tvRemoteHandler = nil;
+  self.tvRemoteSelectHandler = nil;
 #endif
   [_contentView invalidate];
 }
+
+#if TARGET_OS_TV
+
+#pragma mark -
+#pragma mark RCTTVRemoteSelectHandlerDelegate methods
+
+- (void)animatePressIn {
+}
+
+- (void)animatePressOut { 
+}
+
+- (void)emitPressInEvent { 
+}
+
+- (void)emitPressOutEvent { 
+}
+
+- (void)sendSelectNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendLongSelectBeganNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
+}
+
+- (void)sendLongSelectEndedNotification
+{
+    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+}
+
+#endif
 
 @end
 
