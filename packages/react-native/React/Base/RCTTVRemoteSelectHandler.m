@@ -36,7 +36,7 @@
 
 // Press recognizer should allow long press recognizer to work (but not the reverse)
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-  return gestureRecognizer == _pressRecognizer;
+  return gestureRecognizer == self.pressRecognizer && otherGestureRecognizer == self.longPressRecognizer;
 }
 
 #pragma mark -
@@ -54,6 +54,7 @@
   UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
   longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
   longPressRecognizer.minimumPressDuration = 0.5;
+  longPressRecognizer.delegate = self;
 
   [self.view addGestureRecognizer:longPressRecognizer];
   self.longPressRecognizer = longPressRecognizer;

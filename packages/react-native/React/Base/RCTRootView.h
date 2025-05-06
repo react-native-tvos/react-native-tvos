@@ -14,6 +14,9 @@
 extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
 extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
 
+#if TARGET_OS_TV
+#import "RCTTVRemoteSelectHandler.h"
+#endif
 
 @protocol RCTRootViewDelegate;
 
@@ -51,8 +54,11 @@ extern
  * like any ordinary UIView. You can have multiple RCTRootViews on screen at
  * once, all controlled by the same JavaScript application.
  */
+#if TARGET_OS_TV
+@interface RCTRootView : UIView <RCTTVRemoteSelectHandlerDelegate>
+#else
 @interface RCTRootView : UIView
-
+#endif
 /**
  * - Designated initializer -
  */
