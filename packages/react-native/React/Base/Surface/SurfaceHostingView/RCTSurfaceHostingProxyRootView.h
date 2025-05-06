@@ -14,6 +14,7 @@
 
 #if TARGET_OS_TV
 #import <React/RCTTVRemoteHandler.h>
+#import <React/RCTTVRemoteSelectHandler.h>
 #endif
 
 NS_ASSUME_NONNULL_BEGIN
@@ -25,7 +26,11 @@ NS_ASSUME_NONNULL_BEGIN
  *
  * WARNING: In the future, RCTRootView will be deprecated in favor of RCTSurfaceHostingView.
  */
+#if TARGET_OS_TV
+@interface RCTSurfaceHostingProxyRootView : RCTSurfaceHostingView <RCTTVRemoteSelectHandlerDelegate>
+#else
 @interface RCTSurfaceHostingProxyRootView : RCTSurfaceHostingView
+#endif
 
 #pragma mark RCTRootView compatibility - keep these sync'ed with RCTRootView.h
 
@@ -44,6 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGSize minimumSize;
 #if TARGET_OS_TV
 @property (nonatomic, strong, nullable) RCTTVRemoteHandler *tvRemoteHandler;
+@property (nonatomic, strong, nullable) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 @property (nonatomic, weak, nullable) UIView *reactPreferredFocusedView;
 @property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
 #endif
