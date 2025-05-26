@@ -590,9 +590,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
-          [self addParallaxMotionEffects];
           if (self->_eventEmitter) self->_eventEmitter->onFocus();
           [self sendFocusNotification:context];
+          [self addParallaxMotionEffects];
       } completion:^(void){}];
       // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
       // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
