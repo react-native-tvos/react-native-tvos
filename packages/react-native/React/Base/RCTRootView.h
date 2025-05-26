@@ -11,6 +11,10 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcherProtocol.h>
 
+extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
+extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
+
+
 @protocol RCTRootViewDelegate;
 
 /**

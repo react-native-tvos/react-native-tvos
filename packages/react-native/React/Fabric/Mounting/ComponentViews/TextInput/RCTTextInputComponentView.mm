@@ -29,11 +29,18 @@ static const CGFloat kSingleLineKeyboardBottomOffset = 15.0;
 
 using namespace facebook::react;
 
+#if TARGET_OS_TV
+@interface RCTTextInputComponentView () <
+    RCTBackedTextInputDelegate,
+    RCTTextInputViewProtocol>
+@end
+#else
 @interface RCTTextInputComponentView () <
     RCTBackedTextInputDelegate,
     RCTTextInputViewProtocol,
     UIDropInteractionDelegate>
 @end
+#endif
 
 static NSSet<NSNumber *> *returnKeyTypesSet;
 
@@ -210,12 +217,14 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
     _backedTextInputView.editable = newTextInputProps.traits.editable;
   }
 
+#if !TARGET_OS_TV
   if (newTextInputProps.multiline &&
       newTextInputProps.traits.dataDetectorTypes != oldTextInputProps.traits.dataDetectorTypes) {
     _backedTextInputView.dataDetectorTypes =
         RCTUITextViewDataDetectorTypesFromStringVector(newTextInputProps.traits.dataDetectorTypes);
   }
-
+#endif
+  
   if (newTextInputProps.traits.enablesReturnKeyAutomatically !=
       oldTextInputProps.traits.enablesReturnKeyAutomatically) {
     _backedTextInputView.enablesReturnKeyAutomatically = newTextInputProps.traits.enablesReturnKeyAutomatically;
@@ -592,6 +601,8 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 - (NSString *)returnKeyTypeToString:(UIReturnKeyType)returnKeyType
 {
   switch (returnKeyType) {
+    case UIReturnKeyDefault:
+      return @"Default";
     case UIReturnKeyGo:
       return @"Go";
     case UIReturnKeyNext:
@@ -619,6 +630,7 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 {
   returnKeyTypesSet = [NSSet setWithObjects:@(UIReturnKeyDone),
                                             @(UIReturnKeyGo),
+                                            @(UIReturnKeyDefault),
                                             @(UIReturnKeyNext),
                                             @(UIReturnKeySearch),
                                             @(UIReturnKeySend),
@@ -661,6 +673,7 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 
   _hasInputAccessoryView = shouldHaveInputAccessoryView;
 
+#if !TARGET_OS_TV
   if (shouldHaveInputAccessoryView) {
     NSString *buttonLabel = inputAccessoryViewButtonLabel != nil ? inputAccessoryViewButtonLabel
                                                                  : [self returnKeyTypeToString:returnKeyType];
@@ -675,7 +688,9 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
                                                                   action:@selector(handleInputAccessoryDoneButton)];
     toolbarView.items = @[ flexibleSpace, doneButton ];
     _backedTextInputView.inputAccessoryView = toolbarView;
-  } else {
+  } else
+#endif
+  {
     _backedTextInputView.inputAccessoryView = nil;
   }
 

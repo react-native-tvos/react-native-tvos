@@ -397,7 +397,6 @@ CGSize RCTScreenSize(void)
     });
   });
 
-  return size;
 }
 
 CGSize RCTViewportSize(void)
@@ -619,10 +618,12 @@ UIWindow *__nullable RCTKeyWindow(void)
   return nil;
 }
 
+#if !TARGET_OS_TV
 UIStatusBarManager *__nullable RCTUIStatusBarManager(void)
 {
   return RCTKeyWindow().windowScene.statusBarManager;
 }
+#endif
 
 UIViewController *__nullable RCTPresentedViewController(void)
 {
