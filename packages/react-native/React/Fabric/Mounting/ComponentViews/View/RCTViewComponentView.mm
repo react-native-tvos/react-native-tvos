@@ -587,23 +587,21 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     }
 
     if (context.nextFocusedView == self) {
-      if(_eventEmitter) _eventEmitter->onFocus();
-
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
-          [self addParallaxMotionEffects];
+          if (self->_eventEmitter) self->_eventEmitter->onFocus();
           [self sendFocusNotification:context];
+          [self addParallaxMotionEffects];
       } completion:^(void){}];
       // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
       // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
       // Generally speaking, it would happen for any non-collapsable `View`.
     } else if (context.previouslyFocusedView == self) {
-      if (_eventEmitter) _eventEmitter->onBlur();
-
       [self disableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
           [self removeParallaxMotionEffects];
+          if (self->_eventEmitter) self->_eventEmitter->onBlur();
           [self sendBlurNotification:context];
       } completion:^(void){}];
       [self resignFirstResponder];
