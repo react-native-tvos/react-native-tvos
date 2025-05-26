@@ -20,6 +20,7 @@ const {
   copyPodSpec,
   downloadHermesSourceTarball,
   expandHermesSourceTarball,
+  patchHermesSourceTarball,
   shouldBuildHermesFromSource,
   shouldUsePrebuiltHermesC,
 } = require('./hermes-utils');
@@ -31,6 +32,7 @@ async function main(isInCI /*: boolean */) {
   }
   downloadHermesSourceTarball();
   expandHermesSourceTarball();
+  patchHermesSourceTarball();
   copyPodSpec();
   copyBuildScripts();
 

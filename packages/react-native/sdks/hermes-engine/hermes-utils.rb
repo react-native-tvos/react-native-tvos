@@ -73,6 +73,10 @@ def hermes_source_type(version, react_native_path)
     return HermesEngineSourceType::BUILD_FROM_GITHUB_MAIN
 end
 
+def override_hermes_nightly_build_version_defined()
+    return ENV.has_key?('REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION')
+end
+
 def override_hermes_dir_envvar_defined()
     return ENV.has_key?('REACT_NATIVE_OVERRIDE_HERMES_DIR')
 end
@@ -99,6 +103,30 @@ end
 
 def nightly_artifact_exists(version)
     return hermes_artifact_exists(nightly_tarball_url(version).gsub("\\", ""))
+end
+
+# Computes the core release version on which this TV release version is based
+def core_version(version)
+    if override_hermes_nightly_build_version_defined()
+      return ENV['REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION']
+    end
+    match = version.match(/(.+)-(.+)/)
+    if match.nil?
+      hermes_log("core_version = #{version}")
+      return version
+    end
+
+    core_base_version = match[1]
+    prerelease = match[2]
+    prerelease_match = prerelease.match(/0rc(\d+)/)
+    if prerelease_match.nil?
+        hermes_log("core_version = #{core_base_version}")
+        return core_base_version
+    end
+
+    cv = "#{core_base_version}-rc.#{prerelease_match[1]}"
+    hermes_log("core_version = #{cv}")
+    return cv
 end
 
 def podspec_source(source_type, version, react_native_path)
@@ -245,6 +273,9 @@ end
 # - version: the version of React Native
 # - build_type: debug or release
 def hermes_artifact_exists(tarball_url)
+    if tarball_url.start_with?("file:") == true
+      return true
+    end
     # -L is used to follow redirects, useful for the nightlies
     # I also needed to wrap the url in quotes to avoid escaping & and ?.
     return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")

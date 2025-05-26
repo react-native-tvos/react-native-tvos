@@ -22,6 +22,7 @@ type BuildType = 'dry-run' | 'release' | 'nightly';
 const SDKS_DIR = path.normalize(path.join(__dirname, '..', '..', 'sdks'));
 const HERMES_DIR = path.join(SDKS_DIR, 'hermes');
 const HERMES_TAG_FILE_PATH = path.join(SDKS_DIR, '.hermesversion');
+const HERMES_PATCH_FILE_PATH = path.join(__dirname, 'hermes.patch');
 const HERMES_SOURCE_TARBALL_BASE_URL =
   'https://github.com/facebook/hermes/tarball/';
 const HERMES_TARBALL_DOWNLOAD_DIR = path.join(SDKS_DIR, 'download');
@@ -139,6 +140,24 @@ function expandHermesSourceTarball() {
     ]);
   } catch (error) {
     throw new Error('[Hermes] Failed to expand Hermes tarball.');
+  }
+}
+
+function patchHermesSourceTarball() {
+  if (!fs.existsSync(HERMES_PATCH_FILE_PATH)) {
+    console.log('[Hermes] No Hermes patch found.');
+    return;
+  }
+  console.info(
+    `[Hermes] Patching Hermes source from ${HERMES_PATCH_FILE_PATH}`,
+  );
+
+  try {
+    delegateSync('patch', ['-p1', '-i', HERMES_PATCH_FILE_PATH], {
+      cwd: HERMES_DIR,
+    });
+  } catch (error) {
+    throw new Error(`[Hermes] Failed to patch Hermes source: ${error}`);
   }
 }
 
@@ -327,6 +346,7 @@ module.exports = {
   createTarballFromDirectory,
   downloadHermesSourceTarball,
   expandHermesSourceTarball,
+  patchHermesSourceTarball,
   getHermesTagSHA,
   getHermesTarballDownloadPath,
   getHermesPrebuiltArtifactsTarballName,
