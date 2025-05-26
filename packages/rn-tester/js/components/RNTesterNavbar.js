@@ -13,7 +13,14 @@ import type {RNTesterTheme} from './RNTesterTheme';
 
 import {RNTesterThemeContext} from './RNTesterTheme';
 import * as React from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TVFocusGuideView,
+  View,
+} from 'react-native';
 
 type NavBarOnPressHandler = ({screen: ScreenTypes}) => void;
 
@@ -33,22 +40,30 @@ const NavbarButton = ({
     testID={testID}
     onPress={handlePress}
     style={[styles.navButton, {backgroundColor: theme.BackgroundColor}]}>
-    <View
-      style={[styles.pressableContent, isActive ? styles.activeBar : null]}
-      collapsable={false}>
-      <Image
-        style={iconStyle}
-        source={isActive ? activeImage : inactiveImage}
-      />
-      <Text
-        style={{
-          color: isActive
-            ? theme.NavBarLabelActiveColor
-            : theme.NavBarLabelInactiveColor,
-        }}>
-        {label}
-      </Text>
-    </View>
+    {({focused}) => {
+      return (
+        <View
+          style={[
+            styles.pressableContent,
+            focused ? styles.focusedBar : null,
+            isActive ? styles.activeBar : null,
+          ]}
+          collapsable={false}>
+          <Image
+            style={iconStyle}
+            source={isActive ? activeImage : inactiveImage}
+          />
+          <Text
+            style={
+              isActive
+                ? theme.NavBarLabelActiveColor
+                : theme.NavBarLabelInactiveColor
+            }>
+            {label}
+          </Text>
+        </View>
+      );
+    }}
   </Pressable>
 );
 
@@ -107,8 +122,8 @@ const APITab = ({
     testID="apis-tab"
     label="APIs"
     handlePress={() => handleNavBarPress({screen: 'apis'})}
-    activeImage={theme.NavBarAPIsActiveIcon}
-    inactiveImage={theme.NavBarAPIsInactiveIcon}
+    activeImage={theme.NavBarComponentsActiveIcon}
+    inactiveImage={theme.NavBarComponentsInactiveIcon}
     isActive={isAPIActive}
     theme={theme}
     iconStyle={styles.apiIcon}
@@ -133,7 +148,7 @@ const RNTesterNavbar = ({
   const isPlaygroundActive = screen === 'playgrounds';
 
   return (
-    <View>
+    <TVFocusGuideView autoFocus={true}>
       <View style={styles.buttonContainer}>
         <ComponentTab
           isComponentActive={isComponentActive}
@@ -151,7 +166,7 @@ const RNTesterNavbar = ({
           theme={theme}
         />
       </View>
-    </View>
+    </TVFocusGuideView>
   );
 };
 
@@ -172,6 +187,15 @@ const styles = StyleSheet.create({
     height: 20,
     alignSelf: 'center',
   },
+  activeText: {
+    color: '#5E5F62',
+  },
+  inactiveText: {
+    color: '#B1B4BA',
+  },
+  focusedBar: {
+    backgroundColor: '#DDDDDD',
+  },
   activeBar: {
     borderTopWidth: 2,
     borderColor: '#005DFF',
@@ -181,6 +205,7 @@ const styles = StyleSheet.create({
     height: navBarHeight,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 15,
   },
   pressableContent: {
     flex: 1,

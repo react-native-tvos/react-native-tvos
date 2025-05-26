@@ -94,15 +94,12 @@ const Components: Array<RNTesterModuleInfo> = [
   {
     key: 'ScrollViewIndicatorInsetsExample',
     module: require('../examples/ScrollView/ScrollViewIndicatorInsetsIOSExample'),
-  },
-  {
-    key: 'ScrollViewKeyboardInsetsExample',
-    module: require('../examples/ScrollView/ScrollViewKeyboardInsetsIOSExample'),
+    supportsTVOS: true,
   },
   {
     key: 'SectionListIndex',
     module: require('../examples/SectionList/SectionListIndex'),
-    category: 'ListView',
+    supportsTVOS: true,
   },
   {
     key: 'StatusBarExample',
@@ -137,6 +134,11 @@ const Components: Array<RNTesterModuleInfo> = [
     module: require('../examples/TransparentHitTest/TransparentHitTestExample'),
   },
   {
+    key: 'TVTextScrollViewExample',
+    category: 'TV',
+    module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
+  },
+  {
     key: 'ViewExample',
     module: require('../examples/View/ViewExample').default,
     category: 'Basic',
@@ -159,6 +161,36 @@ const Components: Array<RNTesterModuleInfo> = [
 ];
 
 const APIs: Array<RNTesterModuleInfo> = ([
+  {
+    key: 'TVEventHandlerExample',
+    category: 'TV',
+    module: require('../examples/TVEventHandler/TVEventHandlerExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVDynamicDirectionalNextFocusExample',
+    category: 'TV',
+    module: require('../examples/DirectionalNextFocus/DynamicDirectionalNextFocusExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+    supportsTVOS: true,
+  },
   {
     key: 'AccessibilityExample',
     module: require('../examples/Accessibility/AccessibilityExample'),
