@@ -73,6 +73,9 @@ constructor(private val fpsListener: FpsListener? = null) :
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
   public fun setScrollEnabled(view: ReactHorizontalScrollView, value: Boolean) {
     view.setScrollEnabled(value)
+    /*Set focusable to match whether scroll is enabled. This improves keyboarding
+    experience by not making scrollview to scroll when scroll enabled is to false.*/
+    view.setFocusable(value)
   }
 
   @ReactProp(name = "showsHorizontalScrollIndicator", defaultBoolean = true)
