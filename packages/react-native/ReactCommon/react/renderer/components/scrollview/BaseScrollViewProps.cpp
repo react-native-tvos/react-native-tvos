@@ -22,6 +22,15 @@ BaseScrollViewProps::BaseScrollViewProps(
     const BaseScrollViewProps& sourceProps,
     const RawProps& rawProps)
     : ViewProps(context, sourceProps, rawProps),
+      showsScrollIndex(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.showsScrollIndex
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "showsScrollIndex",
+                    sourceProps.showsScrollIndex,
+                    {})),
       alwaysBounceHorizontal(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
               ? sourceProps.alwaysBounceHorizontal
@@ -387,6 +396,7 @@ void BaseScrollViewProps::setProp(
   static auto defaults = BaseScrollViewProps{};
 
   switch (hash) {
+    RAW_SET_PROP_SWITCH_CASE_BASIC(showsScrollIndex);
     RAW_SET_PROP_SWITCH_CASE_BASIC(alwaysBounceHorizontal);
     RAW_SET_PROP_SWITCH_CASE_BASIC(alwaysBounceVertical);
     RAW_SET_PROP_SWITCH_CASE_BASIC(bounces);
@@ -436,6 +446,10 @@ SharedDebugStringConvertibleList BaseScrollViewProps::getDebugProps() const {
 
   return ViewProps::getDebugProps() +
       SharedDebugStringConvertibleList{
+          debugStringConvertibleItem(
+              "showsScrollIndex",
+              snapToEnd,
+              defaultScrollViewProps.showsScrollIndex),
           debugStringConvertibleItem(
               "alwaysBounceHorizontal",
               alwaysBounceHorizontal,
