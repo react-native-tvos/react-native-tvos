@@ -20,6 +20,7 @@ import {
 } from '../../Types/CoreEventTypes';
 import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
+import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 
 export interface TVViewPropsIOS {
   /**
@@ -130,6 +131,8 @@ export interface ViewProps
     GestureResponderHandlers,
     Touchable,
     PointerEvents,
+    FocusEvents,
+    PressEvents,
     AccessibilityProps {
   children?: React.ReactNode | undefined;
   /**
@@ -230,4 +233,13 @@ export interface ViewProps
    * `collapsable={false}` on each child.
    */
   collapsableChildren?: boolean | undefined;
+
+  /**
+   * Invoked on TV focus
+   */
+  readonly onFocus?: BubblingEventHandler<Event> | undefined;
+  /**
+   * Invoked on TV blur
+   */
+  readonly onBlur?: BubblingEventHandler<Event> | undefined;
 }

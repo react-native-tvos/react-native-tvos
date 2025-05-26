@@ -12,6 +12,8 @@ import type {
   GestureResponderEvent,
   LayoutChangeEvent,
   MouseEvent,
+  FocusEvent,
+  BlurEvent,
 } from '../../Types/CoreEventTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 
@@ -20,6 +22,8 @@ import usePressability from '../../Pressability/usePressability';
 import {type RectOrSize} from '../../StyleSheet/Rect';
 import useMergeRefs from '../../Utilities/useMergeRefs';
 import View from '../View/View';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import useAndroidRippleForView, {
   type PressableAndroidRippleConfig,
 } from './useAndroidRippleForView';
@@ -32,6 +36,22 @@ export type {PressableAndroidRippleConfig};
 
 export type PressableStateCallbackType = $ReadOnly<{
   pressed: boolean,
+  focused: boolean,
+}>;
+
+type TVProps = $ReadOnly<{
+  hasTVPreferredFocus?: boolean,
+  isTVSelectable?: ?boolean,
+  tvParallaxProperties?: TVParallaxPropertiesType,
+  nextFocusDown?: ?number,
+  nextFocusForward?: ?number,
+  nextFocusLeft?: ?number,
+  nextFocusRight?: ?number,
+  nextFocusUp?: ?number,
+  onFocus?: ?(event: FocusEvent) => mixed,
+  onBlur?: ?(event: BlurEvent) => mixed,
+  onFocusCapture?: ?(event: FocusEvent) => void,
+  onBlurCapture?: ?(event: BlurEvent) => void,
 }>;
 
 type PressableBaseProps = $ReadOnly<{
@@ -149,6 +169,10 @@ type PressableBaseProps = $ReadOnly<{
    * Duration to wait after press down before calling `onPressIn`.
    */
   unstable_pressDelay?: ?number,
+  /**
+   * Props needed for Apple TV and Android TV
+   */
+  ...TVProps,
 }>;
 
 export type PressableProps = $ReadOnly<{
@@ -194,6 +218,14 @@ function Pressable({
     hitSlop,
     onHoverIn,
     onHoverOut,
+    isTVSelectable,
+    nextFocusDown,
+    nextFocusForward,
+    nextFocusLeft,
+    nextFocusRight,
+    nextFocusUp,
+    onBlur,
+    onFocus,
     onLongPress,
     onPress,
     onPressIn,
@@ -202,6 +234,7 @@ function Pressable({
     pressRetentionOffset,
     style,
     testOnly_pressed,
+    tvParallaxProperties,
     unstable_pressDelay,
     ...restProps
   } = props;
@@ -212,6 +245,7 @@ function Pressable({
   const android_rippleConfig = useAndroidRippleForView(android_ripple, viewRef);
 
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
+  const [focused, setFocused] = usePressState(false);
 
   const shouldUpdatePressed =
     typeof children === 'function' || typeof style === 'function';
@@ -247,7 +281,9 @@ function Pressable({
     accessibilityLiveRegion,
     accessibilityLabel,
     accessibilityState: _accessibilityState,
-    focusable: focusable !== false,
+    focusable:
+      focusable !== false && disabled !== true && ariaDisabled !== true,
+    isTVSelectable: isTVSelectable !== false && accessible !== false,
     accessibilityValue,
     hitSlop,
   };
@@ -265,6 +301,18 @@ function Pressable({
       delayPressIn: unstable_pressDelay,
       onHoverIn,
       onHoverOut,
+      onBlur(event: BlurEvent): void {
+        shouldUpdatePressed && setFocused(false);
+        if (onBlur != null) {
+          onBlur(event);
+        }
+      },
+      onFocus(event: FocusEvent): void {
+        shouldUpdatePressed && setFocused(true);
+        if (onFocus != null) {
+          onFocus(event);
+        }
+      },
       onLongPress,
       onPress,
       onPressIn(event: GestureResponderEvent): void {
@@ -303,6 +351,8 @@ function Pressable({
       hitSlop,
       onHoverIn,
       onHoverOut,
+      onBlur,
+      onFocus,
       onLongPress,
       onPress,
       onPressIn,
@@ -310,6 +360,7 @@ function Pressable({
       onPressOut,
       pressRetentionOffset,
       setPressed,
+      setFocused,
       shouldUpdatePressed,
       unstable_pressDelay,
     ],
@@ -321,9 +372,21 @@ function Pressable({
       {...restPropsWithDefaults}
       {...eventHandlers}
       ref={mergedRef}
-      style={typeof style === 'function' ? style({pressed}) : style}
+      nextFocusDown={tagForComponentOrHandle(props.nextFocusDown)}
+      nextFocusForward={tagForComponentOrHandle(props.nextFocusForward)}
+      nextFocusLeft={tagForComponentOrHandle(props.nextFocusLeft)}
+      nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
+      nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
+      isTVSelectable={
+        isTVSelectable !== false &&
+        accessible !== false &&
+        disabled !== true &&
+        ariaDisabled !== true
+      }
+      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed}) : children}
+      {typeof children === 'function' ? children({pressed, focused}) : children}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );

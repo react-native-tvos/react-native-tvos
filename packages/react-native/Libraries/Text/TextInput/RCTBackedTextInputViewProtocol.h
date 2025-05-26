@@ -30,7 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL caretHidden;
 @property (nonatomic, assign) BOOL enablesReturnKeyAutomatically;
 @property (nonatomic, assign) UITextFieldViewMode clearButtonMode;
+#if !TARGET_OS_TV
 @property (nonatomic, assign) UIDataDetectorTypes dataDetectorTypes;
+#endif
 @property (nonatomic, getter=isScrollEnabled) BOOL scrollEnabled;
 @property (nonatomic, strong, nullable) NSString *inputAccessoryViewID;
 @property (nonatomic, strong, nullable) NSString *inputAccessoryViewButtonLabel;

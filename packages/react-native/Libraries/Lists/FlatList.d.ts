@@ -13,7 +13,7 @@ import type {
   ViewToken,
   VirtualizedListProps,
   ViewabilityConfig,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 import type {ScrollViewComponent} from '../Components/ScrollView/ScrollView';
 import type {StyleProp} from '../StyleSheet/StyleSheet';
 import type {ViewStyle} from '../StyleSheet/StyleSheetTypes';

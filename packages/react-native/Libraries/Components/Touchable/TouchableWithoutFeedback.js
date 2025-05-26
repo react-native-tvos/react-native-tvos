@@ -16,6 +16,7 @@ import type {
   GestureResponderEvent,
   LayoutChangeEvent,
 } from '../../Types/CoreEventTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 
 import View from '../../Components/View/View';
 import {type AccessibilityProps} from '../../Components/View/ViewAccessibility';
@@ -25,7 +26,9 @@ import {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import * as React from 'react';
 import {cloneElement, useMemo} from 'react';
 
-export type TouchableWithoutFeedbackPropsIOS = {};
+export type TouchableWithoutFeedbackPropsIOS = {
+  tvParallaxProperties?: TVParallaxPropertiesType,
+};
 
 export type TouchableWithoutFeedbackPropsAndroid = {
   /**
@@ -152,6 +155,7 @@ const PASSTHROUGH_PROPS = [
   'onFocus',
   'onLayout',
   'testID',
+  'tvParallaxProperties',
 ] as const;
 
 /**

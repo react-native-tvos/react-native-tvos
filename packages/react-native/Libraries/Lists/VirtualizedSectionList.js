@@ -10,7 +10,7 @@
 
 'use strict';
 
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 
 type VirtualizedSectionListType =
   typeof VirtualizedLists.VirtualizedSectionList;
@@ -21,5 +21,5 @@ export type {
   SectionBase,
   ScrollToLocationParamsType,
   VirtualizedSectionListProps,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 export default VirtualizedSectionList;

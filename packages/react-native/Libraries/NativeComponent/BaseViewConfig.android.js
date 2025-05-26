@@ -13,6 +13,7 @@ import type {PartialViewConfigWithoutName} from './PlatformBaseViewConfig';
 import * as ReactNativeFeatureFlags from '../../src/private/featureflags/ReactNativeFeatureFlags';
 import NativeReactNativeFeatureFlags from '../../src/private/featureflags/specs/NativeReactNativeFeatureFlags';
 import ReactNativeStyleAttributes from '../Components/View/ReactNativeStyleAttributes';
+import {validAttributesForTVProps} from './TVViewConfig';
 import {DynamicallyInjectedByGestureHandler} from './ViewConfigIgnore';
 
 const bubblingEventTypes = {
@@ -135,6 +136,13 @@ const directEventTypes = {
   onGestureHandlerStateChange: DynamicallyInjectedByGestureHandler({
     registrationName: 'onGestureHandlerStateChange',
   }),
+
+  topPressIn: {
+    registrationName: 'onPressIn',
+  },
+  topPressOut: {
+    registrationName: 'onPressOut',
+  },
 
   // Direct events from UIManagerModuleConstants.java
   topContentSizeChange: {
@@ -439,6 +447,7 @@ const PlatformBaseViewConfigAndroid: PartialViewConfigWithoutName = {
   validAttributes: {
     ...validAttributesForNonEventProps,
     ...validAttributesForEventProps,
+    ...validAttributesForTVProps,
   },
 };
 
