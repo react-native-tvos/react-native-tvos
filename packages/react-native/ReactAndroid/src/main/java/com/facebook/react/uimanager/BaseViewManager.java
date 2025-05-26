@@ -780,6 +780,16 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
                 MapBuilder.of(
                     "phasedRegistrationNames",
                     MapBuilder.of("bubbled", "onClick", "captured", "onClickCapture")))
+            .put(
+              "topFocus",
+              MapBuilder.of(
+                "phasedRegistrationNames",
+                MapBuilder.of("bubbled", "onFocus", "captured", "onFocusCapture")))
+            .put(
+              "topBlur",
+              MapBuilder.of(
+                "phasedRegistrationNames",
+                MapBuilder.of("bubbled", "onBlur", "captured", "onBlurCapture")))
             .build());
     return eventTypeConstants;
   }
@@ -795,6 +805,12 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
             .put(
                 "topAccessibilityAction",
                 MapBuilder.of("registrationName", "onAccessibilityAction"))
+          .put(
+            "topPressIn",
+            MapBuilder.of("registrationName", "onPressIn"))
+          .put(
+            "topPressOut",
+            MapBuilder.of("registrationName", "onPressOut"))
             .build());
     return eventTypeConstants;
   }

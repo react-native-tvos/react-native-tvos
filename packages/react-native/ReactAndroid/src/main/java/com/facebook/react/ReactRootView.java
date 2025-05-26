@@ -70,6 +70,7 @@ import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.common.ViewUtil;
 import com.facebook.react.uimanager.events.EventDispatcher;
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper;
 import com.facebook.systrace.Systrace;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -106,7 +107,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
   private @Nullable JSTouchDispatcher mJSTouchDispatcher;
   private @Nullable JSPointerDispatcher mJSPointerDispatcher;
   private final ReactAndroidHWInputDeviceHelper mAndroidHWInputDeviceHelper =
-      new ReactAndroidHWInputDeviceHelper(this);
+      new ReactAndroidHWInputDeviceHelper();
   private boolean mWasMeasured = false;
   private int mWidthMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
   private int mHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
@@ -324,7 +325,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       FLog.w(TAG, "Unable to handle key event as the catalyst instance has not been attached");
       return super.dispatchKeyEvent(ev);
     }
-    mAndroidHWInputDeviceHelper.handleKeyEvent(ev);
+    mAndroidHWInputDeviceHelper.handleKeyEvent(ev, getCurrentReactContext());
     return super.dispatchKeyEvent(ev);
   }
 
@@ -337,7 +338,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
       return;
     }
-    mAndroidHWInputDeviceHelper.clearFocus();
+    mAndroidHWInputDeviceHelper.clearFocus(getCurrentReactContext());
     super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
   }
 
@@ -351,7 +352,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       super.requestChildFocus(child, focused);
       return;
     }
-    mAndroidHWInputDeviceHelper.onFocusChanged(focused);
+    mAndroidHWInputDeviceHelper.onFocusChanged(focused, getCurrentReactContext());
     super.requestChildFocus(child, focused);
   }
 
@@ -832,7 +833,13 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
 
   /* package */ void sendEvent(String eventName, @Nullable WritableMap params) {
     if (hasActiveReactInstance()) {
-      getCurrentReactContext().emitDeviceEvent(eventName, params);
+      // getCurrentReactContext().emitDeviceEvent(eventName, params);
+      // TODO: check the change below for RN 0.72
+      mAndroidHWInputDeviceHelper.emitNamedEvent(
+        eventName,
+        params,
+        getCurrentReactContext()
+      );
     }
   }
 
@@ -923,7 +930,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
           sendEvent(
               "keyboardDidHide",
               createKeyboardEventPayload(
-                  PixelUtil.toDIPFromPixel(mVisibleViewArea.height()),
+                  PixelUtil.toDIPFromPixel(mLastHeight),
                   0,
                   PixelUtil.toDIPFromPixel(mVisibleViewArea.width()),
                   0));
@@ -972,7 +979,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
         sendEvent(
             "keyboardDidHide",
             createKeyboardEventPayload(
-                PixelUtil.toDIPFromPixel(mVisibleViewArea.height()),
+                PixelUtil.toDIPFromPixel(mLastHeight),
                 0,
                 PixelUtil.toDIPFromPixel(mVisibleViewArea.width()),
                 0));

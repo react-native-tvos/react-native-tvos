@@ -149,6 +149,8 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
 
   private var eventDispatcher: EventDispatcher? = null
 
+  private var isKeyboardOpened: Boolean = false
+
   private var textWatcherDelegator: TextWatcherDelegator? = null
     get() {
       if (field == null) {
@@ -274,6 +276,25 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     TextLayoutManager.deleteCachedSpannableForTag(id)
   }
 
+  // Not currently used, but leaving in as a comment in case it's needed later
+
+  /*
+  private fun isTVDevice(): Boolean {
+    val uiModeManager: UiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+    return uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
+  }
+   */
+
+  public fun showKeyboard() {
+    isKeyboardOpened = true
+    showSoftKeyboard()
+  }
+
+  public fun hideKeyboard() {
+    isKeyboardOpened = false
+    hideSoftKeyboard()
+  }
+
   // After the text changes inside an EditText, TextView checks if a layout() has been requested.
   // If it has, it will not scroll the text to the end of the new text inserted, but wait for the
   // next layout() to be called. However, we do not perform a layout() after a requestLayout(), so
@@ -299,6 +320,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
         // Disallow parent views to intercept touch events, until we can detect if we should be
         // capturing these touches or not.
         this.parent.requestDisallowInterceptTouchEvent(true)
+        isKeyboardOpened = !isKeyboardOpened
       }
 
       MotionEvent.ACTION_MOVE ->
@@ -322,6 +344,9 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     if (keyCode == KeyEvent.KEYCODE_ENTER && !isMultiline) {
       hideSoftKeyboard()
       return true
+    }
+    if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_BACK) {
+      isKeyboardOpened = !isKeyboardOpened
     }
     return super.onKeyUp(keyCode, event)
   }
@@ -373,6 +398,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
       super.clearFocus()
       rootViewGroup.descendantFocusability = oldDescendantFocusability
     }
+    isKeyboardOpened = false
     hideSoftKeyboard()
   }
 
@@ -389,6 +415,12 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     val focused = super.requestFocus(FOCUS_DOWN, null)
     if (isInTouchMode && showSoftInputOnFocus) {
       showSoftKeyboard()
+    } else {
+      if (isKeyboardOpened) {
+        showSoftKeyboard()
+      } else {
+        hideSoftKeyboard()
+      }
     }
 
     return focused
@@ -476,6 +508,9 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     super.onFocusChanged(focused, direction, previouslyFocusedRect)
     if (focused && selectionWatcher != null) {
       selectionWatcher?.onSelectionChanged(selectionStart, selectionEnd)
+    }
+    if (!focused) {
+      isKeyboardOpened = false
     }
   }
 
@@ -771,6 +806,31 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     }
   }
 
+  private fun stripAbsoluteSizeSpans(sb: SpannableStringBuilder) {
+    // We have already set a font size on the EditText itself. We can safely remove sizing spans
+    // which are the same as the set font size, and not otherwise overlapped.
+    val effectiveFontSize: Int = textAttributes.effectiveFontSize
+    val spans = sb.getSpans(
+      0, sb.length,
+      ReactAbsoluteSizeSpan::class.java
+    )
+
+    outerLoop@ for (span in spans) {
+      val overlappingSpans =
+        sb.getSpans(
+          sb.getSpanStart(span), sb.getSpanEnd(span),
+          ReactAbsoluteSizeSpan::class.java
+        )
+
+      for (overlappingSpan in overlappingSpans) {
+        if (span.size !== effectiveFontSize) {
+          continue@outerLoop
+        }
+      }
+
+      sb.removeSpan(span)
+    }
+  }
   /**
    * Copy styles represented as attributes to the underlying span, for later measurement or other
    * usage outside the ReactEditText.
