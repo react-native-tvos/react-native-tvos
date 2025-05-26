@@ -122,7 +122,11 @@ RCT_EXPORT_MODULE()
 
     UIWindow *mainWindow = RCTKeyWindow();
     self->_window = [[UIWindow alloc] initWithWindowScene:mainWindow.windowScene];
+#if TARGET_OS_TV
+    self->_window.windowLevel = UIWindowLevelNormal + 1;
+#else
     self->_window.windowLevel = UIWindowLevelStatusBar + 1;
+#endif
     self->_window.rootViewController = [UIViewController new];
 
     self->_container = [[UIView alloc] init];

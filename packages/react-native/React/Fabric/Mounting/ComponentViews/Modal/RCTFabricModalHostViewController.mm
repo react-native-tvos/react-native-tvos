@@ -42,15 +42,26 @@
   [_touchHandler attachToView:self.view];
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-  return [RCTUIStatusBarManager() statusBarStyle];
-}
-
 - (void)viewDidDisappear:(BOOL)animated
 {
   [super viewDidDisappear:animated];
   _lastViewBounds = CGRectZero;
+}
+
+#if TARGET_OS_TV
+- (void)viewDidAppear:(BOOL)animated
+{
+  [self.delegate enableEventHandlers];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+  [self.delegate disableEventHandlers];
+}
+#else
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+  return [RCTUIStatusBarManager() statusBarStyle];
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -76,5 +87,6 @@
   return _supportedInterfaceOrientations;
 }
 #endif // RCT_DEV
+#endif // TARGET_OS_TV
 
 @end

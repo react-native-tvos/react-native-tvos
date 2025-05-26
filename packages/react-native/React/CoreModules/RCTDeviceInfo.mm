@@ -25,7 +25,9 @@ using namespace facebook::react;
 @end
 
 @implementation RCTDeviceInfo {
+#if !TARGET_OS_TV
   UIInterfaceOrientation _currentInterfaceOrientation;
+#endif
   NSDictionary *_currentInterfaceDimensions;
   BOOL _isFullscreen;
   std::atomic<BOOL> _invalidated;
@@ -54,10 +56,12 @@ RCT_EXPORT_MODULE()
                         change:(NSDictionary *)change
                        context:(void *)context
 {
+#if !TARGET_OS_TV
   if ([keyPath isEqualToString:kFrameKeyPath]) {
     [self interfaceFrameDidChange];
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
   }
+#endif
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -79,6 +83,7 @@ RCT_EXPORT_MODULE()
 
   _currentInterfaceDimensions = [self _exportedDimensions];
 
+#if !TARGET_OS_TV
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(interfaceOrientationDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
@@ -93,6 +98,7 @@ RCT_EXPORT_MODULE()
                                            selector:@selector(interfaceFrameDidChange)
                                                name:UIApplicationDidBecomeActiveNotification
                                              object:nil];
+#endif
 
 #if TARGET_OS_IOS
 
@@ -154,9 +160,9 @@ RCT_EXPORT_MODULE()
 static BOOL RCTIsIPhoneNotched()
 {
   static BOOL isIPhoneNotched = NO;
-  static dispatch_once_t onceToken;
 
 #if TARGET_OS_IOS
+  static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     RCTAssertMainQueue();
 
@@ -234,6 +240,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
   });
 }
 
+#if !TARGET_OS_TV
+
 - (void)interfaceOrientationDidChange
 {
 #if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
@@ -293,6 +301,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 #pragma clang diagnostic pop
   }
 }
+
+#endif // TARGET_OS_TV
 
 - (std::shared_ptr<TurboModule>)getTurboModule:(const ObjCTurboModule::InitParams &)params
 {

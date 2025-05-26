@@ -229,6 +229,7 @@ RCT_EXPORT_MODULE()
   });
 }
 
+#if !TARGET_OS_TV
 // Names and coordinate system from html5 spec:
 // https://developer.mozilla.org/en-US/docs/Web/API/Screen.orientation
 // https://developer.mozilla.org/en-US/docs/Web/API/Screen.lockOrientation
@@ -267,6 +268,7 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
     @"isLandscape" : @(isLandscape),
   };
 }
+#endif
 
 #if TARGET_OS_IOS
 - (void)namedOrientationDidChange

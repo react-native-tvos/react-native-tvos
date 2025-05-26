@@ -22,6 +22,10 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
+#if TARGET_OS_TV
+#import "RCTTVView.h"
+#endif
+
 @implementation RCTConvert (UIAccessibilityTraits)
 
 RCT_MULTI_ENUM_CONVERTER(
@@ -144,7 +148,11 @@ RCT_EXPORT_MODULE()
 
 - (UIView *)view
 {
+#if TARGET_OS_TV
+  return [[RCTTVView alloc] initWithBridge:self.bridge];
+#else
   return [RCTView new];
+#endif
 }
 
 - (RCTShadowView *)shadowView
@@ -174,6 +182,26 @@ RCT_EXPORT_MODULE()
 }
 
 #pragma mark - View properties
+
+#if TARGET_OS_TV
+// TODO: Delete props for Apple TV.
+RCT_EXPORT_VIEW_PROPERTY(isTVSelectable, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(hasTVPreferredFocus, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(tvParallaxProperties, NSDictionary)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusUp, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusDown, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusLeft, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(nextFocusRight, NSNumber)
+RCT_EXPORT_VIEW_PROPERTY(autoFocus, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(trapFocusUp, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(trapFocusDown, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(trapFocusLeft, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(trapFocusRight, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(onFocus, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onBlur, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPressIn, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPressOut, RCTDirectEventBlock)
+#endif
 
 // Accessibility related properties
 RCT_REMAP_VIEW_PROPERTY(accessible, reactAccessibilityElement.isAccessibilityElement, BOOL)
@@ -297,6 +325,7 @@ RCT_CUSTOM_VIEW_PROPERTY(accessibilityState, NSDictionary, RCTView)
 
 RCT_CUSTOM_VIEW_PROPERTY(accessibilityShowsLargeContentViewer, BOOL, RCTView)
 {
+#if !TARGET_OS_TV
   if (@available(iOS 13.0, *)) {
     BOOL showsLargeContentViewer = json ? [RCTConvert BOOL:json] : defaultView.showsLargeContentViewer;
 
@@ -308,13 +337,16 @@ RCT_CUSTOM_VIEW_PROPERTY(accessibilityShowsLargeContentViewer, BOOL, RCTView)
       view.showsLargeContentViewer = NO;
     }
   }
+#endif
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(accessibilityLargeContentTitle, NSString, RCTView)
 {
+#if !TARGET_OS_TV
   if (@available(iOS 13.0, *)) {
     view.largeContentTitle = json ? [RCTConvert NSString:json] : defaultView.largeContentTitle;
   }
+#endif
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(nativeID, NSString *, RCTView)
@@ -694,6 +726,31 @@ RCT_EXPORT_SHADOW_PROPERTY(display, YGDisplay)
 RCT_EXPORT_SHADOW_PROPERTY(onLayout, RCTDirectEventBlock)
 
 RCT_EXPORT_SHADOW_PROPERTY(direction, YGDirection)
+
+#if TARGET_OS_TV
+RCT_EXPORT_METHOD(setDestinations : (nonnull NSNumber *)viewTag reactTags : (NSArray<NSNumber *> *)destinationTags)
+{
+  [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+    RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
+    NSMutableArray* destinations = [NSMutableArray array];
+    for (NSNumber *  tag in destinationTags) {
+      RCTTVView *destination = (RCTTVView*)viewRegistry[tag];
+      if (destination != nil) {
+        [destinations addObject:destination];
+      }
+    }
+    [view setFocusDestinations:destinations];
+  }];  
+}
+
+RCT_EXPORT_METHOD(requestTVFocus : (nonnull NSNumber *)viewTag)
+{
+  [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+    RCTTVView *view = (RCTTVView *)viewRegistry[viewTag];
+    [view requestTVFocus];
+  }];
+}
+#endif
 
 // The events below define the properties that are not used by native directly, but required in the view config for new
 // renderer to function.

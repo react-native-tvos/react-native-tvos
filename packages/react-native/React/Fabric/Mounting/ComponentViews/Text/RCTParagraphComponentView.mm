@@ -35,11 +35,13 @@ using namespace facebook::react;
 
 @end
 
+#if !TARGET_OS_TV
 @interface RCTParagraphComponentView () <UIEditMenuInteractionDelegate>
 
 @property (nonatomic, nullable) UIEditMenuInteraction *editMenuInteraction API_AVAILABLE(ios(16.0));
 
 @end
+#endif
 
 @implementation RCTParagraphComponentView {
   ParagraphAttributes _paragraphAttributes;
@@ -287,6 +289,7 @@ using namespace facebook::react;
 
 - (void)enableContextMenu
 {
+#if !TARGET_OS_TV
   _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(handleLongPress:)];
 
@@ -295,18 +298,22 @@ using namespace facebook::react;
     [self addInteraction:_editMenuInteraction];
   }
   [self addGestureRecognizer:_longPressGestureRecognizer];
+#endif
 }
 
 - (void)disableContextMenu
 {
+#if !TARGET_OS_TV
   [self removeGestureRecognizer:_longPressGestureRecognizer];
   if (@available(iOS 16.0, *)) {
     [self removeInteraction:_editMenuInteraction];
     _editMenuInteraction = nil;
   }
   _longPressGestureRecognizer = nil;
+#endif
 }
 
+#if !TARGET_OS_TV
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gesture
 {
   if (@available(iOS 16.0, macCatalyst 16.0, *)) {
@@ -325,6 +332,7 @@ using namespace facebook::react;
     [menuController showMenuFromView:self rect:self.bounds];
   }
 }
+#endif
 
 - (BOOL)canBecomeFirstResponder
 {
@@ -345,6 +353,7 @@ using namespace facebook::react;
 
 - (void)copy:(id)sender
 {
+#if !TARGET_OS_TV
   NSAttributedString *attributedText = self.attributedText;
 
   NSMutableDictionary *item = [NSMutableDictionary new];
@@ -361,6 +370,7 @@ using namespace facebook::react;
 
   UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
   pasteboard.items = @[ item ];
+#endif
 }
 
 @end

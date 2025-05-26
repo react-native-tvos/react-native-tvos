@@ -180,7 +180,6 @@ RCT_EXPORT_MODULE()
     [_container addGestureRecognizer:self.gestureRecognizer];
     [_container addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap)]];
 
-    _container.backgroundColor = [UIColor systemBackgroundColor];
   }
 
   return _container;

@@ -35,7 +35,9 @@ NSString *__nullable RCTHomePathForURL(NSURL *__nullable URL);
 BOOL RCTIsHomeAssetURL(NSURL *__nullable imageURL);
 
 // Returns the current device's orientation
+#if !TARGET_OS_TV
 UIDeviceOrientation RCTDeviceOrientation(void);
+#endif
 
 // Whether the New Architecture is enabled or not
 BOOL RCTIsNewArchEnabled(void)
@@ -384,10 +386,14 @@ CGFloat RCTFontSizeMultiplier(void)
   return mapping[RCTSharedApplication().preferredContentSizeCategory].floatValue;
 }
 
+#if !TARGET_OS_TV
+
 UIDeviceOrientation RCTDeviceOrientation(void)
 {
   return [[UIDevice currentDevice] orientation];
 }
+
+#endif
 
 CGSize RCTScreenSize(void)
 {
@@ -400,11 +406,15 @@ CGSize RCTScreenSize(void)
     });
   });
 
+#if TARGET_OS_TV
+  return CGSizeMake(portraitSize.height, portraitSize.width); // landscape
+#else
   if (UIDeviceOrientationIsLandscape(RCTDeviceOrientation())) {
     return CGSizeMake(portraitSize.height, portraitSize.width);
   } else {
     return CGSizeMake(portraitSize.width, portraitSize.height);
   }
+#endif
 }
 
 CGSize RCTViewportSize(void)
@@ -626,10 +636,12 @@ UIWindow *__nullable RCTKeyWindow(void)
   return nil;
 }
 
+#if !TARGET_OS_TV
 UIStatusBarManager *__nullable RCTUIStatusBarManager(void)
 {
   return RCTKeyWindow().windowScene.statusBarManager;
 }
+#endif
 
 UIViewController *__nullable RCTPresentedViewController(void)
 {

@@ -445,6 +445,7 @@ RCT_ENUM_CONVERTER(
   return type;
 }
 
+#if !TARGET_OS_TV
 RCT_MULTI_ENUM_CONVERTER(
     UIDataDetectorTypes,
     (@{
@@ -460,6 +461,24 @@ RCT_MULTI_ENUM_CONVERTER(
     }),
     UIDataDetectorTypePhoneNumber,
     unsignedLongLongValue)
+
+RCT_MULTI_ENUM_CONVERTER(
+    WKDataDetectorTypes,
+    (@{
+      @"phoneNumber" : @(WKDataDetectorTypePhoneNumber),
+      @"link" : @(WKDataDetectorTypeLink),
+      @"address" : @(WKDataDetectorTypeAddress),
+      @"calendarEvent" : @(WKDataDetectorTypeCalendarEvent),
+      @"trackingNumber" : @(WKDataDetectorTypeTrackingNumber),
+      @"flightNumber" : @(WKDataDetectorTypeFlightNumber),
+      @"lookupSuggestion" : @(WKDataDetectorTypeLookupSuggestion),
+      @"none" : @(WKDataDetectorTypeNone),
+      @"all" : @(WKDataDetectorTypeAll),
+    }),
+    WKDataDetectorTypePhoneNumber,
+    unsignedLongLongValue)
+
+#endif // !TARGET_OS_TV
 
 RCT_ENUM_CONVERTER(
     UIKeyboardAppearance,
@@ -498,7 +517,7 @@ RCT_ENUM_CONVERTER(
     }),
     UIUserInterfaceStyleUnspecified,
     integerValue)
-
+#if !TARGET_OS_TV
 RCT_ENUM_CONVERTER(
     UIInterfaceOrientationMask,
     (@{
@@ -510,7 +529,6 @@ RCT_ENUM_CONVERTER(
     }),
     NSNotFound,
     unsignedIntegerValue)
-
 RCT_ENUM_CONVERTER(
     UIModalPresentationStyle,
     (@{
@@ -521,6 +539,7 @@ RCT_ENUM_CONVERTER(
     }),
     UIModalPresentationFullScreen,
     integerValue)
+#endif
 
 RCT_ENUM_CONVERTER(
     UIViewContentMode,

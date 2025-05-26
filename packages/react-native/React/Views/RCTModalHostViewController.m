@@ -12,7 +12,9 @@
 
 @implementation RCTModalHostViewController {
   CGRect _lastViewFrame;
+#if !TARGET_OS_TV
   UIStatusBarStyle _preferredStatusBarStyle;
+#endif
   BOOL _preferredStatusBarHidden;
 }
 
@@ -24,10 +26,38 @@
 
   self.modalInPresentation = YES;
 
+#if !TARGET_OS_TV
   _preferredStatusBarStyle = [RCTUIStatusBarManager() statusBarStyle];
   _preferredStatusBarHidden = [RCTUIStatusBarManager() isStatusBarHidden];
+#endif
 
   return self;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView enableEventHandlers];
+#endif
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  [self.modalHostView disableEventHandlers];
+  if (self.modalHostView.onRequestClose) {
+    self.modalHostView.onRequestClose(nil);
+  }
+#endif
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+#if TARGET_OS_TV
+  if (self.modalHostView.onDismiss) {
+    self.modalHostView.onDismiss(nil);
+  }
+#endif
 }
 
 - (void)viewDidLayoutSubviews
@@ -40,6 +70,7 @@
   }
 }
 
+#if !TARGET_OS_TV
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
   return _preferredStatusBarStyle;
@@ -68,5 +99,6 @@
   return _supportedInterfaceOrientations;
 }
 #endif // RCT_DEV
+#endif // TARGET_OS_TV
 
 @end
