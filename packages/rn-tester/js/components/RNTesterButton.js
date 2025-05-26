@@ -27,7 +27,7 @@ function RNTesterButton(props: Props): React.Node {
     <Pressable
       testID={props.testID}
       onPress={props.onPress}
-      style={({pressed}) => [styles.button, pressed && styles.pressed]}>
+      style={({pressed, focused}) => [styles.button, (pressed || focused) && styles.pressed]}>
       <Text testID={props.textTestID}>{props.children}</Text>
     </Pressable>
   );
