@@ -14,9 +14,9 @@ export type {
   ViewToken,
   ViewabilityConfig,
   ViewabilityConfigCallbackPair,
-} from '@react-native/virtualized-lists';
+} from '@react-native-tvos/virtualized-lists';
 
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 
 type ViewabilityHelperType = typeof VirtualizedLists.ViewabilityHelper;
 const ViewabilityHelper: ViewabilityHelperType =

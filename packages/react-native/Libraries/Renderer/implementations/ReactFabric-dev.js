@@ -13682,10 +13682,11 @@ __DEV__ &&
       }
       return map;
     }
-    function findNodeHandle(componentOrHandle) {
+    function findNodeHandle(componentOrHandle, suppressWarning) {
       var owner = current;
       null !== owner &&
         isRendering &&
+        !suppressWarning &&
         null !== owner.stateNode &&
         (owner.stateNode._warnedAboutRefsInRender ||
           console.error(

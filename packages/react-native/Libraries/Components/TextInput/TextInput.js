@@ -50,6 +50,7 @@ import type {
 } from './TextInput.flow';
 
 import usePressability from '../../Pressability/usePressability';
+import warnOnce from '../../Utilities/warnOnce';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import StyleSheet, {type TextStyleProp} from '../../StyleSheet/StyleSheet';
 import Text from '../../Text/Text';
@@ -669,6 +670,13 @@ function InternalTextInput(props: TextInputProps): React.Node {
         (flattenedStyle.padding == null &&
           flattenedStyle.paddingVertical == null &&
           flattenedStyle.paddingTop == null));
+
+    if (props.multiline === true && Platform.isTVOS) {
+      warnOnce(
+        'text-input-multiline-tvos',
+        'Multiline TextInput not supported on Apple TV.  See https://github.com/react-native-tvos/react-native-tvos/issues/109',
+      );
+    }
 
     textInput = (
       <RCTTextInputView
