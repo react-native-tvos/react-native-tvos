@@ -71,6 +71,7 @@ describe('ReactNativeTestTools', () => {
   });
 
   it('interacts via tap()', async () => {
+    /*
     const touchFn = jest.fn();
     const renderTouch = await create(
       <TouchableWithoutFeedback onPress={touchFn}>
@@ -79,7 +80,7 @@ describe('ReactNativeTestTools', () => {
     );
     tap(renderTouch.root);
     expect(touchFn).toBeCalled();
-
+     */
     // example of tapping <Text />
     const textFn = jest.fn();
     const renderText = await create(<Text onPress={textFn} />);

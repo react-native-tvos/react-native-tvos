@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict-local
+ * @flow
  * @format
  */
 
@@ -131,6 +131,11 @@ export type PressabilityConfig = $ReadOnly<{
   onPressOut?: ?(event: GestureResponderEvent) => mixed,
 
   /**
+   * Called when a TV event is passed to the config.
+   */
+  onTVEvent?: ?(event: any) => void,
+
+  /**
    * Whether to prevent any other native components from becoming responder
    * while this pressable is responder.
    */
@@ -151,6 +156,8 @@ export type EventHandlers = $ReadOnly<{
   onResponderTerminate: (event: GestureResponderEvent) => void,
   onResponderTerminationRequest: () => boolean,
   onStartShouldSetResponder: () => boolean,
+  onPressIn: (event: any) => void,
+  onPressOut: (event: any) => void,
 }>;
 
 type TouchState =
@@ -390,6 +397,7 @@ export default class Pressability {
   }>;
   _touchActivateTime: ?number;
   _touchState: TouchState = 'NOT_RESPONDER';
+  _longPressSent: boolean = false;
 
   constructor(config: PressabilityConfig) {
     this.configure(config);
@@ -429,6 +437,50 @@ export default class Pressability {
   }
 
   _createEventHandlers(): EventHandlers {
+    const tvPressEventHandlers = {
+      onPressIn: (evt: any): void => {
+        if (this._config.disabled === false) {
+          return;
+        }
+
+        this._longPressSent = false;
+
+        const {onPressIn, onLongPress} = this._config;
+        onPressIn && onPressIn(evt);
+
+        const delayPressIn = normalizeDelay(this._config.delayPressIn);
+        const delayLongPress = normalizeDelay(
+          this._config.delayLongPress,
+          10,
+          DEFAULT_LONG_PRESS_DELAY_MS - delayPressIn,
+        );
+        this._longPressDelayTimeout = setTimeout(() => {
+          onLongPress && onLongPress(evt);
+          this._longPressSent = true;
+        }, delayLongPress + delayPressIn);
+      },
+      onPressOut: (evt: any): void => {
+        if (this._config.disabled === false) {
+          return;
+        }
+        this._cancelLongPressDelayTimeout();
+        const {onPress, onLongPress, onPressOut, android_disableSound} =
+          this._config;
+        onPressOut && onPressOut(evt);
+
+        if (onPress != null) {
+          const isPressCanceledByLongPress =
+            onLongPress != null && this._longPressSent;
+          if (!isPressCanceledByLongPress) {
+            if (Platform.OS === 'android' && android_disableSound !== true) {
+              SoundManager.playTouchSound();
+            }
+            onPress(evt);
+          }
+        }
+      },
+    };
+
     const focusEventHandlers = {
       onBlur: (event: BlurEvent): void => {
         const {onBlur} = this._config;
@@ -528,7 +580,7 @@ export default class Pressability {
         return cancelable ?? true;
       },
 
-      onClick: (event: GestureResponderEvent): void => {
+      onClick: (event: any): void => {
         // If event has `pointerType`, it was emitted from a PointerEvent and
         // we should ignore it to avoid triggering `onPress` twice.
         if (event?.nativeEvent?.hasOwnProperty?.('pointerType')) {
@@ -539,6 +591,14 @@ export default class Pressability {
         // in particular, we shouldn't respond to clicks from nested pressables
         if (event?.currentTarget !== event?.target) {
           event?.stopPropagation();
+          return;
+        }
+
+        // Remove spurious onClick events with empty event object generated on Android TV
+        if (
+          Platform.isTV &&
+          (event?.eventType === null || event?.eventType === undefined)
+        ) {
           return;
         }
 
@@ -601,6 +661,7 @@ export default class Pressability {
         };
       }
       return {
+        ...tvPressEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...hoverPointerEvents,
@@ -653,6 +714,7 @@ export default class Pressability {
               },
             };
       return {
+        ...tvPressEventHandlers,
         ...focusEventHandlers,
         ...responderEventHandlers,
         ...mouseEventHandlers,

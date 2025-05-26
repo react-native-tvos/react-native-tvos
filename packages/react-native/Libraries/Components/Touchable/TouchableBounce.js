@@ -204,14 +204,14 @@ class TouchableBounce extends React.Component<
     );
   }
 
+  componentDidMount(): void {
+    this.state.pressability.configure(this._createPressabilityConfig());
+  }
+
   componentDidUpdate(
     prevProps: TouchableBounceProps,
     prevState: TouchableBounceState,
   ) {
-    this.state.pressability.configure(this._createPressabilityConfig());
-  }
-
-  componentDidMount(): mixed {
     this.state.pressability.configure(this._createPressabilityConfig());
   }
 

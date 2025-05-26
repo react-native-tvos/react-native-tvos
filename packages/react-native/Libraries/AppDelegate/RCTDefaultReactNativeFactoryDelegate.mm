@@ -63,10 +63,12 @@
                           moduleName:(NSString *)moduleName
                            initProps:(NSDictionary *)initProps
 {
-  BOOL enableFabric = self.fabricEnabled;
+  BOOL enableFabric = self.newArchEnabled;
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
 
+#if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
+#endif
 
   return rootView;
 }

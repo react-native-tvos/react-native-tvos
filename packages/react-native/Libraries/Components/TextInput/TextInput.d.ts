@@ -566,7 +566,7 @@ export type TextInputSubmitEditingEvent =
  * @see https://reactnative.dev/docs/textinput#props
  */
 export interface TextInputProps
-  extends ViewProps,
+  extends Omit<ViewProps, 'onFocus' | 'onBlur' | 'onPressIn' | 'onPressOut'>,
     TextInputIOSProps,
     TextInputAndroidProps,
     AccessibilityProps {

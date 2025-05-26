@@ -10,7 +10,7 @@
 
 'use strict';
 
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 
 type VirtualizedListContextResetterType =
   typeof VirtualizedLists.VirtualizedListContextResetter;

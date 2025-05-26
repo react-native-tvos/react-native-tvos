@@ -45,7 +45,11 @@ UIFontMetrics *RCTUIFontMetricsForDynamicTypeRamp(RCTDynamicTypeRamp dynamicType
       @(RCTDynamicTypeRampTitle3) : UIFontTextStyleTitle3,
       @(RCTDynamicTypeRampTitle2) : UIFontTextStyleTitle2,
       @(RCTDynamicTypeRampTitle1) : UIFontTextStyleTitle1,
+#if TARGET_OS_TV
+      @(RCTDynamicTypeRampLargeTitle): UIFontTextStyleTitle1,
+#else
       @(RCTDynamicTypeRampLargeTitle) : UIFontTextStyleLargeTitle,
+#endif
     };
   });
 

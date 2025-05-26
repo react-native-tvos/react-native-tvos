@@ -10,10 +10,10 @@
 
 'use strict';
 
-import VirtualizedLists from '@react-native/virtualized-lists';
+import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 
 type FillRateHelperType = typeof VirtualizedLists.FillRateHelper;
 const FillRateHelper: FillRateHelperType = VirtualizedLists.FillRateHelper;
 
-export type {FillRateInfo} from '@react-native/virtualized-lists';
+export type {FillRateInfo} from '@react-native-tvos/virtualized-lists';
 export default FillRateHelper;
