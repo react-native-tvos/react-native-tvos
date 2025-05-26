@@ -316,6 +316,30 @@ module.exports = {
     return require('./Libraries/Vibration/Vibration').default;
   },
   // #endregion
+  // #region TV
+  get TVEventControl(): TVEventControl {
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVEventHandler(): TVEventHandler {
+    return require('./Libraries/Components/TV/TVEventHandler');
+  },
+  get useTVEventHandler(): useTVEventHandler {
+    return require('./Libraries/Components/TV/useTVEventHandler').default;
+  },
+  get TVFocusGuideView(): TVFocusGuideView {
+    return require('./Libraries/Components/TV/TVFocusGuideView').default;
+  },
+  get TVMenuControl(): TVEventControl {
+    warnOnce(
+      'TVMenuControl-moved',
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
+    );
+    return require('./Libraries/Components/TV/TVEventControl');
+  },
+  get TVTextScrollView(): TVTextScrollView {
+    return require('./Libraries/Components/TV/TVTextScrollView').default;
+  },
+  // #endregion
 } as ReactNativePublicAPI;
 
 if (__DEV__) {
