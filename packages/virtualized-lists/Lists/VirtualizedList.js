@@ -61,6 +61,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
+  TVFocusGuideView,
   View,
   findNodeHandle,
 } from 'react-native';
@@ -1120,6 +1121,22 @@ class VirtualizedList extends StateSafePureComponent<
 
     this._hasMore = this.state.cellsAroundViewport.last < itemCount - 1;
 
+    const trapFocusHorizontal = I18nManager.isRTL
+      ? {
+          trapFocusRight:
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0,
+          trapFocusLeft:
+            horizontalOrDefault(this.props.horizontal) && this._hasMore,
+        }
+      : {
+          trapFocusLeft:
+            horizontalOrDefault(this.props.horizontal) &&
+            this.state.cellsAroundViewport.first > 0,
+          trapFocusRight:
+            horizontalOrDefault(this.props.horizontal) && this._hasMore,
+        };
+
     const innerRet = (
       <VirtualizedListContextProvider
         value={{
@@ -1130,18 +1147,44 @@ class VirtualizedList extends StateSafePureComponent<
           registerAsNestedChild: this._registerAsNestedChild,
           unregisterAsNestedChild: this._unregisterAsNestedChild,
         }}>
-        {cloneElement(
-          (
-            this.props.renderScrollComponent ||
-            this._defaultRenderScrollComponent
-          )(
-            // $FlowExpectedError[prop-missing] scrollProps is a superset of ScrollViewProps
-            scrollProps,
-          ) as ExactReactElement_DEPRECATED<any>,
-          {
-            ref: this._captureScrollRef,
-          },
-          cells,
+        {Platform.isTV ? (
+          <TVFocusGuideView
+            {...trapFocusHorizontal}
+            trapFocusUp={
+              !horizontalOrDefault(this.props.horizontal) &&
+              this.state.cellsAroundViewport.first > 0
+            }
+            trapFocusDown={
+              !horizontalOrDefault(this.props.horizontal) && this._hasMore
+            }>
+            {cloneElement(
+              (
+                this.props.renderScrollComponent ||
+                this._defaultRenderScrollComponent
+              )(
+                // $FlowExpectedError[prop-missing] scrollProps is a superset of ScrollViewProps
+                scrollProps,
+              ) as ExactReactElement_DEPRECATED<any>,
+              {
+                ref: this._captureScrollRef,
+              },
+              cells,
+            )}
+          </TVFocusGuideView>
+        ) : (
+          cloneElement(
+            (
+              this.props.renderScrollComponent ||
+              this._defaultRenderScrollComponent
+            )(
+              // $FlowExpectedError[prop-missing] scrollProps is a superset of ScrollViewProps
+              scrollProps,
+            ) as ExactReactElement_DEPRECATED<any>,
+            {
+              ref: this._captureScrollRef,
+            },
+            cells,
+          )
         )}
       </VirtualizedListContextProvider>
     );
@@ -1943,18 +1986,26 @@ class VirtualizedList extends StateSafePureComponent<
   }
 
   _getNonViewportRenderRegions = (
-    props: CellMetricProps,
+    props: CellMetricProps & {
+      additionalRenderRegions?: {first: number, last: number}[],
+    },
   ): $ReadOnlyArray<{
     first: number,
     last: number,
   }> => {
+    let nonViewportRenderRegions: {first: number, last: number}[] = [];
+
+    if (props?.additionalRenderRegions?.length) {
+      nonViewportRenderRegions = [...props.additionalRenderRegions];
+    }
+
     // Keep a viewport's worth of content around the last focused cell to allow
     // random navigation around it without any blanking. E.g. tabbing from one
     // focused item out of viewport to another.
     if (
       !(this._lastFocusedCellKey && this._cellRefs[this._lastFocusedCellKey])
     ) {
-      return [];
+      return nonViewportRenderRegions;
     }
 
     const lastFocusedCellRenderer = this._cellRefs[this._lastFocusedCellKey];
@@ -1968,7 +2019,7 @@ class VirtualizedList extends StateSafePureComponent<
       VirtualizedList._getItemKey(props, focusedCellIndex) !==
         this._lastFocusedCellKey
     ) {
-      return [];
+      return nonViewportRenderRegions;
     }
 
     let first = focusedCellIndex;
@@ -2000,7 +2051,7 @@ class VirtualizedList extends StateSafePureComponent<
       ).length;
     }
 
-    return [{first, last}];
+    return [...nonViewportRenderRegions, {first, last}];
   };
 
   _updateViewableItems(

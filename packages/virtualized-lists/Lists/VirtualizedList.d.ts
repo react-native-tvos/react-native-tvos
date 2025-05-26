@@ -390,4 +390,12 @@ export interface VirtualizedListWithoutRenderItemProps<ItemT>
     | React.ComponentType<CellRendererProps<ItemT>>
     | null
     | undefined;
+
+  /**
+   * Defines regions within the list that are exempt from virtualization,
+   * ensuring they remain rendered at all times. Useful for cases where
+   * users can't afford blank areas in certain parts of the list.
+   * The specified regions are lazily rendered after the initial render.
+   */
+  additionalRenderRegions?: {first: number; last: number}[] | undefined;
 }
