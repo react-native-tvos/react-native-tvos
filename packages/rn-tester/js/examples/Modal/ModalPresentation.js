@@ -19,7 +19,7 @@ import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 import RNTOption from '../../components/RNTOption';
 import * as React from 'react';
 import {useCallback, useContext, useState} from 'react';
-import {Modal, Platform, StyleSheet, Switch, Text, View} from 'react-native';
+import {Modal, Platform, StyleSheet, Text, View} from 'react-native';
 
 const animationTypes = ['slide', 'none', 'fade'] as const;
 const presentationStyles = [
@@ -37,6 +37,23 @@ const supportedOrientations = [
 ] as const;
 
 const backdropColors = ['red', 'blue', undefined];
+
+function Switch({
+  value,
+  onValueChange,
+}: {
+  value: boolean | void | null,
+  onValueChange: boolean => void,
+}) {
+  return (
+    <RNTesterButton
+      onPress={() => {
+        onValueChange(!value);
+      }}>
+      {value === true ? 'On' : 'Off'}
+    </RNTesterButton>
+  );
+}
 
 function ModalPresentation() {
   const onDismiss = useCallback(() => {
@@ -334,7 +351,7 @@ const styles = StyleSheet.create({
   inlineBlock: {
     padding: 6,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderColor: 'rgba(0,0,0, 0.1)',
     borderBottomWidth: 1,
@@ -360,6 +377,17 @@ const styles = StyleSheet.create({
     margin: 3,
     fontSize: 12,
     color: 'red',
+  },
+  switch: {
+    width: 100,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderColor: 'blue',
+    borderWidth: 2,
+  },
+  switchOn: {
+    backgroundColor: 'blue',
   },
 });
 

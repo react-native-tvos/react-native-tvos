@@ -118,6 +118,13 @@ class RNTesterExampleFilter<T> extends React.Component<Props<T>, State> {
                       : theme.BackgroundColor,
                 },
               ]}>
+              {!this.props.hideFilterPills && (
+                <RNTesterListFilters
+                  onFilterButtonPress={filterLabel =>
+                    this.setState({category: filterLabel})
+                  }
+                />
+              )}
               <View style={styles.textInputStyle}>
                 <Image
                   source={require('../assets/search-icon.png')}
@@ -145,13 +152,6 @@ class RNTesterExampleFilter<T> extends React.Component<Props<T>, State> {
                   value={this.state.filter}
                 />
               </View>
-              {!this.props.hideFilterPills && (
-                <RNTesterListFilters
-                  onFilterButtonPress={filterLabel =>
-                    this.setState({category: filterLabel})
-                  }
-                />
-              )}
             </View>
           );
         }}

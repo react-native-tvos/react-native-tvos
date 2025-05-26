@@ -122,6 +122,7 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
 // Required for the remoteNotificationReceived and localNotificationReceived events
 // Called when a notification is tapped from background. (Foreground notification will not be shown per
 // the presentation option selected above).
+#if !TARGET_OS_TV
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
     didReceiveNotificationResponse:(UNNotificationResponse *)response
              withCompletionHandler:(void (^)(void))completionHandler
@@ -137,6 +138,7 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
   [RCTPushNotificationManager didReceiveNotification:notification];
   completionHandler();
 }
+#endif
 
 #pragma mark - New Arch Enabled settings
 

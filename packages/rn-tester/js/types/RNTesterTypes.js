@@ -39,6 +39,7 @@ export type RNTesterModuleInfo = $ReadOnly<{
   category?: string,
   documentationURL?: string,
   exampleType?: 'components' | 'apis',
+  supportsTVOS?: boolean,
 }>;
 
 export type SectionData<T> = {
