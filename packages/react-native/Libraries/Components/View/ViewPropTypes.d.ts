@@ -87,6 +87,20 @@ export interface ViewPropsIOS extends TVViewPropsIOS {
 
 export interface ViewPropsAndroid {
   /**
+   * Callback that is called when the view is blurred.
+   *
+   * Note: This will only be called if the view is focusable.
+   */
+  onBlur?: ((e: BlurEvent) => void) | null | undefined;
+
+  /**
+   * Callback that is called when the view is focused.
+   *
+   * Note: This will only be called if the view is focusable.
+   */
+  onFocus?: ((e: FocusEvent) => void) | null | undefined;
+
+  /**
    * Whether this view should render itself (and all of its children) into a single hardware texture on the GPU.
    *
    * On Android, this is useful for animations and interactions that only modify opacity, rotation, translation, and/or scale:

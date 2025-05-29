@@ -39,6 +39,8 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.annotations.ReactPropGroup
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil
+import com.facebook.react.uimanager.events.BlurEvent
+import com.facebook.react.uimanager.events.FocusEvent
 import com.facebook.react.uimanager.style.BackgroundImageLayer
 import com.facebook.react.uimanager.style.BorderRadiusProp
 import com.facebook.react.uimanager.style.BorderStyle
@@ -406,6 +408,40 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   public override fun createViewInstance(context: ThemedReactContext): ReactViewGroup =
       ReactViewGroup(context)
+
+  override fun getExportedCustomBubblingEventTypeConstants(): Map<String, Any> {
+    val baseEventTypeConstants = super.getExportedCustomBubblingEventTypeConstants()
+    val eventTypeConstants = baseEventTypeConstants ?: mutableMapOf()
+    eventTypeConstants.putAll(
+        mapOf(
+            FocusEvent.EVENT_NAME to
+                mapOf(
+                    "phasedRegistrationNames" to
+                        mapOf("bubbled" to "onFocus", "captured" to "onFocusCapture")),
+            BlurEvent.EVENT_NAME to
+                mapOf(
+                    "phasedRegistrationNames" to
+                        mapOf("bubbled" to "onBlur", "captured" to "onBlurCapture")),
+        ))
+    return eventTypeConstants
+  }
+
+  override fun addEventEmitters(reactContext: ThemedReactContext, view: ReactViewGroup) {
+    view.onFocusChangeListener = OnFocusChangeListener { _: View?, hasFocus: Boolean ->
+      val surfaceId = UIManagerHelper.getSurfaceId(view.context)
+      if (surfaceId == View.NO_ID) {
+        return@OnFocusChangeListener
+      }
+      val eventDispatcher =
+          UIManagerHelper.getEventDispatcherForReactTag((view.context as ReactContext), view.id)
+              ?: return@OnFocusChangeListener
+      if (hasFocus) {
+        eventDispatcher.dispatchEvent(FocusEvent(surfaceId, view.id))
+      } else {
+        eventDispatcher.dispatchEvent(BlurEvent(surfaceId, view.id))
+      }
+    }
+  }
 
   override fun getCommandsMap(): MutableMap<String, Int> =
       mutableMapOf(HOTSPOT_UPDATE_KEY to CMD_HOTSPOT_UPDATE,
