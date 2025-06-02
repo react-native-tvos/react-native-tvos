@@ -17,6 +17,8 @@ import {
   PointerEvents,
   FocusEvents,
   PressEvents,
+  BlurEvent,
+  FocusEvent,
   NativeFocusEvent,
   NativeBlurEvent,
 } from '../../Types/CoreEventTypes';

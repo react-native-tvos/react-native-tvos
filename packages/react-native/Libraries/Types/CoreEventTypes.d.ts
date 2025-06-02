@@ -257,10 +257,6 @@ export interface TargetedEvent {
   target: number;
 }
 
-export type BlurEvent = NativeSyntheticEvent<TargetedEvent>;
-
-export type FocusEvent = NativeSyntheticEvent<TargetedEvent>;
-
 export interface PointerEvents {
   onPointerEnter?: ((event: PointerEvent) => void) | undefined;
   onPointerEnterCapture?: ((event: PointerEvent) => void) | undefined;
