@@ -35,6 +35,7 @@ import {
   Linking,
   Platform,
   StyleSheet,
+  TVEventControl,
   View,
   useColorScheme,
   useWindowDimensions,
@@ -92,6 +93,15 @@ const RNTesterApp = ({
       dispatch({type: RNTesterNavigationActionsType.BACK_BUTTON_PRESS});
     }
   }, [dispatch, activeModuleKey]);
+
+  // TVEventControl
+  useEffect(() => {
+    if (activeModuleKey) {
+      TVEventControl.enableTVMenuKey();
+    } else {
+      TVEventControl.disableTVMenuKey();
+    }
+  }, [activeModuleKey]);
 
   // Setup hardware back button press listener
   useEffect(() => {
