@@ -9,8 +9,8 @@
  */
 
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 
 import View from '../../Components/View/View';
 import Pressability, {

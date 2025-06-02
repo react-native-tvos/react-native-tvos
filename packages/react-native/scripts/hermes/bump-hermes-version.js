@@ -45,6 +45,6 @@ async function main() {
   setHermesTag(hermesTag);
 }
 
-void main().then(() => {
+main().then(() => {
   exit(0);
 });

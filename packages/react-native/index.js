@@ -318,10 +318,10 @@ module.exports = {
   // #endregion
   // #region TV
   get TVEventControl(): TVEventControl {
-    return require('./Libraries/Components/TV/TVEventControl');
+    return require('./Libraries/Components/TV/TVEventControl').default;
   },
   get TVEventHandler(): TVEventHandler {
-    return require('./Libraries/Components/TV/TVEventHandler');
+    return require('./Libraries/Components/TV/TVEventHandler').default;
   },
   get useTVEventHandler(): useTVEventHandler {
     return require('./Libraries/Components/TV/useTVEventHandler').default;
@@ -334,7 +334,7 @@ module.exports = {
       'TVMenuControl-moved',
       'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
     );
-    return require('./Libraries/Components/TV/TVEventControl');
+    return require('./Libraries/Components/TV/TVEventControl').default;
   },
   get TVTextScrollView(): TVTextScrollView {
     return require('./Libraries/Components/TV/TVTextScrollView').default;

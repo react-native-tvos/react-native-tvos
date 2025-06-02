@@ -73,6 +73,6 @@ async function main() {
   return tarballOutputPath;
 }
 
-void main().then(() => {
+main().then(() => {
   process.exit(0);
 });

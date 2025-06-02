@@ -44,6 +44,6 @@ async function main(isInCI /*: boolean */) {
 
 const isInCI = process.env.CI === 'true';
 
-void main(isInCI).then(() => {
+main(isInCI).then(() => {
   process.exit(0);
 });

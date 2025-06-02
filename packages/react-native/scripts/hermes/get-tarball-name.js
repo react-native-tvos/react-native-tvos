@@ -31,6 +31,6 @@ async function main() {
   return tarballName;
 }
 
-void main().then(() => {
+main().then(() => {
   process.exit(0);
 });
