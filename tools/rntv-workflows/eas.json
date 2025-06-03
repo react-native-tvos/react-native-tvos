@@ -4,5 +4,21 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "android": {
+        "resourceClass": "large",
+        "image": "latest"
+      },
+      "ios": {
+        "resourceClass": "large",
+        "image": "latest"
+      },
+      "withoutCredentials": true,
+      "distribution": "internal"
+    },
+    "build_rntester_apple": {
+      "extends": "base",
+      "config": "build-rntester-apple.yml"
+    }
   }
 }
