@@ -9,7 +9,7 @@
 
 import NativeTVNavigationEventEmitter from '../../../src/private/specs_DEPRECATED/modules/NativeTVNavigationEventEmitter';
 
-module.exports = {
+const TVEventControl = {
   enableTVMenuKey: () => {
     NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.enableTVMenuKey();
@@ -35,3 +35,5 @@ module.exports = {
       NativeTVNavigationEventEmitter.disableGestureHandlersCancelTouches();
   },
 };
+
+export default TVEventControl;

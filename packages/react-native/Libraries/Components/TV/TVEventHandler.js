@@ -10,28 +10,36 @@
 
 'use strict';
 
-import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
-
 import NativeTVNavigationEventEmitter from '../../../src/private/specs_DEPRECATED/modules/NativeTVNavigationEventEmitter';
 import NativeEventEmitter from '../../EventEmitter/NativeEventEmitter';
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
 
-let __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEvent> = null;
+type TVRemoteEventDefinitions = {
+  tag: [{tag: number}],
+  target: [{target: number}],
+  eventType: [{eventType: string}],
+  eventKeyAction: [{eventKeyAction: string}],
+  body: [{body: any}],
+};
+let __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEventDefinitions> =
+  null;
 
-const TVEventHandler: {
-  addListener: (
-    callback: (event: any) => void,
-  ) => EventSubscription | {remove: () => void},
-} = {
-  addListener: callback => {
+type TVEventHandlerCallback = (event: any) => void;
+type TVEventHandlerType = {
+  addListener: (callback: TVEventHandlerCallback) => EventSubscription,
+};
+
+const TVEventHandler: TVEventHandlerType = {
+  addListener: (callback: TVEventHandlerCallback) => {
     if (Platform.OS === 'ios' && !NativeTVNavigationEventEmitter) {
       return {remove: () => {}};
     }
     if (!__nativeTVNavigationEventEmitter) {
-      __nativeTVNavigationEventEmitter = new NativeEventEmitter<TVRemoteEvent>(
-        NativeTVNavigationEventEmitter,
-      );
+      __nativeTVNavigationEventEmitter =
+        new NativeEventEmitter<TVRemoteEventDefinitions>(
+          NativeTVNavigationEventEmitter,
+        );
     }
     const subscription: EventSubscription =
       __nativeTVNavigationEventEmitter.addListener(
@@ -47,4 +55,4 @@ const TVEventHandler: {
   },
 };
 
-module.exports = TVEventHandler;
+export default TVEventHandler;

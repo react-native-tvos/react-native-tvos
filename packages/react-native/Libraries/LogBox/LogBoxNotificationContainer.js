@@ -10,8 +10,8 @@
 
 import SafeAreaView from '../../src/private/components/safeareaview/SafeAreaView_INTERNAL_DO_NOT_USE';
 import View from '../Components/View/View';
-import Platform from '../Utilities/Platform';
 import StyleSheet from '../StyleSheet/StyleSheet';
+import Platform from '../Utilities/Platform';
 import * as LogBoxData from './Data/LogBoxData';
 import LogBoxLog from './Data/LogBoxLog';
 import LogBoxLogNotification from './UI/LogBoxNotification';

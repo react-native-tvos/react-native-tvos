@@ -82,11 +82,9 @@ type TextLayoutEventData = $ReadOnly<{
 
 export type TextLayoutEvent = NativeSyntheticEvent<TextLayoutEventData>;
 
-export type RemotePressEvent = SyntheticEvent<
-  $ReadOnly<{
-    target: number,
-  }>,
->;
+export type RemotePressEvent = $ReadOnly<{
+  target: number,
+}>;
 
 export type TVRemoteEvent = $ReadOnly<{
   tag?: number,

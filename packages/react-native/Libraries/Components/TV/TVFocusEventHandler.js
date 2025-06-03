@@ -14,7 +14,7 @@ import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 
 import Platform from '../../Utilities/Platform';
 import {type EventSubscription} from '../../vendor/emitter/EventEmitter';
-import TVEventHandler from './TVEventHandler';
+import {default as TVEventHandler} from './TVEventHandler';
 
 class TVFocusEventHandler {
   __subscription: ?EventSubscription = null;

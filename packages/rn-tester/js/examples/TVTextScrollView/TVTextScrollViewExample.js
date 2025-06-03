@@ -13,7 +13,6 @@
 const React = require('react');
 const {
   Dimensions,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,

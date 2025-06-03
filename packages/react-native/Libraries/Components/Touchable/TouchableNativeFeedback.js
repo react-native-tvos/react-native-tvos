@@ -18,8 +18,8 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import {findHostInstance_DEPRECATED} from '../../ReactNative/RendererProxy';
 import processColor from '../../StyleSheet/processColor';
-import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import Platform from '../../Utilities/Platform';
+import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import {Commands} from '../View/ViewNativeComponent';
 import invariant from 'invariant';
 import * as React from 'react';

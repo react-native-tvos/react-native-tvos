@@ -9,8 +9,6 @@
  * @oncall react_native
  */
 
-import type {BrowserLauncher} from '../types/BrowserLauncher';
-
 const {spawn} = require('child_process');
 const ChromeLauncher = require('chrome-launcher');
 const {Launcher: EdgeLauncher} = require('chromium-edge-launcher');

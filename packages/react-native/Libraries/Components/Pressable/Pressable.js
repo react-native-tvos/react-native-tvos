@@ -9,21 +9,21 @@
  */
 
 import type {
+  BlurEvent,
+  FocusEvent,
   GestureResponderEvent,
   LayoutChangeEvent,
   MouseEvent,
-  FocusEvent,
-  BlurEvent,
 } from '../../Types/CoreEventTypes';
+import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import usePressability from '../../Pressability/usePressability';
 import {type RectOrSize} from '../../StyleSheet/Rect';
 import useMergeRefs from '../../Utilities/useMergeRefs';
-import View from '../View/View';
-import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
+import View from '../View/View';
 import useAndroidRippleForView, {
   type PressableAndroidRippleConfig,
 } from './useAndroidRippleForView';
