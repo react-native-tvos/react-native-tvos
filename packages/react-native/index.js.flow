@@ -445,3 +445,12 @@ export type {
 } from './Libraries/ReactPrivate/ReactNativePrivateInterface';
 
 // #endregion
+
+// #region TV
+export {default as TVEventHandler} from './Libraries/Components/TV/TVEventHandler';
+export {default as TVEventControl} from './Libraries/Components/TV/TVEventControl';
+export {default as TVFocusGuideView} from './Libraries/Components/TV/TVFocusGuideView';
+export type {TVRemoteEvent} from './Libraries/Types/CoreEventTypes';
+export {default as TVTextScrollView} from './Libraries/Components/TV/TVTextScrollView';
+export {default as useTVEventHandler} from './Libraries/Components/TV/useTVEventHandler';
+// #endregion

@@ -6,11 +6,11 @@
 
 // TODO: make this work for Fabric
 
-import type {ElementRef, ElementType} from 'react';
+import * as React from 'react';
 
 const findNodeHandle = require('../../ReactNative/RendererProxy').findNodeHandle;
 
-export type ComponentOrHandleType = ?(ElementRef<ElementType> | number);
+export type ComponentOrHandleType = ?(React.ElementRef<React.ElementType> | number);
 
 export type TagForComponentOrHandleType = (
     component: ComponentOrHandleType,

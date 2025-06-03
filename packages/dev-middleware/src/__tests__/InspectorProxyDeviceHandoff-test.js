@@ -44,6 +44,7 @@ describe('inspector-proxy device socket handoff', () => {
     jest.clearAllMocks();
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   xtest('device ID collision with no debugger connected', async () => {
     let device1, device2;
     try {
@@ -79,6 +80,7 @@ describe('inspector-proxy device socket handoff', () => {
     }
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   xtest('device ID collision with a debugger connected', async () => {
     let device1, device2, debugger_, webSocketDebuggerUrl;
     try {
@@ -146,6 +148,7 @@ describe('inspector-proxy device socket handoff', () => {
     }
   });
 
+  // eslint-disable-next-line jest/no-disabled-tests
   xtest.each([
     ['app', 'name'],
     ['name', 'app'],
@@ -212,6 +215,7 @@ describe('inspector-proxy device socket handoff', () => {
     },
   );
 
+  // eslint-disable-next-line jest/no-disabled-tests
   xtest.each([
     ['app', 'name'],
     ['name', 'app'],

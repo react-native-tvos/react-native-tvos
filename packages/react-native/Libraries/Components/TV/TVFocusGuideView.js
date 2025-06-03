@@ -8,16 +8,15 @@
  * @format
  */
 
-import type {HostComponent} from '../../Renderer/shims/ReactNativeTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
+import View from '../View/View';
 import {Commands} from '../View/ViewNativeComponent';
 import tagForComponentOrHandle from './tagForComponentOrHandle';
 
 const StyleSheet = require('../../StyleSheet/StyleSheet').default;
-const View = require('../View/View').default;
 const React = require('react');
 
 type TVFocusGuideViewProps = $ReadOnly<{
@@ -54,9 +53,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
 }>;
 
 export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
-  setDestinations: (
-    destinations: (?React.ElementRef<HostComponent<mixed>>)[],
-  ) => void,
+  setDestinations: (destinations: (ComponentOrHandleType | number)[]) => void,
 }>;
 
 function TVFocusGuideView(
@@ -143,10 +140,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const ForwardedTVFocusGuideView: React.AbstractComponent<
-  TVFocusGuideViewProps,
-  React.ElementRef<typeof View> & TVFocusGuideViewImperativeMethods,
-> = React.forwardRef(TVFocusGuideView);
-ForwardedTVFocusGuideView.displayName = 'TVFocusGuideView';
-
-export default ForwardedTVFocusGuideView;
+export default TVFocusGuideView;

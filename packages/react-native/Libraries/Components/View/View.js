@@ -12,12 +12,11 @@ import type {ViewProps} from './ViewPropTypes';
 
 import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import TextAncestor from '../../Text/TextAncestor';
+import setAndForwardRef from '../../Utilities/setAndForwardRef';
 import ViewNativeComponent from './ViewNativeComponent';
+import {Commands} from './ViewNativeComponent';
 import * as React from 'react';
 import {use} from 'react';
-import {Commands} from './ViewNativeComponent';
-
-import setAndForwardRef from '../../Utilities/setAndForwardRef';
 
 export type Props = ViewProps;
 
@@ -35,6 +34,14 @@ type PropsWithRef = $ReadOnly<{
  */
 function View(props: PropsWithRef): React.Node {
   const hasTextAncestor = use(TextAncestor);
+
+  const viewRef = React.useRef<?React.ElementRef<typeof View>>(null);
+
+  const requestTVFocus = React.useCallback(() => {
+    if (viewRef.current) {
+      Commands.requestTVFocus(viewRef.current);
+    }
+  }, []);
 
   let actualView;
   if (ReactNativeFeatureFlags.reduceDefaultPropsInView()) {
@@ -185,16 +192,8 @@ function View(props: PropsWithRef): React.Node {
           }
         : undefined;
 
-    const viewRef = React.useRef<?React.ElementRef<typeof View>>(null);
-
-    const requestTVFocus = React.useCallback(() => {
-      if (viewRef.current) {
-        Commands.requestTVFocus(viewRef.current);
-      }
-    }, []);
-
     const _setNativeRef = setAndForwardRef({
-      getForwardedRef: () => forwardedRef,
+      getForwardedRef: () => viewRef.current,
       setLocalRef: ref => {
         viewRef.current = ref;
 
