@@ -14,7 +14,7 @@ on:
 jobs:
   run-unit-tests:
     name: Run unit tests
-    runs_on: linux-medium
+    runs_on: macos-large
     image: latest
     steps:
       - uses: eas/checkout
