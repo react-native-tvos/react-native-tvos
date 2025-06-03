@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "rntv-eas-workflows",
+    "slug": "rntv-eas-workflows",
+    "extra": {
+      "eas": {
+        "projectId": "98c71605-b982-423a-abfc-a2952c9cde86"
+      }
+    },
+    "owner": "douglowderexpo"
+  }
+}

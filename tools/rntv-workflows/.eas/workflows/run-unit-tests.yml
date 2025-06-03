@@ -1,0 +1,47 @@
+name: Run React Native unit tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - packages/react-native/**
+      - packages/virtualized-lists/**
+#  schedule:
+#    - cron: '0 18 * * SUN' # 18:00 UTC every Sunday
+
+jobs:
+  run-unit-tests:
+    name: Run unit tests
+    runs_on: macos-large
+    image: latest
+    steps:
+      - uses: eas/checkout
+      - name: Rename virtualized-lists dependency for TV
+        id: rename-virtualized-lists
+        working_directory: ../..
+        run: |
+          ./tools/rntv-workflows/rename-virtualized-lists.sh
+      - name: Install dependencies
+        id: install
+        working_directory: ../..
+        run: |
+          yarn
+          bun install
+      - name: Run tests for codegen, lint, and typescript
+        id: test-other
+        working_directory: ../..
+        run: |
+          bun --cwd packages/react-native featureflags-check
+          bun lint
+          bun --cwd packages/react-native-codegen build
+          bun --cwd packages/react-native-codegen-typescript-test build
+          bun install
+          ls -l packages/react-native/Libraries/vendor/*
+          bun test-typescript
+      - name: Run Jest tests
+        id: test-jest
+        working_directory: ../..   
+        run: |
+          npx jest packages/react-native
