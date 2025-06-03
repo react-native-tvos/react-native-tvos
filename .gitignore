@@ -107,11 +107,11 @@ package-lock.json
 /packages/rn-tester/**/*.xcodeproj
 
 # Ruby Gems (Bundler)
-/packages/react-native/vendor
-/packages/helloworld/vendor
+#/packages/react-native/vendor
+#/packages/helloworld/vendor
 .ruby-version
 /**/.ruby-version
-vendor/
+#vendor/
 
 # iOS / CocoaPods
 /packages/helloworld/ios/build/
