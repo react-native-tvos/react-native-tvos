@@ -1,0 +1,19 @@
+build:
+  name: Build RNTester app for Apple TV
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Install Ruby
+        command: |
+          ./install-ruby.sh
+    - run:
+        name: Build RNTester app
+        command: |
+          ./build-rntester-apple.sh
+    - eas/upload_artifact:
+        name: Upload RNTester artifacts
+        inputs:
+          type: application-archive
+          path: |
+            packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app
