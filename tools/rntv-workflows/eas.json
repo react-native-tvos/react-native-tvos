@@ -16,9 +16,14 @@
       "withoutCredentials": true,
       "distribution": "internal"
     },
-    "build_rntester_apple": {
+    "rntester": {
       "extends": "base",
-      "config": "build-rntester-apple.yml"
+      "ios": {
+        "config": "build-rntester-apple.yml"
+      },
+      "android": {
+        "config": "build-rntester-android.yml"
+      }
     }
   }
 }
