@@ -1,0 +1,15 @@
+build:
+  name: Build RNTester app for Android TV
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Build RNTester app
+        command: |
+          ./build-rntester-android.sh
+    - eas/upload_artifact:
+        name: Upload RNTester artifacts
+        inputs:
+          type: application-archive
+          path: |
+            packages/rn-tester/android/app/build/outputs/apk/hermes/debug/app-hermes-arm64-v8a-debug.apk
