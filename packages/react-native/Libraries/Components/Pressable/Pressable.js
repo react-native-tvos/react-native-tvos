@@ -216,6 +216,8 @@ function Pressable({
     disabled,
     focusable,
     hitSlop,
+    onBlur,
+    onFocus,
     onHoverIn,
     onHoverOut,
     isTVSelectable,
@@ -299,6 +301,8 @@ function Pressable({
       delayHoverOut,
       delayLongPress,
       delayPressIn: unstable_pressDelay,
+      onBlur,
+      onFocus,
       onHoverIn,
       onHoverOut,
       onBlur(event: BlurEvent): void {
@@ -349,6 +353,8 @@ function Pressable({
       delayLongPress,
       disabled,
       hitSlop,
+      onBlur,
+      onFocus,
       onHoverIn,
       onHoverOut,
       onBlur,
@@ -365,6 +371,7 @@ function Pressable({
       unstable_pressDelay,
     ],
   );
+
   const eventHandlers = usePressability(config);
 
   return (

@@ -257,6 +257,11 @@ const APIs: Array<RNTesterModuleInfo> = ([
       .default,
   },
   {
+    key: 'FocusEventsExample',
+    module: require('../examples/FocusEventsExample/FocusEventsExample')
+      .default,
+  },
+  {
     key: 'InvalidPropsExample',
     module: require('../examples/InvalidProps/InvalidPropsExample'),
   },

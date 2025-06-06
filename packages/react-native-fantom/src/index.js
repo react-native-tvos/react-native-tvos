@@ -37,6 +37,8 @@ export type RootConfig = {
   viewportWidth?: number,
   viewportHeight?: number,
   devicePixelRatio?: number,
+  viewportOffsetX?: number,
+  viewportOffsetY?: number,
 };
 
 export {getConstants} from './Constants';
@@ -50,6 +52,8 @@ class Root {
   #surfaceId: number;
   #viewportWidth: number;
   #viewportHeight: number;
+  #viewportOffsetX: number;
+  #viewportOffsetY: number;
   #devicePixelRatio: number;
   #document: ?ReactNativeDocument;
 
@@ -62,6 +66,8 @@ class Root {
     this.#devicePixelRatio =
       config?.devicePixelRatio ?? DEFAULT_DEVICE_PIXEL_RATIO;
     globalSurfaceIdCounter += 10;
+    this.#viewportOffsetX = config?.viewportOffsetX ?? 0;
+    this.#viewportOffsetY = config?.viewportOffsetY ?? 0;
   }
 
   // $FlowExpectedError[unsafe-getters-setters]
@@ -88,6 +94,8 @@ class Root {
         this.#viewportWidth,
         this.#viewportHeight,
         this.#devicePixelRatio,
+        this.#viewportOffsetX,
+        this.#viewportOffsetY,
       );
       this.#hasRendered = true;
     }
@@ -184,6 +192,45 @@ export function runTask(task: () => void | Promise<void>) {
 
   scheduleTask(task);
   runWorkLoop();
+}
+
+/**
+ * Simulates the production of animation frames for a specified duration.
+ * This function is useful for testing animations or time-dependent behaviors
+ * by advancing the animation frame timeline without waiting for real time to pass.
+ *
+ * @param milliseconds - The duration in milliseconds for which to produce animation frames
+ *
+ * @example
+ * ```
+ * // Simulate 500ms of animation frames
+ * Fantom.unstable_produceFramesForDuration(500);
+ *
+ * // Now you can test the state of your UI after those frames have been produced
+ * ```
+ *
+ * Note: This API is marked as unstable and may change in future versions.
+ */
+export function unstable_produceFramesForDuration(milliseconds: number) {
+  NativeFantom.produceFramesForDuration(milliseconds);
+}
+
+/**
+ * Returns props appplied via direct manipulation to a view represented by shadow node.
+ * Direct manipulation is used by C++ Animated to change view properties on UI tick
+ * while the animation is in progress. Once animation finishes, the final state is committed
+ * to the shadow tree and result is observable through other JavaScript APIs, like `measure`.
+ *
+ * @param node - The node for which to retrieve direct manipulation props.
+ * @returns Mixed type data containing the direct manipulation properties
+ *
+ * Note: This API is marked as unstable and may change in future versions.
+ */
+export function unstable_getDirectManipulationProps(
+  node: ReactNativeElement,
+): mixed {
+  const shadowNode = getNativeNodeReference(node);
+  return NativeFantom.getDirectManipulationProps(shadowNode);
 }
 
 /**
