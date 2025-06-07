@@ -12,4 +12,4 @@ build:
         inputs:
           type: application-archive
           path: |
-            packages/rn-tester/android/app/build/outputs/apk/hermes/debug/app-hermes-arm64-v8a-debug.apk
+            packages/rn-tester/android/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
