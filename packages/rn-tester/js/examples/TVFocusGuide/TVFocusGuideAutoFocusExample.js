@@ -12,7 +12,7 @@
 
 import type {FocusEvent} from '../../../../react-native/Libraries/Types/CoreEventTypes';
 
-import {useRNTesterTheme} from '../../components/RNTesterTheme';
+import {useTheme} from '../../components/RNTesterTheme';
 import React from 'react';
 import {
   Dimensions,
@@ -63,7 +63,7 @@ const TVFocusGuide = React.forwardRef((props: any, forwardedRef: any) => {
 });
 
 const Text = ({style, children}: {style: any, children: any}) => {
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
   return (
     <RNText style={[styles.text, {color: theme.LabelColor}, style]}>
       {children}
@@ -87,7 +87,7 @@ const FocusableBox = React.memo(
       },
       forwardRef,
     ) => {
-      const theme = useRNTesterTheme();
+      const theme = useTheme();
       const {id, width, height, text, slow, style} = props;
 
       if (slow) {
@@ -126,7 +126,7 @@ const FocusableBox = React.memo(
 );
 
 const SideMenu = React.forwardRef((props: any, forwardedRef: any) => {
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
   const sideMenuItemStyle = [
     styles.sideMenuItem,
     {backgroundColor: theme.TertiarySystemFillColor},
@@ -493,7 +493,7 @@ const ContentArea = React.forwardRef(
 const TVFocusGuideAutoFocusExample = () => {
   const sideMenuRef =
     React.useRef<?React.ElementRef<typeof TVFocusGuide>>(null);
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
 
   return (
     <View style={[styles.container, {backgroundColor: theme.BackgroundColor}]}>
