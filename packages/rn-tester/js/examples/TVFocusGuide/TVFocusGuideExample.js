@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {useRNTesterTheme} from '../../components/RNTesterTheme';
+import {useTheme} from '../../components/RNTesterTheme';
 
 const React = require('react');
 const ReactNative = require('react-native');
@@ -36,7 +36,7 @@ const width = 200 * scale;
 const height = 120 * scale;
 
 const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
   return (
     <Pressable
       onPress={props.onPress}
@@ -53,7 +53,7 @@ const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
 });
 
 const ThemedView = (props: $FlowFixMeProps) => {
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
   return (
     <View style={[styles.buttonStyle, props.style]}>
       <Text style={[{color: theme.LabelColor}, styles.buttonText]}>
@@ -81,7 +81,7 @@ const TVFocusGuideExample = () => {
     setDestinationText(text);
   };
 
-  const theme = useRNTesterTheme();
+  const theme = useTheme();
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
