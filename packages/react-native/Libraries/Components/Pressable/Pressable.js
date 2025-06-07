@@ -169,10 +169,6 @@ type PressableBaseProps = $ReadOnly<{
    * Duration to wait after press down before calling `onPressIn`.
    */
   unstable_pressDelay?: ?number,
-  /**
-   * Props needed for Apple TV and Android TV
-   */
-  ...TVProps,
 }>;
 
 export type PressableProps = $ReadOnly<{
@@ -181,6 +177,10 @@ export type PressableProps = $ReadOnly<{
   // Hover events should be used instead of mouse events.
   ...Omit<ViewProps, 'onMouseEnter' | 'onMouseLeave'>,
   ...PressableBaseProps,
+  /**
+   * Props needed for Apple TV and Android TV
+   */
+  ...TVProps,
 }>;
 
 type Instance = React.ElementRef<typeof View>;
@@ -216,10 +216,6 @@ function Pressable({
     disabled,
     focusable,
     hitSlop,
-    onBlur,
-    onFocus,
-    onHoverIn,
-    onHoverOut,
     isTVSelectable,
     nextFocusDown,
     nextFocusForward,
@@ -228,6 +224,8 @@ function Pressable({
     nextFocusUp,
     onBlur,
     onFocus,
+    onHoverIn,
+    onHoverOut,
     onLongPress,
     onPress,
     onPressIn,
@@ -301,10 +299,6 @@ function Pressable({
       delayHoverOut,
       delayLongPress,
       delayPressIn: unstable_pressDelay,
-      onBlur,
-      onFocus,
-      onHoverIn,
-      onHoverOut,
       onBlur(event: BlurEvent): void {
         shouldUpdatePressed && setFocused(false);
         if (onBlur != null) {
@@ -317,6 +311,8 @@ function Pressable({
           onFocus(event);
         }
       },
+      onHoverIn,
+      onHoverOut,
       onLongPress,
       onPress,
       onPressIn(event: GestureResponderEvent): void {
@@ -357,8 +353,6 @@ function Pressable({
       onFocus,
       onHoverIn,
       onHoverOut,
-      onBlur,
-      onFocus,
       onLongPress,
       onPress,
       onPressIn,
