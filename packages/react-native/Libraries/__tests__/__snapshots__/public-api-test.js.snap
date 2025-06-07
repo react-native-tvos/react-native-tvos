@@ -1802,11 +1802,11 @@ type PressableBaseProps = $ReadOnly<{
   android_ripple?: ?PressableAndroidRippleConfig,
   testOnly_pressed?: ?boolean,
   unstable_pressDelay?: ?number,
-  ...TVProps,
 }>;
 export type PressableProps = $ReadOnly<{
   ...Omit<ViewProps, \\"onMouseEnter\\" | \\"onMouseLeave\\">,
   ...PressableBaseProps,
+  ...TVProps,
 }>;
 declare export default component(
   ref?: React.RefSetter<React.ElementRef<typeof View>>,
