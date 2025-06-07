@@ -18,12 +18,20 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Bundle
+import android.view.FocusFinder
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
 import android.view.ViewStructure
+import android.view.accessibility.AccessibilityNodeInfo
+import androidx.core.view.ViewCompat
+import androidx.core.view.isNotEmpty
 import com.facebook.common.logging.FLog
 import com.facebook.react.R
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactNoCrashSoftException
 import com.facebook.react.bridge.ReactSoftExceptionLogger
 import com.facebook.react.bridge.ReactSoftExceptionLogger.logSoftException
@@ -49,20 +57,28 @@ import com.facebook.react.uimanager.PixelUtil.toDIPFromPixel
 import com.facebook.react.uimanager.PointerEvents
 import com.facebook.react.uimanager.PointerEvents.Companion.canBeTouchTarget
 import com.facebook.react.uimanager.PointerEvents.Companion.canChildrenBeTouchTarget
+import com.facebook.react.uimanager.ReactAccessibilityDelegate
 import com.facebook.react.uimanager.ReactClippingProhibitedView
 import com.facebook.react.uimanager.ReactClippingViewGroup
 import com.facebook.react.uimanager.ReactClippingViewGroupHelper.calculateClippingRect
 import com.facebook.react.uimanager.ReactOverflowViewWithInset
 import com.facebook.react.uimanager.ReactPointerEventsView
 import com.facebook.react.uimanager.ReactZIndexedViewGroup
+import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewGroupDrawingOrderHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
+import com.facebook.react.uimanager.events.BlurEvent
+import com.facebook.react.uimanager.events.EventDispatcher
+import com.facebook.react.uimanager.events.FocusEvent
+import com.facebook.react.uimanager.events.PressInEvent
+import com.facebook.react.uimanager.events.PressOutEvent
 import com.facebook.react.uimanager.style.BorderRadiusProp
 import com.facebook.react.uimanager.style.BorderStyle
 import com.facebook.react.uimanager.style.LogicalEdge
 import com.facebook.react.uimanager.style.Overflow
 import com.facebook.react.views.view.CanvasUtil.enableZ
+import java.lang.ref.WeakReference
 import kotlin.concurrent.Volatile
 import kotlin.math.max
 
@@ -84,6 +100,18 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
   public override val overflowInset: Rect = Rect()
 
+  private var focusDestinations = IntArray(0)
+  private var autoFocus = false
+  private var isFocusGuideTalkbackAccessibilityDelegateSet = false
+  private var lastFocusedElement: WeakReference<View?>? = null
+  private var mRecoverFocus = false
+  private var originalIsFocusable = false
+  private var trapFocusUp = false
+  private var trapFocusDown = false
+  private var trapFocusLeft = false
+  private var trapFocusRight = false
+  public var hasTVPreferredFocus: Boolean = false
+
   /**
    * This listener will be set for child views when `removeClippedSubview` property is enabled. When
    * children layout is updated, it will call [updateSubviewClipStatus] to notify parent view about
@@ -92,7 +120,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
    * TODO(7728005): Attach/detach views in batch - once per frame in case when multiple children
    *   update their layout.
    */
-  private class ChildrenLayoutChangeListener(private var parent: ReactViewGroup?) :
+  public class ChildrenLayoutChangeListener(private var parent: ReactViewGroup?) :
       OnLayoutChangeListener {
     override fun onLayoutChange(
         v: View,
@@ -110,7 +138,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       }
     }
 
-    fun shutdown() {
+    public fun shutdown() {
       parent = null
     }
   }
@@ -202,6 +230,8 @@ public open class ReactViewGroup public constructor(context: Context?) :
     updateBackgroundDrawable(null)
 
     resetPointerEvents()
+
+    cleanupFocusGuideTalkbackAccessibilityDelegate()
   }
 
   private var _drawingOrderHelper: ViewGroupDrawingOrderHelper? = null
@@ -477,6 +507,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
         child !== focusedChild &&
         !shouldSkipView) {
       setViewClipped(child, true)
+      recoverFocus(child)
       // We can try saving on invalidate call here as the view that we remove is out of visible area
       // therefore invalidation is not necessary.
       removeViewInLayout(child)
@@ -502,7 +533,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
     }
   }
 
-  private fun updateSubviewClipStatus(subview: View) {
+  public fun updateSubviewClipStatus(subview: View) {
     if (!_removeClippedSubviews || parent == null) {
       return
     }
@@ -531,6 +562,136 @@ public open class ReactViewGroup public constructor(context: Context?) :
       }
       inSubviewClippingLoop = false
     }
+  }
+
+  private fun getFirstFocusableView(viewGroup: ReactViewGroup): View? {
+    val focusables = ArrayList<View>(0)
+    /**
+     * `addFocusables` is the method used by `FocusFinder` to determine
+     * which elements are `focusable` within the given view.
+     * Here we use it for the exact purpose. It mutates/populates the `focusables` array list.
+     * Focus direction (FOCUS_DOWN) doesn't matter at all because
+     * it's not being used by the underlying implementation.
+     *
+     * Here we intentionally call `super` method to bypass `ReactViewGroup`'s
+     * overriden `addFocusables` logic.
+     */
+    super.addFocusables(focusables, FOCUS_DOWN, FOCUSABLES_ALL)
+    /**
+     * Depending on ViewGroup's `descendantFocusability` property,
+     * the first element can be the ViewGroup itself.
+     * The other ones on the list can be non-focusable as well.
+     * So, we run a loop till finding the first real focusable element.
+     */
+    if (focusables.size <= 0) return null
+
+    var firstFocusableElement: View? = null
+    var index = 0
+    while (index < focusables.size) {
+      val elem = focusables[index]
+      if (elem !== viewGroup) {
+        firstFocusableElement = elem
+        break
+      }
+      index++
+    }
+
+    return firstFocusableElement!!
+  }
+
+  private fun moveFocusToFirstFocusable(viewGroup: ReactViewGroup): Boolean {
+    val firstFocusableElement = this.getFirstFocusableView(viewGroup)
+
+    if (firstFocusableElement != null) return firstFocusableElement.requestFocus()
+
+    return false
+  }
+
+  private fun recoverFocus(view: View) {
+    if (!view.hasFocus() || view !is ReactViewGroup) return
+
+    val parentFocusGuide = findParentFocusGuide(view) ?: return
+
+    /**
+     * Making `parentFocusGuide` focusable for a brief time to
+     * temporarily move the focus to it. We do this to prevent
+     * Android from moving the focus to top-left-most element of the screen.
+     */
+    parentFocusGuide.mRecoverFocus = true
+    parentFocusGuide.isFocusable = true
+    parentFocusGuide.requestFocus()
+
+    /**
+     * We set a Runnable to wait and make sure every layout related action gets completed
+     * before trying to find a new focus candidate inside the `parentFocusGuide`.
+     */
+    runOnUiThread(
+      Runnable {
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         *//**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+
+        /**
+         * Focus can move to an another element while waiting for the next frame.
+         * E.g: An element with `hasTVPreferredFocus` can appear.
+         *
+         * We check here to make sure `parentFocusGuide` still remains the focus
+         * before recovering the focus to make sure we don't accidentally override it.
+         */
+        if (parentFocusGuide.isFocused) {
+          moveFocusToFirstFocusable(parentFocusGuide)
+        }
+
+        parentFocusGuide.isFocusable = false
+        parentFocusGuide.mRecoverFocus = false
+      })
   }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -924,12 +1085,423 @@ public open class ReactViewGroup public constructor(context: Context?) :
     alpha = 0f
   }
 
+  public fun initializeFocusGuideTalkbackAccessibilityDelegate() {
+    if (!this.isTVFocusGuide) {
+      return
+    }
+
+    this.originalIsFocusable = this.isFocusable
+
+    val viewAccessibilityDelegate: ReactAccessibilityDelegate = object : ReactAccessibilityDelegate(
+      this, originalIsFocusable, this.importantForAccessibility
+    ) {
+      override fun performAccessibilityAction(host: View, action: Int, args: Bundle?): Boolean {
+        if (host !is ReactViewGroup) {
+          return super.performAccessibilityAction(host, action, args)
+        }
+        if (action == AccessibilityNodeInfo.ACTION_FOCUS) {
+          if (args?.let { host.interceptAccessibilityEvents(action, it) } == true) {
+            return true
+          }
+          // Handle case when focus guide cannot find any focusable child
+          if (host.isTVFocusGuide && host.getFirstFocusableView(host) == null) {
+            if (host.isNotEmpty()) {
+              val child = host.getChildAt(0)
+              val childFocusables = ArrayList<View>(0)
+              child.addFocusables(childFocusables, FOCUS_DOWN, 0)
+              if (childFocusables.isNotEmpty()) {
+                childFocusables[0].performAccessibilityAction(action, args)
+                return true
+              }
+            }
+          }
+          return super.performAccessibilityAction(host, action, args)
+        }
+        if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
+          if (args?.let { host.interceptAccessibilityEvents(action, it) } == true) {
+            return true
+          }
+          // Handle case when focus guide cannot find any focusable child
+          if (host.isTVFocusGuide && host.getFirstFocusableView(host) == null) {
+            if (host.isNotEmpty()) {
+              val child = host.getChildAt(0)
+              val childFocusables = ArrayList<View>(0)
+              child.addFocusables(childFocusables, FOCUS_DOWN, 0)
+              if (childFocusables.isNotEmpty()) {
+                /*
+                 * Instead of forwarding AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS,
+                 * let's invoke AccessibilityNodeInfo.ACTION_FOCUS
+                 * to trigger focus events on JS side - the AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS
+                 * will be automatically invoked later
+                 */
+                childFocusables[0].performAccessibilityAction(
+                  AccessibilityNodeInfo.ACTION_FOCUS,
+                  args
+                )
+                return true
+              }
+            }
+            /*
+             * Let's consume event here, otherwise there might be an issue with
+             * FocusGuide receiving focus instead of one of its child views
+             */
+            return true
+          }
+          return super.performAccessibilityAction(host, action, args)
+        }
+        return super.performAccessibilityAction(host, action, args)
+      }
+    }
+    ViewCompat.setAccessibilityDelegate(this, viewAccessibilityDelegate)
+    this.isFocusable = true
+    this.isFocusableInTouchMode = true
+    // To force Talkback to give the a11y event to the FocusGuide
+    // we need to make it look like it has some a11y label to be announced.
+    // Because FocusGuide should always have at least one focusable child view,
+    // which will receive forwarded a11y event from this FocusGuide,
+    // the following fake label will never be announced
+    this.contentDescription = "FocusGuide"
+    this.isFocusGuideTalkbackAccessibilityDelegateSet = true
+  }
+
+  public fun cleanupFocusGuideTalkbackAccessibilityDelegate() {
+    ViewCompat.setAccessibilityDelegate(this, null)
+    this.isFocusable = this.originalIsFocusable
+    this.isFocusableInTouchMode = this.originalIsFocusable
+    this.originalIsFocusable = false
+    this.contentDescription = null
+    this.isFocusGuideTalkbackAccessibilityDelegateSet = false
+  }
+
+  public fun hasFocusGuideTalkbackAccessibilityDelegate(): Boolean {
+    return this.isFocusGuideTalkbackAccessibilityDelegateSet
+  }
+
+  private fun interceptAccessibilityEvents(action: Int, args: Bundle): Boolean {
+    if (!this.isTVFocusGuide) {
+      return false
+    }
+
+    // If it's "FocusGuide", we want to intercept
+    // the event and redirect it to either:
+    // 1) first available destination view from "destinations" prop
+    // 2) last focused element saved when "autoFocus" prop is `true`
+    // 3) first focusable child view
+    val destinationView = this.findDestinationView()
+    if (destinationView != null) {
+      try {
+        destinationView.performAccessibilityAction(action, args)
+        return true
+      } catch (e: Exception) {
+        FLog.e(
+          TAG,
+          "Exception when performing accessibility action on destination view - falling back to next case (last focused view): $e"
+        )
+      }
+    }
+    val lastFocusedView = lastFocusedElement!!.get()
+    if (lastFocusedView != null) {
+      try {
+        lastFocusedView.performAccessibilityAction(action, args)
+        return true
+      } catch (e: Exception) {
+        FLog.e(
+          TAG,
+          "Exception when performing accessibility action on last focused view - falling back to next case (first focusable view): $e"
+        )
+      }
+    }
+    val firstFocusableView = this.getFirstFocusableView(this)
+    if (firstFocusableView != null) {
+      try {
+        firstFocusableView.performAccessibilityAction(action, args)
+        return true
+      } catch (e: Exception) {
+        FLog.e(
+          TAG,
+          "Exception when performing accessibility action on first focusable view - focus guide will not handle focus: $e"
+        )
+      }
+    }
+    return false
+  }
+
+  private fun findDestinationView(): View? {
+    for (focusDestination in focusDestinations) {
+      val childViewWithTag = findViewById<View>(focusDestination)
+      if (childViewWithTag != null) return childViewWithTag
+      val viewWithTag = rootView.findViewById<View>(focusDestination)
+      if (viewWithTag != null) return viewWithTag
+    }
+    return null
+  }
+
+  private val isFocusDestinationsSet: Boolean
+    get() = focusDestinations.isNotEmpty()
+
+  public val isTVFocusGuide: Boolean
+    get() =
+      /**
+       * We don't count a view as `TVFocusGuide` if it has `trapFocus*` props enabled.
+       * The reason is, it's a seperate functionality that has nothing to do with other
+       * TVFocusGuide features that involves heavy focus management. So, the feature
+       * is not directly tied to `TVFocusGuide`.
+       */
+      isFocusDestinationsSet || autoFocus
+
+  private fun findParentFocusGuide(view: View): ReactViewGroup? {
+    var parent: ViewParent? = view.parent
+
+    while (parent != null) {
+      if (parent is ReactViewGroup) {
+        val elem = parent
+        if (elem.isTVFocusGuide) return elem
+      }
+      parent = parent.parent
+    }
+
+    return null
+  }
+
+  private val focusedChildOfFocusGuide: View?
+    /***
+     * This is meant to be used only for TVFocusGuide.
+     * @return View | null
+     */
+    get() {
+      if (!isTVFocusGuide) return null
+
+      /*
+* We can have nested `TVFocusGuide`s, this is a typical scenario.
+* The problem is, returned element from `getFocusedChild` can be
+* either a direct `child` of the `TVFocusGuide` or a `descendant` of it.
+* Let's say if we run `getFocusedChild` for the Root element, it will always
+* give us an element even though the Root element is not the direct parent
+* of the focused element.
+* So, we need to find the closest `TVFocusGuide` to the focused child
+* to make sure the focused element's closest `TVFocusGuide` is "this" one.
+*/
+      val focusedChild = this.focusedChild ?: return null
+
+      val parentFocusGuide =
+        findParentFocusGuide(focusedChild)
+      if (parentFocusGuide === this) return focusedChild
+
+      return null
+    }
+
+  override fun addFocusables(views: ArrayList<View>, direction: Int, focusableMode: Int) {
+    /**
+     * TVFocusGuides should reveral their children when `mRecoverFocus` is set.
+     * `mRecoverFocus` flag indicates a temporary focus recovery mode it's in which
+     * requires full access to children focusable elements.
+     */
+    if (isTVFocusGuide && !mRecoverFocus && this.descendantFocusability != FOCUS_BLOCK_DESCENDANTS) {
+      val focusedChild = focusedChildOfFocusGuide
+
+      /*
+       * We only include the view's (TVFocusGuide) itself if it doesn't have a child that currently has the focus.
+       * Otherwise, it means focus is already in the `TVFocusGuide` and all of it's descendants should be included
+       * for focus calculations.
+       */
+      if (focusedChild == null) {
+        views.add(this)
+        return
+      }
+    }
+
+    super.addFocusables(views, direction, focusableMode)
+  }
+
+  override fun requestChildFocus(child: View, focused: View) {
+    super.requestChildFocus(child, focused)
+
+    if (autoFocus) {
+      lastFocusedElement = WeakReference(focused)
+    }
+  }
+
+  override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+
+    val mEventDispatcher: EventDispatcher? =
+      UIManagerHelper.getEventDispatcherForReactTag(
+        this.context as ReactContext, this.id
+      )
+
+    if (mEventDispatcher == null) {
+      return
+    }
+
+    if (gainFocus) {
+      mEventDispatcher.dispatchEvent(
+        FocusEvent(
+          UIManagerHelper.getSurfaceId(this.context), this.id
+        )
+      )
+    } else {
+      mEventDispatcher.dispatchEvent(
+        BlurEvent(
+          UIManagerHelper.getSurfaceId(this.context), this.id
+        )
+      )
+    }
+  }
+
+  override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && event.repeatCount == 0 && !this.isTVFocusGuide) {
+      val mEventDispatcher: EventDispatcher? =
+        UIManagerHelper.getEventDispatcherForReactTag(
+          this.context as ReactContext, this.id
+        )
+
+      if (mEventDispatcher == null) {
+        return super.onKeyDown(keyCode, event)
+      }
+
+      mEventDispatcher.dispatchEvent(
+        PressInEvent(
+          UIManagerHelper.getSurfaceId(this.context),
+          this.id
+        )
+      )
+    }
+
+
+    return super.onKeyDown(keyCode, event)
+  }
+
+  override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && !this.isTVFocusGuide) {
+      val mEventDispatcher: EventDispatcher? =
+        UIManagerHelper.getEventDispatcherForReactTag(
+          this.context as ReactContext, this.id
+        )
+
+      if (mEventDispatcher == null) {
+        return super.onKeyUp(keyCode, event)
+      }
+
+      mEventDispatcher.dispatchEvent(
+        PressOutEvent(
+          UIManagerHelper.getSurfaceId(this.context),
+          this.id
+        )
+      )
+    }
+
+    return super.onKeyUp(keyCode, event)
+  }
+
+  override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+    if (!isTVFocusGuide || mRecoverFocus) {
+      return super.requestFocus(direction, previouslyFocusedRect)
+    }
+
+    if (isFocusDestinationsSet) {
+      val destination = findDestinationView()
+
+      if (destination != null && requestFocusViewOrAncestor(destination)) {
+        return true
+      }
+    }
+
+    if (this.autoFocus) {
+      val lastFocusedElem = lastFocusedElement!!.get()
+
+      if (lastFocusedElem != null) {
+        if (lastFocusedElem.isAttachedToWindow) {
+          lastFocusedElem.requestFocus()
+          return true
+        }
+
+        /**
+         * `lastFocusedElem` can get detached based on application logic.
+         * If the code reaches here, that means we're dealing with that case.
+         * We should set `lastFocusedElem` to null and let the focus determination
+         * logic below to do its magic and redirect focus to the first element.
+         */
+        lastFocusedElement = WeakReference(null)
+      }
+
+      // Try moving the focus to the first focusable element otherwise.
+      if (moveFocusToFirstFocusable(this)) {
+        return true
+      }
+    }
+
+    return super.requestFocus(direction, previouslyFocusedRect)
+  }
+
+  override fun focusSearch(focused: View, direction: Int): View? {
+    /**
+     * FocusSearch recursively goes all the way up to the Root view
+     * and runs `FocusFinder.findNextFocus()` to determine the next focusable.
+     * It finds the next focusable by accounting *every* focusable elements on the screen.
+     *
+     * That is exactly the thing we want to prevent if the view has a `focusTrap` enabled
+     * matching the `direction`. We interrupt `focusSearch` to make the `FocusFinder` run
+     * the algorithm only accounting the children elements of the focus trap.
+     * This ensures that focus will always stay inside the container until trap gets disabled.
+     */
+    if ((trapFocusUp && direction == FOCUS_UP)
+      || (trapFocusDown && direction == FOCUS_DOWN)
+      || (trapFocusLeft && direction == FOCUS_LEFT)
+      || (trapFocusRight && direction == FOCUS_RIGHT)
+    ) {
+      return FocusFinder.getInstance().findNextFocus(this, focused, direction)
+    }
+
+    return super.focusSearch(focused, direction)
+  }
+
+  public fun setFocusDestinations(focusDestinations: IntArray) {
+    this.focusDestinations = focusDestinations
+  }
+
+  public fun setAutoFocusTV(autoFocus: Boolean) {
+    this.autoFocus = autoFocus
+    lastFocusedElement = WeakReference(null)
+  }
+
+  public fun setTrapFocusUp(enabled: Boolean) {
+    this.trapFocusUp = enabled
+  }
+
+  public fun setTrapFocusDown(enabled: Boolean) {
+    this.trapFocusDown = enabled
+  }
+
+  public fun setTrapFocusLeft(enabled: Boolean) {
+    this.trapFocusLeft = enabled
+  }
+
+  public fun setTrapFocusRight(enabled: Boolean) {
+    this.trapFocusRight = enabled
+  }
+
   private companion object {
-    private const val ARRAY_CAPACITY_INCREMENT = 12
+    const val ARRAY_CAPACITY_INCREMENT = 12
     private val defaultLayoutParam = LayoutParams(0, 0)
 
-    private fun setViewClipped(view: View, clipped: Boolean) {
+    fun setViewClipped(view: View, clipped: Boolean) {
       view.setTag(R.id.view_clipped, clipped)
+    }
+
+    private fun requestFocusViewOrAncestor(destination: View): Boolean {
+      var v: View? = destination
+      while (v != null) {
+        if (v.requestFocus()) {
+          return true
+        }
+        val parent = v.parent
+        v = if (parent is View) {
+          parent
+        } else {
+          null
+        }
+      }
+      return false
     }
   }
 }
