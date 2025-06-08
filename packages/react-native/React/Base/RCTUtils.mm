@@ -397,6 +397,7 @@ CGSize RCTScreenSize(void)
     });
   });
 
+  return size;
 }
 
 CGSize RCTViewportSize(void)
