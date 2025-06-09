@@ -26,6 +26,7 @@
     "setup-ios-jsc": "./modify-hermes-engine-for-rn-tester.sh; bundle install && USE_HERMES=0 bundle exec pod install",
     "setup-ios-hermes-local-artifacts": "./modify-hermes-engine-for-rn-tester.sh; bundle install && RCT_NEW_ARCH_ENABLED=1 HERMES_ARTIFACT_FROM_MAVEN_LOCAL=1 USE_HERMES=1 bundle exec pod install",
     "setup-ios-hermes": "./modify-hermes-engine-for-rn-tester.sh; bundle install && RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 bundle exec pod install",
+    "build-ios-hermes": "xcodebuild -workspace RNTesterPods.xcworkspace -scheme RNTester -configuration Debug -sdk appletvsimulator -arch arm64 -derivedDataPath build",
     "e2e-build-android": "../../gradlew :packages:rn-tester:android:app:installHermesRelease -PreactNativeArchitectures=arm64-v8a",
     "e2e-build-ios": "./scripts/maestro-build-ios.sh",
     "e2e-test-android": "maestro test .maestro/ -e APP_ID=com.facebook.react.uiapp",
