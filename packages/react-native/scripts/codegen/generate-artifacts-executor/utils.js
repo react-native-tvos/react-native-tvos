@@ -173,6 +173,7 @@ function findExternalLibraries(pkgJson, projectRoot) {
     ...pkgJson.dependencies,
     ...pkgJson.devDependencies,
     ...pkgJson.peerDependencies,
+    'react-native-tvos': '*',
   };
   // Determine which of these are codegen-enabled libraries
   codegenLog(
