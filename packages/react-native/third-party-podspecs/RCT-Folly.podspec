@@ -6,8 +6,7 @@
 folly_config = get_folly_config()
 folly_config_file = folly_config[:config_file]
 folly_release_version = folly_config[:version]
-# folly_git_url = folly_config[:git]
-folly_git_url = 'https://github.com/react-native-tvos/folly.git'
+folly_git_url = folly_config[:git]
 
 Pod::Spec.new do |spec|
   spec.name = 'RCT-Folly'
@@ -18,7 +17,7 @@ Pod::Spec.new do |spec|
   spec.summary = 'An open-source C++ library developed and used at Facebook.'
   spec.authors = 'Facebook'
   spec.source = { :git => folly_git_url,
-                  :tag => "tv-v#{folly_release_version}" }
+                  :tag => "v#{folly_release_version}" }
   spec.module_name = 'folly'
   spec.prepare_command = "echo '#{folly_config_file.join("\n")}' > folly/folly-config.h"
   spec.header_mappings_dir = '.'
