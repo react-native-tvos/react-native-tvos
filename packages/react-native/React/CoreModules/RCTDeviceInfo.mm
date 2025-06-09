@@ -51,6 +51,7 @@ RCT_EXPORT_MODULE()
   return self;
 }
 
+#if !TARGET_OS_TV
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -61,6 +62,7 @@ RCT_EXPORT_MODULE()
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
   }
 }
+#endif
 
 + (BOOL)requiresMainQueueSetup
 {

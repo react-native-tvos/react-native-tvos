@@ -29,11 +29,18 @@ static const CGFloat kSingleLineKeyboardBottomOffset = 15.0;
 
 using namespace facebook::react;
 
+#if TARGET_OS_TV
+@interface RCTTextInputComponentView () <
+    RCTBackedTextInputDelegate,
+    RCTTextInputViewProtocol>
+@end
+#else
 @interface RCTTextInputComponentView () <
     RCTBackedTextInputDelegate,
     RCTTextInputViewProtocol,
     UIDropInteractionDelegate>
 @end
+#endif
 
 static NSSet<NSNumber *> *returnKeyTypesSet;
 
