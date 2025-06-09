@@ -57,7 +57,6 @@ import com.facebook.react.views.modal.ReactModalHostView.DialogRootViewGroup
 import com.facebook.react.views.view.ReactViewGroup
 import com.facebook.react.views.view.setStatusBarTranslucency
 import com.facebook.react.views.view.setSystemBarsTranslucency
-import com.facebook.react.views.modal.ReactModalHostView.DialogRootViewGroup
 import java.util.Objects
 
 
