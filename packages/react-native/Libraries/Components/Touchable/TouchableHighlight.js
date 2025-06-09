@@ -318,7 +318,8 @@ class TouchableHighlightImpl extends React.Component<
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
-    const eventHandlers = this.state.pressability.getEventHandlers();
+    const {onBlur, onFocus, ...eventHandlersWithoutBlurAndFocus} =
+      this.state.pressability.getEventHandlers();
 
     const accessibilityState =
       this.props.disabled != null
@@ -390,7 +391,7 @@ class TouchableHighlightImpl extends React.Component<
         testID={this.props.testID}
         ref={this.props.hostRef}
         {...eventHandlersWithoutBlurAndFocus}>
-        {cloneElement(child, {
+        {React.cloneElement(child, {
           style: StyleSheet.compose(
             child.props.style,
             this.state.extraStyles?.child,

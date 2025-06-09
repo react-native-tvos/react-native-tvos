@@ -94,7 +94,7 @@ const RNTesterApp = ({
   }, [dispatch, activeModuleKey]);
 
   // TVEventControl
-  useEffect(() => {
+  React.useEffect(() => {
     if (activeModuleKey) {
       TVEventControl.enableTVMenuKey();
     } else {
