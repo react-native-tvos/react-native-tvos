@@ -24,4 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface RCTTVRemoteSelectGestureRecognizer: UILongPressGestureRecognizer
+
+@end
+
 NS_ASSUME_NONNULL_END
