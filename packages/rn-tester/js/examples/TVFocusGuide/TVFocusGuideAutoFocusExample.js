@@ -12,7 +12,7 @@
 
 import type {FocusEvent} from '../../../../react-native/Libraries/Types/CoreEventTypes';
 
-import {useTheme} from '../../components/RNTesterTheme';
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 import React from 'react';
 import {
   Dimensions,
@@ -63,7 +63,7 @@ const TVFocusGuide = React.forwardRef((props: any, forwardedRef: any) => {
 });
 
 const Text = ({style, children}: {style: any, children: any}) => {
-  const theme = useTheme();
+  const theme = React.useContext(RNTesterThemeContext);
   return (
     <RNText style={[styles.text, {color: theme.LabelColor}, style]}>
       {children}
@@ -87,7 +87,7 @@ const FocusableBox = React.memo(
       },
       forwardRef,
     ) => {
-      const theme = useTheme();
+      const theme = React.useContext(RNTesterThemeContext);
       const {id, width, height, text, slow, style} = props;
 
       if (slow) {
@@ -126,7 +126,7 @@ const FocusableBox = React.memo(
 );
 
 const SideMenu = React.forwardRef((props: any, forwardedRef: any) => {
-  const theme = useTheme();
+  const theme = React.useContext(RNTesterThemeContext);
   const sideMenuItemStyle = [
     styles.sideMenuItem,
     {backgroundColor: theme.TertiarySystemFillColor},
@@ -230,7 +230,9 @@ const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
         autoFocus
         style={styles.rowTop}
         focusable={focusable}
-        importantForAccessibility={focusable === false ? 'no-hide-descendants' : 'auto'}>
+        importantForAccessibility={
+          focusable === false ? 'no-hide-descendants' : 'auto'
+        }>
         <Text style={styles.rowTitle}>{title}</Text>
         <HList
           prefix="Category"
@@ -245,7 +247,9 @@ const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
         autoFocus
         style={styles.mb5}
         focusable={focusable}
-        importantForAccessibility={focusable === false ? 'no-hide-descendants' : 'auto'}>
+        importantForAccessibility={
+          focusable === false ? 'no-hide-descendants' : 'auto'
+        }>
         <HList
           prefix={getSelectedItemPrefix(selectedCategory)}
           itemCount={10}
@@ -493,7 +497,7 @@ const ContentArea = React.forwardRef(
 const TVFocusGuideAutoFocusExample = () => {
   const sideMenuRef =
     React.useRef<?React.ElementRef<typeof TVFocusGuide>>(null);
-  const theme = useTheme();
+  const theme = React.useContext(RNTesterThemeContext);
 
   return (
     <View style={[styles.container, {backgroundColor: theme.BackgroundColor}]}>

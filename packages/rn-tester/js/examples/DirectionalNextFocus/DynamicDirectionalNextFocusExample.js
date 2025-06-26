@@ -10,7 +10,7 @@
 
 'use strict';
 
-import {useTheme} from '../../components/RNTesterTheme';
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
 const React = require('react');
 const ReactNative = require('react-native');
@@ -40,7 +40,7 @@ const Button = React.memo((props: $FlowFixMeProps) => {
     props.onRefAssign?.(props.index, ref);
   };
 
-  const theme = useTheme();
+  const theme = React.useContext(RNTesterThemeContext);
   return (
     <Pressable
       onPress={props.onPress}

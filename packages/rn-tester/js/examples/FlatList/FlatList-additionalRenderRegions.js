@@ -11,7 +11,7 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 import type {RenderItemType} from 'react-native/Libraries/Lists/VirtualizedList';
 
-import {useTheme} from '../../components/RNTesterTheme';
+import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 import * as React from 'react';
 import {
   Dimensions,
@@ -60,7 +60,7 @@ function Row({title, children}: {title: string, children: React.Node}) {
  * after the pressing action.
  */
 export function FlatList_additionalRenderRegions(): React.Node {
-  const theme = useTheme();
+  const theme = React.useContext(RNTesterThemeContext);
   const listRef = React.useRef<?FlatList<ItemType>>(null);
   const [additionalRenderRegionsEnabled, setAdditionalRenderRegionsEnabled] =
     React.useState(true);
