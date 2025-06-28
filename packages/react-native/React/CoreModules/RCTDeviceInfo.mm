@@ -56,10 +56,12 @@ RCT_EXPORT_MODULE()
                         change:(NSDictionary *)change
                        context:(void *)context
 {
+#if !TARGET_OS_TV
   if ([keyPath isEqualToString:kFrameKeyPath]) {
     [self interfaceFrameDidChange];
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTWindowFrameDidChangeNotification object:self];
   }
+#endif
 }
 
 + (BOOL)requiresMainQueueSetup
