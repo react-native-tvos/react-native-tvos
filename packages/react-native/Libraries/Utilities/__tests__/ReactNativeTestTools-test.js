@@ -73,9 +73,9 @@ describe('ReactNativeTestTools', () => {
     /*
     const touchFn = jest.fn();
     const renderTouch = await create(
-      <TouchableWithoutFeedback onPress={touchFn}>
+      <TouchableHighlight onPress={touchFn}>
         <ExampleNull />
-      </TouchableWithoutFeedback>,
+      </TouchableHighlight>,
     );
     tap(renderTouch.root);
     expect(touchFn).toBeCalled();

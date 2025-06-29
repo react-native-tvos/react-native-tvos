@@ -129,10 +129,6 @@ module.exports = {
   get TouchableOpacity() {
     return require('./Libraries/Components/Touchable/TouchableOpacity').default;
   },
-  get TouchableWithoutFeedback() {
-    return require('./Libraries/Components/Touchable/TouchableWithoutFeedback')
-      .default;
-  },
   get View() {
     return require('./Libraries/Components/View/View').default;
   },

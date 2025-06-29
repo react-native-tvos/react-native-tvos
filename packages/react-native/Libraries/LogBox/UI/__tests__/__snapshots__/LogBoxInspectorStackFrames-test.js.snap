@@ -140,18 +140,21 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
       }
     >
       <View
-        accessibilityState={
+        accessibilityValue={
           Object {
-            "busy": undefined,
-            "checked": undefined,
-            "disabled": undefined,
-            "expanded": undefined,
-            "selected": undefined,
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
           }
         }
         accessible={true}
         focusable={true}
+        hasTVPreferredFocus={false}
+        isTVSelectable={true}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
         onPressIn={[Function]}
         onPressOut={[Function]}
         onResponderGrant={[Function]}
@@ -160,32 +163,40 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
-        style={
-          Array [
-            Object {
-              "backgroundColor": "transparent",
-            },
-            Object {
-              "borderRadius": 5,
-            },
-          ]
+        tvParallaxProperties={
+          Object {
+            "enabled": false,
+          }
         }
       >
-        <Text
+        <View
           style={
-            Object {
-              "color": "rgba(255, 255, 255, 0.7)",
-              "fontSize": 12,
-              "fontWeight": "300",
-              "lineHeight": 20,
-              "marginTop": 0,
-              "paddingHorizontal": 10,
-              "paddingVertical": 5,
-            }
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+              },
+              Object {
+                "borderRadius": 5,
+              },
+            ]
           }
         >
-          See 1 more frame
-        </Text>
+          <Text
+            style={
+              Object {
+                "color": "rgba(255, 255, 255, 0.7)",
+                "fontSize": 12,
+                "fontWeight": "300",
+                "lineHeight": 20,
+                "marginTop": 0,
+                "paddingHorizontal": 10,
+                "paddingVertical": 5,
+              }
+            }
+          >
+            See 1 more frame
+          </Text>
+        </View>
       </View>
     </View>
   </View>

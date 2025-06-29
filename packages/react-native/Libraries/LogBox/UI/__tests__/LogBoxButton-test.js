@@ -14,11 +14,11 @@ const render = require('../../../../jest/renderer');
 const LogBoxButton = require('../LogBoxButton').default;
 const React = require('react');
 
-// Mock `TouchableWithoutFeedback` because we are interested in snapshotting the
-// behavior of `LogBoxButton`, not `TouchableWithoutFeedback`.
-jest.mock('../../../Components/Touchable/TouchableWithoutFeedback', () => ({
+// Mock `TouchableHighlight` because we are interested in snapshotting the
+// behavior of `LogBoxButton`, not `TouchableHighlight`.
+jest.mock('../../../Components/Touchable/TouchableHighlight', () => ({
   __esModule: true,
-  default: 'TouchableWithoutFeedback',
+  default: 'TouchableHighlight',
 }));
 
 describe('LogBoxButton', () => {
@@ -36,7 +36,7 @@ describe('LogBoxButton', () => {
     expect(output).toMatchSnapshot();
   });
 
-  it('should render TouchableWithoutFeedback and pass through props', async () => {
+  it('should render TouchableHighlight and pass through props', async () => {
     const output = await render.create(
       <LogBoxButton
         backgroundColor={{

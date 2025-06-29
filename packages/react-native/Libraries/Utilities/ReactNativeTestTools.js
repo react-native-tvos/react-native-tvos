@@ -12,7 +12,7 @@
 
 import type {ReactTestRenderer as ReactTestRendererType} from 'react-test-renderer';
 
-import TouchableWithoutFeedback from '../Components/Touchable/TouchableWithoutFeedback';
+import TouchableHighlight from '../Components/Touchable/TouchableHighlight';
 import * as React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 
@@ -45,7 +45,7 @@ function byClickable(): Predicate {
       (node.type === Switch && node.props && node.props.disabled !== true) ||
       (node.type === View &&
         node?.props?.onStartShouldSetResponder?.testOnly_pressabilityConfig) ||
-      (node.type === TouchableWithoutFeedback &&
+      (node.type === TouchableHighlight &&
         node.props &&
         typeof node.props.onPress === 'function') ||
       // HACK: Find components that use `Pressability`.

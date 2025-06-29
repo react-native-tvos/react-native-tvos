@@ -161,7 +161,6 @@ export type {TouchableOpacityProps} from './Libraries/Components/Touchable/Touch
 export {default as TouchableOpacity} from './Libraries/Components/Touchable/TouchableOpacity';
 
 export type {TouchableWithoutFeedbackProps} from './Libraries/Components/Touchable/TouchableWithoutFeedback';
-export {default as TouchableWithoutFeedback} from './Libraries/Components/Touchable/TouchableWithoutFeedback';
 
 export type {
   AccessibilityActionEvent,

@@ -3594,9 +3594,6 @@ export type TouchableWithoutFeedbackProps = $ReadOnly<
     TouchableWithoutFeedbackPropsIOS &
     AccessibilityProps,
 >;
-declare export default function TouchableWithoutFeedback(
-  props: TouchableWithoutFeedbackProps
-): React.Node;
 "
 `;
 
@@ -9312,7 +9309,6 @@ export { default as TouchableNativeFeedback } from \\"./Libraries/Components/Tou
 export type { TouchableOpacityProps } from \\"./Libraries/Components/Touchable/TouchableOpacity\\";
 export { default as TouchableOpacity } from \\"./Libraries/Components/Touchable/TouchableOpacity\\";
 export type { TouchableWithoutFeedbackProps } from \\"./Libraries/Components/Touchable/TouchableWithoutFeedback\\";
-export { default as TouchableWithoutFeedback } from \\"./Libraries/Components/Touchable/TouchableWithoutFeedback\\";
 export type {
   AccessibilityActionEvent,
   AccessibilityProps,

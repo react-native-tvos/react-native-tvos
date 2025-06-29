@@ -1,11 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`LogBoxButton should render TouchableWithoutFeedback and pass through props 1`] = `
-<TouchableWithoutFeedback
+exports[`LogBoxButton should render TouchableHighlight and pass through props 1`] = `
+<TouchableHighlight
   hitSlop={Object {}}
   onPress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
+  tvParallaxProperties={
+    Object {
+      "enabled": false,
+    }
+  }
 >
   <View
     style={
@@ -18,7 +23,7 @@ exports[`LogBoxButton should render TouchableWithoutFeedback and pass through pr
       Press me
     </Text>
   </View>
-</TouchableWithoutFeedback>
+</TouchableHighlight>
 `;
 
 exports[`LogBoxButton should render only a view without an onPress 1`] = `

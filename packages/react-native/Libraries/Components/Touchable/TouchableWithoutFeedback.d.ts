@@ -137,15 +137,3 @@ export interface TouchableWithoutFeedbackProps
   testID?: string | undefined;
 }
 
-/**
- * Do not use unless you have a very good reason.
- * All the elements that respond to press should have a visual feedback when touched.
- * This is one of the primary reason a "web" app doesn't feel "native".
- *
- * @see https://reactnative.dev/docs/touchablewithoutfeedback
- */
-declare class TouchableWithoutFeedbackComponent extends React.Component<TouchableWithoutFeedbackProps> {}
-declare const TouchableWithoutFeedbackBase: Constructor<TimerMixin> &
-  Constructor<TouchableMixin> &
-  typeof TouchableWithoutFeedbackComponent;
-export class TouchableWithoutFeedback extends TouchableWithoutFeedbackBase {}

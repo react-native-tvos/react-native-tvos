@@ -13,7 +13,6 @@ import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {GestureResponderEvent} from '../../Types/CoreEventTypes';
 
 import TouchableHighlight from '../../Components/Touchable/TouchableHighlight';
-import TouchableWithoutFeedback from '../../Components/Touchable/TouchableWithoutFeedback';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
@@ -61,23 +60,15 @@ function LogBoxButton(props: Props): React.Node {
 
   return props.onPress == null ? (
     content
-  ) : Platform.isTV ? (
-        <TouchableHighlight
-          tvParallaxProperties={{enabled: false}}
-          hitSlop={props.hitSlop}
-          onPress={props.onPress}
-          onPressIn={() => setPressed(true)}
-          onPressOut={() => setPressed(false)}>
-          {content}
-        </TouchableHighlight>
   ) : (
-        <TouchableWithoutFeedback
-          hitSlop={props.hitSlop}
-          onPress={props.onPress}
-          onPressIn={() => setPressed(true)}
-          onPressOut={() => setPressed(false)}>
-          {content}
-        </TouchableWithoutFeedback>
+    <TouchableHighlight
+      tvParallaxProperties={{enabled: false}}
+      hitSlop={props.hitSlop}
+      onPress={props.onPress}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}>
+      {content}
+    </TouchableHighlight>
   );
 }
 
