@@ -32,7 +32,7 @@ import {
   TextInput,
   TouchableNativeFeedback,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -997,8 +997,8 @@ class AccessibilityActionsExample extends React.Component<{}> {
           </View>
         </RNTesterBlock>
 
-        <RNTesterBlock title="TouchableWithoutFeedback with custom accessibility actions">
-          <TouchableWithoutFeedback
+        <RNTesterBlock title="TouchableHighlight with custom accessibility actions">
+          <TouchableHighlight
             accessible={true}
             accessibilityActions={[
               {name: 'cut', label: 'cut label'},
@@ -1023,7 +1023,7 @@ class AccessibilityActionsExample extends React.Component<{}> {
             <View>
               <RNTesterText>Click me</RNTesterText>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableHighlight>
         </RNTesterBlock>
 
         <RNTesterBlock title="Button with accessibility actions">
@@ -1128,7 +1128,7 @@ class FakeSliderExample extends React.Component<{}, FakeSliderExampleState> {
           }}>
           <RNTesterText>Fake Slider {this.state.current}</RNTesterText>
         </View>
-        <TouchableWithoutFeedback
+        <TouchableHighlight
           accessible={true}
           accessibilityLabel="Equalizer"
           accessibilityRole="adjustable"
@@ -1155,7 +1155,7 @@ class FakeSliderExample extends React.Component<{}, FakeSliderExampleState> {
           <View>
             <RNTesterText>Equalizer {this.state.textualValue}</RNTesterText>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -1214,7 +1214,7 @@ class FakeSliderExampleForAccessibilityValue extends React.Component<
           aria-valuenow={this.state.current}>
           <RNTesterText>Fake Slider {this.state.current}</RNTesterText>
         </View>
-        <TouchableWithoutFeedback
+        <TouchableHighlight
           accessible={true}
           accessibilityLabel="Equalizer"
           accessibilityRole="adjustable"
@@ -1241,7 +1241,7 @@ class FakeSliderExampleForAccessibilityValue extends React.Component<
           <View>
             <RNTesterText>Equalizer {this.state.textualValue}</RNTesterText>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -1634,13 +1634,13 @@ function AccessibilityExpandedExample(): React.Node {
       </RNTesterBlock>
 
       <RNTesterBlock title="expanded/collapsed only managed through the accessibility menu">
-        <TouchableWithoutFeedback
+        <TouchableHighlight
           accessibilityState={{expanded: true}}
           accessible={true}>
           <View>
             <RNTesterText>Clicking me does not change state</RNTesterText>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
       </RNTesterBlock>
     </View>
   );

@@ -21,7 +21,6 @@ import {
   TouchableHighlight,
   TouchableNativeFeedback,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -71,49 +70,6 @@ class TouchableHighlightBox extends React.Component<{...}, $FlowFixMeState> {
         </View>
         <View style={styles.logBox}>
           <RNTesterText testID="touchable_highlight_console">
-            {textLog}
-          </RNTesterText>
-        </View>
-      </View>
-    );
-  }
-}
-
-class TouchableWithoutFeedbackBox extends React.Component<
-  {...},
-  $FlowFixMeState,
-> {
-  state: any | {timesPressed: number} = {
-    timesPressed: 0,
-  };
-
-  textOnPress = () => {
-    this.setState({
-      timesPressed: this.state.timesPressed + 1,
-    });
-  };
-
-  render(): React.Node {
-    let textLog = '';
-    if (this.state.timesPressed > 1) {
-      textLog = this.state.timesPressed + 'x TouchableWithoutFeedback onPress';
-    } else if (this.state.timesPressed > 0) {
-      textLog = 'TouchableWithoutFeedback onPress';
-    }
-
-    return (
-      <View>
-        <TouchableWithoutFeedback
-          onPress={this.textOnPress}
-          testID="touchable_without_feedback_button">
-          <View style={styles.wrapperCustom}>
-            <RNTesterText style={styles.text}>
-              Tap Here For No Feedback!
-            </RNTesterText>
-          </View>
-        </TouchableWithoutFeedback>
-        <View style={styles.logBox}>
-          <RNTesterText testID="touchable_without_feedback_console">
             {textLog}
           </RNTesterText>
         </View>
@@ -391,31 +347,6 @@ class TouchableDisabled extends React.Component<{...}> {
           </RNTesterText>
         </TouchableHighlight>
 
-        <TouchableWithoutFeedback
-          onPress={() => console.log('TWOF has been clicked')}
-          disabled={true}>
-          <View style={styles.wrapperCustom}>
-            <RNTesterText
-              style={[
-                styles.button,
-                styles.nativeFeedbackButton,
-                styles.disabledButton,
-              ]}>
-              Disabled TouchableWithoutFeedback
-            </RNTesterText>
-          </View>
-        </TouchableWithoutFeedback>
-
-        <TouchableWithoutFeedback
-          onPress={() => console.log('TWOF has been clicked')}
-          disabled={false}>
-          <View style={styles.wrapperCustom}>
-            <RNTesterText style={[styles.button, styles.nativeFeedbackButton]}>
-              Enabled TouchableWithoutFeedback
-            </RNTesterText>
-          </View>
-        </TouchableWithoutFeedback>
-
         {Platform.OS === 'android' && (
           <>
             <TouchableNativeFeedback
@@ -531,7 +462,7 @@ const TouchableTouchSoundDisabled = () => {
     <>
       {Platform.OS === 'android' ? (
         <>
-          <TouchableWithoutFeedback
+          <TouchableOpacity
             touchSoundDisabled={soundEnabled}
             onPress={() => console.log('touchSoundDisabled pressed!')}>
             <RNTesterText
@@ -540,7 +471,7 @@ const TouchableTouchSoundDisabled = () => {
               }}>
               Touchables make a sound on Android, which can be turned off.
             </RNTesterText>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
           <TouchableOpacity
             style={{
               padding: 10,
@@ -680,12 +611,6 @@ exports.examples = [
       'underlayColor props.': string),
     render(): React.Node {
       return <TouchableHighlightBox />;
-    },
-  },
-  {
-    title: '<TouchableWithoutFeedback>',
-    render(): React.Node {
-      return <TouchableWithoutFeedbackBox />;
     },
   },
   {

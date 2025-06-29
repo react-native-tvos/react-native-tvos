@@ -24,7 +24,7 @@ import {
   Switch,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
+  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -139,12 +139,12 @@ function AnimationBlock(props: {
 }) {
   return (
     <View style={styles.block}>
-      <TouchableWithoutFeedback onPress={props.onPress}>
+      <TouchableHighlight onPress={props.onPress}>
         <Animated.Image
           style={[styles.img, props.imgStyle]}
           source={require('../../assets/poke.png')}
         />
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     </View>
   );
 }

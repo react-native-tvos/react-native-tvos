@@ -19,7 +19,7 @@ import React from 'react';
 import {
   Animated,
   StyleSheet,
-  TouchableWithoutFeedback,
+  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -54,7 +54,7 @@ class Tester extends React.Component<$FlowFixMeProps, $FlowFixMeState> {
 
   render(): React.Node {
     return (
-      <TouchableWithoutFeedback onPress={this.onPress}>
+      <TouchableHighlight onPress={this.onPress}>
         <View>
           <View>
             <RNTesterText>Native:</RNTesterText>
@@ -67,7 +67,7 @@ class Tester extends React.Component<$FlowFixMeProps, $FlowFixMeState> {
           </View>
           <View style={styles.row}>{this.props.children(this.state.js)}</View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     );
   }
 }
@@ -102,7 +102,7 @@ class ValueListenerExample extends React.Component<{...}, $FlowFixMeState> {
 
   render(): React.Node {
     return (
-      <TouchableWithoutFeedback onPress={this._onPress}>
+      <TouchableHighlight onPress={this._onPress}>
         <View>
           <View style={styles.row}>
             <Animated.View
@@ -116,7 +116,7 @@ class ValueListenerExample extends React.Component<{...}, $FlowFixMeState> {
           </View>
           <RNTesterText>Value: {this.state.progress}</RNTesterText>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     );
   }
 }
@@ -299,7 +299,7 @@ class TrackingExample extends React.Component<
 
   render(): React.Node {
     return (
-      <TouchableWithoutFeedback onPress={this.onPress}>
+      <TouchableHighlight onPress={this.onPress}>
         <View>
           <View>
             <RNTesterText>Native:</RNTesterText>
@@ -314,7 +314,7 @@ class TrackingExample extends React.Component<
             {this.renderBlock(this.state.js, this.state.toJS)}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     );
   }
 }

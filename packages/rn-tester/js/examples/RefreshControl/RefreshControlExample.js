@@ -14,7 +14,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  TouchableWithoutFeedback,
+  TouchableHighlight,
   View,
 } from 'react-native';
 
@@ -52,13 +52,13 @@ class Row extends React.Component<
 
   render(): React.Node {
     return (
-      <TouchableWithoutFeedback onPress={this._onClick}>
+      <TouchableHighlight onPress={this._onClick}>
         <View style={styles.row}>
           <RNTesterText testID="refresh_control_row" style={styles.text}>
             {this.props.data.text + ' (' + this.props.data.clicks + ' clicks)'}
           </RNTesterText>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableHighlight>
     );
   }
 }
