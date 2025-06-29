@@ -10,6 +10,7 @@
 #include <folly/json.h>
 #include <glog/logging.h>
 #include <react/debug/react_native_assert.h>
+#include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/profiling/perfetto.h>
 #include <react/renderer/animated/drivers/AnimationDriver.h>
 #include <react/renderer/animated/drivers/AnimationDriverUtils.h>
@@ -87,7 +88,7 @@ std::optional<double> NativeAnimatedNodesManager::getValue(Tag tag) noexcept {
   }
 }
 
-// graph
+#pragma mark - Graph
 
 std::unique_ptr<AnimatedNode> NativeAnimatedNodesManager::animatedNode(
     Tag tag,
@@ -235,7 +236,7 @@ void NativeAnimatedNodesManager::dropAnimatedNode(Tag tag) noexcept {
   animatedNodes_.erase(tag);
 }
 
-// mutations
+#pragma mark - Mutations
 
 void NativeAnimatedNodesManager::setAnimatedNodeValue(Tag tag, double value) {
   if (auto node = getAnimatedNode<ValueAnimatedNode>(tag)) {
@@ -254,6 +255,18 @@ void NativeAnimatedNodesManager::setAnimatedNodeOffset(Tag tag, double offset) {
   }
 }
 
+void NativeAnimatedNodesManager::flattenAnimatedNodeOffset(Tag tag) {
+  if (auto node = getAnimatedNode<ValueAnimatedNode>(tag)) {
+    node->flattenOffset();
+  }
+}
+
+void NativeAnimatedNodesManager::extractAnimatedNodeOffsetOp(Tag tag) {
+  if (auto node = getAnimatedNode<ValueAnimatedNode>(tag)) {
+    node->extractOffset();
+  }
+}
+
 void NativeAnimatedNodesManager::stopAnimationsForNode(Tag nodeTag) {
   std::vector<int> discardedAnimIds{};
 
@@ -268,7 +281,7 @@ void NativeAnimatedNodesManager::stopAnimationsForNode(Tag nodeTag) {
   }
 }
 
-// drivers
+#pragma mark - Drivers
 
 void NativeAnimatedNodesManager::startAnimatingNode(
     int animationId,
@@ -418,10 +431,10 @@ void NativeAnimatedNodesManager::handleAnimatedEvent(
       }
     }
 
-    if (foundAtLeastOneDriver && !isGestureAnimationInProgress_) {
+    if (foundAtLeastOneDriver && !isEventAnimationInProgress_) {
       // There is an animation driver handling this event and
-      // gesture driven animation has not been started yet.
-      isGestureAnimationInProgress_ = true;
+      // event driven animation has not been started yet.
+      isEventAnimationInProgress_ = true;
       // Some platforms (e.g. iOS) have UI tick listener disable
       // when there are no active animations. Calling
       // `startRenderCallbackIfNeeded` will call platform specific code to
@@ -466,7 +479,7 @@ void NativeAnimatedNodesManager::stopRenderCallbackIfNeeded() noexcept {
 
 bool NativeAnimatedNodesManager::isAnimationUpdateNeeded() const noexcept {
   return !activeAnimations_.empty() || !updatedNodeTags_.empty() ||
-      isGestureAnimationInProgress_;
+      isEventAnimationInProgress_;
 }
 
 void NativeAnimatedNodesManager::updateNodes(
@@ -646,7 +659,9 @@ bool NativeAnimatedNodesManager::onAnimationFrame(double timestamp) {
 
     if (driver->getIsComplete()) {
       hasFinishedAnimations = true;
-      finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
+      if (ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync()) {
+        finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
+      }
     }
   }
 
@@ -689,7 +704,8 @@ bool NativeAnimatedNodesManager::isOnRenderThread() const noexcept {
   return isOnRenderThread_;
 }
 
-// listeners
+#pragma mark - Listeners
+
 void NativeAnimatedNodesManager::startListeningToAnimatedNodeValue(
     Tag tag,
     ValueListenerCallback&& callback) noexcept {
@@ -727,6 +743,9 @@ void NativeAnimatedNodesManager::schedulePropsCommit(
       (layoutStyleUpdated || forceFabricCommit ||
        directManipulationCallback_ == nullptr)) {
     mergeObjects(updateViewProps_[viewTag], props);
+
+    // Must call direct manipulation to set final values on components.
+    mergeObjects(updateViewPropsDirect_[viewTag], props);
   } else if (directManipulationCallback_ != nullptr) {
     mergeObjects(updateViewPropsDirect_[viewTag], props);
   }
@@ -755,14 +774,33 @@ void NativeAnimatedNodesManager::onRender() {
                             g_now().time_since_epoch())
                             .count();
 
-    auto containsChange =
-        onAnimationFrame(static_cast<double>(microseconds) / 1000.0);
+    auto timestamp = static_cast<double>(microseconds) / 1000.0;
+    auto containsChange = onAnimationFrame(timestamp);
 
     if (!containsChange) {
       // The last animation tick didn't result in any changes to the UI.
-      // It is safe to assume any gesture animation that was in progress has
+      // It is safe to assume any event animation that was in progress has
       // completed.
-      isGestureAnimationInProgress_ = false;
+
+      // Step 1: gather all animations driven by events.
+      std::set<int> finishedAnimationValueNodes;
+      for (auto& [key, drivers] : eventDrivers_) {
+        for (auto& driver : drivers) {
+          finishedAnimationValueNodes.insert(driver->getAnimatedNodeTag());
+          if (auto node = getAnimatedNode<ValueAnimatedNode>(
+                  driver->getAnimatedNodeTag())) {
+            updatedNodeTags_.insert(node->tag());
+          }
+        }
+      }
+
+      // Step 2: update all nodes that are connected to the finished animations.
+      updateNodes(finishedAnimationValueNodes);
+
+      isEventAnimationInProgress_ = false;
+
+      // Step 3: commit the changes to the UI.
+      commitProps();
     }
   } else {
     // There is no active animation. Stop the render callback.
@@ -776,12 +814,6 @@ bool NativeAnimatedNodesManager::commitProps() {
 
   if (fabricCommitCallback_ != nullptr) {
     if (!updateViewProps_.empty()) {
-      // Must call direct manipulation to set final values on components.
-      if (directManipulationCallback_ != nullptr) {
-        for (const auto& [viewTag, props] : updateViewProps_) {
-          directManipulationCallback_(viewTag, folly::dynamic(props));
-        }
-      }
       fabricCommitCallback_(updateViewProps_);
       updateViewProps_.clear();
     }

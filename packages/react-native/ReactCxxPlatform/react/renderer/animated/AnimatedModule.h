@@ -71,6 +71,14 @@ class AnimatedModule : public NativeAnimatedModuleCxxSpec<AnimatedModule>,
     double offset{};
   };
 
+  struct FlattenAnimatedNodeOffsetOp {
+    Tag nodeTag{};
+  };
+
+  struct ExtractAnimatedNodeOffsetOp {
+    Tag nodeTag{};
+  };
+
   struct ConnectAnimatedNodeToViewOp {
     Tag nodeTag{};
     Tag viewTag{};
@@ -115,6 +123,8 @@ class AnimatedModule : public NativeAnimatedModuleCxxSpec<AnimatedModule>,
       ConnectAnimatedNodeToViewOp,
       DisconnectAnimatedNodeFromViewOp,
       RestoreDefaultValuesOp,
+      FlattenAnimatedNodeOffsetOp,
+      ExtractAnimatedNodeOffsetOp,
       DropAnimatedNodeOp,
       AddAnimatedEventToViewOp,
       RemoveAnimatedEventFromViewOp>;
