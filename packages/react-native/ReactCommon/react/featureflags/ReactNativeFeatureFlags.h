@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dfad04f9ff620686a1619070f8c19efe>>
+ * @generated SignedSource<<d724d9cfe69141b40f95df5308894f50>>
  */
 
 /**
@@ -50,14 +50,14 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool animatedShouldSignalBatch();
 
   /**
-   * Do not incorrectly ceil the available width of an Android text layout
-   */
-  RN_EXPORT static bool avoidCeilingAvailableAndroidTextWidth();
-
-  /**
    * Use a C++ implementation of Native Animated instead of the platform implementation.
    */
   RN_EXPORT static bool cxxNativeAnimatedEnabled();
+
+  /**
+   * Removes JS sync at end of native animation
+   */
+  RN_EXPORT static bool cxxNativeAnimatedRemoveJsSync();
 
   /**
    * Disable sync dispatch on the main queue on iOS
@@ -145,9 +145,9 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableIOSViewClipToPaddingBox();
 
   /**
-   * Integrates IntersectionObserver in the Event Loop in the new architecture, to dispatch the initial notifications for observations in the "Update the rendering" step.
+   * This is to fix the issue with interop view manager where component descriptor lookup is causing ViewManager to preload.
    */
-  RN_EXPORT static bool enableIntersectionObserverEventLoopIntegration();
+  RN_EXPORT static bool enableInteropViewManagerClassLookUpOptimizationIOS();
 
   /**
    * When enabled, LayoutAnimations API will animate state changes on Android.
@@ -230,6 +230,21 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableViewRecyclingForView();
 
   /**
+   * Enables VirtualView debug features such as logging and overlays.
+   */
+  RN_EXPORT static bool enableVirtualViewDebugFeatures();
+
+  /**
+   * Enables reading render state when dispatching VirtualView events.
+   */
+  RN_EXPORT static bool enableVirtualViewRenderState();
+
+  /**
+   * Enables window focus detection for prioritizing VirtualView events.
+   */
+  RN_EXPORT static bool enableVirtualViewWindowFocusDetection();
+
+  /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
@@ -245,9 +260,9 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool fuseboxNetworkInspectionEnabled();
 
   /**
-   * Set maxLines and ellipsization during Android layout creation
+   * Number cached PreparedLayouts in TextLayoutManager cache
    */
-  RN_EXPORT static bool incorporateMaxLinesDuringAndroidLayout();
+  RN_EXPORT static double preparedTextCacheSize();
 
   /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
@@ -263,11 +278,6 @@ class ReactNativeFeatureFlags {
    * In Bridgeless mode, use the always available javascript error reporting pipeline.
    */
   RN_EXPORT static bool useAlwaysAvailableJSErrorHandling();
-
-  /**
-   * Trust the width of a text layout we create, instead of re-deriving it from its contents
-   */
-  RN_EXPORT static bool useAndroidTextLayoutWidthDirectly();
 
   /**
    * Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.

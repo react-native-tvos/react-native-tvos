@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<aba6b250d4c48029ae96480724c16ed0>>
+ * @generated SignedSource<<cdd5ac40322e76f95cc8831d30012375>>
  */
 
 /**
@@ -26,8 +26,8 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
 
   private var commonTestFlagCache: Boolean? = null
   private var animatedShouldSignalBatchCache: Boolean? = null
-  private var avoidCeilingAvailableAndroidTextWidthCache: Boolean? = null
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
+  private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
   private var disableMainQueueSyncDispatchIOSCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableTextLayoutManagerCacheAndroidCache: Boolean? = null
@@ -45,7 +45,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
-  private var enableIntersectionObserverEventLoopIntegrationCache: Boolean? = null
+  private var enableInteropViewManagerClassLookUpOptimizationIOSCache: Boolean? = null
   private var enableLayoutAnimationsOnAndroidCache: Boolean? = null
   private var enableLayoutAnimationsOnIOSCache: Boolean? = null
   private var enableMainQueueCoordinatorOnIOSCache: Boolean? = null
@@ -62,14 +62,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableViewRecyclingCache: Boolean? = null
   private var enableViewRecyclingForTextCache: Boolean? = null
   private var enableViewRecyclingForViewCache: Boolean? = null
+  private var enableVirtualViewDebugFeaturesCache: Boolean? = null
+  private var enableVirtualViewRenderStateCache: Boolean? = null
+  private var enableVirtualViewWindowFocusDetectionCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
   private var fuseboxEnabledReleaseCache: Boolean? = null
   private var fuseboxNetworkInspectionEnabledCache: Boolean? = null
-  private var incorporateMaxLinesDuringAndroidLayoutCache: Boolean? = null
+  private var preparedTextCacheSizeCache: Double? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
   private var useAlwaysAvailableJSErrorHandlingCache: Boolean? = null
-  private var useAndroidTextLayoutWidthDirectlyCache: Boolean? = null
   private var useFabricInteropCache: Boolean? = null
   private var useNativeViewConfigsInBridgelessModeCache: Boolean? = null
   private var useOptimizedEventBatchingOnAndroidCache: Boolean? = null
@@ -99,22 +101,22 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun avoidCeilingAvailableAndroidTextWidth(): Boolean {
-    var cached = avoidCeilingAvailableAndroidTextWidthCache
-    if (cached == null) {
-      cached = currentProvider.avoidCeilingAvailableAndroidTextWidth()
-      accessedFeatureFlags.add("avoidCeilingAvailableAndroidTextWidth")
-      avoidCeilingAvailableAndroidTextWidthCache = cached
-    }
-    return cached
-  }
-
   override fun cxxNativeAnimatedEnabled(): Boolean {
     var cached = cxxNativeAnimatedEnabledCache
     if (cached == null) {
       cached = currentProvider.cxxNativeAnimatedEnabled()
       accessedFeatureFlags.add("cxxNativeAnimatedEnabled")
       cxxNativeAnimatedEnabledCache = cached
+    }
+    return cached
+  }
+
+  override fun cxxNativeAnimatedRemoveJsSync(): Boolean {
+    var cached = cxxNativeAnimatedRemoveJsSyncCache
+    if (cached == null) {
+      cached = currentProvider.cxxNativeAnimatedRemoveJsSync()
+      accessedFeatureFlags.add("cxxNativeAnimatedRemoveJsSync")
+      cxxNativeAnimatedRemoveJsSyncCache = cached
     }
     return cached
   }
@@ -289,12 +291,12 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun enableIntersectionObserverEventLoopIntegration(): Boolean {
-    var cached = enableIntersectionObserverEventLoopIntegrationCache
+  override fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean {
+    var cached = enableInteropViewManagerClassLookUpOptimizationIOSCache
     if (cached == null) {
-      cached = currentProvider.enableIntersectionObserverEventLoopIntegration()
-      accessedFeatureFlags.add("enableIntersectionObserverEventLoopIntegration")
-      enableIntersectionObserverEventLoopIntegrationCache = cached
+      cached = currentProvider.enableInteropViewManagerClassLookUpOptimizationIOS()
+      accessedFeatureFlags.add("enableInteropViewManagerClassLookUpOptimizationIOS")
+      enableInteropViewManagerClassLookUpOptimizationIOSCache = cached
     }
     return cached
   }
@@ -459,6 +461,36 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun enableVirtualViewDebugFeatures(): Boolean {
+    var cached = enableVirtualViewDebugFeaturesCache
+    if (cached == null) {
+      cached = currentProvider.enableVirtualViewDebugFeatures()
+      accessedFeatureFlags.add("enableVirtualViewDebugFeatures")
+      enableVirtualViewDebugFeaturesCache = cached
+    }
+    return cached
+  }
+
+  override fun enableVirtualViewRenderState(): Boolean {
+    var cached = enableVirtualViewRenderStateCache
+    if (cached == null) {
+      cached = currentProvider.enableVirtualViewRenderState()
+      accessedFeatureFlags.add("enableVirtualViewRenderState")
+      enableVirtualViewRenderStateCache = cached
+    }
+    return cached
+  }
+
+  override fun enableVirtualViewWindowFocusDetection(): Boolean {
+    var cached = enableVirtualViewWindowFocusDetectionCache
+    if (cached == null) {
+      cached = currentProvider.enableVirtualViewWindowFocusDetection()
+      accessedFeatureFlags.add("enableVirtualViewWindowFocusDetection")
+      enableVirtualViewWindowFocusDetectionCache = cached
+    }
+    return cached
+  }
+
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean {
     var cached = fixMappingOfEventPrioritiesBetweenFabricAndReactCache
     if (cached == null) {
@@ -489,12 +521,12 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun incorporateMaxLinesDuringAndroidLayout(): Boolean {
-    var cached = incorporateMaxLinesDuringAndroidLayoutCache
+  override fun preparedTextCacheSize(): Double {
+    var cached = preparedTextCacheSizeCache
     if (cached == null) {
-      cached = currentProvider.incorporateMaxLinesDuringAndroidLayout()
-      accessedFeatureFlags.add("incorporateMaxLinesDuringAndroidLayout")
-      incorporateMaxLinesDuringAndroidLayoutCache = cached
+      cached = currentProvider.preparedTextCacheSize()
+      accessedFeatureFlags.add("preparedTextCacheSize")
+      preparedTextCacheSizeCache = cached
     }
     return cached
   }
@@ -525,16 +557,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.useAlwaysAvailableJSErrorHandling()
       accessedFeatureFlags.add("useAlwaysAvailableJSErrorHandling")
       useAlwaysAvailableJSErrorHandlingCache = cached
-    }
-    return cached
-  }
-
-  override fun useAndroidTextLayoutWidthDirectly(): Boolean {
-    var cached = useAndroidTextLayoutWidthDirectlyCache
-    if (cached == null) {
-      cached = currentProvider.useAndroidTextLayoutWidthDirectly()
-      accessedFeatureFlags.add("useAndroidTextLayoutWidthDirectly")
-      useAndroidTextLayoutWidthDirectlyCache = cached
     }
     return cached
   }

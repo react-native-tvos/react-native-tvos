@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3f2600dc760fa878ded68e0e15110904>>
+ * @generated SignedSource<<10197755f82d5b7251563ce1517c8fac>>
  */
 
 /**
@@ -27,9 +27,9 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun animatedShouldSignalBatch(): Boolean
 
-  @DoNotStrip public fun avoidCeilingAvailableAndroidTextWidth(): Boolean
-
   @DoNotStrip public fun cxxNativeAnimatedEnabled(): Boolean
+
+  @DoNotStrip public fun cxxNativeAnimatedRemoveJsSync(): Boolean
 
   @DoNotStrip public fun disableMainQueueSyncDispatchIOS(): Boolean
 
@@ -65,7 +65,7 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableIOSViewClipToPaddingBox(): Boolean
 
-  @DoNotStrip public fun enableIntersectionObserverEventLoopIntegration(): Boolean
+  @DoNotStrip public fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean
 
   @DoNotStrip public fun enableLayoutAnimationsOnAndroid(): Boolean
 
@@ -99,21 +99,25 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableViewRecyclingForView(): Boolean
 
+  @DoNotStrip public fun enableVirtualViewDebugFeatures(): Boolean
+
+  @DoNotStrip public fun enableVirtualViewRenderState(): Boolean
+
+  @DoNotStrip public fun enableVirtualViewWindowFocusDetection(): Boolean
+
   @DoNotStrip public fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
 
   @DoNotStrip public fun fuseboxEnabledRelease(): Boolean
 
   @DoNotStrip public fun fuseboxNetworkInspectionEnabled(): Boolean
 
-  @DoNotStrip public fun incorporateMaxLinesDuringAndroidLayout(): Boolean
+  @DoNotStrip public fun preparedTextCacheSize(): Double
 
   @DoNotStrip public fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 
   @DoNotStrip public fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean
 
   @DoNotStrip public fun useAlwaysAvailableJSErrorHandling(): Boolean
-
-  @DoNotStrip public fun useAndroidTextLayoutWidthDirectly(): Boolean
 
   @DoNotStrip public fun useFabricInterop(): Boolean
 

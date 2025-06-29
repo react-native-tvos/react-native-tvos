@@ -18,11 +18,6 @@ import {Commands} from './ViewNativeComponent';
 import * as React from 'react';
 import {use} from 'react';
 
-type PropsWithRef = $ReadOnly<{
-  ref?: React.RefSetter<React.ElementRef<typeof ViewNativeComponent>>,
-  ...ViewProps,
-}>;
-
 /**
  * The most fundamental component for building a UI, View is a container that
  * supports layout with flexbox, style, some touch handling, and accessibility
@@ -30,7 +25,10 @@ type PropsWithRef = $ReadOnly<{
  *
  * @see https://reactnative.dev/docs/view
  */
-function View(props: PropsWithRef): React.Node {
+export default component View(
+  ref?: React.RefSetter<React.ElementRef<typeof ViewNativeComponent>>,
+  ...props: ViewProps
+) {
   const hasTextAncestor = use(TextAncestor);
 
   const viewRef = React.useRef<?React.ElementRef<typeof View>>(null);
@@ -65,7 +63,7 @@ function View(props: PropsWithRef): React.Node {
     } = props;
 
     // Since we destructured props, we can now treat it as mutable
-    const processedProps = otherProps as {...PropsWithRef};
+    const processedProps = otherProps as {...ViewProps};
 
     const parsedAriaLabelledBy = ariaLabelledBy?.split(/\s*,\s*/g);
     if (parsedAriaLabelledBy !== undefined) {
@@ -128,7 +126,12 @@ function View(props: PropsWithRef): React.Node {
       };
     }
 
-    actualView = <ViewNativeComponent {...processedProps} />;
+    actualView =
+      ref == null ? (
+        <ViewNativeComponent {...processedProps} />
+      ) : (
+        <ViewNativeComponent {...processedProps} ref={ref} />
+      );
   } else {
     const {
       accessibilityElementsHidden,
@@ -192,8 +195,8 @@ function View(props: PropsWithRef): React.Node {
 
     const _setNativeRef = setAndForwardRef({
       getForwardedRef: () => viewRef.current,
-      setLocalRef: ref => {
-        viewRef.current = ref;
+      setLocalRef: _ref => {
+        viewRef.current = _ref;
 
         // This is a hack. Ideally we would forwardRef to the underlying
         // host component. However, since TVFocusGuide has its own methods that can be
@@ -203,8 +206,8 @@ function View(props: PropsWithRef): React.Node {
         // Here we mutate the ref, so that the user can use the standart native
         // methods like `measureLayout()` etc. while also having access to
         // imperative methods of this component like `requestTVFocus()`.
-        if (ref) {
-          ref.requestTVFocus = requestTVFocus;
+        if (_ref) {
+          _ref.requestTVFocus = requestTVFocus;
         }
       },
     });
@@ -237,8 +240,3 @@ function View(props: PropsWithRef): React.Node {
   }
   return actualView;
 }
-
-export default View as component(
-  ref?: React.RefSetter<React.ElementRef<typeof ViewNativeComponent>>,
-  ...props: ViewProps
-);

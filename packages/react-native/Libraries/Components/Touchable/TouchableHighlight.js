@@ -10,6 +10,7 @@
 
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import type {AccessibilityState} from '../View/ViewAccessibility';
 import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 
 import View from '../../Components/View/View';
@@ -32,6 +33,9 @@ type AndroidProps = $ReadOnly<{
 }>;
 
 type IOSProps = $ReadOnly<{
+  /**
+   * @deprecated Use `focusable` instead
+   */
   hasTVPreferredFocus?: ?boolean,
   isTVSelectable?: ?boolean,
   tvParallaxProperties?: TVParallaxPropertiesType,
@@ -321,7 +325,7 @@ class TouchableHighlightImpl extends React.Component<
     // adopting `Pressability`, so preserve that behavior.
     const eventHandlers = this.state.pressability.getEventHandlers();
 
-    const accessibilityState =
+    const accessibilityState: ?AccessibilityState =
       this.props.disabled != null
         ? {
             ...this.props.accessibilityState,

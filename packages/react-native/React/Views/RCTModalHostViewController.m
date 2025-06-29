@@ -24,7 +24,6 @@
     return nil;
   }
 
-  self.modalInPresentation = YES;
 
 #if !TARGET_OS_TV
   _preferredStatusBarStyle = [RCTUIStatusBarManager() statusBarStyle];

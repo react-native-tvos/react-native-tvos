@@ -12,21 +12,28 @@ require('../babel-register').registerForScript();
 
 const buildApiSnapshot = require('./BuildApiSnapshot');
 const buildGeneratedTypes = require('./buildGeneratedTypes');
-const chalk = require('chalk');
 const debug = require('debug');
-const {parseArgs} = require('util');
+const {parseArgs, styleText} = require('util');
 
 const config = {
   options: {
     debug: {type: 'boolean'},
+    'debug-version-annotations': {type: 'boolean'},
     help: {type: 'boolean'},
-    withSnapshot: {type: 'boolean'},
+    'skip-snapshot': {type: 'boolean'},
+    validate: {type: 'boolean'},
   },
 };
 
 async function main() {
   const {
-    values: {debug: debugEnabled, help, withSnapshot},
+    values: {
+      debug: debugEnabled,
+      'debug-version-annotations': debugVersionAnnotations,
+      help,
+      'skip-snapshot': skipSnapshot,
+      validate,
+    },
     /* $FlowFixMe[incompatible-call] Natural Inference rollout. See
      * https://fburl.com/workplace/6291gfvu */
   } = parseArgs(config);
@@ -38,7 +45,13 @@ async function main() {
   Build generated TypeScript types for react-native.
 
   Options:
-    --withSnapshot    [Experimental] Include API snapshot generation.
+    --debug           Enable debug logging.
+    --debug-version-annotations
+                      Outputs debug info alongside versioned type hashes as
+                      part of the API snapshot contents.
+    --skip-snapshot   Skip API snapshot generation.
+    --validate        Validate if the current API snapshot on disk is up to
+                      date. Exits with an error if differences are detected.
     `);
     process.exitCode = 0;
     return;
@@ -50,20 +63,19 @@ async function main() {
 
   console.log(
     '\n' +
-      chalk.bold.inverse('Building generated react-native package types') +
+      styleText(
+        ['bold', 'inverse'],
+        ' Building generated react-native package types ',
+      ) +
       '\n',
   );
-
   await buildGeneratedTypes();
 
-  if (withSnapshot) {
+  if (!skipSnapshot) {
     console.log(
-      '\n' +
-        chalk.bold.inverse.yellow('EXPERIMENTAL - Building API snapshot') +
-        '\n',
+      styleText(['bold', 'inverse'], ' Building API snapshot ') + '\n',
     );
-
-    await buildApiSnapshot();
+    await buildApiSnapshot({validate, debugVersionAnnotations});
   }
 }
 

@@ -76,9 +76,6 @@ function reportException(
     message = namePrefix + message;
   }
 
-  message =
-    e.jsEngine == null ? message : `${message}, js engine: ${e.jsEngine}`;
-
   // $FlowFixMe[unclear-type]
   const extraData: Object = {
     // $FlowFixMe[incompatible-use] we can't define a type with a Symbol-keyed field in flow
@@ -108,7 +105,7 @@ function reportException(
     // we feed back into console.error, to make sure any methods that are
     // monkey patched on top of console.error are called when coming from
     // handleException
-    console.error(data.message);
+    console.error(e);
   }
 
   if (__DEV__) {

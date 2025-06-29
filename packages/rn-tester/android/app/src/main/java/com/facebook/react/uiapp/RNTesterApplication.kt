@@ -33,6 +33,7 @@ import com.facebook.react.uiapp.component.MyNativeViewManager
 import com.facebook.react.uiapp.component.ReportFullyDrawnViewManager
 import com.facebook.react.uimanager.ReactShadowNode
 import com.facebook.react.uimanager.ViewManager
+import com.facebook.react.views.view.setEdgeToEdgeFeatureFlagOn
 import com.facebook.soloader.SoLoader
 
 internal class RNTesterApplication : Application(), ReactApplication {
@@ -114,7 +115,6 @@ internal class RNTesterApplication : Application(), ReactApplication {
       }
 
       override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
-      override val isHermesEnabled: Boolean = true
     }
   }
 
@@ -135,6 +135,10 @@ internal class RNTesterApplication : Application(), ReactApplication {
 
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       load()
+    }
+
+    if (BuildConfig.IS_EDGE_TO_EDGE_ENABLED) {
+      setEdgeToEdgeFeatureFlagOn()
     }
   }
 }

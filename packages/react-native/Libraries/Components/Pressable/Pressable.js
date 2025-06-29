@@ -8,6 +8,7 @@
  * @format
  */
 
+import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {
   BlurEvent,
   FocusEvent,
@@ -29,8 +30,6 @@ import useAndroidRippleForView, {
 } from './useAndroidRippleForView';
 import * as React from 'react';
 import {memo, useMemo, useRef, useState} from 'react';
-
-type ViewStyleProp = React.ElementConfig<typeof View>['style'];
 
 export type {PressableAndroidRippleConfig};
 

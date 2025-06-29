@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e3792f1be08a9175b71c3bef175fbb71>>
+ * @generated SignedSource<<a1eb592bf34ec0bd242c44a2f6bb6828>>
  */
 
 /**
@@ -27,9 +27,9 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun animatedShouldSignalBatch(): Boolean = false
 
-  override fun avoidCeilingAvailableAndroidTextWidth(): Boolean = true
-
   override fun cxxNativeAnimatedEnabled(): Boolean = false
+
+  override fun cxxNativeAnimatedRemoveJsSync(): Boolean = false
 
   override fun disableMainQueueSyncDispatchIOS(): Boolean = false
 
@@ -65,7 +65,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableIOSViewClipToPaddingBox(): Boolean = false
 
-  override fun enableIntersectionObserverEventLoopIntegration(): Boolean = true
+  override fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean = false
 
   override fun enableLayoutAnimationsOnAndroid(): Boolean = false
 
@@ -99,21 +99,25 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableViewRecyclingForView(): Boolean = true
 
+  override fun enableVirtualViewDebugFeatures(): Boolean = false
+
+  override fun enableVirtualViewRenderState(): Boolean = false
+
+  override fun enableVirtualViewWindowFocusDetection(): Boolean = false
+
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
   override fun fuseboxEnabledRelease(): Boolean = false
 
   override fun fuseboxNetworkInspectionEnabled(): Boolean = false
 
-  override fun incorporateMaxLinesDuringAndroidLayout(): Boolean = true
+  override fun preparedTextCacheSize(): Double = 200.0
 
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean = false
 
   override fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean = false
 
   override fun useAlwaysAvailableJSErrorHandling(): Boolean = false
-
-  override fun useAndroidTextLayoutWidthDirectly(): Boolean = true
 
   override fun useFabricInterop(): Boolean = true
 
