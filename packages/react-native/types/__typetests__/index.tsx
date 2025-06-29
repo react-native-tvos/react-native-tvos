@@ -111,7 +111,6 @@ import {
   TouchableNativeFeedback,
   TouchableOpacity,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   UIManager,
   View,
   ViewStyle,
@@ -573,16 +572,6 @@ export class TouchableNativeFeedbackTest extends React.Component {
             <Text style={{margin: 30}}>Button</Text>
           </View>
         </TouchableNativeFeedback>
-        <TouchableWithoutFeedback focusable={false}>
-          <View style={{width: 150, height: 100, backgroundColor: 'red'}}>
-            <Text style={{margin: 30}}>Button</Text>
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback rejectResponderTermination={true}>
-          <View style={{width: 150, height: 100, backgroundColor: 'red'}}>
-            <Text style={{margin: 30}}>Button</Text>
-          </View>
-        </TouchableWithoutFeedback>
         <TouchableNativeFeedback
           background={TouchableNativeFeedback.Ripple('red', true)}>
           <View style={{width: 150, height: 100, backgroundColor: 'red'}}>
@@ -1674,7 +1663,7 @@ const NativeIDTest = () => (
 
 const IdTest = () => (
   <View id={'id'}>
-    <TouchableWithoutFeedback id={'id'} onPress={() => {}} />
+    <TouchableOpacity id={'id'} onPress={() => {}} />
     <Text id={'id'}>Text</Text>
     <TextInput id={'id'} value="text" />
     <Image
