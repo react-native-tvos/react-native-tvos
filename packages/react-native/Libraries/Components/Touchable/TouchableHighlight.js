@@ -50,9 +50,6 @@ type TouchableHighlightBaseProps = $ReadOnly<{
   /**
    * Determines what the opacity of the wrapped view should be when touch is active.
    */
-  ...React.ElementConfig<TouchableWithoutFeedback>,
-  ...AndroidProps,
-  ...IOSProps,
   activeOpacity?: ?number,
   /**
    * The color of the underlay that will show through when the touch is active.
