@@ -8,6 +8,8 @@ echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERS
 export PATH=$PATH:/opt/homebrew/bin
 which ruby
 cd ../../packages/rn-tester
+echo "Install dependencies..."
+yarn
 echo "Cleaning build directories..."
 yarn clean-ios
 echo "Setting up RNTester..."

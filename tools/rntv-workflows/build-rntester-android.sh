@@ -13,6 +13,8 @@ which sdkmanager
 export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
 # Change directory
 cd ../../packages/rn-tester
+echo "Install dependencies..."
+yarn
 echo "Cleaning build directories..."
 yarn clean-android
 echo "Building RNTester..."
