@@ -18,13 +18,9 @@ import type {
 } from '../../Types/CoreEventTypes';
 import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
 
-import View from '../../Components/View/View';
 import {type AccessibilityProps} from '../../Components/View/ViewAccessibility';
-import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
-import usePressability from '../../Pressability/usePressability';
 import {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import * as React from 'react';
-import {cloneElement, useMemo} from 'react';
 
 export type TouchableWithoutFeedbackPropsIOS = {
   tvParallaxProperties?: TVParallaxPropertiesType,
@@ -130,31 +126,3 @@ export type TouchableWithoutFeedbackProps = $ReadOnly<
     TouchableWithoutFeedbackPropsIOS &
     AccessibilityProps,
 >;
-
-const PASSTHROUGH_PROPS = [
-  'accessibilityActions',
-  'accessibilityElementsHidden',
-  'accessibilityHint',
-  'accessibilityLanguage',
-  'accessibilityIgnoresInvertColors',
-  'accessibilityLabel',
-  'accessibilityLiveRegion',
-  'accessibilityRole',
-  'accessibilityValue',
-  'aria-valuemax',
-  'aria-valuemin',
-  'aria-valuenow',
-  'aria-valuetext',
-  'accessibilityViewIsModal',
-  'aria-modal',
-  'hitSlop',
-  'importantForAccessibility',
-  'nativeID',
-  'onAccessibilityAction',
-  'onBlur',
-  'onFocus',
-  'onLayout',
-  'testID',
-  'tvParallaxProperties',
-] as const;
-

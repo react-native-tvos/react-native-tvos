@@ -30,9 +30,9 @@ import {
   StyleSheet,
   Switch,
   TextInput,
+  TouchableHighlight,
   TouchableNativeFeedback,
   TouchableOpacity,
-  TouchableHighlight,
   View,
 } from 'react-native';
 

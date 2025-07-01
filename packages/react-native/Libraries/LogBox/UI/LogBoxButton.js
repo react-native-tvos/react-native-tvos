@@ -15,7 +15,6 @@ import type {GestureResponderEvent} from '../../Types/CoreEventTypes';
 import TouchableHighlight from '../../Components/Touchable/TouchableHighlight';
 import View from '../../Components/View/View';
 import StyleSheet from '../../StyleSheet/StyleSheet';
-import Platform from '../../Utilities/Platform';
 import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 import {useState} from 'react';
