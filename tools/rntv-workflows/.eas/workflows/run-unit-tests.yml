@@ -42,11 +42,11 @@ jobs:
           yarn --cwd packages/react-native-codegen build
           yarn --cwd packages/react-native-codegen-typescript-test build
           yarn test-typescript
-#      - name: Run Typescript generation
-#        id: typescript-gen
-#        working_directory: ../..
-#        run: |
-#          yarn build-types
+      - name: Run Typescript generation
+        id: typescript-gen
+        working_directory: ../..
+        run: |
+          yarn build-types --skip-snapshot
       - name: Run Jest tests
         id: test-jest
         working_directory: ../..   
