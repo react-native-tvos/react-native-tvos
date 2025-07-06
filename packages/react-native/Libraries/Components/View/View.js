@@ -11,7 +11,7 @@
 import type {ViewProps} from './ViewPropTypes';
 
 import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
-import TextAncestor from '../../Text/TextAncestor';
+import TextAncestorContext from '../../Text/TextAncestorContext';
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
 import ViewNativeComponent from './ViewNativeComponent';
 import {Commands} from './ViewNativeComponent';
@@ -29,7 +29,7 @@ export default component View(
   ref?: React.RefSetter<React.ElementRef<typeof ViewNativeComponent>>,
   ...props: ViewProps
 ) {
-  const hasTextAncestor = use(TextAncestor);
+  const hasTextAncestor = use(TextAncestorContext);
 
   const viewRef = React.useRef<?React.ElementRef<typeof View>>(null);
 
@@ -236,7 +236,9 @@ export default component View(
   }
 
   if (hasTextAncestor) {
-    return <TextAncestor value={false}>{actualView}</TextAncestor>;
+    return (
+      <TextAncestorContext value={false}>{actualView}</TextAncestorContext>
+    );
   }
   return actualView;
 }

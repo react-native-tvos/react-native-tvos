@@ -145,6 +145,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableAndroidTextMeasurementOptimizations: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-01',
+        description:
+          'Enables various optimizations throughout the path of measuring text on Android.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableBridgelessArchitecture: {
       defaultValue: false,
       metadata: {
@@ -511,6 +522,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    hideOffscreenVirtualViewsOnIOS: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-06-30',
+        description:
+          'Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     preparedTextCacheSize: {
       defaultValue: 200,
       metadata: {
@@ -681,6 +703,17 @@ const definitions: FeatureFlagDefinitions = {
           'Changes `useAnimatedPropsMemo` to avoid state updates to invalidate the cached `AnimatedProps`.',
         expectedReleaseValue: true,
         purpose: 'release',
+      },
+      ossReleaseStage: 'none',
+    },
+    deferFlatListFocusChangeRenderUpdate: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-02',
+        description:
+          'Use the deferred cell render update mechanism for focus change in FlatList.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
     },

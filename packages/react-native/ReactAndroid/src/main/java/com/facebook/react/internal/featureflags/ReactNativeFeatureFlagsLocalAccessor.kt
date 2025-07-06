@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<cdd5ac40322e76f95cc8831d30012375>>
+ * @generated SignedSource<<356261385b837def94ac5a4ca7ffd05d>>
  */
 
 /**
@@ -33,6 +33,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var disableTextLayoutManagerCacheAndroidCache: Boolean? = null
   private var enableAccessibilityOrderCache: Boolean? = null
   private var enableAccumulatedUpdatesInRawPropsAndroidCache: Boolean? = null
+  private var enableAndroidTextMeasurementOptimizationsCache: Boolean? = null
   private var enableBridgelessArchitectureCache: Boolean? = null
   private var enableCppPropsIteratorSetterCache: Boolean? = null
   private var enableCustomFocusSearchOnClippedElementsAndroidCache: Boolean? = null
@@ -68,6 +69,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
   private var fuseboxEnabledReleaseCache: Boolean? = null
   private var fuseboxNetworkInspectionEnabledCache: Boolean? = null
+  private var hideOffscreenVirtualViewsOnIOSCache: Boolean? = null
   private var preparedTextCacheSizeCache: Double? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
@@ -167,6 +169,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableAccumulatedUpdatesInRawPropsAndroid()
       accessedFeatureFlags.add("enableAccumulatedUpdatesInRawPropsAndroid")
       enableAccumulatedUpdatesInRawPropsAndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun enableAndroidTextMeasurementOptimizations(): Boolean {
+    var cached = enableAndroidTextMeasurementOptimizationsCache
+    if (cached == null) {
+      cached = currentProvider.enableAndroidTextMeasurementOptimizations()
+      accessedFeatureFlags.add("enableAndroidTextMeasurementOptimizations")
+      enableAndroidTextMeasurementOptimizationsCache = cached
     }
     return cached
   }
@@ -517,6 +529,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.fuseboxNetworkInspectionEnabled()
       accessedFeatureFlags.add("fuseboxNetworkInspectionEnabled")
       fuseboxNetworkInspectionEnabledCache = cached
+    }
+    return cached
+  }
+
+  override fun hideOffscreenVirtualViewsOnIOS(): Boolean {
+    var cached = hideOffscreenVirtualViewsOnIOSCache
+    if (cached == null) {
+      cached = currentProvider.hideOffscreenVirtualViewsOnIOS()
+      accessedFeatureFlags.add("hideOffscreenVirtualViewsOnIOS")
+      hideOffscreenVirtualViewsOnIOSCache = cached
     }
     return cached
   }
