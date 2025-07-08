@@ -32,6 +32,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.facebook.common.logging.FLog
 import com.facebook.react.R
+import com.facebook.react.ReactActivity
 import com.facebook.react.bridge.GuardedRunnable
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -302,12 +303,31 @@ public class ReactModalHostView(context: ThemedReactContext) :
                 // activity expects to receive those events and react to them, ie. in the case of
                 // the dev menu
                 val innerCurrentActivity =
-                    (this@ReactModalHostView.context as ReactContext).currentActivity
+                    (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
                 if (innerCurrentActivity != null) {
-                  return innerCurrentActivity.onKeyUp(keyCode, event)
+                  return innerCurrentActivity.onDialogKeyUp(keyCode, event)
                 }
               }
             }
+
+            // @see https://github.com/react-native-tvos/react-native-tvos/issues/829
+            if (event.action == KeyEvent.ACTION_DOWN) {
+              // Allow BACK and ESCAPE keys to propagate to the dialog's activity.
+              // Returning false ensures these keys are not consumed here, so they
+              // can be processed during the ACTION_UP event where their functionality
+              // is handled by JavaScript.
+              if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
+                return false
+              }
+
+              // Redirect all other key down events to the current activity.
+              val innerCurrentActivity =
+                (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
+              if (innerCurrentActivity != null) {
+                return innerCurrentActivity.onDialogKeyDown(keyCode, event)
+              }
+            }
+
             return false
           }
         })
