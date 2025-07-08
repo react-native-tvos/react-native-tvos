@@ -9,8 +9,8 @@ on:
       - packages/react-native/**
       - packages/virtualized-lists/**
       - tools/rntv-workflows/**
-#  schedule:
-#    - cron: '0 18 * * SUN' # 18:00 UTC every Sunday
+  schedule:
+    - cron: '0 21 * * *' # 21:00 UTC every day
 
 defaults:
   tools:
