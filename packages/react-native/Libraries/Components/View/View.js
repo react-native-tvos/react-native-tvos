@@ -39,6 +39,27 @@ export default component View(
     }
   }, []);
 
+  const _setNativeRef = React.useMemo(() => {
+    return setAndForwardRef({
+      getForwardedRef: () => viewRef.current,
+      setLocalRef: _ref => {
+        viewRef.current = _ref;
+
+        // This is a hack. Ideally we would forwardRef to the underlying
+        // host component. However, since TVFocusGuide has its own methods that can be
+        // called as well, if we used the standard forwardRef then these
+        // methods wouldn't be accessible
+        //
+        // Here we mutate the ref, so that the user can use the standart native
+        // methods like `measureLayout()` etc. while also having access to
+        // imperative methods of this component like `requestTVFocus()`.
+        if (_ref) {
+          _ref.requestTVFocus = requestTVFocus;
+        }
+      },
+    })
+  }, [requestTVFocus]);
+
   let actualView;
   if (ReactNativeFeatureFlags.reduceDefaultPropsInView()) {
     const {
@@ -192,25 +213,6 @@ export default component View(
             text: ariaValueText ?? accessibilityValue?.text,
           }
         : undefined;
-
-    const _setNativeRef = setAndForwardRef({
-      getForwardedRef: () => viewRef.current,
-      setLocalRef: _ref => {
-        viewRef.current = _ref;
-
-        // This is a hack. Ideally we would forwardRef to the underlying
-        // host component. However, since TVFocusGuide has its own methods that can be
-        // called as well, if we used the standard forwardRef then these
-        // methods wouldn't be accessible
-        //
-        // Here we mutate the ref, so that the user can use the standart native
-        // methods like `measureLayout()` etc. while also having access to
-        // imperative methods of this component like `requestTVFocus()`.
-        if (_ref) {
-          _ref.requestTVFocus = requestTVFocus;
-        }
-      },
-    });
 
     actualView = (
       <ViewNativeComponent
