@@ -84,24 +84,26 @@ function TVFocusGuideView(
     [],
   );
 
-  const _setNativeRef = setAndForwardRef({
-    getForwardedRef: () => forwardedRef,
-    setLocalRef: ref => {
-      focusGuideRef.current = ref;
+  const _setNativeRef = React.useMemo(() => {
+    return setAndForwardRef({
+      getForwardedRef: () => forwardedRef,
+      setLocalRef: ref => {
+        focusGuideRef.current = ref;
 
-      // This is a hack. Ideally we would forwardRef to the underlying
-      // host component. However, since TVFocusGuide has its own methods that can be
-      // called as well, if we used the standard forwardRef then these
-      // methods wouldn't be accessible
-      //
-      // Here we mutate the ref, so that the user can use the standard native
-      // methods like `focus()`, `blur()`, etc. while also having access to
-      // imperative methods of this component like `setDestinations()`.
-      if (ref) {
-        ref.setDestinations = setDestinations;
-      }
-    },
-  });
+        // This is a hack. Ideally we would forwardRef to the underlying
+        // host component. However, since TVFocusGuide has its own methods that can be
+        // called as well, if we used the standard forwardRef then these
+        // methods wouldn't be accessible
+        //
+        // Here we mutate the ref, so that the user can use the standard native
+        // methods like `focus()`, `blur()`, etc. while also having access to
+        // imperative methods of this component like `setDestinations()`.
+        if (ref) {
+          ref.setDestinations = setDestinations;
+        }
+      },
+    })
+  }, [forwardedRef, setDestinations]);
 
   React.useEffect(() => {
     if (destinationsProp !== null && destinationsProp !== undefined) {
