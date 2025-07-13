@@ -34,8 +34,8 @@
   },
   "dependencies": {
     "@react-native/oss-library-example": "0.81.0-main",
-    "@react-native/new-app-screen": "0.81.0-main",
-    "@react-native/popup-menu-android": "0.81.0-main",
+    "@react-native/new-app-screen": "0.81.0-rc.0",
+    "@react-native/popup-menu-android": "0.81.0-rc.0",
     "flow-enums-runtime": "^0.0.6",
     "invariant": "^2.2.4",
     "nullthrows": "^1.1.1"
@@ -66,9 +66,9 @@
   },
   "devDependencies": {
     "@expo/xcpretty": "^4.3.2",
-    "@react-native-community/cli": "17.0.0",
-    "@react-native-community/cli-platform-android": "17.0.0",
-    "@react-native-community/cli-platform-ios": "17.0.0",
+    "@react-native-community/cli": "20.0.0-alpha.0",
+    "@react-native-community/cli-platform-android": "20.0.0-alpha.0",
+    "@react-native-community/cli-platform-ios": "20.0.0-alpha.0",
     "commander": "^12.0.0",
     "listr2": "^6.4.1",
     "rxjs": "npm:@react-native-community/rxjs@6.5.4-custom"
