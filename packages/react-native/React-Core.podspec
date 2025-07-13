@@ -93,10 +93,6 @@ Pod::Spec.new do |s|
                                 "React/Base/RCTTouchHandler.m"
     ss.private_header_files   = "React/Cxx*/*.h"
 
-    # Include prebuilt if we're not building from source
-    if !ReactNativeCoreUtils.build_rncore_from_source()
-      ss.dependency "React-Core-prebuilt", version
-    end
   end
 
   s.subspec "DevSupport" do |ss|
@@ -147,4 +143,5 @@ Pod::Spec.new do |s|
 
   depend_on_js_engine(s)
   add_rn_third_party_dependencies(s)
+  add_rncore_dependency(s)
 end

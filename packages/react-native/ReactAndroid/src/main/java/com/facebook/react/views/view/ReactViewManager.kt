@@ -31,7 +31,6 @@ import com.facebook.react.uimanager.LengthPercentage
 import com.facebook.react.uimanager.LengthPercentageType
 import com.facebook.react.uimanager.PixelUtil.dpToPx
 import com.facebook.react.uimanager.PointerEvents
-import com.facebook.react.uimanager.ReactAxOrderHelper
 import com.facebook.react.uimanager.Spacing
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.UIManagerHelper
@@ -91,11 +90,6 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     return preparedView
   }
 
-  override fun onDropViewInstance(view: ReactViewGroup) {
-    super.onDropViewInstance(view)
-    view.cleanUpAxOrderListener()
-  }
-
   @ReactProp(name = "accessible")
   public open fun setAccessible(view: ReactViewGroup, accessible: Boolean) {
     view.isFocusable = accessible
@@ -119,31 +113,6 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     } else {
       view.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
     }
-  }
-
-  @ReactProp(name = ViewProps.ACCESSIBILITY_ORDER)
-  public open fun setAccessibilityOrder(view: ReactViewGroup, nativeIds: ReadableArray?) {
-    if (!ReactNativeFeatureFlags.enableAccessibilityOrder()) {
-      return
-    }
-
-    ReactAxOrderHelper.cleanUpAxOrder(view)
-
-    if (nativeIds == null) {
-      view.axOrderList = null
-      return
-    }
-
-    val axOrderList = mutableListOf<String>()
-
-    for (i in 0 until nativeIds.size()) {
-      val id = nativeIds.getString(i)
-      if (id != null) {
-        axOrderList.add(id)
-      }
-    }
-
-    view.axOrderList = axOrderList
   }
 
   @ReactProp(name = "hasTVPreferredFocus")

@@ -679,7 +679,7 @@ type ScrollViewBaseProps = $ReadOnly<{
 }>;
 
 export type ScrollViewProps = $ReadOnly<{
-  ...Omit<ViewProps, 'experimental_accessibilityOrder'>,
+  ...ViewProps,
   ...ScrollViewPropsIOS,
   ...ScrollViewPropsAndroid,
   ...ScrollViewBaseProps,

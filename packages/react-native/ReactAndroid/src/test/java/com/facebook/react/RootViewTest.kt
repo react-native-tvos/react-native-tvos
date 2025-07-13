@@ -18,11 +18,9 @@ import android.view.WindowManager
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.BridgeReactContext
 import com.facebook.react.bridge.CatalystInstance
-import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactTestHelper
 import com.facebook.react.bridge.WritableArray
-import com.facebook.react.bridge.WritableMap
 import com.facebook.react.common.SystemClock
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsForTests
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -31,14 +29,12 @@ import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.facebook.react.uimanager.events.TouchEvent
+import com.facebook.testutils.shadows.ShadowArguments
 import java.util.Date
 import org.assertj.core.api.Assertions.*
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockedStatic
-import org.mockito.Mockito.mockStatic
 import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -60,17 +56,14 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
-import java.util.Date
-import org.mockito.Mockito.`when` as whenever
+import org.robolectric.annotation.Config
 
+@Config(shadows = [ShadowArguments::class])
 @RunWith(RobolectricTestRunner::class)
 class RootViewTest {
 
   private lateinit var reactContext: BridgeReactContext
   private lateinit var catalystInstanceMock: CatalystInstance
-
-  private lateinit var arguments: MockedStatic<Arguments>
-  private lateinit var systemClock: MockedStatic<SystemClock>
 
   private lateinit var downEventCaptor: KArgumentCaptor<TouchEvent>
   private lateinit var downActionTouchesArgCaptor: KArgumentCaptor<WritableArray>
@@ -81,14 +74,6 @@ class RootViewTest {
   @Before
   fun setUp() {
     ReactNativeFeatureFlagsForTests.setUp()
-
-    arguments = mockStatic(Arguments::class.java)
-    arguments.`when`<WritableArray> { Arguments.createArray() }.thenAnswer { JavaOnlyArray() }
-    arguments.`when`<WritableMap> { Arguments.createMap() }.thenAnswer { JavaOnlyMap() }
-
-    val ts = SystemClock.uptimeMillis()
-    systemClock = mockStatic(SystemClock::class.java)
-    systemClock.`when`<Long> { SystemClock.uptimeMillis() }.thenReturn(ts)
 
     catalystInstanceMock = ReactTestHelper.createMockCatalystInstance()
     reactContext = spy(BridgeReactContext(RuntimeEnvironment.getApplication()))
@@ -104,12 +89,6 @@ class RootViewTest {
 
     upEventCaptor = argumentCaptor()
     upActionTouchesArgCaptor = argumentCaptor()
-  }
-
-  @After
-  fun tearDown() {
-    systemClock.close()
-    arguments.close()
   }
 
   @Test
