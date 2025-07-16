@@ -21,7 +21,7 @@ build:
           set-env RCT_TESTONLY_RNCORE_TARBALL_PATH $RCT_TESTONLY_RNCORE_TARBALL_PATH
           set-env ROOT_DIR $ROOT_DIR
     - run:
-        name: Build RNTester app with prebuild
+        name: Build RNCore prebuilt framework for tvOS simulator
         working_directory: ../../packages/react-native
         command: |
           echo "Execute RNCore prebuild setup..."
@@ -31,13 +31,13 @@ build:
           echo "Execute RNCore prebuild framework compose..."
           node scripts/ios-prebuild.js -c -f Debug
     - run:
-        name: Create RNCore prebuild tarball
+        name: Create RNCore framework tarball
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
         command: |
-          echo "Create RNCore prebuild tarball..."
+          echo "Create RNCore framework tarball..."
           tar zcf $RCT_TESTONLY_RNCORE_TARBALL_PATH React.xcframework
     - run:
-        name: Build RNTester app
+        name: Build RNTester app using RNCore framework
         working_directory: ../../packages/rn-tester
         command: |
           echo "Building RNTester..."
