@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7b6a844d99839c72647d6685d72f6896>>
+ * @generated SignedSource<<99019349a8f3642c42e6dac5f1476e7f>>
  */
 
 /**
@@ -30,6 +30,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun cxxNativeAnimatedRemoveJsSync(): Boolean = false
 
   override fun disableMountItemReorderingAndroid(): Boolean = false
+
+  override fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean = true
 
   override fun disableTextLayoutManagerCacheAndroid(): Boolean = false
 
@@ -65,6 +67,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableIOSViewClipToPaddingBox(): Boolean = false
 
+  override fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = false
+
   override fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean = false
 
   override fun enableLayoutAnimationsOnAndroid(): Boolean = false
@@ -86,8 +90,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enablePropsUpdateReconciliationAndroid(): Boolean = false
 
   override fun enableResourceTimingAPI(): Boolean = false
-
-  override fun enableSynchronousStateUpdates(): Boolean = false
 
   override fun enableViewCulling(): Boolean = false
 
@@ -113,6 +115,12 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun preparedTextCacheSize(): Double = 200.0
 
+  override fun preventShadowTreeCommitExhaustionWithLocking(): Boolean = false
+
+  override fun releaseImageDataWhenConsumed(): Boolean = false
+
+  override fun skipActivityIdentityAssertionOnHostPause(): Boolean = false
+
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean = false
 
   override fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean = false
@@ -120,6 +128,10 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useAlwaysAvailableJSErrorHandling(): Boolean = false
 
   override fun useFabricInterop(): Boolean = true
+
+  override fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = false
+
+  override fun useNativeTransformHelperAndroid(): Boolean = false
 
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 

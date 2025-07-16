@@ -36,7 +36,7 @@ function toJSON(entries: PerformanceEntryList): Array<PerformanceEntryJSON> {
   return entries.map(entry => entry.toJSON());
 }
 
-describe('Performance', () => {
+describe('User Timing', () => {
   beforeEach(() => {
     performance.clearMarks();
     performance.clearMeasures();
@@ -288,6 +288,44 @@ describe('Performance', () => {
         expect(measure).toBeInstanceOf(PerformanceMeasure);
         expect(measure.entryType).toBe('measure');
         expect(measure.name).toBe('measure-with-start-mark-and-duration');
+        expect(measure.startTime).toBe(10);
+        expect(measure.duration).toBe(30);
+        expect(measure.detail).toBe(null);
+      });
+
+      it('works with an end timestamp and a duration', () => {
+        const measure = performance.measure(
+          'measure-with-end-timestamp-and-duration',
+          {
+            end: 40,
+            duration: 30,
+          },
+        );
+
+        expect(measure).toBeInstanceOf(PerformanceMeasure);
+        expect(measure.entryType).toBe('measure');
+        expect(measure.name).toBe('measure-with-end-timestamp-and-duration');
+        expect(measure.startTime).toBe(10);
+        expect(measure.duration).toBe(30);
+        expect(measure.detail).toBe(null);
+      });
+
+      it('works with an end mark and a duration', () => {
+        performance.mark('end-mark', {
+          startTime: 40,
+        });
+
+        const measure = performance.measure(
+          'measure-with-end-mark-and-duration',
+          {
+            end: 'end-mark',
+            duration: 30,
+          },
+        );
+
+        expect(measure).toBeInstanceOf(PerformanceMeasure);
+        expect(measure.entryType).toBe('measure');
+        expect(measure.name).toBe('measure-with-end-mark-and-duration');
         expect(measure.startTime).toBe(10);
         expect(measure.duration).toBe(30);
         expect(measure.detail).toBe(null);

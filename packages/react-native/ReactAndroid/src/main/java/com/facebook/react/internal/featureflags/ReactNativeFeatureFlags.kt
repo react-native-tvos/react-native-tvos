@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f45b66a7bbafef525b79c657522d062e>>
+ * @generated SignedSource<<a90efac589511beb130c499e51150de8>>
  */
 
 /**
@@ -53,6 +53,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun disableMountItemReorderingAndroid(): Boolean = accessor.disableMountItemReorderingAndroid()
+
+  /**
+   * Disable some workarounds for old Android versions in TextLayoutManager logic for retrieving attachment metrics
+   */
+  @JvmStatic
+  public fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean = accessor.disableOldAndroidAttachmentMetricsWorkarounds()
 
   /**
    * Turns off the global measurement cache used by TextLayoutManager on Android.
@@ -157,6 +163,12 @@ public object ReactNativeFeatureFlags {
   public fun enableIOSViewClipToPaddingBox(): Boolean = accessor.enableIOSViewClipToPaddingBox()
 
   /**
+   * Dispatches state updates for content offset changes synchronously on the main thread.
+   */
+  @JvmStatic
+  public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = accessor.enableImmediateUpdateModeForContentOffsetChanges()
+
+  /**
    * This is to fix the issue with interop view manager where component descriptor lookup is causing ViewManager to preload.
    */
   @JvmStatic
@@ -221,12 +233,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableResourceTimingAPI(): Boolean = accessor.enableResourceTimingAPI()
-
-  /**
-   * Dispatches state updates synchronously in Fabric (e.g.: updates the scroll position in the shadow tree synchronously from the main thread).
-   */
-  @JvmStatic
-  public fun enableSynchronousStateUpdates(): Boolean = accessor.enableSynchronousStateUpdates()
 
   /**
    * Enables View Culling: as soon as a view goes off screen, it can be reused anywhere in the UI and pieced together with other items to create new UI elements.
@@ -301,6 +307,24 @@ public object ReactNativeFeatureFlags {
   public fun preparedTextCacheSize(): Double = accessor.preparedTextCacheSize()
 
   /**
+   * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
+   */
+  @JvmStatic
+  public fun preventShadowTreeCommitExhaustionWithLocking(): Boolean = accessor.preventShadowTreeCommitExhaustionWithLocking()
+
+  /**
+   * Releases the cached image data when it is consumed by the observers.
+   */
+  @JvmStatic
+  public fun releaseImageDataWhenConsumed(): Boolean = accessor.releaseImageDataWhenConsumed()
+
+  /**
+   * Skip activity identity assertion in ReactHostImpl::onHostPause()
+   */
+  @JvmStatic
+  public fun skipActivityIdentityAssertionOnHostPause(): Boolean = accessor.skipActivityIdentityAssertionOnHostPause()
+
+  /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
    */
   @JvmStatic
@@ -323,6 +347,18 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useFabricInterop(): Boolean = accessor.useFabricInterop()
+
+  /**
+   * Use a native implementation of equals in NativeReadableArray.
+   */
+  @JvmStatic
+  public fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = accessor.useNativeEqualsInNativeReadableArrayAndroid()
+
+  /**
+   * Use a native implementation of TransformHelper
+   */
+  @JvmStatic
+  public fun useNativeTransformHelperAndroid(): Boolean = accessor.useNativeTransformHelperAndroid()
 
   /**
    * When enabled, the native view configs are used in bridgeless mode.

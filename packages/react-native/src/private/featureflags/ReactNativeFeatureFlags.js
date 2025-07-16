@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b680260e184df469f918d2bf4a3a4e65>>
+ * @generated SignedSource<<d30fc4e36ad600353c9b9098fd71430a>>
  * @flow strict
  * @noformat
  */
@@ -55,6 +55,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   cxxNativeAnimatedEnabled: Getter<boolean>,
   cxxNativeAnimatedRemoveJsSync: Getter<boolean>,
   disableMountItemReorderingAndroid: Getter<boolean>,
+  disableOldAndroidAttachmentMetricsWorkarounds: Getter<boolean>,
   disableTextLayoutManagerCacheAndroid: Getter<boolean>,
   enableAccessibilityOrder: Getter<boolean>,
   enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean>,
@@ -72,6 +73,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableFontScaleChangesUpdatingLayout: Getter<boolean>,
   enableIOSTextBaselineOffsetPerLine: Getter<boolean>,
   enableIOSViewClipToPaddingBox: Getter<boolean>,
+  enableImmediateUpdateModeForContentOffsetChanges: Getter<boolean>,
   enableInteropViewManagerClassLookUpOptimizationIOS: Getter<boolean>,
   enableLayoutAnimationsOnAndroid: Getter<boolean>,
   enableLayoutAnimationsOnIOS: Getter<boolean>,
@@ -83,7 +85,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enablePreparedTextLayout: Getter<boolean>,
   enablePropsUpdateReconciliationAndroid: Getter<boolean>,
   enableResourceTimingAPI: Getter<boolean>,
-  enableSynchronousStateUpdates: Getter<boolean>,
   enableViewCulling: Getter<boolean>,
   enableViewRecycling: Getter<boolean>,
   enableViewRecyclingForText: Getter<boolean>,
@@ -96,10 +97,15 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   fuseboxNetworkInspectionEnabled: Getter<boolean>,
   hideOffscreenVirtualViewsOnIOS: Getter<boolean>,
   preparedTextCacheSize: Getter<number>,
+  preventShadowTreeCommitExhaustionWithLocking: Getter<boolean>,
+  releaseImageDataWhenConsumed: Getter<boolean>,
+  skipActivityIdentityAssertionOnHostPause: Getter<boolean>,
   traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommit: Getter<boolean>,
   useAlwaysAvailableJSErrorHandling: Getter<boolean>,
   useFabricInterop: Getter<boolean>,
+  useNativeEqualsInNativeReadableArrayAndroid: Getter<boolean>,
+  useNativeTransformHelperAndroid: Getter<boolean>,
   useNativeViewConfigsInBridgelessMode: Getter<boolean>,
   useOptimizedEventBatchingOnAndroid: Getter<boolean>,
   useRawPropsJsiValue: Getter<boolean>,
@@ -210,6 +216,10 @@ export const cxxNativeAnimatedRemoveJsSync: Getter<boolean> = createNativeFlagGe
  */
 export const disableMountItemReorderingAndroid: Getter<boolean> = createNativeFlagGetter('disableMountItemReorderingAndroid', false);
 /**
+ * Disable some workarounds for old Android versions in TextLayoutManager logic for retrieving attachment metrics
+ */
+export const disableOldAndroidAttachmentMetricsWorkarounds: Getter<boolean> = createNativeFlagGetter('disableOldAndroidAttachmentMetricsWorkarounds', true);
+/**
  * Turns off the global measurement cache used by TextLayoutManager on Android.
  */
 export const disableTextLayoutManagerCacheAndroid: Getter<boolean> = createNativeFlagGetter('disableTextLayoutManagerCacheAndroid', false);
@@ -278,6 +288,10 @@ export const enableIOSTextBaselineOffsetPerLine: Getter<boolean> = createNativeF
  */
 export const enableIOSViewClipToPaddingBox: Getter<boolean> = createNativeFlagGetter('enableIOSViewClipToPaddingBox', false);
 /**
+ * Dispatches state updates for content offset changes synchronously on the main thread.
+ */
+export const enableImmediateUpdateModeForContentOffsetChanges: Getter<boolean> = createNativeFlagGetter('enableImmediateUpdateModeForContentOffsetChanges', false);
+/**
  * This is to fix the issue with interop view manager where component descriptor lookup is causing ViewManager to preload.
  */
 export const enableInteropViewManagerClassLookUpOptimizationIOS: Getter<boolean> = createNativeFlagGetter('enableInteropViewManagerClassLookUpOptimizationIOS', false);
@@ -321,10 +335,6 @@ export const enablePropsUpdateReconciliationAndroid: Getter<boolean> = createNat
  * Enables the reporting of network resource timings through `PerformanceObserver`.
  */
 export const enableResourceTimingAPI: Getter<boolean> = createNativeFlagGetter('enableResourceTimingAPI', false);
-/**
- * Dispatches state updates synchronously in Fabric (e.g.: updates the scroll position in the shadow tree synchronously from the main thread).
- */
-export const enableSynchronousStateUpdates: Getter<boolean> = createNativeFlagGetter('enableSynchronousStateUpdates', false);
 /**
  * Enables View Culling: as soon as a view goes off screen, it can be reused anywhere in the UI and pieced together with other items to create new UI elements.
  */
@@ -374,6 +384,18 @@ export const hideOffscreenVirtualViewsOnIOS: Getter<boolean> = createNativeFlagG
  */
 export const preparedTextCacheSize: Getter<number> = createNativeFlagGetter('preparedTextCacheSize', 200);
 /**
+ * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
+ */
+export const preventShadowTreeCommitExhaustionWithLocking: Getter<boolean> = createNativeFlagGetter('preventShadowTreeCommitExhaustionWithLocking', false);
+/**
+ * Releases the cached image data when it is consumed by the observers.
+ */
+export const releaseImageDataWhenConsumed: Getter<boolean> = createNativeFlagGetter('releaseImageDataWhenConsumed', false);
+/**
+ * Skip activity identity assertion in ReactHostImpl::onHostPause()
+ */
+export const skipActivityIdentityAssertionOnHostPause: Getter<boolean> = createNativeFlagGetter('skipActivityIdentityAssertionOnHostPause', false);
+/**
  * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
  */
 export const traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean> = createNativeFlagGetter('traceTurboModulePromiseRejectionsOnAndroid', false);
@@ -389,6 +411,14 @@ export const useAlwaysAvailableJSErrorHandling: Getter<boolean> = createNativeFl
  * Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.
  */
 export const useFabricInterop: Getter<boolean> = createNativeFlagGetter('useFabricInterop', true);
+/**
+ * Use a native implementation of equals in NativeReadableArray.
+ */
+export const useNativeEqualsInNativeReadableArrayAndroid: Getter<boolean> = createNativeFlagGetter('useNativeEqualsInNativeReadableArrayAndroid', false);
+/**
+ * Use a native implementation of TransformHelper
+ */
+export const useNativeTransformHelperAndroid: Getter<boolean> = createNativeFlagGetter('useNativeTransformHelperAndroid', false);
 /**
  * When enabled, the native view configs are used in bridgeless mode.
  */

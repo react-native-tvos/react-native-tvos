@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<391d35ccb9b7004fd8d9643df9a08ab5>>
+ * @generated SignedSource<<780793412b76f101be1569d7a866c435>>
  */
 
 /**
@@ -30,6 +30,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun cxxNativeAnimatedRemoveJsSync(): Boolean
 
   @DoNotStrip public fun disableMountItemReorderingAndroid(): Boolean
+
+  @DoNotStrip public fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean
 
   @DoNotStrip public fun disableTextLayoutManagerCacheAndroid(): Boolean
 
@@ -65,6 +67,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableIOSViewClipToPaddingBox(): Boolean
 
+  @DoNotStrip public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean
+
   @DoNotStrip public fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean
 
   @DoNotStrip public fun enableLayoutAnimationsOnAndroid(): Boolean
@@ -86,8 +90,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun enablePropsUpdateReconciliationAndroid(): Boolean
 
   @DoNotStrip public fun enableResourceTimingAPI(): Boolean
-
-  @DoNotStrip public fun enableSynchronousStateUpdates(): Boolean
 
   @DoNotStrip public fun enableViewCulling(): Boolean
 
@@ -113,6 +115,12 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun preparedTextCacheSize(): Double
 
+  @DoNotStrip public fun preventShadowTreeCommitExhaustionWithLocking(): Boolean
+
+  @DoNotStrip public fun releaseImageDataWhenConsumed(): Boolean
+
+  @DoNotStrip public fun skipActivityIdentityAssertionOnHostPause(): Boolean
+
   @DoNotStrip public fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 
   @DoNotStrip public fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean
@@ -120,6 +128,10 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useAlwaysAvailableJSErrorHandling(): Boolean
 
   @DoNotStrip public fun useFabricInterop(): Boolean
+
+  @DoNotStrip public fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean
+
+  @DoNotStrip public fun useNativeTransformHelperAndroid(): Boolean
 
   @DoNotStrip public fun useNativeViewConfigsInBridgelessMode(): Boolean
 

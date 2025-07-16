@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a0c97a9338cbe91cc3de4db2fa5f27d2>>
+ * @generated SignedSource<<45c98e5f4b5f3d3a8a0ded4c5148b549>>
  * @flow strict
  * @noformat
  */
@@ -29,6 +29,7 @@ export interface Spec extends TurboModule {
   +cxxNativeAnimatedEnabled?: () => boolean;
   +cxxNativeAnimatedRemoveJsSync?: () => boolean;
   +disableMountItemReorderingAndroid?: () => boolean;
+  +disableOldAndroidAttachmentMetricsWorkarounds?: () => boolean;
   +disableTextLayoutManagerCacheAndroid?: () => boolean;
   +enableAccessibilityOrder?: () => boolean;
   +enableAccumulatedUpdatesInRawPropsAndroid?: () => boolean;
@@ -46,6 +47,7 @@ export interface Spec extends TurboModule {
   +enableFontScaleChangesUpdatingLayout?: () => boolean;
   +enableIOSTextBaselineOffsetPerLine?: () => boolean;
   +enableIOSViewClipToPaddingBox?: () => boolean;
+  +enableImmediateUpdateModeForContentOffsetChanges?: () => boolean;
   +enableInteropViewManagerClassLookUpOptimizationIOS?: () => boolean;
   +enableLayoutAnimationsOnAndroid?: () => boolean;
   +enableLayoutAnimationsOnIOS?: () => boolean;
@@ -57,7 +59,6 @@ export interface Spec extends TurboModule {
   +enablePreparedTextLayout?: () => boolean;
   +enablePropsUpdateReconciliationAndroid?: () => boolean;
   +enableResourceTimingAPI?: () => boolean;
-  +enableSynchronousStateUpdates?: () => boolean;
   +enableViewCulling?: () => boolean;
   +enableViewRecycling?: () => boolean;
   +enableViewRecyclingForText?: () => boolean;
@@ -70,10 +71,15 @@ export interface Spec extends TurboModule {
   +fuseboxNetworkInspectionEnabled?: () => boolean;
   +hideOffscreenVirtualViewsOnIOS?: () => boolean;
   +preparedTextCacheSize?: () => number;
+  +preventShadowTreeCommitExhaustionWithLocking?: () => boolean;
+  +releaseImageDataWhenConsumed?: () => boolean;
+  +skipActivityIdentityAssertionOnHostPause?: () => boolean;
   +traceTurboModulePromiseRejectionsOnAndroid?: () => boolean;
   +updateRuntimeShadowNodeReferencesOnCommit?: () => boolean;
   +useAlwaysAvailableJSErrorHandling?: () => boolean;
   +useFabricInterop?: () => boolean;
+  +useNativeEqualsInNativeReadableArrayAndroid?: () => boolean;
+  +useNativeTransformHelperAndroid?: () => boolean;
   +useNativeViewConfigsInBridgelessMode?: () => boolean;
   +useOptimizedEventBatchingOnAndroid?: () => boolean;
   +useRawPropsJsiValue?: () => boolean;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<62ecfcd8d00ce03d659715bbb3f4a235>>
+ * @generated SignedSource<<f310a5dc27fd655eab4445cb25d4c85c>>
  */
 
 /**
@@ -60,6 +60,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableMountItemReorderingAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableMountItemReorderingAndroid");
+    return method(javaProvider_);
+  }
+
+  bool disableOldAndroidAttachmentMetricsWorkarounds() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableOldAndroidAttachmentMetricsWorkarounds");
     return method(javaProvider_);
   }
 
@@ -165,6 +171,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImmediateUpdateModeForContentOffsetChanges");
+    return method(javaProvider_);
+  }
+
   bool enableInteropViewManagerClassLookUpOptimizationIOS() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableInteropViewManagerClassLookUpOptimizationIOS");
@@ -228,12 +240,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableResourceTimingAPI() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableResourceTimingAPI");
-    return method(javaProvider_);
-  }
-
-  bool enableSynchronousStateUpdates() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableSynchronousStateUpdates");
     return method(javaProvider_);
   }
 
@@ -309,6 +315,24 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool preventShadowTreeCommitExhaustionWithLocking() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("preventShadowTreeCommitExhaustionWithLocking");
+    return method(javaProvider_);
+  }
+
+  bool releaseImageDataWhenConsumed() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("releaseImageDataWhenConsumed");
+    return method(javaProvider_);
+  }
+
+  bool skipActivityIdentityAssertionOnHostPause() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("skipActivityIdentityAssertionOnHostPause");
+    return method(javaProvider_);
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("traceTurboModulePromiseRejectionsOnAndroid");
@@ -330,6 +354,18 @@ class ReactNativeFeatureFlagsJavaProvider
   bool useFabricInterop() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useFabricInterop");
+    return method(javaProvider_);
+  }
+
+  bool useNativeEqualsInNativeReadableArrayAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useNativeEqualsInNativeReadableArrayAndroid");
+    return method(javaProvider_);
+  }
+
+  bool useNativeTransformHelperAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useNativeTransformHelperAndroid");
     return method(javaProvider_);
   }
 
@@ -397,6 +433,11 @@ bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync(
 bool JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableMountItemReorderingAndroid();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::disableOldAndroidAttachmentMetricsWorkarounds(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableOldAndroidAttachmentMetricsWorkarounds();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid(
@@ -484,6 +525,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableIOSViewClipToPaddingBox(
   return ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableInteropViewManagerClassLookUpOptimizationIOS(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableInteropViewManagerClassLookUpOptimizationIOS();
@@ -537,11 +583,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enablePropsUpdateReconciliationAndroid(
 bool JReactNativeFeatureFlagsCxxInterop::enableResourceTimingAPI(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableResourceTimingAPI();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::enableSynchronousStateUpdates(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableSynchronousStateUpdates();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableViewCulling(
@@ -604,6 +645,21 @@ double JReactNativeFeatureFlagsCxxInterop::preparedTextCacheSize(
   return ReactNativeFeatureFlags::preparedTextCacheSize();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustionWithLocking(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustionWithLocking();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::releaseImageDataWhenConsumed(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::releaseImageDataWhenConsumed();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid();
@@ -622,6 +678,16 @@ bool JReactNativeFeatureFlagsCxxInterop::useAlwaysAvailableJSErrorHandling(
 bool JReactNativeFeatureFlagsCxxInterop::useFabricInterop(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::useFabricInterop();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::useNativeEqualsInNativeReadableArrayAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::useNativeEqualsInNativeReadableArrayAndroid();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::useNativeTransformHelperAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::useNativeTransformHelperAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode(
@@ -703,6 +769,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "disableMountItemReorderingAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid),
       makeNativeMethod(
+        "disableOldAndroidAttachmentMetricsWorkarounds",
+        JReactNativeFeatureFlagsCxxInterop::disableOldAndroidAttachmentMetricsWorkarounds),
+      makeNativeMethod(
         "disableTextLayoutManagerCacheAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid),
       makeNativeMethod(
@@ -754,6 +823,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableIOSViewClipToPaddingBox",
         JReactNativeFeatureFlagsCxxInterop::enableIOSViewClipToPaddingBox),
       makeNativeMethod(
+        "enableImmediateUpdateModeForContentOffsetChanges",
+        JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges),
+      makeNativeMethod(
         "enableInteropViewManagerClassLookUpOptimizationIOS",
         JReactNativeFeatureFlagsCxxInterop::enableInteropViewManagerClassLookUpOptimizationIOS),
       makeNativeMethod(
@@ -786,9 +858,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableResourceTimingAPI",
         JReactNativeFeatureFlagsCxxInterop::enableResourceTimingAPI),
-      makeNativeMethod(
-        "enableSynchronousStateUpdates",
-        JReactNativeFeatureFlagsCxxInterop::enableSynchronousStateUpdates),
       makeNativeMethod(
         "enableViewCulling",
         JReactNativeFeatureFlagsCxxInterop::enableViewCulling),
@@ -826,6 +895,15 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "preparedTextCacheSize",
         JReactNativeFeatureFlagsCxxInterop::preparedTextCacheSize),
       makeNativeMethod(
+        "preventShadowTreeCommitExhaustionWithLocking",
+        JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustionWithLocking),
+      makeNativeMethod(
+        "releaseImageDataWhenConsumed",
+        JReactNativeFeatureFlagsCxxInterop::releaseImageDataWhenConsumed),
+      makeNativeMethod(
+        "skipActivityIdentityAssertionOnHostPause",
+        JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause),
+      makeNativeMethod(
         "traceTurboModulePromiseRejectionsOnAndroid",
         JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid),
       makeNativeMethod(
@@ -837,6 +915,12 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "useFabricInterop",
         JReactNativeFeatureFlagsCxxInterop::useFabricInterop),
+      makeNativeMethod(
+        "useNativeEqualsInNativeReadableArrayAndroid",
+        JReactNativeFeatureFlagsCxxInterop::useNativeEqualsInNativeReadableArrayAndroid),
+      makeNativeMethod(
+        "useNativeTransformHelperAndroid",
+        JReactNativeFeatureFlagsCxxInterop::useNativeTransformHelperAndroid),
       makeNativeMethod(
         "useNativeViewConfigsInBridgelessMode",
         JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode),

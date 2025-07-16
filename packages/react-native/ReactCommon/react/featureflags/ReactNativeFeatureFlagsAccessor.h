@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<4e06f35e1af18fbf5219f7fd2f79767d>>
+ * @generated SignedSource<<edfd880ca5034a683053dc95e177a7c2>>
  */
 
 /**
@@ -36,6 +36,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool cxxNativeAnimatedEnabled();
   bool cxxNativeAnimatedRemoveJsSync();
   bool disableMountItemReorderingAndroid();
+  bool disableOldAndroidAttachmentMetricsWorkarounds();
   bool disableTextLayoutManagerCacheAndroid();
   bool enableAccessibilityOrder();
   bool enableAccumulatedUpdatesInRawPropsAndroid();
@@ -53,6 +54,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableFontScaleChangesUpdatingLayout();
   bool enableIOSTextBaselineOffsetPerLine();
   bool enableIOSViewClipToPaddingBox();
+  bool enableImmediateUpdateModeForContentOffsetChanges();
   bool enableInteropViewManagerClassLookUpOptimizationIOS();
   bool enableLayoutAnimationsOnAndroid();
   bool enableLayoutAnimationsOnIOS();
@@ -64,7 +66,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool enablePreparedTextLayout();
   bool enablePropsUpdateReconciliationAndroid();
   bool enableResourceTimingAPI();
-  bool enableSynchronousStateUpdates();
   bool enableViewCulling();
   bool enableViewRecycling();
   bool enableViewRecyclingForText();
@@ -77,10 +78,15 @@ class ReactNativeFeatureFlagsAccessor {
   bool fuseboxNetworkInspectionEnabled();
   bool hideOffscreenVirtualViewsOnIOS();
   double preparedTextCacheSize();
+  bool preventShadowTreeCommitExhaustionWithLocking();
+  bool releaseImageDataWhenConsumed();
+  bool skipActivityIdentityAssertionOnHostPause();
   bool traceTurboModulePromiseRejectionsOnAndroid();
   bool updateRuntimeShadowNodeReferencesOnCommit();
   bool useAlwaysAvailableJSErrorHandling();
   bool useFabricInterop();
+  bool useNativeEqualsInNativeReadableArrayAndroid();
+  bool useNativeTransformHelperAndroid();
   bool useNativeViewConfigsInBridgelessMode();
   bool useOptimizedEventBatchingOnAndroid();
   bool useRawPropsJsiValue();
@@ -99,12 +105,13 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 56> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 62> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedRemoveJsSync_;
   std::atomic<std::optional<bool>> disableMountItemReorderingAndroid_;
+  std::atomic<std::optional<bool>> disableOldAndroidAttachmentMetricsWorkarounds_;
   std::atomic<std::optional<bool>> disableTextLayoutManagerCacheAndroid_;
   std::atomic<std::optional<bool>> enableAccessibilityOrder_;
   std::atomic<std::optional<bool>> enableAccumulatedUpdatesInRawPropsAndroid_;
@@ -122,6 +129,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableFontScaleChangesUpdatingLayout_;
   std::atomic<std::optional<bool>> enableIOSTextBaselineOffsetPerLine_;
   std::atomic<std::optional<bool>> enableIOSViewClipToPaddingBox_;
+  std::atomic<std::optional<bool>> enableImmediateUpdateModeForContentOffsetChanges_;
   std::atomic<std::optional<bool>> enableInteropViewManagerClassLookUpOptimizationIOS_;
   std::atomic<std::optional<bool>> enableLayoutAnimationsOnAndroid_;
   std::atomic<std::optional<bool>> enableLayoutAnimationsOnIOS_;
@@ -133,7 +141,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enablePreparedTextLayout_;
   std::atomic<std::optional<bool>> enablePropsUpdateReconciliationAndroid_;
   std::atomic<std::optional<bool>> enableResourceTimingAPI_;
-  std::atomic<std::optional<bool>> enableSynchronousStateUpdates_;
   std::atomic<std::optional<bool>> enableViewCulling_;
   std::atomic<std::optional<bool>> enableViewRecycling_;
   std::atomic<std::optional<bool>> enableViewRecyclingForText_;
@@ -146,10 +153,15 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> fuseboxNetworkInspectionEnabled_;
   std::atomic<std::optional<bool>> hideOffscreenVirtualViewsOnIOS_;
   std::atomic<std::optional<double>> preparedTextCacheSize_;
+  std::atomic<std::optional<bool>> preventShadowTreeCommitExhaustionWithLocking_;
+  std::atomic<std::optional<bool>> releaseImageDataWhenConsumed_;
+  std::atomic<std::optional<bool>> skipActivityIdentityAssertionOnHostPause_;
   std::atomic<std::optional<bool>> traceTurboModulePromiseRejectionsOnAndroid_;
   std::atomic<std::optional<bool>> updateRuntimeShadowNodeReferencesOnCommit_;
   std::atomic<std::optional<bool>> useAlwaysAvailableJSErrorHandling_;
   std::atomic<std::optional<bool>> useFabricInterop_;
+  std::atomic<std::optional<bool>> useNativeEqualsInNativeReadableArrayAndroid_;
+  std::atomic<std::optional<bool>> useNativeTransformHelperAndroid_;
   std::atomic<std::optional<bool>> useNativeViewConfigsInBridgelessMode_;
   std::atomic<std::optional<bool>> useOptimizedEventBatchingOnAndroid_;
   std::atomic<std::optional<bool>> useRawPropsJsiValue_;

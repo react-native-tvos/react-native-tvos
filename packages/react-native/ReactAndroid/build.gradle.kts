@@ -19,6 +19,7 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.download)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.ktfmt)
 }
 
 version = project.findProperty("VERSION_NAME")?.toString()!!
@@ -622,6 +623,7 @@ dependencies {
   api(libs.androidx.autofill)
   api(libs.androidx.swiperefreshlayout)
   api(libs.androidx.tracing)
+  api(libs.androidx.window)
 
   api(libs.fbjni)
   api(libs.fresco)

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a16b227254e43d57c46479d87bc45bf2>>
+ * @generated SignedSource<<d7534fe6e3b398e56c179da8233e3b0a>>
  */
 
 /**
@@ -41,6 +41,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool disableMountItemReorderingAndroid() override {
     return false;
+  }
+
+  bool disableOldAndroidAttachmentMetricsWorkarounds() override {
+    return true;
   }
 
   bool disableTextLayoutManagerCacheAndroid() override {
@@ -111,6 +115,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    return false;
+  }
+
   bool enableInteropViewManagerClassLookUpOptimizationIOS() override {
     return false;
   }
@@ -152,10 +160,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableResourceTimingAPI() override {
-    return false;
-  }
-
-  bool enableSynchronousStateUpdates() override {
     return false;
   }
 
@@ -207,6 +211,18 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return 200.0;
   }
 
+  bool preventShadowTreeCommitExhaustionWithLocking() override {
+    return false;
+  }
+
+  bool releaseImageDataWhenConsumed() override {
+    return false;
+  }
+
+  bool skipActivityIdentityAssertionOnHostPause() override {
+    return false;
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     return false;
   }
@@ -221,6 +237,14 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool useFabricInterop() override {
     return true;
+  }
+
+  bool useNativeEqualsInNativeReadableArrayAndroid() override {
+    return false;
+  }
+
+  bool useNativeTransformHelperAndroid() override {
+    return false;
   }
 
   bool useNativeViewConfigsInBridgelessMode() override {

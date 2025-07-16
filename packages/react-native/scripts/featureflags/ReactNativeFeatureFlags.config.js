@@ -92,6 +92,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    disableOldAndroidAttachmentMetricsWorkarounds: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2025-07-02',
+        description:
+          'Disable some workarounds for old Android versions in TextLayoutManager logic for retrieving attachment metrics',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     disableTextLayoutManagerCacheAndroid: {
       defaultValue: false,
       metadata: {
@@ -270,6 +281,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableImmediateUpdateModeForContentOffsetChanges: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-15',
+        description:
+          'Dispatches state updates for content offset changes synchronously on the main thread.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableInteropViewManagerClassLookUpOptimizationIOS: {
       defaultValue: false,
       metadata: {
@@ -382,17 +404,6 @@ const definitions: FeatureFlagDefinitions = {
           'Enables the reporting of network resource timings through `PerformanceObserver`.',
         expectedReleaseValue: true,
         purpose: 'release',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableSynchronousStateUpdates: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2024-04-25',
-        description:
-          'Dispatches state updates synchronously in Fabric (e.g.: updates the scroll position in the shadow tree synchronously from the main thread).',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
     },
@@ -523,6 +534,39 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    preventShadowTreeCommitExhaustionWithLocking: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-14',
+        description:
+          'Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    releaseImageDataWhenConsumed: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-10',
+        description:
+          'Releases the cached image data when it is consumed by the observers.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    skipActivityIdentityAssertionOnHostPause: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-15',
+        description:
+          'Skip activity identity assertion in ReactHostImpl::onHostPause()',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     traceTurboModulePromiseRejectionsOnAndroid: {
       defaultValue: false,
       metadata: {
@@ -561,6 +605,27 @@ const definitions: FeatureFlagDefinitions = {
           'Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.',
         expectedReleaseValue: false,
         purpose: 'release',
+      },
+      ossReleaseStage: 'none',
+    },
+    useNativeEqualsInNativeReadableArrayAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-15',
+        description:
+          'Use a native implementation of equals in NativeReadableArray.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    useNativeTransformHelperAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-07-15',
+        description: 'Use a native implementation of TransformHelper',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
     },

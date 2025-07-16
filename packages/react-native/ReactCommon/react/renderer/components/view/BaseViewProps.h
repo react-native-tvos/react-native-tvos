@@ -99,14 +99,7 @@ class BaseViewProps : public YogaStylableProps, public AccessibilityProps {
 
   // Transform
   Transform transform{};
-  TransformOrigin transformOrigin{
-      {
-          ValueUnit{50.0f, UnitType::Percent},
-          ValueUnit{50.0f, UnitType::Percent},
-      },
-      0.0f,
-
-  };
+  TransformOrigin transformOrigin{};
   BackfaceVisibility backfaceVisibility{};
   bool shouldRasterize{};
   std::optional<int> zIndex{};
@@ -129,6 +122,11 @@ class BaseViewProps : public YogaStylableProps, public AccessibilityProps {
   BorderMetrics resolveBorderMetrics(const LayoutMetrics& layoutMetrics) const;
   Transform resolveTransform(const LayoutMetrics& layoutMetrics) const;
   bool getClipsContentToBounds() const;
+
+  static Transform resolveTransform(
+      const Size& frameSize,
+      const Transform& transform,
+      const TransformOrigin& transformOrigin);
 
 #if RN_DEBUG_STRING_CONVERTIBLE
   SharedDebugStringConvertibleList getDebugProps() const override;

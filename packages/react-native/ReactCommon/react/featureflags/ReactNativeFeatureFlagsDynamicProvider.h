@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<015e26c40f3a6bef540d8c4ca43b8502>>
+ * @generated SignedSource<<6502c090532e1d7d2ac67cf6e711d9f4>>
  */
 
 /**
@@ -79,6 +79,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::disableMountItemReorderingAndroid();
+  }
+
+  bool disableOldAndroidAttachmentMetricsWorkarounds() override {
+    auto value = values_["disableOldAndroidAttachmentMetricsWorkarounds"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableOldAndroidAttachmentMetricsWorkarounds();
   }
 
   bool disableTextLayoutManagerCacheAndroid() override {
@@ -234,6 +243,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enableIOSViewClipToPaddingBox();
   }
 
+  bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    auto value = values_["enableImmediateUpdateModeForContentOffsetChanges"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableImmediateUpdateModeForContentOffsetChanges();
+  }
+
   bool enableInteropViewManagerClassLookUpOptimizationIOS() override {
     auto value = values_["enableInteropViewManagerClassLookUpOptimizationIOS"];
     if (!value.isNull()) {
@@ -331,15 +349,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableResourceTimingAPI();
-  }
-
-  bool enableSynchronousStateUpdates() override {
-    auto value = values_["enableSynchronousStateUpdates"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::enableSynchronousStateUpdates();
   }
 
   bool enableViewCulling() override {
@@ -450,6 +459,33 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::preparedTextCacheSize();
   }
 
+  bool preventShadowTreeCommitExhaustionWithLocking() override {
+    auto value = values_["preventShadowTreeCommitExhaustionWithLocking"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::preventShadowTreeCommitExhaustionWithLocking();
+  }
+
+  bool releaseImageDataWhenConsumed() override {
+    auto value = values_["releaseImageDataWhenConsumed"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::releaseImageDataWhenConsumed();
+  }
+
+  bool skipActivityIdentityAssertionOnHostPause() override {
+    auto value = values_["skipActivityIdentityAssertionOnHostPause"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::skipActivityIdentityAssertionOnHostPause();
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     auto value = values_["traceTurboModulePromiseRejectionsOnAndroid"];
     if (!value.isNull()) {
@@ -484,6 +520,24 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useFabricInterop();
+  }
+
+  bool useNativeEqualsInNativeReadableArrayAndroid() override {
+    auto value = values_["useNativeEqualsInNativeReadableArrayAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useNativeEqualsInNativeReadableArrayAndroid();
+  }
+
+  bool useNativeTransformHelperAndroid() override {
+    auto value = values_["useNativeTransformHelperAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useNativeTransformHelperAndroid();
   }
 
   bool useNativeViewConfigsInBridgelessMode() override {
