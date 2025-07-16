@@ -17,6 +17,12 @@
       "distribution": "internal",
       "node": "22.14.0"
     },
+    "rntester-prebuild": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rntester-apple-prebuild.yml"
+      }
+    },
     "rntester": {
       "extends": "base",
       "ios": {
