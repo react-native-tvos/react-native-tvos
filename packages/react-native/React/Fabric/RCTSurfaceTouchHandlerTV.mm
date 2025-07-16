@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 #import "RCTSurfaceTouchHandler.h"
 
 #import <React/RCTIdentifierPool.h>
@@ -28,3 +29,4 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 - (void)detachFromView:(UIView *)view {}
 
 @end
+#endif

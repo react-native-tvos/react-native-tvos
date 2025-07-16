@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -793,3 +794,4 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 #endif
 
 @end
+#endif

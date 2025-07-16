@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -41,3 +42,4 @@ RCT_EXPORT_METHOD(setNativeRefreshing : (nonnull NSNumber *)viewTag toRefreshing
 }
 
 @end
+#endif
