@@ -13,6 +13,8 @@
 const {execSync} = require('child_process');
 const fs = require('fs');
 
+const utilsLog = createLogger('Utils');
+
 /**
  * Creates a folder if it does not exist
  * @param {string} folderPath - The path to the folder
@@ -101,9 +103,42 @@ async function computeNightlyTarballURL(
   return finalUrl;
 }
 
+/**
+ * Computes core release version needed for finding Hermes artifacts
+ */
+function coreVersionForTVVersion(version /*: string */) /*: string */ {
+  const match = version.match(/(.+)-(.+)/);
+  if (!match) {
+    // This is not a TV release or prerelease
+    // Check for the override used to build RNTester for PRs on RNTV main
+    if (process.env.REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION) {
+      const nightlyBuildVersion =
+        process.env.REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION;
+      utilsLog(`Overriding Hermes core version to ${nightlyBuildVersion}`);
+      return nightlyBuildVersion;
+    }
+    // Otherwise, return the entire version string
+    return version;
+  }
+  const coreBaseVersion = match[1];
+  const prerelease = match[2];
+  const prereleaseMatch = prerelease.match(/0rc(\d+)/);
+  // Check to see if this matches the convention for TV prereleases ("0.79.0-0rc1", etc.)
+  if (!prereleaseMatch) {
+    // If not, return the core version part ("0.79.0")
+    utilsLog(`core_version = ${coreBaseVersion}`);
+    return coreBaseVersion;
+  }
+  // This is a TV prerelease, so return the core prerelease version ("0.79.0-rc.1")
+  const corePrereleaseVersion = `${coreBaseVersion}-rc.${prereleaseMatch[1]}`;
+  utilsLog(`core_version = ${corePrereleaseVersion}`);
+  return corePrereleaseVersion;
+}
+
 module.exports = {
   createFolderIfNotExists,
   throwIfOnEden,
   createLogger,
   computeNightlyTarballURL,
+  coreVersionForTVVersion,
 };

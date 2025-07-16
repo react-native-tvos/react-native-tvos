@@ -14,7 +14,11 @@ const {prepareHermesArtifactsAsync} = require('./hermes');
 const {
   prepareReactNativeDependenciesArtifactsAsync,
 } = require('./reactNativeDependencies');
-const {createFolderIfNotExists, createLogger} = require('./utils');
+const {
+  coreVersionForTVVersion,
+  createFolderIfNotExists,
+  createLogger,
+} = require('./utils');
 const {execSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -97,9 +101,15 @@ async function setup(
   };
 
   // HERMES ARTIFACTS
-  await prepareHermesArtifactsAsync(currentVersion, buildType);
+  await prepareHermesArtifactsAsync(
+    coreVersionForTVVersion(currentVersion),
+    buildType,
+  );
 
-  await prepareReactNativeDependenciesArtifactsAsync(currentVersion, buildType);
+  await prepareReactNativeDependenciesArtifactsAsync(
+    coreVersionForTVVersion(currentVersion),
+    buildType,
+  );
 
   // CODEGEN
   const codegenPath = path.join(root, '.build/codegen');

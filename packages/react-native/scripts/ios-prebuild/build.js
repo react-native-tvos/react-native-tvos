@@ -59,7 +59,7 @@ function buildSwiftPackage(
   const buildCommand =
     `xcodebuild -scheme React -destination "generic/platform=${platform}" -derivedDataPath "${outputFolder}" ` +
     `-configuration "${buildType}" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES OTHER_SWIFT_FLAGS="-no-verify-emitted-module-interface" ` +
-    `DEBUG_INFORMATION_FORMAT="dwarf-with-dsym"`;
+    `DEBUG_INFORMATION_FORMAT="dwarf-with-dsym" | npx @expo/xcpretty`;
   buildLog(`Building Swift package for ${buildType}`);
   buildLog(buildCommand);
 
@@ -67,6 +67,21 @@ function buildSwiftPackage(
     cwd: rootFolder,
     stdio: 'inherit',
   });
+
+  // For some reason, buildSwiftPackage puts outputs in ../build on my local machine
+  // This is a temporary workaround
+  const maybeBuildSwiftPackageOutputPath = path.join(
+    rootFolder,
+    '..',
+    'build',
+    'Build',
+  );
+  if (fs.existsSync(maybeBuildSwiftPackageOutputPath)) {
+    buildLog(`Build output found in ${maybeBuildSwiftPackageOutputPath}`);
+    const copyCommand = `cp -r ${maybeBuildSwiftPackageOutputPath} ${outputFolder}`;
+    buildLog(copyCommand);
+    execSync(copyCommand);
+  }
 
   // Use glob to find all the frameworks in the output folder
   const productsFolder = computeProductsFolder(outputFolder);
