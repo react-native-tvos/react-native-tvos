@@ -110,6 +110,7 @@
     "README.md",
     "README-core.md",
     "rn-get-polyfills.js",
+    "scripts/replace-rncore-version.js",
     "scripts/bundle.js",
     "scripts/cocoapods",
     "scripts/codegen",
