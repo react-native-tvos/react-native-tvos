@@ -20,6 +20,7 @@ build:
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env RCT_TESTONLY_RNCORE_TARBALL_PATH $RCT_TESTONLY_RNCORE_TARBALL_PATH
           set-env ROOT_DIR $ROOT_DIR
+          set-env RCT_USE_RN_DEP 1
     - run:
         name: Build RNCore prebuilt framework for tvOS simulator
         working_directory: ../../packages/react-native
@@ -40,6 +41,8 @@ build:
         name: Build RNTester app using RNCore framework
         working_directory: ../../packages/rn-tester
         command: |
+          echo "Use prebuilt RNCore for this step..."
+          export RCT_USE_PREBUILT_RNCORE=1
           echo "Building RNTester..."
           echo "Cleaning build directories..."
           yarn clean-ios
