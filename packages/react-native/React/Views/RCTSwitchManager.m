@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -64,3 +65,4 @@ RCT_REMAP_VIEW_PROPERTY(trackColorForFalse, tintColor, UIColor);
 RCT_REMAP_VIEW_PROPERTY(trackColorForTrue, onTintColor, UIColor);
 
 @end
+#endif

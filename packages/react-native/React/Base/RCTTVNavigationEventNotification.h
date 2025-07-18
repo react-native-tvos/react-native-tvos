@@ -7,6 +7,8 @@
 #define RCTTVNavigationEventNotification_h
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 #import "RCTTVNavigationEventNotificationConstants.h"
 #import "RCTTVRemoteHandlerConstants.h"
 

@@ -8,9 +8,25 @@ build:
         command: |
           ./install-ruby.sh
     - run:
-        name: Build RNTester app
+        name: Set up build-specific environment
+        working_directory: ../..
         command: |
-          ./build-rntester-apple.sh
+          . ./tools/rntv-workflows/override-nightly-build-version.sh
+          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+          # Set up environment for subsequent steps
+          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+    - run:
+        name: Build RNTester app
+        working_directory: ../../packages/rn-tester
+        command: |
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-ios-hermes
+          echo "Building RNTester..."
+          yarn build-ios-hermes
+          echo "Build completed."
     - eas/upload_artifact:
         name: Upload RNTester artifacts
         inputs:

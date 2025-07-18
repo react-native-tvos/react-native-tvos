@@ -85,10 +85,12 @@ RCT_EXPORT_MODULE()
 
 - (void)initialize
 {
+#if !TARGET_OS_TV
   _constants = facebook::react::typedConstants<JS::NativeStatusBarManagerIOS::Constants>({
       .HEIGHT = RCTUIStatusBarManager().statusBarFrame.size.height,
       .DEFAULT_BACKGROUND_COLOR = std::nullopt,
   });
+#endif
 }
 
 - (NSArray<NSString *> *)supportedEvents

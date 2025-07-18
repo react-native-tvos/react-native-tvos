@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -476,3 +477,4 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
   _tvRemoteGestureRecognizers[name] = recognizer;
 }
 @end
+#endif

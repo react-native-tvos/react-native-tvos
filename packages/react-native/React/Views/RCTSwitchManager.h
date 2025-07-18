@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -10,3 +11,4 @@
 @interface RCTSwitchManager : RCTViewManager
 
 @end
+#endif

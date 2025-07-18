@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -375,3 +376,4 @@ static BOOL RCTAnyTouchesChanged(NSSet<UITouch *> *touches)
 }
 
 @end
+#endif

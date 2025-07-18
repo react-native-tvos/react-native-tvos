@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -18,3 +19,4 @@
 - (void)setRefreshing:(BOOL)refreshing;
 
 @end
+#endif

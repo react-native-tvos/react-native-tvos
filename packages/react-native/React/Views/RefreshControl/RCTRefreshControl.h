@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -17,3 +18,4 @@
 @property (nonatomic, weak) UIScrollView *scrollView;
 
 @end
+#endif

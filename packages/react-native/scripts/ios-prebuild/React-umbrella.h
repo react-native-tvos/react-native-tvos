@@ -282,6 +282,14 @@
 #import "React/RCTWrapperViewController.h"
 #import "React/UIView+Private.h"
 #import "React/UIView+React.h"
+#import "React/RCTTVNavigationEventEmitter.h"
+#import "React/RCTTVView.h"
+#import "React/RCTTVRemoteHandler.h"
+#import "React/RCTTVRemoteSelectHandler.h"
+#import "React/RCTTVNavigationEventNotificationConstants.h"
+#import "React/RCTVersion.h"
+#import "React/RCTTVNavigationEventNotification.h"
+#import "React/RCTTVRemoteHandlerConstants.h"
 
 FOUNDATION_EXPORT double ReactVersionNumber;
 FOUNDATION_EXPORT const unsigned char ReactVersionString[];

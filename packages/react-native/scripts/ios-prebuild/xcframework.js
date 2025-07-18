@@ -316,6 +316,14 @@ function extractDestinationFromPath(symbolPath /*: string */) /*: string */ {
     return 'iphonesimulator';
   }
 
+  if (symbolPath.includes('appletvos')) {
+    return 'appletvos';
+  }
+
+  if (symbolPath.includes('appletvsimulator')) {
+    return 'appletvsimulator';
+  }
+
   if (symbolPath.includes('maccatalyst')) {
     return 'catalyst';
   }

@@ -56,6 +56,8 @@ RCT_EXPORT_MODULE()
   return std::make_shared<facebook::react::NativeTVNavigationEventEmitterSpecJSI>(params);
 }
 
+#if TARGET_OS_TV
+
 #pragma mark -
 #pragma mark Methods moved from old RCTTVMenuBridge
 
@@ -92,7 +94,7 @@ RCT_EXPORT_METHOD(disableGestureHandlersCancelTouches) {
   [RCTTVRemoteHandler setGestureHandlersCancelTouches:NO];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableGestureHandlersCancelTouchesNotification object:nil];
 }
-
+#endif
 @end
 
 Class RCTTVNavigationEventEmitterCls(void)
