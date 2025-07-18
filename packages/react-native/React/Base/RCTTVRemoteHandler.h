@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -5,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
@@ -34,3 +36,4 @@ extern NSString * _Nonnull const RCTTVDisableGestureHandlersCancelTouchesNotific
 - (void)disableTVMenuKey;
 
 @end
+#endif

@@ -1,3 +1,4 @@
+#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -15,3 +16,4 @@
 @property (nonatomic, copy) RCTBubblingEventBlock onChange;
 
 @end
+#endif

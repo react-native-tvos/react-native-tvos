@@ -708,4 +708,51 @@ class ReactNativePodsUtils
             end
         end
     end
+
+    # Computes the core release version on which a TV release version is based
+    def self.core_version_for_tv_version(version)
+        # See if the release version string has a dash (true for all TV releases)
+        match = version.match(/(.+)-(.+)/)
+        if match.nil?
+            # This is not a TV release or prerelease
+            # Check for the override used to build RNTester for PRs on RNTV main
+            if ENV.has_key?('REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION')
+                utils_log("core_version_for_tv_version = ENV['REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION'] = #{ENV['REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION']}")
+                return ENV['REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION']
+            end
+            # Otherwise, return the entire version string
+            utils_log("core_version_for_tv_version = #{version}")
+            return version
+        end
+
+        core_base_version = match[1]
+        prerelease = match[2]
+        # Check to see if this matches the convention for TV prereleases ("0.79.0-0rc1", etc.)
+        prerelease_match = prerelease.match(/0rc(\d+)/)
+        if prerelease_match.nil?
+            # If not, return the core version part ("0.79.0")
+            utils_log("core_version_for_tv_version = #{core_base_version}")
+            return core_base_version
+        end
+
+        # This is a TV prerelease, so return the core prerelease version ("0.79.0-rc.1")
+        cv = "#{core_base_version}-rc.#{prerelease_match[1]}"
+        utils_log("core_version_for_tv_version = #{cv}")
+        return cv
+    end
+
+    def self.utils_log(message, level = :info)
+        if !Object.const_defined?("Pod::UI")
+            return
+        end
+        log_message = '[PodsUtils] ' + message
+        case level
+        when :info
+            Pod::UI.puts log_message.green
+        when :error
+            Pod::UI.puts log_message.red
+        else
+            Pod::UI.puts log_message.yellow
+        end
+    end
 end

@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 #import "RCTTVRemoteSelectHandler.h"
 #import "RCTTVRemoteHandler.h"
 
@@ -131,3 +132,4 @@
 @implementation RCTTVRemoteSelectGestureRecognizer
 
 @end
+#endif

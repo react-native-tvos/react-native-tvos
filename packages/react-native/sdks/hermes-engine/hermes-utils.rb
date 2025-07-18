@@ -5,6 +5,7 @@
 
 require 'net/http'
 require 'rexml/document'
+require_relative '../../scripts/cocoapods/utils.rb'
 
 HERMES_GITHUB_URL = "https://github.com/facebook/hermes.git"
 ENV_BUILD_FROM_SOURCE = "RCT_BUILD_HERMES_FROM_SOURCE"
@@ -107,33 +108,8 @@ end
 
 # Computes the core release version on which this TV release version is based
 def core_version(version)
-    # See if the release version string has a dash (true for all TV releases)
-    match = version.match(/(.+)-(.+)/)
-    if match.nil?
-      # This is not a TV release or prerelease
-      # Check for the override used to build RNTester for PRs on RNTV main
-      if override_hermes_nightly_build_version_defined()
-        return ENV['REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION']
-      end
-      # Otherwise, return the entire version string
-      hermes_log("core_version = #{version}")
-      return version
-    end
-
-    core_base_version = match[1]
-    prerelease = match[2]
-    # Check to see if this matches the convention for TV prereleases ("0.79.0-0rc1", etc.)
-    prerelease_match = prerelease.match(/0rc(\d+)/)
-    if prerelease_match.nil?
-        # If not, return the core version part ("0.79.0")
-        hermes_log("core_version = #{core_base_version}")
-        return core_base_version
-    end
-
-    # This is a TV prerelease, so return the core prerelease version ("0.79.0-rc.1")
-    cv = "#{core_base_version}-rc.#{prerelease_match[1]}"
-    hermes_log("core_version = #{cv}")
-    return cv
+    # Use the implementation in utils.rb
+    return ReactNativePodsUtils.core_version_for_tv_version(version)
 end
 
 def podspec_source(source_type, version, react_native_path)

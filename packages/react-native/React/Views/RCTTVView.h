@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -95,3 +96,4 @@
 @property (nonatomic, strong) UIFocusGuide * focusGuide;
 
 @end
+#endif

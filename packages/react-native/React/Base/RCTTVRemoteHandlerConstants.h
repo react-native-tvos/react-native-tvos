@@ -3,6 +3,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#import <Foundation/Foundation.h>
+
 #ifndef RCTTVRemoteHandlerConstants_h
 #define RCTTVRemoteHandlerConstants_h
 

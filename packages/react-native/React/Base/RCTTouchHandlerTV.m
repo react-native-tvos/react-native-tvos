@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 #import <Foundation/Foundation.h>
 
 #import "RCTTouchHandler.h"
@@ -33,3 +34,4 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 - (void)cancel {}
 
 @end
+#endif

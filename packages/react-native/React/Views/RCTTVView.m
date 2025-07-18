@@ -1,3 +1,4 @@
+#if TARGET_OS_TV
 /*
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
@@ -596,3 +597,4 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
   [self requestFocusSelf];
 }
 @end
+#endif
