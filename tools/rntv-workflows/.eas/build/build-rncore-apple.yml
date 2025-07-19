@@ -1,0 +1,91 @@
+build:
+  name: Build RNCore framework for Apple platforms
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - import_codesign_certs
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          . ./tools/rntv-workflows/override-nightly-build-version.sh
+          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+          export ROOT_DIR=$PWD
+          # Set up environment for subsequent steps
+          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          set-env ROOT_DIR $ROOT_DIR
+          set-env RCT_USE_RN_DEP 1
+    - run:
+        name: Build RNCore framework (Debug)
+        working_directory: ../../packages/react-native
+        command: |
+          node scripts/ios-prebuild -s -f Debug
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNCore prebuild Debug build for $platform..."
+            node scripts/ios-prebuild.js -b -f Debug -p $platform
+          done
+          echo "Execute RNCore prebuild framework compose..."
+          node scripts/ios-prebuild.js -c -f Debug -i "$RNCORE_CODE_SIGNING_IDENTITY"
+          # This is needed for local builds
+          rm -rf $ROOT_DIR/packages/build
+    - run:
+        name: Create RNCore framework tarball (Debug)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/ReactCoreDebug.xcframework.tar.gz React.xcframework
+          echo "RNCore Debug framework tarball created."
+    - run:
+        name: Create RNCore framework DSYMS tarball (Debug)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug/Symbols
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/ReactCoreDebug.framework.dSYM.tar.gz *
+          echo "RNCore Debug framework tarball created."
+    - run:
+        name: RNCore prebuild (Release)
+        working_directory: ../../packages/react-native
+        command: |
+          node scripts/ios-prebuild -s -f Release
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNCore prebuild Release build for $platform..."
+            node scripts/ios-prebuild.js -b -f Release -p $platform
+          done
+          echo "Execute RNCore prebuild framework compose..."
+          node scripts/ios-prebuild.js -c -f Release -i "$RNCORE_CODE_SIGNING_IDENTITY"
+          echo "RNCore Release framework tarball created."
+          # This is needed for local builds
+          rm -rf $ROOT_DIR/packages/build
+    - run:
+        name: Create RNCore framework tarball (Release)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/ReactCoreRelease.xcframework.tar.gz React.xcframework
+          echo "RNCore Release framework tarball created."
+    - run:
+        name: Create RNCore framework DSYMS tarball (Release)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Release/Symbols
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/ReactCoreRelease.framework.dSYM.tar.gz *
+          echo "RNCore Release framework tarball created."
+    - eas/upload_artifact:
+        name: Upload RNCore artifacts
+        inputs:
+          type: build-artifact
+          path: |
+            ReactCore*.tar.gz
+
+functions:
+  import_codesign_certs:
+    name: Import code signing certificates
+    path: ./importCodesignCerts
+    # There are no inputs; this function reads
+    # from the environment variables
+    # REACT_ORG_CODE_SIGNING_P12_CERT and
+    # REACT_ORG_CODE_SIGNING_P12_CERT_PWD
+    outputs:
+      - name: keychainPassword
