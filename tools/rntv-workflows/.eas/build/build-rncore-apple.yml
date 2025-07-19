@@ -1,0 +1,78 @@
+build:
+  name: Build RNCore framework for Apple platforms
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Install Ruby
+        command: |
+          ./install-ruby.sh
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          . ./tools/rntv-workflows/override-nightly-build-version.sh
+          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+          export ROOT_DIR=$PWD
+          # Set up environment for subsequent steps
+          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          set-env ROOT_DIR $ROOT_DIR
+          set-env RCT_USE_RN_DEP 1
+    - run:
+        name: Build RNCore framework (Debug)
+        working_directory: ../../packages/react-native
+        command: |
+          node scripts/ios-prebuild -s -f Debug
+          echo "Execute RNCore prebuild Debug build for ios..."
+          node scripts/ios-prebuild.js -b -f Debug -p ios
+          echo "Execute RNCore prebuild Debug build for ios-simulator..."
+          node scripts/ios-prebuild.js -b -f Debug -p ios-simulator
+          echo "Execute RNCore prebuild Debug build for tvos..."
+          node scripts/ios-prebuild.js -b -f Debug -p tvos
+          echo "Execute RNCore prebuild Debug build for tvos-simulator..."
+          node scripts/ios-prebuild.js -b -f Debug -p tvos-simulator
+          echo "Execute RNCore prebuild Debug build for mac-catalyst..."
+          node scripts/ios-prebuild.js -b -f Debug -p mac-catalyst
+          echo "Execute RNCore prebuild framework compose..."
+          node scripts/ios-prebuild.js -c -f Debug
+    - run:
+        name: Create RNCore framework tarball (Debug)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/rncore-framework-Debug.tar.gz React.xcframework
+          echo "RNCore Debug framework tarball created."
+          # This is needed for local builds
+          rm -rf $ROOT_DIR/packages/build
+    - run:
+        name: RNCore prebuild (Release)
+        working_directory: ../../packages/react-native
+        command: |
+          node scripts/ios-prebuild -s -f Release
+          echo "Execute RNCore prebuild Release build for ios..."
+          node scripts/ios-prebuild.js -b -f Release -p ios
+          echo "Execute RNCore prebuild Release build for ios-simulator..."
+          node scripts/ios-prebuild.js -b -f Release -p ios-simulator
+          echo "Execute RNCore prebuild Release build for tvos..."
+          node scripts/ios-prebuild.js -b -f Release -p tvos
+          echo "Execute RNCore prebuild Release build for tvos-simulator..."
+          node scripts/ios-prebuild.js -b -f Release -p tvos-simulator
+          echo "Execute RNCore prebuild Release build for mac-catalyst..."
+          node scripts/ios-prebuild.js -b -f Release -p mac-catalyst
+          echo "Execute RNCore prebuild framework compose..."
+          node scripts/ios-prebuild.js -c -f Release
+          echo "RNCore Release framework tarball created."
+          # This is needed for local builds
+          rm -rf $ROOT_DIR/packages/build
+    - run:
+        name: Create RNCore framework tarball (Release)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
+        command: |
+          echo "Create RNCore framework tarball..."
+          tar zcf $ROOT_DIR/rncore-framework-Release.tar.gz React.xcframework
+    - eas/upload_artifact:
+        name: Upload RNCore artifacts
+        inputs:
+          type: build-artifact
+          path: |
+            rncore-framework*.tar.gz
