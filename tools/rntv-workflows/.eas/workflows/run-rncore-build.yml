@@ -1,0 +1,28 @@
+name: Run RNTV builds
+
+on:
+  push:
+    branches: [main, release-0.81*]
+  pull_request:
+    branches: [main]
+    paths:
+      - packages/react-native/**
+      - packages/virtualized-lists/**
+      - tools/rntv-workflows/**
+
+jobs:
+  build_rncore:
+    type: build
+    params:
+      platform: ios
+      profile: rncore
+  build_rntester_apple:
+    type: build
+    params:
+      platform: ios
+      profile: rntester-prebuild
+  build_rntester_android:
+    type: build
+    params:
+      platform: android
+      profile: rntester
