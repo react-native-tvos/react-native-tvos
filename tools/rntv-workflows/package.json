@@ -2,6 +2,9 @@
   "name": "rntv-eas-workflows",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "postinstall": "./post-install.sh"
+  },
   "dependencies": {
     "expo": "^53.0.9"
   }
