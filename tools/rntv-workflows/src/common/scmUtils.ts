@@ -11,17 +11,14 @@
 'use strict';
 
 import spawnAsync from '@expo/spawn-async';
-import { echo, test } from 'shelljs';
+import {echo, test} from 'shelljs';
 import path from 'path';
 
-import { repoConstants, easConstants } from './constants';
-import {
-  removeDirectoryIfNeededAsync,
-  unpackTarArchiveAsync,
-} from './fileUtils';
+import {repoConstants, easConstants} from './constants';
+import {removeDirectoryIfNeededAsync, unpackTarArchiveAsync} from './fileUtils';
 
-const { repoPath, repoName, repoUrl } = repoConstants;
-const { buildDir } = easConstants;
+const {repoPath, repoName, repoUrl} = repoConstants;
+const {buildDir} = easConstants;
 
 export async function getBranchNameAsync() /*: string */ {
   const result = await spawnAsync(
@@ -102,8 +99,8 @@ export async function setCredentialsAsync() {
       `Secrets GITHUB_USER and GITHUB_TOKEN must be set in EAS in order to push to GitHub`,
     );
   }
-  const userName = process.env.GITHUB_NAME;
-  const email = process.env.GITHUB_EMAIL;
+  const userName = process.env.GIT_COMMITTER_NAME;
+  const email = process.env.GIT_COMMITTER_EMAIL;
   await spawnAsync('git', ['config', 'user.email', email], {
     stdio: 'inherit',
     cwd: repoPath,

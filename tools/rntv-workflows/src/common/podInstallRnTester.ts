@@ -14,7 +14,7 @@ export const podInstallRnTesterAsync = async (withLocalArtifacts: boolean) => {
   });
 
   // Set up Ruby path
-  const pathComponents = ['/opt/homebrew/bin', ...process.env.PATH.split(':')];
+  const pathComponents = ['/opt/homebrew/bin', ...(process.env.PATH ?? '').split(':')];
 
   const podInstallEnv = {
     ...process.env,

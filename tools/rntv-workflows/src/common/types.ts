@@ -1,12 +1,11 @@
 export type RepoConstants = {
   repoName: string;
-  rnPackagePath: string;
-  vlPackagePath: string;
   repoPath: string;
   repoUrl: string;
-  repoBranch: string;
   releaseBranch: string;
   releaseVersion: string;
+  rnPackagePath: string;
+  vlPackagePath: string;
   isSnapshot: boolean;
   publishToSonatype: boolean;
   pushReleaseToRepo: boolean;
@@ -34,9 +33,9 @@ export type PackageJSON = {
   name: string;
   version: string;
   private?: boolean;
-  dependencies: { [key: string]: string };
-  devDependencies: { [key: string]: string };
-  peerDependencies?: { [key: string]: string };
+  dependencies: { [key: string]: string | undefined };
+  devDependencies?: { [key: string]: string | undefined };
+  peerDependencies?: { [key: string]: string | undefined };
   scripts: { [key: string]: string };
 };
 

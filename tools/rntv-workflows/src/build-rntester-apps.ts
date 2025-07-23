@@ -33,7 +33,7 @@ async function executeScriptAsync() {
 
   await cloneAndInstallBranchAsync(releaseBranch);
 
-  let defaultMavenLocalRepositoryPath: string | undefined = undefined;
+  let defaultMavenLocalRepositoryPath: string | undefined;
 
   if (test('-e', mavenArtifactsPath)) {
     console.log(

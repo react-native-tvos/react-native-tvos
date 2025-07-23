@@ -25,9 +25,8 @@ import {
 } from './common';
 
 const {
-  repoPath,
-  repoBranch,
   repoName,
+  repoPath,
   rnPackagePath,
   pushReleaseToRepo,
   releaseBranch,
@@ -43,8 +42,6 @@ const REACT_NATIVE_PACKAGE_JSON = path.join(rnPackagePath, 'package.json');
 
 async function executeScriptAsync() {
   validateForGitHub();
-
-  await cloneAndInstallBranchAsync(repoBranch);
 
   await rewritePackageNamesIfNeeded();
 

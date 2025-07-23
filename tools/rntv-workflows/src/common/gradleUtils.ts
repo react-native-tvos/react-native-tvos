@@ -60,7 +60,7 @@ export const getGradleEnvAsync: () => Promise<NodeJS.ProcessEnv> = async () => {
   const JAVA_HOME = jdkHomePath;
   const ANDROID_HOME = '/opt/homebrew/share/android-commandlinetools';
   const pathComponents = [
-    ...process.env.PATH.split(':'),
+    ...(process.env.PATH ?? '').split(':'),
     `${ANDROID_HOME}/cmdline-tools/latest/bin`,
     `${ANDROID_HOME}/build-tools/34.0.0`,
     `/usr/sbin`,

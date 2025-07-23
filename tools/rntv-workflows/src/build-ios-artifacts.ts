@@ -41,11 +41,11 @@ const HERMES_ARCHIVE_DIR = path.join(
   'artifacts',
 );
 const HERMES_DSYMS_WORKING_DIR = path.join(
-  process.env.TMPDIR,
+  process.env.TMPDIR ?? '/tmp',
   'hermes_tmp',
   'dSYM',
 );
-const HERMES_DSYMS_DEST_DIR = path.join(process.env.TMPDIR, 'hermes', 'dSYM');
+const HERMES_DSYMS_DEST_DIR = path.join(process.env.TMPDIR ?? '/tmp', 'hermes', 'dSYM');
 
 const SDKS_DIR = path.resolve(rnPackagePath, 'sdks');
 const HERMES_DIR = path.join(SDKS_DIR, 'hermes');

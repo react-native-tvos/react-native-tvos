@@ -56,7 +56,7 @@ export function parseAnyVersion(versionStr: string) {
       if (parsed) {
         return parsed;
       }
-    } catch (e) {} // eslint-disable-line @typescript-eslint/no-unused-vars
+    } catch (e) {} 
   }
   throw new Error('Version string did not match any parser.');
 }
@@ -64,7 +64,7 @@ export function parseAnyVersion(versionStr: string) {
 export function baseCoreVersionStringForTV(versionStr: string) {
   try {
     const tvVersionInfo = parseVersion(versionStr, 'tvrelease');
-    let prerelease = null;
+    let prerelease: string | null = null;
     if (isTVPrerelease(tvVersionInfo)) {
       const rcNumber = tvVersionInfo.prerelease.split('rc')[1];
       prerelease = `rc.${rcNumber}`;
@@ -73,7 +73,7 @@ export function baseCoreVersionStringForTV(versionStr: string) {
       ...tvVersionInfo,
       prerelease,
     });
-  } catch (e) {} // eslint-disable-line @typescript-eslint/no-unused-vars
+  } catch (e) {} 
   // If the above fails, assume versionStr is a core release
   const versionInfo = parseVersion(versionStr, 'release');
   return versionToString({

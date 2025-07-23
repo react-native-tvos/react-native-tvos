@@ -29,12 +29,12 @@ const falseStrings = new Set([
 ]);
 
 export const boolValueFromString: (
-  testString: string,
+  testString: string | undefined,
   defaultValue?: boolean,
 ) => boolean = (testString, defaultValue) => {
-  return defaultValue === true
+  return testString ? defaultValue === true
     ? !falseStrings.has(testString)
-    : trueStrings.has(testString);
+    : trueStrings.has(testString) : false;
 };
 
 const buildDir = process.env.EAS_BUILD_WORKINGDIR ?? '.';
@@ -50,12 +50,11 @@ const includeVisionOS = boolValueFromString(
   true,
 );
 const includeTVOS = boolValueFromString(process.env.INCLUDE_TV_OS, true);
-const repoUrl = process.env.REACT_NATIVE_REPO_URL ?? '';
-const repoBranch = process.env.REACT_NATIVE_REPO_BRANCH ?? '';
 const releaseBranch = process.env.REACT_NATIVE_RELEASE_BRANCH ?? '';
 const releaseVersion = process.env.REACT_NATIVE_RELEASE_VERSION ?? '';
-const repoName = path.basename(repoUrl);
-const repoPath = path.join(buildDir, repoName);
+const repoPath = buildDir;
+const repoName = 'react-native-tvos';
+const repoUrl = 'https://github.com/react-native-tvos/react-native-tvos';
 const rnPackagePath = path.join(repoPath, 'packages', 'react-native');
 const vlPackagePath = path.join(repoPath, 'packages', 'virtualized-lists');
 const mavenLocalPath = path.join(buildDir, 'maven_local');
@@ -63,9 +62,8 @@ const mavenLocalUrl = pathToFileURL(mavenLocalPath).toString();
 const mavenArtifactsPath = path.join(buildDir, 'maven_artifacts');
 
 export const repoConstants: RepoConstants = {
-  repoUrl,
   repoName,
-  repoBranch,
+  repoUrl,
   releaseBranch,
   releaseVersion,
   rnPackagePath,
