@@ -37,6 +37,18 @@
       "android": {
         "config": "build-rntester-android.yml"
       }
+    },
+    "rntester-prebuild-release": {
+      "extends": "rntester-prebuild",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rntester-release": {
+      "extends": "rntester",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
     }
   }
 }

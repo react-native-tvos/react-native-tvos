@@ -1,0 +1,22 @@
+name: Run RNTV builds
+
+on:
+  push:
+    branches: [release-0.81*]
+
+jobs:
+  build_rncore:
+    type: build
+    params:
+      platform: ios
+      profile: rncore
+  build_rntester_apple:
+    type: build
+    params:
+      platform: ios
+      profile: rntester-prebuild-release
+  build_rntester_android:
+    type: build
+    params:
+      platform: android
+      profile: rntester-release

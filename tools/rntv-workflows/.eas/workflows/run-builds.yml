@@ -2,11 +2,14 @@ name: Run RNTV builds
 
 on:
   push:
-    branches: [main, release-0.81*]
+    branches: [main]
   pull_request:
     branches: [main]
     paths:
       - packages/react-native/**
+      - packages/react-native-codegen/**
+      - packages/react-native-codegen-typescript-test/**
+      - packages/rn-tester/**
       - packages/virtualized-lists/**
       - tools/rntv-workflows/**
 
