@@ -23,6 +23,12 @@
         "config": "build-rntester-apple-prebuild.yml"
       }
     },
+    "rncore": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rncore-apple.yml"
+      }
+    },
     "rntester": {
       "extends": "base",
       "ios": {
