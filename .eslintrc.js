@@ -144,5 +144,12 @@ module.exports = {
         '@react-native/monorepo/no-react-native-imports': 'off',
       },
     },
+    {
+      files: ['tools/rntv-workflows/**'],
+      rules: {
+        'eslint-comments/no-unused-disable': 'off',
+        'ft-flow/require-valid-file-annotation': 'off',
+      }
+    }
   ],
 };
