@@ -50,20 +50,14 @@
         "RNTV_RELEASE_BUILD": "1"
       }
     },
-    "cut_release_branch": {
+    "cut-release-branch": {
       "extends": "base",
       "android": {
-        "config": "cut_release_branch.yml"
-      }
-    },
-    "complete_release": {
-      "extends": "base",
-      "ios": {
-        "config": "complete_release.yml"
+        "config": "cut-release-branch.yml"
       }
     },
     "Cut release branch for RNTV 0.81.0-0rc2": {
-      "extends": "cut_release_branch",
+      "extends": "cut-release-branch",
       "env": {
         "REACT_NATIVE_RELEASE_BRANCH": "release-0.81.0-0rc2",
         "REACT_NATIVE_RELEASE_VERSION": "0.81.0-0rc2",

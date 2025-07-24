@@ -26,6 +26,7 @@ build:
           export MAVEN_TEMP_LOCAL_URL=file://$MAVEN_TEMP_LOCAL_PATH
           sed -i '' "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
           sed -i '' 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
+          # Set up environment for subsequent steps
           set-env MAVEN_TEMP_LOCAL_PATH $MAVEN_TEMP_LOCAL_PATH
           set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
           echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
@@ -38,10 +39,13 @@ build:
           . ./tools/rntv-workflows/override-nightly-build-version.sh
           echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
           export ROOT_DIR=$PWD
+          export MAVEN_ARTIFACTS_PATH=$PWD/packages/react-native/ReactAndroid/external-artifacts/artifacts
+          mkdir -p $MAVEN_ARTIFACTS_PATH
           # Set up environment for subsequent steps
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
           set-env RCT_USE_RN_DEP 1
+          set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
     - run:
         name: Build RNCore framework (Debug)
         working_directory: ../../packages/react-native
@@ -61,14 +65,14 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreDebug.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework
           echo "RNCore Debug framework tarball created."
     - run:
         name: Create RNCore framework DSYMS tarball (Debug)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug/Symbols
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreDebug.framework.dSYM.tar.gz *
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
           echo "RNCore Debug framework tarball created."
     - run:
         name: RNCore prebuild (Release)
@@ -90,22 +94,19 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreRelease.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.xcframework.tar.gz React.xcframework
           echo "RNCore Release framework tarball created."
     - run:
         name: Create RNCore framework DSYMS tarball (Release)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release/Symbols
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreRelease.framework.dSYM.tar.gz *
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.framework.dSYM.tar.gz *
           echo "RNCore Release framework tarball created."
     - run:
         name: Create RNCore framework Maven artifacts
         working_directory: ../..
         command: |
-          echo "Copy RNCore framework tarballs to ReactAndroid..."
-          mkdir -p ./ReactAndroid/external-artifacts/artifacts
-          cp ReactCore*.tar.gz packages/react-native/ReactAndroid/external-artifacts/artifacts
           echo "Publishing react-native-artifacts to Maven local repository..."
           ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
     - eas/upload_artifact:
