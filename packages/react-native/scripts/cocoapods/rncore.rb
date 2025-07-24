@@ -24,6 +24,7 @@ end
 ## - RCT_USE_PREBUILT_RNCORE: If set to 1, it will use the release tarball from Maven instead of building from source.
 ## - RCT_TESTONLY_RNCORE_TARBALL_PATH: **TEST ONLY** If set, it will use a local tarball of RNCore if it exists.
 ## - RCT_TESTONLY_RNCORE_VERSION: **TEST ONLY** If set, it will override the version of RNCore to be used.
+## - RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY: **TEST ONLY** If set, it will override the Maven URL used to download the ReactNativeCore release artifacts for RNTV.
 
 class ReactNativeCoreUtils
     @@build_from_source = true
@@ -136,11 +137,16 @@ class ReactNativeCoreUtils
         maven_repo_url =
             ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != "" ?
             ENV['ENTERPRISE_REPOSITORY'] :
+            ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != "" ?
+            ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] :
             "https://repo1.maven.org/maven2"
-        group = "com/facebook/react"
+        #group = "com/facebook/react"
+        group = "io/github/react-native-tvos"
         # Sample url from Maven:
         # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.81.0/react-native-artifacts-0.81.0-reactnative-core-debug.tar.gz
-        return "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-core-#{build_type.to_s}.tar.gz"
+        url = "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-core-#{build_type.to_s}.tar.gz"
+        rncore_log("Stable tarball URL: #{url}")
+        return url
     end
 
     def self.nightly_tarball_url(version)
@@ -164,6 +170,7 @@ class ReactNativeCoreUtils
 
     def self.download_stable_rncore(react_native_path, version, configuration)
         tarball_url = stable_tarball_url(version, configuration)
+        rncore_log("Stable tarball URL: #{tarball_url}")
         download_rncore_tarball(react_native_path, tarball_url, version, configuration)
     end
 
@@ -201,6 +208,9 @@ class ReactNativeCoreUtils
 
     # This function checks that ReactNativeCore artifact exists on the maven repo
     def self.artifact_exists(tarball_url)
+        if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
+            return true
+        end
         # -L is used to follow redirects, useful for the nightlies
         # I also needed to wrap the url in quotes to avoid escaping & and ?.
         return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
