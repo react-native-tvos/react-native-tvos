@@ -2,6 +2,33 @@ build:
   name: Build RNCore framework for Apple platforms
   steps:
     - eas/checkout
+    - run:
+        name: Set up JDK 17 and Android dependencies
+        id: setuptools
+        env:
+          JAVA_HOME: /opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home
+          ANDROID_SDK_ROOT: /opt/homebrew/share/android-commandlinetools
+        command: |
+          ./install-android-sdk.sh
+          # Set environment for subsequent steps
+          set-env JAVA_HOME $JAVA_HOME
+          set-env ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
+    - run:
+        name: Install Ruby
+        command: |
+          ./install-ruby.sh
+    - run:
+        name: Copy and modify publish.gradle
+        working_directory: ../..
+        command: |
+          cp ./tools/rntv-workflows/publish.gradle ./packages/react-native/ReactAndroid/publish.gradle
+          export MAVEN_TEMP_LOCAL_PATH=$EAS_BUILD_WORKINGDIR/maven_local
+          export MAVEN_TEMP_LOCAL_URL=file://$MAVEN_TEMP_LOCAL_PATH
+          sed -i '' "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
+          sed -i '' 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
+          set-env MAVEN_TEMP_LOCAL_PATH $MAVEN_TEMP_LOCAL_PATH
+          set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
+          echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
     - eas/install_node_modules
     - import_codesign_certs
     - run:
@@ -72,12 +99,21 @@ build:
           echo "Create RNCore framework tarball..."
           tar zcf $ROOT_DIR/ReactCoreRelease.framework.dSYM.tar.gz *
           echo "RNCore Release framework tarball created."
+    - run:
+        name: Create RNCore framework Maven artifacts
+        working_directory: ../..
+        command: |
+          echo "Copy RNCore framework tarballs to ReactAndroid..."
+          mkdir -p ./ReactAndroid/external-artifacts/artifacts
+          cp ReactCore*.tar.gz packages/react-native/ReactAndroid/external-artifacts/artifacts
+          echo "Publishing react-native-artifacts to Maven local repository..."
+          ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
     - eas/upload_artifact:
-        name: Upload RNCore artifacts
+        name: Upload RNCore Maven artifacts
         inputs:
           type: build-artifact
           path: |
-            ReactCore*.tar.gz
+            $MAVEN_TEMP_LOCAL_PATH
 
 functions:
   import_codesign_certs:
@@ -88,4 +124,4 @@ functions:
     # REACT_ORG_CODE_SIGNING_P12_CERT and
     # REACT_ORG_CODE_SIGNING_P12_CERT_PWD
     outputs:
-      - name: keychainPassword
+    - name: keychainPassword
