@@ -22,7 +22,7 @@ build:
         working_directory: ../..
         command: |
           cp ./tools/rntv-workflows/publish.gradle ./packages/react-native/ReactAndroid/publish.gradle
-          export MAVEN_TEMP_LOCAL_PATH=$EAS_BUILD_WORKINGDIR/maven_local
+          export MAVEN_TEMP_LOCAL_PATH=$EAS_BUILD_WORKINGDIR/maven-local
           export MAVEN_TEMP_LOCAL_URL=file://$MAVEN_TEMP_LOCAL_PATH
           sed -i '' "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
           sed -i '' 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
@@ -114,7 +114,7 @@ build:
         inputs:
           type: build-artifact
           path: |
-            $MAVEN_TEMP_LOCAL_PATH
+            maven-local
 
 functions:
   import_codesign_certs:
