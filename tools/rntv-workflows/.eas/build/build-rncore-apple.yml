@@ -153,8 +153,20 @@ build:
           echo "Build completed."
           cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
           cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
+    - run:
+        name: Publish RNCore framework Maven artifacts
+        working_directory: ../..
+        command: |
+          if [[ "$PUBLISH_TO_SONATYPE" == "1" ]]; then
+            echo "Publishing react-native-artifacts to Sonatype (Maven Central)..."
+            ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishToSonatype
+            ./gradlew closeAndReleaseSonatypeStagingRepository
+            echo "react-native-artifacts published to Sonatype (Maven Central)."
+          else
+            echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
+          fi
     - eas/upload_artifact:
-        name: Upload RNCore Maven artifacts
+        name: Upload RNCore Maven artifacts and RNTester apps
         inputs:
           type: build-artifact
           path: |

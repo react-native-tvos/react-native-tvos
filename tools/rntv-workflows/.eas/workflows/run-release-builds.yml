@@ -5,18 +5,15 @@ on:
     branches: [release-0.81*]
 
 jobs:
-  build_rncore:
+  build_apple:
+    name: Create Apple artifacts and RNTester
     type: build
     params:
       platform: ios
       profile: rncore-release
-  build_rntester_apple:
-    type: build
-    params:
-      platform: ios
-      profile: rntester-prebuild-release
-  build_rntester_android:
+  build_android:
+    name: Create Android artifacts and RNTester
     type: build
     params:
       platform: android
-      profile: rntester-release
+      profile: android-artifacts

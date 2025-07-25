@@ -14,16 +14,11 @@ on:
       - tools/rntv-workflows/**
 
 jobs:
-  build_rncore:
+  build_rncore_rntester_apple:
     type: build
     params:
       platform: ios
       profile: rncore
-  build_rntester_apple:
-    type: build
-    params:
-      platform: ios
-      profile: rntester-prebuild
   build_rntester_android:
     type: build
     params:

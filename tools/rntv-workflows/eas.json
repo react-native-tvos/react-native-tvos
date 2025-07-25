@@ -56,6 +56,25 @@
         "RNTV_RELEASE_BUILD": "1"
       }
     },
+    "rncore-release-publish": {
+      "extends": "rncore",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1",
+        "PUBLISH_TO_SONATYPE": "1"
+      }
+    },
+    "android-artifacts": {
+      "extends": "base",
+      "android": {
+        "config": "build-android-artifacts.yml"
+      }
+    },
+    "android-artifacts-publish": {
+      "extends": "android-artifacts",
+      "env": {
+        "PUBLISH_TO_SONATYPE": "1"
+      }
+    },
     "cut-release-branch": {
       "extends": "base",
       "android": {
