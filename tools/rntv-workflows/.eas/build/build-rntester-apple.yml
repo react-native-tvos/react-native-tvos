@@ -16,16 +16,16 @@ build:
           # Set up environment for subsequent steps
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
     - run:
-        name: Build RNTester app
+        name: Build RNTester app for tvOS
         working_directory: ../../packages/rn-tester
         command: |
           echo "Building RNTester..."
           echo "Cleaning build directories..."
           yarn clean-ios
           echo "Setting up RNTester..."
-          yarn setup-ios-hermes
+          yarn setup-tvos-hermes
           echo "Building RNTester..."
-          yarn build-ios-hermes
+          yarn build-tvos-hermes
           echo "Build completed."
     - eas/upload_artifact:
         name: Upload RNTester artifacts

@@ -9,7 +9,7 @@ jobs:
     type: build
     params:
       platform: ios
-      profile: rncore
+      profile: rncore-release
   build_rntester_apple:
     type: build
     params:

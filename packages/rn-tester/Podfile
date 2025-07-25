@@ -1,7 +1,7 @@
 require_relative '../react-native/scripts/react_native_pods'
 
 source 'https://cdn.cocoapods.org/'
-platform :tvos, min_ios_version_supported
+platform :ios, min_ios_version_supported
 
 cmake_path = `command -v cmake`
 

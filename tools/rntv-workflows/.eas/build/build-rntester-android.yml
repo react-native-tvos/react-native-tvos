@@ -16,7 +16,7 @@ build:
           echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
           set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
     - run:
-        name: Build RNTester app
+        name: Build RNTester app for Android and Android TV
         working_directory: ../../packages/rn-tester
         command: |
           echo "Cleaning build directories..."

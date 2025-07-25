@@ -11,6 +11,7 @@
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
+import Platform from '../../Utilities/Platform';
 import setAndForwardRef from '../../Utilities/setAndForwardRef';
 import View from '../View/View';
 import {Commands} from '../View/ViewNativeComponent';
@@ -73,12 +74,14 @@ function TVFocusGuideView(
 
   const setDestinations = React.useCallback(
     (destinations: ?(ComponentOrHandleType[])) => {
-      const dests: number[] = (destinations || [])
-        .map((destination: any) => tagForComponentOrHandle(destination))
-        .filter(Boolean);
-
-      if (focusGuideRef.current != null) {
-        Commands.setDestinations(focusGuideRef.current, dests);
+      if (Platform.isTV) {
+        const dests: number[] = (destinations || [])
+          .map((destination: any) => tagForComponentOrHandle(destination))
+          .filter(Boolean);
+  
+        if (focusGuideRef.current != null) {
+          Commands.setDestinations(focusGuideRef.current, dests);
+        }
       }
     },
     [],

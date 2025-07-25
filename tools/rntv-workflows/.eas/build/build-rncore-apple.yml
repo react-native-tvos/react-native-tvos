@@ -2,6 +2,34 @@ build:
   name: Build RNCore framework for Apple platforms
   steps:
     - eas/checkout
+    - run:
+        name: Set up JDK 17 and Android dependencies
+        id: setuptools
+        env:
+          JAVA_HOME: /opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home
+          ANDROID_SDK_ROOT: /opt/homebrew/share/android-commandlinetools
+        command: |
+          ./install-android-sdk.sh
+          # Set environment for subsequent steps
+          set-env JAVA_HOME $JAVA_HOME
+          set-env ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
+    - run:
+        name: Install Ruby
+        command: |
+          ./install-ruby.sh
+    - run:
+        name: Copy and modify publish.gradle
+        working_directory: ../..
+        command: |
+          cp ./tools/rntv-workflows/publish.gradle ./packages/react-native/ReactAndroid/publish.gradle
+          export MAVEN_TEMP_LOCAL_PATH=$EAS_BUILD_WORKINGDIR/maven-local
+          export MAVEN_TEMP_LOCAL_URL=file://$MAVEN_TEMP_LOCAL_PATH
+          sed -i '' "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
+          sed -i '' 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
+          # Set up environment for subsequent steps
+          set-env MAVEN_TEMP_LOCAL_PATH $MAVEN_TEMP_LOCAL_PATH
+          set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
+          echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
     - eas/install_node_modules
     - import_codesign_certs
     - run:
@@ -11,10 +39,13 @@ build:
           . ./tools/rntv-workflows/override-nightly-build-version.sh
           echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
           export ROOT_DIR=$PWD
+          export MAVEN_ARTIFACTS_PATH=$PWD/packages/react-native/ReactAndroid/external-artifacts/artifacts
+          mkdir -p $MAVEN_ARTIFACTS_PATH
           # Set up environment for subsequent steps
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
           set-env RCT_USE_RN_DEP 1
+          set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
     - run:
         name: Build RNCore framework (Debug)
         working_directory: ../../packages/react-native
@@ -34,14 +65,14 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreDebug.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework
           echo "RNCore Debug framework tarball created."
     - run:
         name: Create RNCore framework DSYMS tarball (Debug)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug/Symbols
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreDebug.framework.dSYM.tar.gz *
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
           echo "RNCore Debug framework tarball created."
     - run:
         name: RNCore prebuild (Release)
@@ -63,21 +94,73 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreRelease.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.xcframework.tar.gz React.xcframework
           echo "RNCore Release framework tarball created."
     - run:
         name: Create RNCore framework DSYMS tarball (Release)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release/Symbols
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $ROOT_DIR/ReactCoreRelease.framework.dSYM.tar.gz *
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.framework.dSYM.tar.gz *
           echo "RNCore Release framework tarball created."
+    - run:
+        name: Create RNCore framework Maven artifacts
+        working_directory: ../..
+        command: |
+          echo "Publishing react-native-artifacts to Maven local repository..."
+          ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
+    - run:
+        name: Build RNTester for iOS using RNCore artifacts
+        working_directory: ../../packages/rn-tester
+        command: |
+          mkdir $ROOT_DIR/RNTester-iOS
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            echo "Skip iOS build for non-release builds."
+            exit 0
+          fi
+          export RCT_USE_RN_DEP=1
+          export RCT_USE_PREBUILT_RNCORE=1
+          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-ios-hermes
+          echo "Building RNTester..."
+          yarn build-ios-hermes
+          echo "Build completed."
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app $ROOT_DIR/RNTester-iOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-iOS
+    - run:
+        name: Build RNTester for tvOS using RNCore artifacts
+        working_directory: ../../packages/rn-tester
+        command: |
+          mkdir $ROOT_DIR/RNTester-tvOS
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            echo "Skip tvOS build for non-release builds."
+            exit 0
+          fi
+          export RCT_USE_RN_DEP=1
+          export RCT_USE_PREBUILT_RNCORE=1
+          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-tvos-hermes
+          echo "Building RNTester..."
+          yarn build-tvos-hermes
+          echo "Build completed."
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
     - eas/upload_artifact:
-        name: Upload RNCore artifacts
+        name: Upload RNCore Maven artifacts
         inputs:
           type: build-artifact
           path: |
-            ReactCore*.tar.gz
+            maven-local
+            RNTester-iOS
+            RNTester-tvOS
 
 functions:
   import_codesign_certs:
@@ -88,4 +171,4 @@ functions:
     # REACT_ORG_CODE_SIGNING_P12_CERT and
     # REACT_ORG_CODE_SIGNING_P12_CERT_PWD
     outputs:
-      - name: keychainPassword
+    - name: keychainPassword
