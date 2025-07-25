@@ -23,12 +23,6 @@
         "config": "build-rntester-apple-prebuild.yml"
       }
     },
-    "rncore": {
-      "extends": "base",
-      "ios": {
-        "config": "build-rncore-apple.yml"
-      }
-    },
     "rntester": {
       "extends": "base",
       "ios": {
@@ -36,6 +30,12 @@
       },
       "android": {
         "config": "build-rntester-android.yml"
+      }
+    },
+    "rncore": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rncore-apple.yml"
       }
     },
     "rntester-prebuild-release": {
@@ -46,6 +46,12 @@
     },
     "rntester-release": {
       "extends": "rntester",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rncore-release": {
+      "extends": "rncore",
       "env": {
         "RNTV_RELEASE_BUILD": "1"
       }

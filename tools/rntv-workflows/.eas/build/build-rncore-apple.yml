@@ -109,12 +109,58 @@ build:
         command: |
           echo "Publishing react-native-artifacts to Maven local repository..."
           ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
+    - run:
+        name: Build RNTester for iOS using RNCore artifacts
+        working_directory: ../../packages/rn-tester
+        command: |
+          mkdir $ROOT_DIR/RNTester-iOS
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            echo "Skip iOS build for non-release builds."
+            exit 0
+          fi
+          export RCT_USE_RN_DEP=1
+          export RCT_USE_PREBUILT_RNCORE=1
+          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-ios-hermes
+          echo "Building RNTester..."
+          yarn build-ios-hermes
+          echo "Build completed."
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app $ROOT_DIR/RNTester-iOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-iOS
+    - run:
+        name: Build RNTester for tvOS using RNCore artifacts
+        working_directory: ../../packages/rn-tester
+        command: |
+          mkdir $ROOT_DIR/RNTester-tvOS
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            echo "Skip tvOS build for non-release builds."
+            exit 0
+          fi
+          export RCT_USE_RN_DEP=1
+          export RCT_USE_PREBUILT_RNCORE=1
+          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-tvos-hermes
+          echo "Building RNTester..."
+          yarn build-tvos-hermes
+          echo "Build completed."
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
     - eas/upload_artifact:
         name: Upload RNCore Maven artifacts
         inputs:
           type: build-artifact
           path: |
             maven-local
+            RNTester-iOS
+            RNTester-tvOS
 
 functions:
   import_codesign_certs:
