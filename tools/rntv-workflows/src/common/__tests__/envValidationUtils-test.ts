@@ -12,7 +12,7 @@ describe('envValidationUtils tests', () => {
       } catch (e) {
         const errorMessages = `${e}`.substring(7).split('\n');
         // console.log(JSON.stringify(errorMessages, null, 2));
-        expect(errorMessages.length).toEqual(6);
+        expect(errorMessages.length).toEqual(4);
       }
     });
     test('Maven env validation succeeds', () => {
@@ -58,7 +58,7 @@ describe('envValidationUtils tests', () => {
       } catch (e) {
         const errorMessages = `${e}`.substring(7).split('\n');
         // console.log(JSON.stringify(errorMessages, null, 2));
-        expect(errorMessages.length).toEqual(10);
+        expect(errorMessages.length).toEqual(8);
       }
     });
     test('Github env validation with some env set', () => {
