@@ -20,6 +20,10 @@ version =
 configurations.maybeCreate("externalArtifacts")
 
 // Those artifacts should be placed inside the `artifacts/hermes-ios-*.tar.gz` location.
+
+// No Hermes artifact needed for TV (use RN core artifact)
+
+/*
 val hermesiOSDebugArtifactFile: RegularFile =
     layout.projectDirectory.file("artifacts/hermes-ios-debug.tar.gz")
 val hermesiOSDebugArtifact: PublishArtifact =
@@ -54,7 +58,11 @@ val hermesDSYMReleaseArtifact: PublishArtifact =
       extension = "tar.gz"
       classifier = "hermes-framework-dSYM-release"
     }
+ */
 
+// No React Native dependencies artifact needed for TV (use RN core artifact)
+
+/*
 // [iOS] React Native Dependencies
 val reactNativeDependenciesDebugArtifactFile: RegularFile =
     layout.projectDirectory.file("artifacts/ReactNativeDependenciesDebug.xcframework.tar.gz")
@@ -90,6 +98,7 @@ val reactNativeDependenciesReleaseDSYMArtifact: PublishArtifact =
       extension = "tar.gz"
       classifier = "reactnative-dependencies-dSYM-release"
     }
+ */
 
 // [iOS] React Native Core
 val reactCoreDebugArtifactFile: RegularFile =
@@ -133,6 +142,7 @@ publishing {
   publications {
     getByName("release", MavenPublication::class) {
       artifactId = "react-native-artifacts"
+      /*
       artifact(hermesiOSDebugArtifact)
       artifact(hermesiOSReleaseArtifact)
       artifact(hermesDSYMDebugArtifact)
@@ -141,6 +151,7 @@ publishing {
       artifact(reactNativeDependenciesReleaseArtifact)
       artifact(reactNativeDependenciesDebugDSYMArtifact)
       artifact(reactNativeDependenciesReleaseDSYMArtifact)
+       */
       artifact(reactCoreDebugArtifact)
       artifact(reactCoreReleaseArtifact)
       artifact(reactCoreDebugDSYMArtifact)

@@ -38,7 +38,7 @@ build:
           echo "Create RNCore framework tarball..."
           tar zcf $RCT_TESTONLY_RNCORE_TARBALL_PATH React.xcframework
     - run:
-        name: Build RNTester app using RNCore framework
+        name: Build RNTester app for tvOS using RNCore framework
         working_directory: ../../packages/rn-tester
         command: |
           echo "Use prebuilt RNCore for this step..."
@@ -47,9 +47,9 @@ build:
           echo "Cleaning build directories..."
           yarn clean-ios
           echo "Setting up RNTester..."
-          yarn setup-ios-hermes
+          yarn setup-tvos-hermes
           echo "Building RNTester..."
-          yarn build-ios-hermes
+          yarn build-tvos-hermes
           echo "Build completed."
     - eas/upload_artifact:
         name: Upload RNTester artifacts
