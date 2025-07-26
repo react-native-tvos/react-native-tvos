@@ -23,7 +23,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 
-console.log('🔧 Fixing Flow v0.233.0 syntax for Metro compatibility...\n');
+console.log('Fixing Flow v0.233.0 syntax for Metro compatibility...\n');
 
 // Find all JavaScript files that might contain Flow syntax
 const patterns = [
@@ -100,22 +100,22 @@ patterns.forEach(pattern => {
       // Only write if content changed
       if (content !== originalContent) {
         fs.writeFileSync(file, content, 'utf8');
-        console.log(`  ✅ Fixed: ${path.relative(process.cwd(), file)}`);
+        console.log(`  Fixed: ${path.relative(process.cwd(), file)}`);
         filesFixed++;
       }
     } catch (error) {
-      console.error(`  ❌ Error processing ${file}:`, error.message);
+      console.error(`  Error processing ${file}:`, error.message);
     }
   });
 });
 
-console.log(`\n📊 Summary:`);
+console.log(`\nSummary:`);
 console.log(`  - Files scanned: ${totalFiles}`);
 console.log(`  - Files fixed: ${filesFixed}`);
 
 if (filesFixed > 0) {
-  console.log('\n✨ Flow syntax fixes applied successfully!');
-  console.log('🎯 Your project should now build without Flow syntax errors.\n');
+  console.log('\nFlow syntax fixes applied successfully!');
+  console.log('Your project should now build without Flow syntax errors.\n');
 } else {
-  console.log('\n✅ No Flow syntax issues found. Your project is ready!\n');
+  console.log('\nNo Flow syntax issues found. Your project is ready!\n');
 }
