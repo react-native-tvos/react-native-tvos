@@ -19,7 +19,6 @@ import {
   applyPackageVersions,
   pushBranchAsync,
   validateForGitHub,
-  cloneAndInstallBranchAsync,
   rewriteFileAtPathAsync,
   rewritePackageNamesIfNeeded,
 } from './common';

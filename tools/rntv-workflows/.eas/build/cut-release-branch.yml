@@ -1,9 +1,0 @@
-build:
-  name: Cut release branch
-  steps:
-    - eas/checkout
-    - eas/install_node_modules
-    - run:
-        name: Bump release version and push release branch
-        command: |
-          npx tsx ./src/cut-release-branch.ts
