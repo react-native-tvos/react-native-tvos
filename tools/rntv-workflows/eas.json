@@ -56,19 +56,23 @@
         "RNTV_RELEASE_BUILD": "1"
       }
     },
-    "cut-release-branch": {
-      "extends": "base",
-      "android": {
-        "config": "cut-release-branch.yml"
+    "rncore-release-publish": {
+      "extends": "rncore",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1",
+        "PUBLISH_TO_SONATYPE": "1"
       }
     },
-    "Cut release branch for RNTV 0.81.0-0rc2": {
-      "extends": "cut-release-branch",
+    "android-artifacts": {
+      "extends": "base",
+      "android": {
+        "config": "build-android-artifacts.yml"
+      }
+    },
+    "android-artifacts-publish": {
+      "extends": "android-artifacts",
       "env": {
-        "REACT_NATIVE_RELEASE_BRANCH": "release-0.81.0-0rc2",
-        "REACT_NATIVE_RELEASE_VERSION": "0.81.0-0rc2",
-        "REACT_NATIVE_CORE_VERSION": "0.81.0-rc.2",
-        "PUSH_RELEASE_TO_REPO": "true"
+        "PUBLISH_TO_SONATYPE": "1"
       }
     }
   }

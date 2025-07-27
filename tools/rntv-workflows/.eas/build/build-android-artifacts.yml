@@ -1,0 +1,85 @@
+build:
+  name: Build Android artifacts for a release
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          # Set up environment for subsequent steps
+          # Check and save sdkmanager path
+          export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
+          echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
+          set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
+          # Location for NPM tarballs
+          export NPM_TARBALL_LOCATION=$PWD/npm-tarballs
+          mkdir -p $NPM_TARBALL_LOCATION
+          set-env NPM_TARBALL_LOCATION $NPM_TARBALL_LOCATION
+          # Location for RNTester APKs
+          export RNTESTER_APK_LOCATION=$PWD/RNTester-Android
+          mkdir -p $RNTESTER_APK_LOCATION
+          set-env RNTESTER_APK_LOCATION $RNTESTER_APK_LOCATION
+    - run:
+        name: Copy and modify publish.gradle
+        working_directory: ../..
+        command: |
+          export MAVEN_TEMP_LOCAL_PATH=$PWD/maven-local
+          export MAVEN_TEMP_LOCAL_URL=file://$MAVEN_TEMP_LOCAL_PATH
+          cp ./tools/rntv-workflows/publish.gradle ./packages/react-native/ReactAndroid/publish.gradle
+          if [[ "$EAS_BUILD_PLATFORM" == "ios" || "$EAS_BUILD_RUNNER" != "eas-build" ]]; then
+            sed -i '' "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
+            sed -i '' 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
+          else
+            sed -i "s|MAVEN_TEMP_LOCAL_URL|\'$MAVEN_TEMP_LOCAL_URL\'|g;" ./packages/react-native/ReactAndroid/publish.gradle
+            sed -i 's/IS_SNAPSHOT/false/g' ./packages/react-native/ReactAndroid/publish.gradle
+          fi
+          # Set up environment for subsequent steps
+          set-env MAVEN_TEMP_LOCAL_PATH $MAVEN_TEMP_LOCAL_PATH
+          set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
+          echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
+    - run:
+        name: Build Android and Android TV artifacts
+        working_directory: ../..
+        command: |
+          ./gradlew publishAllToMavenTempLocal
+    - run:
+        name: Publish Android artifacts to Sonatype
+        working_directory: ../..
+        command: |
+          if [[ "$PUBLISH_TO_SONATYPE" == "1" ]]; then
+            echo "Publishing react-android and hermes-android to Sonatype (Maven Central)..."
+            ./gradlew :packages:react-native:ReactAndroid:hermes-engine:publishToSonatype
+            ./gradlew :packages:react-native:ReactAndroid:publishToSonatype
+            ./gradlew closeAndReleaseSonatypeStagingRepository
+            echo "react-native-artifacts published to Sonatype (Maven Central)."
+          else
+            echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
+          fi
+    - run:
+        name: Create virtualized-lists tarball
+        working_directory: ../../packages/virtualized-lists
+        command: |
+          npm pack --pack-destination $NPM_TARBALL_LOCATION
+    - run:
+        name: Create react-native tarball
+        working_directory: ../../packages/react-native
+        command: |
+          npm pack --pack-destination $NPM_TARBALL_LOCATION
+    - run:
+        name: Build RNTester app for Android and Android TV
+        working_directory: ../../packages/rn-tester
+        command: |
+          echo "Building RNTester..."
+          yarn build-android-hermes
+          echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
+          cp -r android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION
+          echo "Build completed."
+    - eas/upload_artifact:
+        name: Upload Android artifacts and NPM tarballs
+        inputs:
+          type: build-artifact
+          path: |
+            maven-local
+            npm-tarballs
+            RNTester-Android
