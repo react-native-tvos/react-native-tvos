@@ -27,6 +27,10 @@ build:
           mkdir -p $RNTESTER_APK_LOCATION
           set-env RNTESTER_APK_LOCATION $RNTESTER_APK_LOCATION
     - run:
+        name: Download hermesc from core release package
+        command: |
+          npx tsx ./src/download-hermesc.ts
+    - run:
         name: Copy and modify publish.gradle
         working_directory: ../..
         command: |

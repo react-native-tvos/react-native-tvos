@@ -1,5 +1,3 @@
-#!/usr/bin/env -S bun --silent ts-node --transpile-only
-
 'use strict';
 
 import path from 'path';
