@@ -32,7 +32,9 @@ class BaseScrollViewProps : public ViewProps {
 
 #pragma mark - Props
 
+#if TARGET_OS_TV
   bool showsScrollIndex{true};
+#endif
   bool alwaysBounceHorizontal{};
   bool alwaysBounceVertical{};
   bool bounces{true};

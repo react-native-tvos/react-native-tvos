@@ -510,11 +510,13 @@ static inline void RCTApplyTransformationAccordingLayoutDirection(
 
 - (void)updateScrollIndex
 {
+#if TARGET_OS_TV
   if (self.showsScrollIndex) {
       self.scrollView.indexDisplayMode = UIScrollViewIndexDisplayModeAutomatic;
   } else {
       self.scrollView.indexDisplayMode = UIScrollViewIndexDisplayModeAlwaysHidden;
   }
+#endif
 }
 
 - (BOOL)centerContent

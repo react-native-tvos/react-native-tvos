@@ -375,10 +375,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
   if (oldScrollViewProps.indicatorStyle != newScrollViewProps.indicatorStyle) {
     _scrollView.indicatorStyle = RCTUIScrollViewIndicatorStyleFromProps(newScrollViewProps);
   }
-    
+
+#if TARGET_OS_TV
   if (oldScrollViewProps.showsScrollIndex != newScrollViewProps.showsScrollIndex) {
       _scrollView.indexDisplayMode = newScrollViewProps.showsScrollIndex ? UIScrollViewIndexDisplayModeAutomatic : UIScrollViewIndexDisplayModeAlwaysHidden;
   }
+#endif
 
   _endDraggingSensitivityMultiplier = newScrollViewProps.endDraggingSensitivityMultiplier;
 
