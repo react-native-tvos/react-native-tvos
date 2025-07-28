@@ -4,6 +4,11 @@ build:
     - eas/checkout
     - eas/install_node_modules
     - run:
+        name: Patch @microsoft/api-extractor
+        working_directory: ../..
+        command: |
+          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
+    - run:
         name: Set up build-specific environment
         working_directory: ../..
         command: |
@@ -56,6 +61,11 @@ build:
           else
             echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
           fi
+    - run:
+        name: Run Typescript generation
+        working_directory: ../..
+        command: |
+          yarn build-types
     - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
