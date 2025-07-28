@@ -60,7 +60,9 @@
 @property (nonatomic, assign) CGRect firstResponderFocus;
 /** newly-activated text input outside of the scroll view */
 @property (nonatomic, weak) UIView *firstResponderViewOutsideScrollView;
+#if TARGET_OS_TV
 @property (nonatomic, assign) BOOL showsScrollIndex;
+#endif
 
 // NOTE: currently these event props are only declared so we can export the
 // event names to JS - we don't call the blocks directly because scroll events
