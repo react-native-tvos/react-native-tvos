@@ -1,6 +1,6 @@
 {
   "name": "@react-native/popup-menu-android",
-  "version": "0.81.0-rc.2",
+  "version": "0.81.0-0rc2",
   "description": "PopupMenu for the Android platform",
   "main": "index.js",
   "files": [
