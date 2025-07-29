@@ -162,14 +162,22 @@ build:
           else
             echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
           fi
+    - run:
+        name: Package Apple artifacts
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
+          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
+          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
+          (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
     - eas/upload_artifact:
         name: Upload RNCore Maven artifacts and RNTester apps
         inputs:
           type: build-artifact
           path: |
-            maven-local
-            RNTester-iOS
-            RNTester-tvOS
+            react-native-artifacts-*.tgz
+            rntester-*.tgz
 
 functions:
   import_codesign_certs:
