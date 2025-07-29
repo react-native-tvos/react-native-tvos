@@ -57,11 +57,7 @@ build:
         working_directory: ../..
         command: |
           if [[ "$PUBLISH_TO_SONATYPE" == "1" ]]; then
-            echo "Publishing react-android and hermes-android to Sonatype (Maven Central)..."
-            ./gradlew :packages:react-native:ReactAndroid:hermes-engine:publishToSonatype
-            ./gradlew :packages:react-native:ReactAndroid:publishToSonatype
-            ./gradlew closeAndReleaseSonatypeStagingRepository
-            echo "react-native-artifacts published to Sonatype (Maven Central)."
+            echo "Publish to Sonatype must be done manually for now."
           else
             echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
           fi
