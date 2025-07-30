@@ -136,6 +136,10 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
   private void init() {
     setRootViewTag(ReactRootViewTagGenerator.getNextRootViewTag());
     setClipChildren(false);
+
+    if (ReactNativeFeatureFlags.enableFontScaleChangesUpdatingLayout()) {
+      DisplayMetricsHolder.initDisplayMetrics(getContext().getApplicationContext());
+    }
   }
 
   @Override
@@ -325,7 +329,10 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       FLog.w(TAG, "Unable to handle key event as the catalyst instance has not been attached");
       return super.dispatchKeyEvent(ev);
     }
-    mAndroidHWInputDeviceHelper.handleKeyEvent(ev, getCurrentReactContext());
+    ReactContext context = getCurrentReactContext();
+    if (context != null) {
+      mAndroidHWInputDeviceHelper.handleKeyEvent(ev, context);
+    }
     return super.dispatchKeyEvent(ev);
   }
 
@@ -338,7 +345,10 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
       return;
     }
-    mAndroidHWInputDeviceHelper.clearFocus(getCurrentReactContext());
+    ReactContext context = getCurrentReactContext();
+    if (context != null) {
+      mAndroidHWInputDeviceHelper.clearFocus(context);
+    }
     super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
   }
 
@@ -352,7 +362,10 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       super.requestChildFocus(child, focused);
       return;
     }
-    mAndroidHWInputDeviceHelper.onFocusChanged(focused, getCurrentReactContext());
+    ReactContext context = getCurrentReactContext();
+    if (context != null) {
+      mAndroidHWInputDeviceHelper.onFocusChanged(focused, context);
+    }
     super.requestChildFocus(child, focused);
   }
 
@@ -872,7 +885,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     private int mDeviceRotation = 0;
 
     /* package */ CustomGlobalLayoutListener() {
-      DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(getContext());
+      DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(getContext().getApplicationContext());
       mVisibleViewArea = new Rect();
       mMinKeyboardHeightDetected = (int) PixelUtil.toPixelFromDIP(60);
     }
@@ -995,7 +1008,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
         return;
       }
       mDeviceRotation = rotation;
-      DisplayMetricsHolder.initDisplayMetrics(getContext());
+      DisplayMetricsHolder.initDisplayMetrics(getContext().getApplicationContext());
       emitOrientationChanged(rotation);
     }
 

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<780793412b76f101be1569d7a866c435>>
+ * @generated SignedSource<<afd38d105b3b7ab92f98f39dbce40925>>
  */
 
 /**
@@ -25,9 +25,13 @@ import com.facebook.proguard.annotations.DoNotStrip
 public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun commonTestFlag(): Boolean
 
+  @DoNotStrip public fun cdpInteractionMetricsEnabled(): Boolean
+
   @DoNotStrip public fun cxxNativeAnimatedEnabled(): Boolean
 
   @DoNotStrip public fun cxxNativeAnimatedRemoveJsSync(): Boolean
+
+  @DoNotStrip public fun disableFabricCommitInCXXAnimated(): Boolean
 
   @DoNotStrip public fun disableMountItemReorderingAndroid(): Boolean
 
@@ -66,6 +70,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun enableIOSTextBaselineOffsetPerLine(): Boolean
 
   @DoNotStrip public fun enableIOSViewClipToPaddingBox(): Boolean
+
+  @DoNotStrip public fun enableImagePrefetchingAndroid(): Boolean
 
   @DoNotStrip public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean
 
@@ -113,11 +119,15 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun hideOffscreenVirtualViewsOnIOS(): Boolean
 
+  @DoNotStrip public fun perfMonitorV2Enabled(): Boolean
+
   @DoNotStrip public fun preparedTextCacheSize(): Double
 
-  @DoNotStrip public fun preventShadowTreeCommitExhaustionWithLocking(): Boolean
+  @DoNotStrip public fun preventShadowTreeCommitExhaustion(): Boolean
 
   @DoNotStrip public fun releaseImageDataWhenConsumed(): Boolean
+
+  @DoNotStrip public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean
 
   @DoNotStrip public fun skipActivityIdentityAssertionOnHostPause(): Boolean
 

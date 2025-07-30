@@ -137,6 +137,12 @@ type PressableBaseProps = $ReadOnly<{
   onPressOut?: ?(event: GestureResponderEvent) => mixed,
 
   /**
+   * Whether to prevent any other native components from becoming responder
+   * while this pressable is responder.
+   */
+  blockNativeResponder?: ?boolean,
+
+  /**
    * Either view styles or a function that receives a boolean reflecting whether
    * the component is currently pressed and returns view styles.
    */
@@ -207,6 +213,7 @@ function Pressable({
     'aria-expanded': ariaExpanded,
     'aria-label': ariaLabel,
     'aria-selected': ariaSelected,
+    blockNativeResponder,
     cancelable,
     children,
     delayHoverIn,
@@ -338,10 +345,12 @@ function Pressable({
           onPressOut(event);
         }
       },
+      blockNativeResponder,
     }),
     [
       android_disableSound,
       android_rippleConfig,
+      blockNativeResponder,
       cancelable,
       delayHoverIn,
       delayHoverOut,

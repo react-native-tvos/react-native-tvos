@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<cadb1f2c1c10a03593dc7c9a9a94747b>>
+ * @generated SignedSource<<2579c7c4f358b76bf9a8315cf0fd5976>>
  */
 
 /**
@@ -49,6 +49,11 @@ bool NativeReactNativeFeatureFlags::commonTestFlagWithoutNativeImplementation(
   return false;
 }
 
+bool NativeReactNativeFeatureFlags::cdpInteractionMetricsEnabled(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::cdpInteractionMetricsEnabled();
+}
+
 bool NativeReactNativeFeatureFlags::cxxNativeAnimatedEnabled(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::cxxNativeAnimatedEnabled();
@@ -57,6 +62,11 @@ bool NativeReactNativeFeatureFlags::cxxNativeAnimatedEnabled(
 bool NativeReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync();
+}
+
+bool NativeReactNativeFeatureFlags::disableFabricCommitInCXXAnimated(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
 }
 
 bool NativeReactNativeFeatureFlags::disableMountItemReorderingAndroid(
@@ -152,6 +162,11 @@ bool NativeReactNativeFeatureFlags::enableIOSTextBaselineOffsetPerLine(
 bool NativeReactNativeFeatureFlags::enableIOSViewClipToPaddingBox(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox();
+}
+
+bool NativeReactNativeFeatureFlags::enableImagePrefetchingAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableImagePrefetchingAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges(
@@ -269,19 +284,29 @@ bool NativeReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS(
   return ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS();
 }
 
+bool NativeReactNativeFeatureFlags::perfMonitorV2Enabled(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::perfMonitorV2Enabled();
+}
+
 double NativeReactNativeFeatureFlags::preparedTextCacheSize(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::preparedTextCacheSize();
 }
 
-bool NativeReactNativeFeatureFlags::preventShadowTreeCommitExhaustionWithLocking(
+bool NativeReactNativeFeatureFlags::preventShadowTreeCommitExhaustion(
     jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustionWithLocking();
+  return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion();
 }
 
 bool NativeReactNativeFeatureFlags::releaseImageDataWhenConsumed(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::releaseImageDataWhenConsumed();
+}
+
+bool NativeReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
 }
 
 bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(

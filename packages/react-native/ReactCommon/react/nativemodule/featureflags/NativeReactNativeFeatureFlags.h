@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<de04d72490f2c09abdcea51e6f02796c>>
+ * @generated SignedSource<<a31953c44fa5eac616d97cd1b206c2f7>>
  */
 
 /**
@@ -38,9 +38,13 @@ class NativeReactNativeFeatureFlags
 
   bool commonTestFlagWithoutNativeImplementation(jsi::Runtime& runtime);
 
+  bool cdpInteractionMetricsEnabled(jsi::Runtime& runtime);
+
   bool cxxNativeAnimatedEnabled(jsi::Runtime& runtime);
 
   bool cxxNativeAnimatedRemoveJsSync(jsi::Runtime& runtime);
+
+  bool disableFabricCommitInCXXAnimated(jsi::Runtime& runtime);
 
   bool disableMountItemReorderingAndroid(jsi::Runtime& runtime);
 
@@ -79,6 +83,8 @@ class NativeReactNativeFeatureFlags
   bool enableIOSTextBaselineOffsetPerLine(jsi::Runtime& runtime);
 
   bool enableIOSViewClipToPaddingBox(jsi::Runtime& runtime);
+
+  bool enableImagePrefetchingAndroid(jsi::Runtime& runtime);
 
   bool enableImmediateUpdateModeForContentOffsetChanges(jsi::Runtime& runtime);
 
@@ -126,11 +132,15 @@ class NativeReactNativeFeatureFlags
 
   bool hideOffscreenVirtualViewsOnIOS(jsi::Runtime& runtime);
 
+  bool perfMonitorV2Enabled(jsi::Runtime& runtime);
+
   double preparedTextCacheSize(jsi::Runtime& runtime);
 
-  bool preventShadowTreeCommitExhaustionWithLocking(jsi::Runtime& runtime);
+  bool preventShadowTreeCommitExhaustion(jsi::Runtime& runtime);
 
   bool releaseImageDataWhenConsumed(jsi::Runtime& runtime);
+
+  bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 
   bool skipActivityIdentityAssertionOnHostPause(jsi::Runtime& runtime);
 

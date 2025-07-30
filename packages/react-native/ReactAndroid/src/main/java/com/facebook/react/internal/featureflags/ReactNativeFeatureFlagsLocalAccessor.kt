@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<23605f090bfbebe911caa9d3d834d3e8>>
+ * @generated SignedSource<<acbbd313189620438b486593634a0523>>
  */
 
 /**
@@ -25,8 +25,10 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private val accessedFeatureFlags = mutableSetOf<String>()
 
   private var commonTestFlagCache: Boolean? = null
+  private var cdpInteractionMetricsEnabledCache: Boolean? = null
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
+  private var disableFabricCommitInCXXAnimatedCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableOldAndroidAttachmentMetricsWorkaroundsCache: Boolean? = null
   private var disableTextLayoutManagerCacheAndroidCache: Boolean? = null
@@ -46,6 +48,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
+  private var enableImagePrefetchingAndroidCache: Boolean? = null
   private var enableImmediateUpdateModeForContentOffsetChangesCache: Boolean? = null
   private var enableInteropViewManagerClassLookUpOptimizationIOSCache: Boolean? = null
   private var enableLayoutAnimationsOnAndroidCache: Boolean? = null
@@ -69,9 +72,11 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var fuseboxEnabledReleaseCache: Boolean? = null
   private var fuseboxNetworkInspectionEnabledCache: Boolean? = null
   private var hideOffscreenVirtualViewsOnIOSCache: Boolean? = null
+  private var perfMonitorV2EnabledCache: Boolean? = null
   private var preparedTextCacheSizeCache: Double? = null
-  private var preventShadowTreeCommitExhaustionWithLockingCache: Boolean? = null
+  private var preventShadowTreeCommitExhaustionCache: Boolean? = null
   private var releaseImageDataWhenConsumedCache: Boolean? = null
+  private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
@@ -97,6 +102,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun cdpInteractionMetricsEnabled(): Boolean {
+    var cached = cdpInteractionMetricsEnabledCache
+    if (cached == null) {
+      cached = currentProvider.cdpInteractionMetricsEnabled()
+      accessedFeatureFlags.add("cdpInteractionMetricsEnabled")
+      cdpInteractionMetricsEnabledCache = cached
+    }
+    return cached
+  }
+
   override fun cxxNativeAnimatedEnabled(): Boolean {
     var cached = cxxNativeAnimatedEnabledCache
     if (cached == null) {
@@ -113,6 +128,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.cxxNativeAnimatedRemoveJsSync()
       accessedFeatureFlags.add("cxxNativeAnimatedRemoveJsSync")
       cxxNativeAnimatedRemoveJsSyncCache = cached
+    }
+    return cached
+  }
+
+  override fun disableFabricCommitInCXXAnimated(): Boolean {
+    var cached = disableFabricCommitInCXXAnimatedCache
+    if (cached == null) {
+      cached = currentProvider.disableFabricCommitInCXXAnimated()
+      accessedFeatureFlags.add("disableFabricCommitInCXXAnimated")
+      disableFabricCommitInCXXAnimatedCache = cached
     }
     return cached
   }
@@ -303,6 +328,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableIOSViewClipToPaddingBox()
       accessedFeatureFlags.add("enableIOSViewClipToPaddingBox")
       enableIOSViewClipToPaddingBoxCache = cached
+    }
+    return cached
+  }
+
+  override fun enableImagePrefetchingAndroid(): Boolean {
+    var cached = enableImagePrefetchingAndroidCache
+    if (cached == null) {
+      cached = currentProvider.enableImagePrefetchingAndroid()
+      accessedFeatureFlags.add("enableImagePrefetchingAndroid")
+      enableImagePrefetchingAndroidCache = cached
     }
     return cached
   }
@@ -537,6 +572,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun perfMonitorV2Enabled(): Boolean {
+    var cached = perfMonitorV2EnabledCache
+    if (cached == null) {
+      cached = currentProvider.perfMonitorV2Enabled()
+      accessedFeatureFlags.add("perfMonitorV2Enabled")
+      perfMonitorV2EnabledCache = cached
+    }
+    return cached
+  }
+
   override fun preparedTextCacheSize(): Double {
     var cached = preparedTextCacheSizeCache
     if (cached == null) {
@@ -547,12 +592,12 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun preventShadowTreeCommitExhaustionWithLocking(): Boolean {
-    var cached = preventShadowTreeCommitExhaustionWithLockingCache
+  override fun preventShadowTreeCommitExhaustion(): Boolean {
+    var cached = preventShadowTreeCommitExhaustionCache
     if (cached == null) {
-      cached = currentProvider.preventShadowTreeCommitExhaustionWithLocking()
-      accessedFeatureFlags.add("preventShadowTreeCommitExhaustionWithLocking")
-      preventShadowTreeCommitExhaustionWithLockingCache = cached
+      cached = currentProvider.preventShadowTreeCommitExhaustion()
+      accessedFeatureFlags.add("preventShadowTreeCommitExhaustion")
+      preventShadowTreeCommitExhaustionCache = cached
     }
     return cached
   }
@@ -563,6 +608,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.releaseImageDataWhenConsumed()
       accessedFeatureFlags.add("releaseImageDataWhenConsumed")
       releaseImageDataWhenConsumedCache = cached
+    }
+    return cached
+  }
+
+  override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean {
+    var cached = shouldPressibilityUseW3CPointerEventsForHoverCache
+    if (cached == null) {
+      cached = currentProvider.shouldPressibilityUseW3CPointerEventsForHover()
+      accessedFeatureFlags.add("shouldPressibilityUseW3CPointerEventsForHover")
+      shouldPressibilityUseW3CPointerEventsForHoverCache = cached
     }
     return cached
   }

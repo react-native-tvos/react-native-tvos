@@ -475,7 +475,7 @@ static NSDictionary *deviceOrientationEventBody(UIDeviceOrientation orientation)
   if (!view) {
     view = _viewRegistry[reactTag];
   }
-  return [RCTUIManager paperViewOrCurrentView:view];
+  return RCTPaperViewOrCurrentView(view);
 }
 
 - (RCTShadowView *)shadowViewForReactTag:(NSNumber *)reactTag
@@ -1631,14 +1631,6 @@ static UIView *_jsResponder;
   return _jsResponder;
 }
 
-+ (UIView *)paperViewOrCurrentView:(UIView *)view
-{
-  if ([view respondsToSelector:@selector(paperView)]) {
-    return [view performSelector:@selector(paperView)];
-  }
-  return view;
-}
-
 - (void)removeViewFromRegistry:(NSNumber *)reactTag
 {
   [_viewRegistry removeObjectForKey:reactTag];
@@ -1739,11 +1731,6 @@ static UIView *_jsResponder;
   return nil;
 }
 
-+ (UIView *)paperViewOrCurrentView:(UIView *)view
-{
-  return nil;
-}
-
 + (NSString *)moduleName
 {
   return @"UIManager";
@@ -1765,6 +1752,14 @@ static UIView *_jsResponder;
 @end
 
 #endif // RCT_FIT_RM_OLD_RUNTIME
+
+UIView *RCTPaperViewOrCurrentView(UIView *view)
+{
+  if ([view respondsToSelector:@selector(paperView)]) {
+    return [view performSelector:@selector(paperView)];
+  }
+  return view;
+}
 
 @implementation RCTComposedViewRegistry {
   __weak RCTUIManager *_uiManager;
@@ -1800,11 +1795,11 @@ static UIView *_jsResponder;
   NSNumber *index = (NSNumber *)key;
   UIView *view = _registry[index];
   if (view) {
-    return [RCTUIManager paperViewOrCurrentView:view];
+    return RCTPaperViewOrCurrentView(view);
   }
   view = [_uiManager viewForReactTag:index];
   if (view) {
-    return [RCTUIManager paperViewOrCurrentView:view];
+    return RCTPaperViewOrCurrentView(view);
   }
   return NULL;
 }

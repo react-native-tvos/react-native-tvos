@@ -56,9 +56,14 @@ class PerformanceTracer {
    * Flush out buffered CDP Trace Events using the given callback.
    */
   void collectEvents(
-      const std::function<void(const folly::dynamic& eventsChunk)>&
-          resultCallback,
+      const std::function<void(folly::dynamic&& eventsChunk)>& resultCallback,
       uint16_t chunkSize);
+
+  /**
+   * Flush out buffered CDP Trace Events into a folly::dynamic collection of
+   * chunks, which can be sent over CDP later.
+   */
+  folly::dynamic collectEvents(uint16_t chunkSize);
 
   /**
    * Record a `Performance.mark()` event - a labelled timestamp. If not
@@ -143,21 +148,13 @@ class PerformanceTracer {
       uint16_t profileId,
       uint64_t threadId,
       HighResTimeStamp chunkTimestamp,
-      const TraceEventProfileChunk& traceEventProfileChunk);
+      TraceEventProfileChunk&& traceEventProfileChunk);
 
  private:
   PerformanceTracer();
   PerformanceTracer(const PerformanceTracer&) = delete;
   PerformanceTracer& operator=(const PerformanceTracer&) = delete;
   ~PerformanceTracer() = default;
-
-  /**
-   * Serialize a TraceEvent into a folly::dynamic object.
-   * \param event rvalue reference to the TraceEvent object.
-   * \return folly::dynamic object that represents a serialized into JSON Trace
-   * Event for CDP.
-   */
-  folly::dynamic serializeTraceEvent(TraceEvent&& event) const;
 
   const uint64_t processId_;
 

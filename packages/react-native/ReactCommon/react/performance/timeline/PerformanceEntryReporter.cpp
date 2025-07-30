@@ -92,6 +92,21 @@ HighResTimeStamp PerformanceEntryReporter::getCurrentTimeStamp() const {
   return timeStampProvider_ != nullptr ? timeStampProvider_()
                                        : HighResTimeStamp::now();
 }
+void PerformanceEntryReporter::addEventTimingListener(
+    PerformanceEntryReporterEventTimingListener* listener) {
+  std::unique_lock lock(listenersMutex_);
+  eventTimingListeners_.push_back(listener);
+}
+
+void PerformanceEntryReporter::removeEventTimingListener(
+    PerformanceEntryReporterEventTimingListener* listener) {
+  std::unique_lock lock(listenersMutex_);
+  auto it = std::find(
+      eventTimingListeners_.begin(), eventTimingListeners_.end(), listener);
+  if (it != eventTimingListeners_.end()) {
+    eventTimingListeners_.erase(it);
+  }
+}
 
 std::vector<PerformanceEntryType>
 PerformanceEntryReporter::getSupportedEntryTypes() {
@@ -231,7 +246,7 @@ std::optional<HighResTimeStamp> PerformanceEntryReporter::getMarkTime(
 }
 
 void PerformanceEntryReporter::reportEvent(
-    std::string name,
+    const std::string& name,
     HighResTimeStamp startTime,
     HighResDuration duration,
     HighResTimeStamp processingStart,
@@ -246,7 +261,7 @@ void PerformanceEntryReporter::reportEvent(
   }
 
   const auto entry = PerformanceEventTiming{
-      {.name = std::move(name), .startTime = startTime, .duration = duration},
+      {.name = name, .startTime = startTime, .duration = duration},
       processingStart,
       processingEnd,
       interactionId};
@@ -258,6 +273,16 @@ void PerformanceEntryReporter::reportEvent(
 
   // TODO(T198982346): Log interaction events to jsinspector_modern
   observerRegistry_->queuePerformanceEntry(entry);
+
+  std::vector<PerformanceEntryReporterEventTimingListener*> listenersCopy;
+  {
+    std::shared_lock lock(listenersMutex_);
+    listenersCopy = eventTimingListeners_;
+  }
+
+  for (auto* listener : listenersCopy) {
+    listener->onEventTimingEntry(entry);
+  }
 }
 
 void PerformanceEntryReporter::reportLongTask(
@@ -310,17 +335,16 @@ void PerformanceEntryReporter::traceMark(
     UserTimingDetailProvider&& detailProvider) const {
   auto& performanceTracer =
       jsinspector_modern::tracing::PerformanceTracer::getInstance();
-  if (ReactPerfettoLogger::isTracing() || performanceTracer.isTracing()) {
-    if (ReactPerfettoLogger::isTracing()) {
-      ReactPerfettoLogger::mark(entry.name, entry.startTime);
-    }
 
-    if (performanceTracer.isTracing()) {
-      performanceTracer.reportMark(
-          entry.name,
-          entry.startTime,
-          detailProvider != nullptr ? detailProvider() : nullptr);
-    }
+  if (ReactPerfettoLogger::isTracing()) {
+    ReactPerfettoLogger::mark(entry.name, entry.startTime);
+  }
+
+  if (performanceTracer.isTracing()) {
+    performanceTracer.reportMark(
+        entry.name,
+        entry.startTime,
+        detailProvider != nullptr ? detailProvider() : nullptr);
   }
 }
 
