@@ -25,6 +25,9 @@ build:
           export RNTESTER_APK_LOCATION=$PWD/RNTester-Android
           mkdir -p $RNTESTER_APK_LOCATION
           set-env RNTESTER_APK_LOCATION $RNTESTER_APK_LOCATION
+          # Root directory
+          export ROOT_DIR=$PWD
+          set-env ROOT_DIR $ROOT_DIR
     - run:
         name: Download hermesc from core release package
         command: |
@@ -57,11 +60,7 @@ build:
         working_directory: ../..
         command: |
           if [[ "$PUBLISH_TO_SONATYPE" == "1" ]]; then
-            echo "Publishing react-android and hermes-android to Sonatype (Maven Central)..."
-            ./gradlew :packages:react-native:ReactAndroid:hermes-engine:publishToSonatype
-            ./gradlew :packages:react-native:ReactAndroid:publishToSonatype
-            ./gradlew closeAndReleaseSonatypeStagingRepository
-            echo "react-native-artifacts published to Sonatype (Maven Central)."
+            echo "Publish to Sonatype must be done manually for now."
           else
             echo "Skipping publishing to Sonatype (Maven Central) as PUBLISH_TO_SONATYPE is not set."
           fi
@@ -74,12 +73,12 @@ build:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
         command: |
-          npm pack --pack-destination $NPM_TARBALL_LOCATION
+          npm pack --pack-destination $ROOT_DIR
     - run:
         name: Create react-native tarball
         working_directory: ../../packages/react-native
         command: |
-          npm pack --pack-destination $NPM_TARBALL_LOCATION
+          npm pack --pack-destination $ROOT_DIR
     - run:
         name: Build RNTester app for Android and Android TV
         working_directory: ../../packages/rn-tester
@@ -89,11 +88,19 @@ build:
           echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
           cp -r android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION
           echo "Build completed."
+    - run:
+        name: Package Android artifacts
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
+          (cd RNTester-Android; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv.tgz *)
+          (cd maven-local; tar zcf $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz *)
     - eas/upload_artifact:
         name: Upload Android artifacts and NPM tarballs
         inputs:
           type: build-artifact
           path: |
-            maven-local
-            npm-tarballs
-            RNTester-Android
+            react-android-artifacts-*.tgz
+            rntester-*.tgz
+            react-native-*.tgz
