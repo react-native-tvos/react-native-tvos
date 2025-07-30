@@ -140,7 +140,7 @@ public class com/facebook/react/ReactActivityDelegate {
 
 public abstract interface class com/facebook/react/ReactApplication {
 	public fun getReactHost ()Lcom/facebook/react/ReactHost;
-	public abstract fun getReactNativeHost ()Lcom/facebook/react/ReactNativeHost;
+	public fun getReactNativeHost ()Lcom/facebook/react/ReactNativeHost;
 }
 
 public class com/facebook/react/ReactDelegate {
@@ -531,20 +531,21 @@ public abstract interface class com/facebook/react/bridge/ActivityEventListener 
 	public fun onUserLeaveHint (Landroid/app/Activity;)V
 }
 
-public class com/facebook/react/bridge/Arguments {
-	public fun <init> ()V
-	public static fun createArray ()Lcom/facebook/react/bridge/WritableArray;
-	public static fun createMap ()Lcom/facebook/react/bridge/WritableMap;
-	public static fun fromArray (Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableArray;
-	public static fun fromBundle (Landroid/os/Bundle;)Lcom/facebook/react/bridge/WritableMap;
-	public static fun fromJavaArgs ([Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableNativeArray;
-	public static fun fromList (Ljava/util/List;)Lcom/facebook/react/bridge/WritableArray;
-	public static fun makeNativeArray (Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableNativeArray;
-	public static fun makeNativeArray (Ljava/util/List;)Lcom/facebook/react/bridge/WritableNativeArray;
-	public static fun makeNativeMap (Landroid/os/Bundle;)Lcom/facebook/react/bridge/WritableNativeMap;
-	public static fun makeNativeMap (Ljava/util/Map;)Lcom/facebook/react/bridge/WritableNativeMap;
-	public static fun toBundle (Lcom/facebook/react/bridge/ReadableMap;)Landroid/os/Bundle;
-	public static fun toList (Lcom/facebook/react/bridge/ReadableArray;)Ljava/util/ArrayList;
+public final class com/facebook/react/bridge/Arguments {
+	public static final field INSTANCE Lcom/facebook/react/bridge/Arguments;
+	public static final fun createArray ()Lcom/facebook/react/bridge/WritableArray;
+	public static final fun createMap ()Lcom/facebook/react/bridge/WritableMap;
+	public static final fun fromArray (Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableArray;
+	public static final fun fromBundle (Landroid/os/Bundle;)Lcom/facebook/react/bridge/WritableMap;
+	public static final fun fromJavaArgs (Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableNativeArray;
+	public static final fun fromJavaArgs ([Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableNativeArray;
+	public static final fun fromList (Ljava/util/List;)Lcom/facebook/react/bridge/WritableArray;
+	public static final fun makeNativeArray (Ljava/lang/Object;)Lcom/facebook/react/bridge/WritableNativeArray;
+	public static final fun makeNativeArray (Ljava/util/List;)Lcom/facebook/react/bridge/WritableNativeArray;
+	public static final fun makeNativeMap (Landroid/os/Bundle;)Lcom/facebook/react/bridge/WritableNativeMap;
+	public static final fun makeNativeMap (Ljava/util/Map;)Lcom/facebook/react/bridge/WritableNativeMap;
+	public static final fun toBundle (Lcom/facebook/react/bridge/ReadableMap;)Landroid/os/Bundle;
+	public static final fun toList (Lcom/facebook/react/bridge/ReadableArray;)Ljava/util/ArrayList;
 }
 
 public final class com/facebook/react/bridge/AssertionException : java/lang/RuntimeException {
@@ -813,14 +814,6 @@ public abstract interface class com/facebook/react/bridge/JSExceptionHandler {
 
 public abstract interface class com/facebook/react/bridge/JSInstance {
 	public abstract fun invokeCallback (ILcom/facebook/react/bridge/NativeArrayInterface;)V
-}
-
-public final class com/facebook/react/bridge/JSONArguments {
-	public static final field INSTANCE Lcom/facebook/react/bridge/JSONArguments;
-	public static final fun fromJSONArray (Lorg/json/JSONArray;)Lcom/facebook/react/bridge/ReadableArray;
-	public static final fun fromJSONArrayString (Ljava/lang/String;)Lcom/facebook/react/bridge/ReadableArray;
-	public static final fun fromJSONObject (Lorg/json/JSONObject;)Lcom/facebook/react/bridge/ReadableMap;
-	public static final fun fromJSONObjectString (Ljava/lang/String;)Lcom/facebook/react/bridge/ReadableMap;
 }
 
 public final class com/facebook/react/bridge/JavaOnlyArray : com/facebook/react/bridge/ReadableArray, com/facebook/react/bridge/WritableArray {
@@ -3286,7 +3279,6 @@ public abstract class com/facebook/react/uimanager/BaseViewManager : com/faceboo
 	public fun setAccessibilityLabel (Landroid/view/View;Ljava/lang/String;)V
 	public fun setAccessibilityLabelledBy (Landroid/view/View;Lcom/facebook/react/bridge/Dynamic;)V
 	public fun setAccessibilityLiveRegion (Landroid/view/View;Ljava/lang/String;)V
-	public fun setAccessibilityOrder (Landroid/view/View;Lcom/facebook/react/bridge/ReadableArray;)V
 	public fun setAccessibilityRole (Landroid/view/View;Ljava/lang/String;)V
 	public fun setAccessibilityValue (Landroid/view/View;Lcom/facebook/react/bridge/ReadableMap;)V
 	public fun setBackgroundColor (Landroid/view/View;I)V
@@ -3775,6 +3767,14 @@ public final class com/facebook/react/uimanager/ReactAccessibilityDelegate$Role 
 	public static fun fromValue (Ljava/lang/String;)Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$Role;
 	public static fun valueOf (Ljava/lang/String;)Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$Role;
 	public static fun values ()[Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$Role;
+}
+
+public final class com/facebook/react/uimanager/ReactAxOrderHelper {
+	public static final field INSTANCE Lcom/facebook/react/uimanager/ReactAxOrderHelper;
+	public final fun buildAxOrderList (Landroid/view/View;Landroid/view/View;Ljava/util/List;[Landroid/view/View;)V
+	public static final fun cleanUpAxOrder (Landroid/view/View;)V
+	public final fun disableFocusForSubtree (Landroid/view/View;Ljava/util/List;)V
+	public static final fun restoreFocusability (Landroid/view/View;)V
 }
 
 public abstract interface class com/facebook/react/uimanager/ReactClippingProhibitedView {
@@ -4401,10 +4401,6 @@ public class com/facebook/react/uimanager/UIManagerModule : com/facebook/react/b
 
 public abstract interface class com/facebook/react/uimanager/UIManagerModule$CustomEventNamesResolver {
 	public abstract fun resolveCustomEventName (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public abstract interface class com/facebook/react/uimanager/UIManagerModuleListener {
-	public abstract fun willDispatchViewUpdates (Lcom/facebook/react/uimanager/UIManagerModule;)V
 }
 
 public class com/facebook/react/uimanager/UIViewOperationQueue {
@@ -6564,6 +6560,8 @@ public final class com/facebook/react/views/view/ReactDrawableHelper {
 
 public class com/facebook/react/views/view/ReactViewGroup : android/view/ViewGroup, com/facebook/react/touch/ReactHitSlopView, com/facebook/react/touch/ReactInterceptingViewGroup, com/facebook/react/uimanager/ReactClippingViewGroup, com/facebook/react/uimanager/ReactOverflowViewWithInset, com/facebook/react/uimanager/ReactPointerEventsView, com/facebook/react/uimanager/ReactZIndexedViewGroup {
 	public fun <init> (Landroid/content/Context;)V
+	public fun addChildrenForAccessibility (Ljava/util/ArrayList;)V
+	public final fun cleanUpAxOrderListener ()V
 	protected fun dispatchDraw (Landroid/graphics/Canvas;)V
 	public fun dispatchGenericMotionEvent (Landroid/view/MotionEvent;)Z
 	public fun dispatchProvideStructure (Landroid/view/ViewStructure;)V
@@ -6571,6 +6569,7 @@ public class com/facebook/react/views/view/ReactViewGroup : android/view/ViewGro
 	public fun draw (Landroid/graphics/Canvas;)V
 	protected fun drawChild (Landroid/graphics/Canvas;Landroid/view/View;J)Z
 	public fun endViewTransition (Landroid/view/View;)V
+	public final fun getAxOrderList ()Ljava/util/List;
 	protected fun getChildDrawingOrder (II)I
 	public fun getClippingRect (Landroid/graphics/Rect;)V
 	public fun getHitSlopRect ()Landroid/graphics/Rect;
@@ -6590,6 +6589,7 @@ public class com/facebook/react/views/view/ReactViewGroup : android/view/ViewGro
 	public fun onViewAdded (Landroid/view/View;)V
 	public fun onViewRemoved (Landroid/view/View;)V
 	public fun requestLayout ()V
+	public final fun setAxOrderList (Ljava/util/List;)V
 	public final fun setBackfaceVisibility (Ljava/lang/String;)V
 	public final fun setBackfaceVisibilityDependantOpacity ()V
 	public fun setBackgroundColor (I)V
@@ -6626,12 +6626,15 @@ public class com/facebook/react/views/view/ReactViewManager : com/facebook/react
 	public fun nextFocusLeft (Lcom/facebook/react/views/view/ReactViewGroup;I)V
 	public fun nextFocusRight (Lcom/facebook/react/views/view/ReactViewGroup;I)V
 	public fun nextFocusUp (Lcom/facebook/react/views/view/ReactViewGroup;I)V
+	public synthetic fun onDropViewInstance (Landroid/view/View;)V
+	public fun onDropViewInstance (Lcom/facebook/react/views/view/ReactViewGroup;)V
 	public synthetic fun prepareToRecycleView (Lcom/facebook/react/uimanager/ThemedReactContext;Landroid/view/View;)Landroid/view/View;
 	protected fun prepareToRecycleView (Lcom/facebook/react/uimanager/ThemedReactContext;Lcom/facebook/react/views/view/ReactViewGroup;)Lcom/facebook/react/views/view/ReactViewGroup;
 	public synthetic fun receiveCommand (Landroid/view/View;ILcom/facebook/react/bridge/ReadableArray;)V
 	public synthetic fun receiveCommand (Landroid/view/View;Ljava/lang/String;Lcom/facebook/react/bridge/ReadableArray;)V
 	public fun receiveCommand (Lcom/facebook/react/views/view/ReactViewGroup;ILcom/facebook/react/bridge/ReadableArray;)V
 	public fun receiveCommand (Lcom/facebook/react/views/view/ReactViewGroup;Ljava/lang/String;Lcom/facebook/react/bridge/ReadableArray;)V
+	public fun setAccessibilityOrder (Lcom/facebook/react/views/view/ReactViewGroup;Lcom/facebook/react/bridge/ReadableArray;)V
 	public fun setAccessible (Lcom/facebook/react/views/view/ReactViewGroup;Z)V
 	public fun setBackfaceVisibility (Lcom/facebook/react/views/view/ReactViewGroup;Ljava/lang/String;)V
 	public fun setBackgroundImage (Lcom/facebook/react/views/view/ReactViewGroup;Lcom/facebook/react/bridge/ReadableArray;)V

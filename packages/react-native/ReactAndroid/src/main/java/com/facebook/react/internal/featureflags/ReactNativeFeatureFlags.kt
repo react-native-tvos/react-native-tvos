@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a90efac589511beb130c499e51150de8>>
+ * @generated SignedSource<<23d0b6132cde79fd2e82e329aec3ba97>>
  */
 
 /**
@@ -37,6 +37,12 @@ public object ReactNativeFeatureFlags {
   public fun commonTestFlag(): Boolean = accessor.commonTestFlag()
 
   /**
+   * Enable emitting of InteractionEntry live metrics to the debugger. Requires `enableBridgelessArchitecture`.
+   */
+  @JvmStatic
+  public fun cdpInteractionMetricsEnabled(): Boolean = accessor.cdpInteractionMetricsEnabled()
+
+  /**
    * Use a C++ implementation of Native Animated instead of the platform implementation.
    */
   @JvmStatic
@@ -47,6 +53,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun cxxNativeAnimatedRemoveJsSync(): Boolean = accessor.cxxNativeAnimatedRemoveJsSync()
+
+  /**
+   * Prevents use of Fabric commit in C++ Animated implementation
+   */
+  @JvmStatic
+  public fun disableFabricCommitInCXXAnimated(): Boolean = accessor.disableFabricCommitInCXXAnimated()
 
   /**
    * Prevent FabricMountingManager from reordering mountItems, which may lead to invalid state on the UI thread
@@ -161,6 +173,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableIOSViewClipToPaddingBox(): Boolean = accessor.enableIOSViewClipToPaddingBox()
+
+  /**
+   * When enabled, Android will build and initiate image prefetch requests on ImageShadowNode::layout
+   */
+  @JvmStatic
+  public fun enableImagePrefetchingAndroid(): Boolean = accessor.enableImagePrefetchingAndroid()
 
   /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
@@ -301,6 +319,12 @@ public object ReactNativeFeatureFlags {
   public fun hideOffscreenVirtualViewsOnIOS(): Boolean = accessor.hideOffscreenVirtualViewsOnIOS()
 
   /**
+   * Enable the V2 in-app Performance Monitor. This flag is global and should not be changed across React Host lifetimes.
+   */
+  @JvmStatic
+  public fun perfMonitorV2Enabled(): Boolean = accessor.perfMonitorV2Enabled()
+
+  /**
    * Number cached PreparedLayouts in TextLayoutManager cache
    */
   @JvmStatic
@@ -310,13 +334,19 @@ public object ReactNativeFeatureFlags {
    * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
    */
   @JvmStatic
-  public fun preventShadowTreeCommitExhaustionWithLocking(): Boolean = accessor.preventShadowTreeCommitExhaustionWithLocking()
+  public fun preventShadowTreeCommitExhaustion(): Boolean = accessor.preventShadowTreeCommitExhaustion()
 
   /**
    * Releases the cached image data when it is consumed by the observers.
    */
   @JvmStatic
   public fun releaseImageDataWhenConsumed(): Boolean = accessor.releaseImageDataWhenConsumed()
+
+  /**
+   * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
+   */
+  @JvmStatic
+  public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = accessor.shouldPressibilityUseW3CPointerEventsForHover()
 
   /**
    * Skip activity identity assertion in ReactHostImpl::onHostPause()

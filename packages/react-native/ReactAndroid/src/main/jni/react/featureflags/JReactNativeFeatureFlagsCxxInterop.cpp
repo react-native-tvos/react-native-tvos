@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f310a5dc27fd655eab4445cb25d4c85c>>
+ * @generated SignedSource<<0d4e71457a51a22e6c8bb7315371bca8>>
  */
 
 /**
@@ -45,6 +45,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool cdpInteractionMetricsEnabled() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("cdpInteractionMetricsEnabled");
+    return method(javaProvider_);
+  }
+
   bool cxxNativeAnimatedEnabled() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("cxxNativeAnimatedEnabled");
@@ -54,6 +60,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool cxxNativeAnimatedRemoveJsSync() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("cxxNativeAnimatedRemoveJsSync");
+    return method(javaProvider_);
+  }
+
+  bool disableFabricCommitInCXXAnimated() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableFabricCommitInCXXAnimated");
     return method(javaProvider_);
   }
 
@@ -168,6 +180,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableIOSViewClipToPaddingBox() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableIOSViewClipToPaddingBox");
+    return method(javaProvider_);
+  }
+
+  bool enableImagePrefetchingAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImagePrefetchingAndroid");
     return method(javaProvider_);
   }
 
@@ -309,21 +327,33 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool perfMonitorV2Enabled() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("perfMonitorV2Enabled");
+    return method(javaProvider_);
+  }
+
   double preparedTextCacheSize() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jdouble()>("preparedTextCacheSize");
     return method(javaProvider_);
   }
 
-  bool preventShadowTreeCommitExhaustionWithLocking() override {
+  bool preventShadowTreeCommitExhaustion() override {
     static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("preventShadowTreeCommitExhaustionWithLocking");
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("preventShadowTreeCommitExhaustion");
     return method(javaProvider_);
   }
 
   bool releaseImageDataWhenConsumed() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("releaseImageDataWhenConsumed");
+    return method(javaProvider_);
+  }
+
+  bool shouldPressibilityUseW3CPointerEventsForHover() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldPressibilityUseW3CPointerEventsForHover");
     return method(javaProvider_);
   }
 
@@ -420,6 +450,11 @@ bool JReactNativeFeatureFlagsCxxInterop::commonTestFlag(
   return ReactNativeFeatureFlags::commonTestFlag();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::cdpInteractionMetricsEnabled(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::cdpInteractionMetricsEnabled();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedEnabled(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::cxxNativeAnimatedEnabled();
@@ -428,6 +463,11 @@ bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedEnabled(
 bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid(
@@ -523,6 +563,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableIOSTextBaselineOffsetPerLine(
 bool JReactNativeFeatureFlagsCxxInterop::enableIOSViewClipToPaddingBox(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableImagePrefetchingAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges(
@@ -640,19 +685,29 @@ bool JReactNativeFeatureFlagsCxxInterop::hideOffscreenVirtualViewsOnIOS(
   return ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::perfMonitorV2Enabled(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::perfMonitorV2Enabled();
+}
+
 double JReactNativeFeatureFlagsCxxInterop::preparedTextCacheSize(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::preparedTextCacheSize();
 }
 
-bool JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustionWithLocking(
+bool JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustionWithLocking();
+  return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::releaseImageDataWhenConsumed(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::releaseImageDataWhenConsumed();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause(
@@ -760,11 +815,17 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "commonTestFlag",
         JReactNativeFeatureFlagsCxxInterop::commonTestFlag),
       makeNativeMethod(
+        "cdpInteractionMetricsEnabled",
+        JReactNativeFeatureFlagsCxxInterop::cdpInteractionMetricsEnabled),
+      makeNativeMethod(
         "cxxNativeAnimatedEnabled",
         JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedEnabled),
       makeNativeMethod(
         "cxxNativeAnimatedRemoveJsSync",
         JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync),
+      makeNativeMethod(
+        "disableFabricCommitInCXXAnimated",
+        JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated),
       makeNativeMethod(
         "disableMountItemReorderingAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid),
@@ -822,6 +883,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableIOSViewClipToPaddingBox",
         JReactNativeFeatureFlagsCxxInterop::enableIOSViewClipToPaddingBox),
+      makeNativeMethod(
+        "enableImagePrefetchingAndroid",
+        JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingAndroid),
       makeNativeMethod(
         "enableImmediateUpdateModeForContentOffsetChanges",
         JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges),
@@ -892,14 +956,20 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "hideOffscreenVirtualViewsOnIOS",
         JReactNativeFeatureFlagsCxxInterop::hideOffscreenVirtualViewsOnIOS),
       makeNativeMethod(
+        "perfMonitorV2Enabled",
+        JReactNativeFeatureFlagsCxxInterop::perfMonitorV2Enabled),
+      makeNativeMethod(
         "preparedTextCacheSize",
         JReactNativeFeatureFlagsCxxInterop::preparedTextCacheSize),
       makeNativeMethod(
-        "preventShadowTreeCommitExhaustionWithLocking",
-        JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustionWithLocking),
+        "preventShadowTreeCommitExhaustion",
+        JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion),
       makeNativeMethod(
         "releaseImageDataWhenConsumed",
         JReactNativeFeatureFlagsCxxInterop::releaseImageDataWhenConsumed),
+      makeNativeMethod(
+        "shouldPressibilityUseW3CPointerEventsForHover",
+        JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover),
       makeNativeMethod(
         "skipActivityIdentityAssertionOnHostPause",
         JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause),

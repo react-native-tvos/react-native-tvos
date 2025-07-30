@@ -10,6 +10,7 @@
 
 import type {RNTesterModule} from '../../types/RNTesterTypes';
 
+import * as PressableExampleFbInternal from './PressableExampleFbInternal';
 import * as React from 'react';
 import {
   Alert,
@@ -21,7 +22,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import ReactNativeFeatureFlags from 'react-native/Libraries/ReactNative/ReactNativeFeatureFlags';
 
 const {useEffect, useRef, useState} = React;
 
@@ -654,16 +654,8 @@ const examples = [
       return <PressableAriaLabel />;
     },
   },
+  ...PressableExampleFbInternal.examples,
 ];
-
-if (ReactNativeFeatureFlags.shouldPressibilityUseW3CPointerEventsForHover()) {
-  examples.push({
-    title: 'Change style based on Hover',
-    render(): React.Node {
-      return <PressableHoverStyle />;
-    },
-  });
-}
 
 module.exports = ({
   title: 'Pressable',

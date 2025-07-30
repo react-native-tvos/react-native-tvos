@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d7534fe6e3b398e56c179da8233e3b0a>>
+ * @generated SignedSource<<7ca0c460a5b96f0cb8555054d24c8c2c>>
  */
 
 /**
@@ -31,11 +31,19 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool cdpInteractionMetricsEnabled() override {
+    return false;
+  }
+
   bool cxxNativeAnimatedEnabled() override {
     return false;
   }
 
   bool cxxNativeAnimatedRemoveJsSync() override {
+    return false;
+  }
+
+  bool disableFabricCommitInCXXAnimated() override {
     return false;
   }
 
@@ -115,6 +123,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableImagePrefetchingAndroid() override {
+    return false;
+  }
+
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     return false;
   }
@@ -184,7 +196,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableVirtualViewRenderState() override {
-    return false;
+    return true;
   }
 
   bool enableVirtualViewWindowFocusDetection() override {
@@ -207,15 +219,23 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool perfMonitorV2Enabled() override {
+    return false;
+  }
+
   double preparedTextCacheSize() override {
     return 200.0;
   }
 
-  bool preventShadowTreeCommitExhaustionWithLocking() override {
+  bool preventShadowTreeCommitExhaustion() override {
     return false;
   }
 
   bool releaseImageDataWhenConsumed() override {
+    return false;
+  }
+
+  bool shouldPressibilityUseW3CPointerEventsForHover() override {
     return false;
   }
 

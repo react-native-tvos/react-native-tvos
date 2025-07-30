@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c584290ce61ee78bdf843c19dd40c40d>>
+ * @generated SignedSource<<2baa48305074e8dce143fe6327ef719e>>
  */
 
 /**
@@ -45,6 +45,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool commonTestFlag();
 
   /**
+   * Enable emitting of InteractionEntry live metrics to the debugger. Requires `enableBridgelessArchitecture`.
+   */
+  RN_EXPORT static bool cdpInteractionMetricsEnabled();
+
+  /**
    * Use a C++ implementation of Native Animated instead of the platform implementation.
    */
   RN_EXPORT static bool cxxNativeAnimatedEnabled();
@@ -53,6 +58,11 @@ class ReactNativeFeatureFlags {
    * Removes JS sync at end of native animation
    */
   RN_EXPORT static bool cxxNativeAnimatedRemoveJsSync();
+
+  /**
+   * Prevents use of Fabric commit in C++ Animated implementation
+   */
+  RN_EXPORT static bool disableFabricCommitInCXXAnimated();
 
   /**
    * Prevent FabricMountingManager from reordering mountItems, which may lead to invalid state on the UI thread
@@ -148,6 +158,11 @@ class ReactNativeFeatureFlags {
    * iOS Views will clip to their padding box vs border box
    */
   RN_EXPORT static bool enableIOSViewClipToPaddingBox();
+
+  /**
+   * When enabled, Android will build and initiate image prefetch requests on ImageShadowNode::layout
+   */
+  RN_EXPORT static bool enableImagePrefetchingAndroid();
 
   /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
@@ -265,6 +280,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool hideOffscreenVirtualViewsOnIOS();
 
   /**
+   * Enable the V2 in-app Performance Monitor. This flag is global and should not be changed across React Host lifetimes.
+   */
+  RN_EXPORT static bool perfMonitorV2Enabled();
+
+  /**
    * Number cached PreparedLayouts in TextLayoutManager cache
    */
   RN_EXPORT static double preparedTextCacheSize();
@@ -272,12 +292,17 @@ class ReactNativeFeatureFlags {
   /**
    * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
    */
-  RN_EXPORT static bool preventShadowTreeCommitExhaustionWithLocking();
+  RN_EXPORT static bool preventShadowTreeCommitExhaustion();
 
   /**
    * Releases the cached image data when it is consumed by the observers.
    */
   RN_EXPORT static bool releaseImageDataWhenConsumed();
+
+  /**
+   * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
+   */
+  RN_EXPORT static bool shouldPressibilityUseW3CPointerEventsForHover();
 
   /**
    * Skip activity identity assertion in ReactHostImpl::onHostPause()

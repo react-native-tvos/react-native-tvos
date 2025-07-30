@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<355265aa8f13e3f307d6e30db6b80d41>>
+ * @generated SignedSource<<029a1d8d265538d6d48a2531ca4ca9df>>
  */
 
 /**
@@ -30,12 +30,20 @@ bool ReactNativeFeatureFlags::commonTestFlag() {
   return getAccessor().commonTestFlag();
 }
 
+bool ReactNativeFeatureFlags::cdpInteractionMetricsEnabled() {
+  return getAccessor().cdpInteractionMetricsEnabled();
+}
+
 bool ReactNativeFeatureFlags::cxxNativeAnimatedEnabled() {
   return getAccessor().cxxNativeAnimatedEnabled();
 }
 
 bool ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() {
   return getAccessor().cxxNativeAnimatedRemoveJsSync();
+}
+
+bool ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated() {
+  return getAccessor().disableFabricCommitInCXXAnimated();
 }
 
 bool ReactNativeFeatureFlags::disableMountItemReorderingAndroid() {
@@ -112,6 +120,10 @@ bool ReactNativeFeatureFlags::enableIOSTextBaselineOffsetPerLine() {
 
 bool ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox() {
   return getAccessor().enableIOSViewClipToPaddingBox();
+}
+
+bool ReactNativeFeatureFlags::enableImagePrefetchingAndroid() {
+  return getAccessor().enableImagePrefetchingAndroid();
 }
 
 bool ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges() {
@@ -206,16 +218,24 @@ bool ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS() {
   return getAccessor().hideOffscreenVirtualViewsOnIOS();
 }
 
+bool ReactNativeFeatureFlags::perfMonitorV2Enabled() {
+  return getAccessor().perfMonitorV2Enabled();
+}
+
 double ReactNativeFeatureFlags::preparedTextCacheSize() {
   return getAccessor().preparedTextCacheSize();
 }
 
-bool ReactNativeFeatureFlags::preventShadowTreeCommitExhaustionWithLocking() {
-  return getAccessor().preventShadowTreeCommitExhaustionWithLocking();
+bool ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion() {
+  return getAccessor().preventShadowTreeCommitExhaustion();
 }
 
 bool ReactNativeFeatureFlags::releaseImageDataWhenConsumed() {
   return getAccessor().releaseImageDataWhenConsumed();
+}
+
+bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {
+  return getAccessor().shouldPressibilityUseW3CPointerEventsForHover();
 }
 
 bool ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause() {

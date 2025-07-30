@@ -29,6 +29,7 @@ import android.view.ViewStructure
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.ViewCompat
 import androidx.core.view.isNotEmpty
+import android.view.accessibility.AccessibilityManager
 import com.facebook.common.logging.FLog
 import com.facebook.react.R
 import com.facebook.react.bridge.ReactContext
@@ -58,6 +59,7 @@ import com.facebook.react.uimanager.PointerEvents
 import com.facebook.react.uimanager.PointerEvents.Companion.canBeTouchTarget
 import com.facebook.react.uimanager.PointerEvents.Companion.canChildrenBeTouchTarget
 import com.facebook.react.uimanager.ReactAccessibilityDelegate
+import com.facebook.react.uimanager.ReactAxOrderHelper
 import com.facebook.react.uimanager.ReactClippingProhibitedView
 import com.facebook.react.uimanager.ReactClippingViewGroup
 import com.facebook.react.uimanager.ReactClippingViewGroupHelper.calculateClippingRect
@@ -79,6 +81,7 @@ import com.facebook.react.uimanager.style.LogicalEdge
 import com.facebook.react.uimanager.style.Overflow
 import com.facebook.react.views.view.CanvasUtil.enableZ
 import java.lang.ref.WeakReference
+import java.util.ArrayList
 import kotlin.concurrent.Volatile
 import kotlin.math.max
 
@@ -167,12 +170,17 @@ public open class ReactViewGroup public constructor(context: Context?) :
   public override var hitSlopRect: Rect? = null
   public override var pointerEvents: PointerEvents = PointerEvents.AUTO
 
+  public var axOrderList: MutableList<String>? = null
+
   private var childrenLayoutChangeListener: ChildrenLayoutChangeListener? = null
   private var onInterceptTouchEventListener: OnInterceptTouchEventListener? = null
   private var needsOffscreenAlphaCompositing = false
   private var backfaceOpacity = 0f
   private var backfaceVisible = false
   private var childrenRemovedWhileTransitioning: MutableSet<Int>? = null
+  private var accessibilityStateChangeListener:
+      AccessibilityManager.AccessibilityStateChangeListener? =
+      null
 
   init {
     initView()
@@ -1485,6 +1493,78 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
   public fun setTrapFocusRight(enabled: Boolean) {
     this.trapFocusRight = enabled
+  }
+
+  override fun addChildrenForAccessibility(outChildren: ArrayList<View>) {
+    val axOrderParent = getTag(R.id.accessibility_order_parent)
+    var axOrderParentOrderList: MutableList<String>? = null
+    if (axOrderParent is ReactViewGroup) {
+      axOrderParentOrderList = (axOrderParent as ReactViewGroup?)?.axOrderList
+    }
+
+    val axOrder: MutableList<*>? = axOrderList
+    if (axOrder != null) {
+
+      val am: AccessibilityManager? =
+          this.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+      if (accessibilityStateChangeListener == null && am != null) {
+        val newAccessibilityStateChangeListener =
+            AccessibilityManager.AccessibilityStateChangeListener { enabled ->
+              if (!enabled) {
+                for (i in 0..<childCount) {
+                  ReactAxOrderHelper.restoreFocusability(getChildAt(i))
+                }
+              }
+            }
+
+        am.addAccessibilityStateChangeListener(newAccessibilityStateChangeListener)
+        accessibilityStateChangeListener = newAccessibilityStateChangeListener
+      }
+
+      val result = arrayOfNulls<View?>(axOrder.size)
+
+      for (i in 0..<childCount) {
+        ReactAxOrderHelper.buildAxOrderList(getChildAt(i), this, axOrder, result)
+      }
+
+      for (i in result.indices) {
+        val view = result[i]
+        if (view != null) {
+          if (view.isFocusable) {
+            outChildren.add(view)
+          } else {
+            view.addChildrenForAccessibility(outChildren)
+          }
+        }
+      }
+    } else if (axOrderParentOrderList != null) {
+      // view is a container so add its children normally
+      if (!isFocusable) {
+        super.addChildrenForAccessibility(outChildren)
+        return
+
+        // If this view can coopt, turn the focusability off its children but add them to the tree
+      } else if (isFocusable && (contentDescription == null || contentDescription == "")) {
+        super.addChildrenForAccessibility(outChildren)
+        for (i in 0..<childCount) {
+          ReactAxOrderHelper.disableFocusForSubtree(getChildAt(i), axOrderParentOrderList)
+        }
+        // if this view is focusable and has a contentDescription then we don't care about its
+        // descendants for accessibility
+      } else if (isFocusable && !(contentDescription == null || contentDescription == "")) {
+        return
+      }
+    } else {
+      super.addChildrenForAccessibility(outChildren)
+    }
+  }
+
+  public fun cleanUpAxOrderListener() {
+    val am = this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+    if (am != null) {
+      accessibilityStateChangeListener?.let { am.removeAccessibilityStateChangeListener(it) }
+    }
+    accessibilityStateChangeListener = null
   }
 
   private companion object {

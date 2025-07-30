@@ -5,6 +5,11 @@
 
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE on)
+if(UNIX AND NOT APPLE)
+  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+  set(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} -latomic")
+  set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -latomic")
+endif()
 
 project(fantom_tester)
 
@@ -68,6 +73,7 @@ add_react_common_subdir(react/nativemodule/intersectionobserver)
 add_react_common_subdir(react/nativemodule/microtasks)
 add_react_common_subdir(react/nativemodule/mutationobserver)
 add_react_common_subdir(react/nativemodule/webperformance)
+add_react_common_subdir(react/performance/cdpmetrics)
 add_react_common_subdir(react/performance/timeline)
 add_react_common_subdir(react/renderer/attributedstring)
 add_react_common_subdir(react/renderer/bridging)
@@ -182,6 +188,7 @@ target_link_libraries(fantom_tester
     react_nativemodule_microtasks
     react_nativemodule_mutationobserver
     react_nativemodule_webperformance
+    react_performance_cdpmetrics
     react_performance_timeline
     react_renderer_attributedstring
     react_renderer_componentregistry
