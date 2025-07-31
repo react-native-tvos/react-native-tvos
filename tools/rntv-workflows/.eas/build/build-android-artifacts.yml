@@ -101,6 +101,6 @@ build:
         inputs:
           type: build-artifact
           path: |
-            react-android-artifacts-*.tgz
+            react-android-hermes-*.tgz
             rntester-*.tgz
             react-native-*.tgz
