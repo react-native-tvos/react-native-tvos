@@ -1396,7 +1396,7 @@ public class ReactViewGroup extends ViewGroup
       }
 
       // Try moving the focus to the first focusable element otherwise.
-      return moveFocusToFirstFocusable(this)
+      return moveFocusToFirstFocusable(this);
     }
 
     return super.requestFocus(direction, previouslyFocusedRect);
