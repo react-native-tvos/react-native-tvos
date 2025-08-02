@@ -1209,22 +1209,6 @@ public class ReactViewGroup extends ViewGroup
     return null;
   }
 
-  private static boolean requestFocusViewOrAncestor(View destination) {
-    View v = destination;
-    while (v != null) {
-      if (v.requestFocus()) {
-        return true;
-      }
-      ViewParent parent = v.getParent();
-      if (parent instanceof View) {
-        v = (View) parent;
-      } else {
-        v = null;
-      }
-    }
-    return false;
-  }
-
   private boolean isFocusDestinationsSet() {
     return focusDestinations.length > 0;
   }
@@ -1381,7 +1365,13 @@ public class ReactViewGroup extends ViewGroup
     if (isFocusDestinationsSet()) {
       View destination = findDestinationView();
 
-      if (destination != null && requestFocusViewOrAncestor(destination)) {
+      // Destination is set but there's no such element on the tree
+      // Just skip it to prevent cyclic issues.
+      if (destination == null) {
+       return false;
+      }
+
+      if (destination != null && destination.requestFocus()) {
         return true;
       }
     }
@@ -1406,9 +1396,7 @@ public class ReactViewGroup extends ViewGroup
       }
 
       // Try moving the focus to the first focusable element otherwise.
-      if (moveFocusToFirstFocusable(this)) {
-        return true;
-      }
+      return moveFocusToFirstFocusable(this);
     }
 
     return super.requestFocus(direction, previouslyFocusedRect);
