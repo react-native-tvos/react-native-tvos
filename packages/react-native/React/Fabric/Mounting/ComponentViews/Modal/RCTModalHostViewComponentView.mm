@@ -143,12 +143,16 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 
 #if TARGET_OS_TV
 - (void)menuButtonPressed {
-  UIView *snapshot = _modalContentsSnapshot;
-  [self.viewController.view addSubview:snapshot];
+  _isPresented = NO;
+  // To animate dismissal of view controller, snapshot of
+  // view hierarchy needs to be added to the UIViewController.
+  UIView *snapshot = [self.viewController.view snapshotViewAfterScreenUpdates:NO];
+  if (_shouldPresent) {
+    [self.viewController.view addSubview:snapshot];
+  }
   [self dismissViewController:self.viewController
                      animated:_shouldAnimatePresentation
                    completion:^{
-                     [snapshot removeFromSuperview];
                      auto eventEmitter = [self modalEventEmitter];
                      if (eventEmitter) {
                        eventEmitter->onDismiss(ModalHostViewEventEmitter::OnDismiss{});
