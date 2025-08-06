@@ -422,6 +422,30 @@ public class ReactModalHostView(context: ThemedReactContext) :
     public fun onRequestClose(dialog: DialogInterface?)
   }
 
+  private companion object {
+    private const val TAG = "ReactModalHost"
+
+    // We store the status bar height to be able to properly position
+    // the modal on the first render.
+    private var statusBarHeight = 0
+
+    private fun initStatusBarHeight(reactContext: ReactContext) {
+      statusBarHeight = getStatusBarHeightPx(reactContext.currentActivity)
+    }
+
+    @JvmStatic
+    @DoNotStrip
+    private fun getScreenDisplayMetricsWithoutInsets(): Long {
+      val displayMetrics = DisplayMetricsHolder.getScreenDisplayMetrics()
+      return encodeFloatsToLong(
+          displayMetrics.widthPixels.toFloat().pxToDp(),
+          (displayMetrics.heightPixels - statusBarHeight).toFloat().pxToDp())
+    }
+
+    private fun encodeFloatsToLong(width: Float, height: Float): Long =
+        (width.toRawBits().toLong()) shl 32 or (height.toRawBits().toLong())
+  }
+
   /**
    * DialogRootViewGroup is the ViewGroup which contains all the children of a Modal. It gets all
    * child information forwarded from [ReactModalHostView] and uses that to create children. It is
