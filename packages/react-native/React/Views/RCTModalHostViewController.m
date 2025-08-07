@@ -7,6 +7,8 @@
 
 #import "RCTModalHostViewController.h"
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import "RCTLog.h"
 #import "RCTModalHostView.h"
 
@@ -101,3 +103,5 @@
 #endif // TARGET_OS_TV
 
 @end
+
+#endif // RCT_FIT_RM_OLD_COMPONENT

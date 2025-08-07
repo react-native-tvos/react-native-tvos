@@ -9,13 +9,15 @@
 
 #include <fbjni/fbjni.h>
 
-namespace facebook::react {
+namespace facebook::react::jsinspector_modern {
 
-class InspectorNetworkReporter
-    : public jni::HybridClass<InspectorNetworkReporter> {
+class JInspectorNetworkReporter
+    : public jni::HybridClass<JInspectorNetworkReporter> {
  public:
   static constexpr auto kJavaDescriptor =
       "Lcom/facebook/react/modules/network/InspectorNetworkReporter;";
+
+  static jboolean isDebuggingEnabled(jni::alias_ref<jclass> /*unused*/);
 
   static void reportRequestStart(
       jni::alias_ref<jclass> /*unused*/,
@@ -39,7 +41,7 @@ class InspectorNetworkReporter
       jni::alias_ref<jni::JMap<jstring, jstring>> responseHeaders,
       jlong encodedDataLength);
 
-  static void reportDataReceived(
+  static void reportDataReceivedImpl(
       jni::alias_ref<jclass> /*unused*/,
       jint requestId,
       jint dataLength);
@@ -49,13 +51,18 @@ class InspectorNetworkReporter
       jint requestId,
       jlong encodedDataLength);
 
-  static void maybeStoreResponseBody(
+  static void reportRequestFailed(
+      jni::alias_ref<jclass> /*unused*/,
+      jint requestId,
+      jboolean cancelled);
+
+  static void maybeStoreResponseBodyImpl(
       jni::alias_ref<jclass> /*unused*/,
       jint requestId,
       jni::alias_ref<jstring> body,
       jboolean base64Encoded);
 
-  static void maybeStoreResponseBodyIncremental(
+  static void maybeStoreResponseBodyIncrementalImpl(
       jni::alias_ref<jclass> /*unused*/,
       jint requestId,
       jni::alias_ref<jstring> data);
@@ -63,7 +70,7 @@ class InspectorNetworkReporter
   static void registerNatives();
 
  private:
-  InspectorNetworkReporter() = delete;
+  JInspectorNetworkReporter() = delete;
 };
 
-} // namespace facebook::react
+} // namespace facebook::react::jsinspector_modern

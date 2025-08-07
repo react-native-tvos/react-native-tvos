@@ -77,12 +77,24 @@ std::shared_ptr<RuntimeAgent> RuntimeTarget::createAgent(
   return runtimeAgent;
 }
 
+std::shared_ptr<RuntimeTracingAgent> RuntimeTarget::createTracingAgent(
+    tracing::TraceRecordingState& state) {
+  auto agent = std::make_shared<RuntimeTracingAgent>(state, controller_);
+  tracingAgent_ = agent;
+  return agent;
+}
+
 RuntimeTarget::~RuntimeTarget() {
   // Agents are owned by the session, not by RuntimeTarget, but
   // they hold a RuntimeTarget& that we must guarantee is valid.
   assert(
       agents_.empty() &&
       "RuntimeAgent objects must be destroyed before their RuntimeTarget. Did you call InstanceTarget::unregisterRuntime()?");
+
+  // Tracing Agents are owned by the HostTargetTraceRecording.
+  assert(
+      tracingAgent_.expired() &&
+      "RuntimeTracingAgent must be destroyed before their InstanceTarget. Did you call InstanceTarget::unregisterRuntime()?");
 }
 
 void RuntimeTarget::installBindingHandler(const std::string& bindingName) {
@@ -162,10 +174,6 @@ void RuntimeTargetController::notifyDebuggerSessionDestroyed() {
   target_.emitDebuggerSessionDestroyed();
 }
 
-void RuntimeTargetController::registerForTracing() {
-  target_.registerForTracing();
-}
-
 void RuntimeTargetController::enableSamplingProfiler() {
   target_.enableSamplingProfiler();
 }
@@ -177,12 +185,6 @@ void RuntimeTargetController::disableSamplingProfiler() {
 tracing::RuntimeSamplingProfile
 RuntimeTargetController::collectSamplingProfile() {
   return target_.collectSamplingProfile();
-}
-
-void RuntimeTarget::registerForTracing() {
-  jsExecutor_([](auto& /*runtime*/) {
-    tracing::PerformanceTracer::getInstance().reportJavaScriptThread();
-  });
 }
 
 void RuntimeTarget::enableSamplingProfiler() {

@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import "RCTModalHostView.h"
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 @interface RCTModalHostViewController : UIViewController
 
 @property (nonatomic, copy) void (^boundsDidChangeBlock)(CGRect newBounds);
@@ -19,3 +21,5 @@
 #endif
 
 @end
+
+#endif // RCT_FIT_RM_OLD_COMPONENT

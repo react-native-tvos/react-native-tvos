@@ -7,6 +7,7 @@
 
 #include "HostTarget.h"
 #include "HostAgent.h"
+#include "HostTargetTraceRecording.h"
 #include "InspectorInterfaces.h"
 #include "InspectorUtilities.h"
 #include "InstanceTarget.h"
@@ -145,11 +146,53 @@ class HostCommandSender {
   std::unique_ptr<ILocalConnection> connection_;
 };
 
+/**
+ * Enables the caller to install and subscribe to a named CDP runtime binding
+ * on the HostTarget via a callback. Note: Per CDP spec, this does not need to
+ * check if the `Runtime` domain is enabled.
+ */
+class HostRuntimeBinding {
+ public:
+  explicit HostRuntimeBinding(
+      HostTarget& target,
+      std::string name,
+      std::function<void(std::string)> callback)
+      : connection_(target.connect(std::make_unique<CallbackRemoteConnection>(
+            [callback = std::move(callback)](const std::string& message) {
+              auto parsedMessage = folly::parseJson(message);
+
+              // Ignore initial Runtime.addBinding response
+              if (parsedMessage["id"] == 0 &&
+                  parsedMessage["result"].isObject() &&
+                  parsedMessage["result"].empty()) {
+                return;
+              }
+
+              // Assert that we only intercept bindingCalled responses
+              assert(
+                  parsedMessage["method"].asString() ==
+                  "Runtime.bindingCalled");
+              callback(parsedMessage["params"]["payload"].asString());
+            }))) {
+    // Install runtime binding
+    connection_->sendMessage(cdp::jsonRequest(
+        0,
+        "Runtime.addBinding",
+        folly::dynamic::object("name", std::move(name))));
+  }
+
+ private:
+  std::unique_ptr<ILocalConnection> connection_;
+};
+
 std::shared_ptr<HostTarget> HostTarget::create(
     HostTargetDelegate& delegate,
     VoidExecutor executor) {
   std::shared_ptr<HostTarget> hostTarget{new HostTarget(delegate)};
   hostTarget->setExecutor(std::move(executor));
+  if (InspectorFlags::getInstance().getPerfMonitorV2Enabled()) {
+    hostTarget->installPerfMetricsBinding();
+  }
   return hostTarget;
 }
 
@@ -179,6 +222,8 @@ HostTarget::~HostTarget() {
   assert(
       sessions_.empty() &&
       "HostTargetSession objects must be destroyed before their HostTarget. Did you call getInspectorInstance().removePage()?");
+  // Trace Recording object (traceRecording_) doesn't create an actual session,
+  // so we don't need to reset it explicitly here.
 }
 
 HostTargetDelegate::~HostTargetDelegate() = default;
@@ -191,6 +236,13 @@ InstanceTarget& HostTarget::registerInstance(InstanceTargetDelegate& delegate) {
       [currentInstance = &*currentInstance_](HostTargetSession& session) {
         session.setCurrentInstance(currentInstance);
       });
+
+  if (traceRecording_) {
+    // Registers the Instance for tracing, if a Trace is currently being
+    // recorded.
+    traceRecording_->setTracedInstance(currentInstance_.get());
+  }
+
   return *currentInstance_;
 }
 
@@ -200,6 +252,13 @@ void HostTarget::unregisterInstance(InstanceTarget& instance) {
       "Invalid unregistration");
   sessions_.forEach(
       [](HostTargetSession& session) { session.setCurrentInstance(nullptr); });
+
+  if (traceRecording_) {
+    // Unregisters the Instance for tracing, if a Trace is currently being
+    // recorded.
+    traceRecording_->setTracedInstance(nullptr);
+  }
+
   currentInstance_.reset();
 }
 
@@ -210,6 +269,19 @@ void HostTarget::sendCommand(HostCommand command) {
     }
     self.commandSender_->sendCommand(command);
   });
+}
+
+void HostTarget::installPerfMetricsBinding() {
+  perfMetricsBinding_ = std::make_unique<HostRuntimeBinding>(
+      *this, // Used immediately
+      "__chromium_devtools_metrics_reporter",
+      [this](const std::string& message) {
+        auto payload = folly::parseJson(message);
+        HostTargetDelegate::PerfMonitorUpdateRequest request{
+            .interactionName = payload["eventName"].asString(),
+            .durationMs = static_cast<uint16_t>(payload["duration"].asInt())};
+        delegate_.unstable_onPerfMonitorUpdate(request);
+      });
 }
 
 HostTargetController::HostTargetController(HostTarget& target)

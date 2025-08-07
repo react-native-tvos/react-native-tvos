@@ -8,6 +8,8 @@
 
 #import "RCTSwitch.h"
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import "UIView+React.h"
 
 @implementation RCTSwitch
@@ -19,4 +21,6 @@
 }
 
 @end
-#endif
+
+#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // TARGET_OS_TV

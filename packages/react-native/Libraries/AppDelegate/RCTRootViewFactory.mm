@@ -73,9 +73,9 @@
 {
   if (self = [super init]) {
     _bundleURLBlock = bundleURLBlock;
-    _fabricEnabled = newArchEnabled;
-    _turboModuleEnabled = turboModuleEnabled;
-    _bridgelessEnabled = bridgelessEnabled;
+    _fabricEnabled = YES;
+    _turboModuleEnabled = YES;
+    _bridgelessEnabled = YES;
   }
   return self;
 }
@@ -135,17 +135,12 @@
 
 - (void)initializeReactHostWithLaunchOptions:(NSDictionary *)launchOptions
 {
-  if (_configuration.bridgelessEnabled) {
-    // Enable TurboModule interop by default in Bridgeless mode
-    RCTEnableTurboModuleInterop(YES);
-    RCTEnableTurboModuleInteropBridgeProxy(YES);
+  // Enable TurboModule interop by default in Bridgeless mode
+  RCTEnableTurboModuleInterop(YES);
+  RCTEnableTurboModuleInteropBridgeProxy(YES);
 
-    [self createReactHostIfNeeded:launchOptions];
-    return;
-  }
-
-  [self createBridgeIfNeeded:launchOptions];
-  [self createBridgeAdapterIfNeeded];
+  [self createReactHostIfNeeded:launchOptions];
+  return;
 }
 
 - (UIView *)viewWithModuleName:(NSString *)moduleName
@@ -154,31 +149,19 @@
 {
   [self initializeReactHostWithLaunchOptions:launchOptions];
 
-  if (_configuration.bridgelessEnabled) {
-    RCTFabricSurface *surface = [self.reactHost createSurfaceWithModuleName:moduleName initialProperties:initProps];
+  RCTFabricSurface *surface = [self.reactHost createSurfaceWithModuleName:moduleName
+                                                        initialProperties:initProps ? initProps : @{}];
 
-    RCTSurfaceHostingProxyRootView *surfaceHostingProxyRootView =
-        [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:surface];
+  RCTSurfaceHostingProxyRootView *surfaceHostingProxyRootView =
+      [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:surface];
 
 #if !TARGET_OS_TV
-    surfaceHostingProxyRootView.backgroundColor = [UIColor systemBackgroundColor];
+  surfaceHostingProxyRootView.backgroundColor = [UIColor systemBackgroundColor];
 #endif
-    if (_configuration.customizeRootView != nil) {
-      _configuration.customizeRootView(surfaceHostingProxyRootView);
-    }
-    return surfaceHostingProxyRootView;
-  }
-
-  UIView *rootView;
-  if (_configuration.createRootViewWithBridge != nil) {
-    rootView = _configuration.createRootViewWithBridge(self.bridge, moduleName, initProps);
-  } else {
-    rootView = [self createRootViewWithBridge:self.bridge moduleName:moduleName initProps:initProps];
-  }
   if (_configuration.customizeRootView != nil) {
-    _configuration.customizeRootView(rootView);
+    _configuration.customizeRootView(surfaceHostingProxyRootView);
   }
-  return rootView;
+  return surfaceHostingProxyRootView;
 }
 
 - (RCTBridge *)createBridgeWithDelegate:(id<RCTBridgeDelegate>)delegate launchOptions:(NSDictionary *)launchOptions
@@ -190,9 +173,7 @@
                           moduleName:(NSString *)moduleName
                            initProps:(NSDictionary *)initProps
 {
-  BOOL enableFabric = _configuration.fabricEnabled;
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, enableFabric);
-
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, YES);
 #if !TARGET_OS_TV
   rootView.backgroundColor = [UIColor systemBackgroundColor];
 #endif
@@ -204,19 +185,15 @@
 - (std::unique_ptr<facebook::react::JSExecutorFactory>)jsExecutorFactoryForBridge:(RCTBridge *)bridge
 {
   _runtimeScheduler = std::make_shared<facebook::react::RuntimeScheduler>(RCTRuntimeExecutorFromBridge(bridge));
-  if (RCTIsNewArchEnabled()) {
-    std::shared_ptr<facebook::react::CallInvoker> callInvoker =
-        std::make_shared<facebook::react::RuntimeSchedulerCallInvoker>(_runtimeScheduler);
-    RCTTurboModuleManager *turboModuleManager =
-        [[RCTTurboModuleManager alloc] initWithBridge:bridge
-                                             delegate:_turboModuleManagerDelegate
-                                            jsInvoker:callInvoker];
-    _contextContainer->erase("RuntimeScheduler");
-    _contextContainer->insert("RuntimeScheduler", _runtimeScheduler);
-    return RCTAppSetupDefaultJsExecutorFactory(bridge, turboModuleManager, _runtimeScheduler);
-  } else {
-    return RCTAppSetupJsExecutorFactoryForOldArch(bridge, _runtimeScheduler);
-  }
+
+  std::shared_ptr<facebook::react::CallInvoker> callInvoker =
+      std::make_shared<facebook::react::RuntimeSchedulerCallInvoker>(_runtimeScheduler);
+  RCTTurboModuleManager *turboModuleManager = [[RCTTurboModuleManager alloc] initWithBridge:bridge
+                                                                                   delegate:_turboModuleManagerDelegate
+                                                                                  jsInvoker:callInvoker];
+  _contextContainer->erase("RuntimeScheduler");
+  _contextContainer->insert("RuntimeScheduler", _runtimeScheduler);
+  return RCTAppSetupDefaultJsExecutorFactory(bridge, turboModuleManager, _runtimeScheduler);
 }
 
 - (void)createBridgeIfNeeded:(NSDictionary *)launchOptions
@@ -234,7 +211,7 @@
 
 - (void)createBridgeAdapterIfNeeded
 {
-  if (!self->_configuration.fabricEnabled || self.bridgeAdapter) {
+  if (self.bridgeAdapter != nullptr) {
     return;
   }
 

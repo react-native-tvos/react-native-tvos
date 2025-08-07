@@ -7,6 +7,8 @@
 
 #import "RCTModalHostView.h"
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import <UIKit/UIKit.h>
 
 #import "RCTAssert.h"
@@ -296,3 +298,5 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 #endif
 
 @end
+
+#endif // RCT_FIT_RM_OLD_COMPONENT

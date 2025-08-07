@@ -8,6 +8,8 @@
 
 #import "RCTSwitchManager.h"
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import <React/RCTUIManager.h>
 #import "RCTBridge.h"
 #import "RCTSwitch.h"
@@ -65,4 +67,6 @@ RCT_REMAP_VIEW_PROPERTY(trackColorForFalse, tintColor, UIColor);
 RCT_REMAP_VIEW_PROPERTY(trackColorForTrue, onTintColor, UIColor);
 
 @end
-#endif
+
+#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // TARGET_OS_TV

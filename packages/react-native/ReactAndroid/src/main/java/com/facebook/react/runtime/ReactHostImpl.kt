@@ -29,7 +29,6 @@ import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactMarker
 import com.facebook.react.bridge.ReactMarkerConstants
-import com.facebook.react.bridge.ReactNoCrashBridgeNotAllowedSoftException
 import com.facebook.react.bridge.ReactNoCrashSoftException
 import com.facebook.react.bridge.ReactSoftExceptionLogger
 import com.facebook.react.bridge.RuntimeExecutor
@@ -521,14 +520,15 @@ public class ReactHostImpl(
   internal fun <T : NativeModule> hasNativeModule(nativeModuleInterface: Class<T>): Boolean =
       reactInstance?.hasNativeModule<T>(nativeModuleInterface) ?: false
 
-  internal val nativeModules: Collection<NativeModule> = reactInstance?.nativeModules ?: listOf()
+  internal val nativeModules: Collection<NativeModule>
+    get() = reactInstance?.nativeModules ?: listOf()
 
   internal fun <T : NativeModule> getNativeModule(nativeModuleInterface: Class<T>): T? {
     if (!ReactBuildConfig.UNSTABLE_ENABLE_MINIFY_LEGACY_ARCHITECTURE &&
         nativeModuleInterface == UIManagerModule::class.java) {
       ReactSoftExceptionLogger.logSoftExceptionVerbose(
           TAG,
-          ReactNoCrashBridgeNotAllowedSoftException(
+          ReactNoCrashSoftException(
               "getNativeModule(UIManagerModule.class) cannot be called when the bridge is disabled"))
     }
 
@@ -625,9 +625,8 @@ public class ReactHostImpl(
   override fun onConfigurationChanged(context: Context) {
     val currentReactContext = this.currentReactContext
     if (currentReactContext != null) {
-      if (ReactNativeFeatureFlags.enableFontScaleChangesUpdatingLayout()) {
-        DisplayMetricsHolder.initDisplayMetrics(currentReactContext)
-      }
+      DisplayMetricsHolder.initScreenDisplayMetrics(currentReactContext)
+      currentReactContext.currentActivity?.let { DisplayMetricsHolder.initWindowDisplayMetrics(it) }
 
       val appearanceModule = currentReactContext.getNativeModule(AppearanceModule::class.java)
       appearanceModule?.onConfigurationChanged(context)
@@ -664,7 +663,7 @@ public class ReactHostImpl(
     }
   }
 
-  internal fun handleHostException(e: Exception): Unit {
+  internal fun handleHostException(e: Exception) {
     val method = "handleHostException(message = \"${e.message}\")"
     log(method)
 
@@ -912,12 +911,13 @@ public class ReactHostImpl(
               { task ->
                 val bundleLoader = checkNotNull(task.getResult())
                 val reactContext = getOrCreateReactContext()
-                reactContext.setJSExceptionHandler(devSupportManager)
+                reactContext.jsExceptionHandler = devSupportManager
 
                 log(method, "Creating ReactInstance")
                 val instance =
                     ReactInstance(
                         reactContext,
+                        currentActivity,
                         reactHostDelegate,
                         componentFactory,
                         devSupportManager,
@@ -1450,7 +1450,7 @@ public class ReactHostImpl(
   }
 
   @ThreadConfined(ThreadConfined.UI)
-  internal fun unregisterInstanceFromInspector(reactInstance: ReactInstance?): Unit {
+  internal fun unregisterInstanceFromInspector(reactInstance: ReactInstance?) {
     if (reactInstance != null) {
       if (InspectorFlags.getFuseboxEnabled()) {
         Assertions.assertCondition(

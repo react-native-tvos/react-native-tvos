@@ -1140,11 +1140,6 @@ public abstract class com/facebook/react/bridge/ReactContextBaseJavaModule : com
 	protected final fun getCurrentActivity ()Landroid/app/Activity;
 }
 
-public final class com/facebook/react/bridge/ReactCxxErrorHandler {
-	public static final field INSTANCE Lcom/facebook/react/bridge/ReactCxxErrorHandler;
-	public static final fun setHandleErrorFunc (Ljava/lang/Object;Ljava/lang/reflect/Method;)V
-}
-
 public final class com/facebook/react/bridge/ReactMarker {
 	public static final field INSTANCE Lcom/facebook/react/bridge/ReactMarker;
 	public static final fun addFabricListener (Lcom/facebook/react/bridge/ReactMarker$FabricMarkerListener;)V
@@ -1307,12 +1302,6 @@ public abstract interface annotation class com/facebook/react/bridge/ReactMethod
 }
 
 public abstract interface class com/facebook/react/bridge/ReactModuleWithSpec {
-}
-
-public final class com/facebook/react/bridge/ReactNoCrashBridgeNotAllowedSoftException : com/facebook/react/bridge/ReactNoCrashSoftException {
-	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-	public fun <init> (Ljava/lang/Throwable;)V
 }
 
 public class com/facebook/react/bridge/ReactNoCrashSoftException : java/lang/RuntimeException {
@@ -3359,8 +3348,10 @@ public final class com/facebook/react/uimanager/DisplayMetricsHolder {
 	public static final fun getDisplayMetricsWritableMap (D)Lcom/facebook/react/bridge/WritableMap;
 	public static final fun getScreenDisplayMetrics ()Landroid/util/DisplayMetrics;
 	public static final fun getWindowDisplayMetrics ()Landroid/util/DisplayMetrics;
-	public static final fun initDisplayMetrics (Landroid/content/Context;)V
-	public static final fun initDisplayMetricsIfNotInitialized (Landroid/content/Context;)V
+	public static final fun initScreenDisplayMetrics (Landroid/content/Context;)V
+	public static final fun initScreenDisplayMetricsIfNotInitialized (Landroid/content/Context;)V
+	public static final fun initWindowDisplayMetrics (Landroid/content/Context;)V
+	public static final fun initWindowDisplayMetricsIfNotInitialized (Landroid/content/Context;)V
 	public static final fun setScreenDisplayMetrics (Landroid/util/DisplayMetrics;)V
 	public static final fun setWindowDisplayMetrics (Landroid/util/DisplayMetrics;)V
 }

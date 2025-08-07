@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import <React/RCTComponent.h>
 #import <React/RCTScrollableProtocol.h>
 
@@ -18,4 +20,6 @@
 @property (nonatomic, weak) UIScrollView *scrollView;
 
 @end
-#endif
+
+#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // TARGET_OS_TV

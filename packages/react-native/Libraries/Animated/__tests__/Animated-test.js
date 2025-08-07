@@ -21,11 +21,11 @@ function mockQueueMicrotask() {
   let queueMicrotask;
   beforeEach(() => {
     queueMicrotask = global.queueMicrotask;
-    // $FlowIgnore[cannot-write]
+    // $FlowFixMe[cannot-write]
     global.queueMicrotask = process.nextTick;
   });
   afterEach(() => {
-    // $FlowIgnore[cannot-write]
+    // $FlowFixMe[cannot-write]
     global.queueMicrotask = queueMicrotask;
   });
 }
@@ -261,7 +261,7 @@ describe('Animated', () => {
       expect(console.warn).toBeCalledWith(
         'Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`',
       );
-      // $FlowIssue[prop-missing]
+      // $FlowFixMe[prop-missing]
       console.warn.mockRestore();
     });
 

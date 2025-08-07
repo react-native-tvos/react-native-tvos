@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1f567a382688ca9876d17e9ce8d428ff>>
+ * @generated SignedSource<<24a5d3213cbc7cd101d34e059ba5c8c4>>
  * @flow strict
  * @noformat
  */
@@ -35,6 +35,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   enableAccessToHostTreeInFabric: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
+  reduceDefaultPropsInText: Getter<boolean>,
   shouldUseAnimatedObjectForTransform: Getter<boolean>,
   shouldUseRemoveClippedSubviewsAsDefaultOnIOS: Getter<boolean>,
   shouldUseSetNativePropsInFabric: Getter<boolean>,
@@ -99,6 +100,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   releaseImageDataWhenConsumed: Getter<boolean>,
   shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean>,
   skipActivityIdentityAssertionOnHostPause: Getter<boolean>,
+  sweepActiveTouchOnChildNativeGesturesAndroid: Getter<boolean>,
   traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommit: Getter<boolean>,
   useAlwaysAvailableJSErrorHandling: Getter<boolean>,
@@ -148,6 +150,11 @@ export const fixVirtualizeListCollapseWindowSize: Getter<boolean> = createJavaSc
  * Function used to enable / disabled Layout Animations in React Native.
  */
 export const isLayoutAnimationEnabled: Getter<boolean> = createJavaScriptFlagGetter('isLayoutAnimationEnabled', true);
+
+/**
+ * Optimize how default props are processed in Text to avoid unnecessary keys.
+ */
+export const reduceDefaultPropsInText: Getter<boolean> = createJavaScriptFlagGetter('reduceDefaultPropsInText', false);
 
 /**
  * Enables use of AnimatedObject for animating transform values.
@@ -384,6 +391,10 @@ export const shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean> = cr
  * Skip activity identity assertion in ReactHostImpl::onHostPause()
  */
 export const skipActivityIdentityAssertionOnHostPause: Getter<boolean> = createNativeFlagGetter('skipActivityIdentityAssertionOnHostPause', false);
+/**
+ * A flag to tell Fabric to sweep active touches from JSTouchDispatcher in Android when a child native gesture is started.
+ */
+export const sweepActiveTouchOnChildNativeGesturesAndroid: Getter<boolean> = createNativeFlagGetter('sweepActiveTouchOnChildNativeGesturesAndroid', false);
 /**
  * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
  */

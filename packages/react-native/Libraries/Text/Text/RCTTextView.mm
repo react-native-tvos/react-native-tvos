@@ -7,6 +7,8 @@
 
 #import <React/RCTTextView.h>
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 #import <MobileCoreServices/UTCoreTypes.h>
 
 #import <React/RCTUtils.h>
@@ -302,3 +304,5 @@
 }
 
 @end
+
+#endif // RCT_FIT_RM_OLD_COMPONENT

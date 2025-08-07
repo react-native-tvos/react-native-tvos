@@ -8,7 +8,11 @@
 
 #import <React/RCTViewManager.h>
 
+#ifndef RCT_FIT_RM_OLD_COMPONENT
+
 @interface RCTSwitchManager : RCTViewManager
 
 @end
-#endif
+
+#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // TARGET_OS_TV

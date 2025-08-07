@@ -116,10 +116,6 @@ RuntimeAgent::~RuntimeAgent() {
   sessionState_.lastRuntimeAgentExportedState = getExportedState();
 }
 
-void RuntimeAgent::registerForTracing() {
-  targetController_.registerForTracing();
-}
-
 void RuntimeAgent::enableSamplingProfiler() {
   targetController_.enableSamplingProfiler();
 }
@@ -130,6 +126,26 @@ void RuntimeAgent::disableSamplingProfiler() {
 
 tracing::RuntimeSamplingProfile RuntimeAgent::collectSamplingProfile() {
   return targetController_.collectSamplingProfile();
+}
+
+#pragma mark - Tracing
+
+RuntimeTracingAgent::RuntimeTracingAgent(
+    tracing::TraceRecordingState& state,
+    RuntimeTargetController& targetController)
+    : tracing::TargetTracingAgent(state), targetController_(targetController) {
+  if (state.mode == tracing::Mode::CDP) {
+    targetController_.enableSamplingProfiler();
+  }
+}
+
+RuntimeTracingAgent::~RuntimeTracingAgent() {
+  if (state_.mode == tracing::Mode::CDP) {
+    targetController_.disableSamplingProfiler();
+    auto profile = targetController_.collectSamplingProfile();
+
+    state_.runtimeSamplingProfiles.emplace_back(std::move(profile));
+  }
 }
 
 } // namespace facebook::react::jsinspector_modern
