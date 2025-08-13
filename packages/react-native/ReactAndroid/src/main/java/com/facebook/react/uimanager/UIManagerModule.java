@@ -12,7 +12,6 @@ import static com.facebook.react.bridge.ReactMarkerConstants.CREATE_UI_MANAGER_M
 import static com.facebook.react.uimanager.common.UIManagerType.FABRIC;
 import static com.facebook.react.uimanager.common.UIManagerType.LEGACY;
 
-import android.app.Activity;
 import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.view.View;
@@ -89,6 +88,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @ReactModule(name = UIManagerModule.NAME)
 @LegacyArchitecture(logLevel = LegacyArchitectureLogLevel.ERROR)
+@Deprecated(
+    since = "This class is part of Legacy Architecture and will be removed in a future release")
 public class UIManagerModule extends ReactContextBaseJavaModule
     implements OnBatchCompleteListener, LifecycleEventListener, UIManager {
   static {
@@ -127,11 +128,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule
       ViewManagerResolver viewManagerResolver,
       int minTimeLeftInFrameForNonBatchedOperationMs) {
     super(reactContext);
-    DisplayMetricsHolder.initScreenDisplayMetricsIfNotInitialized(reactContext);
-    Activity currentActivity = reactContext.getCurrentActivity();
-    if (currentActivity != null) {
-      DisplayMetricsHolder.initWindowDisplayMetricsIfNotInitialized(currentActivity);
-    }
+    DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(reactContext);
     mEventDispatcher = new EventDispatcherImpl(reactContext);
     mModuleConstants = createConstants(viewManagerResolver);
     mCustomDirectEvents = UIManagerModuleConstants.directEventTypeConstants;
@@ -151,11 +148,7 @@ public class UIManagerModule extends ReactContextBaseJavaModule
       List<ViewManager> viewManagersList,
       int minTimeLeftInFrameForNonBatchedOperationMs) {
     super(reactContext);
-    DisplayMetricsHolder.initScreenDisplayMetricsIfNotInitialized(reactContext);
-    Activity currentActivity = reactContext.getCurrentActivity();
-    if (currentActivity != null) {
-      DisplayMetricsHolder.initWindowDisplayMetricsIfNotInitialized(currentActivity);
-    }
+    DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(reactContext);
     mEventDispatcher = new EventDispatcherImpl(reactContext);
     mCustomDirectEvents = MapBuilder.newHashMap();
     mModuleConstants = createConstants(viewManagersList, null, mCustomDirectEvents);

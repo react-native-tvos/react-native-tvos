@@ -1108,7 +1108,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
     this.originalIsFocusable = this.isFocusable
 
     val viewAccessibilityDelegate: ReactAccessibilityDelegate = object : ReactAccessibilityDelegate(
-      this, originalIsFocusable, this.importantForAccessibility
+      this@ReactViewGroup, originalIsFocusable, this@ReactViewGroup.importantForAccessibility
     ) {
       override fun performAccessibilityAction(host: View, action: Int, args: Bundle?): Boolean {
         if (host !is ReactViewGroup) {

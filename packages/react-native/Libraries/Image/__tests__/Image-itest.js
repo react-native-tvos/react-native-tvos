@@ -10,13 +10,15 @@
 
 import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
-import type {HostInstance} from 'react-native';
+import type {AccessibilityProps, HostInstance} from 'react-native';
 
 import * as Fantom from '@react-native/fantom';
 import * as React from 'react';
 import {createRef} from 'react';
 import {Image} from 'react-native';
+import accessibilityPropsSuite from 'react-native/src/private/__tests__/utilities/accessibilityPropsSuite';
 import ensureInstance from 'react-native/src/private/__tests__/utilities/ensureInstance';
+import NativeFantom from 'react-native/src/private/testing/fantom/specs/NativeFantom';
 import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/ReactNativeElement';
 
 const LOGO_SOURCE = {uri: 'https://reactnative.dev/img/tiny_logo.png'};
@@ -33,7 +35,13 @@ describe('<Image>', () => {
         });
 
         expect(root.getRenderedOutput().toJSX()).toEqual(
-          <rn-image overflow="hidden" source-scale="1" source-type="remote" />,
+          <rn-image
+            accessibilityState="{disabled:false,selected:false,checked:None,busy:false,expanded:null}"
+            overflow="hidden"
+            resizeMode="cover"
+            source-scale="1"
+            source-type="remote"
+          />,
         );
 
         Fantom.runTask(() => {
@@ -41,72 +49,14 @@ describe('<Image>', () => {
         });
 
         expect(root.getRenderedOutput().toJSX()).toEqual(
-          <rn-image overflow="hidden" source-scale="1" source-type="remote" />,
+          <rn-image
+            accessibilityState="{disabled:false,selected:false,checked:None,busy:false,expanded:null}"
+            overflow="hidden"
+            resizeMode="cover"
+            source-scale="1"
+            source-type="remote"
+          />,
         );
-      });
-    });
-
-    describe('accessibility', () => {
-      describe('accessible', () => {
-        it('indicates that image is an accessibility element', () => {
-          const root = Fantom.createRoot();
-
-          Fantom.runTask(() => {
-            root.render(<Image accessible={true} />);
-          });
-
-          expect(
-            root.getRenderedOutput({props: ['accessible']}).toJSX(),
-          ).toEqual(<rn-image accessible="true" />);
-        });
-      });
-
-      describe('accessibilityLabel', () => {
-        it('provides information for screen reader', () => {
-          const root = Fantom.createRoot();
-
-          Fantom.runTask(() => {
-            root.render(<Image accessibilityLabel="React Native Logo" />);
-          });
-
-          expect(
-            root.getRenderedOutput({props: ['accessibilityLabel']}).toJSX(),
-          ).toEqual(<rn-image accessibilityLabel="React Native Logo" />);
-        });
-      });
-
-      describe('alt', () => {
-        it('provides information for screen reader', () => {
-          const root = Fantom.createRoot();
-
-          Fantom.runTask(() => {
-            root.render(<Image alt="React Native Logo" />);
-          });
-
-          expect(root.getRenderedOutput({props: ['^access']}).toJSX()).toEqual(
-            <rn-image
-              accessible="true"
-              accessibilityLabel="React Native Logo"
-            />,
-          );
-        });
-
-        it('can be set alongside accessibilityLabel, but accessibilityLabel has higher priority', () => {
-          const root = Fantom.createRoot();
-
-          Fantom.runTask(() => {
-            root.render(
-              <Image
-                alt="React Native Logo"
-                accessibilityLabel="React Native"
-              />,
-            );
-          });
-
-          expect(root.getRenderedOutput({props: ['^access']}).toJSX()).toEqual(
-            <rn-image accessible="true" accessibilityLabel="React Native" />,
-          );
-        });
       });
     });
 
@@ -312,11 +262,27 @@ describe('<Image>', () => {
         });
 
         expect(root.getRenderedOutput({props: ['resizeMode']}).toJSX()).toEqual(
-          <rn-image />,
+          <rn-image resizeMode="cover" />,
         );
+      });
+
+      it('can be set to "cover" explicitly', () => {
+        const root = Fantom.createRoot();
 
         Fantom.runTask(() => {
           root.render(<Image resizeMode="cover" source={LOGO_SOURCE} />);
+        });
+
+        expect(root.getRenderedOutput({props: ['resizeMode']}).toJSX()).toEqual(
+          <rn-image resizeMode="cover" />,
+        );
+      });
+
+      it('can be set to "stretch", which is the same as not setting it', () => {
+        const root = Fantom.createRoot();
+
+        Fantom.runTask(() => {
+          root.render(<Image resizeMode="stretch" source={LOGO_SOURCE} />);
         });
 
         expect(root.getRenderedOutput({props: ['resizeMode']}).toJSX()).toEqual(
@@ -324,23 +290,19 @@ describe('<Image>', () => {
         );
       });
 
-      (['stretch', 'contain', 'repeat', 'center'] as const).forEach(
-        resizeMode => {
-          it(`can be set to "${resizeMode}"`, () => {
-            const root = Fantom.createRoot();
+      (['contain', 'repeat', 'center'] as const).forEach(resizeMode => {
+        it(`can be set to "${resizeMode}"`, () => {
+          const root = Fantom.createRoot();
 
-            Fantom.runTask(() => {
-              root.render(
-                <Image resizeMode={resizeMode} source={LOGO_SOURCE} />,
-              );
-            });
-
-            expect(
-              root.getRenderedOutput({props: ['resizeMode']}).toJSX(),
-            ).toEqual(<rn-image resizeMode={resizeMode} />);
+          Fantom.runTask(() => {
+            root.render(<Image resizeMode={resizeMode} source={LOGO_SOURCE} />);
           });
-        },
-      );
+
+          expect(
+            root.getRenderedOutput({props: ['resizeMode']}).toJSX(),
+          ).toEqual(<rn-image resizeMode={resizeMode} />);
+        });
+      });
     });
 
     describe('source', () => {
@@ -582,15 +544,15 @@ describe('<Image>', () => {
           );
         });
 
-        expect(root.getRenderedOutput().toJSX()).toEqual(
+        expect(
+          root
+            .getRenderedOutput({props: ['width', 'height', 'resizeMode']})
+            .toJSX(),
+        ).toEqual(
           <rn-image
             height="100.000000"
-            overflow="hidden"
             resizeMode="contain"
             width="100.000000"
-            source-scale="1"
-            source-type="remote"
-            source-uri="https://reactnative.dev/img/tiny_logo.png"
           />,
         );
       });
@@ -623,6 +585,12 @@ describe('<Image>', () => {
         );
       });
     });
+
+    component ComponentWithAccessibilityProps(...props: AccessibilityProps) {
+      return <Image {...props} source={LOGO_SOURCE} />;
+    }
+
+    accessibilityPropsSuite(ComponentWithAccessibilityProps, false);
   });
 
   describe('ref', () => {
@@ -650,6 +618,162 @@ describe('<Image>', () => {
 
         const element = ensureInstance(elementRef.current, ReactNativeElement);
         expect(element.tagName).toBe('RN:Image');
+      });
+    });
+  });
+
+  describe('static methods', () => {
+    afterEach(() => {
+      NativeFantom.clearAllImages();
+    });
+
+    describe('getSize', () => {
+      it('returns the size of the image when image is loaded', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        NativeFantom.setImageResponse(uri, {
+          width: 100,
+          height: 100,
+        });
+
+        let size;
+        Fantom.runTask(() => {
+          Image.getSize(uri, (width, height) => {
+            size = {width, height};
+          });
+        });
+
+        expect(size).toEqual({width: 100, height: 100});
+      });
+
+      it('fails when image is not loaded', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        let size;
+        let err: ?Error;
+        Fantom.runTask(async () => {
+          Image.getSize(
+            uri,
+            (width, height) => {
+              size = {width, height};
+            },
+            (e: mixed) => {
+              if (e instanceof Error) {
+                err = e;
+              }
+            },
+          );
+        });
+
+        expect(size).toBeUndefined();
+        expect(err).toBeInstanceOf(Error);
+        expect(err?.message).toBe('image not loaded');
+      });
+    });
+
+    describe('getSizeWithHeaders', () => {
+      afterEach(() => {
+        NativeFantom.clearAllImages();
+      });
+
+      it('returns the size of the image when image is loaded', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        NativeFantom.setImageResponse(uri, {
+          width: 100,
+          height: 100,
+        });
+
+        let size;
+        Fantom.runTask(() => {
+          Image.getSizeWithHeaders(
+            uri,
+            {
+              Authorization: 'Basic RandomString',
+            },
+            (width: number, height: number) => {
+              size = {width, height};
+            },
+          );
+        });
+
+        expect(size).toEqual({width: 100, height: 100});
+      });
+    });
+
+    describe('prefetch', () => {
+      it('prefetches the image', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        NativeFantom.setImageResponse(uri, {
+          width: 100,
+          height: 100,
+        });
+
+        let result;
+        Fantom.runTask(async () => {
+          result = await Image.prefetch(uri);
+        });
+
+        expect(result).toEqual(true);
+      });
+
+      it('can fail to prefetch image', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        NativeFantom.setImageResponse(uri, {
+          width: 100,
+          height: 100,
+          errorMessage: 'Failed to prefetch image',
+        });
+
+        let result;
+        let error;
+        Fantom.runTask(async () => {
+          try {
+            result = await Image.prefetch(uri);
+          } catch (e) {
+            error = e;
+          }
+        });
+
+        expect(result).toEqual(undefined);
+        expect(error).toBeInstanceOf(Error);
+        expect(error?.message).toBe('Failed to prefetch image');
+      });
+    });
+
+    describe('queryCache', () => {
+      it('returns empty when image is not cached', () => {
+        const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+        let result;
+        Fantom.runTask(async () => {
+          result = await Image.queryCache([uri]);
+        });
+
+        expect(result).toEqual({});
+      });
+
+      (['disk', 'memory', 'disk/memory'] as const).forEach(cacheStatus => {
+        it(`returns the '${cacheStatus}' record when image is cached`, () => {
+          const uri = 'https://reactnative.dev/img/tiny_logo.png';
+
+          NativeFantom.setImageResponse(uri, {
+            width: 100,
+            height: 100,
+            cacheStatus,
+          });
+
+          let result;
+          Fantom.runTask(async () => {
+            result = await Image.queryCache([uri]);
+          });
+
+          expect(result).toEqual({
+            [uri]: cacheStatus,
+          });
+        });
       });
     });
   });

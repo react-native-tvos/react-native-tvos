@@ -89,7 +89,8 @@ std::string NativeFantom::getRenderedOutput(
       options.includeRoot, options.includeLayoutMetrics};
 
   auto viewTree = appDelegate_.mountingManager_->getViewTree(surfaceId);
-  return RenderOutput::render(viewTree, formatOptions);
+  return appDelegate_.mountingManager_->renderer()->render(
+      viewTree, formatOptions);
 }
 
 void NativeFantom::reportTestSuiteResultsJSON(
@@ -291,6 +292,28 @@ void NativeFantom::stopJSSamplingProfilerAndSaveToFile(
   std::ofstream fileStream(filePath);
   auto* hermesRuntime = dynamic_cast<hermes::HermesRuntime*>(&runtime);
   hermesRuntime->sampledTraceToStreamInDevToolsFormat(fileStream);
+}
+
+void NativeFantom::setImageResponse(
+    jsi::Runtime& /*rt*/,
+    const std::string& uri,
+    const NativeFantomSetImageResponseImageResponse& imageResponse) {
+  appDelegate_.mountingManager_->imageLoader_->setImageResponse(
+      uri,
+      {
+          .width = imageResponse.width,
+          .height = imageResponse.height,
+          .cacheStatus = imageResponse.cacheStatus,
+          .errorMessage = imageResponse.errorMessage,
+      });
+}
+
+void NativeFantom::clearImage(jsi::Runtime& /*rt*/, const std::string& uri) {
+  appDelegate_.mountingManager_->imageLoader_->clearImage(uri);
+}
+
+void NativeFantom::clearAllImages(jsi::Runtime& /*rt*/) {
+  appDelegate_.mountingManager_->imageLoader_->clearAllImages();
 }
 
 } // namespace facebook::react

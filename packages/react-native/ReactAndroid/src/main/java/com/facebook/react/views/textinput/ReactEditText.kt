@@ -63,7 +63,6 @@ import com.facebook.react.uimanager.PixelUtil.toDIPFromPixel
 import com.facebook.react.uimanager.ReactAccessibilityDelegate
 import com.facebook.react.uimanager.StateWrapper
 import com.facebook.react.uimanager.UIManagerHelper
-import com.facebook.react.uimanager.UIManagerModule
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
 import com.facebook.react.uimanager.events.EventDispatcher
@@ -227,7 +226,10 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
 
     val editTextAccessibilityDelegate: ReactAccessibilityDelegate =
         object :
-            ReactAccessibilityDelegate(this, this.isFocusable, this.importantForAccessibility) {
+            ReactAccessibilityDelegate(
+                this@ReactEditText,
+                this@ReactEditText.isFocusable,
+                this@ReactEditText.importantForAccessibility) {
           override fun performAccessibilityAction(host: View, action: Int, args: Bundle?): Boolean {
             if (action == AccessibilityNodeInfo.ACTION_CLICK) {
               val length = checkNotNull(text).length
@@ -910,7 +912,8 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
       @Suppress("DEPRECATION")
       if (stateWrapper == null && !reactContext.isBridgeless) {
         val localData = ReactTextInputLocalData(this)
-        val uiManager = reactContext.getNativeModule(UIManagerModule::class.java)
+        val uiManager =
+            reactContext.getNativeModule(com.facebook.react.uimanager.UIManagerModule::class.java)
         uiManager?.setViewLocalData(id, localData)
       }
     }
