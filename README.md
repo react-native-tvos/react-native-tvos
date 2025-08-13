@@ -2,7 +2,7 @@
 
 Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
 
-Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.76.0-0 release of this package will be derived from the 0.76.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
+Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.81.0-0 release of this package will be derived from the 0.81.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
 Releases will be published on npmjs.org and you may find the latest release version here: https://www.npmjs.com/package/react-native-tvos?activeTab=versions or use the tag `@latest`
 
@@ -23,17 +23,17 @@ This README covers only TV-specific features. For more general documentation and
 
 ### Hermes JS support
 
-- As of the 0.71 release, Hermes is fully working on both Apple TV and Android TV, and is enabled by default.
+- Hermes is fully working on both Apple TV and Android TV, and is enabled by default.
 
 ### React Native new architecture (Fabric) support
 
-React Native TV 0.76 enables the New Architecture by default. You can read more about it in this blog post from the RN core team: [The New Architecture Is Here](https://reactnative.dev/blog/2024/10/23/the-new-architecture-is-here)
+React Native TV fully implements the new architecture, identically to the core repo. You can read more about it in this blog post from the RN core team: [The New Architecture Is Here](https://reactnative.dev/blog/2024/10/23/the-new-architecture-is-here)
 
 If, for any reason, the New Architecture is not behaving properly in your application, there is always the option to opt-out from it until you are ready to turn it on again.
 
 To opt-out from the New Architecture:
 
-- _Expo apps_: RN 0.76 will be supported in SDK 52. See the [SDK 52 beta release notes](https://expo.dev/changelog/2024/10-24-sdk-52-beta) for more information on new arch support in Expo.
+- _Expo apps_: See [Expo's documentation](https://docs.expo.dev/guides/new-architecture/#disable-the-new-architecture-in-an-existing-project).
 
 - _Apple TV_: You can reinstall the dependencies by running the command:
 
@@ -50,22 +50,30 @@ RCT_NEW_ARCH_ENABLED=0 bundle exec pod install
 
 ### Typescript
 
-Typescript types for TV-specific components and APIs have been added to `types/public`.
+Typescript types for TV-specific components and APIs have been added to `types/public`. This repo is also generating types for the new API [currently in development by the core team](https://reactnative.dev/blog/2025/06/12/moving-towards-a-stable-javascript-api).
+
+## React Native core library precompiled framework for iOS and tvOS
+
+Starting with the 0.81.0-0 release, this repo provides a precompiled framework for the React Native core library for iOS and tvOS.  This framework is built using the [Swift Package Manager](https://www.swift.org/package-manager/) and is available for both debug and release builds.  The framework is available for both iOS and tvOS, and is provided as a Maven artifact in the `io.github.react-native-tvos` group, similarly to the Android artifacts from this repo.
+
+Builds using the above framework also require the precompiled ReactNativeDependencies framework, and the Hermes engine framework. Both of these are built automatically for both iOS and tvOS and are included in the React Native core releases, and are not separately distributed.
+
 
 ## General support for TV
 
 TV device support has been implemented with the intention of making existing React Native applications "just work" on TV, with few or no changes needed in the JavaScript code for the applications.
 
-The RNTester app supports Apple TV and Android TV.  In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.
+The RNTester app supports iOS, Apple TV, Android, and Android TV.  In this repo, `RNTester/Podfile` and `RNTester/RNTesterPods.xcodeproj` have been modified to work for tvOS.
 
 Minimum operating system versions:
 
+- iPhone and iPad:
+  - iOS 15.1
 - Apple TV:
-  - tvOS 13.4 (for the 0.74 and 0.75 releases)
-  - tvOS 15.1 (for the 0.76 release)
-- Android TV:
-  - API level 23 (for the 0.74 and 0.75 releases)
-  - API level 24 (for the 0.76 release)
+  - tvOS 15.1
+- Android and Android TV:
+  - API level 22 (only for the 0.77 releases)
+  - API level 24 (for all later releases)
 
 ## Build changes
 
@@ -92,7 +100,7 @@ As of React Native 0.75.x, the template that used to reside in the `react-native
 
 > _Note:_ The new TV template will only build apps for Apple TV and Android TV. Multiple platform targets are no longer supported in React Native app Podfiles.
 
-To create a new project for RNTV 0.76:
+To create a new project for RNTV 0.81:
 
 ```sh
 # 
@@ -126,7 +134,7 @@ $ npx @react-native-community/cli@latest init TVTest --template @react-native-tv
                ######                ######               
                                                           
 
-              Welcome to React Native 0.76!                
+              Welcome to React Native 0.81!                
                  Learn once, write anywhere               
 
 ✔ Downloading template
@@ -176,7 +184,7 @@ var running_on_apple_tv = Platform.isTVOS;
 
 - _Common codebase for Android phone and Android TV_: Apps built for Android using this repo will run on both Android phone and Android TV. Most of the changes for TV are specific to handling focus-based navigation on a TV using the D-Pad on the remote control.
 
-- _Pressable and Touchable controls_:  In RNTV 0.76.1-1 and later, TV controls are supported with fully native events.
+- _Pressable and Touchable controls_:  TV controls are supported with fully native events.
 Code has been added to detect focus changes and use existing methods to style the components properly and initiate the proper actions when the view is selected using the TV remote, so `Pressable`, `TouchableHighlight` and `TouchableOpacity` will "just work" on both Apple TV and Android TV. In particular:
 
   - `onFocus()` will be executed when the touchable view goes into focus
@@ -264,9 +272,9 @@ class Game2048 extends React.Component {
 
 - _Dev Menu support_:
   - The developer menu provided by React Native itself works on TV. On the Apple TV simulator, cmd-D will bring up the developer menu, just like on iOS. To bring it up on a real Apple TV device, make a long press on the play/pause button on the remote. (Please do not shake the Apple TV device, that will not work :) ). Android TV dev menu behavior is the same as on Android phone.
-  - The Expo dev menu (provided by the [Expo dev client package](https://docs.expo.dev/versions/latest/sdk/dev-client/)) is *not* supported on TV.
+  - As of Expo SDK 54 and RNTV 0.81, the Expo dev menu (provided by the [Expo dev client package](https://docs.expo.dev/versions/latest/sdk/dev-client/)) is supported on TV. On Apple TV, features requiring login to an Expo EAS account are not yet available.
 
-- _TV remote animations on Apple TV_: `RCTTVView` native code implements Apple-recommended parallax animations to help guide the eye as the user navigates through views. The animations can be disabled or adjusted with new optional view properties.
+- _TV remote animations on Apple TV_: Native code implements Apple-recommended parallax animations to help guide the eye as the user navigates through views. The animations can be disabled or adjusted with new optional view properties.
 
 - _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button or '<' button on the Apple TV remote, and the back button as usual on Android TV remote.
 
@@ -290,7 +298,7 @@ class Game2048 extends React.Component {
   
   - _Next Focus Direction_: the props `nextFocus*` on `View` should work as expected on iOS too (previously android only). One caveat is that if there is no focusable in the `nextFocusable*` direction next to the starting view, iOS doesn't check if we want to override the destination. 
   
-  - _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component wraps ScrollView and uses tvOS-specific native code to allow scrolling using swipe gestures from the remote control.
+  - _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component works on both Apple TV and Android TV, using native code to allow scrolling using swipe gestures from the remote control.
 
   - _VirtualizedList_: We extend `VirtualizedList` to make virtualization work well with focus management in mind. All of the improvements that we made are automatically available to all the VirtualizedList based components such as `FlatList`.
     - Defaults: VirtualizeList contents are automatically wrapped with a `TVFocusGuideView` with `trapFocus*` properties enabled depending on the orientation of the list. This default makes sure that focus doesn't leave the list accidentally due to a virtualization issue etc. until reaching the beginning or the end of the list.
