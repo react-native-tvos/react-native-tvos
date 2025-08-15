@@ -145,7 +145,7 @@ class ReactNativeCoreUtils
         # Sample url from Maven:
         # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.81.0/react-native-artifacts-0.81.0-reactnative-core-debug.tar.gz
         url = "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-core-#{build_type.to_s}.tar.gz"
-        rncore_log("Stable tarball URL: #{url}")
+        # rncore_log("Stable tarball URL: #{url}")
         return url
     end
 
