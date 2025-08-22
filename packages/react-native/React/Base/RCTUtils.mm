@@ -426,7 +426,11 @@ CGSize RCTSwitchSize(void)
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     RCTUnsafeExecuteOnMainQueueSync(^{
+#if TARGET_OS_TV
+      rctSwitchSize = CGSizeMake(0.0, 0.0); // no switch on tvOS
+#else
       rctSwitchSize = [UISwitch new].intrinsicContentSize;
+#endif
     });
   });
   return rctSwitchSize;
