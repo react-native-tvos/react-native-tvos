@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package com.facebook.yoga;
+package com.facebook.react.devsupport.perfmonitor
 
-public abstract class YogaConfigFactory {
-  public static YogaConfig create() {
-    return new YogaConfigJNIFinalizer();
-  }
-}
+internal interface PerfMonitorInspectorTarget :
+    PerfMonitorEventDispatcher, PerfMonitorInspectorTargetBinding {}

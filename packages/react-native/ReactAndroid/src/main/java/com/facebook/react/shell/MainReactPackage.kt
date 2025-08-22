@@ -94,7 +94,8 @@ import com.facebook.react.views.view.ReactViewManager
             ToastModule::class,
             VibrationModule::class,
             WebSocketModule::class,
-        ])
+        ]
+)
 public class MainReactPackage
 @JvmOverloads
 constructor(private val config: MainPackageConfig? = null) :
@@ -152,7 +153,8 @@ constructor(private val config: MainPackageConfig? = null) :
           else ReactTextViewManager(),
           ReactViewManager(),
           com.facebook.react.views.text.ReactVirtualTextViewManager(),
-          ReactUnimplementedViewManager())
+          ReactUnimplementedViewManager(),
+      )
 
   /**
    * A map of view managers that should be registered with
@@ -198,7 +200,8 @@ constructor(private val config: MainPackageConfig? = null) :
                 com.facebook.react.views.text.ReactVirtualTextViewManager()
               },
           ReactUnimplementedViewManager.REACT_CLASS to
-              ModuleSpec.viewManagerSpec { ReactUnimplementedViewManager() })
+              ModuleSpec.viewManagerSpec { ReactUnimplementedViewManager() },
+      )
 
   public override fun getViewManagers(reactContext: ReactApplicationContext): List<ModuleSpec> =
       viewManagersMap.values.toList()
@@ -208,7 +211,7 @@ constructor(private val config: MainPackageConfig? = null) :
 
   override fun createViewManager(
       reactContext: ReactApplicationContext,
-      viewManagerName: String
+      viewManagerName: String,
   ): ViewManager<*, *>? {
     val spec = viewManagersMap[viewManagerName]
     return spec?.provider?.get() as? ViewManager<*, *>
@@ -221,7 +224,8 @@ constructor(private val config: MainPackageConfig? = null) :
     try {
       val reactModuleInfoProviderClass =
           ClassFinder.findClass(
-              "com.facebook.react.shell.MainReactPackage$\$ReactModuleInfoProvider")
+              "com.facebook.react.shell.MainReactPackage$\$ReactModuleInfoProvider"
+          )
       @Suppress("DEPRECATION")
       return reactModuleInfoProviderClass?.newInstance() as? ReactModuleInfoProvider
           ?: fallbackForMissingClass()
@@ -229,10 +233,14 @@ constructor(private val config: MainPackageConfig? = null) :
       return fallbackForMissingClass()
     } catch (e: InstantiationException) {
       throw RuntimeException(
-          "No ReactModuleInfoProvider for MainReactPackage$\$ReactModuleInfoProvider", e)
+          "No ReactModuleInfoProvider for MainReactPackage$\$ReactModuleInfoProvider",
+          e,
+      )
     } catch (e: IllegalAccessException) {
       throw RuntimeException(
-          "No ReactModuleInfoProvider for MainReactPackage$\$ReactModuleInfoProvider", e)
+          "No ReactModuleInfoProvider for MainReactPackage$\$ReactModuleInfoProvider",
+          e,
+      )
     }
   }
 
@@ -265,7 +273,8 @@ constructor(private val config: MainPackageConfig? = null) :
                 SoundManagerModule::class.java,
                 ToastModule::class.java,
                 VibrationModule::class.java,
-                WebSocketModule::class.java)
+                WebSocketModule::class.java,
+            )
             .filterNotNull()
             .toTypedArray()
 
@@ -281,7 +290,8 @@ constructor(private val config: MainPackageConfig? = null) :
                       reactModule.canOverrideExistingModule,
                       reactModule.needsEagerInit,
                       reactModule.isCxxModule,
-                      classIsTurboModule(moduleClass))
+                      classIsTurboModule(moduleClass),
+                  )
             }
     return ReactModuleInfoProvider { moduleMap }
   }

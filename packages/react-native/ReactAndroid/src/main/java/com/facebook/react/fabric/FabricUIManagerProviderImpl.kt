@@ -24,10 +24,11 @@ import com.facebook.systrace.Systrace
  */
 @Deprecated(
     message = "This class is part of Legacy Architecture and will be removed in a future release",
-    level = DeprecationLevel.WARNING)
+    level = DeprecationLevel.WARNING,
+)
 public class FabricUIManagerProviderImpl(
     private val componentFactory: ComponentFactory,
-    private val viewManagerRegistry: ViewManagerRegistry
+    private val viewManagerRegistry: ViewManagerRegistry,
 ) : UIManagerProvider {
 
   /**
@@ -59,11 +60,17 @@ public class FabricUIManagerProviderImpl(
 
     if (runtimeExecutor != null && runtimeScheduler != null) {
       binding.register(
-          runtimeExecutor, runtimeScheduler, fabricUIManager, eventBeatManager, componentFactory)
+          runtimeExecutor,
+          runtimeScheduler,
+          fabricUIManager,
+          eventBeatManager,
+          componentFactory,
+      )
     } else {
       throw IllegalStateException(
           "Unable to register FabricUIManager with CatalystInstance, runtimeExecutor and" +
-              " runtimeScheduler must not be null")
+              " runtimeScheduler must not be null"
+      )
     }
 
     Systrace.endSection(Systrace.TRACE_TAG_REACT)

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<de9db1b4e8ad4d4a81368613a7d1cfb2>>
+ * @generated SignedSource<<4831f7b871223d8347db93f9a0b3a1f9>>
  */
 
 /**
@@ -140,11 +140,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableFabricRenderer();
 
   /**
-   * This feature flag enables a fix for reparenting fix in differentiator
-   */
-  RN_EXPORT static bool enableFixForParentTagDuringReparenting();
-
-  /**
    * Enables font scale changes updating layout for measurable nodes.
    */
   RN_EXPORT static bool enableFontScaleChangesUpdatingLayout();
@@ -233,6 +228,11 @@ class ReactNativeFeatureFlags {
    * Enables View Recycling. When enabled, individual ViewManagers must still opt-in.
    */
   RN_EXPORT static bool enableViewRecycling();
+
+  /**
+   * Enables View Recycling for <ScrollView> via ReactViewGroup/ReactViewManager.
+   */
+  RN_EXPORT static bool enableViewRecyclingForScrollView();
 
   /**
    * Enables View Recycling for <Text> via ReactTextView/ReactTextViewManager.

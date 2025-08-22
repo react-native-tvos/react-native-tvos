@@ -51,7 +51,7 @@ class TextInputAccessoryViewChangeTextExample extends React.Component<
   {text: string},
 > {
   constructor(props: void | {...}) {
-    // $FlowFixMe[incompatible-call]
+    // $FlowFixMe[incompatible-type]
     super(props);
     this.state = {text: 'Placeholder Text'};
   }
@@ -86,7 +86,7 @@ class TextInputAccessoryViewChangeKeyboardExample extends React.Component<
   {keyboardType: string, text: string},
 > {
   constructor(props: void | {...}) {
-    // $FlowFixMe[incompatible-call]
+    // $FlowFixMe[incompatible-type]
     super(props);
     this.state = {text: '', keyboardType: 'default'};
   }
@@ -131,7 +131,7 @@ class TextInputAccessoryViewDefaultDoneButtonExample extends React.Component<
   {text: string},
 > {
   constructor(props: void | $ReadOnly<{keyboardType: KeyboardTypeOptions}>) {
-    // $FlowFixMe[incompatible-call]
+    // $FlowFixMe[incompatible-type]
     super(props);
     this.state = {text: ''};
   }

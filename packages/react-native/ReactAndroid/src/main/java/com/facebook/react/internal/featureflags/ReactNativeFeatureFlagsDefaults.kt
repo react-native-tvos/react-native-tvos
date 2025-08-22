@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9583365cd9d7786ee9be03ff34b0766f>>
+ * @generated SignedSource<<19022bb7e93ed79a1cbe86c71f34bd50>>
  */
 
 /**
@@ -63,9 +63,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableFabricRenderer(): Boolean = false
 
-  override fun enableFixForParentTagDuringReparenting(): Boolean = false
-
-  override fun enableFontScaleChangesUpdatingLayout(): Boolean = false
+  override fun enableFontScaleChangesUpdatingLayout(): Boolean = true
 
   override fun enableIOSTextBaselineOffsetPerLine(): Boolean = false
 
@@ -100,6 +98,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableViewCulling(): Boolean = false
 
   override fun enableViewRecycling(): Boolean = false
+
+  override fun enableViewRecyclingForScrollView(): Boolean = true
 
   override fun enableViewRecyclingForText(): Boolean = true
 
@@ -141,9 +141,9 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun useFabricInterop(): Boolean = true
 
-  override fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = false
+  override fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = true
 
-  override fun useNativeTransformHelperAndroid(): Boolean = false
+  override fun useNativeTransformHelperAndroid(): Boolean = true
 
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 

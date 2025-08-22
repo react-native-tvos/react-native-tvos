@@ -24,7 +24,8 @@ import com.facebook.react.common.annotations.internal.LegacyArchitectureLogger
 @LegacyArchitecture(logLevel = LegacyArchitectureLogLevel.ERROR)
 @Deprecated(
     message = "This class is part of Legacy Architecture and will be removed in a future release",
-    level = DeprecationLevel.WARNING)
+    level = DeprecationLevel.WARNING,
+)
 internal class ShadowNodeRegistry {
   private val tagsToCSSNodes = SparseArray<ReactShadowNode<*>>()
   private val rootTags = SparseBooleanArray()
@@ -61,7 +62,8 @@ internal class ShadowNodeRegistry {
     threadAsserter.assertNow()
     if (rootTags[tag]) {
       throw IllegalViewOperationException(
-          "Trying to remove root node $tag without using removeRootNode!")
+          "Trying to remove root node $tag without using removeRootNode!"
+      )
     }
     tagsToCSSNodes.remove(tag)
   }
@@ -90,7 +92,9 @@ internal class ShadowNodeRegistry {
   private companion object {
     init {
       LegacyArchitectureLogger.assertLegacyArchitecture(
-          "ShadowNodeRegistry", LegacyArchitectureLogLevel.ERROR)
+          "ShadowNodeRegistry",
+          LegacyArchitectureLogLevel.ERROR,
+      )
     }
   }
 

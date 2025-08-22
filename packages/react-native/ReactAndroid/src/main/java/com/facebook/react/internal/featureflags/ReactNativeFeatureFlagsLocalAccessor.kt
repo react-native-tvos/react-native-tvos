@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8bcbcc20f92faf4c50c093fac701dfa2>>
+ * @generated SignedSource<<1a19e0569371a038ba8d3849fb26eb5c>>
  */
 
 /**
@@ -44,7 +44,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableEagerRootViewAttachmentCache: Boolean? = null
   private var enableFabricLogsCache: Boolean? = null
   private var enableFabricRendererCache: Boolean? = null
-  private var enableFixForParentTagDuringReparentingCache: Boolean? = null
   private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
@@ -63,6 +62,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableResourceTimingAPICache: Boolean? = null
   private var enableViewCullingCache: Boolean? = null
   private var enableViewRecyclingCache: Boolean? = null
+  private var enableViewRecyclingForScrollViewCache: Boolean? = null
   private var enableViewRecyclingForTextCache: Boolean? = null
   private var enableViewRecyclingForViewCache: Boolean? = null
   private var enableVirtualViewDebugFeaturesCache: Boolean? = null
@@ -293,16 +293,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun enableFixForParentTagDuringReparenting(): Boolean {
-    var cached = enableFixForParentTagDuringReparentingCache
-    if (cached == null) {
-      cached = currentProvider.enableFixForParentTagDuringReparenting()
-      accessedFeatureFlags.add("enableFixForParentTagDuringReparenting")
-      enableFixForParentTagDuringReparentingCache = cached
-    }
-    return cached
-  }
-
   override fun enableFontScaleChangesUpdatingLayout(): Boolean {
     var cached = enableFontScaleChangesUpdatingLayoutCache
     if (cached == null) {
@@ -479,6 +469,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableViewRecycling()
       accessedFeatureFlags.add("enableViewRecycling")
       enableViewRecyclingCache = cached
+    }
+    return cached
+  }
+
+  override fun enableViewRecyclingForScrollView(): Boolean {
+    var cached = enableViewRecyclingForScrollViewCache
+    if (cached == null) {
+      cached = currentProvider.enableViewRecyclingForScrollView()
+      accessedFeatureFlags.add("enableViewRecyclingForScrollView")
+      enableViewRecyclingForScrollViewCache = cached
     }
     return cached
   }

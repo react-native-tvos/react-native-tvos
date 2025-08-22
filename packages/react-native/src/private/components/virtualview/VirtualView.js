@@ -10,7 +10,7 @@
 
 import type {ViewStyleProp} from '../../../../Libraries/StyleSheet/StyleSheet';
 import type {NativeSyntheticEvent} from '../../../../Libraries/Types/CoreEventTypes';
-import type ReadOnlyElement from '../../webapis/dom/nodes/ReadOnlyElement';
+import type {HostInstance} from '../../types/HostInstance';
 import type {NativeModeChangeEvent} from './VirtualViewNativeComponent';
 
 import StyleSheet from '../../../../Libraries/StyleSheet/StyleSheet';
@@ -44,7 +44,7 @@ export type Rect = $ReadOnly<{
 export type ModeChangeEvent = $ReadOnly<{
   ...Omit<NativeModeChangeEvent, 'mode'>,
   mode: VirtualViewMode,
-  target: ReadOnlyElement,
+  target: HostInstance,
 }>;
 
 type VirtualViewComponent = component(
@@ -53,6 +53,7 @@ type VirtualViewComponent = component(
   ref?: ?React.RefSetter<React.ElementRef<typeof VirtualViewNativeComponent>>,
   style?: ?ViewStyleProp,
   onModeChange?: (event: ModeChangeEvent) => void,
+  removeClippedSubviews?: boolean,
 );
 
 type HiddenHeight = number;
@@ -76,6 +77,7 @@ function createVirtualView(
     ref?: ?React.RefSetter<React.ElementRef<typeof VirtualViewNativeComponent>>,
     style?: ?ViewStyleProp,
     onModeChange?: (event: ModeChangeEvent) => void,
+    removeClippedSubviews?: boolean,
   ) {
     const [state, setState] = useState<State>(initialState);
     if (__DEV__) {
@@ -92,8 +94,8 @@ function createVirtualView(
           ? null
           : onModeChange.bind(null, {
               mode,
-              // $FlowFixMe[incompatible-cast]
-              target: event.currentTarget as ReadOnlyElement,
+              // $FlowFixMe[incompatible-type] - we know this is a HostInstance
+              target: event.currentTarget as HostInstance,
               targetRect: event.nativeEvent.targetRect,
               thresholdRect: event.nativeEvent.thresholdRect,
             });
@@ -124,6 +126,7 @@ function createVirtualView(
         initialHidden={initialHidden}
         nativeID={nativeID}
         ref={ref}
+        removeClippedSubviews={removeClippedSubviews}
         renderState={
           (isHidden
             ? VirtualViewRenderState.None

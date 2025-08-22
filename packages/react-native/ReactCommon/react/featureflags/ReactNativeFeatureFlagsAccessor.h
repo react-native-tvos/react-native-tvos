@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d306b263212bd856fd6fd14ea4198b29>>
+ * @generated SignedSource<<ce6cfc25358a636fcd9cd6605e9008ed>>
  */
 
 /**
@@ -52,7 +52,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableEagerRootViewAttachment();
   bool enableFabricLogs();
   bool enableFabricRenderer();
-  bool enableFixForParentTagDuringReparenting();
   bool enableFontScaleChangesUpdatingLayout();
   bool enableIOSTextBaselineOffsetPerLine();
   bool enableIOSViewClipToPaddingBox();
@@ -71,6 +70,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableResourceTimingAPI();
   bool enableViewCulling();
   bool enableViewRecycling();
+  bool enableViewRecyclingForScrollView();
   bool enableViewRecyclingForText();
   bool enableViewRecyclingForView();
   bool enableVirtualViewDebugFeatures();
@@ -133,7 +133,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableEagerRootViewAttachment_;
   std::atomic<std::optional<bool>> enableFabricLogs_;
   std::atomic<std::optional<bool>> enableFabricRenderer_;
-  std::atomic<std::optional<bool>> enableFixForParentTagDuringReparenting_;
   std::atomic<std::optional<bool>> enableFontScaleChangesUpdatingLayout_;
   std::atomic<std::optional<bool>> enableIOSTextBaselineOffsetPerLine_;
   std::atomic<std::optional<bool>> enableIOSViewClipToPaddingBox_;
@@ -152,6 +151,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableResourceTimingAPI_;
   std::atomic<std::optional<bool>> enableViewCulling_;
   std::atomic<std::optional<bool>> enableViewRecycling_;
+  std::atomic<std::optional<bool>> enableViewRecyclingForScrollView_;
   std::atomic<std::optional<bool>> enableViewRecyclingForText_;
   std::atomic<std::optional<bool>> enableViewRecyclingForView_;
   std::atomic<std::optional<bool>> enableVirtualViewDebugFeatures_;

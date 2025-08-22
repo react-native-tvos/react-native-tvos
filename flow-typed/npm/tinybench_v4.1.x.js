@@ -91,7 +91,19 @@ declare module 'tinybench' {
     beforeEach?: (this: Task) => void | Promise<void>,
   };
 
-  export type Fn = () => Promise<mixed> | mixed;
+  // This is defined as an interface in tinybench but we define it as an object
+  // to catch problems like `overriddenDuration` being misspelled.
+  export type FnReturnedObject = {
+    overriddenDuration?: number,
+  };
+
+  // This type is defined as returning `unknown` instead of `void` in tinybench,
+  // but we type it this way to avoid mistakes (we can make breaking changes
+  // in our definition that they can't).
+  export type Fn = () =>
+    | Promise<void | FnReturnedObject>
+    | void
+    | FnReturnedObject;
 
   declare export class Bench extends EventTarget {
     concurrency: null | 'task' | 'bench';

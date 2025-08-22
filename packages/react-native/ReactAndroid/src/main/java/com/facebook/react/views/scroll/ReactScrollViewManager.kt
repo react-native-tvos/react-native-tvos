@@ -187,7 +187,8 @@ constructor(private val fpsListener: FpsListener? = null) :
   @Deprecated(
       message =
           "ReceiveCommand with an int commandId param is deprecated. Use the overload where commandId is a string.",
-      ReplaceWith("receiveCommand(scrollView, commandId, args)"))
+      ReplaceWith("receiveCommand(scrollView, commandId, args)"),
+  )
   override fun receiveCommand(scrollView: ReactScrollView, commandId: Int, args: ReadableArray?) {
     receiveCommand(this, scrollView, commandId, args)
   }
@@ -195,7 +196,7 @@ constructor(private val fpsListener: FpsListener? = null) :
   override fun receiveCommand(
       scrollView: ReactScrollView,
       commandId: String,
-      args: ReadableArray?
+      args: ReadableArray?,
   ) {
     receiveCommand<ReactScrollView>(this, scrollView, commandId, args)
   }
@@ -220,8 +221,10 @@ constructor(private val fpsListener: FpsListener? = null) :
               ViewProps.BORDER_TOP_LEFT_RADIUS,
               ViewProps.BORDER_TOP_RIGHT_RADIUS,
               ViewProps.BORDER_BOTTOM_RIGHT_RADIUS,
-              ViewProps.BORDER_BOTTOM_LEFT_RADIUS],
-      defaultFloat = Float.NaN)
+              ViewProps.BORDER_BOTTOM_LEFT_RADIUS,
+          ],
+      defaultFloat = Float.NaN,
+  )
   public fun setBorderRadius(view: ReactScrollView?, index: Int, borderRadius: Float) {
     if (view != null) {
       val radius =
@@ -246,8 +249,10 @@ constructor(private val fpsListener: FpsListener? = null) :
               ViewProps.BORDER_LEFT_WIDTH,
               ViewProps.BORDER_RIGHT_WIDTH,
               ViewProps.BORDER_TOP_WIDTH,
-              ViewProps.BORDER_BOTTOM_WIDTH],
-      defaultFloat = Float.NaN)
+              ViewProps.BORDER_BOTTOM_WIDTH,
+          ],
+      defaultFloat = Float.NaN,
+  )
   public fun setBorderWidth(view: ReactScrollView?, index: Int, width: Float) {
     if (view != null) {
       setBorderWidth(view, LogicalEdge.entries[index], width)
@@ -261,8 +266,10 @@ constructor(private val fpsListener: FpsListener? = null) :
               "borderLeftColor",
               "borderRightColor",
               "borderTopColor",
-              "borderBottomColor"],
-      customType = "Color")
+              "borderBottomColor",
+          ],
+      customType = "Color",
+  )
   @Suppress("UNUSED_PARAMETER")
   public fun setBorderColor(view: ReactScrollView?, index: Int, color: Int?) {
     if (view != null) {
@@ -282,7 +289,8 @@ constructor(private val fpsListener: FpsListener? = null) :
     val child =
         scrollView.getChildAt(0)
             ?: throw RetryableMountingLayerException(
-                "scrollToEnd called on ScrollView without child")
+                "scrollToEnd called on ScrollView without child"
+            )
 
     // ScrollView always has one child - the scrollable area
     val bottom = child.height + scrollView.paddingBottom
@@ -327,7 +335,8 @@ constructor(private val fpsListener: FpsListener? = null) :
     if (view.fadingEdgeLengthStart > 0 || view.fadingEdgeLengthEnd > 0) {
       view.isVerticalFadingEdgeEnabled = true
       view.setFadingEdgeLength(
-          Math.round(Math.max(view.fadingEdgeLengthStart, view.fadingEdgeLengthEnd).dpToPx()))
+          Math.round(Math.max(view.fadingEdgeLengthStart, view.fadingEdgeLengthEnd).dpToPx())
+      )
     } else {
       view.isVerticalFadingEdgeEnabled = false
       view.setFadingEdgeLength(0)
@@ -343,7 +352,8 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setMaintainVisibleContentPosition(view: ReactScrollView, value: ReadableMap?) {
     if (value != null) {
       view.setMaintainVisibleContentPosition(
-          MaintainVisibleScrollPositionHelper.Config.fromReadableMap(value))
+          MaintainVisibleScrollPositionHelper.Config.fromReadableMap(value)
+      )
     } else {
       view.setMaintainVisibleContentPosition(null)
     }
@@ -352,7 +362,7 @@ constructor(private val fpsListener: FpsListener? = null) :
   override fun updateState(
       view: ReactScrollView,
       props: ReactStylesDiffMap,
-      stateWrapper: StateWrapper
+      stateWrapper: StateWrapper,
   ): Any? {
     view.setStateWrapper(stateWrapper)
     return null
@@ -412,6 +422,7 @@ constructor(private val fpsListener: FpsListener? = null) :
             getJSEventName(ScrollEventType.MOMENTUM_BEGIN) to
                 mapOf("registrationName" to "onMomentumScrollBegin"),
             getJSEventName(ScrollEventType.MOMENTUM_END) to
-                mapOf("registrationName" to "onMomentumScrollEnd"))
+                mapOf("registrationName" to "onMomentumScrollEnd"),
+        )
   }
 }

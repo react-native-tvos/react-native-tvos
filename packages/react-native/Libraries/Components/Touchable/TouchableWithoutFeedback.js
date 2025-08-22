@@ -286,6 +286,6 @@ export default function TouchableWithoutFeedback(
     }
   }
 
-  // $FlowFixMe[incompatible-call]
+  // $FlowFixMe[incompatible-type]
   return cloneElement(element, elementProps, ...children);
 }

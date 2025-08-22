@@ -275,7 +275,8 @@ public class ReactModalHostView(context: ThemedReactContext) :
     val window = requireNotNull(newDialog.window)
     window.setFlags(
         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+    )
 
     newDialog.setContentView(contentView)
     updateProperties()
@@ -344,7 +345,8 @@ public class ReactModalHostView(context: ThemedReactContext) :
 
             return false
           }
-        })
+        }
+    )
 
     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     if (hardwareAccelerated) {
@@ -353,7 +355,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
     val flagSecureSet = isFlagSecureSet(currentActivity)
     if (flagSecureSet) {
       window.setFlags(
-          WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+          WindowManager.LayoutParams.FLAG_SECURE,
+          WindowManager.LayoutParams.FLAG_SECURE,
+      )
     }
     if (currentActivity?.isFinishing == false) {
       newDialog.show()
@@ -417,7 +421,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
       } else {
         dialogWindow.setDimAmount(0.5f)
         dialogWindow.setFlags(
-            WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+            WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+        )
       }
     } catch (e: IllegalArgumentException) {
       // This is to prevent a crash from the following error, without a clear repro steps:
@@ -617,7 +623,8 @@ public class ReactModalHostView(context: ThemedReactContext) :
                       .getNativeModule(UIManagerModule::class.java)
                       ?.updateNodeSize(id, viewWidth, viewHeight)
                 }
-              })
+              }
+          )
         }
       }
     }

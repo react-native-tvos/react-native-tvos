@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6ff8aafa0de2f6c5cf8b42e0d43302e9>>
+ * @generated SignedSource<<a7bd9fcbbcb19ee8a939b4c08e0fd508>>
  */
 
 /**
@@ -106,10 +106,6 @@ bool ReactNativeFeatureFlags::enableFabricRenderer() {
   return getAccessor().enableFabricRenderer();
 }
 
-bool ReactNativeFeatureFlags::enableFixForParentTagDuringReparenting() {
-  return getAccessor().enableFixForParentTagDuringReparenting();
-}
-
 bool ReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout() {
   return getAccessor().enableFontScaleChangesUpdatingLayout();
 }
@@ -180,6 +176,10 @@ bool ReactNativeFeatureFlags::enableViewCulling() {
 
 bool ReactNativeFeatureFlags::enableViewRecycling() {
   return getAccessor().enableViewRecycling();
+}
+
+bool ReactNativeFeatureFlags::enableViewRecyclingForScrollView() {
+  return getAccessor().enableViewRecyclingForScrollView();
 }
 
 bool ReactNativeFeatureFlags::enableViewRecyclingForText() {

@@ -139,7 +139,9 @@ class RootViewTest {
                 "identifier",
                 0.0,
                 "targetSurface",
-                -1))
+                -1,
+            )
+        )
 
     // Test ACTION_UP event
     reset(eventEmitterModuleMock, eventDispatcher)
@@ -171,13 +173,16 @@ class RootViewTest {
                 "identifier",
                 0.0,
                 "targetSurface",
-                -1))
+                -1,
+            )
+        )
 
     // Test other action
     reset(eventDispatcher)
 
     rootView.onTouchEvent(
-        MotionEvent.obtain(50, Date().time, MotionEvent.ACTION_HOVER_MOVE, 0f, 0f, 0))
+        MotionEvent.obtain(50, Date().time, MotionEvent.ACTION_HOVER_MOVE, 0f, 0f, 0)
+    )
 
     verifyNoMoreInteractions(eventDispatcher)
   }

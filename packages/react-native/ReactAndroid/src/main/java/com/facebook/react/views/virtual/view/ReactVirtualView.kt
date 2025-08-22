@@ -18,6 +18,7 @@ import com.facebook.common.logging.FLog
 import com.facebook.react.R
 import com.facebook.react.common.build.ReactBuildConfig
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags
+import com.facebook.react.uimanager.ReactClippingViewGroup
 import com.facebook.react.uimanager.ReactRoot
 import com.facebook.react.views.scroll.ReactHorizontalScrollView
 import com.facebook.react.views.scroll.ReactScrollView
@@ -56,6 +57,7 @@ public class ReactVirtualView(context: Context) :
   private val lastRect: Rect = Rect()
   private val targetRect: Rect = Rect()
   private val thresholdRect: Rect = Rect()
+  private val lastClippingRect: Rect = Rect()
 
   /** Cumulative offset of parents' `left` values within the scroll view */
   private var offsetX: Int = 0
@@ -77,6 +79,7 @@ public class ReactVirtualView(context: Context) :
     offsetX = 0
     offsetY = 0
     offsetChanged = false
+    lastClippingRect.setEmpty()
   }
 
   override fun onAttachedToWindow() {
@@ -127,7 +130,7 @@ public class ReactVirtualView(context: Context) :
       oldLeft: Int,
       oldTop: Int,
       oldRight: Int,
-      oldBottom: Int
+      oldBottom: Int,
   ) {
     offsetChanged = offsetChanged || oldLeft != left || oldTop != top
     dispatchOnModeChangeIfNeeded(true)
@@ -141,7 +144,7 @@ public class ReactVirtualView(context: Context) :
       scrollView: ViewGroup?,
       scrollEventType: ScrollEventType?,
       xVelocity: Float,
-      yVelocity: Float
+      yVelocity: Float,
   ) {
     if (scrollView == parentScrollView) {
       dispatchOnModeChangeIfNeeded(checkRectChange = false)
@@ -167,6 +170,42 @@ public class ReactVirtualView(context: Context) :
       offsetChanged = true
       dispatchOnModeChangeIfNeeded(false)
     }
+  }
+
+  override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+    super.onSizeChanged(w, h, oldw, oldh)
+    dispatchOnModeChangeIfNeeded(true)
+  }
+
+  // Note: We co-opt subview clipping on ReactVirtualView by returning the
+  // clipping rect of the ScrollView. This means we clip the children of ReactVirtualView
+  // when they are out of the viewport, but not ReactVirtualView itself.
+  override fun updateClippingRect(excludedViews: Set<Int>?) {
+    if (!_removeClippedSubviews) {
+      return
+    }
+
+    // If no ScrollView, or ScrollView has disabled removeClippedSubviews, use default behavior
+    if (
+        parentScrollView == null ||
+            !((parentScrollView as ReactClippingViewGroup)?.removeClippedSubviews ?: false)
+    ) {
+      super.updateClippingRect(excludedViews)
+      return
+    }
+
+    val clippingRect = checkNotNull(clippingRect)
+
+    (parentScrollView as ReactClippingViewGroup).getClippingRect(clippingRect)
+    clippingRect.intersect(targetRect)
+    clippingRect.offset(-targetRect.left, -targetRect.top)
+
+    if (lastClippingRect == clippingRect) {
+      return
+    }
+
+    updateClippingToRect(clippingRect, excludedViews)
+    lastClippingRect.set(clippingRect)
   }
 
   private fun dispatchOnModeChangeIfNeeded(checkRectChange: Boolean) {
@@ -195,6 +234,9 @@ public class ReactVirtualView(context: Context) :
       }
       return
     }
+
+    updateClippingRect()
+
     if (checkRectChange) {
       if (!lastRect.isEmpty && lastRect == targetRect) {
         debugLog("dispatchOnModeChangeIfNeeded") { "no rect change" }
@@ -219,7 +261,8 @@ public class ReactVirtualView(context: Context) :
       if (prerenderRatio > 0.0) {
         thresholdRect.inset(
             (-thresholdRect.width() * prerenderRatio).toInt(),
-            (-thresholdRect.height() * prerenderRatio).toInt())
+            (-thresholdRect.height() * prerenderRatio).toInt(),
+        )
         prerender = rectsOverlap(targetRect, thresholdRect)
       }
       if (prerender) {
@@ -271,7 +314,8 @@ public class ReactVirtualView(context: Context) :
     debugLog("Mode change") { "$oldMode->$newMode" }
     Systrace.beginSection(
         Systrace.TRACE_TAG_REACT,
-        "VirtualView::mode change $oldMode -> $newMode, nativeID=$nativeId")
+        "VirtualView::mode change $oldMode -> $newMode, nativeID=$nativeId",
+    )
     when (newMode) {
       VirtualViewMode.Visible -> {
         if (renderState == VirtualViewRenderState.Unknown) {

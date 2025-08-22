@@ -84,16 +84,18 @@ public object DisplayMetricsHolder {
     return WritableNativeMap().apply {
       putMap(
           "windowPhysicalPixels",
-          getPhysicalPixelsWritableMap(windowDisplayMetrics as DisplayMetrics, fontScale))
+          getPhysicalPixelsWritableMap(windowDisplayMetrics as DisplayMetrics, fontScale),
+      )
       putMap(
           "screenPhysicalPixels",
-          getPhysicalPixelsWritableMap(screenDisplayMetrics as DisplayMetrics, fontScale))
+          getPhysicalPixelsWritableMap(screenDisplayMetrics as DisplayMetrics, fontScale),
+      )
     }
   }
 
   private fun getPhysicalPixelsWritableMap(
       displayMetrics: DisplayMetrics,
-      fontScale: Double
+      fontScale: Double,
   ): WritableMap =
       WritableNativeMap().apply {
         putInt("width", displayMetrics.widthPixels)
@@ -109,7 +111,8 @@ public object DisplayMetricsHolder {
         .getInsets(
             WindowInsetsCompat.Type.statusBars() or
                 WindowInsetsCompat.Type.navigationBars() or
-                WindowInsetsCompat.Type.displayCutout())
+                WindowInsetsCompat.Type.displayCutout()
+        )
         .top
   }
 
@@ -132,11 +135,13 @@ public object DisplayMetricsHolder {
         windowInsets.getInsets(
             WindowInsetsCompat.Type.statusBars() or
                 WindowInsetsCompat.Type.navigationBars() or
-                WindowInsetsCompat.Type.displayCutout())
+                WindowInsetsCompat.Type.displayCutout()
+        )
     val verticalInsets = insets.top + insets.bottom
     return encodeFloatsToLong(
         (checkNotNull(screenDisplayMetrics).widthPixels).toFloat().pxToDp(),
-        (checkNotNull(screenDisplayMetrics).heightPixels - verticalInsets).toFloat().pxToDp())
+        (checkNotNull(screenDisplayMetrics).heightPixels - verticalInsets).toFloat().pxToDp(),
+    )
   }
 
   internal fun encodeFloatsToLong(width: Float, height: Float): Long =

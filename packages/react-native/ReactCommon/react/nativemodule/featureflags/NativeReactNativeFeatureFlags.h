@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<57b7676134d7d0782f576b852c71aa1f>>
+ * @generated SignedSource<<89c5d22cd228da57d82843f7e660f262>>
  */
 
 /**
@@ -76,8 +76,6 @@ class NativeReactNativeFeatureFlags
 
   bool enableFabricRenderer(jsi::Runtime& runtime);
 
-  bool enableFixForParentTagDuringReparenting(jsi::Runtime& runtime);
-
   bool enableFontScaleChangesUpdatingLayout(jsi::Runtime& runtime);
 
   bool enableIOSTextBaselineOffsetPerLine(jsi::Runtime& runtime);
@@ -113,6 +111,8 @@ class NativeReactNativeFeatureFlags
   bool enableViewCulling(jsi::Runtime& runtime);
 
   bool enableViewRecycling(jsi::Runtime& runtime);
+
+  bool enableViewRecyclingForScrollView(jsi::Runtime& runtime);
 
   bool enableViewRecyclingForText(jsi::Runtime& runtime);
 

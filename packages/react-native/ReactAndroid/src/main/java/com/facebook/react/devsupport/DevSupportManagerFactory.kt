@@ -27,7 +27,9 @@ public interface DevSupportManagerFactory {
           "Use the other create() method with useDevSupport parameter for New Architecture. This method will be removed in a future release.",
       replaceWith =
           ReplaceWith(
-              "create(applicationContext, reactInstanceManagerHelper, packagerPathForJSBundleName, enableOnCreate, redBoxHandler, devBundleDownloadListener, minNumShakes, customPackagerCommandHandlers, surfaceDelegateFactory, devLoadingViewManager, pausedInDebuggerOverlayManager)"))
+              "create(applicationContext, reactInstanceManagerHelper, packagerPathForJSBundleName, enableOnCreate, redBoxHandler, devBundleDownloadListener, minNumShakes, customPackagerCommandHandlers, surfaceDelegateFactory, devLoadingViewManager, pausedInDebuggerOverlayManager)"
+          ),
+  )
   public fun create(
       applicationContext: Context,
       reactInstanceManagerHelper: ReactInstanceDevHelper,
@@ -39,7 +41,7 @@ public interface DevSupportManagerFactory {
       customPackagerCommandHandlers: Map<String, RequestHandler>?,
       surfaceDelegateFactory: SurfaceDelegateFactory?,
       devLoadingViewManager: DevLoadingViewManager?,
-      pausedInDebuggerOverlayManager: PausedInDebuggerOverlayManager?
+      pausedInDebuggerOverlayManager: PausedInDebuggerOverlayManager?,
   ): DevSupportManager
 
   /**
@@ -58,6 +60,6 @@ public interface DevSupportManagerFactory {
       surfaceDelegateFactory: SurfaceDelegateFactory?,
       devLoadingViewManager: DevLoadingViewManager?,
       pausedInDebuggerOverlayManager: PausedInDebuggerOverlayManager?,
-      useDevSupport: Boolean
+      useDevSupport: Boolean,
   ): DevSupportManager
 }

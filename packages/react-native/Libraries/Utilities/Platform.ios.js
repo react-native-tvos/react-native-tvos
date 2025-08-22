@@ -83,7 +83,7 @@ const Platform: PlatformType = {
     return this.constants.isMacCatalyst ?? false;
   },
   select: <T>(spec: PlatformSelectSpec<T>): T =>
-    // $FlowFixMe[incompatible-return]
+    // $FlowFixMe[incompatible-type]
     'ios' in spec ? spec.ios : 'native' in spec ? spec.native : spec.default,
 };
 

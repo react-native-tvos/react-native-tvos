@@ -70,7 +70,7 @@ class JReactHostInspectorTarget
   ~JReactHostInspectorTarget() override;
 
   static jni::local_ref<JReactHostInspectorTarget::jhybriddata> initHybrid(
-      jni::alias_ref<JReactHostInspectorTarget::jhybridobject> jThis,
+      jni::alias_ref<JReactHostInspectorTarget::jhybridobject> jobj,
       jni::alias_ref<JReactHostImpl> reactHost,
       jni::alias_ref<JExecutor::javaobject> javaExecutor);
 
@@ -83,9 +83,9 @@ class JReactHostInspectorTarget
   jsinspector_modern::HostTargetMetadata getMetadata() override;
   void onReload(const PageReloadRequest& request) override;
   void onSetPausedInDebuggerMessage(
-      const OverlaySetPausedInDebuggerMessageRequest&) override;
+      const OverlaySetPausedInDebuggerMessageRequest& request) override;
   void unstable_onPerfMonitorUpdate(
-      const PerfMonitorUpdateRequest& /* unused */) override;
+      const jsinspector_modern::PerfMonitorUpdateRequest& request) override;
   void loadNetworkResource(
       const jsinspector_modern::LoadNetworkResourceRequest& params,
       jsinspector_modern::ScopedExecutor<
@@ -93,8 +93,10 @@ class JReactHostInspectorTarget
 
  private:
   JReactHostInspectorTarget(
+      jni::alias_ref<JReactHostInspectorTarget::javaobject> jobj,
       jni::alias_ref<JReactHostImpl> reactHostImpl,
       jni::alias_ref<JExecutor::javaobject> javaExecutor);
+  jni::global_ref<JReactHostInspectorTarget::javaobject> jobj_;
   // This weak reference breaks the cycle between the C++ HostTarget and the
   // Java ReactHostImpl, preventing memory leaks in apps that create multiple
   // ReactHostImpls over time.

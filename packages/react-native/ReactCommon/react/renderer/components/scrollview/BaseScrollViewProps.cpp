@@ -578,7 +578,7 @@ SharedDebugStringConvertibleList BaseScrollViewProps::getDebugProps() const {
               "snapToEnd", snapToEnd, defaultScrollViewProps.snapToEnd),
           debugStringConvertibleItem(
               "isInvertedVirtualizedList",
-              snapToEnd,
+              isInvertedVirtualizedList,
               defaultScrollViewProps.isInvertedVirtualizedList)};
 }
 #endif

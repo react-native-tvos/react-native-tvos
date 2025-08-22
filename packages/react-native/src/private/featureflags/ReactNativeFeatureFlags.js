@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<24a5d3213cbc7cd101d34e059ba5c8c4>>
+ * @generated SignedSource<<825b92d137ed3253e0badd0696605882>>
  * @flow strict
  * @noformat
  */
@@ -35,6 +35,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   enableAccessToHostTreeInFabric: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
+  reduceDefaultPropsInImage: Getter<boolean>,
   reduceDefaultPropsInText: Getter<boolean>,
   shouldUseAnimatedObjectForTransform: Getter<boolean>,
   shouldUseRemoveClippedSubviewsAsDefaultOnIOS: Getter<boolean>,
@@ -66,7 +67,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableEagerRootViewAttachment: Getter<boolean>,
   enableFabricLogs: Getter<boolean>,
   enableFabricRenderer: Getter<boolean>,
-  enableFixForParentTagDuringReparenting: Getter<boolean>,
   enableFontScaleChangesUpdatingLayout: Getter<boolean>,
   enableIOSTextBaselineOffsetPerLine: Getter<boolean>,
   enableIOSViewClipToPaddingBox: Getter<boolean>,
@@ -85,6 +85,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableResourceTimingAPI: Getter<boolean>,
   enableViewCulling: Getter<boolean>,
   enableViewRecycling: Getter<boolean>,
+  enableViewRecyclingForScrollView: Getter<boolean>,
   enableViewRecyclingForText: Getter<boolean>,
   enableViewRecyclingForView: Getter<boolean>,
   enableVirtualViewDebugFeatures: Getter<boolean>,
@@ -139,7 +140,7 @@ export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaS
 /**
  * Enables access to the host tree in Fabric using DOM-compatible APIs.
  */
-export const enableAccessToHostTreeInFabric: Getter<boolean> = createJavaScriptFlagGetter('enableAccessToHostTreeInFabric', false);
+export const enableAccessToHostTreeInFabric: Getter<boolean> = createJavaScriptFlagGetter('enableAccessToHostTreeInFabric', true);
 
 /**
  * Fixing an edge case where the current window size is not properly calculated with fast scrolling. Window size collapsed to 1 element even if windowSize more than the current amount of elements
@@ -150,6 +151,11 @@ export const fixVirtualizeListCollapseWindowSize: Getter<boolean> = createJavaSc
  * Function used to enable / disabled Layout Animations in React Native.
  */
 export const isLayoutAnimationEnabled: Getter<boolean> = createJavaScriptFlagGetter('isLayoutAnimationEnabled', true);
+
+/**
+ * Optimize how default props are processed in Image to avoid unnecessary keys.
+ */
+export const reduceDefaultPropsInImage: Getter<boolean> = createJavaScriptFlagGetter('reduceDefaultPropsInImage', false);
 
 /**
  * Optimize how default props are processed in Text to avoid unnecessary keys.
@@ -256,13 +262,9 @@ export const enableFabricLogs: Getter<boolean> = createNativeFlagGetter('enableF
  */
 export const enableFabricRenderer: Getter<boolean> = createNativeFlagGetter('enableFabricRenderer', false);
 /**
- * This feature flag enables a fix for reparenting fix in differentiator
- */
-export const enableFixForParentTagDuringReparenting: Getter<boolean> = createNativeFlagGetter('enableFixForParentTagDuringReparenting', false);
-/**
  * Enables font scale changes updating layout for measurable nodes.
  */
-export const enableFontScaleChangesUpdatingLayout: Getter<boolean> = createNativeFlagGetter('enableFontScaleChangesUpdatingLayout', false);
+export const enableFontScaleChangesUpdatingLayout: Getter<boolean> = createNativeFlagGetter('enableFontScaleChangesUpdatingLayout', true);
 /**
  * Applies base offset for each line of text separately on iOS.
  */
@@ -331,6 +333,10 @@ export const enableViewCulling: Getter<boolean> = createNativeFlagGetter('enable
  * Enables View Recycling. When enabled, individual ViewManagers must still opt-in.
  */
 export const enableViewRecycling: Getter<boolean> = createNativeFlagGetter('enableViewRecycling', false);
+/**
+ * Enables View Recycling for <ScrollView> via ReactViewGroup/ReactViewManager.
+ */
+export const enableViewRecyclingForScrollView: Getter<boolean> = createNativeFlagGetter('enableViewRecyclingForScrollView', true);
 /**
  * Enables View Recycling for <Text> via ReactTextView/ReactTextViewManager.
  */
@@ -414,11 +420,11 @@ export const useFabricInterop: Getter<boolean> = createNativeFlagGetter('useFabr
 /**
  * Use a native implementation of equals in NativeReadableArray.
  */
-export const useNativeEqualsInNativeReadableArrayAndroid: Getter<boolean> = createNativeFlagGetter('useNativeEqualsInNativeReadableArrayAndroid', false);
+export const useNativeEqualsInNativeReadableArrayAndroid: Getter<boolean> = createNativeFlagGetter('useNativeEqualsInNativeReadableArrayAndroid', true);
 /**
  * Use a native implementation of TransformHelper
  */
-export const useNativeTransformHelperAndroid: Getter<boolean> = createNativeFlagGetter('useNativeTransformHelperAndroid', false);
+export const useNativeTransformHelperAndroid: Getter<boolean> = createNativeFlagGetter('useNativeTransformHelperAndroid', true);
 /**
  * When enabled, the native view configs are used in bridgeless mode.
  */
