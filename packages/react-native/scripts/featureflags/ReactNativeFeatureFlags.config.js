@@ -452,7 +452,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableViewRecyclingForScrollView: {
-      defaultValue: true,
+      defaultValue: false,
       metadata: {
         dateAdded: '2025-08-20',
         description:
@@ -719,13 +719,12 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     useRawPropsJsiValue: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
-        dateAdded: '2024-12-02',
         description:
           'Instead of using folly::dynamic as internal representation in RawProps and RawValue, use jsi::Value',
         expectedReleaseValue: true,
-        purpose: 'experimentation',
+        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },
@@ -760,6 +759,17 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'release',
       },
       ossReleaseStage: 'canary',
+    },
+    virtualViewHysteresisRatio: {
+      defaultValue: 0,
+      metadata: {
+        dateAdded: '2025-08-22',
+        description:
+          'Sets a hysteresis window for transition between prerender and hidden modes.',
+        expectedReleaseValue: 1,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
     },
     virtualViewPrerenderRatio: {
       defaultValue: 5,
@@ -804,6 +814,17 @@ const definitions: FeatureFlagDefinitions = {
         description:
           'Use the deferred cell render update mechanism for focus change in FlatList.',
         expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    disableMaintainVisibleContentPosition: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-08-26',
+        description:
+          'Disable prop maintainVisibleContentPosition in ScrollView',
+        expectedReleaseValue: false,
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
@@ -888,6 +909,16 @@ const definitions: FeatureFlagDefinitions = {
       metadata: {
         dateAdded: '2024-03-05',
         description: 'Enables use of setNativeProps in JS driven animations.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    virtualViewActivityBehavior: {
+      defaultValue: 'no-activity',
+      metadata: {
+        dateAdded: '2025-08-27',
+        description: 'Changes whether and how `VirtualView` uses `Activity`.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

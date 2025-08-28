@@ -21,6 +21,7 @@
 
 @protocol UIScrollViewDelegate;
 
+__attribute__((deprecated("This API will be removed along with the legacy architecture.")))
 #if TARGET_OS_TV
 @interface RCTScrollView : RCTTVView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
 #else

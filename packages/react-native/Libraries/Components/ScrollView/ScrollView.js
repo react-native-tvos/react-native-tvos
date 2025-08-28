@@ -31,6 +31,7 @@ import {
   VScrollContentViewNativeComponent,
   VScrollViewNativeComponent,
 } from '../../../src/private/components/scrollview/VScrollViewNativeComponents';
+import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import AnimatedImplementation from '../../Animated/AnimatedImplementation';
 import FrameRateLogger from '../../Interaction/FrameRateLogger';
 import {findNodeHandle} from '../../ReactNative/RendererProxy';
@@ -1758,8 +1759,11 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
 
     const baseStyle = horizontal ? styles.baseHorizontal : styles.baseVertical;
 
-    const {experimental_endDraggingSensitivityMultiplier, ...otherProps} =
-      this.props;
+    const {
+      experimental_endDraggingSensitivityMultiplier,
+      maintainVisibleContentPosition,
+      ...otherProps
+    } = this.props;
     const props = {
       ...otherProps,
       alwaysBounceHorizontal,
@@ -1814,6 +1818,10 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
           this.props.snapToInterval != null ||
           this.props.snapToOffsets != null,
       }),
+      maintainVisibleContentPosition:
+        ReactNativeFeatureFlags.disableMaintainVisibleContentPosition()
+          ? undefined
+          : this.props.maintainVisibleContentPosition,
     };
 
     const {decelerationRate} = this.props;
