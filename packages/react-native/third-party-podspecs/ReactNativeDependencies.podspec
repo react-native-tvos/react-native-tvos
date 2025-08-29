@@ -4,6 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 require "json"
+require_relative "../scripts/cocoapods/utils.rb"
 
 begin
   react_native_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
@@ -20,12 +21,13 @@ end
 # package.json
 package = JSON.parse(File.read(File.join(react_native_path, "package.json")))
 version = package['version']
+core_version = ReactNativePodsUtils.core_version_for_tv_version(version)
 
 source = ReactNativeDependenciesUtils.resolve_podspec_source()
 
 Pod::Spec.new do |spec|
   spec.name                 = 'ReactNativeDependencies'
-  spec.version              = version
+  spec.version              = core_version
   spec.summary              = 'React Native Dependencies'
   spec.description          = 'ReactNativeDependencies is a podspec that contains all the third-party dependencies of React Native.'
   spec.homepage             = 'https://github.com/facebook/react-native'
@@ -82,7 +84,7 @@ Pod::Spec.new do |spec|
         CONFIG="Debug"
       fi
 
-      "$NODE_BINARY" "$REACT_NATIVE_PATH/third-party-podspecs/replace_dependencies_version.js" -c "$CONFIG" -r "#{version}" -p "$PODS_ROOT"
+      "$NODE_BINARY" "$REACT_NATIVE_PATH/third-party-podspecs/replace_dependencies_version.js" -c "$CONFIG" -r "#{core_version}" -p "$PODS_ROOT"
       EOS
     }
 
