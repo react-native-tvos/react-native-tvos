@@ -57,7 +57,7 @@ function buildSwiftPackage(
   outputFolder /*: string */,
 ) {
   const buildCommand =
-    `xcodebuild -scheme React -destination "generic/platform=${platform}" -derivedDataPath "${outputFolder}" ` +
+    `set -o pipefail && xcodebuild -scheme React -destination "generic/platform=${platform}" -derivedDataPath "${outputFolder}" ` +
     `-configuration "${buildType}" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES OTHER_SWIFT_FLAGS="-no-verify-emitted-module-interface" ` +
     `DEBUG_INFORMATION_FORMAT="dwarf-with-dsym" | npx @expo/xcpretty`;
   buildLog(`Building Swift package for ${buildType}`);

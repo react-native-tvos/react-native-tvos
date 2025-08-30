@@ -80,7 +80,7 @@ function buildXCFrameworks(
     })
     .join(' ');
 
-  const buildCommand = `xcodebuild -create-xcframework ${frameworks} -output ${outputPath} -allow-internal-distribution`;
+  const buildCommand = `set -o pipefail && xcodebuild -create-xcframework ${frameworks} -output ${outputPath} -allow-internal-distribution | npx @expo/xcpretty`;
 
   frameworkLog(buildCommand);
   try {
