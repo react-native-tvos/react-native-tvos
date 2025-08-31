@@ -23,7 +23,10 @@ const {
 const { buildDir } = easConstants;
 
 const executeScriptAsync = async function () {
-
+  if (process.env.RNTV_RELEASE_BUILD !== '1') {
+    echo('Skipping Hermes download for non-release build.');
+    return;
+  }
   const HERMES_INSTALL_LOCATION = path.resolve(rnPackagePath, 'sdks');
   const HERMES_SOURCE_DEST_PATH = path.join(HERMES_INSTALL_LOCATION, 'hermes');
   const HERMES_VERSION_PATH = path.resolve(

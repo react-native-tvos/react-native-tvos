@@ -1,5 +1,5 @@
 build:
-  name: Build RNCore framework for Apple platforms
+  name: Build RNTester release build for Apple platforms
   steps:
     - eas/checkout
     - run:
@@ -47,39 +47,12 @@ build:
           set-env RCT_USE_RN_DEP 1
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
     - run:
-        name: Build RNCore framework (Debug)
-        working_directory: ../../packages/react-native
-        command: |
-          node scripts/ios-prebuild -s -f Debug
-          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
-          do
-            echo "Execute RNCore prebuild Debug build for $platform..."
-            node scripts/ios-prebuild.js -b -f Debug -p $platform
-          done
-          echo "Execute RNCore prebuild framework compose..."
-          node scripts/ios-prebuild.js -c -f Debug -i "$RNCORE_CODE_SIGNING_IDENTITY"
-          # This is needed for local builds
-          rm -rf $ROOT_DIR/packages/build
-    - run:
-        name: Create RNCore framework tarball (Debug)
-        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
-        command: |
-          echo "Create RNCore framework tarball..."
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework
-          echo "RNCore Debug framework tarball created."
-    - run:
-        name: Create RNCore framework DSYMS tarball (Debug)
-        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug/Symbols
-        command: |
-          echo "Create RNCore framework tarball..."
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
-          echo "RNCore Debug framework tarball created."
-    - run:
-        name: RNCore prebuild (Release)
+        name: Build minimal RNCore framework (Release)
         working_directory: ../../packages/react-native
         command: |
           node scripts/ios-prebuild -s -f Release
-          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          # We only need the simulator builds for release build testing
+          for platform in ios-simulator tvos-simulator
           do
             echo "Execute RNCore prebuild Release build for $platform..."
             node scripts/ios-prebuild.js -b -f Release -p $platform
@@ -95,6 +68,8 @@ build:
         command: |
           echo "Create RNCore framework tarball..."
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.xcframework.tar.gz React.xcframework
+          echo "Create debug tarball also (needed by rncore scripts)..."
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework
           echo "RNCore Release framework tarball created."
     - run:
         name: Create RNCore framework DSYMS tarball (Release)
@@ -102,6 +77,8 @@ build:
         command: |
           echo "Create RNCore framework tarball..."
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.framework.dSYM.tar.gz *
+          echo "Create debug tarball also (needed by rncore scripts)..."
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
           echo "RNCore Release framework tarball created."
     - run:
         name: Create RNCore framework Maven artifacts
@@ -110,7 +87,7 @@ build:
           echo "Publishing react-native-artifacts to Maven local repository..."
           ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
     - run:
-        name: Build RNTester for iOS using RNCore artifacts
+        name: Build release RNTester for iOS using RNCore minimal artifacts
         working_directory: ../../packages/rn-tester
         command: |
           mkdir $ROOT_DIR/RNTester-iOS
@@ -123,12 +100,12 @@ build:
           echo "Setting up RNTester..."
           yarn setup-ios-hermes
           echo "Building RNTester..."
-          yarn build-ios-hermes
+          yarn build-ios-hermes-release
           echo "Build completed."
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app $ROOT_DIR/RNTester-iOS
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-iOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Release-iphonesimulator/RNTester.app $ROOT_DIR/RNTester-iOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Release-iphonesimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-iOS
     - run:
-        name: Build RNTester for tvOS using RNCore artifacts
+        name: Build release RNTester for tvOS using RNCore artifacts
         working_directory: ../../packages/rn-tester
         command: |
           mkdir $ROOT_DIR/RNTester-tvOS
@@ -141,27 +118,25 @@ build:
           echo "Setting up RNTester..."
           yarn setup-tvos-hermes
           echo "Building RNTester..."
-          yarn build-tvos-hermes
+          yarn build-tvos-hermes-release
           echo "Build completed."
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Release-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
+          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Release-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
     - run:
-        name: Package Apple artifacts
+        name: Package RNTester release artifacts
         working_directory: ../..
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
           if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
-            (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
-            (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
+            (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone-release.tgz *)
+            (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv-release.tgz *)
           fi
-          (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
     - eas/upload_artifact:
-        name: Upload RNCore Maven artifacts and RNTester apps
+        name: Upload RNTester release artifacts
         inputs:
           type: build-artifact
           path: |
-            react-native-artifacts-*.tgz
             rntester-*.tgz
 
 functions:

@@ -2,18 +2,24 @@ name: Run RNTV builds
 
 on:
   push:
-    branches: [release-0.81*]
+    branches: [release-*]
 
 jobs:
   build_apple:
-    name: Create Apple artifacts and RNTester
+    name: Create Apple artifacts and RNTester debug images
     type: build
     params:
       platform: ios
-      profile: rncore-release
+      profile: rncore
   build_android:
     name: Create Android artifacts and RNTester
     type: build
     params:
       platform: android
       profile: android-artifacts
+  build_rntester_apple:
+    name: Create Apple RNTester release images
+    type: build
+    params:
+      platform: ios
+      profile: rntester-apple-release

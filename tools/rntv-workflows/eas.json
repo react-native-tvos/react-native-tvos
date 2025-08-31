@@ -17,12 +17,6 @@
       "distribution": "internal",
       "node": "22.14.0"
     },
-    "rntester-prebuild": {
-      "extends": "base",
-      "ios": {
-        "config": "build-rntester-apple-prebuild.yml"
-      }
-    },
     "rntester": {
       "extends": "base",
       "ios": {
@@ -32,47 +26,34 @@
         "config": "build-rntester-android.yml"
       }
     },
-    "rncore": {
+    "rncore-main": {
       "extends": "base",
       "ios": {
         "config": "build-rncore-apple.yml"
       }
     },
-    "rntester-prebuild-release": {
-      "extends": "rntester-prebuild",
+    "rncore": {
+      "extends": "rncore-main",
       "env": {
         "RNTV_RELEASE_BUILD": "1"
       }
     },
-    "rntester-release": {
-      "extends": "rntester",
-      "env": {
-        "RNTV_RELEASE_BUILD": "1"
+    "rntester-apple-release-main": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rntester-apple-release.yml"
       }
     },
-    "rncore-release": {
-      "extends": "rncore",
+    "rntester-apple-release": {
+      "extends": "rntester-apple-release-main",
       "env": {
         "RNTV_RELEASE_BUILD": "1"
-      }
-    },
-    "rncore-release-publish": {
-      "extends": "rncore",
-      "env": {
-        "RNTV_RELEASE_BUILD": "1",
-        "PUBLISH_TO_SONATYPE": "1"
       }
     },
     "android-artifacts": {
       "extends": "base",
       "android": {
         "config": "build-android-artifacts.yml"
-      }
-    },
-    "android-artifacts-publish": {
-      "extends": "android-artifacts",
-      "env": {
-        "PUBLISH_TO_SONATYPE": "1"
       }
     }
   }
