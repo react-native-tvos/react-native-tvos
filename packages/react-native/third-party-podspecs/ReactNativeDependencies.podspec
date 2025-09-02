@@ -72,7 +72,7 @@ Pod::Spec.new do |spec|
   CMD
 
   # If we are passing a local tarball, we don't want to switch between Debug and Release
-  if !ENV["RCT_USE_LOCAL_RN_DEP"]
+  if !ENV["RCT_USE_LOCAL_RN_DEP"] && !ENV["REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"]
     script_phase = {
       :name => "[RNDeps] Replace React Native Dependencies for the right configuration, if needed",
       :execution_position => :before_compile,
