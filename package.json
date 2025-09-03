@@ -120,5 +120,8 @@
     "react-is": "19.1.1",
     "on-headers": "1.1.0",
     "compression": "1.8.1"
+  },
+  "dependencies": {
+    "yarn.lock": "^0.0.1-security"
   }
 }
