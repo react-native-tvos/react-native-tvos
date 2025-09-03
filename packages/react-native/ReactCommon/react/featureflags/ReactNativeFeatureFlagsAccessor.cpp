@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3c5588a851e6cdefaba22236c5ebb828>>
+ * @generated SignedSource<<5a84827d553809907a015b01cc5cff66>>
  */
 
 /**
@@ -461,6 +461,24 @@ bool ReactNativeFeatureFlagsAccessor::enableImagePrefetchingAndroid() {
   return flagValue.value();
 }
 
+bool ReactNativeFeatureFlagsAccessor::enableImagePrefetchingOnUiThreadAndroid() {
+  auto flagValue = enableImagePrefetchingOnUiThreadAndroid_.load();
+
+  if (!flagValue.has_value()) {
+    // This block is not exclusive but it is not necessary.
+    // If multiple threads try to initialize the feature flag, we would only
+    // be accessing the provider multiple times but the end state of this
+    // instance and the returned flag value would be the same.
+
+    markFlagAsAccessed(24, "enableImagePrefetchingOnUiThreadAndroid");
+
+    flagValue = currentProvider_->enableImagePrefetchingOnUiThreadAndroid();
+    enableImagePrefetchingOnUiThreadAndroid_ = flagValue;
+  }
+
+  return flagValue.value();
+}
+
 bool ReactNativeFeatureFlagsAccessor::enableImmediateUpdateModeForContentOffsetChanges() {
   auto flagValue = enableImmediateUpdateModeForContentOffsetChanges_.load();
 
@@ -470,7 +488,7 @@ bool ReactNativeFeatureFlagsAccessor::enableImmediateUpdateModeForContentOffsetC
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(24, "enableImmediateUpdateModeForContentOffsetChanges");
+    markFlagAsAccessed(25, "enableImmediateUpdateModeForContentOffsetChanges");
 
     flagValue = currentProvider_->enableImmediateUpdateModeForContentOffsetChanges();
     enableImmediateUpdateModeForContentOffsetChanges_ = flagValue;
@@ -488,7 +506,7 @@ bool ReactNativeFeatureFlagsAccessor::enableInteropViewManagerClassLookUpOptimiz
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(25, "enableInteropViewManagerClassLookUpOptimizationIOS");
+    markFlagAsAccessed(26, "enableInteropViewManagerClassLookUpOptimizationIOS");
 
     flagValue = currentProvider_->enableInteropViewManagerClassLookUpOptimizationIOS();
     enableInteropViewManagerClassLookUpOptimizationIOS_ = flagValue;
@@ -506,7 +524,7 @@ bool ReactNativeFeatureFlagsAccessor::enableLayoutAnimationsOnAndroid() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(26, "enableLayoutAnimationsOnAndroid");
+    markFlagAsAccessed(27, "enableLayoutAnimationsOnAndroid");
 
     flagValue = currentProvider_->enableLayoutAnimationsOnAndroid();
     enableLayoutAnimationsOnAndroid_ = flagValue;
@@ -524,7 +542,7 @@ bool ReactNativeFeatureFlagsAccessor::enableLayoutAnimationsOnIOS() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(27, "enableLayoutAnimationsOnIOS");
+    markFlagAsAccessed(28, "enableLayoutAnimationsOnIOS");
 
     flagValue = currentProvider_->enableLayoutAnimationsOnIOS();
     enableLayoutAnimationsOnIOS_ = flagValue;
@@ -542,7 +560,7 @@ bool ReactNativeFeatureFlagsAccessor::enableMainQueueCoordinatorOnIOS() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(28, "enableMainQueueCoordinatorOnIOS");
+    markFlagAsAccessed(29, "enableMainQueueCoordinatorOnIOS");
 
     flagValue = currentProvider_->enableMainQueueCoordinatorOnIOS();
     enableMainQueueCoordinatorOnIOS_ = flagValue;
@@ -560,7 +578,7 @@ bool ReactNativeFeatureFlagsAccessor::enableModuleArgumentNSNullConversionIOS() 
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(29, "enableModuleArgumentNSNullConversionIOS");
+    markFlagAsAccessed(30, "enableModuleArgumentNSNullConversionIOS");
 
     flagValue = currentProvider_->enableModuleArgumentNSNullConversionIOS();
     enableModuleArgumentNSNullConversionIOS_ = flagValue;
@@ -578,7 +596,7 @@ bool ReactNativeFeatureFlagsAccessor::enableNativeCSSParsing() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(30, "enableNativeCSSParsing");
+    markFlagAsAccessed(31, "enableNativeCSSParsing");
 
     flagValue = currentProvider_->enableNativeCSSParsing();
     enableNativeCSSParsing_ = flagValue;
@@ -596,28 +614,10 @@ bool ReactNativeFeatureFlagsAccessor::enableNetworkEventReporting() {
     // be accessing the provider multiple times but the end state of this
     // instance and the returned flag value would be the same.
 
-    markFlagAsAccessed(31, "enableNetworkEventReporting");
+    markFlagAsAccessed(32, "enableNetworkEventReporting");
 
     flagValue = currentProvider_->enableNetworkEventReporting();
     enableNetworkEventReporting_ = flagValue;
-  }
-
-  return flagValue.value();
-}
-
-bool ReactNativeFeatureFlagsAccessor::enableNewBackgroundAndBorderDrawables() {
-  auto flagValue = enableNewBackgroundAndBorderDrawables_.load();
-
-  if (!flagValue.has_value()) {
-    // This block is not exclusive but it is not necessary.
-    // If multiple threads try to initialize the feature flag, we would only
-    // be accessing the provider multiple times but the end state of this
-    // instance and the returned flag value would be the same.
-
-    markFlagAsAccessed(32, "enableNewBackgroundAndBorderDrawables");
-
-    flagValue = currentProvider_->enableNewBackgroundAndBorderDrawables();
-    enableNewBackgroundAndBorderDrawables_ = flagValue;
   }
 
   return flagValue.value();

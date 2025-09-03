@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a76f1a1e8ba0d65b689b4b87d33d7ced>>
+ * @generated SignedSource<<1285e1c404d7a9554a5285ac3dc63cd1>>
  */
 
 /**
@@ -123,6 +123,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableImagePrefetchingOnUiThreadAndroid() override {
+    return false;
+  }
+
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     return false;
   }
@@ -153,10 +157,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool enableNetworkEventReporting() override {
     return false;
-  }
-
-  bool enableNewBackgroundAndBorderDrawables() override {
-    return true;
   }
 
   bool enablePreparedTextLayout() override {

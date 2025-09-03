@@ -303,6 +303,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableImagePrefetchingOnUiThreadAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-09-02',
+        description:
+          'When enabled, Android will initiate image prefetch requested on ImageShadowNode::layout on the UI thread',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableImmediateUpdateModeForContentOffsetChanges: {
       defaultValue: false,
       metadata: {
@@ -384,17 +395,6 @@ const definitions: FeatureFlagDefinitions = {
           'Enable network event reporting hooks in each native platform through `NetworkReporter`. This flag should be combined with `enableResourceTimingAPI` and `fuseboxNetworkInspectionEnabled` to enable end-to-end reporting behaviour via the Web Performance API and CDP debugging respectively.',
         expectedReleaseValue: true,
         purpose: 'release',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableNewBackgroundAndBorderDrawables: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2024-09-24',
-        description:
-          'Use BackgroundDrawable and BorderDrawable instead of CSSBackgroundDrawable',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
     },
@@ -838,6 +838,16 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'release',
       },
       ossReleaseStage: 'stable',
+    },
+    enableVirtualViewExperimental: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-08-29',
+        description: 'Enables the experimental version of `VirtualView`.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
     },
     fixVirtualizeListCollapseWindowSize: {
       defaultValue: false,

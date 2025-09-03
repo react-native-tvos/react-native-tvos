@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<392da016e0bf4193b72c44a508811e10>>
+ * @generated SignedSource<<7dbb21bddd9c2ae447c83923a25372e4>>
  */
 
 /**
@@ -44,6 +44,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
   private var enableImagePrefetchingAndroidCache: Boolean? = null
+  private var enableImagePrefetchingOnUiThreadAndroidCache: Boolean? = null
   private var enableImmediateUpdateModeForContentOffsetChangesCache: Boolean? = null
   private var enableInteropViewManagerClassLookUpOptimizationIOSCache: Boolean? = null
   private var enableLayoutAnimationsOnAndroidCache: Boolean? = null
@@ -52,7 +53,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableModuleArgumentNSNullConversionIOSCache: Boolean? = null
   private var enableNativeCSSParsingCache: Boolean? = null
   private var enableNetworkEventReportingCache: Boolean? = null
-  private var enableNewBackgroundAndBorderDrawablesCache: Boolean? = null
   private var enablePreparedTextLayoutCache: Boolean? = null
   private var enablePropsUpdateReconciliationAndroidCache: Boolean? = null
   private var enableResourceTimingAPICache: Boolean? = null
@@ -306,6 +306,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun enableImagePrefetchingOnUiThreadAndroid(): Boolean {
+    var cached = enableImagePrefetchingOnUiThreadAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableImagePrefetchingOnUiThreadAndroid()
+      enableImagePrefetchingOnUiThreadAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean {
     var cached = enableImmediateUpdateModeForContentOffsetChangesCache
     if (cached == null) {
@@ -374,15 +383,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableNetworkEventReporting()
       enableNetworkEventReportingCache = cached
-    }
-    return cached
-  }
-
-  override fun enableNewBackgroundAndBorderDrawables(): Boolean {
-    var cached = enableNewBackgroundAndBorderDrawablesCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.enableNewBackgroundAndBorderDrawables()
-      enableNewBackgroundAndBorderDrawablesCache = cached
     }
     return cached
   }

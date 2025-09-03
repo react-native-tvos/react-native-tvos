@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<eee81e4e9bb13ef5134d4e2d79876b38>>
+ * @generated SignedSource<<83c1c5b181d47f4a54cb097f8d31c48a>>
  */
 
 /**
@@ -160,6 +160,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableImagePrefetchingAndroid();
 
   /**
+   * When enabled, Android will initiate image prefetch requested on ImageShadowNode::layout on the UI thread
+   */
+  RN_EXPORT static bool enableImagePrefetchingOnUiThreadAndroid();
+
+  /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
    */
   RN_EXPORT static bool enableImmediateUpdateModeForContentOffsetChanges();
@@ -198,11 +203,6 @@ class ReactNativeFeatureFlags {
    * Enable network event reporting hooks in each native platform through `NetworkReporter`. This flag should be combined with `enableResourceTimingAPI` and `fuseboxNetworkInspectionEnabled` to enable end-to-end reporting behaviour via the Web Performance API and CDP debugging respectively.
    */
   RN_EXPORT static bool enableNetworkEventReporting();
-
-  /**
-   * Use BackgroundDrawable and BorderDrawable instead of CSSBackgroundDrawable
-   */
-  RN_EXPORT static bool enableNewBackgroundAndBorderDrawables();
 
   /**
    * Enables caching text layout artifacts for later reuse

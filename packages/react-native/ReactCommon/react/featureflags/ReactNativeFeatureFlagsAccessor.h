@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f1eb31a7412bff743a5c581224d71e2a>>
+ * @generated SignedSource<<3e2e6e95c530a18cfd248908e99d6878>>
  */
 
 /**
@@ -56,6 +56,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableIOSTextBaselineOffsetPerLine();
   bool enableIOSViewClipToPaddingBox();
   bool enableImagePrefetchingAndroid();
+  bool enableImagePrefetchingOnUiThreadAndroid();
   bool enableImmediateUpdateModeForContentOffsetChanges();
   bool enableInteropViewManagerClassLookUpOptimizationIOS();
   bool enableLayoutAnimationsOnAndroid();
@@ -64,7 +65,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableModuleArgumentNSNullConversionIOS();
   bool enableNativeCSSParsing();
   bool enableNetworkEventReporting();
-  bool enableNewBackgroundAndBorderDrawables();
   bool enablePreparedTextLayout();
   bool enablePropsUpdateReconciliationAndroid();
   bool enableResourceTimingAPI();
@@ -138,6 +138,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableIOSTextBaselineOffsetPerLine_;
   std::atomic<std::optional<bool>> enableIOSViewClipToPaddingBox_;
   std::atomic<std::optional<bool>> enableImagePrefetchingAndroid_;
+  std::atomic<std::optional<bool>> enableImagePrefetchingOnUiThreadAndroid_;
   std::atomic<std::optional<bool>> enableImmediateUpdateModeForContentOffsetChanges_;
   std::atomic<std::optional<bool>> enableInteropViewManagerClassLookUpOptimizationIOS_;
   std::atomic<std::optional<bool>> enableLayoutAnimationsOnAndroid_;
@@ -146,7 +147,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableModuleArgumentNSNullConversionIOS_;
   std::atomic<std::optional<bool>> enableNativeCSSParsing_;
   std::atomic<std::optional<bool>> enableNetworkEventReporting_;
-  std::atomic<std::optional<bool>> enableNewBackgroundAndBorderDrawables_;
   std::atomic<std::optional<bool>> enablePreparedTextLayout_;
   std::atomic<std::optional<bool>> enablePropsUpdateReconciliationAndroid_;
   std::atomic<std::optional<bool>> enableResourceTimingAPI_;

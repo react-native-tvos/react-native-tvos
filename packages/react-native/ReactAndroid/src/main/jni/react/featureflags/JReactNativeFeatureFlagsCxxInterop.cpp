@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<16b12024bb363358ef09b9a42cb2fc97>>
+ * @generated SignedSource<<6e451f1b402ee9f80e86d0ee6b808f05>>
  */
 
 /**
@@ -183,6 +183,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool enableImagePrefetchingOnUiThreadAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImagePrefetchingOnUiThreadAndroid");
+    return method(javaProvider_);
+  }
+
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImmediateUpdateModeForContentOffsetChanges");
@@ -228,12 +234,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableNetworkEventReporting() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableNetworkEventReporting");
-    return method(javaProvider_);
-  }
-
-  bool enableNewBackgroundAndBorderDrawables() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableNewBackgroundAndBorderDrawables");
     return method(javaProvider_);
   }
 
@@ -577,6 +577,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingAndroid(
   return ReactNativeFeatureFlags::enableImagePrefetchingAndroid();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingOnUiThreadAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableImagePrefetchingOnUiThreadAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges();
@@ -615,11 +620,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enableNativeCSSParsing(
 bool JReactNativeFeatureFlagsCxxInterop::enableNetworkEventReporting(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableNetworkEventReporting();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::enableNewBackgroundAndBorderDrawables(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableNewBackgroundAndBorderDrawables();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enablePreparedTextLayout(
@@ -906,6 +906,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableImagePrefetchingAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingAndroid),
       makeNativeMethod(
+        "enableImagePrefetchingOnUiThreadAndroid",
+        JReactNativeFeatureFlagsCxxInterop::enableImagePrefetchingOnUiThreadAndroid),
+      makeNativeMethod(
         "enableImmediateUpdateModeForContentOffsetChanges",
         JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges),
       makeNativeMethod(
@@ -929,9 +932,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableNetworkEventReporting",
         JReactNativeFeatureFlagsCxxInterop::enableNetworkEventReporting),
-      makeNativeMethod(
-        "enableNewBackgroundAndBorderDrawables",
-        JReactNativeFeatureFlagsCxxInterop::enableNewBackgroundAndBorderDrawables),
       makeNativeMethod(
         "enablePreparedTextLayout",
         JReactNativeFeatureFlagsCxxInterop::enablePreparedTextLayout),

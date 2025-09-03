@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<85a053d6a79240a7b4e181d3054ecfd3>>
+ * @generated SignedSource<<22523248acc3e378f3f81ef43406f106>>
  * @flow strict
  * @noformat
  */
@@ -34,6 +34,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   disableMaintainVisibleContentPosition: Getter<boolean>,
   enableAccessToHostTreeInFabric: Getter<boolean>,
+  enableVirtualViewExperimental: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
   reduceDefaultPropsInImage: Getter<boolean>,
@@ -73,6 +74,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableIOSTextBaselineOffsetPerLine: Getter<boolean>,
   enableIOSViewClipToPaddingBox: Getter<boolean>,
   enableImagePrefetchingAndroid: Getter<boolean>,
+  enableImagePrefetchingOnUiThreadAndroid: Getter<boolean>,
   enableImmediateUpdateModeForContentOffsetChanges: Getter<boolean>,
   enableInteropViewManagerClassLookUpOptimizationIOS: Getter<boolean>,
   enableLayoutAnimationsOnAndroid: Getter<boolean>,
@@ -81,7 +83,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableModuleArgumentNSNullConversionIOS: Getter<boolean>,
   enableNativeCSSParsing: Getter<boolean>,
   enableNetworkEventReporting: Getter<boolean>,
-  enableNewBackgroundAndBorderDrawables: Getter<boolean>,
   enablePreparedTextLayout: Getter<boolean>,
   enablePropsUpdateReconciliationAndroid: Getter<boolean>,
   enableResourceTimingAPI: Getter<boolean>,
@@ -149,6 +150,11 @@ export const disableMaintainVisibleContentPosition: Getter<boolean> = createJava
  * Enables access to the host tree in Fabric using DOM-compatible APIs.
  */
 export const enableAccessToHostTreeInFabric: Getter<boolean> = createJavaScriptFlagGetter('enableAccessToHostTreeInFabric', true);
+
+/**
+ * Enables the experimental version of `VirtualView`.
+ */
+export const enableVirtualViewExperimental: Getter<boolean> = createJavaScriptFlagGetter('enableVirtualViewExperimental', false);
 
 /**
  * Fixing an edge case where the current window size is not properly calculated with fast scrolling. Window size collapsed to 1 element even if windowSize more than the current amount of elements
@@ -291,6 +297,10 @@ export const enableIOSViewClipToPaddingBox: Getter<boolean> = createNativeFlagGe
  */
 export const enableImagePrefetchingAndroid: Getter<boolean> = createNativeFlagGetter('enableImagePrefetchingAndroid', false);
 /**
+ * When enabled, Android will initiate image prefetch requested on ImageShadowNode::layout on the UI thread
+ */
+export const enableImagePrefetchingOnUiThreadAndroid: Getter<boolean> = createNativeFlagGetter('enableImagePrefetchingOnUiThreadAndroid', false);
+/**
  * Dispatches state updates for content offset changes synchronously on the main thread.
  */
 export const enableImmediateUpdateModeForContentOffsetChanges: Getter<boolean> = createNativeFlagGetter('enableImmediateUpdateModeForContentOffsetChanges', false);
@@ -322,10 +332,6 @@ export const enableNativeCSSParsing: Getter<boolean> = createNativeFlagGetter('e
  * Enable network event reporting hooks in each native platform through `NetworkReporter`. This flag should be combined with `enableResourceTimingAPI` and `fuseboxNetworkInspectionEnabled` to enable end-to-end reporting behaviour via the Web Performance API and CDP debugging respectively.
  */
 export const enableNetworkEventReporting: Getter<boolean> = createNativeFlagGetter('enableNetworkEventReporting', false);
-/**
- * Use BackgroundDrawable and BorderDrawable instead of CSSBackgroundDrawable
- */
-export const enableNewBackgroundAndBorderDrawables: Getter<boolean> = createNativeFlagGetter('enableNewBackgroundAndBorderDrawables', true);
 /**
  * Enables caching text layout artifacts for later reuse
  */
