@@ -57,11 +57,6 @@ build:
         command: |
           ./gradlew publishAllToMavenTempLocal
     - run:
-        name: Run Typescript generation
-        working_directory: ../..
-        command: |
-          yarn build-types
-    - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
         command: |
