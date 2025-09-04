@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<83c1c5b181d47f4a54cb097f8d31c48a>>
+ * @generated SignedSource<<3cde1e9bcf234515551ba57ecf02e3a7>>
  */
 
 /**
@@ -230,6 +230,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableViewRecycling();
 
   /**
+   * Enables View Recycling for <Image> via ReactViewGroup/ReactViewManager.
+   */
+  RN_EXPORT static bool enableViewRecyclingForImage();
+
+  /**
    * Enables View Recycling for <ScrollView> via ReactViewGroup/ReactViewManager.
    */
   RN_EXPORT static bool enableViewRecyclingForScrollView();
@@ -293,11 +298,6 @@ class ReactNativeFeatureFlags {
    * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
    */
   RN_EXPORT static bool preventShadowTreeCommitExhaustion();
-
-  /**
-   * Releases the cached image data when it is consumed by the observers.
-   */
-  RN_EXPORT static bool releaseImageDataWhenConsumed();
 
   /**
    * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks

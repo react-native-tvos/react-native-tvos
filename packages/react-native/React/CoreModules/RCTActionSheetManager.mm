@@ -34,7 +34,7 @@ using namespace facebook::react;
 - (instancetype)init
 {
   self = [super init];
-  if (self) {
+  if (self != nullptr) {
     _alertControllers = [NSMutableArray new];
   }
   return self;
@@ -58,7 +58,8 @@ RCT_EXPORT_MODULE()
 {
   alertController.modalPresentationStyle = UIModalPresentationPopover;
   UIView *sourceView = parentViewController.view;
-  if (anchorViewTag) {
+
+  if (anchorViewTag != nullptr) {
     sourceView = [self.viewRegistry_DEPRECATED viewForReactTag:anchorViewTag];
   } else {
     alertController.popoverPresentationController.permittedArrowDirections = 0;
@@ -171,12 +172,12 @@ RCT_EXPORT_METHOD(showActionSheetWithOptions
       index++;
     }
 
-    if (disabledButtonIndices) {
+    if (disabledButtonIndices != nullptr) {
       for (NSNumber *disabledButtonIndex in disabledButtonIndices) {
         if ([disabledButtonIndex integerValue] < buttons.count) {
           UIAlertAction *action = alertController.actions[[disabledButtonIndex integerValue]];
           [action setEnabled:false];
-          if (disabledButtonTintColor) {
+          if (disabledButtonTintColor != nullptr) {
             [action setValue:disabledButtonTintColor forKey:@"titleTextColor"];
           }
         } else {
@@ -240,14 +241,14 @@ RCT_EXPORT_METHOD(showShareActionSheetWithOptions
   UIColor *tintColor = [RCTConvert UIColor:options.tintColor() ? @(*options.tintColor()) : nil];
 
   dispatch_async(dispatch_get_main_queue(), ^{
-    if (message) {
+    if (message != nullptr) {
       [items addObject:message];
     }
-    if (URL) {
+    if (URL != nullptr) {
       if ([URL.scheme.lowercaseString isEqualToString:@"data"]) {
         NSError *error;
         NSData *data = [NSData dataWithContentsOfURL:URL options:(NSDataReadingOptions)0 error:&error];
-        if (!data) {
+        if (data == nullptr) {
           failureCallback(@[ RCTJSErrorFromNSError(error) ]);
           return;
         }
@@ -263,17 +264,17 @@ RCT_EXPORT_METHOD(showShareActionSheetWithOptions
 
     UIActivityViewController *shareController = [[UIActivityViewController alloc] initWithActivityItems:items
                                                                                   applicationActivities:nil];
-    if (subject) {
+    if (subject != nullptr) {
       [shareController setValue:subject forKey:@"subject"];
     }
-    if (excludedActivityTypes) {
+    if (excludedActivityTypes != nullptr) {
       shareController.excludedActivityTypes = excludedActivityTypes;
     }
 
     UIViewController *controller = RCTPresentedViewController();
     shareController.completionWithItemsHandler =
         ^(NSString *activityType, BOOL completed, __unused NSArray *returnedItems, NSError *activityError) {
-          if (activityError) {
+          if (activityError != nullptr) {
             failureCallback(@[ RCTJSErrorFromNSError(activityError) ]);
           } else if (completed || activityType == nil) {
             successCallback(@[ @(completed), RCTNullIfNil(activityType) ]);

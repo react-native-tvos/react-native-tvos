@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c9ccf7038a26788fe2853ba1fabe8615>>
+ * @generated SignedSource<<5bd932f1d52596dad6ea86a2674170ff>>
  */
 
 /**
@@ -178,6 +178,10 @@ bool ReactNativeFeatureFlags::enableViewRecycling() {
   return getAccessor().enableViewRecycling();
 }
 
+bool ReactNativeFeatureFlags::enableViewRecyclingForImage() {
+  return getAccessor().enableViewRecyclingForImage();
+}
+
 bool ReactNativeFeatureFlags::enableViewRecyclingForScrollView() {
   return getAccessor().enableViewRecyclingForScrollView();
 }
@@ -228,10 +232,6 @@ double ReactNativeFeatureFlags::preparedTextCacheSize() {
 
 bool ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion() {
   return getAccessor().preventShadowTreeCommitExhaustion();
-}
-
-bool ReactNativeFeatureFlags::releaseImageDataWhenConsumed() {
-  return getAccessor().releaseImageDataWhenConsumed();
 }
 
 bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1285e1c404d7a9554a5285ac3dc63cd1>>
+ * @generated SignedSource<<6d8adaa4b960407540afb1d6e42a3840>>
  */
 
 /**
@@ -179,6 +179,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableViewRecyclingForImage() override {
+    return true;
+  }
+
   bool enableViewRecyclingForScrollView() override {
     return false;
   }
@@ -228,10 +232,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool preventShadowTreeCommitExhaustion() override {
-    return false;
-  }
-
-  bool releaseImageDataWhenConsumed() override {
     return false;
   }
 

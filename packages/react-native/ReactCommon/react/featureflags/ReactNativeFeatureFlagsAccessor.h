@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3e2e6e95c530a18cfd248908e99d6878>>
+ * @generated SignedSource<<a449e9cf8f14bb7381d9779c764d0d7c>>
  */
 
 /**
@@ -70,6 +70,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableResourceTimingAPI();
   bool enableViewCulling();
   bool enableViewRecycling();
+  bool enableViewRecyclingForImage();
   bool enableViewRecyclingForScrollView();
   bool enableViewRecyclingForText();
   bool enableViewRecyclingForView();
@@ -83,7 +84,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool perfMonitorV2Enabled();
   double preparedTextCacheSize();
   bool preventShadowTreeCommitExhaustion();
-  bool releaseImageDataWhenConsumed();
   bool shouldPressibilityUseW3CPointerEventsForHover();
   bool skipActivityIdentityAssertionOnHostPause();
   bool sweepActiveTouchOnChildNativeGesturesAndroid();
@@ -152,6 +152,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableResourceTimingAPI_;
   std::atomic<std::optional<bool>> enableViewCulling_;
   std::atomic<std::optional<bool>> enableViewRecycling_;
+  std::atomic<std::optional<bool>> enableViewRecyclingForImage_;
   std::atomic<std::optional<bool>> enableViewRecyclingForScrollView_;
   std::atomic<std::optional<bool>> enableViewRecyclingForText_;
   std::atomic<std::optional<bool>> enableViewRecyclingForView_;
@@ -165,7 +166,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> perfMonitorV2Enabled_;
   std::atomic<std::optional<double>> preparedTextCacheSize_;
   std::atomic<std::optional<bool>> preventShadowTreeCommitExhaustion_;
-  std::atomic<std::optional<bool>> releaseImageDataWhenConsumed_;
   std::atomic<std::optional<bool>> shouldPressibilityUseW3CPointerEventsForHover_;
   std::atomic<std::optional<bool>> skipActivityIdentityAssertionOnHostPause_;
   std::atomic<std::optional<bool>> sweepActiveTouchOnChildNativeGesturesAndroid_;

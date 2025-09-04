@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<22523248acc3e378f3f81ef43406f106>>
+ * @generated SignedSource<<2bef8486b596a7593bbc931da63b2682>>
  * @flow strict
  * @noformat
  */
@@ -88,6 +88,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableResourceTimingAPI: Getter<boolean>,
   enableViewCulling: Getter<boolean>,
   enableViewRecycling: Getter<boolean>,
+  enableViewRecyclingForImage: Getter<boolean>,
   enableViewRecyclingForScrollView: Getter<boolean>,
   enableViewRecyclingForText: Getter<boolean>,
   enableViewRecyclingForView: Getter<boolean>,
@@ -101,7 +102,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   perfMonitorV2Enabled: Getter<boolean>,
   preparedTextCacheSize: Getter<number>,
   preventShadowTreeCommitExhaustion: Getter<boolean>,
-  releaseImageDataWhenConsumed: Getter<boolean>,
   shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean>,
   skipActivityIdentityAssertionOnHostPause: Getter<boolean>,
   sweepActiveTouchOnChildNativeGesturesAndroid: Getter<boolean>,
@@ -353,6 +353,10 @@ export const enableViewCulling: Getter<boolean> = createNativeFlagGetter('enable
  */
 export const enableViewRecycling: Getter<boolean> = createNativeFlagGetter('enableViewRecycling', false);
 /**
+ * Enables View Recycling for <Image> via ReactViewGroup/ReactViewManager.
+ */
+export const enableViewRecyclingForImage: Getter<boolean> = createNativeFlagGetter('enableViewRecyclingForImage', true);
+/**
  * Enables View Recycling for <ScrollView> via ReactViewGroup/ReactViewManager.
  */
 export const enableViewRecyclingForScrollView: Getter<boolean> = createNativeFlagGetter('enableViewRecyclingForScrollView', false);
@@ -404,10 +408,6 @@ export const preparedTextCacheSize: Getter<number> = createNativeFlagGetter('pre
  * Enables a new mechanism in ShadowTree to prevent problems caused by multiple threads trying to commit concurrently. If a thread tries to commit a few times unsuccessfully, it will acquire a lock and try again.
  */
 export const preventShadowTreeCommitExhaustion: Getter<boolean> = createNativeFlagGetter('preventShadowTreeCommitExhaustion', false);
-/**
- * Releases the cached image data when it is consumed by the observers.
- */
-export const releaseImageDataWhenConsumed: Getter<boolean> = createNativeFlagGetter('releaseImageDataWhenConsumed', false);
 /**
  * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
  */

@@ -451,6 +451,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableViewRecyclingForImage: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2025-09-04',
+        description:
+          'Enables View Recycling for <Image> via ReactViewGroup/ReactViewManager.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableViewRecyclingForScrollView: {
       defaultValue: false,
       metadata: {
@@ -590,17 +601,6 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'experimentation',
       },
       ossReleaseStage: 'experimental',
-    },
-    releaseImageDataWhenConsumed: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2025-07-10',
-        description:
-          'Releases the cached image data when it is consumed by the observers.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
     },
     shouldPressibilityUseW3CPointerEventsForHover: {
       defaultValue: false,

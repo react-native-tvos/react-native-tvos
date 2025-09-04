@@ -19,7 +19,7 @@
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-  if ((self = [super initWithFrame:frame])) {
+  if ((self = [super initWithFrame:frame]) != nullptr) {
 #if TARGET_OS_TV
       self.windowLevel = UIWindowLevelNormal;
 #else

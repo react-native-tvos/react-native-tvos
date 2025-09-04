@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<77f248a7c43e9f11f6e727319a72e1a0>>
+ * @generated SignedSource<<a27c4788a4b87366ef1e3ee03da53ab6>>
  */
 
 /**
@@ -112,6 +112,8 @@ class NativeReactNativeFeatureFlags
 
   bool enableViewRecycling(jsi::Runtime& runtime);
 
+  bool enableViewRecyclingForImage(jsi::Runtime& runtime);
+
   bool enableViewRecyclingForScrollView(jsi::Runtime& runtime);
 
   bool enableViewRecyclingForText(jsi::Runtime& runtime);
@@ -137,8 +139,6 @@ class NativeReactNativeFeatureFlags
   double preparedTextCacheSize(jsi::Runtime& runtime);
 
   bool preventShadowTreeCommitExhaustion(jsi::Runtime& runtime);
-
-  bool releaseImageDataWhenConsumed(jsi::Runtime& runtime);
 
   bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 

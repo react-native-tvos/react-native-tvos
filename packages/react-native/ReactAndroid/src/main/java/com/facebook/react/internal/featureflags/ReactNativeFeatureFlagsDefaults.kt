@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<731176315c5589990865a0995f8b7e20>>
+ * @generated SignedSource<<411732d441bacbef37c3474b9041202c>>
  */
 
 /**
@@ -99,6 +99,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableViewRecycling(): Boolean = false
 
+  override fun enableViewRecyclingForImage(): Boolean = true
+
   override fun enableViewRecyclingForScrollView(): Boolean = false
 
   override fun enableViewRecyclingForText(): Boolean = true
@@ -124,8 +126,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun preparedTextCacheSize(): Double = 200.0
 
   override fun preventShadowTreeCommitExhaustion(): Boolean = false
-
-  override fun releaseImageDataWhenConsumed(): Boolean = false
 
   override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = false
 

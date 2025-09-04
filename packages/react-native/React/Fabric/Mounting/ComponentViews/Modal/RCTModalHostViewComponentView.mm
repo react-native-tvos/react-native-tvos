@@ -125,6 +125,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   UITapGestureRecognizer *_menuButtonGestureRecognizer;
   RCTTVRemoteHandler *_tvRemoteHandler;
 #endif
+  BOOL _modalInPresentation;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -139,6 +140,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 #endif
 
     _isPresented = NO;
+    _modalInPresentation = YES;
   }
 
   return self;
@@ -182,7 +184,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
     _viewController = [RCTFabricModalHostViewController new];
     _viewController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     _viewController.delegate = self;
-    _viewController.modalInPresentation = YES;
+    _viewController.modalInPresentation = _modalInPresentation;
   }
   return _viewController;
 }
@@ -208,6 +210,7 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   if (shouldBePresented) {
     [self saveAccessibilityFocusedView];
     self.viewController.presentationController.delegate = self;
+    self.viewController.modalInPresentation = _modalInPresentation;
 
     _isPresented = YES;
     [self presentViewController:self.viewController
@@ -332,7 +335,8 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
   self.viewController.modalPresentationStyle = presentationConfiguration(newProps);
 
   if (oldViewProps.allowSwipeDismissal != newProps.allowSwipeDismissal) {
-    self.viewController.modalInPresentation = !newProps.allowSwipeDismissal;
+    _modalInPresentation = !newProps.allowSwipeDismissal;
+    self.viewController.modalInPresentation = _modalInPresentation;
   }
 
   _shouldPresent = newProps.visible;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7af6546cb6e02afcfca90635b3cbe603>>
+ * @generated SignedSource<<2f65e0e9066a8c2c35c44ea7c73dbedc>>
  */
 
 /**
@@ -62,6 +62,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableResourceTimingAPICache: Boolean? = null
   private var enableViewCullingCache: Boolean? = null
   private var enableViewRecyclingCache: Boolean? = null
+  private var enableViewRecyclingForImageCache: Boolean? = null
   private var enableViewRecyclingForScrollViewCache: Boolean? = null
   private var enableViewRecyclingForTextCache: Boolean? = null
   private var enableViewRecyclingForViewCache: Boolean? = null
@@ -75,7 +76,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var perfMonitorV2EnabledCache: Boolean? = null
   private var preparedTextCacheSizeCache: Double? = null
   private var preventShadowTreeCommitExhaustionCache: Boolean? = null
-  private var releaseImageDataWhenConsumedCache: Boolean? = null
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
   private var sweepActiveTouchOnChildNativeGesturesAndroidCache: Boolean? = null
@@ -474,6 +474,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun enableViewRecyclingForImage(): Boolean {
+    var cached = enableViewRecyclingForImageCache
+    if (cached == null) {
+      cached = currentProvider.enableViewRecyclingForImage()
+      accessedFeatureFlags.add("enableViewRecyclingForImage")
+      enableViewRecyclingForImageCache = cached
+    }
+    return cached
+  }
+
   override fun enableViewRecyclingForScrollView(): Boolean {
     var cached = enableViewRecyclingForScrollViewCache
     if (cached == null) {
@@ -600,16 +610,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.preventShadowTreeCommitExhaustion()
       accessedFeatureFlags.add("preventShadowTreeCommitExhaustion")
       preventShadowTreeCommitExhaustionCache = cached
-    }
-    return cached
-  }
-
-  override fun releaseImageDataWhenConsumed(): Boolean {
-    var cached = releaseImageDataWhenConsumedCache
-    if (cached == null) {
-      cached = currentProvider.releaseImageDataWhenConsumed()
-      accessedFeatureFlags.add("releaseImageDataWhenConsumed")
-      releaseImageDataWhenConsumedCache = cached
     }
     return cached
   }

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a5534457a42ada7d6e2a5d820844b782>>
+ * @generated SignedSource<<92a6edded037a504fc1c2c8ae88deae1>>
  */
 
 /**
@@ -259,6 +259,12 @@ public object ReactNativeFeatureFlags {
   public fun enableViewRecycling(): Boolean = accessor.enableViewRecycling()
 
   /**
+   * Enables View Recycling for <Image> via ReactViewGroup/ReactViewManager.
+   */
+  @JvmStatic
+  public fun enableViewRecyclingForImage(): Boolean = accessor.enableViewRecyclingForImage()
+
+  /**
    * Enables View Recycling for <ScrollView> via ReactViewGroup/ReactViewManager.
    */
   @JvmStatic
@@ -335,12 +341,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun preventShadowTreeCommitExhaustion(): Boolean = accessor.preventShadowTreeCommitExhaustion()
-
-  /**
-   * Releases the cached image data when it is consumed by the observers.
-   */
-  @JvmStatic
-  public fun releaseImageDataWhenConsumed(): Boolean = accessor.releaseImageDataWhenConsumed()
 
   /**
    * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
