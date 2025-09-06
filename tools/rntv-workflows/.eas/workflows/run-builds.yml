@@ -25,4 +25,4 @@ jobs:
     type: build
     params:
       platform: android
-      profile: android-artifacts
+      profile: android-artifacts-main

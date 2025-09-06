@@ -50,10 +50,16 @@
         "RNTV_RELEASE_BUILD": "1"
       }
     },
-    "android-artifacts": {
+    "android-artifacts-main": {
       "extends": "base",
       "android": {
         "config": "build-android-artifacts.yml"
+      }
+    },
+    "android-artifacts": {
+      "extends": "android-artifacts-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
       }
     }
   }
