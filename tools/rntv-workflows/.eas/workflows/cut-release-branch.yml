@@ -5,6 +5,7 @@ on:
     inputs:
       release:
         type: string
+        required: true
 
 defaults:
   tools:
