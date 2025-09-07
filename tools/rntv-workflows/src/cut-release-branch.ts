@@ -79,7 +79,7 @@ async function executeScriptAsync() {
     stdio: 'inherit',
   });
 
-  await spawnAsync('yarn', ['add', '-W', 'yarn.lock'], {
+  await spawnAsync('git', ['add', 'yarn.lock'], {
     cwd: repoPath,
     stdio: 'inherit',
   });
