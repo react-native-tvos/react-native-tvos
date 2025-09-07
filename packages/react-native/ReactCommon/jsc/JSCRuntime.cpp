@@ -325,7 +325,7 @@ std::string JSStringToSTLString(JSStringRef str) {
     buffer = heapBuffer.get();
   }
   size_t actualBytes = JSStringGetUTF8CString(str, buffer, maxBytes);
-  if (!actualBytes) {
+  if (actualBytes == 0u) {
     // Happens if maxBytes == 0 (never the case here) or if str contains
     // invalid UTF-16 data, since JSStringGetUTF8CString attempts a strict
     // conversion.
@@ -442,7 +442,7 @@ jsi::Value JSCRuntime::evaluateJavaScript(
   JSValueRef res =
       JSEvaluateScript(ctx_, sourceRef, nullptr, sourceURLRef, 0, &exc);
   JSStringRelease(sourceRef);
-  if (sourceURLRef) {
+  if (sourceURLRef != nullptr) {
     JSStringRelease(sourceURLRef);
   }
   checkException(res, exc);
@@ -602,7 +602,7 @@ void JSCRuntime::JSCObjectValue::invalidate() noexcept {
 
 jsi::Runtime::PointerValue* JSCRuntime::cloneSymbol(
     const jsi::Runtime::PointerValue* pv) {
-  if (!pv) {
+  if (pv == nullptr) {
     return nullptr;
   }
   const JSCSymbolValue* symbol = static_cast<const JSCSymbolValue*>(pv);
@@ -616,7 +616,7 @@ jsi::Runtime::PointerValue* JSCRuntime::cloneBigInt(
 
 jsi::Runtime::PointerValue* JSCRuntime::cloneString(
     const jsi::Runtime::PointerValue* pv) {
-  if (!pv) {
+  if (pv == nullptr) {
     return nullptr;
   }
   const JSCStringValue* string = static_cast<const JSCStringValue*>(pv);
@@ -625,7 +625,7 @@ jsi::Runtime::PointerValue* JSCRuntime::cloneString(
 
 jsi::Runtime::PointerValue* JSCRuntime::cloneObject(
     const jsi::Runtime::PointerValue* pv) {
-  if (!pv) {
+  if (pv == nullptr) {
     return nullptr;
   }
   const JSCObjectValue* object = static_cast<const JSCObjectValue*>(pv);
@@ -637,7 +637,7 @@ jsi::Runtime::PointerValue* JSCRuntime::cloneObject(
 
 jsi::Runtime::PointerValue* JSCRuntime::clonePropNameID(
     const jsi::Runtime::PointerValue* pv) {
-  if (!pv) {
+  if (pv == nullptr) {
     return nullptr;
   }
   const JSCStringValue* string = static_cast<const JSCStringValue*>(pv);
@@ -919,7 +919,7 @@ JSClassRef getNativeStateClass() {
 } // namespace
 
 JSValueRef JSCRuntime::getNativeStateSymbol() {
-  if (!nativeStateSymbol_) {
+  if (nativeStateSymbol_ == nullptr) {
     JSStringRef symbolName =
         JSStringCreateWithUTF8CString("__internal_nativeState");
     JSValueRef symbol = JSValueMakeSymbol(ctx_, symbolName);
@@ -1187,7 +1187,7 @@ jsi::Function JSCRuntime::createFunctionFromHostFunction(
           kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontEnum |
               kJSPropertyAttributeDontDelete,
           &exc);
-      if (exc) {
+      if (exc != nullptr) {
         // Silently fail to set length
         exc = nullptr;
       }
@@ -1203,7 +1203,7 @@ jsi::Function JSCRuntime::createFunctionFromHostFunction(
               kJSPropertyAttributeDontDelete,
           &exc);
       JSStringRelease(name);
-      if (exc) {
+      if (exc != nullptr) {
         // Silently fail to set name
         exc = nullptr;
       }
@@ -1216,7 +1216,7 @@ jsi::Function JSCRuntime::createFunctionFromHostFunction(
         abort();
       }
       JSObjectRef funcCtor = JSValueToObject(ctx, value, &exc);
-      if (!funcCtor) {
+      if (funcCtor == nullptr) {
         // We can't do anything if Function is not an object
         return;
       }
@@ -1444,7 +1444,7 @@ JSStringRef getEmptyString() {
 
 jsi::Runtime::PointerValue* JSCRuntime::makeStringValue(
     JSStringRef stringRef) const {
-  if (!stringRef) {
+  if (stringRef == nullptr) {
     stringRef = getEmptyString();
   }
 #ifndef NDEBUG
@@ -1468,7 +1468,7 @@ jsi::PropNameID JSCRuntime::createPropNameID(JSStringRef str) {
 
 jsi::Runtime::PointerValue* JSCRuntime::makeObjectValue(
     JSObjectRef objectRef) const {
-  if (!objectRef) {
+  if (objectRef == nullptr) {
     objectRef = JSObjectMake(ctx_, nullptr, nullptr);
   }
 #ifndef NDEBUG
