@@ -166,7 +166,7 @@ async function updateSourceFiles(versionInfo: Version) {
   const templateData = { version: versionInfo };
 
   const templatePaths = [
-    './common/templates/ReactNativeVersion.java-template',
+    './common/templates/ReactNativeVersion.kt-template',
     './common/templates/RCTVersion.m-template',
     './common/templates/ReactNativeVersion.h-template',
     './common/templates/ReactNativeVersion.js-template',
@@ -184,7 +184,7 @@ async function updateSourceFiles(versionInfo: Version) {
       'react',
       'modules',
       'systeminfo',
-      'ReactNativeVersion.java',
+      'ReactNativeVersion.kt',
     ),
     path.resolve(rnPackagePath, 'React', 'Base', 'RCTVersion.m'),
     path.resolve(
