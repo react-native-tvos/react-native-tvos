@@ -12,7 +12,7 @@ import type {ViewProps} from './ViewPropTypes';
 
 import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import TextAncestorContext from '../../Text/TextAncestorContext';
-import setAndForwardRef from '../../Utilities/setAndForwardRef';
+import useMergeRefs from '../../Utilities/useMergeRefs';
 import ViewNativeComponent from './ViewNativeComponent';
 import {Commands} from './ViewNativeComponent';
 import * as React from 'react';
@@ -39,26 +39,23 @@ component View(
     }
   }, []);
 
-  const _setNativeRef = React.useMemo(() => {
-    return setAndForwardRef({
-      getForwardedRef: () => viewRef.current,
-      setLocalRef: _ref => {
-        viewRef.current = _ref;
+  const setLocalRef = React.useCallback(
+    (instance: HostInstance | null) => {
+      // $FlowExpectedError[incompatible-type]
+      viewRef.current = instance;
 
-        // This is a hack. Ideally we would forwardRef to the underlying
-        // host component. However, since TVFocusGuide has its own methods that can be
-        // called as well, if we used the standard forwardRef then these
-        // methods wouldn't be accessible
-        //
-        // Here we mutate the ref, so that the user can use the standart native
-        // methods like `measureLayout()` etc. while also having access to
-        // imperative methods of this component like `requestTVFocus()`.
-        if (_ref) {
-          _ref.requestTVFocus = requestTVFocus;
-        }
-      },
-    })
-  }, [requestTVFocus]);
+      if (instance != null) {
+        // $FlowFixMe[prop-missing]
+        // $FlowFixMe[unsafe-object-assign]
+        Object.assign(instance, {
+          requestTVFocus,
+        });
+      }
+    },
+    [requestTVFocus],
+  );
+
+  const mergedRef = useMergeRefs(setLocalRef, ref);
 
   let actualView;
   if (ReactNativeFeatureFlags.reduceDefaultPropsInView()) {
@@ -151,7 +148,7 @@ component View(
       ref == null ? (
         <ViewNativeComponent {...processedProps} />
       ) : (
-        <ViewNativeComponent {...processedProps} ref={ref} />
+        <ViewNativeComponent {...processedProps} ref={mergedRef} />
       );
   } else {
     const {
@@ -232,7 +229,7 @@ component View(
             : importantForAccessibility
         }
         nativeID={id ?? nativeID}
-        ref={_setNativeRef}
+        ref={mergedRef}
       />
     );
   }
