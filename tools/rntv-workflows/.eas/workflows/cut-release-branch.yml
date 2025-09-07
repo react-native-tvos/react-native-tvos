@@ -25,4 +25,5 @@ jobs:
           export REACT_NATIVE_RELEASE_VERSION=${{ inputs.release }}
           export REACT_NATIVE_RELEASE_BRANCH=release-${{ inputs.release }}
           export PUSH_RELEASE_TO_REPO=true
+          cp -r ../../scripts/releases/templates src/common
           npx tsx ./src/cut-release-branch.ts
