@@ -12,7 +12,7 @@ import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
 import Platform from '../../Utilities/Platform';
-import setAndForwardRef from '../../Utilities/setAndForwardRef';
+import useMergeRefs from '../../Utilities/useMergeRefs';
 import View from '../View/View';
 import {Commands} from '../View/ViewNativeComponent';
 import tagForComponentOrHandle from './tagForComponentOrHandle';
@@ -57,17 +57,15 @@ export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
   setDestinations: (destinations: (ComponentOrHandleType | number)[]) => void,
 }>;
 
-function TVFocusGuideView(
-  {
-    enabled = true,
-    safePadding,
-    destinations: destinationsProp,
-    autoFocus,
-    focusable,
-    ...props
-  }: TVFocusGuideViewProps,
-  forwardedRef: any,
-): React.Node {
+function TVFocusGuideView({
+  enabled = true,
+  safePadding,
+  destinations: destinationsProp,
+  autoFocus,
+  focusable,
+  ref,
+  ...props
+}: TVFocusGuideViewProps): React.Node {
   const focusGuideRef = React.useRef<React.ElementRef<typeof View> | null>(
     null,
   );
@@ -78,7 +76,7 @@ function TVFocusGuideView(
         const dests: number[] = (destinations || [])
           .map((destination: any) => tagForComponentOrHandle(destination))
           .filter(Boolean);
-  
+
         if (focusGuideRef.current != null) {
           Commands.setDestinations(focusGuideRef.current, dests);
         }
@@ -87,26 +85,23 @@ function TVFocusGuideView(
     [],
   );
 
-  const _setNativeRef = React.useMemo(() => {
-    return setAndForwardRef({
-      getForwardedRef: () => forwardedRef,
-      setLocalRef: ref => {
-        focusGuideRef.current = ref;
+  const setLocalRef = React.useCallback(
+    (instance: HostInstance | null) => {
+      // $FlowExpectedError[incompatible-type]
+      focusGuideRef.current = instance;
 
-        // This is a hack. Ideally we would forwardRef to the underlying
-        // host component. However, since TVFocusGuide has its own methods that can be
-        // called as well, if we used the standard forwardRef then these
-        // methods wouldn't be accessible
-        //
-        // Here we mutate the ref, so that the user can use the standard native
-        // methods like `focus()`, `blur()`, etc. while also having access to
-        // imperative methods of this component like `setDestinations()`.
-        if (ref) {
-          ref.setDestinations = setDestinations;
-        }
-      },
-    })
-  }, [forwardedRef, setDestinations]);
+      if (instance != null) {
+        // $FlowFixMe[prop-missing]
+        // $FlowFixMe[unsafe-object-assign]
+        Object.assign(instance, {
+          setDestinations,
+        });
+      }
+    },
+    [setDestinations],
+  );
+
+  const mergedRef = useMergeRefs(setLocalRef, ref);
 
   React.useEffect(() => {
     if (destinationsProp !== null && destinationsProp !== undefined) {
@@ -127,7 +122,7 @@ function TVFocusGuideView(
     <View
       {...props}
       style={style}
-      ref={_setNativeRef}
+      ref={mergedRef}
       collapsable={false}
       autoFocus={autoFocus}
       // tvOS only prop
