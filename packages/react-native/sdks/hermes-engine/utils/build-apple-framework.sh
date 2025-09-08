@@ -129,7 +129,7 @@ function configure_apple_framework {
       -DIMPORT_HOST_COMPILERS:PATH="$IMPORT_HOST_COMPILERS_PATH" \
       -DJSI_DIR="$JSI_PATH" \
       -DHERMES_RELEASE_VERSION="for RNTV $(get_release_version)" \
-      -DCMAKE_BUILD_TYPE="$cmake_build_type"
+      -DCMAKE_BUILD_TYPE="$cmake_build_type" \
       $boost_context_flag
     popd > /dev/null || exit 1
 }
