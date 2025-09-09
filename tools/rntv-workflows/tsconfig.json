@@ -2,6 +2,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "outDir": "./build",
     "esModuleInterop": true
   },
   "include": ["./src"],
