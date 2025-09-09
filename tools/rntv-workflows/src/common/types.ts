@@ -76,3 +76,8 @@ export type PackageInfo = {
 export type ProjectInfo = {
   [packageName: string]: PackageInfo;
 };
+
+export type SonatypeConfig = {
+  sonatypeUsername: string;
+  sonatypePassword: string;
+}
