@@ -5,6 +5,7 @@ set -eox pipefail
 
 ./tools/rntv-workflows/rename-virtualized-lists.sh
 yarn
+patch -p1 < tools/rntv-workflows/microsoft-api-extractor.patch 
 yarn --cwd packages/react-native featureflags-check
 yarn lint
 yarn --cwd packages/react-native-codegen build
