@@ -462,6 +462,17 @@ function findDisabledLibrariesByPlatform(
   );
 }
 
+function findReactNativeRootPath(projectRoot /* : string */) /* : string */ {
+  const reactNativePackageJsonPath = require.resolve(
+    path.join('react-native', 'package.json'),
+    {
+      paths: [projectRoot],
+    },
+  );
+
+  return path.dirname(reactNativePackageJsonPath);
+}
+
 module.exports = {
   buildCodegenIfNeeded,
   pkgJsonIncludesGeneratedCode,
@@ -475,4 +486,5 @@ module.exports = {
   parseiOSAnnotations,
   readReactNativeConfig,
   findDisabledLibrariesByPlatform,
+  findReactNativeRootPath,
 };

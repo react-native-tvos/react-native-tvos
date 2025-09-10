@@ -5,7 +5,7 @@
 
 require "json"
 
-package = JSON.parse(File.read(File.join(__dir__, "..", "..", "..", "..", "package.json")))
+package = JSON.parse(File.read(File.join(__dir__, "..", "..", "..", "package.json")))
 version = package['version']
 
 source = { :git => 'https://github.com/facebook/react-native.git' }
@@ -19,37 +19,33 @@ end
 header_search_paths = []
 
 if ENV['USE_FRAMEWORKS']
-  header_search_paths << "\"$(PODS_TARGET_SRCROOT)/../../..\"" # this is needed to allow the defaultsnativemodule to access its own files
+  header_search_paths << "\"$(PODS_TARGET_SRCROOT)/../..\"" # this is needed to allow the feature flags access its own files
 end
 
 Pod::Spec.new do |s|
-  s.name                   = "React-defaultsnativemodule"
+  s.name                   = "React-networking"
   s.version                = version
-  s.summary                = "React Native Default native modules"
+  s.summary                = "Common networking modules for React Native"
   s.homepage               = "https://reactnative.dev/"
   s.license                = package["license"]
   s.author                 = "Meta Platforms, Inc. and its affiliates"
   s.platforms              = min_supported_versions
   s.source                 = source
   s.source_files           = podspec_sources("*.{cpp,h}", "*.h")
-  s.header_dir             = "react/nativemodule/defaults"
+  s.header_dir             = "react/networking"
   s.pod_target_xcconfig    = { "CLANG_CXX_LANGUAGE_STANDARD" => rct_cxx_language_standard(),
                                "HEADER_SEARCH_PATHS" => header_search_paths.join(' '),
-                               "OTHER_CFLAGS" => "$(inherited)",
                                "DEFINES_MODULE" => "YES" }
 
-  resolve_use_frameworks(s, header_mappings_dir: "../..", module_name: "React_defaultsnativemodule")
+  if ENV['USE_FRAMEWORKS'] && ReactNativeCoreUtils.build_rncore_from_source()
+    s.module_name            = "React_networking"
+    s.header_mappings_dir  = "../.."
+  end
+  add_dependency(s, "React-featureflags")
+  add_dependency(s, "React-jsinspectornetwork", :framework_name => 'jsinspector_modernnetwork')
+  s.dependency "React-performancetimeline"
+  s.dependency "React-timing"
 
-  s.dependency "React-jsi"
-  s.dependency "React-jsiexecutor"
-  depend_on_js_engine(s)
   add_rn_third_party_dependencies(s)
   add_rncore_dependency(s)
-
-  s.dependency "React-domnativemodule"
-  s.dependency "React-featureflagsnativemodule"
-  s.dependency "React-microtasksnativemodule"
-  s.dependency "React-idlecallbacksnativemodule"
-  s.dependency "React-webperformancenativemodule"
-  add_dependency(s, "React-RCTFBReactNativeSpec")
 end
