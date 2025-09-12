@@ -26,9 +26,6 @@ import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
 import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 
-/**
- * @deprecated These properties are not implemented natively.
- */
 export interface TVViewPropsIOS {
   /**
    * *(Apple TV only)* When set to true, this view will be focusable
@@ -39,10 +36,9 @@ export interface TVViewPropsIOS {
   isTVSelectable?: boolean | undefined;
 
   /**
-   * *(Apple TV only)* May be set to true to force the Apple TV focus engine to move focus to this view.
+   * *(Apple TV and Android TV)* May be set to true to force the Apple TV focus engine to move focus to this view.
    *
    * @platform ios
-   * @deprecated Use `focusable` instead
    */
   hasTVPreferredFocus?: boolean | undefined;
 
