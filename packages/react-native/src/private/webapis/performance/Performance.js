@@ -94,7 +94,11 @@ const getMarkTimeForMeasure = (markName: string): number => {
  * https://www.w3.org/TR/user-timing/#extensions-performance-interface
  */
 export default class Performance {
-  eventCounts: EventCounts = new EventCounts();
+  #eventCounts: EventCounts = new EventCounts();
+
+  get eventCounts(): EventCounts {
+    return this.#eventCounts;
+  }
 
   // Get the current JS memory information.
   get memory(): MemoryInfo {
@@ -124,19 +128,15 @@ export default class Performance {
   get rnStartupTiming(): ReactNativeStartupTiming {
     const {
       startTime,
-      endTime,
       initializeRuntimeStart,
-      initializeRuntimeEnd,
       executeJavaScriptBundleEntryPointStart,
-      executeJavaScriptBundleEntryPointEnd,
+      endTime,
     } = NativePerformance.getReactNativeStartupTiming();
     return new ReactNativeStartupTiming({
       startTime,
-      endTime,
       initializeRuntimeStart,
-      initializeRuntimeEnd,
       executeJavaScriptBundleEntryPointStart,
-      executeJavaScriptBundleEntryPointEnd,
+      endTime,
     });
   }
 

@@ -276,7 +276,8 @@ jobs:
           NEW_ARCH_ENABLED=1
 
           export RCT_USE_LOCAL_RN_DEP=/tmp/third-party/ReactNativeDependencies${{ matrix.flavor }}.xcframework.tar.gz
-          export RCT_TESTONLY_RNCORE_TARBALL_PATH="/tmp/ReactCore/ReactCore${{ matrix.flavor }}.xcframework.tar.gz"
+          # Disable prebuilds for now, as they are causing issues with E2E tests for 0.82-stable branch
+          # export RCT_TESTONLY_RNCORE_TARBALL_PATH="/tmp/ReactCore/ReactCore${{ matrix.flavor }}.xcframework.tar.gz"
           HERMES_ENGINE_TARBALL_PATH=$HERMES_PATH RCT_NEW_ARCH_ENABLED=$NEW_ARCH_ENABLED bundle exec pod install
 
           xcodebuild \
@@ -382,7 +383,8 @@ jobs:
     runs-on: 8-core-ubuntu
     needs: [set_release_type]
     container:
-      image: reactnativecommunity/react-native-android:latest
+      # Version is pinned to v18.0 to unblock `run_fantom_tests` - see https://github.com/react-native-community/docker-android/pull/242#issuecomment-3280029122
+      image: reactnativecommunity/react-native-android:v18.0
       env:
         TERM: "dumb"
         GRADLE_OPTS: "-Dorg.gradle.daemon=false"

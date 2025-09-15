@@ -43,27 +43,21 @@ internal class PerfMonitorOverlayManager(
   fun enable() {
     enabled = true
     init()
-    UiThreadUtil.runOnUiThread { view?.show() }
   }
 
   /** Disable the Perf Monitor overlay. Will remain hidden when updates are received. */
   fun disable() {
     UiThreadUtil.runOnUiThread { view?.hide() }
+    view = null
     enabled = false
   }
 
   /** Reset the Perf Monitor overlay, e.g. after a reload. */
   fun reset() {
-    UiThreadUtil.runOnUiThread { view?.resetState() }
-
     // Update with current recording state
     onRecordingStateChanged(
         devHelper.inspectorTarget?.getTracingState() ?: TracingState.ENABLEDINCDPMODE
     )
-  }
-
-  override fun onNewFocusedEvent(data: PerfMonitorUpdateListener.LongTaskEventData) {
-    view?.updateFocusedEvent(data)
   }
 
   override fun onRecordingStateChanged(state: TracingState) {
