@@ -2,6 +2,8 @@
 
 import spawnAsync from '@expo/spawn-async'
 
+import { spawnSync } from 'child_process';
+
 type ExecOptions = spawnAsync.SpawnOptions;
 
 async function exec(
@@ -185,4 +187,31 @@ async function createKeychain(
     keychain
   ]
   await exec('security', setSettingsArgs, options)
+}
+
+// security verify-cert security find-certificate -c "certificate name here" -p | openssl x509 -text | grep "Not After" -k codesign
+
+export async function pemCertificateFromKeychain(keychain: string): Promise<string> {
+  const pemArgs: string[] = [
+    'find-certificate',
+    '-p',
+  ];
+  const result = await exec('security', pemArgs, { stdio: 'pipe' });
+  return result.output[0];
+}
+
+export function throwErrorIfCertificateExpired(certificate: string): void {
+  const opensslArgs: string[] = [
+    'x509',
+    '-text',
+  ];
+  const result = spawnSync('openssl', opensslArgs, { input: certificate, stdio: 'pipe' });
+  const output = String(result.output[1]);
+  const expirationDateString = output.match(/Not After : (.*)/)?.[1] ?? '';
+  const expirationDate = new Date(expirationDateString);
+  const today = new Date();
+  const expired = expirationDate < today;
+  if (expired) {
+    throw new Error(`Certificate expired on ${expirationDate.toISOString()}`);
+  }
 }
