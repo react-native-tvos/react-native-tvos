@@ -8,11 +8,23 @@ if [[ "$EAS_BUILD_RUNNER" != "eas-build" ]]; then
   exit 0
 fi
 
+if [[ "$EAS_BUILD_PLATFORM" != "ios" ]]; then
+  echo "Skip Ruby installation on Linux Android workers."
+  exit 0
+fi
+
 echo "Installing Ruby..."
 brew install ruby
-echo "Configuring the bundler..."
-gem install bundler:2.4.12
-bundle config --global set path.system true
+. ./ruby-env.sh
+echo "Verify Ruby path and version..."
+which ruby
+ruby -v
+echo "Verify Gem path and version..."
+which gem
+gem -v
+echo "Verify bundler path and version..."
+which bundler
+bundler -v
 echo "Configure Node..."
 sudo ln -s $(which node) /usr/local/bin/node
 echo "Done."
