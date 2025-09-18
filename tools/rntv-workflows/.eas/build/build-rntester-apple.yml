@@ -19,6 +19,7 @@ build:
         name: Build RNTester app for tvOS
         working_directory: ../../packages/rn-tester
         command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
           echo "Building RNTester..."
           echo "Cleaning build directories..."
           yarn clean-ios
