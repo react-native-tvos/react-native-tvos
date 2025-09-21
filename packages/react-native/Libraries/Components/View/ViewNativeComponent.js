@@ -21,6 +21,8 @@ const ViewNativeComponent: HostComponent<Props> =
   }));
 
 interface NativeCommands {
+  +focus: () => void;
+  +blur: () => void;
   +hotspotUpdate: (viewRef: HostInstance, x: number, y: number) => void;
   +setPressed: (viewRef: HostInstance, pressed: boolean) => void;
   // Focus Guide API
@@ -33,6 +35,8 @@ interface NativeCommands {
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
   supportedCommands: [
+    'focus',
+    'blur',
     'hotspotUpdate',
     'setPressed',
     'setDestinations',

@@ -130,4 +130,13 @@ void BaseViewEventEmitter::onLayout(const LayoutMetrics& layoutMetrics) const {
   });
 }
 
+#pragma mark - Focus
+void BaseViewEventEmitter::onFocus() const {
+  dispatchEvent("focus");
+}
+
+void BaseViewEventEmitter::onBlur() const {
+  dispatchEvent("blur");
+}
+
 } // namespace facebook::react

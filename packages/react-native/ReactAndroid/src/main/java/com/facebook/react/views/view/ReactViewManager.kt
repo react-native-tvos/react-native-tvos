@@ -474,6 +474,8 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       "setPressed" -> handleSetPressed(root, args)
       "setDestinations" -> handleSetDestinations(root, args)
       "requestTVFocus" -> root.requestFocus()
+      "focus" -> handleFocus(root)
+      "blur" -> handleBlur(root)
       else -> {}
     }
   }
@@ -556,5 +558,17 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   private fun hasTouchScreen(context: Context): Boolean {
     return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+  }
+
+  private fun handleFocus(root: ReactViewGroup) {
+    if (ReactNativeFeatureFlags.enableImperativeFocus()) {
+      root.requestFocusFromJS()
+    }
+  }
+
+  private fun handleBlur(root: ReactViewGroup) {
+    if (ReactNativeFeatureFlags.enableImperativeFocus()) {
+      root.clearFocusFromJS()
+    }
   }
 }

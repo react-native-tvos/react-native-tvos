@@ -1303,7 +1303,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
   BOOL isPointInside = [self pointInside:point withEvent:event];
 
-  BOOL clipsToBounds = self.currentContainerView.clipsToBounds;
+  UIView *currentContainerView = self.currentContainerView;
+
+  BOOL clipsToBounds = currentContainerView.clipsToBounds;
 
   clipsToBounds = clipsToBounds || _layoutMetrics.overflowInset == EdgeInsets{};
 
@@ -1311,8 +1313,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     return nil;
   }
 
-  for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
-    UIView *hitView = [subview hitTest:[subview convertPoint:point fromView:self] withEvent:event];
+  for (UIView *subview = nullptr in [currentContainerView.subviews reverseObjectEnumerator]) {
+    UIView *hitView = [subview hitTest:[subview convertPoint:point fromView:currentContainerView] withEvent:event];
     if (hitView) {
       return hitView;
     }
@@ -1512,7 +1514,7 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
 
   if (_useCustomContainerView) {
     if (!_containerView) {
-      _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+      _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
       for (UIView *subview = nullptr in effectiveContentView.subviews) {
         [_containerView addSubview:subview];
       }
@@ -2191,6 +2193,62 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   for (CALayer *layer = nullptr in _boxShadowLayers) {
     [destinationView.layer addSublayer:layer];
   }
+}
+
+- (BOOL)canBecomeFirstResponder
+{
+  return YES;
+}
+
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
+{
+  if ([commandName isEqualToString:@"focus"]) {
+    [self focus];
+    return;
+  }
+
+  if ([commandName isEqualToString:@"blur"]) {
+    [self blur];
+    return;
+  }
+}
+
+- (void)focus
+{
+  [self becomeFirstResponder];
+}
+
+- (void)blur
+{
+  [self resignFirstResponder];
+}
+
+#pragma mark - Focus Events
+
+- (BOOL)becomeFirstResponder
+{
+  if (![super becomeFirstResponder]) {
+    return NO;
+  }
+
+  if (_eventEmitter && ReactNativeFeatureFlags::enableImperativeFocus()) {
+    _eventEmitter->onFocus();
+  }
+
+  return YES;
+}
+
+- (BOOL)resignFirstResponder
+{
+  if (![super resignFirstResponder]) {
+    return NO;
+  }
+
+  if (_eventEmitter && ReactNativeFeatureFlags::enableImperativeFocus()) {
+    _eventEmitter->onBlur();
+  }
+
+  return YES;
 }
 
 @end
