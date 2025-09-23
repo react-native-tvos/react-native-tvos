@@ -160,6 +160,16 @@ build:
           (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
           (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
+    - run:
+        name: Send Apple artifacts to Sonatype
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
+            npx tsx tools/rntv-workflows/src/sonatype.ts upload $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz
+          else
+            echo "Skipping upload to Sonatype because this is not a release build."
+          fi
     - eas/upload_artifact:
         name: Upload RNCore Maven artifacts and RNTester apps
         inputs:
