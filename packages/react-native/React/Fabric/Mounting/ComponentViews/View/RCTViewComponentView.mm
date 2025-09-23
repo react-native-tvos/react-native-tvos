@@ -616,11 +616,12 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
 #pragma mark - Native Commands
 
-- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args
-{
-  NSLog(@"RCTViewComponentView handleCommand: %@", commandName);
-  if ([commandName isEqualToString:@"setDestinations"]) {
+// tvOS only method called from handleCommand()
 #if TARGET_OS_TV
+- (void)handleTVCommand:(const NSString *)commandName args:(const NSArray *)args
+{
+  NSLog(@"RCTViewComponentView handleTVCommand: %@", commandName);
+  if ([commandName isEqualToString:@"setDestinations"]) {
     if ([args count] != 1) {
       RCTLogError(
           @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 1);
@@ -640,9 +641,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     }
     [self setFocusDestinations:destinations];
     return;
-#endif
   } else if ([commandName isEqualToString:@"requestTVFocus"]) {
-#if TARGET_OS_TV
     if ([args count] != 0) {
       RCTLogError(
           @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 0);
@@ -650,13 +649,13 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     }
 
     [self requestFocusSelf];
-#endif
     return;
   }
 #if RCT_DEBUG
   RCTLogError(@"%@ received command %@, which is not a supported command.", @"View", commandName);
 #endif
 }
+#endif // TARGET_OS_TV
 
 #pragma mark - RCTComponentViewProtocol
 
@@ -2211,6 +2210,10 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
     [self blur];
     return;
   }
+
+#if TARGET_OS_TV
+  [self handleTVCommand:commandName args:args];
+#endif
 }
 
 - (void)focus
