@@ -13,6 +13,7 @@ echo "Modifying Xcode project..."
 sed -i '' 's/\"1,2\"/3/g;' RNTesterPods.xcodeproj/project.pbxproj
 sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET/TVOS_DEPLOYMENT_TARGET/g;' RNTesterPods.xcodeproj/project.pbxproj
 sed -i '' 's/iphoneos/appletvos/g;' RNTesterPods.xcodeproj/project.pbxproj
+sed -i '' 's/ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon/ASSETCATALOG_COMPILER_APPICON_NAME = TVAppIcon/;' RNTesterPods.xcodeproj/project.pbxproj
 
 echo "Modifying Podfile..."
 
