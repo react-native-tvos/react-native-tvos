@@ -12,6 +12,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTDefines.h>
 #import <React/RCTLinkingManager.h>
+#import <React/RCTAppearance.h>
 #import <ReactCommon/RCTSampleTurboModule.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 
@@ -49,10 +50,21 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
                                                  inWindow:self.window
                                         initialProperties:[self prepareInitialProps]
                                             launchOptions:launchOptions];
-
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+  RCTUseKeyWindowForSystemStyle(true);
+  [self setMainWindowBackground];
 
   return YES;
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+  [self setMainWindowBackground];
+}
+
+- (void)setMainWindowBackground
+{
+  UIUserInterfaceStyle style = self.window.rootViewController.view.traitCollection.userInterfaceStyle;
+  self.window.rootViewController.view.backgroundColor = style == UIUserInterfaceStyleDark ? [UIColor blackColor] : [UIColor whiteColor];
 }
 
 - (NSDictionary *)prepareInitialProps
