@@ -141,8 +141,6 @@ RCT_EXPORT_MODULE()
 
 - (void)setBridge:(RCTBridge *)bridge
 {
-  RCTErrorNewArchitectureValidation(
-      RCTNotAllowedInBridgeless, self, @"RCTViewManager must not be initialized for the new architecture");
   _bridge = bridge;
 }
 

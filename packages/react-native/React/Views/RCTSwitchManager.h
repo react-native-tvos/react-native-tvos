@@ -8,12 +8,12 @@
 
 #import <React/RCTViewManager.h>
 
-#ifndef RCT_FIT_RM_OLD_COMPONENT
+#ifndef RCT_REMOVE_LEGACY_ARCH
 
 __attribute__((deprecated("This API will be removed along with the legacy architecture.")))
 @interface RCTSwitchManager : RCTViewManager
 
 @end
 
-#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // RCT_REMOVE_LEGACY_ARCH
 #endif // TARGET_OS_TV
