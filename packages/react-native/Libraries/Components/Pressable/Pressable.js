@@ -29,7 +29,7 @@ import useAndroidRippleForView, {
   type PressableAndroidRippleConfig,
 } from './useAndroidRippleForView';
 import * as React from 'react';
-import {memo, useMemo, useRef, useState} from 'react';
+import {memo, useEffect, useMemo, useRef, useState} from 'react';
 
 export type {PressableAndroidRippleConfig};
 
@@ -251,7 +251,21 @@ function Pressable({
   const android_rippleConfig = useAndroidRippleForView(android_ripple, viewRef);
 
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
-  const [focused, setFocused] = usePressState(false);
+  const [focused, setFocused] = useState(false);
+
+  const [computedStyle, setComputedStyle] = useState<ViewStyleProp>({});
+
+  useEffect(() => {
+    const computeStyle = () => {
+      if (typeof style === 'function') {
+        return style({pressed, focused});
+      } else {
+        return style;
+      }
+    };
+
+    setComputedStyle(computeStyle());
+  }, [pressed, focused, style]);
 
   const shouldUpdatePressed =
     typeof children === 'function' || typeof style === 'function';
@@ -287,9 +301,6 @@ function Pressable({
     accessibilityLiveRegion,
     accessibilityLabel,
     accessibilityState: _accessibilityState,
-    focusable:
-      focusable !== false && disabled !== true && ariaDisabled !== true,
-    isTVSelectable: isTVSelectable !== false && accessible !== false,
     accessibilityValue,
     hitSlop,
   };
@@ -386,13 +397,8 @@ function Pressable({
       nextFocusLeft={tagForComponentOrHandle(props.nextFocusLeft)}
       nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
       nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
-      isTVSelectable={
-        isTVSelectable !== false &&
-        accessible !== false &&
-        disabled !== true &&
-        ariaDisabled !== true
-      }
-      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      focusable={focusable !== false && isTVSelectable !== false}
+      style={computedStyle}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
       {typeof children === 'function' ? children({pressed, focused}) : children}

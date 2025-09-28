@@ -11,7 +11,7 @@
 'use strict';
 
 import * as React from 'react';
-import ReactNative from 'react-native';
+import ReactNative, {ScrollView} from 'react-native';
 
 const {
   StyleSheet,
@@ -57,6 +57,9 @@ const PressableButton = (props: {
   functional?: boolean,
   noBubbledEvents?: boolean,
   tvParallaxProperties?: $FlowFixMe,
+  accessible?: boolean,
+  focusable?: boolean,
+  disabled?: boolean,
 }) => {
   // Set functional=false to have no functional style or children
   // and test the fix for #744
@@ -119,6 +122,7 @@ const TouchableOpacityButton = (props: {
 }) => {
   return (
     <TouchableOpacity
+      {...props}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -137,6 +141,7 @@ const TouchableHighlightButton = (props: {
 }) => {
   return (
     <TouchableHighlight
+      {...props}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -155,6 +160,7 @@ const TouchableNativeFeedbackButton = (props: {
 }) => {
   return (
     <TouchableNativeFeedback
+      {...props}
       background={TouchableNativeFeedback.SelectableBackground()}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
@@ -276,9 +282,41 @@ const TVEventHandlerView: () => React.Node = () => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <ScrollView>
         <View>
           <PressableButton title="Pressable" log={updatePressableLog} />
+          <PressableButton
+            title="Pressable accessible={false}"
+            accessible={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true} focusable={true}"
+            disabled={true}
+            focusable={true}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
           <PressableButton
             title="Pressable nonfunctional"
             log={updatePressableLog}
@@ -297,8 +335,40 @@ const TVEventHandlerView: () => React.Node = () => {
             title="TouchableOpacity"
             log={updatePressableLog}
           />
+          <TouchableOpacityButton
+            title="TouchableOpacity focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+          />
+          <TouchableOpacityButton
+            title="TouchableOpacity disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+          />
+          <TouchableOpacityButton
+            title="TouchableOpacity disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
+            log={updatePressableLog}
+          />
           <TouchableHighlightButton
             title="TouchableHighlight"
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
             log={updatePressableLog}
           />
           {Platform.OS === 'android' ? (
@@ -401,7 +471,7 @@ const TVEventHandlerView: () => React.Node = () => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.logContainer}>
         <View style={{width: 400 * scale}}>

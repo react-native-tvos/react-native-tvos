@@ -22,7 +22,6 @@ exports[`<Pressable /> should render as expected: should deep render when mocked
   accessible={true}
   collapsable={false}
   focusable={true}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -61,7 +60,6 @@ exports[`<Pressable /> should render as expected: should deep render when not mo
   accessible={true}
   collapsable={false}
   focusable={true}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -99,8 +97,7 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -138,8 +135,7 @@ exports[`<Pressable disabled={true} /> should be disabled when disabled is true:
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -177,8 +173,7 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -216,8 +211,7 @@ exports[`<Pressable disabled={true} accessibilityState={{}} /> should be disable
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -255,8 +249,7 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -294,8 +287,7 @@ exports[`<Pressable disabled={true} accessibilityState={{checked: true}} /> shou
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -333,8 +325,7 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -372,8 +363,7 @@ exports[`<Pressable disabled={true} accessibilityState={{disabled: false}} /> sh
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
-  isTVSelectable={false}
+  focusable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
