@@ -40,6 +40,7 @@ const focusHandler = (event: $FlowFixMe, props: any) => {
 
 const blurHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
+    event.name = undefined;
     event.stopPropagation();
   } else {
     event.name = props.title;

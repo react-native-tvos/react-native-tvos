@@ -29,7 +29,7 @@ import useAndroidRippleForView, {
   type PressableAndroidRippleConfig,
 } from './useAndroidRippleForView';
 import * as React from 'react';
-import {memo, useEffect, useMemo, useRef, useState} from 'react';
+import {memo, useMemo, useRef, useState} from 'react';
 
 export type {PressableAndroidRippleConfig};
 
@@ -253,20 +253,6 @@ function Pressable({
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
   const [focused, setFocused] = useState(false);
 
-  const [computedStyle, setComputedStyle] = useState<ViewStyleProp>({});
-
-  useEffect(() => {
-    const computeStyle = () => {
-      if (typeof style === 'function') {
-        return style({pressed, focused});
-      } else {
-        return style;
-      }
-    };
-
-    setComputedStyle(computeStyle());
-  }, [pressed, focused, style]);
-
   const shouldUpdatePressed =
     typeof children === 'function' || typeof style === 'function';
 
@@ -398,7 +384,7 @@ function Pressable({
       nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
       nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
       focusable={focusable !== false && isTVSelectable !== false}
-      style={computedStyle}
+      style={typeof style === 'function' ? style({pressed, focused}) : style}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
       {typeof children === 'function' ? children({pressed, focused}) : children}
