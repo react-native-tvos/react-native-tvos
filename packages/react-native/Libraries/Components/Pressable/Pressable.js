@@ -373,6 +373,16 @@ function Pressable({
 
   const eventHandlers = usePressability(config);
 
+  const computedStyle = useMemo(() => {
+    return typeof style === 'function' ? style({pressed, focused}) : style;
+  }, [pressed, focused, style]);
+
+  const computedChildren = useMemo(() => {
+    return typeof children === 'function'
+      ? children({pressed, focused})
+      : children;
+  }, [pressed, focused, children]);
+
   return (
     <View
       {...restPropsWithDefaults}
@@ -384,10 +394,10 @@ function Pressable({
       nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
       nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
       focusable={focusable !== false && isTVSelectable !== false}
-      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      style={computedStyle}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed, focused}) : children}
+      {computedChildren}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );
