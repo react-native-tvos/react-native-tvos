@@ -11,7 +11,7 @@
 'use strict';
 
 import * as React from 'react';
-import ReactNative, {ScrollView} from 'react-native';
+import ReactNative, {ScrollView, type TVRemoteEvent} from 'react-native';
 
 const {
   StyleSheet,
@@ -234,16 +234,22 @@ const TVEventHandlerView: () => React.Node = () => {
     setPressableEventLog(log => logWithAppendedEntry(log, entry));
   };
 
+  const logEntryForEvent = (event: TVRemoteEvent) => {
+    return [
+      `type=${event.eventType}`,
+      event.eventKeyAction ? `action=${event.eventKeyAction}` : '',
+      event.body?.x ? `x=${event.body?.x}` : '',
+      event.body?.y ? `y=${event.body?.y}` : '',
+      event.body?.velocityX ? `vx=${Math.floor(event.body?.velocityX)}` : '',
+      event.body?.velocityY ? `vy=${Math.floor(event.body?.velocityY)}` : '',
+    ].join(' ');
+  };
+
   useTVEventHandler(event => {
-    const {eventType, eventKeyAction} = event;
+    const {eventType} = event;
     if (eventType !== 'focus' && eventType !== 'blur') {
       setRemoteEventLog(log =>
-        logWithAppendedEntry(
-          log,
-          `type=${eventType}, action=${
-            eventKeyAction !== undefined ? eventKeyAction : ''
-          }`,
-        ),
+        logWithAppendedEntry(log, logEntryForEvent(event)),
       );
     }
   });
