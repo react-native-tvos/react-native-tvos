@@ -55,7 +55,6 @@ const pressEventHandler = (eventType: string, props: any) => {
 const PressableButton = (props: {
   title: string,
   log: (entry: string) => void,
-  functional?: boolean,
   noBubbledEvents?: boolean,
   tvParallaxProperties?: $FlowFixMe,
   accessible?: boolean,
@@ -66,36 +65,8 @@ const PressableButton = (props: {
   // and test the fix for #744
   const {functional, log, noBubbledEvents, title, ...pressableProps} = props;
   const [userFocused, setUserFocused] = React.useState(false);
-  return functional !== false ? (
-    <Pressable
-      {...pressableProps}
-      onFocus={(event: $FlowFixMe) => focusHandler(event, props)}
-      onBlur={(event: $FlowFixMe) => blurHandler(event, props)}
-      onPress={() => pressEventHandler('onPress', props)}
-      onLongPress={() => pressEventHandler('onLongPress', props)}
-      onPressIn={() => pressEventHandler('onPressIn', props)}
-      onPressOut={() => pressEventHandler('onPressOut', props)}
-      tvParallaxProperties={props.tvParallaxProperties}
-      android_ripple={{
-        color: '#cccccc',
-        radius: 50,
-      }}
-      style={({pressed, focused}) =>
-        pressed || focused ? styles.pressableFocused : styles.pressable
-      }>
-      {({focused, pressed}) => {
-        return (
-          <Text style={styles.pressableText}>
-            {pressed
-              ? `${props.title} pressed`
-              : focused
-                ? `${props.title} focused`
-                : props.title}
-          </Text>
-        );
-      }}
-    </Pressable>
-  ) : (
+  const [userPressed, setUserPressed] = React.useState(false);
+  return (
     <Pressable
       {...pressableProps}
       onFocus={(event: $FlowFixMe) => {
@@ -109,10 +80,20 @@ const PressableButton = (props: {
       tvParallaxProperties={props.tvParallaxProperties}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
-      onPressIn={() => pressEventHandler('onPressIn', props)}
-      onPressOut={() => pressEventHandler('onPressOut', props)}
-      style={userFocused ? styles.pressableFocused : styles.pressable}>
-      <Text style={styles.pressableText}>{`${props.title}`}</Text>
+      onPressIn={() => {
+        pressEventHandler('onPressIn', props);
+        setUserPressed(true);
+      }}
+      onPressOut={() => {
+        pressEventHandler('onPressOut', props);
+        setUserPressed(false);
+      }}
+      style={
+        userFocused || userPressed ? styles.pressableFocused : styles.pressable
+      }>
+      <Text style={styles.pressableText}>{`${props.title}${
+        userFocused ? ' focused' : ''
+      }${userPressed ? ' pressed' : ''}`}</Text>
     </Pressable>
   );
 };
@@ -317,11 +298,6 @@ const TVEventHandlerView: () => React.Node = () => {
             focusable={true}
             log={updatePressableLog}
             noBubbledEvents
-          />
-          <PressableButton
-            title="Pressable nonfunctional"
-            log={updatePressableLog}
-            functional={false}
           />
           <PressableButton
             title="Pressable tvOS expand"
