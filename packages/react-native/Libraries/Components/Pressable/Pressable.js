@@ -251,7 +251,7 @@ function Pressable({
   const android_rippleConfig = useAndroidRippleForView(android_ripple, viewRef);
 
   const [pressed, setPressed] = usePressState(testOnly_pressed === true);
-  const [focused, setFocused] = usePressState(false);
+  const [focused, setFocused] = useState(false);
 
   const shouldUpdatePressed =
     typeof children === 'function' || typeof style === 'function';
@@ -287,9 +287,6 @@ function Pressable({
     accessibilityLiveRegion,
     accessibilityLabel,
     accessibilityState: _accessibilityState,
-    focusable:
-      focusable !== false && disabled !== true && ariaDisabled !== true,
-    isTVSelectable: isTVSelectable !== false && accessible !== false,
     accessibilityValue,
     hitSlop,
   };
@@ -376,6 +373,16 @@ function Pressable({
 
   const eventHandlers = usePressability(config);
 
+  const computedStyle = useMemo(() => {
+    return typeof style === 'function' ? style({pressed, focused}) : style;
+  }, [pressed, focused, style]);
+
+  const computedChildren = useMemo(() => {
+    return typeof children === 'function'
+      ? children({pressed, focused})
+      : children;
+  }, [pressed, focused, children]);
+
   return (
     <View
       {...restPropsWithDefaults}
@@ -386,16 +393,11 @@ function Pressable({
       nextFocusLeft={tagForComponentOrHandle(props.nextFocusLeft)}
       nextFocusRight={tagForComponentOrHandle(props.nextFocusRight)}
       nextFocusUp={tagForComponentOrHandle(props.nextFocusUp)}
-      isTVSelectable={
-        isTVSelectable !== false &&
-        accessible !== false &&
-        disabled !== true &&
-        ariaDisabled !== true
-      }
-      style={typeof style === 'function' ? style({pressed, focused}) : style}
+      focusable={focusable !== false && isTVSelectable !== false}
+      style={computedStyle}
       tvParallaxProperties={tvParallaxProperties}
       collapsable={false}>
-      {typeof children === 'function' ? children({pressed, focused}) : children}
+      {computedChildren}
       {__DEV__ ? <PressabilityDebugView color="red" hitSlop={hitSlop} /> : null}
     </View>
   );

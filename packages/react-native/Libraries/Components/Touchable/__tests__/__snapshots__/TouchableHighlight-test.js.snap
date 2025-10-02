@@ -11,9 +11,8 @@ exports[`TouchableHighlight renders correctly 1`] = `
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -49,9 +48,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -84,9 +82,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -119,9 +116,8 @@ exports[`TouchableHighlight with disabled state should disable button when acces
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -155,9 +151,8 @@ exports[`TouchableHighlight with disabled state should keep accessibilityState w
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -190,9 +185,8 @@ exports[`TouchableHighlight with disabled state should overwrite accessibilitySt
     }
   }
   accessible={true}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}

@@ -1360,7 +1360,8 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
-    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+    // Calling the super method causes duplicate events
+    // super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
 
     val mEventDispatcher: EventDispatcher? =
       UIManagerHelper.getEventDispatcherForReactTag(

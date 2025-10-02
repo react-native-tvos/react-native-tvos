@@ -8,9 +8,11 @@
  * @format
  */
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {ViewProps} from './ViewPropTypes';
 
 import TextAncestorContext from '../../Text/TextAncestorContext';
+import Platform from '../../Utilities/Platform';
 import useMergeRefs from '../../Utilities/useMergeRefs';
 import ViewNativeComponent from './ViewNativeComponent';
 import {Commands} from './ViewNativeComponent';
@@ -59,6 +61,8 @@ component View(
   const {
     accessibilityState,
     accessibilityValue,
+    isTVSelectable,
+    focusable,
     'aria-busy': ariaBusy,
     'aria-checked': ariaChecked,
     'aria-disabled': ariaDisabled,
@@ -139,6 +143,14 @@ component View(
       now: ariaValueNow ?? accessibilityValue?.now,
       text: ariaValueText ?? accessibilityValue?.text,
     };
+  }
+
+  if (Platform.OS === 'ios') {
+    processedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
+    delete processedProps.focusable;
+  } else {
+    processedProps.focusable = focusable ?? false;
+    delete processedProps.isTVSelectable;
   }
 
   const actualView =

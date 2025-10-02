@@ -53,30 +53,36 @@ export type TVParallaxPropertiesType = $ReadOnly<{|
 |}>;
 
 /**
- * Additional View properties for Apple TV
+ * These props are for both Apple TV and Android TV.
+ * TODO: update `@react-native/eslint-plugin` so that the
+ * name can be changed to TVViewProps
  */
 export type TVViewProps = $ReadOnly<{|
   /**
-   * *(Apple TV only)* When set to true, this view will be focusable
-   * and navigable using the Apple TV remote.
+   * @deprecated Replaced by `focusable`.
    *
    * @platform ios
    */
-  isTVSelectable?: boolean,
+  isTVSelectable?: ?boolean,
 
   /**
-   * *(Apple TV only)* May be set to true to force the Apple TV focus engine to move focus to this view.
+   * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
    *
-   * @platform ios
    */
-  hasTVPreferredFocus?: boolean,
+  focusable?: ?boolean,
+
+  /**
+   * May be set to true to force the focus engine to move focus to this view.
+   *
+   */
+  hasTVPreferredFocus?: ?boolean,
 
   /**
    * *(Apple TV only)* Object with properties to control Apple TV parallax effects.
    *
    * @platform ios
    */
-  tvParallaxProperties?: TVParallaxPropertiesType,
+  tvParallaxProperties?: ?TVParallaxPropertiesType,
 
   /**
    * Additional properties needed for flow checks on TVFocusGuideView
@@ -87,4 +93,35 @@ export type TVViewProps = $ReadOnly<{|
   safePadding?: string | null,
   onPressIn?: (event: any) => void,
   onPressOut?: (event: any) => void,
+
+  /**
+   * TV next focus forward (see documentation for the View component).
+   *
+   * @platform android
+   */
+  nextFocusForward?: ?number,
+
+  /**
+   * TV next focus down (see documentation for the View component).
+   *
+   */
+  nextFocusDown?: ?number,
+
+  /**
+   * TV next focus left (see documentation for the View component).
+   *
+   */
+  nextFocusLeft?: ?number,
+
+  /**
+   * TV next focus right (see documentation for the View component).
+   *
+   */
+  nextFocusRight?: ?number,
+
+  /**
+   * TV next focus up (see documentation for the View component).
+   *
+   */
+  nextFocusUp?: ?number,
 |}>;
