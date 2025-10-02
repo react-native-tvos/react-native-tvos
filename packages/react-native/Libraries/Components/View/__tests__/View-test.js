@@ -20,7 +20,11 @@ describe('View', () => {
   it('default render', async () => {
     const instance = await create(<View />);
 
-    expect(instance.toJSON()).toMatchInlineSnapshot(`<RCTView />`);
+    expect(instance.toJSON()).toMatchInlineSnapshot(`
+      <RCTView
+        isTVSelectable={false}
+      />
+    `);
   });
 
   it('has displayName', () => {
@@ -40,7 +44,7 @@ describe('View compat with web', () => {
 
     expect(instance.toJSON()).toMatchInlineSnapshot(`
       <RCTView
-        focusable={true}
+        isTVSelectable={false}
         nativeID="id"
         testID="testID"
       />
@@ -160,6 +164,7 @@ describe('View compat with web', () => {
         aria-setsize={5}
         aria-sort="ascending"
         importantForAccessibility="no-hide-descendants"
+        isTVSelectable={false}
         role="main"
       />
     `);
@@ -179,6 +184,7 @@ describe('View compat with web', () => {
 
     expect(instance.toJSON()).toMatchInlineSnapshot(`
       <RCTView
+        isTVSelectable={false}
         style={
           Object {
             "backgroundColor": "white",
