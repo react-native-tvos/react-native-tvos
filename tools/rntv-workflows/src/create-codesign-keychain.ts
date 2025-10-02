@@ -5,6 +5,11 @@ import { tmpdir } from 'os';
 
 async function executeScriptAsync() {
 
+  if (process.env.EAS_BUILD_RUNNER !== 'eas-build') {
+    console.log('Skipping code signing certificate import on a local build.');
+    return;
+  }
+
   const keychainPassword = Math.random().toString(36);
 
   const keychain = 'codesigning';
