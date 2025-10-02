@@ -8,10 +8,12 @@
  * @format
  */
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {ViewProps} from './ViewPropTypes';
 
 import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import TextAncestorContext from '../../Text/TextAncestorContext';
+import Platform from '../../Utilities/Platform';
 import useMergeRefs from '../../Utilities/useMergeRefs';
 import ViewNativeComponent from './ViewNativeComponent';
 import {Commands} from './ViewNativeComponent';
@@ -62,6 +64,8 @@ component View(
     const {
       accessibilityState,
       accessibilityValue,
+      isTVSelectable,
+      focusable,
       'aria-busy': ariaBusy,
       'aria-checked': ariaChecked,
       'aria-disabled': ariaDisabled,
@@ -144,6 +148,14 @@ component View(
       };
     }
 
+    if (Platform.OS === 'ios') {
+      processedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
+      delete processedProps.focusable;
+    } else {
+      processedProps.focusable = focusable ?? false;
+      delete processedProps.isTVSelectable;
+    }
+
     actualView =
       ref == null ? (
         <ViewNativeComponent {...processedProps} />
@@ -211,6 +223,13 @@ component View(
           }
         : undefined;
 
+    const modifiedIsTVSelectable = Platform.OS === 'ios' ?
+                                     (focusable ?? isTVSelectable ?? false) :
+                                     undefined;
+    const modifiedFocusable = Platform.OS === 'android' ?
+                                (focusable ?? false) :
+                                undefined;
+    
     actualView = (
       <ViewNativeComponent
         {...otherProps}
@@ -218,7 +237,8 @@ component View(
           ariaLive === 'off' ? 'none' : ariaLive ?? accessibilityLiveRegion
         }
         accessibilityLabel={ariaLabel ?? accessibilityLabel}
-        focusable={tabIndex !== undefined ? !tabIndex : focusable}
+        focusable={tabIndex !== undefined ? !tabIndex : modifiedFocusable}
+        isTVSelectable={tabIndex !== undefined ? !tabIndex : modifiedIsTVSelectable}
         accessibilityState={_accessibilityState}
         accessibilityElementsHidden={ariaHidden ?? accessibilityElementsHidden}
         accessibilityLabelledBy={_accessibilityLabelledBy}

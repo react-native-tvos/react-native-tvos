@@ -9,6 +9,7 @@
  */
 
 import type {GestureResponderEvent} from '../../Types/CoreEventTypes';
+import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 
 import View from '../../Components/View/View';
@@ -25,53 +26,9 @@ import invariant from 'invariant';
 import * as React from 'react';
 import {cloneElement} from 'react';
 
-type TouchableNativeFeedbackTVProps = {
-  /**
-   * *(Apple TV only)* TV preferred focus (see documentation for the View component).
-   *
-   * @platform ios
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
-   * Designates the next view to receive focus when the user navigates down. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusDown?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates forward. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusForward?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates left. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates right. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates up. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusUp?: ?number,
-};
-
 export type TouchableNativeFeedbackProps = $ReadOnly<{
   ...TouchableWithoutFeedbackProps,
-  ...TouchableNativeFeedbackTVProps,
+  ...TVViewProps,
   /**
    * Determines the type of background drawable that's going to be used to display feedback.
    * It takes an object with type property and extra data depending on the type.
@@ -366,16 +323,15 @@ class TouchableNativeFeedback extends React.Component<
           this.props['aria-hidden'] ?? this.props.accessibilityElementsHidden,
         hasTVPreferredFocus: this.props.hasTVPreferredFocus,
         hitSlop: this.props.hitSlop,
-        focusable:
-          this.props.focusable !== false &&
-          this.props.onPress !== undefined &&
-          !this.props.disabled,
         nativeID: this.props.id ?? this.props.nativeID,
         nextFocusDown: tagForComponentOrHandle(this.props.nextFocusDown),
         nextFocusForward: tagForComponentOrHandle(this.props.nextFocusForward),
         nextFocusLeft: tagForComponentOrHandle(this.props.nextFocusLeft),
         nextFocusRight: tagForComponentOrHandle(this.props.nextFocusRight),
         nextFocusUp: tagForComponentOrHandle(this.props.nextFocusUp),
+        focusable:
+          this.props.focusable !== false &&
+          this.props.isTVSelectable !== false,
         onLayout: this.props.onLayout,
         testID: this.props.testID,
       },

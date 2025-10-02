@@ -9,7 +9,7 @@
  */
 
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
-import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 
 import Animated from '../../Animated/Animated';
@@ -22,52 +22,6 @@ import flattenStyle from '../../StyleSheet/flattenStyle';
 import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
-
-export type TouchableOpacityTVProps = $ReadOnly<{
-  /**
-   * *(Apple TV only)* TV preferred focus (see documentation for the View component).
-   *
-   * @platform ios
-   */
-  hasTVPreferredFocus?: ?boolean,
-  isTVSelectable?: ?boolean,
-  tvParallaxProperties?: TVParallaxPropertiesType,
-
-  /**
-   * Designates the next view to receive focus when the user navigates down. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusDown?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates forward. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusForward?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates left. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates right. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * Designates the next view to receive focus when the user navigates up. See the Android documentation.
-   *
-   * @platform android
-   */
-  nextFocusUp?: ?number,
-}>;
 
 type TouchableOpacityBaseProps = $ReadOnly<{
   /**
@@ -82,7 +36,7 @@ type TouchableOpacityBaseProps = $ReadOnly<{
 
 export type TouchableOpacityProps = $ReadOnly<{
   ...TouchableWithoutFeedbackProps,
-  ...TouchableOpacityTVProps,
+  ...TVViewProps,
   ...TouchableOpacityBaseProps,
 }>;
 
@@ -338,16 +292,12 @@ class TouchableOpacity extends React.Component<
         nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
         nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
-        isTVSelectable={
-          this.props.isTVSelectable !== false && this.props.accessible !== false
+        focusable={
+          this.props.focusable !== false &&
+          this.props.isTVSelectable !== false
         }
         tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}
-        focusable={
-          this.props.focusable !== false &&
-          this.props.onPress !== undefined &&
-          !this.props.disabled
-        }
         // $FlowFixMe[prop-missing]
         ref={this.props.hostRef}
         {...eventHandlers}>

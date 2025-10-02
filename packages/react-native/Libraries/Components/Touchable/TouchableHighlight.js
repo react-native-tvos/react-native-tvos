@@ -9,7 +9,7 @@
  */
 
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
-import type {TVParallaxPropertiesType} from '../TV/TVViewPropTypes';
+import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {AccessibilityState} from '../View/ViewAccessibility';
 import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
 
@@ -23,25 +23,6 @@ import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 import {cloneElement} from 'react';
-
-type AndroidProps = $ReadOnly<{
-  nextFocusDown?: ?number,
-  nextFocusForward?: ?number,
-  nextFocusLeft?: ?number,
-  nextFocusRight?: ?number,
-  nextFocusUp?: ?number,
-}>;
-
-type IOSProps = $ReadOnly<{
-  hasTVPreferredFocus?: ?boolean,
-  isTVSelectable?: ?boolean,
-  tvParallaxProperties?: TVParallaxPropertiesType,
-  nextFocusDown?: ?number,
-  nextFocusForward?: ?number,
-  nextFocusLeft?: ?number,
-  nextFocusRight?: ?number,
-  nextFocusUp?: ?number,
-}>;
 
 type TouchableHighlightBaseProps = $ReadOnly<{
   /**
@@ -71,8 +52,7 @@ type TouchableHighlightBaseProps = $ReadOnly<{
 
 export type TouchableHighlightProps = $ReadOnly<{
   ...TouchableWithoutFeedbackProps,
-  ...AndroidProps,
-  ...IOSProps,
+  ...TVViewProps,
   ...TouchableHighlightBaseProps,
 }>;
 
@@ -371,8 +351,9 @@ class TouchableHighlightImpl extends React.Component<
         onLayout={this.props.onLayout}
         hitSlop={this.props.hitSlop}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
-        isTVSelectable={
-          this.props.isTVSelectable !== false && this.props.accessible !== false
+        focusable={
+          this.props.focusable !== false &&
+          this.props.isTVSelectable !== false
         }
         tvParallaxProperties={this.props.tvParallaxProperties}
         nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
@@ -380,11 +361,6 @@ class TouchableHighlightImpl extends React.Component<
         nextFocusLeft={tagForComponentOrHandle(this.props.nextFocusLeft)}
         nextFocusRight={tagForComponentOrHandle(this.props.nextFocusRight)}
         nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
-        focusable={
-          this.props.focusable !== false &&
-          this.props.onPress !== undefined &&
-          !this.props.disabled
-        }
         nativeID={this.props.id ?? this.props.nativeID}
         testID={this.props.testID}
         ref={this.props.hostRef}

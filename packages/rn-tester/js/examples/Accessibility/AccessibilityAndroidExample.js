@@ -14,7 +14,18 @@ import RNTesterBlock from '../../components/RNTesterBlock';
 import RNTesterPage from '../../components/RNTesterPage';
 import RNTesterText from '../../components/RNTesterText';
 import React from 'react';
-import {Alert, StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+
+const TouchableComponent = Platform.isTV
+  ? TouchableOpacity
+  : TouchableWithoutFeedback;
 
 const importantForAccessibilityValues = [
   'auto',
@@ -75,11 +86,11 @@ class AccessibilityAndroidExample extends React.Component<
         </RNTesterBlock>
 
         <RNTesterBlock title="LiveRegion">
-          <TouchableWithoutFeedback onPress={this._addOne}>
+          <TouchableComponent onPress={this._addOne}>
             <View style={styles.embedded}>
               <RNTesterText style={styles.buttonText}>Click me</RNTesterText>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableComponent>
           <View accessibilityLiveRegion="polite">
             <RNTesterText>Clicked {this.state.count} times</RNTesterText>
           </View>
@@ -87,7 +98,7 @@ class AccessibilityAndroidExample extends React.Component<
 
         <RNTesterBlock title="Overlapping views and importantForAccessibility property">
           <View style={styles.container}>
-            <TouchableWithoutFeedback
+            <TouchableComponent
               accessible={true}
               accessibilityLabel="First layout"
               importantForAccessibility={
@@ -98,7 +109,7 @@ class AccessibilityAndroidExample extends React.Component<
               <View accessible={true} style={styles.touchableContainer}>
                 <RNTesterText style={{fontSize: 25}}>Hello</RNTesterText>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableComponent>
             <View
               style={{
                 position: 'absolute',
@@ -121,14 +132,13 @@ class AccessibilityAndroidExample extends React.Component<
               </View>
             </View>
           </View>
-          <TouchableWithoutFeedback
-            onPress={this._changeBackgroundImportantForAcc}>
+          <TouchableComponent onPress={this._changeBackgroundImportantForAcc}>
             <View style={styles.embedded}>
               <RNTesterText style={styles.buttonText}>
                 Change importantForAccessibility for background layout.
               </RNTesterText>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableComponent>
           <View accessible={true}>
             <RNTesterText>
               Background layout importantForAccessibility
@@ -141,14 +151,13 @@ class AccessibilityAndroidExample extends React.Component<
               }
             </RNTesterText>
           </View>
-          <TouchableWithoutFeedback
-            onPress={this._changeForgroundImportantForAcc}>
+          <TouchableComponent onPress={this._changeForgroundImportantForAcc}>
             <View style={styles.embedded}>
               <RNTesterText style={styles.buttonText}>
                 Change importantForAccessibility for forground layout.
               </RNTesterText>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableComponent>
           <View accessible={true}>
             <RNTesterText>
               Forground layout importantForAccessibility

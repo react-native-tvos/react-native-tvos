@@ -286,49 +286,60 @@ const RNTesterApp = ({
 
   return (
     <RNTesterThemeContext.Provider value={theme}>
-      {Platform.OS === 'android' ? (
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor={theme.GroupedBackgroundColor}
-        />
-      ) : null}
-      {!shouldHideChrome && (
-        <RNTTitleBar
-          title={title}
-          theme={theme}
-          documentationURL={activeModule?.documentationURL}>
-          {activeModule && BackButtonComponent ? (
-            <BackButtonComponent onBack={handleBackPress} />
-          ) : undefined}
-        </RNTTitleBar>
-      )}
-      <View
-        style={StyleSheet.compose(styles.container, {
-          backgroundColor: theme.GroupedBackgroundColor,
-        })}>
-        {activeModule != null ? (
-          <RNTesterModuleContainer
-            module={activeModule}
-            example={activeModuleExample}
-            onExampleCardPress={handleModuleExampleCardPress}
+      <View style={styles.outerContainer}>
+        {Platform.OS === 'android' ? (
+          <StatusBar
+            barStyle="dark-content"
+            backgroundColor={theme.GroupedBackgroundColor}
           />
-        ) : (
-          <RNTesterModuleList
-            sections={activeExampleList}
-            handleModuleCardPress={handleModuleCardPress}
-          />
+        ) : null}
+        {!shouldHideChrome && Platform.isTV && (
+          <View style={styles.bottomNavbar}>
+            <RNTesterNavBar
+              screen={screen || Screens.COMPONENTS}
+              isExamplePageOpen={!!activeModule}
+              handleNavBarPress={handleNavBarPress}
+            />
+          </View>
         )}
-      </View>
-      {!shouldHideChrome && (
-        <View style={styles.bottomNavbar}>
-          <RNTesterNavBar
-            screen={screen || Screens.COMPONENTS}
-            isExamplePageOpen={!!activeModule}
-            handleNavBarPress={handleNavBarPress}
-          />
+        {!shouldHideChrome && (
+          <RNTTitleBar
+            title={title}
+            theme={theme}
+            documentationURL={activeModule?.documentationURL}>
+            {activeModule && BackButtonComponent ? (
+              <BackButtonComponent onBack={handleBackPress} />
+            ) : undefined}
+          </RNTTitleBar>
+        )}
+        <View
+          style={StyleSheet.compose(styles.container, {
+            backgroundColor: theme.GroupedBackgroundColor,
+          })}>
+          {activeModule != null ? (
+            <RNTesterModuleContainer
+              module={activeModule}
+              example={activeModuleExample}
+              onExampleCardPress={handleModuleExampleCardPress}
+            />
+          ) : (
+            <RNTesterModuleList
+              sections={activeExampleList}
+              handleModuleCardPress={handleModuleCardPress}
+            />
+          )}
         </View>
-      )}
-      <ReportFullyDrawnView />
+        {!shouldHideChrome && !Platform.isTV && (
+          <View style={styles.bottomNavbar}>
+            <RNTesterNavBar
+              screen={screen || Screens.COMPONENTS}
+              isExamplePageOpen={!!activeModule}
+              handleNavBarPress={handleNavBarPress}
+            />
+          </View>
+        )}
+        <ReportFullyDrawnView />
+      </View>
     </RNTesterThemeContext.Provider>
   );
 };
@@ -338,6 +349,11 @@ export default RNTesterApp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    overflow: 'hidden',
+  },
+  outerContainer: {
+    flex: 1,
+    margin: 50,
   },
   bottomNavbar: {
     height: navBarHeight,

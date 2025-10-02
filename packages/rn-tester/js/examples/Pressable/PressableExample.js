@@ -50,7 +50,9 @@ function ContentPress() {
             setTimesPressed(current => current + 1);
           }}>
           {({pressed, focused}) => (
-            <Text testID="one_press_me_button" style={[styles.button, {opacity: focused ? 0.5 : 1.0}]}>
+            <Text
+              testID="one_press_me_button"
+              style={[styles.button, {opacity: focused ? 0.5 : 1.0}]}>
               {pressed ? 'Pressed!' : 'Press Me'}
             </Text>
           )}
@@ -445,12 +447,16 @@ const examples = [
                 backgroundColor: pressed
                   ? 'rgb(210, 230, 255)'
                   : focused
-                  ? 'rgb(255, 230, 210)'
-                  : 'white',
+                    ? 'rgb(255, 230, 210)'
+                    : 'white',
               },
               styles.wrapperCustom,
             ]}>
-            <Text style={styles.text}>Press Me</Text>
+            {({pressed, focused}) => (
+              <Text style={styles.text}>
+                {pressed ? 'Pressed!' : focused ? 'Focused!' : 'Press Me'}
+              </Text>
+            )}
           </Pressable>
         </View>
       );

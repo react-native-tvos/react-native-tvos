@@ -284,20 +284,6 @@ export type ViewPropsAndroid = $ReadOnly<{
   renderToHardwareTextureAndroid?: ?boolean,
 
   /**
-   * TV next focus forward (see documentation for the View component).
-   *
-   * @platform android
-   */
-  nextFocusForward?: ?number,
-
-  /**
-   * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
-   *
-   * @platform android
-   */
-  focusable?: ?boolean,
-
-  /**
    * Indicates whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
    * See https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
    * for more details.
@@ -318,51 +304,6 @@ export type ViewPropsAndroid = $ReadOnly<{
   onClick?: ?(event: GestureResponderEvent) => mixed,
 }>;
 
-export type TVViewPropsIOS = $ReadOnly<{
-  /**
-   * *(Apple TV only)* When set to true, this view will be focusable
-   * and navigable using the Apple TV remote.
-   *
-   * @platform ios
-   */
-  isTVSelectable?: boolean,
-
-  /**
-   * *(Apple TV and Android TV)* May be set to true to force the Apple TV focus engine to move focus to this view.
-   *
-   * @platform ios
-   */
-  hasTVPreferredFocus?: boolean,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
-   */
-  tvParallaxShiftDistanceX?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
-   */
-  tvParallaxShiftDistanceY?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 0.05.
-   *
-   * @platform ios
-   */
-  tvParallaxTiltAngle?: number,
-
-  /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 1.0.
-   *
-   * @platform ios
-   */
-  tvParallaxMagnification?: number,
-}>;
-
 export type ViewPropsIOS = $ReadOnly<{
   /**
    * Whether this `View` should be rendered as a bitmap before compositing.
@@ -372,32 +313,6 @@ export type ViewPropsIOS = $ReadOnly<{
    * See https://reactnative.dev/docs/view#shouldrasterizeios
    */
   shouldRasterizeIOS?: ?boolean,
-}>;
-
-type NextFocusProps = $ReadOnly<{
-  /**
-   * TV next focus down (see documentation for the View component).
-   *
-   */
-  nextFocusDown?: ?number,
-
-  /**
-   * TV next focus left (see documentation for the View component).
-   *
-   */
-  nextFocusLeft?: ?number,
-
-  /**
-   * TV next focus right (see documentation for the View component).
-   *
-   */
-  nextFocusRight?: ?number,
-
-  /**
-   * TV next focus up (see documentation for the View component).
-   *
-   */
-  nextFocusUp?: ?number,
 }>;
 
 type ViewBaseProps = $ReadOnly<{
@@ -496,6 +411,11 @@ type ViewBaseProps = $ReadOnly<{
   experimental_accessibilityOrder?: ?Array<string>,
 }>;
 
+// For compatibility with legacy types
+export type TVViewPropsIOS = $ReadOnly<{|
+  ...TVViewProps,
+|}>;
+
 export type ViewProps = $ReadOnly<{
   ...DirectEventProps,
   ...GestureResponderHandlers,
@@ -508,6 +428,5 @@ export type ViewProps = $ReadOnly<{
   ...AccessibilityProps,
   ...ViewBaseProps,
   ...TVViewProps,
-  ...NextFocusProps,
   ...PressEventProps,
 }>;

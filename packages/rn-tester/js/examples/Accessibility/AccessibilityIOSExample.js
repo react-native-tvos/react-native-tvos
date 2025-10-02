@@ -28,6 +28,7 @@ class AccessibilityIOSExample extends React.Component<Props> {
                 }
               }}
               accessible={true}
+              focusable={true}
               accessibilityActions={[{name: 'activate'}]}>
               <Text style={{color: theme.SecondaryLabelColor}}>
                 Accessibility normal tap example
@@ -40,6 +41,7 @@ class AccessibilityIOSExample extends React.Component<Props> {
                 }
               }}
               accessible={true}
+              focusable={true}
               accessibilityActions={[{name: 'magicTap'}]}>
               <Text style={{color: theme.SecondaryLabelColor}}>
                 Accessibility magic tap example
@@ -52,6 +54,7 @@ class AccessibilityIOSExample extends React.Component<Props> {
                 }
               }}
               accessible={true}
+              focusable={true}
               accessibilityActions={[{name: 'escape'}]}>
               <Text style={{color: theme.SecondaryLabelColor}}>
                 Accessibility escape example
@@ -62,7 +65,10 @@ class AccessibilityIOSExample extends React.Component<Props> {
                 This view's children are hidden from the accessibility tree
               </Text>
             </View>
-            <View accessible={true} accessibilityLanguage="it-IT">
+            <View
+              focusable={true}
+              accessible={true}
+              accessibilityLanguage="it-IT">
               <Text style={{color: theme.SecondaryLabelColor}}>
                 This view's language should be `it-IT`
               </Text>

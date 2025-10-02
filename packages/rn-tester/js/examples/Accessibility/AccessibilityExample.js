@@ -30,11 +30,18 @@ import {
   StyleSheet,
   Switch,
   TextInput,
-  TouchableNativeFeedback,
+  TouchableNativeFeedback as TouchableNativeFeedbackRN,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  TouchableWithoutFeedback as TouchableWithoutFeedbackRN,
   View,
 } from 'react-native';
+
+const TouchableWithoutFeedback = Platform.isTV
+  ? TouchableOpacity
+  : TouchableWithoutFeedbackRN;
+const TouchableNativeFeedback = Platform.isTV
+  ? TouchableOpacity
+  : TouchableNativeFeedbackRN;
 
 const styles = StyleSheet.create({
   sectionContainer: {

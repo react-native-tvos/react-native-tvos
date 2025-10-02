@@ -7,10 +7,11 @@ on:
     branches: [main]
     paths:
       - packages/react-native/**
+      - packages/react-native-codegen/**
+      - packages/react-native-codegen-typescript-test/**
+      - packages/rn-tester/**
       - packages/virtualized-lists/**
       - tools/rntv-workflows/**
-  schedule:
-    - cron: '0 21 * * *' # 21:00 UTC every day
 
 defaults:
   tools:
