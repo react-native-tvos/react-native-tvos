@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "@babel/core": "^7.25.2",
-    "@react-native/babel-preset": "0.82.0-rc.5",
+    "@react-native/babel-preset": "0.82.0-0rc5",
     "hermes-parser": "0.32.0",
     "nullthrows": "^1.1.1"
   },
