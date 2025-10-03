@@ -16,6 +16,8 @@ exports[`TouchableHighlight renders correctly 1`] = `
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -53,6 +55,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -87,6 +91,8 @@ exports[`TouchableHighlight with disabled state should be disabled when disabled
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -121,6 +127,8 @@ exports[`TouchableHighlight with disabled state should disable button when acces
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -156,6 +164,8 @@ exports[`TouchableHighlight with disabled state should keep accessibilityState w
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -190,6 +200,8 @@ exports[`TouchableHighlight with disabled state should overwrite accessibilitySt
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}

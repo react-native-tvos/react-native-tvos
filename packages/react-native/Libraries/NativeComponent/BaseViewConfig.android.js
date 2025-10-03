@@ -143,6 +143,13 @@ const directEventTypes = {
     registrationName: 'onPressOut',
   },
 
+  topNativePress: {
+    registrationName: 'onNativePress',
+  },
+  topNativeLongPress: {
+    registrationName: 'onNativeLongPress',
+  },
+
   // Direct events from UIManagerModuleConstants.java
   topContentSizeChange: {
     registrationName: 'onContentSizeChange',

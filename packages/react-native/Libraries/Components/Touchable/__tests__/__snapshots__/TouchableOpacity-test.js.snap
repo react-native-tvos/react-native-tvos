@@ -26,6 +26,8 @@ exports[`TouchableOpacity renders correctly 1`] = `
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -72,6 +74,8 @@ exports[`TouchableOpacity renders in disabled state when a disabled prop is pass
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}
@@ -118,6 +122,8 @@ exports[`TouchableOpacity renders in disabled state when a key disabled in acces
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onNativeLongPress={[Function]}
+  onNativePress={[Function]}
   onPressIn={[Function]}
   onPressOut={[Function]}
   onResponderGrant={[Function]}

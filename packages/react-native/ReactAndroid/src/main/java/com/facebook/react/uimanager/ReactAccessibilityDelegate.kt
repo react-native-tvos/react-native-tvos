@@ -12,9 +12,11 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.EditText
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
@@ -38,6 +40,7 @@ import com.facebook.react.uimanager.UIManagerHelper.getUIManager
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
 import com.facebook.react.uimanager.events.Event
 import com.facebook.react.uimanager.util.ReactFindViewUtil.findView
+import com.facebook.react.views.view.ReactViewGroup
 
 /**
  * Utility class that handles the addition of a "role" for accessibility to either a View or
@@ -224,25 +227,16 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
     if (action == AccessibilityNodeInfoCompat.ACTION_EXPAND) {
       host.setTag(R.id.accessibility_state_expanded, true)
     }
-    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
-      val payload = createMap()
-      val reactTag = host.id
-      payload.putString("eventType", "select")
-      payload.putInt("eventKeyAction", 1)
-      payload.putInt("tag", reactTag)
-      payload.putInt("target", reactTag)
-      val reactContext = host.context as ReactContext
-      reactContext.emitDeviceEvent("onHWKeyEvent", payload)
+    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK
+      ) {
+      if (hostView is ReactViewGroup) {
+        hostView.sendNativePress()
+      }
     }
     if (action == AccessibilityNodeInfoCompat.ACTION_LONG_CLICK) {
-      val payload = createMap()
-      val reactTag = host.id
-      payload.putString("eventType", "longSelect")
-      payload.putInt("eventKeyAction", 1)
-      payload.putInt("tag", reactTag)
-      payload.putInt("target", reactTag)
-      val reactContext = host.context as ReactContext
-      reactContext.emitDeviceEvent("onHWKeyEvent", payload)
+      if (hostView is ReactViewGroup) {
+        hostView.sendNativeLongPress()
+      }
     }
     if (accessibilityActionsMap.containsKey(action)) {
       val eventData = createMap()

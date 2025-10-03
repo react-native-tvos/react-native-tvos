@@ -73,6 +73,8 @@ import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
 import com.facebook.react.uimanager.events.BlurEvent
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.uimanager.events.FocusEvent
+import com.facebook.react.uimanager.events.NativeLongPressEvent
+import com.facebook.react.uimanager.events.NativePressEvent
 import com.facebook.react.uimanager.events.PressInEvent
 import com.facebook.react.uimanager.events.PressOutEvent
 import com.facebook.react.uimanager.style.BorderRadiusProp
@@ -82,7 +84,9 @@ import com.facebook.react.uimanager.style.Overflow
 import com.facebook.react.views.view.CanvasUtil.enableZ
 import java.lang.ref.WeakReference
 import java.util.ArrayList
+import java.util.Timer
 import kotlin.concurrent.Volatile
+import kotlin.concurrent.schedule
 import kotlin.math.max
 
 /**
@@ -1367,76 +1371,69 @@ public open class ReactViewGroup public constructor(context: Context?) :
     }
   }
 
+  private fun getEventDispatcher(): EventDispatcher? {
+    return UIManagerHelper.getEventDispatcherForReactTag(
+      this.context as ReactContext, this.id
+    )
+  }
+
   override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
-    // Calling the super method causes duplicate events
-    // super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
+  }
 
-    val mEventDispatcher: EventDispatcher? =
-      UIManagerHelper.getEventDispatcherForReactTag(
-        this.context as ReactContext, this.id
+  private fun sendPressInEvent(): Boolean {
+    val eventDispatcher = getEventDispatcher()
+    eventDispatcher?.dispatchEvent(
+      PressInEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
       )
+    )
+    return eventDispatcher != null
+  }
 
-    if (mEventDispatcher == null) {
-      return
-    }
+  private fun sendPressOutEvent(): Boolean {
+    val eventDispatcher = getEventDispatcher()
+    eventDispatcher?.dispatchEvent(
+      PressOutEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
+      )
+    )
+    return eventDispatcher != null
+  }
 
-    if (gainFocus) {
-      mEventDispatcher.dispatchEvent(
-        FocusEvent(
-          UIManagerHelper.getSurfaceId(this.context), this.id
-        )
+  public fun sendNativePress() {
+    val eventDispatcher = getEventDispatcher()
+    eventDispatcher?.dispatchEvent(
+      NativePressEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
       )
-    } else {
-      mEventDispatcher.dispatchEvent(
-        BlurEvent(
-          UIManagerHelper.getSurfaceId(this.context), this.id
-        )
+    )
+  }
+
+  public fun sendNativeLongPress() {
+    val eventDispatcher = getEventDispatcher()
+    eventDispatcher?.dispatchEvent(
+      NativeLongPressEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
       )
-    }
+    )
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
     if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && event.repeatCount == 0 && !this.isTVFocusGuide) {
-      val mEventDispatcher: EventDispatcher? =
-        UIManagerHelper.getEventDispatcherForReactTag(
-          this.context as ReactContext, this.id
-        )
-
-      if (mEventDispatcher == null) {
-        return super.onKeyDown(keyCode, event)
-      }
-
-      mEventDispatcher.dispatchEvent(
-        PressInEvent(
-          UIManagerHelper.getSurfaceId(this.context),
-          this.id
-        )
-      )
+      return sendPressInEvent() || super.onKeyDown(keyCode, event)
     }
-
-
     return super.onKeyDown(keyCode, event)
   }
 
   override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
     if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && !this.isTVFocusGuide) {
-      val mEventDispatcher: EventDispatcher? =
-        UIManagerHelper.getEventDispatcherForReactTag(
-          this.context as ReactContext, this.id
-        )
-
-      if (mEventDispatcher == null) {
-        return super.onKeyUp(keyCode, event)
-      }
-
-      mEventDispatcher.dispatchEvent(
-        PressOutEvent(
-          UIManagerHelper.getSurfaceId(this.context),
-          this.id
-        )
-      )
+      return sendPressOutEvent() || super.onKeyUp(keyCode, event)
     }
-
     return super.onKeyUp(keyCode, event)
   }
 

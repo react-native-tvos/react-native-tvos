@@ -131,6 +131,8 @@ type TouchEventProps = $ReadOnly<{
 type PressEventProps = $ReadOnly<{
   onPressIn?: ?(e: RemotePressEvent) => void,
   onPressOut?: ?(e: RemotePressEvent) => void,
+  onNativePress?: ?(e: RemotePressEvent) => void,
+  onNativeLongPress?: ?(e: RemotePressEvent) => void,
 }>;
 
 /**

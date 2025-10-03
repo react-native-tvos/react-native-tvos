@@ -783,7 +783,13 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
           .put(
             "topPressOut",
             MapBuilder.of("registrationName", "onPressOut"))
-            .build());
+          .put(
+            "topNativePress",
+            MapBuilder.of("registrationName", "onNativePress"))
+          .put(
+            "topNativeLongPress",
+            MapBuilder.of("registrationName", "onNativeLongPress"))
+          .build());
     return eventTypeConstants;
   }
 

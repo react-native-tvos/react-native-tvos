@@ -438,6 +438,14 @@ export default class Pressability {
 
   _createEventHandlers(): EventHandlers {
     const tvPressEventHandlers = {
+      onNativePress: (event: any): void => {
+        const {onPress} = this._config;
+        onPress && onPress(event);
+      },
+      onNativeLongPress: (event: any): void => {
+        const {onLongPress} = this._config;
+        onLongPress && onLongPress(event);
+      },
       onPressIn: (evt: any): void => {
         if (this._config.disabled === true) {
           return;

@@ -152,6 +152,8 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         accessible={true}
         focusable={true}
         onClick={[Function]}
+        onNativeLongPress={[Function]}
+        onNativePress={[Function]}
         onPressIn={[Function]}
         onPressOut={[Function]}
         onResponderGrant={[Function]}
