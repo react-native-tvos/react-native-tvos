@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bad2aadea64eba29430e9c93c169d621>>
+ * @generated SignedSource<<ce76bbae9b797c6c1c9a1ceb1350f370>>
  */
 
 /**
@@ -395,6 +395,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool useShadowNodeStateOnClone();
 
   /**
+   * Use shared animation backend in C++ Animated
+   */
+  RN_EXPORT static bool useSharedAnimatedBackend();
+
+  /**
    * In Bridgeless mode, should legacy NativeModules use the TurboModule system?
    */
   RN_EXPORT static bool useTurboModuleInterop();
@@ -403,6 +408,11 @@ class ReactNativeFeatureFlags {
    * When enabled, NativeModules will be executed by using the TurboModule system
    */
   RN_EXPORT static bool useTurboModules();
+
+  /**
+   * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
+   */
+  RN_EXPORT static double viewCullingOutsetRatio();
 
   /**
    * Sets a hysteresis window for transition between prerender and hidden modes.

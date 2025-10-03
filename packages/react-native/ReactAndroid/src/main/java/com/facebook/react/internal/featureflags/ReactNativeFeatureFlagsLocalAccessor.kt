@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<66fa583c37021750123a483ab0ccb030>>
+ * @generated SignedSource<<f3420de2307aab53b885fa491183d84b>>
  */
 
 /**
@@ -95,8 +95,10 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var useOptimizedEventBatchingOnAndroidCache: Boolean? = null
   private var useRawPropsJsiValueCache: Boolean? = null
   private var useShadowNodeStateOnCloneCache: Boolean? = null
+  private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
   private var useTurboModulesCache: Boolean? = null
+  private var viewCullingOutsetRatioCache: Double? = null
   private var virtualViewHysteresisRatioCache: Double? = null
   private var virtualViewPrerenderRatioCache: Double? = null
 
@@ -810,6 +812,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun useSharedAnimatedBackend(): Boolean {
+    var cached = useSharedAnimatedBackendCache
+    if (cached == null) {
+      cached = currentProvider.useSharedAnimatedBackend()
+      accessedFeatureFlags.add("useSharedAnimatedBackend")
+      useSharedAnimatedBackendCache = cached
+    }
+    return cached
+  }
+
   override fun useTurboModuleInterop(): Boolean {
     var cached = useTurboModuleInteropCache
     if (cached == null) {
@@ -826,6 +838,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.useTurboModules()
       accessedFeatureFlags.add("useTurboModules")
       useTurboModulesCache = cached
+    }
+    return cached
+  }
+
+  override fun viewCullingOutsetRatio(): Double {
+    var cached = viewCullingOutsetRatioCache
+    if (cached == null) {
+      cached = currentProvider.viewCullingOutsetRatio()
+      accessedFeatureFlags.add("viewCullingOutsetRatio")
+      viewCullingOutsetRatioCache = cached
     }
     return cached
   }

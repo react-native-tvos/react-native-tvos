@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<faa71f6cfef7a803bb034507eabd264e>>
+ * @generated SignedSource<<e799e5ce5aea7adbef02a7e7431f8a35>>
  */
 
 /**
@@ -399,6 +399,11 @@ bool NativeReactNativeFeatureFlags::useShadowNodeStateOnClone(
   return ReactNativeFeatureFlags::useShadowNodeStateOnClone();
 }
 
+bool NativeReactNativeFeatureFlags::useSharedAnimatedBackend(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useSharedAnimatedBackend();
+}
+
 bool NativeReactNativeFeatureFlags::useTurboModuleInterop(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useTurboModuleInterop();
@@ -407,6 +412,11 @@ bool NativeReactNativeFeatureFlags::useTurboModuleInterop(
 bool NativeReactNativeFeatureFlags::useTurboModules(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useTurboModules();
+}
+
+double NativeReactNativeFeatureFlags::viewCullingOutsetRatio(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::viewCullingOutsetRatio();
 }
 
 double NativeReactNativeFeatureFlags::virtualViewHysteresisRatio(

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<edcc579f1ecfd47b8fc480bc1e4e7988>>
+ * @generated SignedSource<<b61bcdcabe00ba0e97e42a7ffc2fa8ef>>
  */
 
 /**
@@ -684,6 +684,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::useShadowNodeStateOnClone();
   }
 
+  bool useSharedAnimatedBackend() override {
+    auto value = values_["useSharedAnimatedBackend"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useSharedAnimatedBackend();
+  }
+
   bool useTurboModuleInterop() override {
     auto value = values_["useTurboModuleInterop"];
     if (!value.isNull()) {
@@ -700,6 +709,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useTurboModules();
+  }
+
+  double viewCullingOutsetRatio() override {
+    auto value = values_["viewCullingOutsetRatio"];
+    if (!value.isNull()) {
+      return value.getDouble();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::viewCullingOutsetRatio();
   }
 
   double virtualViewHysteresisRatio() override {

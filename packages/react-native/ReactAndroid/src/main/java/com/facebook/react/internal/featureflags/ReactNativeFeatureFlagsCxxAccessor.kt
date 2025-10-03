@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c228bdbf6120b4715f49e03c04918a7c>>
+ * @generated SignedSource<<5c2aa1e15e7fbe129b8f774d2dc7be70>>
  */
 
 /**
@@ -91,8 +91,10 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var useOptimizedEventBatchingOnAndroidCache: Boolean? = null
   private var useRawPropsJsiValueCache: Boolean? = null
   private var useShadowNodeStateOnCloneCache: Boolean? = null
+  private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
   private var useTurboModulesCache: Boolean? = null
+  private var viewCullingOutsetRatioCache: Double? = null
   private var virtualViewHysteresisRatioCache: Double? = null
   private var virtualViewPrerenderRatioCache: Double? = null
 
@@ -735,6 +737,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun useSharedAnimatedBackend(): Boolean {
+    var cached = useSharedAnimatedBackendCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useSharedAnimatedBackend()
+      useSharedAnimatedBackendCache = cached
+    }
+    return cached
+  }
+
   override fun useTurboModuleInterop(): Boolean {
     var cached = useTurboModuleInteropCache
     if (cached == null) {
@@ -749,6 +760,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useTurboModules()
       useTurboModulesCache = cached
+    }
+    return cached
+  }
+
+  override fun viewCullingOutsetRatio(): Double {
+    var cached = viewCullingOutsetRatioCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.viewCullingOutsetRatio()
+      viewCullingOutsetRatioCache = cached
     }
     return cached
   }

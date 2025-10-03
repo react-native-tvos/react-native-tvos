@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<26dce1945df5641ab84cbca9eaf2b10f>>
+ * @generated SignedSource<<0bd8796f4580322a78690ec4469c07ce>>
  */
 
 /**
@@ -170,9 +170,13 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun useShadowNodeStateOnClone(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun useSharedAnimatedBackend(): Boolean
+
   @DoNotStrip @JvmStatic public external fun useTurboModuleInterop(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useTurboModules(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun viewCullingOutsetRatio(): Double
 
   @DoNotStrip @JvmStatic public external fun virtualViewHysteresisRatio(): Double
 
