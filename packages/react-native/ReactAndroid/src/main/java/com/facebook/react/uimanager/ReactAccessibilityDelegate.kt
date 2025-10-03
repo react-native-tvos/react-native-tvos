@@ -38,6 +38,7 @@ import com.facebook.react.uimanager.UIManagerHelper.getUIManager
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
 import com.facebook.react.uimanager.events.Event
 import com.facebook.react.uimanager.util.ReactFindViewUtil.findView
+import com.facebook.react.views.view.ReactViewGroup
 
 /**
  * Utility class that handles the addition of a "role" for accessibility to either a View or
@@ -224,25 +225,19 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
     if (action == AccessibilityNodeInfoCompat.ACTION_EXPAND) {
       host.setTag(R.id.accessibility_state_expanded, true)
     }
-    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK) {
-      val payload = createMap()
-      val reactTag = host.id
-      payload.putString("eventType", "select")
-      payload.putInt("eventKeyAction", 1)
-      payload.putInt("tag", reactTag)
-      payload.putInt("target", reactTag)
-      val reactContext = host.context as ReactContext
-      reactContext.emitDeviceEvent("onHWKeyEvent", payload)
+    if (action == AccessibilityNodeInfoCompat.ACTION_CLICK
+      ) {
+      if (hostView is ReactViewGroup) {
+        hostView.sendPressInEvent()
+        hostView.sendPressOutEvent()
+      }
     }
     if (action == AccessibilityNodeInfoCompat.ACTION_LONG_CLICK) {
-      val payload = createMap()
-      val reactTag = host.id
-      payload.putString("eventType", "longSelect")
-      payload.putInt("eventKeyAction", 1)
-      payload.putInt("tag", reactTag)
-      payload.putInt("target", reactTag)
-      val reactContext = host.context as ReactContext
-      reactContext.emitDeviceEvent("onHWKeyEvent", payload)
+      if (hostView is ReactViewGroup) {
+        hostView.sendPressInEvent()
+        Thread.sleep(2000)
+        hostView.sendPressOutEvent()
+      }
     }
     if (accessibilityActionsMap.containsKey(action)) {
       val eventData = createMap()
