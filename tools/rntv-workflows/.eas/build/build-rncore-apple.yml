@@ -18,10 +18,6 @@ build:
         command: |
           . ./install-ruby.sh
     - run:
-        name: Install curl 
-        command: |
-          . ./install-curl.sh
-    - run:
         name: Copy and modify publish.gradle
         working_directory: ../..
         command: |
@@ -122,7 +118,6 @@ build:
         working_directory: ../../packages/rn-tester
         command: |
           . ../../tools/rntv-workflows/ruby-env.sh
-          . ../../tools/rntv-workflows/curl-env.sh
           mkdir $ROOT_DIR/RNTester-iOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -142,7 +137,6 @@ build:
         working_directory: ../../packages/rn-tester
         command: |
           . ../../tools/rntv-workflows/ruby-env.sh
-          . ../../tools/rntv-workflows/curl-env.sh
           mkdir $ROOT_DIR/RNTester-tvOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
