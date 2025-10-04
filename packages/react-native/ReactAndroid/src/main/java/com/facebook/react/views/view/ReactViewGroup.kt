@@ -1395,48 +1395,55 @@ public open class ReactViewGroup public constructor(context: Context?) :
     }
   }
 
-  override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && event.repeatCount == 0 && !this.isTVFocusGuide) {
-      val mEventDispatcher: EventDispatcher? =
-        UIManagerHelper.getEventDispatcherForReactTag(
-          this.context as ReactContext, this.id
-        )
-
-      if (mEventDispatcher == null) {
-        return super.onKeyDown(keyCode, event)
-      }
-
-      mEventDispatcher.dispatchEvent(
-        PressInEvent(
-          UIManagerHelper.getSurfaceId(this.context),
-          this.id
-        )
+  public fun sendPressInEvent(): Boolean {
+    val mEventDispatcher: EventDispatcher? =
+      UIManagerHelper.getEventDispatcherForReactTag(
+        this.context as ReactContext, this.id
       )
+
+    if (mEventDispatcher == null) {
+      return false
     }
 
+    mEventDispatcher.dispatchEvent(
+      PressInEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
+      )
+    )
+    return true
+  }
 
+  public fun sendPressOutEvent(): Boolean {
+    val mEventDispatcher: EventDispatcher? =
+      UIManagerHelper.getEventDispatcherForReactTag(
+        this.context as ReactContext, this.id
+      )
+
+    if (mEventDispatcher == null) {
+      return false
+    }
+
+    mEventDispatcher.dispatchEvent(
+      PressOutEvent(
+        UIManagerHelper.getSurfaceId(this.context),
+        this.id
+      )
+    )
+    return true
+  }
+
+  override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+    if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && event.repeatCount == 0 && !this.isTVFocusGuide) {
+      return sendPressInEvent() || super.onKeyDown(keyCode, event)
+    }
     return super.onKeyDown(keyCode, event)
   }
 
   override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
     if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) && !this.isTVFocusGuide) {
-      val mEventDispatcher: EventDispatcher? =
-        UIManagerHelper.getEventDispatcherForReactTag(
-          this.context as ReactContext, this.id
-        )
-
-      if (mEventDispatcher == null) {
-        return super.onKeyUp(keyCode, event)
-      }
-
-      mEventDispatcher.dispatchEvent(
-        PressOutEvent(
-          UIManagerHelper.getSurfaceId(this.context),
-          this.id
-        )
-      )
+      return sendPressOutEvent() || super.onKeyUp(keyCode, event)
     }
-
     return super.onKeyUp(keyCode, event)
   }
 
