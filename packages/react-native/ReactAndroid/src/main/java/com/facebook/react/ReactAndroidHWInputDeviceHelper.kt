@@ -33,26 +33,6 @@ internal class ReactAndroidHWInputDeviceHelper {
     }
   }
 
-  /** Called from [ReactRootView] when focused view changes. */
-  fun onFocusChanged(newFocusedView: View, context: ReactContext) {
-    if (lastFocusedViewId == newFocusedView.id) {
-      return
-    }
-    if (lastFocusedViewId != View.NO_ID) {
-      dispatchEvent(context, "blur", lastFocusedViewId)
-    }
-    lastFocusedViewId = newFocusedView.id
-    dispatchEvent(context, "focus", newFocusedView.id)
-  }
-
-  /** Called from [ReactRootView] when the whole view hierarchy looses focus. */
-  fun clearFocus(context: ReactContext) {
-    if (lastFocusedViewId != View.NO_ID) {
-      dispatchEvent(context, "blur", lastFocusedViewId)
-    }
-    lastFocusedViewId = View.NO_ID
-  }
-
   private fun dispatchEvent(
       context: ReactContext,
       eventType: String?,
