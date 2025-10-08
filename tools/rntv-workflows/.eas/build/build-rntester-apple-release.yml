@@ -134,10 +134,8 @@ build:
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
-          if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
-            (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone-release.tgz *)
-            (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv-release.tgz *)
-          fi
+          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone-release.tgz *)
+          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv-release.tgz *)
     - eas/upload_artifact:
         name: Upload RNTester release artifacts
         inputs:

@@ -60,7 +60,9 @@ build:
         name: Run Typescript generation
         working_directory: ../..
         command: |
-          yarn build-types
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            yarn build-types
+          fi
     - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
