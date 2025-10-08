@@ -560,15 +560,6 @@ public class ReactModalHostView(context: ThemedReactContext) :
       updateState(viewWidth, viewHeight)
     }
 
-    protected override fun onFocusChanged(
-      gainFocus: Boolean,
-      direction: Int,
-      previouslyFocusedRect: Rect?
-    ) {
-      androidHWInputDeviceHelper.clearFocus(reactContext)
-      super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
-    }
-
     /*
     public override fun requestChildFocus(child: View?, focused: View?) {
       androidHWInputDeviceHelper.onFocusChanged(focused, reactContext)

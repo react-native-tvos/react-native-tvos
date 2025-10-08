@@ -70,9 +70,7 @@ import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewGroupDrawingOrderHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
-import com.facebook.react.uimanager.events.BlurEvent
 import com.facebook.react.uimanager.events.EventDispatcher
-import com.facebook.react.uimanager.events.FocusEvent
 import com.facebook.react.uimanager.events.PressInEvent
 import com.facebook.react.uimanager.events.PressOutEvent
 import com.facebook.react.uimanager.style.BorderRadiusProp
@@ -1360,31 +1358,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
-    // Calling the super method causes duplicate events
-    // super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
-
-    val mEventDispatcher: EventDispatcher? =
-      UIManagerHelper.getEventDispatcherForReactTag(
-        this.context as ReactContext, this.id
-      )
-
-    if (mEventDispatcher == null) {
-      return
-    }
-
-    if (gainFocus) {
-      mEventDispatcher.dispatchEvent(
-        FocusEvent(
-          UIManagerHelper.getSurfaceId(this.context), this.id
-        )
-      )
-    } else {
-      mEventDispatcher.dispatchEvent(
-        BlurEvent(
-          UIManagerHelper.getSurfaceId(this.context), this.id
-        )
-      )
-    }
+    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
