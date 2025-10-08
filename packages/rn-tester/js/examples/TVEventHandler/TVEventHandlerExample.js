@@ -61,9 +61,48 @@ const PressableButton = (props: {
   focusable?: boolean,
   disabled?: boolean,
 }) => {
-  // Set functional=false to have no functional style or children
-  // and test the fix for #744
-  const {functional, log, noBubbledEvents, title, ...pressableProps} = props;
+  const {log, noBubbledEvents, title, ...pressableProps} = props;
+  return (
+    <Pressable
+      {...pressableProps}
+      onFocus={(event: $FlowFixMe) => {
+        focusHandler(event, props);
+      }}
+      onBlur={(event: $FlowFixMe) => {
+        blurHandler(event, props);
+      }}
+      tvParallaxProperties={props.tvParallaxProperties}
+      onPress={() => pressEventHandler('onPress', props)}
+      onLongPress={() => pressEventHandler('onLongPress', props)}
+      onPressIn={() => {
+        pressEventHandler('onPressIn', props);
+      }}
+      onPressOut={() => {
+        pressEventHandler('onPressOut', props);
+      }}
+      style={({focused, pressed}) => [
+        pressed || focused ? styles.pressableFocused : styles.pressable,
+      ]}>
+      {({focused, pressed}) => (
+        <Text style={styles.pressableText}>{`${props.title}${
+          focused ? ' focused' : ''
+        }${pressed ? ' pressed' : ''}`}</Text>
+      )}
+    </Pressable>
+  );
+};
+
+const PressableNonfunctionalButton = (props: {
+  title: string,
+  log: (entry: string) => void,
+  noBubbledEvents?: boolean,
+  tvParallaxProperties?: $FlowFixMe,
+  accessible?: boolean,
+  focusable?: boolean,
+  disabled?: boolean,
+}) => {
+  // test the fix for #744
+  const {log, noBubbledEvents, title, ...pressableProps} = props;
   const [userFocused, setUserFocused] = React.useState(false);
   const [userPressed, setUserPressed] = React.useState(false);
   return (
@@ -97,7 +136,6 @@ const PressableButton = (props: {
     </Pressable>
   );
 };
-
 const TouchableOpacityButton = (props: {
   title: string,
   log: (entry: string) => void,
@@ -273,6 +311,10 @@ const TVEventHandlerView: () => React.Node = () => {
       <ScrollView>
         <View>
           <PressableButton title="Pressable" log={updatePressableLog} />
+          <PressableNonfunctionalButton
+            title="Pressable nonfunctional form"
+            log={updatePressableLog}
+          />
           <PressableButton
             title="Pressable accessible={false}"
             accessible={false}

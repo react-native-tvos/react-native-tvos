@@ -341,39 +341,6 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     return super.dispatchKeyEvent(ev);
   }
 
-  @Override
-  protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
-    if (!hasActiveReactContext() || !isViewAttachedToReactInstance()) {
-      FLog.w(
-          TAG,
-          "Unable to handle focus changed event as the catalyst instance has not been attached");
-      super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-      return;
-    }
-    ReactContext context = getCurrentReactContext();
-    if (context != null) {
-      mAndroidHWInputDeviceHelper.clearFocus(context);
-    }
-    super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-  }
-
-  @Override
-  public void requestChildFocus(View child, View focused) {
-    if (!hasActiveReactContext() || !isViewAttachedToReactInstance()) {
-      FLog.w(
-          TAG,
-          "Unable to handle child focus changed event as the catalyst instance has not been"
-              + " attached");
-      super.requestChildFocus(child, focused);
-      return;
-    }
-    ReactContext context = getCurrentReactContext();
-    if (context != null) {
-      mAndroidHWInputDeviceHelper.onFocusChanged(focused, context);
-    }
-    super.requestChildFocus(child, focused);
-  }
-
   protected void dispatchJSPointerEvent(MotionEvent event, boolean isCapture) {
     if (!hasActiveReactContext() || !isViewAttachedToReactInstance()) {
       FLog.w(TAG, "Unable to dispatch touch to JS as the catalyst instance has not been attached");
