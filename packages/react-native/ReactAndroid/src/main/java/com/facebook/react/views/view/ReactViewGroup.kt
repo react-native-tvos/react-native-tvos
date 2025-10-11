@@ -70,9 +70,7 @@ import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewGroupDrawingOrderHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
-import com.facebook.react.uimanager.events.BlurEvent
 import com.facebook.react.uimanager.events.EventDispatcher
-import com.facebook.react.uimanager.events.FocusEvent
 import com.facebook.react.uimanager.events.NativeLongPressEvent
 import com.facebook.react.uimanager.events.NativePressEvent
 import com.facebook.react.uimanager.events.PressInEvent
