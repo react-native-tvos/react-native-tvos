@@ -26,66 +26,49 @@ import {Touchable} from '../Touchable/Touchable';
 import {AccessibilityProps} from './ViewAccessibility';
 import type {BubblingEventHandler} from 'react-native/Libraries/Types/CodegenTypes';
 
-export interface TVViewPropsIOS {
+export type TVParallaxProperties = {
   /**
-   * *(Apple TV only)* When set to true, this view will be focusable
-   * and navigable using the Apple TV remote.
-   *
-   * @platform ios
+   * If true, parallax effects are enabled.  Defaults to true.
    */
-  isTVSelectable?: boolean | undefined;
+  enabled?: boolean | undefined;
 
   /**
-   * *(Apple TV and Android TV)* May be set to true to force the Apple TV focus engine to move focus to this view.
-   *
-   * @platform ios
+   * Defaults to 2.0.
    */
-  hasTVPreferredFocus?: boolean | undefined;
+  shiftDistanceX?: number | undefined;
 
   /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
+   * Defaults to 2.0.
    */
-  tvParallaxShiftDistanceX?: number | undefined;
+  shiftDistanceY?: number | undefined;
 
   /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.
-   *
-   * @platform ios
+   * Defaults to 0.05.
    */
-  tvParallaxShiftDistanceY?: number | undefined;
+  tiltAngle?: number | undefined;
 
   /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 0.05.
-   *
-   * @platform ios
+   * Defaults to 1.0
    */
-  tvParallaxTiltAngle?: number | undefined;
+  magnification?: number | undefined;
 
   /**
-   * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 1.0.
-   *
-   * @platform ios
+   * Defaults to 1.0
    */
-  tvParallaxMagnification?: number | undefined;
-}
+  pressMagnification?: number | undefined;
 
-export interface ViewPropsIOS extends TVViewPropsIOS {
   /**
-   * Whether this view should be rendered as a bitmap before compositing.
-   *
-   * On iOS, this is useful for animations and interactions that do not modify this component's dimensions nor its children;
-   * for example, when translating the position of a static view, rasterization allows the renderer to reuse a cached bitmap of a static view
-   * and quickly composite it during each frame.
-   *
-   * Rasterization incurs an off-screen drawing pass and the bitmap consumes memory.
-   * Test and measure when using this property.
+   * Defaults to 0.3
    */
-  shouldRasterizeIOS?: boolean | undefined;
-}
+  pressDuration?: number | undefined;
 
-export interface ViewPropsAndroid {
+  /**
+   * @deprecated No longer used
+   */
+  pressDelay?: number | undefined;
+};
+
+export interface TVViewProps {
   /**
    * Callback that is called when the view is blurred.
    *
@@ -101,6 +84,49 @@ export interface ViewPropsAndroid {
   onFocus?: ((e: FocusEvent) => void) | null | undefined;
 
   /**
+   * @deprecated Replaced by `focusable`.
+   *
+   * @platform ios
+   */
+  isTVSelectable?: boolean | undefined;
+
+  /**
+   * *(Apple TV and Android TV)* May be set to true to force the Apple TV focus engine to move focus to this view.
+   *
+   * @platform ios
+   */
+  hasTVPreferredFocus?: boolean | undefined;
+
+  /**
+   * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
+   *
+   */
+  focusable?: boolean | undefined;
+
+  /**
+   * *(Apple TV only)* Object with properties to control Apple TV parallax effects.
+   *
+   * @platform ios
+   */
+  tvParallaxProperties?: TVParallaxProperties | undefined;
+}
+
+export interface ViewPropsIOS {
+  /**
+   * Whether this view should be rendered as a bitmap before compositing.
+   *
+   * On iOS, this is useful for animations and interactions that do not modify this component's dimensions nor its children;
+   * for example, when translating the position of a static view, rasterization allows the renderer to reuse a cached bitmap of a static view
+   * and quickly composite it during each frame.
+   *
+   * Rasterization incurs an off-screen drawing pass and the bitmap consumes memory.
+   * Test and measure when using this property.
+   */
+  shouldRasterizeIOS?: boolean | undefined;
+}
+
+export interface ViewPropsAndroid {
+  /**
    * Whether this view should render itself (and all of its children) into a single hardware texture on the GPU.
    *
    * On Android, this is useful for animations and interactions that only modify opacity, rotation, translation, and/or scale:
@@ -108,11 +134,6 @@ export interface ViewPropsAndroid {
    * re-used and re-composited with different parameters. The downside is that this can use up limited video memory, so this prop should be set back to false at the end of the interaction/animation.
    */
   renderToHardwareTextureAndroid?: boolean | undefined;
-
-  /**
-   * Whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
-   */
-  focusable?: boolean | undefined;
 
   /**
    * Indicates whether this `View` should be focusable with a non-touch input device, eg. receive focus with a hardware keyboard.
@@ -132,6 +153,7 @@ export interface ViewPropsAndroid {
 export interface ViewProps
   extends ViewPropsAndroid,
     ViewPropsIOS,
+    TVViewProps,
     GestureResponderHandlers,
     Touchable,
     PointerEvents,

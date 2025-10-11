@@ -8,13 +8,15 @@
  * @format
  */
 
-// $FlowFixMe[unclear-type] We have no Flow types for the Electron API.
-const {BrowserWindow, Menu, app, shell, ipcMain} = require('electron') as any;
-const Store = require('electron-store');
+import SettingsStore from './SettingsStore.js';
+
 const path = require('path');
 const util = require('util');
 
-const appSettings = new Store();
+// $FlowFixMe[unclear-type] We have no Flow types for the Electron API.
+const {BrowserWindow, Menu, app, shell, ipcMain} = require('electron') as any;
+
+const appSettings = new SettingsStore();
 const windowMetadata = new WeakMap<
   typeof BrowserWindow,
   $ReadOnly<{

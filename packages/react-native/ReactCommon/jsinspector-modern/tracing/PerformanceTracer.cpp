@@ -9,6 +9,8 @@
 #include "Timing.h"
 #include "TraceEventSerializer.h"
 
+#include <jsinspector-modern/network/CdpNetwork.h>
+#include <jsinspector-modern/network/HttpUtils.h>
 #include <oscompat/OSCompat.h>
 #include <react/timing/primitives.h>
 
@@ -16,9 +18,12 @@
 
 #include <mutex>
 
+using namespace facebook::react;
+
 namespace facebook::react::jsinspector_modern::tracing {
 
 namespace {
+
 /**
  * Instead of validating that the indicated duration is positive, we can ensure
  * the value is sensible (less than 1 seccond doesn't make much sense).
@@ -31,6 +36,7 @@ ThreadId getCurrentThreadId() {
       oscompat::getCurrentThreadId();
   return CURRENT_THREAD_ID;
 }
+
 } // namespace
 
 PerformanceTracer& PerformanceTracer::getInstance() {
@@ -84,6 +90,7 @@ std::optional<std::vector<TraceEvent>> PerformanceTracer::stopTracing() {
     tracingAtomic_ = false;
     performanceMeasureCount_ = 0;
 
+    alreadyEmittedEntryForComponentsTrackOrdering_ = false;
     events = collectEventsAndClearBuffers(currentTraceEndTime);
   }
 
@@ -124,7 +131,7 @@ std::optional<std::vector<TraceEvent>> PerformanceTracer::stopTracing() {
 }
 
 void PerformanceTracer::reportMark(
-    const std::string_view& name,
+    const std::string& name,
     HighResTimeStamp start,
     folly::dynamic&& detail) {
   if (!tracingAtomic_) {
@@ -137,7 +144,7 @@ void PerformanceTracer::reportMark(
   }
 
   enqueueEvent(PerformanceTracerEventMark{
-      .name = std::string(name),
+      .name = name,
       .start = start,
       .detail = std::move(detail),
       .threadId = getCurrentThreadId(),
@@ -145,7 +152,7 @@ void PerformanceTracer::reportMark(
 }
 
 void PerformanceTracer::reportMeasure(
-    const std::string_view& name,
+    const std::string& name,
     HighResTimeStamp start,
     HighResDuration duration,
     folly::dynamic&& detail) {
@@ -159,7 +166,7 @@ void PerformanceTracer::reportMeasure(
   }
 
   enqueueEvent(PerformanceTracerEventMeasure{
-      .name = std::string(name),
+      .name = name,
       .start = start,
       .duration = duration,
       .detail = std::move(detail),
@@ -168,7 +175,7 @@ void PerformanceTracer::reportMeasure(
 }
 
 void PerformanceTracer::reportTimeStamp(
-    std::string name,
+    const std::string& name,
     std::optional<ConsoleTimeStampEntry> start,
     std::optional<ConsoleTimeStampEntry> end,
     std::optional<std::string> trackName,
@@ -184,7 +191,7 @@ void PerformanceTracer::reportTimeStamp(
   }
 
   enqueueEvent(PerformanceTracerEventTimeStamp{
-      .name = std::move(name),
+      .name = name,
       .start = std::move(start),
       .end = std::move(end),
       .trackName = std::move(trackName),
@@ -232,15 +239,12 @@ void PerformanceTracer::reportEventLoopMicrotasks(
   });
 }
 
-void PerformanceTracer::reportResourceTiming(
-    const std::string& requestId,
+void PerformanceTracer::reportResourceSendRequest(
+    const std::string& devtoolsRequestId,
+    HighResTimeStamp start,
     const std::string& url,
-    HighResTimeStamp fetchStart,
-    HighResTimeStamp responseStart,
-    HighResTimeStamp responseEnd,
-    int statusCode,
     const std::string& requestMethod,
-    const std::string& resourceType) {
+    const Headers& headers) {
   if (!tracingAtomic_) {
     return;
   }
@@ -250,28 +254,67 @@ void PerformanceTracer::reportResourceTiming(
     return;
   }
 
-  enqueueEvent(PerformanceTracerResourceWillSendRequest{
-      .requestId = requestId,
-      .start = fetchStart,
-      .threadId = getCurrentThreadId(),
-  });
+  auto resourceType =
+      jsinspector_modern::cdp::network::resourceTypeFromMimeType(
+          jsinspector_modern::mimeTypeFromHeaders(headers));
   enqueueEvent(PerformanceTracerResourceSendRequest{
-      .requestId = requestId,
+      .requestId = devtoolsRequestId,
       .url = url,
-      .start = fetchStart,
+      .start = start,
       .requestMethod = requestMethod,
       .resourceType = resourceType,
       .threadId = getCurrentThreadId(),
   });
+}
+
+void PerformanceTracer::reportResourceReceiveResponse(
+    const std::string& devtoolsRequestId,
+    HighResTimeStamp start,
+    int statusCode,
+    const Headers& headers,
+    int encodedDataLength,
+    folly::dynamic timingData) {
+  if (!tracingAtomic_) {
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (!tracingAtomic_) {
+    return;
+  }
+
   enqueueEvent(PerformanceTracerResourceReceiveResponse{
-      .requestId = requestId,
-      .start = responseStart,
+      .requestId = devtoolsRequestId,
+      .start = start,
+      .encodedDataLength = encodedDataLength,
+      .headers = headers,
+      .mimeType = jsinspector_modern::mimeTypeFromHeaders(headers),
+      .protocol = "h2",
       .statusCode = statusCode,
+      .timing = std::move(timingData),
       .threadId = getCurrentThreadId(),
   });
+}
+
+void PerformanceTracer::reportResourceFinish(
+    const std::string& devtoolsRequestId,
+    HighResTimeStamp start,
+    int encodedDataLength,
+    int decodedBodyLength) {
+  if (!tracingAtomic_) {
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (!tracingAtomic_) {
+    return;
+  }
+
   enqueueEvent(PerformanceTracerResourceFinish{
-      .requestId = requestId,
-      .start = responseEnd,
+      .requestId = devtoolsRequestId,
+      .start = start,
+      .encodedDataLength = encodedDataLength,
+      .decodedBodyLength = decodedBodyLength,
       .threadId = getCurrentThreadId(),
   });
 }
@@ -508,11 +551,8 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
             });
           },
           [&](PerformanceTracerEventTimeStamp&& event) {
-            // `name` takes precedence over `message` in Chrome DevTools
-            // Frontend, no need
-            // to record both.
-            folly::dynamic data =
-                folly::dynamic::object("name", std::move(event.name));
+            folly::dynamic data = folly::dynamic::object("name", event.name)(
+                "message", std::move(event.name));
             if (event.start) {
               if (std::holds_alternative<HighResTimeStamp>(*event.start)) {
                 data["start"] = highResTimeStampToTracingClockTimeStamp(
@@ -529,6 +569,34 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
                 data["end"] = std::move(std::get<std::string>(*event.end));
               }
             }
+
+            // We add a custom synthetic entry here to manually put Components
+            // track right under the Scheduler track. Will be removed once CDT
+            // Frontend preserves track ordering and we upgrade the fork.
+            if (!alreadyEmittedEntryForComponentsTrackOrdering_ &&
+                event.trackName && !event.trackGroup) {
+              if (*event.trackName == "Components \u269B") {
+                alreadyEmittedEntryForComponentsTrackOrdering_ = true;
+                // React is using 0.003 for Scheduler sub-tracks.
+                auto timestamp = highResTimeStampToTracingClockTimeStamp(
+                    HighResTimeStamp::fromDOMHighResTimeStamp(0.004));
+                events.emplace_back(TraceEvent{
+                    .name = "TimeStamp",
+                    .cat = "devtools.timeline",
+                    .ph = 'I',
+                    .ts = event.createdAt,
+                    .pid = processId_,
+                    .tid = event.threadId,
+                    .args = folly::dynamic::object(
+                        "data",
+                        folly::dynamic::object(
+                            "name", "ReactNative-ComponentsTrack")(
+                            "start", timestamp)("end", timestamp)(
+                            "track", *event.trackName)),
+                });
+              }
+            }
+
             if (event.trackName) {
               data["track"] = std::move(*event.trackName);
             }
@@ -549,25 +617,10 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
                 .args = folly::dynamic::object("data", std::move(data)),
             });
           },
-          [&](PerformanceTracerResourceWillSendRequest&& event) {
-            folly::dynamic data =
-                folly::dynamic::object("requestId", std::move(event.requestId));
-
-            events.emplace_back(TraceEvent{
-                .name = "ResourceWillSendRequest",
-                .cat = "devtools.timeline",
-                .ph = 'I',
-                .ts = event.start,
-                .pid = processId_,
-                .s = 't',
-                .tid = event.threadId,
-                .args = folly::dynamic::object("data", std::move(data)),
-            });
-          },
           [&](PerformanceTracerResourceSendRequest&& event) {
             folly::dynamic data =
                 folly::dynamic::object("initiator", folly::dynamic::object())(
-                    "renderBlocking", "non_blocking")(
+                    "priority", "VeryHigh")("renderBlocking", "non_blocking")(
                     "requestId", std::move(event.requestId))(
                     "requestMethod", std::move(event.requestMethod))(
                     "resourceType", std::move(event.resourceType))(
@@ -585,10 +638,18 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
             });
           },
           [&](PerformanceTracerResourceReceiveResponse&& event) {
-            folly::dynamic data = folly::dynamic::object("protocol", "h2")(
+            folly::dynamic headersEntries = folly::dynamic::array;
+            for (const auto& [key, value] : event.headers) {
+              headersEntries.push_back(
+                  folly::dynamic::object("name", key)("value", value));
+            }
+            folly::dynamic data = folly::dynamic::object(
+                "encodedDataLength", event.encodedDataLength)(
+                "headers", headersEntries)("mimeType", event.mimeType)(
+                "protocol", event.protocol)(
                 "requestId", std::move(event.requestId))(
                 "statusCode", event.statusCode)(
-                "timing", folly::dynamic::object());
+                "timing", std::move(event.timing));
 
             events.emplace_back(TraceEvent{
                 .name = "ResourceReceiveResponse",
@@ -602,7 +663,9 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
             });
           },
           [&](PerformanceTracerResourceFinish&& event) {
-            folly::dynamic data = folly::dynamic::object("didFail", false)(
+            folly::dynamic data = folly::dynamic::object(
+                "decodedBodyLength", event.decodedBodyLength)("didFail", false)(
+                "encodedDataLength", event.encodedDataLength)(
                 "requestId", std::move(event.requestId));
 
             events.emplace_back(TraceEvent{

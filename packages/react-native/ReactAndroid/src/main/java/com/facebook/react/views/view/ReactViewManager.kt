@@ -72,7 +72,10 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   }
 
   init {
-    if (ReactNativeFeatureFlags.enableViewRecyclingForView()) {
+    if (
+        ReactNativeFeatureFlags.enableViewRecyclingForView() &&
+            this.javaClass == ReactViewManager::class.java
+    ) {
       setupViewRecycling()
     }
   }
@@ -98,16 +101,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   @ReactProp(name = "accessible")
   public open fun setAccessible(view: ReactViewGroup, accessible: Boolean) {
-    view.isFocusable = accessible
-    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as LeanBack
-    // https://developer.android.com/reference/android/view/View#requestFocus(int,%20android.graphics.Rect)
-    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false), **
-    // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
-    // ** while the device is in touch mode.  **
-    if (hasTouchScreen(view.context)) {
-      view.isFocusableInTouchMode = accessible
-    }
-
+    // TODO: determine if any AxOrder changes should be put here
   }
 
   @ReactProp(name = "tvFocusable")
@@ -419,6 +413,14 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       // Don't set view.setFocusable(false) because we might still want it to be focusable for
       // accessibility reasons
     }
+    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as LeanBack
+    // https://developer.android.com/reference/android/view/View#requestFocus(int,%20android.graphics.Rect)
+    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false), **
+    // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
+    // ** while the device is in touch mode.  **
+    if (hasTouchScreen(view.context)) {
+      view.isFocusableInTouchMode = focusable
+    }
   }
 
   @ReactProp(name = ViewProps.OVERFLOW)
@@ -474,6 +476,8 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       "setPressed" -> handleSetPressed(root, args)
       "setDestinations" -> handleSetDestinations(root, args)
       "requestTVFocus" -> root.requestFocus()
+      "focus" -> handleFocus(root)
+      "blur" -> handleBlur(root)
       else -> {}
     }
   }
@@ -556,5 +560,17 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   private fun hasTouchScreen(context: Context): Boolean {
     return context.packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)
+  }
+
+  private fun handleFocus(root: ReactViewGroup) {
+    if (ReactNativeFeatureFlags.enableImperativeFocus()) {
+      root.requestFocusFromJS()
+    }
+  }
+
+  private fun handleBlur(root: ReactViewGroup) {
+    if (ReactNativeFeatureFlags.enableImperativeFocus()) {
+      root.clearFocusFromJS()
+    }
   }
 }

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<af10f4eea240ae4a228de9bbc4b78b7e>>
+ * @generated SignedSource<<8af0aea8bbf4cffaad7d312032bef0e4>>
  */
 
 /**
@@ -181,6 +181,12 @@ public object ReactNativeFeatureFlags {
   public fun enableImagePrefetchingAndroid(): Boolean = accessor.enableImagePrefetchingAndroid()
 
   /**
+   * When enabled, Android will build and initiate image prefetch requests on ImageShadowNode::layout and batch them together in a single JNI call
+   */
+  @JvmStatic
+  public fun enableImagePrefetchingJNIBatchingAndroid(): Boolean = accessor.enableImagePrefetchingJNIBatchingAndroid()
+
+  /**
    * When enabled, Android will initiate image prefetch requested on ImageShadowNode::layout on the UI thread
    */
   @JvmStatic
@@ -191,6 +197,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = accessor.enableImmediateUpdateModeForContentOffsetChanges()
+
+  /**
+   * Enable ref.focus() and ref.blur() for all views, not just TextInput.
+   */
+  @JvmStatic
+  public fun enableImperativeFocus(): Boolean = accessor.enableImperativeFocus()
 
   /**
    * This is to fix the issue with interop view manager where component descriptor lookup is causing ViewManager to preload.
@@ -251,6 +263,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableResourceTimingAPI(): Boolean = accessor.enableResourceTimingAPI()
+
+  /**
+   * When enabled, it will use SwiftUI for filter effects like blur on iOS.
+   */
+  @JvmStatic
+  public fun enableSwiftUIBasedFilters(): Boolean = accessor.enableSwiftUIBasedFilters()
 
   /**
    * Enables View Culling: as soon as a view goes off screen, it can be reused anywhere in the UI and pieced together with other items to create new UI elements.
@@ -439,6 +457,12 @@ public object ReactNativeFeatureFlags {
   public fun useShadowNodeStateOnClone(): Boolean = accessor.useShadowNodeStateOnClone()
 
   /**
+   * Use shared animation backend in C++ Animated
+   */
+  @JvmStatic
+  public fun useSharedAnimatedBackend(): Boolean = accessor.useSharedAnimatedBackend()
+
+  /**
    * In Bridgeless mode, should legacy NativeModules use the TurboModule system?
    */
   @JvmStatic
@@ -449,6 +473,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useTurboModules(): Boolean = accessor.useTurboModules()
+
+  /**
+   * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
+   */
+  @JvmStatic
+  public fun viewCullingOutsetRatio(): Double = accessor.viewCullingOutsetRatio()
 
   /**
    * Sets a hysteresis window for transition between prerender and hidden modes.

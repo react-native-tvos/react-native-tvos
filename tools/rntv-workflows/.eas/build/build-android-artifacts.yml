@@ -60,7 +60,9 @@ build:
         name: Run Typescript generation
         working_directory: ../..
         command: |
-          yarn build-types
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            yarn build-types
+          fi
     - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
@@ -98,6 +100,16 @@ build:
           (cd RNTester-Android/Debug; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-debug.tgz *)
           (cd RNTester-Android/Release; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-release.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz *)
+    - run:
+        name: Send Android artifacts to Sonatype
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
+            npx tsx tools/rntv-workflows/src/sonatype.ts upload $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz
+          else
+            echo "Skipping upload to Sonatype because this is not a release build."
+          fi
     - eas/upload_artifact:
         name: Upload Android artifacts and NPM tarballs
         inputs:

@@ -1696,6 +1696,7 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
           return (
             <StickyHeaderComponent
               key={key}
+              /* $FlowFixMe[incompatible-type] */
               ref={ref => this._setStickyHeaderRef(key, ref)}
               nextHeaderLayoutY={this._headerLayoutYs.get(
                 this._getKeyForIndex(nextIndex, children),

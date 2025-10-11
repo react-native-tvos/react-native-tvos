@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<680ccef60b08f17fcbfd718087d30955>>
+ * @generated SignedSource<<7879aa079d5dc8603faac4dbf40f70c5>>
  */
 
 /**
@@ -127,11 +127,19 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableImagePrefetchingJNIBatchingAndroid() override {
+    return false;
+  }
+
   bool enableImagePrefetchingOnUiThreadAndroid() override {
     return false;
   }
 
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    return false;
+  }
+
+  bool enableImperativeFocus() override {
     return false;
   }
 
@@ -172,6 +180,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableResourceTimingAPI() override {
+    return false;
+  }
+
+  bool enableSwiftUIBasedFilters() override {
     return false;
   }
 
@@ -299,12 +311,20 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool useSharedAnimatedBackend() override {
+    return false;
+  }
+
   bool useTurboModuleInterop() override {
     return false;
   }
 
   bool useTurboModules() override {
     return false;
+  }
+
+  double viewCullingOutsetRatio() override {
+    return 0.0;
   }
 
   double virtualViewHysteresisRatio() override {

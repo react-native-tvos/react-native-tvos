@@ -22,9 +22,8 @@ exports[`<Button /> should be disabled and it should set accessibilityState to d
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -94,9 +93,8 @@ exports[`<Button /> should be disabled when disabled is empty and accessibilityS
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -166,9 +164,8 @@ exports[`<Button /> should be disabled when disabled={true} and accessibilitySta
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -238,10 +235,9 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
   importantForAccessibility="no-hide-descendants"
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -306,10 +302,9 @@ exports[`<Button /> should be set importantForAccessibility={no-hide-descendants
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
   importantForAccessibility="no-hide-descendants"
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -374,9 +369,8 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -442,9 +436,8 @@ exports[`<Button /> should not be disabled when disabled={false} and accessibili
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -510,9 +503,8 @@ exports[`<Button /> should overwrite accessibilityState with value of disabled p
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -582,9 +574,8 @@ exports[`<Button /> should render as expected 1`] = `
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}

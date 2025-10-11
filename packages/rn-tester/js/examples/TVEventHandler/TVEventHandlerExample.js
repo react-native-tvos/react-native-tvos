@@ -11,7 +11,7 @@
 'use strict';
 
 import * as React from 'react';
-import ReactNative from 'react-native';
+import ReactNative, {ScrollView, type TVRemoteEvent} from 'react-native';
 
 const {
   StyleSheet,
@@ -40,6 +40,7 @@ const focusHandler = (event: $FlowFixMe, props: any) => {
 
 const blurHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
+    event.name = undefined;
     event.stopPropagation();
   } else {
     event.name = props.title;
@@ -54,44 +55,57 @@ const pressEventHandler = (eventType: string, props: any) => {
 const PressableButton = (props: {
   title: string,
   log: (entry: string) => void,
-  functional?: boolean,
   noBubbledEvents?: boolean,
   tvParallaxProperties?: $FlowFixMe,
+  accessible?: boolean,
+  focusable?: boolean,
+  disabled?: boolean,
 }) => {
-  // Set functional=false to have no functional style or children
-  // and test the fix for #744
-  const {functional, log, noBubbledEvents, title, ...pressableProps} = props;
-  const [userFocused, setUserFocused] = React.useState(false);
-  return functional !== false ? (
+  const {log, noBubbledEvents, title, ...pressableProps} = props;
+  return (
     <Pressable
       {...pressableProps}
-      onFocus={(event: $FlowFixMe) => focusHandler(event, props)}
-      onBlur={(event: $FlowFixMe) => blurHandler(event, props)}
+      onFocus={(event: $FlowFixMe) => {
+        focusHandler(event, props);
+      }}
+      onBlur={(event: $FlowFixMe) => {
+        blurHandler(event, props);
+      }}
+      tvParallaxProperties={props.tvParallaxProperties}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
-      onPressIn={() => pressEventHandler('onPressIn', props)}
-      onPressOut={() => pressEventHandler('onPressOut', props)}
-      tvParallaxProperties={props.tvParallaxProperties}
-      android_ripple={{
-        color: '#cccccc',
-        radius: 50,
+      onPressIn={() => {
+        pressEventHandler('onPressIn', props);
       }}
-      style={({pressed, focused}) =>
-        pressed || focused ? styles.pressableFocused : styles.pressable
-      }>
-      {({focused, pressed}) => {
-        return (
-          <Text style={styles.pressableText}>
-            {pressed
-              ? `${props.title} pressed`
-              : focused
-                ? `${props.title} focused`
-                : props.title}
-          </Text>
-        );
+      onPressOut={() => {
+        pressEventHandler('onPressOut', props);
       }}
+      style={({focused, pressed}) => [
+        pressed || focused ? styles.pressableFocused : styles.pressable,
+      ]}>
+      {({focused, pressed}) => (
+        <Text style={styles.pressableText}>{`${props.title}${
+          focused ? ' focused' : ''
+        }${pressed ? ' pressed' : ''}`}</Text>
+      )}
     </Pressable>
-  ) : (
+  );
+};
+
+const PressableNonfunctionalButton = (props: {
+  title: string,
+  log: (entry: string) => void,
+  noBubbledEvents?: boolean,
+  tvParallaxProperties?: $FlowFixMe,
+  accessible?: boolean,
+  focusable?: boolean,
+  disabled?: boolean,
+}) => {
+  // test the fix for #744
+  const {log, noBubbledEvents, title, ...pressableProps} = props;
+  const [userFocused, setUserFocused] = React.useState(false);
+  const [userPressed, setUserPressed] = React.useState(false);
+  return (
     <Pressable
       {...pressableProps}
       onFocus={(event: $FlowFixMe) => {
@@ -105,20 +119,30 @@ const PressableButton = (props: {
       tvParallaxProperties={props.tvParallaxProperties}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
-      onPressIn={() => pressEventHandler('onPressIn', props)}
-      onPressOut={() => pressEventHandler('onPressOut', props)}
-      style={userFocused ? styles.pressableFocused : styles.pressable}>
-      <Text style={styles.pressableText}>{`${props.title}`}</Text>
+      onPressIn={() => {
+        pressEventHandler('onPressIn', props);
+        setUserPressed(true);
+      }}
+      onPressOut={() => {
+        pressEventHandler('onPressOut', props);
+        setUserPressed(false);
+      }}
+      style={
+        userFocused || userPressed ? styles.pressableFocused : styles.pressable
+      }>
+      <Text style={styles.pressableText}>{`${props.title}${
+        userFocused ? ' focused' : ''
+      }${userPressed ? ' pressed' : ''}`}</Text>
     </Pressable>
   );
 };
-
 const TouchableOpacityButton = (props: {
   title: string,
   log: (entry: string) => void,
 }) => {
   return (
     <TouchableOpacity
+      {...props}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -137,6 +161,7 @@ const TouchableHighlightButton = (props: {
 }) => {
   return (
     <TouchableHighlight
+      {...props}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -155,6 +180,7 @@ const TouchableNativeFeedbackButton = (props: {
 }) => {
   return (
     <TouchableNativeFeedback
+      {...props}
       background={TouchableNativeFeedback.SelectableBackground()}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
@@ -246,16 +272,22 @@ const TVEventHandlerView: () => React.Node = () => {
     setPressableEventLog(log => logWithAppendedEntry(log, entry));
   };
 
+  const logEntryForEvent = (event: TVRemoteEvent) => {
+    return [
+      `type=${event.eventType}`,
+      event.eventKeyAction ? `action=${event.eventKeyAction}` : '',
+      event.body?.x ? `x=${event.body?.x}` : '',
+      event.body?.y ? `y=${event.body?.y}` : '',
+      event.body?.velocityX ? `vx=${Math.floor(event.body?.velocityX)}` : '',
+      event.body?.velocityY ? `vy=${Math.floor(event.body?.velocityY)}` : '',
+    ].join(' ');
+  };
+
   useTVEventHandler(event => {
-    const {eventType, eventKeyAction} = event;
+    const {eventType} = event;
     if (eventType !== 'focus' && eventType !== 'blur') {
       setRemoteEventLog(log =>
-        logWithAppendedEntry(
-          log,
-          `type=${eventType}, action=${
-            eventKeyAction !== undefined ? eventKeyAction : ''
-          }`,
-        ),
+        logWithAppendedEntry(log, logEntryForEvent(event)),
       );
     }
   });
@@ -276,13 +308,44 @@ const TVEventHandlerView: () => React.Node = () => {
 
   return (
     <View style={styles.container}>
-      <View>
+      <ScrollView>
         <View>
           <PressableButton title="Pressable" log={updatePressableLog} />
-          <PressableButton
-            title="Pressable nonfunctional"
+          <PressableNonfunctionalButton
+            title="Pressable nonfunctional form"
             log={updatePressableLog}
-            functional={false}
+          />
+          <PressableButton
+            title="Pressable accessible={false}"
+            accessible={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
+            log={updatePressableLog}
+            noBubbledEvents
+          />
+          <PressableButton
+            title="Pressable disabled={true} focusable={true}"
+            disabled={true}
+            focusable={true}
+            log={updatePressableLog}
+            noBubbledEvents
           />
           <PressableButton
             title="Pressable tvOS expand"
@@ -297,8 +360,40 @@ const TVEventHandlerView: () => React.Node = () => {
             title="TouchableOpacity"
             log={updatePressableLog}
           />
+          <TouchableOpacityButton
+            title="TouchableOpacity focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+          />
+          <TouchableOpacityButton
+            title="TouchableOpacity disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+          />
+          <TouchableOpacityButton
+            title="TouchableOpacity disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
+            log={updatePressableLog}
+          />
           <TouchableHighlightButton
             title="TouchableHighlight"
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight focusable={false}"
+            focusable={false}
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight disabled={true}"
+            disabled={true}
+            log={updatePressableLog}
+          />
+          <TouchableHighlightButton
+            title="TouchableHighlight disabled={true} focusable={false}"
+            disabled={true}
+            focusable={false}
             log={updatePressableLog}
           />
           {Platform.OS === 'android' ? (
@@ -401,7 +496,7 @@ const TVEventHandlerView: () => React.Node = () => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.logContainer}>
         <View style={{width: 400 * scale}}>

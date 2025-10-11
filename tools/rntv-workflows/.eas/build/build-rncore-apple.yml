@@ -16,7 +16,7 @@ build:
     - run:
         name: Install Ruby
         command: |
-          ./install-ruby.sh
+          . ./install-ruby.sh
     - run:
         name: Copy and modify publish.gradle
         working_directory: ../..
@@ -31,7 +31,11 @@ build:
           set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
           echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
     - eas/install_node_modules
-    - import_codesign_certs
+    - run:
+        name: Import code signing certificates
+        working_directory: ../..
+        command: |
+          npx tsx ./tools/rntv-workflows/src/create-codesign-keychain.ts
     - run:
         name: Set up build-specific environment
         working_directory: ../..
@@ -113,6 +117,7 @@ build:
         name: Build RNTester for iOS using RNCore artifacts
         working_directory: ../../packages/rn-tester
         command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-iOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -131,6 +136,7 @@ build:
         name: Build RNTester for tvOS using RNCore artifacts
         working_directory: ../../packages/rn-tester
         command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-tvOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -151,11 +157,19 @@ build:
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
-          if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
-            (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
-            (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
-          fi
+          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
+          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
+    - run:
+        name: Send Apple artifacts to Sonatype
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
+            npx tsx tools/rntv-workflows/src/sonatype.ts upload $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz
+          else
+            echo "Skipping upload to Sonatype because this is not a release build."
+          fi
     - eas/upload_artifact:
         name: Upload RNCore Maven artifacts and RNTester apps
         inputs:
@@ -164,13 +178,3 @@ build:
             react-native-artifacts-*.tgz
             rntester-*.tgz
 
-functions:
-  import_codesign_certs:
-    name: Import code signing certificates
-    path: ./importCodesignCerts
-    # There are no inputs; this function reads
-    # from the environment variables
-    # REACT_ORG_CODE_SIGNING_P12_CERT and
-    # REACT_ORG_CODE_SIGNING_P12_CERT_PWD
-    outputs:
-    - name: keychainPassword

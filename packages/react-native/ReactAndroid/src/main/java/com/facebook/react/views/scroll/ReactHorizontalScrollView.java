@@ -79,7 +79,8 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
         HasStateWrapper,
         HasFlingAnimator,
         HasScrollEventThrottle,
-        HasSmoothScroll {
+        HasSmoothScroll,
+        VirtualViewContainer {
 
   private static boolean DEBUG_MODE = false && ReactBuildConfig.DEBUG;
   private static String TAG = ReactHorizontalScrollView.class.getSimpleName();
@@ -100,6 +101,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private final ValueAnimator DEFAULT_FLING_ANIMATOR = ObjectAnimator.ofInt(this, "scrollX", 0, 0);
 
   private Rect mOverflowInset = new Rect();
+  private @Nullable VirtualViewContainerState mVirtualViewContainerState;
   private boolean mActivelyScrolling;
   private @Nullable Rect mClippingRect;
   private Overflow mOverflow = Overflow.SCROLL;
@@ -156,9 +158,15 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    */
   private void initView() {
     mOverflowInset = new Rect();
+    mVirtualViewContainerState = null;
     mActivelyScrolling = false;
     mClippingRect = null;
-    mOverflow = Overflow.SCROLL;
+    // The default value for `overflow` is set to `Visible` in the Yoga style props.
+    mOverflow =
+        ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid()
+            ? Overflow.VISIBLE
+            : Overflow.SCROLL;
+
     mDragging = false;
     mPagingEnabled = false;
     mPostTouchRunnable = null;
@@ -203,6 +211,15 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   private void updateView() {}
+
+  @Override
+  public VirtualViewContainerState getVirtualViewContainerState() {
+    if (mVirtualViewContainerState == null) {
+      mVirtualViewContainerState = new VirtualViewContainerState(this);
+    }
+
+    return mVirtualViewContainerState;
+  }
 
   @Override
   public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
@@ -389,7 +406,12 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
       mOverflow = Overflow.SCROLL;
     } else {
       @Nullable Overflow parsedOverflow = Overflow.fromString(overflow);
-      mOverflow = parsedOverflow == null ? Overflow.SCROLL : parsedOverflow;
+      mOverflow =
+          parsedOverflow == null
+              ? (ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid()
+                  ? Overflow.VISIBLE
+                  : Overflow.SCROLL)
+              : parsedOverflow;
     }
 
     invalidate();
@@ -510,6 +532,9 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     }
 
     ReactScrollViewHelper.emitLayoutEvent(this);
+    if (mVirtualViewContainerState != null) {
+      mVirtualViewContainerState.updateState();
+    }
   }
 
   /**
@@ -603,7 +628,11 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
             this,
             mOnScrollDispatchHelper.getXFlingVelocity(),
             mOnScrollDispatchHelper.getYFlingVelocity());
+        if (mVirtualViewContainerState != null) {
+          mVirtualViewContainerState.updateState();
+        }
       }
+
     } finally {
       Systrace.endSection(Systrace.TRACE_TAG_REACT);
     }
@@ -854,6 +883,9 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     if (mRemoveClippedSubviews) {
       updateClippingRect();
     }
+    if (mVirtualViewContainerState != null) {
+      mVirtualViewContainerState.updateState();
+    }
   }
 
   @Override
@@ -872,6 +904,9 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     super.onDetachedFromWindow();
     if (mMaintainVisibleContentPositionHelper != null) {
       mMaintainVisibleContentPositionHelper.stop();
+    }
+    if (mVirtualViewContainerState != null) {
+      mVirtualViewContainerState.cleanup();
     }
   }
 

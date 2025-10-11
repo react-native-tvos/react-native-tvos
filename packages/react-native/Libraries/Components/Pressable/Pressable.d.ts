@@ -20,7 +20,7 @@ import {
 import {View} from '../View/View';
 import {AccessibilityProps} from '../View/ViewAccessibility';
 import {ViewProps} from '../View/ViewPropTypes';
-import {TVParallaxProperties} from '../../../types/index';
+import {TVParallaxProperties} from '../TV/TVParallaxProperties';
 
 export interface PressableStateCallbackType {
   readonly pressed: boolean;

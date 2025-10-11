@@ -133,7 +133,7 @@ NSMutableDictionary<NSString *, id> *RCTModuleConstantsForDestructuredComponent(
   return moduleConstants;
 }
 
-#ifndef RCT_FIT_RM_OLD_RUNTIME
+#ifndef RCT_REMOVE_LEGACY_ARCH
 
 static void RCTTraverseViewNodes(id<RCTComponent> view, void (^block)(id<RCTComponent>))
 {
@@ -246,9 +246,6 @@ RCT_EXPORT_MODULE()
 
 - (void)setBridge:(RCTBridge *)bridge
 {
-  RCTEnforceNewArchitectureValidation(
-      RCTNotAllowedInBridgeless, self, @"RCTUIManager must not be initialized for the new architecture");
-
   RCTAssert(_bridge == nil, @"Should not re-use same UIManager instance");
   _bridge = bridge;
 
@@ -1626,8 +1623,6 @@ static UIView *_jsResponder;
 
 + (UIView *)JSResponder
 {
-  RCTErrorNewArchitectureValidation(
-      RCTNotAllowedInFabricWithoutLegacy, @"RCTUIManager", @"Please migrate this legacy surface to Fabric.");
   return _jsResponder;
 }
 
@@ -1647,7 +1642,7 @@ static UIView *_jsResponder;
 
 @end
 
-#else // RCT_FIT_RM_OLD_RUNTIME
+#else // RCT_REMOVE_LEGACY_ARCH
 
 @implementation RCTUIManager
 - (void)registerRootViewTag:(NSNumber *)rootTag
@@ -1751,7 +1746,7 @@ static UIView *_jsResponder;
 
 @end
 
-#endif // RCT_FIT_RM_OLD_RUNTIME
+#endif // RCT_REMOVE_LEGACY_ARCH
 
 UIView *RCTPaperViewOrCurrentView(UIView *view)
 {

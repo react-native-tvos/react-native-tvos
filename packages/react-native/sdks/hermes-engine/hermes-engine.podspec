@@ -80,7 +80,7 @@ Pod::Spec.new do |spec|
       )
 
       spec.user_target_xcconfig = {
-        'HERMES_CLI_PATH' => "#{hermes_compiler_path}/osx-bin/hermesc"
+        'HERMES_CLI_PATH' => "#{hermes_compiler_path}/hermesc/osx-bin/hermesc"
       }
     end
 
@@ -125,20 +125,6 @@ Pod::Spec.new do |spec|
       ss.source_files = ''
       ss.public_header_files = 'public/hermes/Public/*.h'
       ss.header_dir = 'hermes/Public'
-    end
-
-    if ENV['RCT_HERMES_V1_ENABLED'] != "1"
-      spec.subspec 'inspector' do |ss|
-        ss.source_files = ''
-        ss.public_header_files = 'API/hermes/inspector/*.h'
-        ss.header_dir = 'hermes/inspector'
-      end
-
-      spec.subspec 'inspector_chrome' do |ss|
-        ss.source_files = ''
-        ss.public_header_files = 'API/hermes/inspector/chrome/*.h'
-        ss.header_dir = 'hermes/inspector/chrome'
-      end
     end
 
     hermesc_path = "${PODS_ROOT}/hermes-engine/build_host_hermesc"

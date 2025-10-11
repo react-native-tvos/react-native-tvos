@@ -21,9 +21,8 @@ exports[`TouchableOpacity renders correctly 1`] = `
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -68,9 +67,8 @@ exports[`TouchableOpacity renders in disabled state when a disabled prop is pass
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -115,9 +113,8 @@ exports[`TouchableOpacity renders in disabled state when a key disabled in acces
   }
   accessible={true}
   collapsable={false}
-  focusable={false}
+  focusable={true}
   hasTVPreferredFocus={false}
-  isTVSelectable={true}
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}

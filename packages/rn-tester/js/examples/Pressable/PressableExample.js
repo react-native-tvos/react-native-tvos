@@ -50,7 +50,9 @@ function ContentPress() {
             setTimesPressed(current => current + 1);
           }}>
           {({pressed, focused}) => (
-            <Text testID="one_press_me_button" style={[styles.button, {opacity: focused ? 0.5 : 1.0}]}>
+            <Text
+              testID="one_press_me_button"
+              style={[styles.button, {opacity: focused ? 0.5 : 1.0}]}>
               {pressed ? 'Pressed!' : 'Press Me'}
             </Text>
           )}
@@ -424,12 +426,16 @@ const examples = [
                 backgroundColor: pressed
                   ? 'rgb(210, 230, 255)'
                   : focused
-                  ? 'rgb(255, 230, 210)'
-                  : 'white',
+                    ? 'rgb(255, 230, 210)'
+                    : 'white',
               },
               styles.wrapperCustom,
             ]}>
-            <Text style={styles.text}>Press Me</Text>
+            {({pressed, focused}) => (
+              <Text style={styles.text}>
+                {pressed ? 'Pressed!' : focused ? 'Focused!' : 'Press Me'}
+              </Text>
+            )}
           </Pressable>
         </View>
       );
@@ -631,6 +637,43 @@ const examples = [
       'reader announces (there are no visual differences).': string),
     render: function (): React.Node {
       return <PressableAriaLabel />;
+    },
+  },
+  {
+    title: 'Pressable with box-shadow',
+    description: ('Pressables with box-shadow': string),
+    render: function PressableWithBoxShadow(): React.Node {
+      const [parentColor, setParentColor] = useState('red');
+      const [childColor, setChildColor] = useState('blue');
+      return (
+        <Pressable
+          pointerEvents="box-none"
+          style={{
+            width: 300,
+            height: 300,
+            overflow: 'hidden',
+            transform: [{scale: 0.5}],
+            boxShadow: '0 0 100px 0 rgba(0, 0, 0, 0.5)',
+            backgroundColor: parentColor,
+          }}
+          onPress={() => {
+            setParentColor(parentColor === 'red' ? 'orange' : 'red');
+          }}>
+          <Pressable
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              backgroundColor: childColor,
+              height: 50,
+              width: 100,
+            }}
+            onPress={() => {
+              setChildColor(childColor === 'blue' ? 'green' : 'blue');
+            }}
+          />
+        </Pressable>
+      );
     },
   },
   ...PressableExampleFbInternal.examples,

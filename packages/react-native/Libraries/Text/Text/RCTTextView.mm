@@ -7,7 +7,7 @@
 
 #import <React/RCTTextView.h>
 
-#ifndef RCT_FIT_RM_OLD_COMPONENT
+#ifndef RCT_REMOVE_LEGACY_ARCH
 
 #import <MobileCoreServices/UTCoreTypes.h>
 
@@ -305,4 +305,4 @@
 
 @end
 
-#endif // RCT_FIT_RM_OLD_COMPONENT
+#endif // RCT_REMOVE_LEGACY_ARCH

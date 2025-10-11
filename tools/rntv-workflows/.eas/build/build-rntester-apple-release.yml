@@ -16,7 +16,7 @@ build:
     - run:
         name: Install Ruby
         command: |
-          ./install-ruby.sh
+          . ./install-ruby.sh
     - run:
         name: Copy and modify publish.gradle
         working_directory: ../..
@@ -31,7 +31,11 @@ build:
           set-env MAVEN_TEMP_LOCAL_URL $MAVEN_TEMP_LOCAL_URL
           echo "MAVEN_TEMP_LOCAL_URL=$MAVEN_TEMP_LOCAL_URL"
     - eas/install_node_modules
-    - import_codesign_certs
+    - run:
+        name: Import code signing certificates
+        working_directory: ../..
+        command: |
+          npx tsx ./tools/rntv-workflows/src/create-codesign-keychain.ts
     - run:
         name: Set up build-specific environment
         working_directory: ../..
@@ -90,6 +94,7 @@ build:
         name: Build release RNTester for iOS using RNCore minimal artifacts
         working_directory: ../../packages/rn-tester
         command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-iOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -108,6 +113,7 @@ build:
         name: Build release RNTester for tvOS using RNCore artifacts
         working_directory: ../../packages/rn-tester
         command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-tvOS
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -136,14 +142,3 @@ build:
           type: build-artifact
           path: |
             rntester-*.tgz
-
-functions:
-  import_codesign_certs:
-    name: Import code signing certificates
-    path: ./importCodesignCerts
-    # There are no inputs; this function reads
-    # from the environment variables
-    # REACT_ORG_CODE_SIGNING_P12_CERT and
-    # REACT_ORG_CODE_SIGNING_P12_CERT_PWD
-    outputs:
-    - name: keychainPassword

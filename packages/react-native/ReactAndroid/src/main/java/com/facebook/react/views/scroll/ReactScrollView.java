@@ -159,14 +159,19 @@ public class ReactScrollView extends ScrollView
     mVirtualViewContainerState = null;
     mActivelyScrolling = false;
     mClippingRect = null;
-    mOverflow = Overflow.SCROLL;
+
+    // The default value for `overflow` is set to `Visible` in the Yoga style props.
+    mOverflow =
+        ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid()
+            ? Overflow.VISIBLE
+            : Overflow.SCROLL;
+
     mDragging = false;
     mPagingEnabled = false;
     mPostTouchRunnable = null;
     mRemoveClippedSubviews = false;
     mScrollEnabled = true;
     mSendMomentumEvents = false;
-    mFpsListener = null;
     mScrollPerfTag = null;
     mEndBackground = null;
     mEndFillColor = Color.TRANSPARENT;
@@ -363,7 +368,12 @@ public class ReactScrollView extends ScrollView
       mOverflow = Overflow.SCROLL;
     } else {
       @Nullable Overflow parsedOverflow = Overflow.fromString(overflow);
-      mOverflow = parsedOverflow == null ? Overflow.SCROLL : parsedOverflow;
+      mOverflow =
+          parsedOverflow == null
+              ? (ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid()
+                  ? Overflow.VISIBLE
+                  : Overflow.SCROLL)
+              : parsedOverflow;
     }
 
     invalidate();
@@ -518,11 +528,24 @@ public class ReactScrollView extends ScrollView
   }
 
   private void scrollToChild(View child) {
+    // Only scroll the nearest ReactScrollView ancestor into view, rather than the focused child.
+    // Nested ScrollView instances will handle scrolling the child into their respective viewports.
+    View parent = child;
+    View scrollViewAncestor = null;
+    while (parent != null && parent != this) {
+      if (parent instanceof ReactScrollView) {
+        scrollViewAncestor = parent;
+      }
+      parent = (View) parent.getParent();
+    }
+
+    View scrollIntoViewTarget = scrollViewAncestor != null ? scrollViewAncestor : child;
+
     Rect tempRect = new Rect();
-    child.getDrawingRect(tempRect);
+    scrollIntoViewTarget.getDrawingRect(tempRect);
 
     /* Offset from child's local coordinates to ScrollView coordinates */
-    offsetDescendantRectToMyCoords(child, tempRect);
+    offsetDescendantRectToMyCoords(scrollIntoViewTarget, tempRect);
 
     int scrollDelta = computeScrollDeltaToGetChildRectOnScreen(tempRect);
 
