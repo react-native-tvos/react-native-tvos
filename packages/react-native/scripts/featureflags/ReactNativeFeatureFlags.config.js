@@ -92,6 +92,16 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    disableEarlyViewCommandExecution: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-10-07',
+        description: 'Dispatch view commands in mount item order.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     disableFabricCommitInCXXAnimated: {
       defaultValue: false,
       metadata: {
@@ -677,6 +687,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    shouldTriggerResponderTransferOnScrollAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-09-30',
+        description:
+          'Do not emit touchcancel from Android ScrollView, instead native topScroll event will trigger responder transfer and terminate in RN renderer.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     skipActivityIdentityAssertionOnHostPause: {
       defaultValue: false,
       metadata: {
@@ -809,6 +830,16 @@ const definitions: FeatureFlagDefinitions = {
       metadata: {
         dateAdded: '2025-08-2',
         description: 'Use shared animation backend in C++ Animated',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    useTraitHiddenOnAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-10-9',
+        description: 'Use Trait::hidden on Android',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

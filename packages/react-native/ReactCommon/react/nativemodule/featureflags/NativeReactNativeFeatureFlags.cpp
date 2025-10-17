@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e799e5ce5aea7adbef02a7e7431f8a35>>
+ * @generated SignedSource<<8d6ba2c295ca32ced7acd3a0679a3cab>>
  */
 
 /**
@@ -35,7 +35,7 @@ namespace facebook::react {
 
 NativeReactNativeFeatureFlags::NativeReactNativeFeatureFlags(
     std::shared_ptr<CallInvoker> jsInvoker)
-    : NativeReactNativeFeatureFlagsCxxSpecJSI(std::move(jsInvoker)) {}
+    : NativeReactNativeFeatureFlagsCxxSpec(std::move(jsInvoker)) {}
 
 bool NativeReactNativeFeatureFlags::commonTestFlag(
     jsi::Runtime& /*runtime*/) {
@@ -62,6 +62,11 @@ bool NativeReactNativeFeatureFlags::cxxNativeAnimatedEnabled(
 bool NativeReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync();
+}
+
+bool NativeReactNativeFeatureFlags::disableEarlyViewCommandExecution(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
 }
 
 bool NativeReactNativeFeatureFlags::disableFabricCommitInCXXAnimated(
@@ -339,6 +344,11 @@ bool NativeReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHove
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
 }
 
+bool NativeReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid();
+}
+
 bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
@@ -402,6 +412,11 @@ bool NativeReactNativeFeatureFlags::useShadowNodeStateOnClone(
 bool NativeReactNativeFeatureFlags::useSharedAnimatedBackend(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useSharedAnimatedBackend();
+}
+
+bool NativeReactNativeFeatureFlags::useTraitHiddenOnAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useTraitHiddenOnAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::useTurboModuleInterop(

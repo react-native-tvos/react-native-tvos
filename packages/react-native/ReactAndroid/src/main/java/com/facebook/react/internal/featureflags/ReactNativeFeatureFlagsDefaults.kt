@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7c7796cbe2722f0f6e5b2cc4ed43a0d5>>
+ * @generated SignedSource<<c601ddc9bd62282f8079d0cb3578675d>>
  */
 
 /**
@@ -30,6 +30,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun cxxNativeAnimatedEnabled(): Boolean = false
 
   override fun cxxNativeAnimatedRemoveJsSync(): Boolean = false
+
+  override fun disableEarlyViewCommandExecution(): Boolean = false
 
   override fun disableFabricCommitInCXXAnimated(): Boolean = false
 
@@ -141,6 +143,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = false
 
+  override fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean = false
+
   override fun skipActivityIdentityAssertionOnHostPause(): Boolean = false
 
   override fun sweepActiveTouchOnChildNativeGesturesAndroid(): Boolean = false
@@ -166,6 +170,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useShadowNodeStateOnClone(): Boolean = false
 
   override fun useSharedAnimatedBackend(): Boolean = false
+
+  override fun useTraitHiddenOnAndroid(): Boolean = false
 
   override fun useTurboModuleInterop(): Boolean = false
 

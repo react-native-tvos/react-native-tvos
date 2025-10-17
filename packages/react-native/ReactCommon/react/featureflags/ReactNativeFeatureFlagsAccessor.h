@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6c6458278652bc91570db82b2be6c7f1>>
+ * @generated SignedSource<<1c59c66275538ea4cd0bc47f1e038924>>
  */
 
 /**
@@ -36,6 +36,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool cdpInteractionMetricsEnabled();
   bool cxxNativeAnimatedEnabled();
   bool cxxNativeAnimatedRemoveJsSync();
+  bool disableEarlyViewCommandExecution();
   bool disableFabricCommitInCXXAnimated();
   bool disableMountItemReorderingAndroid();
   bool disableOldAndroidAttachmentMetricsWorkarounds();
@@ -91,6 +92,7 @@ class ReactNativeFeatureFlagsAccessor {
   double preparedTextCacheSize();
   bool preventShadowTreeCommitExhaustion();
   bool shouldPressibilityUseW3CPointerEventsForHover();
+  bool shouldTriggerResponderTransferOnScrollAndroid();
   bool skipActivityIdentityAssertionOnHostPause();
   bool sweepActiveTouchOnChildNativeGesturesAndroid();
   bool traceTurboModulePromiseRejectionsOnAndroid();
@@ -104,6 +106,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool useRawPropsJsiValue();
   bool useShadowNodeStateOnClone();
   bool useSharedAnimatedBackend();
+  bool useTraitHiddenOnAndroid();
   bool useTurboModuleInterop();
   bool useTurboModules();
   double viewCullingOutsetRatio();
@@ -120,12 +123,13 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 77> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 80> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedRemoveJsSync_;
+  std::atomic<std::optional<bool>> disableEarlyViewCommandExecution_;
   std::atomic<std::optional<bool>> disableFabricCommitInCXXAnimated_;
   std::atomic<std::optional<bool>> disableMountItemReorderingAndroid_;
   std::atomic<std::optional<bool>> disableOldAndroidAttachmentMetricsWorkarounds_;
@@ -181,6 +185,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<double>> preparedTextCacheSize_;
   std::atomic<std::optional<bool>> preventShadowTreeCommitExhaustion_;
   std::atomic<std::optional<bool>> shouldPressibilityUseW3CPointerEventsForHover_;
+  std::atomic<std::optional<bool>> shouldTriggerResponderTransferOnScrollAndroid_;
   std::atomic<std::optional<bool>> skipActivityIdentityAssertionOnHostPause_;
   std::atomic<std::optional<bool>> sweepActiveTouchOnChildNativeGesturesAndroid_;
   std::atomic<std::optional<bool>> traceTurboModulePromiseRejectionsOnAndroid_;
@@ -194,6 +199,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> useRawPropsJsiValue_;
   std::atomic<std::optional<bool>> useShadowNodeStateOnClone_;
   std::atomic<std::optional<bool>> useSharedAnimatedBackend_;
+  std::atomic<std::optional<bool>> useTraitHiddenOnAndroid_;
   std::atomic<std::optional<bool>> useTurboModuleInterop_;
   std::atomic<std::optional<bool>> useTurboModules_;
   std::atomic<std::optional<double>> viewCullingOutsetRatio_;

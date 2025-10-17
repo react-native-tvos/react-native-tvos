@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<990b6518e7b1d196deb0965e9ada6605>>
+ * @generated SignedSource<<1c0cdfdfd5d77e602e4b44bb13e7be4b>>
  */
 
 /**
@@ -28,7 +28,7 @@
 namespace facebook::react {
 
 class NativeReactNativeFeatureFlags
-    : public NativeReactNativeFeatureFlagsCxxSpecJSI {
+    : public NativeReactNativeFeatureFlagsCxxSpec<NativeReactNativeFeatureFlags> {
  public:
   NativeReactNativeFeatureFlags(std::shared_ptr<CallInvoker> jsInvoker);
 
@@ -43,6 +43,8 @@ class NativeReactNativeFeatureFlags
   bool cxxNativeAnimatedEnabled(jsi::Runtime& runtime);
 
   bool cxxNativeAnimatedRemoveJsSync(jsi::Runtime& runtime);
+
+  bool disableEarlyViewCommandExecution(jsi::Runtime& runtime);
 
   bool disableFabricCommitInCXXAnimated(jsi::Runtime& runtime);
 
@@ -154,6 +156,8 @@ class NativeReactNativeFeatureFlags
 
   bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 
+  bool shouldTriggerResponderTransferOnScrollAndroid(jsi::Runtime& runtime);
+
   bool skipActivityIdentityAssertionOnHostPause(jsi::Runtime& runtime);
 
   bool sweepActiveTouchOnChildNativeGesturesAndroid(jsi::Runtime& runtime);
@@ -179,6 +183,8 @@ class NativeReactNativeFeatureFlags
   bool useShadowNodeStateOnClone(jsi::Runtime& runtime);
 
   bool useSharedAnimatedBackend(jsi::Runtime& runtime);
+
+  bool useTraitHiddenOnAndroid(jsi::Runtime& runtime);
 
   bool useTurboModuleInterop(jsi::Runtime& runtime);
 

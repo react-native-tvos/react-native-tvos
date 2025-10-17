@@ -17,8 +17,11 @@
 #include <react/debug/flags.h>
 #include <react/renderer/animated/EventEmitterListener.h>
 #include <react/renderer/animated/event_drivers/EventAnimationDriver.h>
+#ifdef RN_USE_ANIMATION_BACKEND
 #include <react/renderer/animationbackend/AnimationBackend.h>
+#endif
 #include <react/renderer/core/ReactPrimitives.h>
+#include <react/renderer/uimanager/UIManagerAnimationBackend.h>
 #include <chrono>
 #include <memory>
 #include <mutex>
@@ -68,7 +71,7 @@ class NativeAnimatedNodesManager {
       StopOnRenderCallback&& stopOnRenderCallback = nullptr) noexcept;
 
   explicit NativeAnimatedNodesManager(
-      std::shared_ptr<AnimationBackend> animationBackend) noexcept;
+      std::shared_ptr<UIManagerAnimationBackend> animationBackend) noexcept;
 
   ~NativeAnimatedNodesManager() noexcept;
 
@@ -113,7 +116,9 @@ class NativeAnimatedNodesManager {
 
   void setAnimatedNodeOffset(Tag tag, double offset);
 
+#ifdef RN_USE_ANIMATION_BACKEND
   AnimationMutations pullAnimationMutations();
+#endif
 
 #pragma mark - Drivers
 
@@ -212,7 +217,7 @@ class NativeAnimatedNodesManager {
       const std::string& eventName,
       const EventPayload& payload) noexcept;
 
-  std::shared_ptr<AnimationBackend> animationBackend_;
+  std::weak_ptr<UIManagerAnimationBackend> animationBackend_;
 
   std::unique_ptr<AnimatedNode> animatedNode(
       Tag tag,

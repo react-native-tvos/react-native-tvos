@@ -534,11 +534,13 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
 
-  kotlinOptions {
-    // Using '-Xjvm-default=all' to generate default java methods for interfaces
-    freeCompilerArgs = listOf("-Xjvm-default=all")
-    // Using -PenableWarningsAsErrors=true prop to enable allWarningsAsErrors
-    kotlinOptions.allWarningsAsErrors = enableWarningsAsErrors()
+  kotlin {
+    compilerOptions {
+      // Using '-Xjvm-default=all' to generate default java methods for interfaces
+      freeCompilerArgs = listOf("-Xjvm-default=all")
+      // Using -PenableWarningsAsErrors=true prop to enable allWarningsAsErrors
+      allWarningsAsErrors = enableWarningsAsErrors()
+    }
   }
 
   defaultConfig {
@@ -639,6 +641,7 @@ android {
     prefab = true
     prefabPublishing = true
     buildConfig = true
+    resValues = true
   }
 
   prefab {

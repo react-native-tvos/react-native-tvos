@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<287689f62d05f2d27c146856b7857010>>
+ * @generated SignedSource<<5fe8801a343267a840956183ca93c757>>
  */
 
 /**
@@ -40,6 +40,10 @@ bool ReactNativeFeatureFlags::cxxNativeAnimatedEnabled() {
 
 bool ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() {
   return getAccessor().cxxNativeAnimatedRemoveJsSync();
+}
+
+bool ReactNativeFeatureFlags::disableEarlyViewCommandExecution() {
+  return getAccessor().disableEarlyViewCommandExecution();
 }
 
 bool ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated() {
@@ -262,6 +266,10 @@ bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {
   return getAccessor().shouldPressibilityUseW3CPointerEventsForHover();
 }
 
+bool ReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid() {
+  return getAccessor().shouldTriggerResponderTransferOnScrollAndroid();
+}
+
 bool ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause() {
   return getAccessor().skipActivityIdentityAssertionOnHostPause();
 }
@@ -312,6 +320,10 @@ bool ReactNativeFeatureFlags::useShadowNodeStateOnClone() {
 
 bool ReactNativeFeatureFlags::useSharedAnimatedBackend() {
   return getAccessor().useSharedAnimatedBackend();
+}
+
+bool ReactNativeFeatureFlags::useTraitHiddenOnAndroid() {
+  return getAccessor().useTraitHiddenOnAndroid();
 }
 
 bool ReactNativeFeatureFlags::useTurboModuleInterop() {

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5c2aa1e15e7fbe129b8f774d2dc7be70>>
+ * @generated SignedSource<<38838d89c61124afce1f13045593aeb4>>
  */
 
 /**
@@ -24,6 +24,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cdpInteractionMetricsEnabledCache: Boolean? = null
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
+  private var disableEarlyViewCommandExecutionCache: Boolean? = null
   private var disableFabricCommitInCXXAnimatedCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableOldAndroidAttachmentMetricsWorkaroundsCache: Boolean? = null
@@ -79,6 +80,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var preparedTextCacheSizeCache: Double? = null
   private var preventShadowTreeCommitExhaustionCache: Boolean? = null
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
+  private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
   private var sweepActiveTouchOnChildNativeGesturesAndroidCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
@@ -92,6 +94,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var useRawPropsJsiValueCache: Boolean? = null
   private var useShadowNodeStateOnCloneCache: Boolean? = null
   private var useSharedAnimatedBackendCache: Boolean? = null
+  private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
   private var useTurboModulesCache: Boolean? = null
   private var viewCullingOutsetRatioCache: Double? = null
@@ -130,6 +133,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.cxxNativeAnimatedRemoveJsSync()
       cxxNativeAnimatedRemoveJsSyncCache = cached
+    }
+    return cached
+  }
+
+  override fun disableEarlyViewCommandExecution(): Boolean {
+    var cached = disableEarlyViewCommandExecutionCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.disableEarlyViewCommandExecution()
+      disableEarlyViewCommandExecutionCache = cached
     }
     return cached
   }
@@ -629,6 +641,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean {
+    var cached = shouldTriggerResponderTransferOnScrollAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.shouldTriggerResponderTransferOnScrollAndroid()
+      shouldTriggerResponderTransferOnScrollAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun skipActivityIdentityAssertionOnHostPause(): Boolean {
     var cached = skipActivityIdentityAssertionOnHostPauseCache
     if (cached == null) {
@@ -742,6 +763,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useSharedAnimatedBackend()
       useSharedAnimatedBackendCache = cached
+    }
+    return cached
+  }
+
+  override fun useTraitHiddenOnAndroid(): Boolean {
+    var cached = useTraitHiddenOnAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useTraitHiddenOnAndroid()
+      useTraitHiddenOnAndroidCache = cached
     }
     return cached
   }

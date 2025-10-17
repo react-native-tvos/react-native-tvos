@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b61bcdcabe00ba0e97e42a7ffc2fa8ef>>
+ * @generated SignedSource<<52167b9f49cce6af156a38967019baff>>
  */
 
 /**
@@ -79,6 +79,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::cxxNativeAnimatedRemoveJsSync();
+  }
+
+  bool disableEarlyViewCommandExecution() override {
+    auto value = values_["disableEarlyViewCommandExecution"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableEarlyViewCommandExecution();
   }
 
   bool disableFabricCommitInCXXAnimated() override {
@@ -576,6 +585,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::shouldPressibilityUseW3CPointerEventsForHover();
   }
 
+  bool shouldTriggerResponderTransferOnScrollAndroid() override {
+    auto value = values_["shouldTriggerResponderTransferOnScrollAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::shouldTriggerResponderTransferOnScrollAndroid();
+  }
+
   bool skipActivityIdentityAssertionOnHostPause() override {
     auto value = values_["skipActivityIdentityAssertionOnHostPause"];
     if (!value.isNull()) {
@@ -691,6 +709,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useSharedAnimatedBackend();
+  }
+
+  bool useTraitHiddenOnAndroid() override {
+    auto value = values_["useTraitHiddenOnAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useTraitHiddenOnAndroid();
   }
 
   bool useTurboModuleInterop() override {

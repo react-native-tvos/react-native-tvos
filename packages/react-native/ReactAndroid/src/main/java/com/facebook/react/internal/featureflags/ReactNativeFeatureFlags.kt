@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8af0aea8bbf4cffaad7d312032bef0e4>>
+ * @generated SignedSource<<132ff30c4a5ecf6b38dd0d6cc47d3abc>>
  */
 
 /**
@@ -53,6 +53,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun cxxNativeAnimatedRemoveJsSync(): Boolean = accessor.cxxNativeAnimatedRemoveJsSync()
+
+  /**
+   * Dispatch view commands in mount item order.
+   */
+  @JvmStatic
+  public fun disableEarlyViewCommandExecution(): Boolean = accessor.disableEarlyViewCommandExecution()
 
   /**
    * Prevents use of Fabric commit in C++ Animated implementation
@@ -385,6 +391,12 @@ public object ReactNativeFeatureFlags {
   public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = accessor.shouldPressibilityUseW3CPointerEventsForHover()
 
   /**
+   * Do not emit touchcancel from Android ScrollView, instead native topScroll event will trigger responder transfer and terminate in RN renderer.
+   */
+  @JvmStatic
+  public fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean = accessor.shouldTriggerResponderTransferOnScrollAndroid()
+
+  /**
    * Skip activity identity assertion in ReactHostImpl::onHostPause()
    */
   @JvmStatic
@@ -461,6 +473,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useSharedAnimatedBackend(): Boolean = accessor.useSharedAnimatedBackend()
+
+  /**
+   * Use Trait::hidden on Android
+   */
+  @JvmStatic
+  public fun useTraitHiddenOnAndroid(): Boolean = accessor.useTraitHiddenOnAndroid()
 
   /**
    * In Bridgeless mode, should legacy NativeModules use the TurboModule system?

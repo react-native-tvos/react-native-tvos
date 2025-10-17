@@ -35,6 +35,10 @@
 #include <react/renderer/animated/nodes/ValueAnimatedNode.h>
 #include <react/renderer/core/EventEmitter.h>
 
+#ifdef RN_USE_ANIMATION_BACKEND
+#include <react/renderer/animationbackend/AnimatedPropsBuilder.h>
+#endif
+
 namespace facebook::react {
 
 // Global function pointer for getting current time. Current time
@@ -92,8 +96,8 @@ NativeAnimatedNodesManager::NativeAnimatedNodesManager(
 }
 
 NativeAnimatedNodesManager::NativeAnimatedNodesManager(
-    std::shared_ptr<AnimationBackend> animationBackend) noexcept
-    : animationBackend_(std::move(animationBackend)) {}
+    std::shared_ptr<UIManagerAnimationBackend> animationBackend) noexcept
+    : animationBackend_(animationBackend) {}
 
 NativeAnimatedNodesManager::~NativeAnimatedNodesManager() noexcept {
   stopRenderCallbackIfNeeded();
@@ -514,8 +518,13 @@ NativeAnimatedNodesManager::ensureEventEmitterListener() noexcept {
 
 void NativeAnimatedNodesManager::startRenderCallbackIfNeeded() {
   if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
-    animationBackend_->start(
-        [this](float /*f*/) { return pullAnimationMutations(); });
+#ifdef RN_USE_ANIMATION_BACKEND
+    if (auto animationBackend = animationBackend_.lock()) {
+      std::static_pointer_cast<AnimationBackend>(animationBackend)
+          ->start([this](float /*f*/) { return pullAnimationMutations(); });
+    }
+#endif
+
     return;
   }
   // This method can be called from either the UI thread or JavaScript thread.
@@ -536,7 +545,9 @@ void NativeAnimatedNodesManager::startRenderCallbackIfNeeded() {
 
 void NativeAnimatedNodesManager::stopRenderCallbackIfNeeded() noexcept {
   if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
-    animationBackend_->stop();
+    if (auto animationBackend = animationBackend_.lock()) {
+      animationBackend->stop();
+    }
     return;
   }
   // When multiple threads reach this point, only one thread should call
@@ -882,6 +893,7 @@ void NativeAnimatedNodesManager::schedulePropsCommit(
   }
 }
 
+#ifdef RN_USE_ANIMATION_BACKEND
 AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
   if (!ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
     return {};
@@ -1000,6 +1012,7 @@ AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
   }
   return mutations;
 }
+#endif
 
 void NativeAnimatedNodesManager::onRender() {
   if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
