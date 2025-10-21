@@ -47,9 +47,25 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
                     rawProps,
                     "fadingEdgeLength",
                     sourceProps.fadingEdgeLength,
-                    nullptr))
-
-{}
+                    nullptr)),
+      overScrollMode(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.overScrollMode
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "overScrollMode",
+                    sourceProps.overScrollMode,
+                    "auto")),
+      endFillColor(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.endFillColor
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "endFillColor",
+                    sourceProps.endFillColor,
+                    clearColor())) {}
 
 void HostPlatformScrollViewProps::setProp(
     const PropsParserContext& context,
@@ -67,6 +83,8 @@ void HostPlatformScrollViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(sendMomentumEvents);
     RAW_SET_PROP_SWITCH_CASE_BASIC(nestedScrollEnabled);
     RAW_SET_PROP_SWITCH_CASE_BASIC(fadingEdgeLength);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(overScrollMode);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(endFillColor);
   }
 }
 
@@ -86,7 +104,15 @@ SharedDebugStringConvertibleList HostPlatformScrollViewProps::getDebugProps()
           debugStringConvertibleItem(
               "nestedScrollEnabled",
               nestedScrollEnabled,
-              defaultScrollViewProps.nestedScrollEnabled)};
+              defaultScrollViewProps.nestedScrollEnabled),
+          debugStringConvertibleItem(
+              "overScrollMode",
+              overScrollMode,
+              defaultScrollViewProps.overScrollMode),
+          debugStringConvertibleItem(
+              "endFillColor",
+              endFillColor,
+              defaultScrollViewProps.endFillColor)};
 }
 #endif
 
@@ -360,6 +386,14 @@ folly::dynamic HostPlatformScrollViewProps::getDiffProps(
 
   if (fadingEdgeLength != oldProps->fadingEdgeLength) {
     result["fadingEdgeLength"] = fadingEdgeLength;
+  }
+
+  if (overScrollMode != oldProps->overScrollMode) {
+    result["overScrollMode"] = overScrollMode;
+  }
+
+  if (endFillColor != oldProps->endFillColor) {
+    result["endFillColor"] = *endFillColor;
   }
 
   return result;

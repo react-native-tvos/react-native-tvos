@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/renderer/components/view/BackgroundImagePropsConversions.h>
 #include <react/renderer/components/view/BoxShadowPropsConversions.h>
 #include <react/renderer/components/view/FilterPropsConversions.h>
 #include <react/renderer/components/view/conversions.h>
@@ -699,6 +700,10 @@ SharedDebugStringConvertibleList BaseViewProps::getDebugProps() const {
               defaultBaseViewProps.pointerEvents),
           debugStringConvertibleItem(
               "transform", transform, defaultBaseViewProps.transform),
+          debugStringConvertibleItem(
+              "backgroundImage",
+              backgroundImage,
+              defaultBaseViewProps.backgroundImage),
       };
 }
 #endif

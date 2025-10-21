@@ -7,11 +7,12 @@
 
 #pragma once
 
+#include <react/renderer/debug/flags.h>
 #include <react/renderer/graphics/ColorStop.h>
 #include <react/renderer/graphics/Float.h>
 #include <react/renderer/graphics/ValueUnit.h>
-#include <stdexcept>
-#include <string>
+
+#include <sstream>
 #include <variant>
 #include <vector>
 
@@ -50,18 +51,10 @@ struct LinearGradient {
 #ifdef RN_SERIALIZABLE_STATE
   folly::dynamic toDynamic() const;
 #endif
-};
 
-inline GradientKeyword parseGradientKeyword(const std::string& keyword) {
-  if (keyword == "to top right")
-    return GradientKeyword::ToTopRight;
-  if (keyword == "to bottom right")
-    return GradientKeyword::ToBottomRight;
-  if (keyword == "to top left")
-    return GradientKeyword::ToTopLeft;
-  if (keyword == "to bottom left")
-    return GradientKeyword::ToBottomLeft;
-  throw std::invalid_argument("Invalid gradient keyword: " + keyword);
-}
+#if RN_DEBUG_STRING_CONVERTIBLE
+  void toString(std::stringstream& ss) const;
+#endif
+};
 
 }; // namespace facebook::react

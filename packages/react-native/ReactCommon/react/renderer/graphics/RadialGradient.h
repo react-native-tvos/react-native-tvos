@@ -7,10 +7,12 @@
 
 #pragma once
 
+#include <react/renderer/debug/flags.h>
 #include <react/renderer/graphics/ColorStop.h>
 #include <react/renderer/graphics/Float.h>
 #include <react/renderer/graphics/ValueUnit.h>
 #include <optional>
+#include <sstream>
 #include <variant>
 #include <vector>
 
@@ -37,6 +39,7 @@ struct RadialGradientSize {
     bool operator==(const Dimensions& other) const {
       return x == other.x && y == other.y;
     }
+
     bool operator!=(const Dimensions& other) const {
       return !(*this == other);
     }
@@ -49,15 +52,7 @@ struct RadialGradientSize {
   std::variant<SizeKeyword, Dimensions> value;
 
   bool operator==(const RadialGradientSize& other) const {
-    if (std::holds_alternative<SizeKeyword>(value) &&
-        std::holds_alternative<SizeKeyword>(other.value)) {
-      return std::get<SizeKeyword>(value) == std::get<SizeKeyword>(other.value);
-    } else if (
-        std::holds_alternative<Dimensions>(value) &&
-        std::holds_alternative<Dimensions>(other.value)) {
-      return std::get<Dimensions>(value) == std::get<Dimensions>(other.value);
-    }
-    return false;
+    return value == other.value;
   }
 
   bool operator!=(const RadialGradientSize& other) const {
@@ -106,6 +101,9 @@ struct RadialGradient {
 #ifdef RN_SERIALIZABLE_STATE
   folly::dynamic toDynamic() const;
 #endif
-};
 
+#if RN_DEBUG_STRING_CONVERTIBLE
+  void toString(std::stringstream& ss) const;
+#endif
+};
 }; // namespace facebook::react
