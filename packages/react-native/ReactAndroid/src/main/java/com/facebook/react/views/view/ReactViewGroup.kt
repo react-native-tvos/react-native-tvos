@@ -886,7 +886,6 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   internal fun removeViewWithSubviewClippingEnabled(view: View) {
-
     assertOnUiThread()
     recoverFocus(view)
     check(_removeClippedSubviews)
