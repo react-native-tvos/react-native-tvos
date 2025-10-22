@@ -168,7 +168,9 @@ public class ReactModalHostView(context: ThemedReactContext) :
   public override fun removeViewAt(index: Int) {
     UiThreadUtil.assertOnUiThread()
     val child = getChildAt(index)
-    dialogRootViewGroup.removeView(child)
+    if (child != null) {
+      dialogRootViewGroup.removeView(child)
+    }
   }
 
   public override fun addChildrenForAccessibility(outChildren: ArrayList<View>) {
