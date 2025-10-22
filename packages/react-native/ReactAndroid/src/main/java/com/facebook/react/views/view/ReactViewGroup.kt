@@ -754,14 +754,14 @@ public open class ReactViewGroup public constructor(context: Context?) :
     super.onViewAdded(child)
   }
   
-  public override fun removeView(view: View?) {
+  override fun removeView(view: View?) {
     if (view != null) {
       recoverFocus(view);
     }
     super.removeView(view);
   }
 
-  public override fun removeViewAt(index: Int) {
+  override fun removeViewAt(index: Int) {
     recoverFocus(getChildAt(index));
     super.removeViewAt(index);
   }
