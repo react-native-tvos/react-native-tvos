@@ -736,6 +736,18 @@ public open class ReactViewGroup public constructor(context: Context?) :
     }
     super.onViewAdded(child)
   }
+  
+  override fun removeView(view: View?) {
+    if (view != null) {
+      recoverFocus(view);
+    }
+    super.removeView(view);
+  }
+
+  override fun removeViewAt(index: Int) {
+    recoverFocus(getChildAt(index));
+    super.removeViewAt(index);
+  }
 
   override fun onViewRemoved(child: View) {
     assertOnUiThread()
@@ -854,7 +866,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
   internal fun removeViewWithSubviewClippingEnabled(view: View) {
     assertOnUiThread()
-
+    recoverFocus(view)
     check(_removeClippedSubviews)
     val allChildren = checkNotNull(allChildren)
     view.removeOnLayoutChangeListener(childrenLayoutChangeListener)
