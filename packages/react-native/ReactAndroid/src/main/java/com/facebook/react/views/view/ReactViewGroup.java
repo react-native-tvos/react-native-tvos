@@ -683,6 +683,23 @@ public class ReactViewGroup extends ViewGroup
     super.onViewAdded(child);
   }
 
+
+
+  @Override
+  public void removeView(@Nullable View view) {
+    if (view != null) {
+      recoverFocus(view);
+    }
+    super.removeView(view);
+  }
+
+  @Override
+  public void removeViewAt(int index) {
+    recoverFocus(getChildAt(index));
+    super.removeViewAt(index);
+  }
+
+
   @Override
   public void onViewRemoved(View child) {
     UiThreadUtil.assertOnUiThread();
@@ -817,7 +834,7 @@ public class ReactViewGroup extends ViewGroup
 
   /*package*/ void removeViewWithSubviewClippingEnabled(View view) {
     UiThreadUtil.assertOnUiThread();
-
+    recoverFocus(view);
     Assertions.assertCondition(mRemoveClippedSubviews);
     Assertions.assertNotNull(mClippingRect);
     View[] childArray = Assertions.assertNotNull(mAllChildren);
