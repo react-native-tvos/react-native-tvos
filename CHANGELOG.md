@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.82.1
+
+### Fixed
+
+#### Android specific
+
+- Fixed representation of transforms when view is originally zero-sized ([a81e94a40c](https://github.com/facebook/react-native/commit/a81e94a40ca8dca9e57b562db21f8f235c5b25a0) by [@javache](https://github.com/javache))
+
+#### iOS specific
+
+- Fixed issue when using gnu coreutils cp command when using precompiled binaries causing compilation error ([068ec39aea](https://github.com/facebook/react-native/commit/068ec39aea543617e5159fe22274b294bfb29026) by [@chrfalch](https://github.com/chrfalch))
+
 ## v0.82.0
 
 ### Breaking
@@ -811,6 +823,10 @@
 - **Text:** Correctly announce "link" on nested text if its the entire text element ([bffb414291](https://github.com/facebook/react-native/commit/bffb414291cfbd3d6e3e51448dd68b7bddddf658) by [@joevilches](https://github.com/joevilches))
 - **Text:** Selection range not respected when changing text or selection when selection is forced ([d32ea66e6a](https://github.com/facebook/react-native/commit/d32ea66e6a945dd84092532401b265b12d482668) by Olivier Bouillet)
 - **TextInput:** Fix TextInput `onContentSizeChange` event being dispatched only once on iOS on the new architecture ([5fd5188172](https://github.com/facebook/react-native/commit/5fd51881727b2d86f87abf04db032940ac0ec8c4) by [@j-piasecki](https://github.com/j-piasecki))
+
+## v0.79.7
+
+See [CHANGELOG-0.7x](./CHANGELOG-0.7x.md#v0797)
 
 ## v0.79.6
 
