@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "rntv-eas-workflows",
+    "slug": "rntv-eas-workflows",
+    "ios": {
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.meta.RNTester.localDevelopment"
+    },
+    "android": {
+      "package": "com.facebook.react.uiapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "98c71605-b982-423a-abfc-a2952c9cde86"
+      }
+    },
+    "owner": "douglowderexpo"
+  }
+}
