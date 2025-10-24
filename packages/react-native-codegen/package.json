@@ -1,6 +1,6 @@
 {
   "name": "@react-native/codegen",
-  "version": "0.79.5",
+  "version": "0.79.7",
   "description": "Code generation tools for React Native",
   "license": "MIT",
   "repository": {
@@ -29,6 +29,8 @@
     "lib"
   ],
   "dependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/parser": "^7.25.3",
     "glob": "^7.1.1",
     "hermes-parser": "0.25.1",
     "invariant": "^2.2.4",

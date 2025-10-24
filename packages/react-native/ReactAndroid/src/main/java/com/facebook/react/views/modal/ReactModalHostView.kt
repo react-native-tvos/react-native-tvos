@@ -42,6 +42,8 @@ import com.facebook.react.common.ReactConstants
 import com.facebook.react.common.annotations.VisibleForTesting
 import com.facebook.react.config.ReactFeatureFlags
 import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper
+import com.facebook.react.uimanager.DisplayMetricsHolder
+import com.facebook.react.uimanager.DisplayMetricsHolder.getStatusBarHeightPx
 import com.facebook.react.uimanager.JSPointerDispatcher
 import com.facebook.react.uimanager.JSTouchDispatcher
 import com.facebook.react.uimanager.PixelUtil.pxToDp
@@ -55,6 +57,7 @@ import com.facebook.react.views.view.setStatusBarTranslucency
 import com.facebook.react.views.modal.ReactModalHostView.DialogRootViewGroup
 import com.facebook.react.views.view.ReactViewGroup
 import java.util.Objects
+import com.facebook.yoga.annotations.DoNotStrip
 
 
 /**
@@ -70,6 +73,7 @@ import java.util.Objects
  *    addition and removal of views to the DialogRootViewGroup.
  */
 @SuppressLint("ViewConstructor")
+@DoNotStrip
 public class ReactModalHostView(context: ThemedReactContext) :
     ViewGroup(context), LifecycleEventListener {
 
@@ -120,6 +124,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
 
   init {
     context.addLifecycleEventListener(this)
+    initStatusBarHeight(context)
     dialogRootViewGroup = DialogRootViewGroup(context)
   }
 
@@ -457,6 +462,30 @@ public class ReactModalHostView(context: ThemedReactContext) :
     public fun onRequestClose(dialog: DialogInterface?)
   }
 
+  private companion object {
+    private const val TAG = "ReactModalHost"
+
+    // We store the status bar height to be able to properly position
+    // the modal on the first render.
+    private var statusBarHeight = 0
+
+    private fun initStatusBarHeight(reactContext: ReactContext) {
+      statusBarHeight = getStatusBarHeightPx(reactContext.currentActivity)
+    }
+
+    @JvmStatic
+    @DoNotStrip
+    private fun getScreenDisplayMetricsWithoutInsets(): Long {
+      val displayMetrics = DisplayMetricsHolder.getScreenDisplayMetrics()
+      return encodeFloatsToLong(
+          displayMetrics.widthPixels.toFloat().pxToDp(),
+          (displayMetrics.heightPixels - statusBarHeight).toFloat().pxToDp())
+    }
+
+    private fun encodeFloatsToLong(width: Float, height: Float): Long =
+        (width.toRawBits().toLong()) shl 32 or (height.toRawBits().toLong())
+  }
+
   /**
    * DialogRootViewGroup is the ViewGroup which contains all the children of a Modal. It gets all
    * child information forwarded from [ReactModalHostView] and uses that to create children. It is
@@ -470,6 +499,7 @@ public class ReactModalHostView(context: ThemedReactContext) :
    */
   public class DialogRootViewGroup internal constructor(context: Context?) :
       ReactViewGroup(context), RootView {
+
     internal var stateWrapper: StateWrapper? = null
     internal var eventDispatcher: EventDispatcher? = null
 
