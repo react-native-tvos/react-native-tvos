@@ -981,6 +981,12 @@ public class ReactTextInputManager extends BaseViewManager<ReactEditText, Layout
     view.setAutoFocus(autoFocus);
   }
 
+  @ReactProp(name = "accessible")
+  public void setAccessible(ReactEditText view, boolean accessible) {
+    view.setFocusable(accessible);
+    view.setFocusableInTouchMode(accessible);
+  }
+
   @ReactProp(name = ViewProps.TEXT_DECORATION_LINE)
   public void setTextDecorationLine(ReactEditText view, @Nullable String textDecorationLineString) {
     view.setPaintFlags(

@@ -411,6 +411,12 @@ public class ReactEditText extends AppCompatEditText {
     boolean focused = super.requestFocus(View.FOCUS_DOWN, null);
     if (isInTouchMode() && getShowSoftInputOnFocus()) {
       showSoftKeyboard();
+    } else {
+      if (isKeyboardOpened) {
+        showSoftKeyboard();
+      } else {
+        hideSoftKeyboard();
+      }
     }
 
     return focused;
