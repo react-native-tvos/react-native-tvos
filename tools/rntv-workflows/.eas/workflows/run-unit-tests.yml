@@ -34,11 +34,6 @@ jobs:
         working_directory: ../..
         run: |
           yarn
-      - name: Patch @microsoft/api-extractor
-        id: patch-api-extractor
-        working_directory: ../..
-        run: |
-          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
       - name: Run tests for codegen, lint, and typescript
         id: test-other
         working_directory: ../..
@@ -48,11 +43,6 @@ jobs:
           yarn --cwd packages/react-native-codegen build
           yarn --cwd packages/react-native-codegen-typescript-test build
           yarn test-typescript
-      - name: Run Typescript generation
-        id: typescript-gen
-        working_directory: ../..
-        run: |
-          yarn build-types
       - name: Run Jest tests
         id: test-jest
         working_directory: ../..   

@@ -4,11 +4,6 @@ build:
     - eas/checkout
     - eas/install_node_modules
     - run:
-        name: Patch @microsoft/api-extractor
-        working_directory: ../..
-        command: |
-          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
-    - run:
         name: Set up build-specific environment
         working_directory: ../..
         command: |
@@ -57,13 +52,6 @@ build:
         command: |
           ./gradlew publishAllToMavenTempLocal
     - run:
-        name: Run Typescript generation
-        working_directory: ../..
-        command: |
-          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            yarn build-types
-          fi
-    - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
         command: |
@@ -80,7 +68,7 @@ build:
           echo "Building RNTester..."
           yarn build-android-hermes
           echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION/Debug
+          cp -r android/app/build/outputs/apk/hermes/debug/* $RNTESTER_APK_LOCATION/Debug
           echo "Build completed."
     - run:
         name: Build RNTester app for Android and Android TV (Release)
@@ -89,7 +77,7 @@ build:
           echo "Building RNTester..."
           yarn build-android-hermes-release
           echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r android/app/build/outputs/apk/release/* $RNTESTER_APK_LOCATION/Release
+          cp -r android/app/build/outputs/apk/hermes/release/* $RNTESTER_APK_LOCATION/Release
           echo "Build completed."
     - run:
         name: Package Android artifacts
