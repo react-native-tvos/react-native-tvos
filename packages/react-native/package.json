@@ -1,6 +1,6 @@
 {
-  "name": "react-native",
-  "version": "0.79.7",
+  "name": "react-native-tvos",
+  "version": "0.79.7-0",
   "description": "A framework for building native apps using React",
   "license": "MIT",
   "repository": {
@@ -119,7 +119,6 @@
     "@react-native/gradle-plugin": "0.79.7",
     "@react-native/js-polyfills": "0.79.7",
     "@react-native/normalize-colors": "0.79.7",
-    "@react-native/virtualized-lists": "0.79.7",
     "abort-controller": "^3.0.0",
     "anser": "^1.4.9",
     "ansi-regex": "^5.0.0",
@@ -147,7 +146,8 @@
     "stacktrace-parser": "^0.1.10",
     "whatwg-fetch": "^3.0.0",
     "ws": "^6.2.3",
-    "yargs": "^17.6.2"
+    "yargs": "^17.6.2",
+    "@react-native-tvos/virtualized-lists": "0.79.7-0"
   },
   "codegenConfig": {
     "libraries": [
