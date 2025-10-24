@@ -1,0 +1,15 @@
+diff --git a/node_modules/@microsoft/api-extractor/lib/analyzer/AstSymbolTable.js b/node_modules/@microsoft/api-extractor/lib/analyzer/AstSymbolTable.js
+index 37d5bae..12e1036 100644
+--- a/node_modules/@microsoft/api-extractor/lib/analyzer/AstSymbolTable.js
++++ b/node_modules/@microsoft/api-extractor/lib/analyzer/AstSymbolTable.js
+@@ -335,7 +335,9 @@ class AstSymbolTable {
+                                 else {
+                                     // If you encounter this, please report a bug with a repro.  We're interested to know
+                                     // how it can occur.
+-                                    throw new node_core_library_1.InternalError(`Unable to follow symbol for "${identifierNode.text}"`);
++                                    if (identifierNode.text !== 'Event') {
++                                        throw new node_core_library_1.InternalError(`Unable to follow symbol for "${identifierNode.text}"`);
++                                    }
+                                 }
+                             }
+                             else {

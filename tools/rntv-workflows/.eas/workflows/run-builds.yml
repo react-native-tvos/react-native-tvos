@@ -1,0 +1,34 @@
+name: Run RNTV builds
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - packages/react-native/**
+      - packages/react-native-codegen/**
+      - packages/react-native-codegen-typescript-test/**
+      - packages/rn-tester/**
+      - packages/virtualized-lists/**
+      - tools/rntv-workflows/**
+
+jobs:
+  build_apple:
+    name: Create Apple artifacts and RNTester debug images
+    type: build
+    params:
+      platform: ios
+      profile: rncore-main
+  build_android:
+    name: Create Android artifacts and RNTester
+    type: build
+    params:
+      platform: android
+      profile: android-artifacts-main
+  build_rntester_apple:
+    name: Create Apple RNTester release images
+    type: build
+    params:
+      platform: ios
+      profile: rntester-apple-release-main

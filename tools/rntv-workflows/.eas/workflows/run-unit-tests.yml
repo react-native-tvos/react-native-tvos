@@ -1,0 +1,60 @@
+name: Run React Native unit tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - packages/react-native/**
+      - packages/react-native-codegen/**
+      - packages/react-native-codegen-typescript-test/**
+      - packages/rn-tester/**
+      - packages/virtualized-lists/**
+      - tools/rntv-workflows/**
+
+defaults:
+  tools:
+    node: 22.14.0
+
+jobs:
+  run-unit-tests:
+    name: Run unit tests
+    runs_on: macos-large
+    image: latest
+    steps:
+      - uses: eas/checkout
+      - name: Rename virtualized-lists dependency for TV
+        id: rename-virtualized-lists
+        working_directory: ../..
+        run: |
+          ./tools/rntv-workflows/rename-virtualized-lists.sh
+      - name: Install dependencies
+        id: install
+        working_directory: ../..
+        run: |
+          yarn
+      - name: Patch @microsoft/api-extractor
+        id: patch-api-extractor
+        working_directory: ../..
+        run: |
+          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
+      - name: Run tests for codegen, lint, and typescript
+        id: test-other
+        working_directory: ../..
+        run: |
+          yarn --cwd packages/react-native featureflags-check
+          yarn lint
+          yarn --cwd packages/react-native-codegen build
+          yarn --cwd packages/react-native-codegen-typescript-test build
+          yarn test-typescript
+      - name: Run Typescript generation
+        id: typescript-gen
+        working_directory: ../..
+        run: |
+          yarn build-types
+      - name: Run Jest tests
+        id: test-jest
+        working_directory: ../..   
+        run: |
+          npx jest packages/react-native

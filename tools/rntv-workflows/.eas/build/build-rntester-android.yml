@@ -1,0 +1,32 @@
+build:
+  name: Build RNTester app for Android TV
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          . ./tools/rntv-workflows/override-nightly-build-version.sh
+          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+          # Set up environment for subsequent steps
+          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          # Check and save sdkmanager path
+          export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
+          echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
+          set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
+    - run:
+        name: Build RNTester app for Android and Android TV
+        working_directory: ../../packages/rn-tester
+        command: |
+          echo "Cleaning build directories..."
+          yarn clean-android
+          echo "Building RNTester..."
+          yarn build-android-hermes
+          echo "Build completed."
+    - eas/upload_artifact:
+        name: Upload RNTester artifacts
+        inputs:
+          type: application-archive
+          path: |
+            packages/rn-tester/android/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk

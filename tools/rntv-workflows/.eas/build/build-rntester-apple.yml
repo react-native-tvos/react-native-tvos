@@ -1,0 +1,36 @@
+build:
+  name: Build RNTester app for Apple TV
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Install Ruby
+        command: |
+          ./install-ruby.sh
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          . ./tools/rntv-workflows/override-nightly-build-version.sh
+          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+          # Set up environment for subsequent steps
+          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+    - run:
+        name: Build RNTester app for tvOS
+        working_directory: ../../packages/rn-tester
+        command: |
+          . ../../tools/rntv-workflows/ruby-env.sh
+          echo "Building RNTester..."
+          echo "Cleaning build directories..."
+          yarn clean-ios
+          echo "Setting up RNTester..."
+          yarn setup-tvos-hermes
+          echo "Building RNTester..."
+          yarn build-tvos-hermes
+          echo "Build completed."
+    - eas/upload_artifact:
+        name: Upload RNTester artifacts
+        inputs:
+          type: application-archive
+          path: |
+            packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app

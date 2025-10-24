@@ -1,0 +1,66 @@
+{
+  "cli": {
+    "version": ">= 16.0.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "android": {
+        "resourceClass": "large",
+        "image": "latest"
+      },
+      "ios": {
+        "resourceClass": "large",
+        "image": "latest"
+      },
+      "withoutCredentials": true,
+      "distribution": "internal",
+      "node": "22.14.0"
+    },
+    "rntester": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rntester-apple.yml"
+      },
+      "android": {
+        "config": "build-rntester-android.yml"
+      }
+    },
+    "rncore-main": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rncore-apple.yml"
+      }
+    },
+    "rncore": {
+      "extends": "rncore-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rntester-apple-release-main": {
+      "extends": "base",
+      "ios": {
+        "config": "build-rntester-apple-release.yml"
+      }
+    },
+    "rntester-apple-release": {
+      "extends": "rntester-apple-release-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "android-artifacts-main": {
+      "extends": "base",
+      "android": {
+        "config": "build-android-artifacts.yml"
+      }
+    },
+    "android-artifacts": {
+      "extends": "android-artifacts-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    }
+  }
+}
