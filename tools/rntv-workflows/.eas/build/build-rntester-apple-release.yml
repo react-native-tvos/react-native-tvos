@@ -49,7 +49,6 @@ build:
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
           set-env RCT_USE_RN_DEP 1
-          set-env RCT_HERMES_V1_ENABLED 1
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
     - run:
         name: Build minimal RNCore framework (Release)
