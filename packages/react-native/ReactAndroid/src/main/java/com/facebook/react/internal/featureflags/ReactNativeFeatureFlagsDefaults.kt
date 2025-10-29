@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7987eba84c39c6e8cb6494092a94790e>>
+ * @generated SignedSource<<346acf2190f419cc4de64f66cb40f802>>
  */
 
 /**
@@ -83,6 +83,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableInteropViewManagerClassLookUpOptimizationIOS(): Boolean = false
 
+  override fun enableKeyEvents(): Boolean = false
+
   override fun enableLayoutAnimationsOnAndroid(): Boolean = false
 
   override fun enableLayoutAnimationsOnIOS(): Boolean = true
@@ -147,7 +149,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun skipActivityIdentityAssertionOnHostPause(): Boolean = false
 
-  override fun sweepActiveTouchOnChildNativeGesturesAndroid(): Boolean = false
+  override fun sweepActiveTouchOnChildNativeGesturesAndroid(): Boolean = true
 
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean = false
 

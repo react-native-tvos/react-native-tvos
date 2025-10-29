@@ -368,6 +368,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableKeyEvents: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-10-17',
+        description:
+          'Enables key up/down/press events to be sent to JS from components',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableLayoutAnimationsOnAndroid: {
       defaultValue: false,
       metadata: {
@@ -710,7 +721,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     sweepActiveTouchOnChildNativeGesturesAndroid: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2025-07-30',
         description:
@@ -919,6 +930,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2024-02-05',
         description:
           'Enables an experimental mega-operation for Animated.js that replaces many calls to native with a single call into native, to reduce JSI/JNI traffic.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    configurePressabilityDuringInsertion: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-10-27',
+        description:
+          'Configure Pressability during insertion and no longer unmount when hidden.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

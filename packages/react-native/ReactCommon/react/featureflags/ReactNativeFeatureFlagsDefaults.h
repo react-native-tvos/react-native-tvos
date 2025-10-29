@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<21049b33fc72200390c6dd6d0ca27c19>>
+ * @generated SignedSource<<d3786de5c8669d29376f135536f7cbbc>>
  */
 
 /**
@@ -147,6 +147,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableKeyEvents() override {
+    return false;
+  }
+
   bool enableLayoutAnimationsOnAndroid() override {
     return false;
   }
@@ -276,7 +280,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool sweepActiveTouchOnChildNativeGesturesAndroid() override {
-    return false;
+    return true;
   }
 
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
