@@ -15,6 +15,7 @@
 
 #include <folly/dynamic.h>
 #include <atomic>
+#include <functional>
 #include <map>
 #include <mutex>
 #include <optional>
@@ -95,7 +96,8 @@ class PerformanceTracer {
       std::optional<ConsoleTimeStampEntry> end = std::nullopt,
       std::optional<std::string> trackName = std::nullopt,
       std::optional<std::string> trackGroup = std::nullopt,
-      std::optional<ConsoleTimeStampColor> color = std::nullopt);
+      std::optional<ConsoleTimeStampColor> color = std::nullopt,
+      std::optional<folly::dynamic> detail = std::nullopt);
 
   /**
    * Record an Event Loop tick, which will be represented as an Event Loop task
@@ -182,6 +184,29 @@ class PerformanceTracer {
       HighResTimeStamp chunkTimestamp,
       TraceEventProfileChunk &&traceEventProfileChunk);
 
+  /**
+   * Callback function type for tracing state changes.
+   * @param isTracing true if tracing has started, false if tracing has stopped
+   */
+  using TracingStateCallback = std::function<void(bool isTracing)>;
+
+  /**
+   * Subscribe to tracing state changes (start/stop events).
+   * Tracing start state is reported after tracing has started, so callbacks can
+   * report events immediately.
+   * Tracing stop state is reported before tracing has stopped, so callbacks
+   * can report final events.
+   * @param callback Function to call when tracing starts or stops
+   * @return A unique identifier for the subscription that can be used to unsubscribe
+   */
+  uint32_t subscribeToTracingStateChanges(TracingStateCallback callback);
+
+  /**
+   * Unsubscribe from tracing state changes.
+   * @param subscriptionId The identifier returned from subscribeToTracingStateChanges
+   */
+  void unsubscribeFromTracingStateChanges(uint32_t subscriptionId);
+
  private:
   PerformanceTracer();
   PerformanceTracer(const PerformanceTracer &) = delete;
@@ -228,6 +253,7 @@ class PerformanceTracer {
     std::optional<std::string> trackName;
     std::optional<std::string> trackGroup;
     std::optional<ConsoleTimeStampColor> color;
+    std::optional<folly::dynamic> detail;
     ThreadId threadId;
     HighResTimeStamp createdAt = HighResTimeStamp::now();
   };
@@ -315,6 +341,10 @@ class PerformanceTracer {
    * the tracingAtomic_, in order to eliminate potential "logic" races.
    */
   std::mutex mutex_;
+
+  // Callback management
+  std::map<uint32_t, TracingStateCallback> tracingStateCallbacks_;
+  uint32_t nextCallbackId_{0};
 
   bool startTracingImpl(std::optional<HighResDuration> maxDuration = std::nullopt);
 

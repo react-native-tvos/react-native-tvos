@@ -593,14 +593,14 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableWebPerformanceAPIsByDefault: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         description:
           'Enable Web Performance APIs (Performance Timeline, User Timings, etc.) by default.',
         expectedReleaseValue: true,
         purpose: 'release',
       },
-      ossReleaseStage: 'canary',
+      ossReleaseStage: 'stable',
     },
     fixMappingOfEventPrioritiesBetweenFabricAndReact: {
       defaultValue: false,
@@ -651,6 +651,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-09-04',
         description:
           'Override props at mounting with synchronously mounted (i.e. direct manipulation) props from Native Animated.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    perfIssuesEnabled: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-10-24',
+        description:
+          'Enable reporting Performance Issues (`detail.rnPerfIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -967,16 +978,6 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
-    },
-    enableAccessToHostTreeInFabric: {
-      defaultValue: true,
-      metadata: {
-        description:
-          'Enables access to the host tree in Fabric using DOM-compatible APIs.',
-        expectedReleaseValue: true,
-        purpose: 'release',
-      },
-      ossReleaseStage: 'stable',
     },
     enableVirtualViewExperimental: {
       defaultValue: false,

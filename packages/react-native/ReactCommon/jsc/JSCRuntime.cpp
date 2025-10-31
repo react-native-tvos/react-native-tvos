@@ -1528,6 +1528,7 @@ jsi::Value JSCRuntime::createValue(JSValueRef value) const {
     }
     case kJSTypeSymbol:
       return jsi::Value(createSymbol(value));
+    case kJSTypeBigInt:
     default:
       // WHAT ARE YOU
       abort();

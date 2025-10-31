@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<25169f72feeaa596faaeb8fc3fffac06>>
+ * @generated SignedSource<<b9050ce18658ffe880bfb25d8e80e71d>>
  * @flow strict
  * @noformat
  */
@@ -34,7 +34,6 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   configurePressabilityDuringInsertion: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   disableMaintainVisibleContentPosition: Getter<boolean>,
-  enableAccessToHostTreeInFabric: Getter<boolean>,
   enableVirtualViewExperimental: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
@@ -108,6 +107,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   fuseboxNetworkInspectionEnabled: Getter<boolean>,
   hideOffscreenVirtualViewsOnIOS: Getter<boolean>,
   overrideBySynchronousMountPropsAtMountingAndroid: Getter<boolean>,
+  perfIssuesEnabled: Getter<boolean>,
   perfMonitorV2Enabled: Getter<boolean>,
   preparedTextCacheSize: Getter<number>,
   preventShadowTreeCommitExhaustion: Getter<boolean>,
@@ -163,11 +163,6 @@ export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaS
  * Disable prop maintainVisibleContentPosition in ScrollView
  */
 export const disableMaintainVisibleContentPosition: Getter<boolean> = createJavaScriptFlagGetter('disableMaintainVisibleContentPosition', false);
-
-/**
- * Enables access to the host tree in Fabric using DOM-compatible APIs.
- */
-export const enableAccessToHostTreeInFabric: Getter<boolean> = createJavaScriptFlagGetter('enableAccessToHostTreeInFabric', true);
 
 /**
  * Enables the experimental version of `VirtualView`.
@@ -425,7 +420,7 @@ export const enableVirtualViewWindowFocusDetection: Getter<boolean> = createNati
 /**
  * Enable Web Performance APIs (Performance Timeline, User Timings, etc.) by default.
  */
-export const enableWebPerformanceAPIsByDefault: Getter<boolean> = createNativeFlagGetter('enableWebPerformanceAPIsByDefault', false);
+export const enableWebPerformanceAPIsByDefault: Getter<boolean> = createNativeFlagGetter('enableWebPerformanceAPIsByDefault', true);
 /**
  * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
  */
@@ -446,6 +441,10 @@ export const hideOffscreenVirtualViewsOnIOS: Getter<boolean> = createNativeFlagG
  * Override props at mounting with synchronously mounted (i.e. direct manipulation) props from Native Animated.
  */
 export const overrideBySynchronousMountPropsAtMountingAndroid: Getter<boolean> = createNativeFlagGetter('overrideBySynchronousMountPropsAtMountingAndroid', false);
+/**
+ * Enable reporting Performance Issues (`detail.rnPerfIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
+ */
+export const perfIssuesEnabled: Getter<boolean> = createNativeFlagGetter('perfIssuesEnabled', false);
 /**
  * Enable the V2 in-app Performance Monitor. This flag is global and should not be changed across React Host lifetimes.
  */

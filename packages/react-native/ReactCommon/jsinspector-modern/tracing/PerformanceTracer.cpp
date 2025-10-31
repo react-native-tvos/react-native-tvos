@@ -57,26 +57,39 @@ bool PerformanceTracer::startTracing(HighResDuration maxDuration) {
 
 bool PerformanceTracer::startTracingImpl(
     std::optional<HighResDuration> maxDuration) {
-  std::lock_guard lock(mutex_);
+  std::vector<TracingStateCallback> callbacksToNotify;
 
-  if (tracingAtomic_) {
-    return false;
+  {
+    std::lock_guard lock(mutex_);
+
+    if (tracingAtomic_) {
+      return false;
+    }
+
+    tracingAtomic_ = true;
+
+    if (maxDuration && *maxDuration < MIN_VALUE_FOR_MAX_TRACE_DURATION_OPTION) {
+      throw std::invalid_argument("maxDuration should be at least 1 second");
+    }
+
+    currentTraceStartTime_ = HighResTimeStamp::now();
+    currentTraceMaxDuration_ = maxDuration;
+
+    for (const auto& [id, callback] : tracingStateCallbacks_) {
+      callbacksToNotify.push_back(callback);
+    }
   }
 
-  tracingAtomic_ = true;
-
-  if (maxDuration && *maxDuration < MIN_VALUE_FOR_MAX_TRACE_DURATION_OPTION) {
-    throw std::invalid_argument("maxDuration should be at least 1 second");
+  for (const auto& callback : callbacksToNotify) {
+    callback(true);
   }
-
-  currentTraceStartTime_ = HighResTimeStamp::now();
-  currentTraceMaxDuration_ = maxDuration;
 
   return true;
 }
 
 std::optional<std::vector<TraceEvent>> PerformanceTracer::stopTracing() {
   std::vector<TraceEvent> events;
+  std::vector<TracingStateCallback> callbacksToNotify;
 
   auto currentTraceEndTime = HighResTimeStamp::now();
 
@@ -86,6 +99,21 @@ std::optional<std::vector<TraceEvent>> PerformanceTracer::stopTracing() {
     if (!tracingAtomic_) {
       return std::nullopt;
     }
+
+    // Collect callbacks before disabling tracing
+    for (const auto& [id, callback] : tracingStateCallbacks_) {
+      callbacksToNotify.push_back(callback);
+    }
+  }
+
+  // Notify callbacks while tracing is still enabled, so they can send final
+  // events
+  for (const auto& callback : callbacksToNotify) {
+    callback(false);
+  }
+
+  {
+    std::lock_guard lock(mutex_);
 
     tracingAtomic_ = false;
     performanceMeasureCount_ = 0;
@@ -129,6 +157,7 @@ std::optional<std::vector<TraceEvent>> PerformanceTracer::stopTracing() {
       });
 
   currentTraceMaxDuration_ = std::nullopt;
+
   return events;
 }
 
@@ -184,7 +213,8 @@ void PerformanceTracer::reportTimeStamp(
     std::optional<ConsoleTimeStampEntry> end,
     std::optional<std::string> trackName,
     std::optional<std::string> trackGroup,
-    std::optional<ConsoleTimeStampColor> color) {
+    std::optional<ConsoleTimeStampColor> color,
+    std::optional<folly::dynamic> detail) {
   if (!tracingAtomic_) {
     return;
   }
@@ -202,6 +232,7 @@ void PerformanceTracer::reportTimeStamp(
           .trackName = std::move(trackName),
           .trackGroup = std::move(trackGroup),
           .color = std::move(color),
+          .detail = std::move(detail),
           .threadId = getCurrentThreadId(),
       });
 }
@@ -622,6 +653,13 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
             if (event.color) {
               data["color"] = consoleTimeStampColorToString(*event.color);
             }
+            if (event.detail) {
+              folly::dynamic devtoolsDetail = folly::dynamic::object();
+              for (const auto& [key, value] : event.detail->items()) {
+                devtoolsDetail[key] = value;
+              }
+              data["devtools"] = folly::toJson(devtoolsDetail);
+            }
 
             events.emplace_back(
                 TraceEvent{
@@ -701,6 +739,20 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
           },
       },
       std::move(event));
+}
+
+uint32_t PerformanceTracer::subscribeToTracingStateChanges(
+    TracingStateCallback callback) {
+  std::lock_guard lock(mutex_);
+  uint32_t subscriptionId = nextCallbackId_++;
+  tracingStateCallbacks_[subscriptionId] = std::move(callback);
+  return subscriptionId;
+}
+
+void PerformanceTracer::unsubscribeFromTracingStateChanges(
+    uint32_t subscriptionId) {
+  std::lock_guard lock(mutex_);
+  tracingStateCallbacks_.erase(subscriptionId);
 }
 
 } // namespace facebook::react::jsinspector_modern::tracing

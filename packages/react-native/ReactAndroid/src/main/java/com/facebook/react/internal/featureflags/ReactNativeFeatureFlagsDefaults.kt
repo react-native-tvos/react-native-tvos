@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<346acf2190f419cc4de64f66cb40f802>>
+ * @generated SignedSource<<43f629e3be734826b241d7e596daf6f4>>
  */
 
 /**
@@ -125,7 +125,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableVirtualViewWindowFocusDetection(): Boolean = false
 
-  override fun enableWebPerformanceAPIsByDefault(): Boolean = false
+  override fun enableWebPerformanceAPIsByDefault(): Boolean = true
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
@@ -136,6 +136,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
   override fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean = false
+
+  override fun perfIssuesEnabled(): Boolean = false
 
   override fun perfMonitorV2Enabled(): Boolean = false
 
