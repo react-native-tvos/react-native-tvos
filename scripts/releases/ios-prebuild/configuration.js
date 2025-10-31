@@ -15,12 +15,9 @@ import type { Dependency, Platform } from './types';
 const platforms /*: $ReadOnlyArray<Platform> */ = [
   'ios',
   'ios-simulator',
-  'macos',
   'mac-catalyst',
   'tvos',
   'tvos-simulator',
-  'xros',
-  'xros-simulator',
 ];
 
 const CPP_STANDARD = 'c++20';
