@@ -21,13 +21,13 @@ end
 # package.json
 package = JSON.parse(File.read(File.join(react_native_path, "package.json")))
 version = package['version']
-core_version = ReactNativePodsUtils.core_version_for_tv_version(version)
+#core_version = ReactNativePodsUtils.core_version_for_tv_version(version)
 
 source = ReactNativeDependenciesUtils.resolve_podspec_source()
 
 Pod::Spec.new do |spec|
   spec.name                 = 'ReactNativeDependencies'
-  spec.version              = core_version
+  spec.version              = version
   spec.summary              = 'React Native Dependencies'
   spec.description          = 'ReactNativeDependencies is a podspec that contains all the third-party dependencies of React Native.'
   spec.homepage             = 'https://github.com/facebook/react-native'

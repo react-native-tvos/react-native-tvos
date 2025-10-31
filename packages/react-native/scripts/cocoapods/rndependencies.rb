@@ -171,7 +171,7 @@ class ReactNativeDependenciesUtils
             ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != "" ?
             ENV['ENTERPRISE_REPOSITORY'] :
             "https://repo1.maven.org/maven2"
-        group = "com/facebook/react"
+        group = "io/github/react-native-tvos"
         # Sample url from Maven:
         # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.79.0-rc.0/react-native-artifacts-0.79.0-rc.0-reactnative-dependencies-debug.tar.gz
         return "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-dependencies-#{build_type.to_s}.tar.gz"

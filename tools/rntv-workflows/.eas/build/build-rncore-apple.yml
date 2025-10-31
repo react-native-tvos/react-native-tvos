@@ -48,12 +48,78 @@ build:
           # Set up environment for subsequent steps
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
-          set-env RCT_USE_RN_DEP 1
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
+    - run: 
+        name: Build RNDependencies frameworks (Debug)
+        working_directory: ../..
+        command: |
+          echo "Building RNDependencies..."
+          rm -rf packages/react-native/build
+          rm -rf packages/react-native/third-party
+          node scripts/releases/prepare-ios-prebuilds.js -s
+          node scripts/releases/prepare-ios-prebuilds.js -w
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNDependencies prebuild Debug build for $platform..."
+            node scripts/releases/prepare-ios-prebuilds.js -b -p $platform -r Debug
+          done
+          if [[ $EAS_BUILD_RUNNER != "eas-build" ]]; then
+            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
+          fi
+          echo "Execute RNDependencies prebuild framework compose..."
+          node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
+    - run: 
+        name: Create RNDependencies framework tarball (Debug)
+        working_directory: ../../packages/react-native/third-party
+        command: |
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.xcframework.tar.gz ReactNativeDependencies.xcframework
+    - run: 
+        name: Create RNDependencies framework DSYMS tarball (Debug)
+        working_directory: ../../packages/react-native/third-party/Symbols
+        command: |
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.framework.dSYM.tar.gz *
+    - run: 
+        name: Build RNDependencies frameworks (Release)
+        working_directory: ../..
+        command: |
+          echo "Building RNDependencies..."
+          rm -rf packages/react-native/build
+          rm -rf packages/react-native/third-party
+          node scripts/releases/prepare-ios-prebuilds.js -s
+          node scripts/releases/prepare-ios-prebuilds.js -w
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNDependencies prebuild Release build for $platform..."
+            node scripts/releases/prepare-ios-prebuilds.js -b -p $platform -r Release
+          done
+          if [[ $EAS_BUILD_RUNNER != "eas-build" ]]; then
+            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
+          fi
+          echo "Execute RNDependencies prebuild framework compose..."
+          node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
+    - run: 
+        name: Create RNDependencies framework tarball (Release)
+        working_directory: ../../packages/react-native/third-party
+        command: |
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.xcframework.tar.gz ReactNativeDependencies.xcframework
+    - run: 
+        name: Create RNDependencies framework DSYMS tarball (Release)
+        working_directory: ../../packages/react-native/third-party/Symbols
+        command: |
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.framework.dSYM.tar.gz *
     - run:
         name: Build RNCore framework (Debug)
         working_directory: ../../packages/react-native
         command: |
+          rm -rf ./third-party
+          mkdir -p ./third-party
+          tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.xcframework.tar.gz -C ./third-party/
+
+          # VERSION=$(jq -r '.version' ./package.json)
+          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          echo "$VERSION-Debug" > ./third-party/version.txt
+          cat ./third-party/version.txt
+
           node scripts/ios-prebuild -s -f Debug
           for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
           do
@@ -82,6 +148,15 @@ build:
         name: RNCore prebuild (Release)
         working_directory: ../../packages/react-native
         command: |
+          rm -rf ./third-party
+          mkdir -p ./third-party
+          tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.xcframework.tar.gz -C ./third-party/
+
+          # VERSION=$(jq -r '.version' ./package.json)
+          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          echo "$VERSION-Release" > ./third-party/version.txt
+          cat ./third-party/version.txt
+
           node scripts/ios-prebuild -s -f Release
           for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
           do
