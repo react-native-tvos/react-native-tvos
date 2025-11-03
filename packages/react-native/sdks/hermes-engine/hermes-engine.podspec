@@ -25,7 +25,7 @@ versionProperties = Hash[*File.read("version.properties").split(/[=\n]+/)]
 if ENV['RCT_HERMES_V1_ENABLED'] == "1"
   version = versionProperties['HERMES_V1_VERSION_NAME']
 else
-  version = versionProperties['HERMES_VERSION_NAME']
+  version = core_version(versionProperties['HERMES_VERSION_NAME'])
 end
 
 source_type = hermes_source_type(version, react_native_path)
@@ -154,34 +154,34 @@ Pod::Spec.new do |spec|
 
     # This podspec is also run in CI to build Hermes without using Pod install
     # and sometimes CI fails because `Pod::Executable` does not exist if it is not run with Pod Install.
-    if defined?(Pod::Executable.to_s)
-      CMAKE_BINARY = Pod::Executable::which!('cmake')
-      # NOTE: Script phases are sorted alphabetically inside Xcode project
-      spec.script_phases = [
-        {
-          :name => '[RN] [1] Build Hermesc',
-          :output_files => [
-            "#{hermesc_path}/ImportHostCompilers.cmake"
-          ],
-          :script => <<-EOS
-          . "${REACT_NATIVE_PATH}/scripts/xcode/with-environment.sh"
-          export CMAKE_BINARY=${CMAKE_BINARY:-#{CMAKE_BINARY}}
-          . ${REACT_NATIVE_PATH}/sdks/hermes-engine/utils/build-hermesc-xcode.sh #{hermesc_path} ${REACT_NATIVE_PATH}/ReactCommon/jsi
-          EOS
-        },
-        {
-          :name => '[RN] [2] Build Hermes',
-          :input_files => ["#{hermesc_path}/ImportHostCompilers.cmake"],
-          :output_files => [
-            "${PODS_ROOT}/hermes-engine/build/iphonesimulator/API/hermes/hermesvm.framework/hermesvm"
-          ],
-          :script => <<-EOS
-          . "${REACT_NATIVE_PATH}/scripts/xcode/with-environment.sh"
-          export CMAKE_BINARY=${CMAKE_BINARY:-#{CMAKE_BINARY}}
-          . ${REACT_NATIVE_PATH}/sdks/hermes-engine/utils/build-hermes-xcode.sh #{version} #{hermesc_path}/ImportHostCompilers.cmake ${REACT_NATIVE_PATH}/ReactCommon/jsi
-          EOS
-        }
-      ]
-    end
-  end
-end
+#     if defined?(Pod::Executable.to_s)
+#       CMAKE_BINARY = Pod::Executable::which!('cmake')
+#       # NOTE: Script phases are sorted alphabetically inside Xcode project
+#       spec.script_phases = [
+#         {
+#           :name => '[RN] [1] Build Hermesc',
+#           :output_files => [
+#             "#{hermesc_path}/ImportHostCompilers.cmake"
+#           ],
+#           :script => <<-EOS
+#           . "${REACT_NATIVE_PATH}/scripts/xcode/with-environment.sh"
+#           export CMAKE_BINARY=${CMAKE_BINARY:-#{CMAKE_BINARY}}
+#           . ${REACT_NATIVE_PATH}/sdks/hermes-engine/utils/build-hermesc-xcode.sh #{hermesc_path} ${REACT_NATIVE_PATH}/ReactCommon/jsi
+#           EOS
+#         },
+#         {
+#           :name => '[RN] [2] Build Hermes',
+#           :input_files => ["#{hermesc_path}/ImportHostCompilers.cmake"],
+#           :output_files => [
+#             "${PODS_ROOT}/hermes-engine/build/iphonesimulator/API/hermes/hermesvm.framework/hermesvm"
+#           ],
+#           :script => <<-EOS
+#           . "${REACT_NATIVE_PATH}/scripts/xcode/with-environment.sh"
+#           export CMAKE_BINARY=${CMAKE_BINARY:-#{CMAKE_BINARY}}
+#           . ${REACT_NATIVE_PATH}/sdks/hermes-engine/utils/build-hermes-xcode.sh #{version} #{hermesc_path}/ImportHostCompilers.cmake ${REACT_NATIVE_PATH}/ReactCommon/jsi
+#           EOS
+#         }
+#       ]
+#     end
+   end
+ end
