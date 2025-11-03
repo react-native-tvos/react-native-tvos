@@ -49,6 +49,7 @@ build:
           set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
+          set-env RCT_HERMES_V1_ENABLED 1
     - run: 
         name: Build RNDependencies frameworks (Debug)
         working_directory: ../..
@@ -63,9 +64,7 @@ build:
             echo "Execute RNDependencies prebuild Debug build for $platform..."
             node scripts/releases/prepare-ios-prebuilds.js -b -p $platform -r Debug
           done
-          if [[ $EAS_BUILD_RUNNER != "eas-build" ]]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
-          fi
+          cp -r packages/react-native/build/Build packages/react-native/third-party/.build
           echo "Execute RNDependencies prebuild framework compose..."
           node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
     - run: 
@@ -92,9 +91,7 @@ build:
             echo "Execute RNDependencies prebuild Release build for $platform..."
             node scripts/releases/prepare-ios-prebuilds.js -b -p $platform -r Release
           done
-          if [[ $EAS_BUILD_RUNNER != "eas-build" ]]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
-          fi
+          cp -r packages/react-native/build/Build packages/react-native/third-party/.build
           echo "Execute RNDependencies prebuild framework compose..."
           node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
     - run: 

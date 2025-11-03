@@ -29,6 +29,7 @@ build:
           # Root directory
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
+          set-env RCT_HERMES_V1_ENABLED 1
     - run:
         name: Download hermesc from core release package
         command: |

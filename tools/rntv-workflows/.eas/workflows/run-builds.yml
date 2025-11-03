@@ -26,9 +26,3 @@ jobs:
     params:
       platform: android
       profile: android-artifacts-main
-  build_rntester_apple:
-    name: Create Apple RNTester release images
-    type: build
-    params:
-      platform: ios
-      profile: rntester-apple-release-main
