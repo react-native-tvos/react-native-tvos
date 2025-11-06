@@ -50,20 +50,36 @@ build:
           set-env ROOT_DIR $ROOT_DIR
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
           set-env RCT_HERMES_V1_ENABLED 1
+          set-env HERMES_V1_ENABLED 1
+          set-env HERMES_VERSION 250829098.0.1
     - run:
         name: Build RNDependencies frameworks (Debug)
         working_directory: ../..
         command: |
           echo "Building RNDependencies..."
           rm -rf packages/react-native/build
+          rm -rf packages/react-native/saved-slices
           rm -rf packages/react-native/third-party
+          mkdir packages/react-native/saved-slices
           node scripts/releases/prepare-ios-prebuilds.js -s
           node scripts/releases/prepare-ios-prebuilds.js -w
           echo "Execute RNDependencies prebuild Debug build..."
-          node scripts/releases/prepare-ios-prebuilds.js -b -r Debug
-          if [ -d "packages/react-native/build/Build" ]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
-          fi
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNDependencies prebuild Debug build for $platform..."
+            node scripts/releases/prepare-ios-prebuilds.js -b -r Debug -p $platform
+            if [ -d "packages/react-native/build/Build" ]; then
+              cp -r packages/react-native/build/Build packages/react-native/third-party/.build
+            fi
+            cp -r packages/react-native/third-party/.build packages/react-native/saved-slices/$platform
+          done
+          # Restore slices
+          rm -rf packages/react-native/third-party/.build
+          mkdir -p packages/react-native/third-party/.build
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            cp -r packages/react-native/saved-slices/$platform/* packages/react-native/third-party/.build
+          done
           echo "Execute RNDependencies prebuild framework compose..."
           node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
     - run:
@@ -82,14 +98,28 @@ build:
         command: |
           echo "Building RNDependencies..."
           rm -rf packages/react-native/build
+          rm -rf packages/react-native/saved-slices
           rm -rf packages/react-native/third-party
+          mkdir packages/react-native/saved-slices
           node scripts/releases/prepare-ios-prebuilds.js -s
           node scripts/releases/prepare-ios-prebuilds.js -w
           echo "Execute RNDependencies prebuild Release build..."
-          node scripts/releases/prepare-ios-prebuilds.js -b -r Release
-          if [ -d "packages/react-native/build/Build" ]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
-          fi
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            echo "Execute RNDependencies prebuild Release build for $platform..."
+            node scripts/releases/prepare-ios-prebuilds.js -b -r Release -p $platform
+            if [ -d "packages/react-native/build/Build" ]; then
+              cp -r packages/react-native/build/Build packages/react-native/third-party/.build
+            fi
+            cp -r packages/react-native/third-party/.build packages/react-native/saved-slices/$platform
+          done
+          # Restore slices
+          rm -rf packages/react-native/third-party/.build
+          mkdir -p packages/react-native/third-party/.build
+          for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
+          do
+            cp -r packages/react-native/saved-slices/$platform/* packages/react-native/third-party/.build
+          done
           echo "Execute RNDependencies prebuild framework compose..."
           node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
     - run:
@@ -110,8 +140,8 @@ build:
           mkdir -p ./third-party
           tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.xcframework.tar.gz -C ./third-party/
 
-          # VERSION=$(jq -r '.version' ./package.json)
-          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          VERSION=$(jq -r '.version' ./package.json)
+          # VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           echo "$VERSION-Debug" > ./third-party/version.txt
           cat ./third-party/version.txt
 
@@ -147,8 +177,8 @@ build:
           mkdir -p ./third-party
           tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.xcframework.tar.gz -C ./third-party/
 
-          # VERSION=$(jq -r '.version' ./package.json)
-          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+          VERSION=$(jq -r '.version' ./package.json)
+          # VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           echo "$VERSION-Release" > ./third-party/version.txt
           cat ./third-party/version.txt
 
