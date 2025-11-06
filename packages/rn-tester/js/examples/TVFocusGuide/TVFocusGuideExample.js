@@ -35,7 +35,7 @@ const scale = screenHeight / 1080;
 const width = 200 * scale;
 const height = 120 * scale;
 
-const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
+const Button = React.forwardRef((props: $FlowFixMe, ref: any) => {
   const theme = useTheme();
   return (
     <Pressable
@@ -52,7 +52,7 @@ const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
   );
 });
 
-const ThemedView = (props: $FlowFixMeProps) => {
+const ThemedView = (props: $FlowFixMe) => {
   const theme = useTheme();
   return (
     <View style={[styles.buttonStyle, props.style]}>

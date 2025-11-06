@@ -39,7 +39,7 @@ exports.examples = [
 ];
 
 // Set it to false to see the behavior without TVFocusGuide.
-const FOCUS_GUIDE_ENABLED = true;
+const FOCUS_GUIDE_ENABLED: $FlowFixMe = true;
 
 const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
@@ -85,7 +85,7 @@ const FocusableBox = React.memo(
         style: $FlowFixMe,
         hasTVPreferredFocus?: boolean,
       },
-      forwardRef,
+      forwardRef: $FlowFixMe,
     ) => {
       const theme = useTheme();
       const {id, width, height, text, slow, style} = props;
@@ -209,12 +209,12 @@ const HList = React.forwardRef(
 );
 
 const categoryData = [1, 2, 3, 4, 5];
-const getSelectedItemPrefix = (selectedCategory: string) => {
+const getSelectedItemPrefix = (selectedCategory: ?string) => {
   if (selectedCategory === null) {
     return 'Item';
   }
 
-  return `Category ${selectedCategory} - Item`;
+  return `Category ${selectedCategory || ''} - Item`;
 };
 
 const Row = ({

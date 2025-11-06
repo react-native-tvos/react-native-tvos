@@ -11,22 +11,22 @@
 'use strict';
 
 import * as React from 'react';
-import ReactNative, {ScrollView, type TVRemoteEvent} from 'react-native';
-
-const {
+import {
+  Platform,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  View,
-  useTVEventHandler,
-  Platform,
-  Pressable,
   TouchableHighlight,
   TouchableNativeFeedback,
   TouchableOpacity,
   TVEventControl,
   TVFocusGuideView,
-} = ReactNative;
+  type TVRemoteEvent,
+  View,
+  useTVEventHandler,
+} from 'react-native';
 
 const focusHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
@@ -138,11 +138,14 @@ const PressableNonfunctionalButton = (props: {
 };
 const TouchableOpacityButton = (props: {
   title: string,
+  focusable?: boolean,
+  disabled?: boolean,
   log: (entry: string) => void,
 }) => {
+  const {log, title, ...touchableOpacityProps} = props;
   return (
     <TouchableOpacity
-      {...props}
+      {...touchableOpacityProps}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -157,11 +160,14 @@ const TouchableOpacityButton = (props: {
 
 const TouchableHighlightButton = (props: {
   title: string,
+  focusable?: boolean,
+  disabled?: boolean,
   log: (entry: string) => void,
 }) => {
+  const {log, title, ...touchableHighlightProps} = props;
   return (
     <TouchableHighlight
-      {...props}
+      {...touchableHighlightProps}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -178,9 +184,10 @@ const TouchableNativeFeedbackButton = (props: {
   title: string,
   log: (entry: string) => void,
 }) => {
+  const {log, title, ...touchableNativeFeedbackProps} = props;
   return (
     <TouchableNativeFeedback
-      {...props}
+      {...touchableNativeFeedbackProps}
       background={TouchableNativeFeedback.SelectableBackground()}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
