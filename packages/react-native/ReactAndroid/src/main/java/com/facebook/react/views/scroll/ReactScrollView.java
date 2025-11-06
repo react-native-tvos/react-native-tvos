@@ -696,8 +696,13 @@ public class ReactScrollView extends ScrollView
                 @Override
                 public void run() {
                   mPostTouchRunnable = null;
-                  // Trigger snap alignment now that scrolling has stopped
-                  handlePostTouchScrolling(0, 0);
+                  // +1/-1 velocity if scrolling down or up. This is to ensure that the
+                  // next/previous page is picked rather than sliding backwards to the current page
+                  int velocityY = (int) -Math.signum(vScroll);
+                  if (mDisableIntervalMomentum) {
+                    velocityY = 0;
+                  }
+                  flingAndSnap(velocityY);
                 }
               };
           postOnAnimationDelayed(mPostTouchRunnable, ReactScrollViewHelper.MOMENTUM_DELAY);
@@ -722,6 +727,10 @@ public class ReactScrollView extends ScrollView
 
   @Override
   public void setRemoveClippedSubviews(boolean removeClippedSubviews) {
+    if (ReactNativeFeatureFlags.disableSubviewClippingAndroid()) {
+      return;
+    }
+
     if (removeClippedSubviews && mClippingRect == null) {
       mClippingRect = new Rect();
     }
@@ -1375,7 +1384,7 @@ public class ReactScrollView extends ScrollView
 
         mScroller.fling(getScrollX(), scrollY, 0, (int) flingVelocityY, 0, 0, 0, Integer.MAX_VALUE);
       } else {
-        scrollTo(getScrollX(), scrollY + (mScroller.getCurrX() - scrollerYBeforeTick));
+        scrollTo(getScrollX(), scrollY + (mScroller.getCurrY() - scrollerYBeforeTick));
       }
     }
   }

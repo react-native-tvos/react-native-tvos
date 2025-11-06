@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<13ed11b5c260fae79048ea80745d22fe>>
+ * @generated SignedSource<<0527dbb4a838be34b80d76b11d18cea0>>
  */
 
 /**
@@ -84,6 +84,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableOldAndroidAttachmentMetricsWorkarounds() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableOldAndroidAttachmentMetricsWorkarounds");
+    return method(javaProvider_);
+  }
+
+  bool disableSubviewClippingAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableSubviewClippingAndroid");
     return method(javaProvider_);
   }
 
@@ -429,12 +435,6 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
-  bool sweepActiveTouchOnChildNativeGesturesAndroid() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("sweepActiveTouchOnChildNativeGesturesAndroid");
-    return method(javaProvider_);
-  }
-
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("traceTurboModulePromiseRejectionsOnAndroid");
@@ -474,12 +474,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool useNativeViewConfigsInBridgelessMode() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useNativeViewConfigsInBridgelessMode");
-    return method(javaProvider_);
-  }
-
-  bool useOptimizedEventBatchingOnAndroid() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useOptimizedEventBatchingOnAndroid");
     return method(javaProvider_);
   }
 
@@ -579,6 +573,11 @@ bool JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid(
 bool JReactNativeFeatureFlagsCxxInterop::disableOldAndroidAttachmentMetricsWorkarounds(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableOldAndroidAttachmentMetricsWorkarounds();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::disableSubviewClippingAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableSubviewClippingAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid(
@@ -866,11 +865,6 @@ bool JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPaus
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
 }
 
-bool JReactNativeFeatureFlagsCxxInterop::sweepActiveTouchOnChildNativeGesturesAndroid(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::sweepActiveTouchOnChildNativeGesturesAndroid();
-}
-
 bool JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid();
@@ -904,11 +898,6 @@ bool JReactNativeFeatureFlagsCxxInterop::useNativeTransformHelperAndroid(
 bool JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::useOptimizedEventBatchingOnAndroid(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::useOptimizedEventBatchingOnAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::useRawPropsJsiValue(
@@ -1011,6 +1000,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "disableOldAndroidAttachmentMetricsWorkarounds",
         JReactNativeFeatureFlagsCxxInterop::disableOldAndroidAttachmentMetricsWorkarounds),
+      makeNativeMethod(
+        "disableSubviewClippingAndroid",
+        JReactNativeFeatureFlagsCxxInterop::disableSubviewClippingAndroid),
       makeNativeMethod(
         "disableTextLayoutManagerCacheAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid),
@@ -1183,9 +1175,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "skipActivityIdentityAssertionOnHostPause",
         JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause),
       makeNativeMethod(
-        "sweepActiveTouchOnChildNativeGesturesAndroid",
-        JReactNativeFeatureFlagsCxxInterop::sweepActiveTouchOnChildNativeGesturesAndroid),
-      makeNativeMethod(
         "traceTurboModulePromiseRejectionsOnAndroid",
         JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid),
       makeNativeMethod(
@@ -1206,9 +1195,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "useNativeViewConfigsInBridgelessMode",
         JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode),
-      makeNativeMethod(
-        "useOptimizedEventBatchingOnAndroid",
-        JReactNativeFeatureFlagsCxxInterop::useOptimizedEventBatchingOnAndroid),
       makeNativeMethod(
         "useRawPropsJsiValue",
         JReactNativeFeatureFlagsCxxInterop::useRawPropsJsiValue),

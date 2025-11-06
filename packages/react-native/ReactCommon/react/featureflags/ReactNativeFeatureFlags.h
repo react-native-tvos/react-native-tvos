@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<41492e85e1feeb20d2e3e60b6cc6cbe7>>
+ * @generated SignedSource<<467f48f2231ceb6772a9a9da9e3badb9>>
  */
 
 /**
@@ -78,6 +78,11 @@ class ReactNativeFeatureFlags {
    * Disable some workarounds for old Android versions in TextLayoutManager logic for retrieving attachment metrics
    */
   RN_EXPORT static bool disableOldAndroidAttachmentMetricsWorkarounds();
+
+  /**
+   * Force disable subview clipping for ReactViewGroup on Android
+   */
+  RN_EXPORT static bool disableSubviewClippingAndroid();
 
   /**
    * Turns off the global measurement cache used by TextLayoutManager on Android.
@@ -330,7 +335,7 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool overrideBySynchronousMountPropsAtMountingAndroid();
 
   /**
-   * Enable reporting Performance Issues (`detail.rnPerfIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
+   * Enable reporting Performance Issues (`detail.devtools.performanceIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
    */
   RN_EXPORT static bool perfIssuesEnabled();
 
@@ -363,11 +368,6 @@ class ReactNativeFeatureFlags {
    * Skip activity identity assertion in ReactHostImpl::onHostPause()
    */
   RN_EXPORT static bool skipActivityIdentityAssertionOnHostPause();
-
-  /**
-   * A flag to tell Fabric to sweep active touches from JSTouchDispatcher in Android when a child native gesture is started.
-   */
-  RN_EXPORT static bool sweepActiveTouchOnChildNativeGesturesAndroid();
 
   /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
@@ -403,11 +403,6 @@ class ReactNativeFeatureFlags {
    * When enabled, the native view configs are used in bridgeless mode.
    */
   RN_EXPORT static bool useNativeViewConfigsInBridgelessMode();
-
-  /**
-   * Uses an optimized mechanism for event batching on Android that does not need to wait for a Choreographer frame callback.
-   */
-  RN_EXPORT static bool useOptimizedEventBatchingOnAndroid();
 
   /**
    * Instead of using folly::dynamic as internal representation in RawProps and RawValue, use jsi::Value

@@ -26,12 +26,8 @@ const uint16_t TRACE_EVENT_CHUNK_SIZE = 1000;
 /**
  * The maximum number of ProfileChunk trace events
  * that will be sent in a single CDP Tracing.dataCollected message.
- * TODO(T219394401): Increase the size once we manage the queue on OkHTTP
- side
- * properly and avoid WebSocket disconnections when sending a message larger
- * than 16MB.
  */
-const uint16_t PROFILE_TRACE_EVENT_CHUNK_SIZE = 1;
+const uint16_t PROFILE_TRACE_EVENT_CHUNK_SIZE = 10;
 
 } // namespace
 
@@ -53,7 +49,6 @@ TracingAgent::~TracingAgent() {
 
 bool TracingAgent::handleRequest(const cdp::PreparsedRequest& req) {
   if (req.method == "Tracing.start") {
-    // @cdp Tracing.start support is experimental.
     if (sessionState_.isDebuggerDomainEnabled) {
       frontendChannel_(
           cdp::jsonError(
@@ -81,7 +76,6 @@ bool TracingAgent::handleRequest(const cdp::PreparsedRequest& req) {
 
     return true;
   } else if (req.method == "Tracing.end") {
-    // @cdp Tracing.end support is experimental.
     auto state = hostTargetController_.stopTracing();
 
     sessionState_.hasPendingTraceRecording = false;

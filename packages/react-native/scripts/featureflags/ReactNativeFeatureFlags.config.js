@@ -135,6 +135,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    disableSubviewClippingAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2025-11-05',
+        description:
+          'Force disable subview clipping for ReactViewGroup on Android',
+        expectedReleaseValue: false,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     disableTextLayoutManagerCacheAndroid: {
       defaultValue: false,
       metadata: {
@@ -671,7 +682,7 @@ const definitions: FeatureFlagDefinitions = {
       metadata: {
         dateAdded: '2025-10-24',
         description:
-          'Enable reporting Performance Issues (`detail.rnPerfIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.',
+          'Enable reporting Performance Issues (`detail.devtools.performanceIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -736,17 +747,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-07-15',
         description:
           'Skip activity identity assertion in ReactHostImpl::onHostPause()',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    sweepActiveTouchOnChildNativeGesturesAndroid: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2025-07-30',
-        description:
-          'A flag to tell Fabric to sweep active touches from JSTouchDispatcher in Android when a child native gesture is started.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -824,17 +824,6 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'experimentation',
       },
       ossReleaseStage: 'canary',
-    },
-    useOptimizedEventBatchingOnAndroid: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2024-08-29',
-        description:
-          'Uses an optimized mechanism for event batching on Android that does not need to wait for a Choreographer frame callback.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
     },
     useRawPropsJsiValue: {
       defaultValue: true,

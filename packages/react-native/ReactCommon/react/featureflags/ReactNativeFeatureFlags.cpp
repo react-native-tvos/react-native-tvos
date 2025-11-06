@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5d596cc470e66861d7c1b2ffbb15b268>>
+ * @generated SignedSource<<a2224b72c2e27abf6a158aa1b4fe9ed0>>
  */
 
 /**
@@ -56,6 +56,10 @@ bool ReactNativeFeatureFlags::disableMountItemReorderingAndroid() {
 
 bool ReactNativeFeatureFlags::disableOldAndroidAttachmentMetricsWorkarounds() {
   return getAccessor().disableOldAndroidAttachmentMetricsWorkarounds();
+}
+
+bool ReactNativeFeatureFlags::disableSubviewClippingAndroid() {
+  return getAccessor().disableSubviewClippingAndroid();
 }
 
 bool ReactNativeFeatureFlags::disableTextLayoutManagerCacheAndroid() {
@@ -286,10 +290,6 @@ bool ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause() {
   return getAccessor().skipActivityIdentityAssertionOnHostPause();
 }
 
-bool ReactNativeFeatureFlags::sweepActiveTouchOnChildNativeGesturesAndroid() {
-  return getAccessor().sweepActiveTouchOnChildNativeGesturesAndroid();
-}
-
 bool ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid() {
   return getAccessor().traceTurboModulePromiseRejectionsOnAndroid();
 }
@@ -316,10 +316,6 @@ bool ReactNativeFeatureFlags::useNativeTransformHelperAndroid() {
 
 bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
   return getAccessor().useNativeViewConfigsInBridgelessMode();
-}
-
-bool ReactNativeFeatureFlags::useOptimizedEventBatchingOnAndroid() {
-  return getAccessor().useOptimizedEventBatchingOnAndroid();
 }
 
 bool ReactNativeFeatureFlags::useRawPropsJsiValue() {

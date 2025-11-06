@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5dcaab263795b1605da54dbbb617264f>>
+ * @generated SignedSource<<a50e4901fa5524066608b64929744dd8>>
  */
 
 /**
@@ -33,6 +33,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool disableFabricCommitInCXXAnimated() = 0;
   virtual bool disableMountItemReorderingAndroid() = 0;
   virtual bool disableOldAndroidAttachmentMetricsWorkarounds() = 0;
+  virtual bool disableSubviewClippingAndroid() = 0;
   virtual bool disableTextLayoutManagerCacheAndroid() = 0;
   virtual bool enableAccessibilityOrder() = 0;
   virtual bool enableAccumulatedUpdatesInRawPropsAndroid() = 0;
@@ -90,7 +91,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool shouldPressibilityUseW3CPointerEventsForHover() = 0;
   virtual bool shouldTriggerResponderTransferOnScrollAndroid() = 0;
   virtual bool skipActivityIdentityAssertionOnHostPause() = 0;
-  virtual bool sweepActiveTouchOnChildNativeGesturesAndroid() = 0;
   virtual bool traceTurboModulePromiseRejectionsOnAndroid() = 0;
   virtual bool updateRuntimeShadowNodeReferencesOnCommit() = 0;
   virtual bool useAlwaysAvailableJSErrorHandling() = 0;
@@ -98,7 +98,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useNativeEqualsInNativeReadableArrayAndroid() = 0;
   virtual bool useNativeTransformHelperAndroid() = 0;
   virtual bool useNativeViewConfigsInBridgelessMode() = 0;
-  virtual bool useOptimizedEventBatchingOnAndroid() = 0;
   virtual bool useRawPropsJsiValue() = 0;
   virtual bool useShadowNodeStateOnClone() = 0;
   virtual bool useSharedAnimatedBackend() = 0;

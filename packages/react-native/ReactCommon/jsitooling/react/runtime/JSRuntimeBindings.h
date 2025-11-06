@@ -7,11 +7,14 @@
 
 #pragma once
 
-#include <react/nativemodule/TurboModuleManager.h>
+#include <jsi/jsi.h>
+#include <string>
 
 namespace facebook::react {
-class TesterTurboModuleManagerDelegate {
- public:
-  static TurboModuleManagerDelegate getTurboModuleManagerDelegate();
-};
+
+using Logger = std::function<void(const std::string &message, unsigned int logLevel)>;
+void bindNativeLogger(jsi::Runtime &runtime, Logger logger);
+
+void bindNativePerformanceNow(jsi::Runtime &runtime);
+
 } // namespace facebook::react

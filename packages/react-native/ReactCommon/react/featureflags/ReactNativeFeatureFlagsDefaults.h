@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a0a1898f3a4c14179bd03d5dbe97adfa>>
+ * @generated SignedSource<<85c260dcb8eb9209a53207c3c54183f0>>
  */
 
 /**
@@ -57,6 +57,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool disableOldAndroidAttachmentMetricsWorkarounds() override {
     return true;
+  }
+
+  bool disableSubviewClippingAndroid() override {
+    return false;
   }
 
   bool disableTextLayoutManagerCacheAndroid() override {
@@ -287,10 +291,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool sweepActiveTouchOnChildNativeGesturesAndroid() override {
-    return true;
-  }
-
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     return false;
   }
@@ -316,10 +316,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool useNativeViewConfigsInBridgelessMode() override {
-    return false;
-  }
-
-  bool useOptimizedEventBatchingOnAndroid() override {
     return false;
   }
 

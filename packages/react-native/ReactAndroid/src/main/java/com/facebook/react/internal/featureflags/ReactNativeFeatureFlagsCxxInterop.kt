@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d6403b67e269ad80ef3e2389ac923c8a>>
+ * @generated SignedSource<<fbc551ca005a7d8abcd2cf2e5d29a3a6>>
  */
 
 /**
@@ -43,6 +43,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun disableMountItemReorderingAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun disableSubviewClippingAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableTextLayoutManagerCacheAndroid(): Boolean
 
@@ -158,8 +160,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun skipActivityIdentityAssertionOnHostPause(): Boolean
 
-  @DoNotStrip @JvmStatic public external fun sweepActiveTouchOnChildNativeGesturesAndroid(): Boolean
-
   @DoNotStrip @JvmStatic public external fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean
@@ -173,8 +173,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun useNativeTransformHelperAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useNativeViewConfigsInBridgelessMode(): Boolean
-
-  @DoNotStrip @JvmStatic public external fun useOptimizedEventBatchingOnAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useRawPropsJsiValue(): Boolean
 

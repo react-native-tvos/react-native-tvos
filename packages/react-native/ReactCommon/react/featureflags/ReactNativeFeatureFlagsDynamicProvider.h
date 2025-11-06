@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fc8f8541827a039fa5bc4a113e75fdf6>>
+ * @generated SignedSource<<0224a638fbec556a62c58f5d84c4c662>>
  */
 
 /**
@@ -115,6 +115,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::disableOldAndroidAttachmentMetricsWorkarounds();
+  }
+
+  bool disableSubviewClippingAndroid() override {
+    auto value = values_["disableSubviewClippingAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableSubviewClippingAndroid();
   }
 
   bool disableTextLayoutManagerCacheAndroid() override {
@@ -630,15 +639,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::skipActivityIdentityAssertionOnHostPause();
   }
 
-  bool sweepActiveTouchOnChildNativeGesturesAndroid() override {
-    auto value = values_["sweepActiveTouchOnChildNativeGesturesAndroid"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::sweepActiveTouchOnChildNativeGesturesAndroid();
-  }
-
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     auto value = values_["traceTurboModulePromiseRejectionsOnAndroid"];
     if (!value.isNull()) {
@@ -700,15 +700,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useNativeViewConfigsInBridgelessMode();
-  }
-
-  bool useOptimizedEventBatchingOnAndroid() override {
-    auto value = values_["useOptimizedEventBatchingOnAndroid"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::useOptimizedEventBatchingOnAndroid();
   }
 
   bool useRawPropsJsiValue() override {

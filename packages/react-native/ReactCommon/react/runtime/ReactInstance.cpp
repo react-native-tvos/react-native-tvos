@@ -18,10 +18,10 @@
 #include <jsi/hermes.h>
 #include <jsi/instrumentation.h>
 #include <jsinspector-modern/HostTarget.h>
-#include <jsireact/JSIExecutor.h>
 #include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/renderer/core/ShadowNode.h>
 #include <react/renderer/runtimescheduler/RuntimeSchedulerBinding.h>
+#include <react/runtime/JSRuntimeBindings.h>
 #include <react/timing/primitives.h>
 #include <react/utils/jsi-utils.h>
 #include <iostream>
@@ -46,6 +46,12 @@ std::shared_ptr<RuntimeScheduler> createRuntimeScheduler(
       PerformanceEntryReporter::getInstance().get());
 
   return scheduler;
+}
+
+std::string getSyntheticBundlePath(uint32_t bundleId) {
+  std::array<char, 32> buffer{};
+  std::snprintf(buffer.data(), buffer.size(), "seg-%u.js", bundleId);
+  return buffer.data();
 }
 
 } // namespace
@@ -221,7 +227,7 @@ void ReactInstance::loadScript(
     const std::string& sourceURL,
     std::function<void(jsi::Runtime& runtime)>&& beforeLoad,
     std::function<void(jsi::Runtime& runtime)>&& afterLoad) {
-  auto buffer = std::make_shared<BigStringBuffer>(std::move(script));
+  std::shared_ptr<const jsi::Buffer> buffer(std::move(script));
   std::string scriptName = simpleBasename(sourceURL);
 
   runtimeScheduler_->scheduleWork([this,
@@ -232,7 +238,7 @@ void ReactInstance::loadScript(
                                        std::weak_ptr<BufferedRuntimeExecutor>(
                                            bufferedRuntimeExecutor_),
                                    beforeLoad,
-                                   afterLoad](jsi::Runtime& runtime) {
+                                   afterLoad](jsi::Runtime& runtime) mutable {
     if (beforeLoad) {
       beforeLoad(runtime);
     }
@@ -357,7 +363,6 @@ void ReactInstance::registerSegment(
       throw std::invalid_argument(
           "Empty segment registered with ID " + tag + " from " + segmentPath);
     }
-    auto buffer = std::make_shared<BigStringBuffer>(std::move(script));
 
     bool hasLogger(ReactMarker::logTaggedMarkerBridgelessImpl != nullptr);
     if (hasLogger) {
@@ -366,11 +371,8 @@ void ReactInstance::registerSegment(
     }
     LOG(WARNING) << "Starting to evaluate segment " << segmentId
                  << " in ReactInstance::registerSegment";
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     runtime.evaluateJavaScript(
-        buffer, JSExecutor::getSyntheticBundlePath(segmentId, segmentPath));
-#pragma clang diagnostic pop
+        std::move(script), getSyntheticBundlePath(segmentId));
     LOG(WARNING) << "Finished evaluating segment " << segmentId
                  << " in ReactInstance::registerSegment";
     if (hasLogger) {

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0b1f3b307c28d6798d4c15029ad5bc58>>
+ * @generated SignedSource<<53fc9aca82f76eb0519b03187993359a>>
  * @flow strict
  * @noformat
  */
@@ -33,6 +33,7 @@ export interface Spec extends TurboModule {
   +disableFabricCommitInCXXAnimated?: () => boolean;
   +disableMountItemReorderingAndroid?: () => boolean;
   +disableOldAndroidAttachmentMetricsWorkarounds?: () => boolean;
+  +disableSubviewClippingAndroid?: () => boolean;
   +disableTextLayoutManagerCacheAndroid?: () => boolean;
   +enableAccessibilityOrder?: () => boolean;
   +enableAccumulatedUpdatesInRawPropsAndroid?: () => boolean;
@@ -90,7 +91,6 @@ export interface Spec extends TurboModule {
   +shouldPressibilityUseW3CPointerEventsForHover?: () => boolean;
   +shouldTriggerResponderTransferOnScrollAndroid?: () => boolean;
   +skipActivityIdentityAssertionOnHostPause?: () => boolean;
-  +sweepActiveTouchOnChildNativeGesturesAndroid?: () => boolean;
   +traceTurboModulePromiseRejectionsOnAndroid?: () => boolean;
   +updateRuntimeShadowNodeReferencesOnCommit?: () => boolean;
   +useAlwaysAvailableJSErrorHandling?: () => boolean;
@@ -98,7 +98,6 @@ export interface Spec extends TurboModule {
   +useNativeEqualsInNativeReadableArrayAndroid?: () => boolean;
   +useNativeTransformHelperAndroid?: () => boolean;
   +useNativeViewConfigsInBridgelessMode?: () => boolean;
-  +useOptimizedEventBatchingOnAndroid?: () => boolean;
   +useRawPropsJsiValue?: () => boolean;
   +useShadowNodeStateOnClone?: () => boolean;
   +useSharedAnimatedBackend?: () => boolean;

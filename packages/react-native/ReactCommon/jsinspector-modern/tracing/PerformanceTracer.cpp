@@ -187,7 +187,8 @@ void PerformanceTracer::reportMeasure(
     const std::string& name,
     HighResTimeStamp start,
     HighResDuration duration,
-    folly::dynamic&& detail) {
+    folly::dynamic&& detail,
+    std::optional<folly::dynamic> stackTrace) {
   if (!tracingAtomic_) {
     return;
   }
@@ -204,6 +205,7 @@ void PerformanceTracer::reportMeasure(
           .duration = duration,
           .detail = std::move(detail),
           .threadId = getCurrentThreadId(),
+          .stackTrace = std::move(stackTrace),
       });
 }
 
@@ -214,7 +216,8 @@ void PerformanceTracer::reportTimeStamp(
     std::optional<std::string> trackName,
     std::optional<std::string> trackGroup,
     std::optional<ConsoleTimeStampColor> color,
-    std::optional<folly::dynamic> detail) {
+    std::optional<folly::dynamic> detail,
+    std::optional<folly::dynamic> stackTrace) {
   if (!tracingAtomic_) {
     return;
   }
@@ -233,6 +236,7 @@ void PerformanceTracer::reportTimeStamp(
           .trackGroup = std::move(trackGroup),
           .color = std::move(color),
           .detail = std::move(detail),
+          .stackTrace = std::move(stackTrace),
           .threadId = getCurrentThreadId(),
       });
 }
@@ -357,6 +361,41 @@ void PerformanceTracer::reportResourceFinish(
           .encodedDataLength = encodedDataLength,
           .decodedBodyLength = decodedBodyLength,
           .threadId = getCurrentThreadId(),
+      });
+}
+
+void PerformanceTracer::setLayerTreeId(std::string frame, int layerTreeId) {
+  enqueueEvent(
+      PerformanceTracerSetLayerTreeIdEvent{
+          .frame = std::move(frame),
+          .layerTreeId = layerTreeId,
+          .start = HighResTimeStamp::now(),
+          .threadId = getCurrentThreadId(),
+      });
+}
+
+void PerformanceTracer::reportFrameTiming(
+    int frameSeqId,
+    HighResTimeStamp start,
+    HighResTimeStamp end) {
+  ThreadId threadId = getCurrentThreadId();
+  enqueueEvent(
+      PerformanceTracerFrameBeginDrawEvent{
+          .frameSeqId = frameSeqId,
+          .start = start,
+          .threadId = threadId,
+      });
+  enqueueEvent(
+      PerformanceTracerFrameCommitEvent{
+          .frameSeqId = frameSeqId,
+          .start = start,
+          .threadId = threadId,
+      });
+  enqueueEvent(
+      PerformanceTracerFrameDrawEvent{
+          .frameSeqId = frameSeqId,
+          .start = end,
+          .threadId = threadId,
       });
 }
 
@@ -571,6 +610,10 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
               beginEventArgs =
                   folly::dynamic::object("detail", folly::toJson(event.detail));
             }
+            if (event.stackTrace) {
+              beginEventArgs["data"] = folly::dynamic::object(
+                  "rnStackTrace", std::move(*event.stackTrace));
+            }
 
             auto eventId = ++performanceMeasureCount_;
 
@@ -660,6 +703,9 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
               }
               data["devtools"] = folly::toJson(devtoolsDetail);
             }
+            if (event.stackTrace) {
+              data["rnStackTrace"] = std::move(*event.stackTrace);
+            }
 
             events.emplace_back(
                 TraceEvent{
@@ -735,6 +781,70 @@ void PerformanceTracer::enqueueTraceEventsFromPerformanceTracerEvent(
                     .s = 't',
                     .tid = event.threadId,
                     .args = folly::dynamic::object("data", std::move(data)),
+                });
+          },
+          [&](PerformanceTracerSetLayerTreeIdEvent&& event) {
+            folly::dynamic data = folly::dynamic::object("frame", event.frame)(
+                "layerTreeId", event.layerTreeId);
+
+            events.emplace_back(
+                TraceEvent{
+                    .name = "SetLayerTreeId",
+                    .cat = "devtools.timeline",
+                    .ph = 'I',
+                    .ts = event.start,
+                    .pid = processId_,
+                    .s = 't',
+                    .tid = event.threadId,
+                    .args = folly::dynamic::object("data", std::move(data)),
+                });
+          },
+          [&](PerformanceTracerFrameBeginDrawEvent&& event) {
+            folly::dynamic data = folly::dynamic::object(
+                "frameSeqId", event.frameSeqId)("layerTreeId", 1);
+
+            events.emplace_back(
+                TraceEvent{
+                    .name = "BeginFrame",
+                    .cat = "devtools.timeline",
+                    .ph = 'I',
+                    .ts = event.start,
+                    .pid = processId_,
+                    .s = 't',
+                    .tid = event.threadId,
+                    .args = std::move(data),
+                });
+          },
+          [&](PerformanceTracerFrameCommitEvent&& event) {
+            folly::dynamic data = folly::dynamic::object(
+                "frameSeqId", event.frameSeqId)("layerTreeId", 1);
+
+            events.emplace_back(
+                TraceEvent{
+                    .name = "Commit",
+                    .cat = "devtools.timeline",
+                    .ph = 'I',
+                    .ts = event.start,
+                    .pid = processId_,
+                    .s = 't',
+                    .tid = event.threadId,
+                    .args = std::move(data),
+                });
+          },
+          [&](PerformanceTracerFrameDrawEvent&& event) {
+            folly::dynamic data = folly::dynamic::object(
+                "frameSeqId", event.frameSeqId)("layerTreeId", 1);
+
+            events.emplace_back(
+                TraceEvent{
+                    .name = "DrawFrame",
+                    .cat = "devtools.timeline",
+                    .ph = 'I',
+                    .ts = event.start,
+                    .pid = processId_,
+                    .s = 't',
+                    .tid = event.threadId,
+                    .args = std::move(data),
                 });
           },
       },

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d8dc8c3a2efe8b7e870546e5749ef5ad>>
+ * @generated SignedSource<<9646ebeba75ec903be5ade7e2333f0c8>>
  */
 
 /**
@@ -77,6 +77,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean = accessor.disableOldAndroidAttachmentMetricsWorkarounds()
+
+  /**
+   * Force disable subview clipping for ReactViewGroup on Android
+   */
+  @JvmStatic
+  public fun disableSubviewClippingAndroid(): Boolean = accessor.disableSubviewClippingAndroid()
 
   /**
    * Turns off the global measurement cache used by TextLayoutManager on Android.
@@ -379,7 +385,7 @@ public object ReactNativeFeatureFlags {
   public fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean = accessor.overrideBySynchronousMountPropsAtMountingAndroid()
 
   /**
-   * Enable reporting Performance Issues (`detail.rnPerfIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
+   * Enable reporting Performance Issues (`detail.devtools.performanceIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
    */
   @JvmStatic
   public fun perfIssuesEnabled(): Boolean = accessor.perfIssuesEnabled()
@@ -419,12 +425,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun skipActivityIdentityAssertionOnHostPause(): Boolean = accessor.skipActivityIdentityAssertionOnHostPause()
-
-  /**
-   * A flag to tell Fabric to sweep active touches from JSTouchDispatcher in Android when a child native gesture is started.
-   */
-  @JvmStatic
-  public fun sweepActiveTouchOnChildNativeGesturesAndroid(): Boolean = accessor.sweepActiveTouchOnChildNativeGesturesAndroid()
 
   /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
@@ -467,12 +467,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useNativeViewConfigsInBridgelessMode(): Boolean = accessor.useNativeViewConfigsInBridgelessMode()
-
-  /**
-   * Uses an optimized mechanism for event batching on Android that does not need to wait for a Choreographer frame callback.
-   */
-  @JvmStatic
-  public fun useOptimizedEventBatchingOnAndroid(): Boolean = accessor.useOptimizedEventBatchingOnAndroid()
 
   /**
    * Instead of using folly::dynamic as internal representation in RawProps and RawValue, use jsi::Value

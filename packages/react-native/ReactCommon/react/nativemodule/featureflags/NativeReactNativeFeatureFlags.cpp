@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6bd64914d0e2f0c727490a420496fbb0>>
+ * @generated SignedSource<<bd66756451b25d73717a5907e6789a77>>
  */
 
 /**
@@ -82,6 +82,11 @@ bool NativeReactNativeFeatureFlags::disableMountItemReorderingAndroid(
 bool NativeReactNativeFeatureFlags::disableOldAndroidAttachmentMetricsWorkarounds(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::disableOldAndroidAttachmentMetricsWorkarounds();
+}
+
+bool NativeReactNativeFeatureFlags::disableSubviewClippingAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::disableSubviewClippingAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::disableTextLayoutManagerCacheAndroid(
@@ -369,11 +374,6 @@ bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
 }
 
-bool NativeReactNativeFeatureFlags::sweepActiveTouchOnChildNativeGesturesAndroid(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::sweepActiveTouchOnChildNativeGesturesAndroid();
-}
-
 bool NativeReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid();
@@ -407,11 +407,6 @@ bool NativeReactNativeFeatureFlags::useNativeTransformHelperAndroid(
 bool NativeReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode();
-}
-
-bool NativeReactNativeFeatureFlags::useOptimizedEventBatchingOnAndroid(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::useOptimizedEventBatchingOnAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::useRawPropsJsiValue(
