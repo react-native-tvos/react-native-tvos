@@ -113,7 +113,7 @@ async function setup(
   );
 
   await prepareReactNativeDependenciesArtifactsAsync(
-    coreVersionForTVVersion(currentVersion),
+    currentVersion,
     buildType,
   );
 

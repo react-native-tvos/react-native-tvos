@@ -185,8 +185,11 @@ function getTarballUrl(
   // You can use the `ENTERPRISE_REPOSITORY` ariable to customise the base url from which artifacts will be downloaded.
   // The mirror's structure must be the same of the Maven repo the react-native core team publishes on Maven Central.
   const mavenRepoUrl =
-    process.env.ENTERPRISE_REPOSITORY ?? 'https://repo1.maven.org/maven2';
-  const namespace = 'com/facebook/react';
+    process.env.ENTERPRISE_REPOSITORY ??
+      process.env.RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY ??
+      'https://repo1.maven.org/maven2';
+  // const namespace = 'com/facebook/react';
+  const namespace = 'io/github/react-native-tvos';
   return `${mavenRepoUrl}/${namespace}/react-native-artifacts/${version}/react-native-artifacts-${version}-reactnative-dependencies-${buildType.toLowerCase()}.tar.gz`;
 }
 
