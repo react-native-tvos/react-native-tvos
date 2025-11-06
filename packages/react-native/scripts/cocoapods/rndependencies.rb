@@ -170,6 +170,8 @@ class ReactNativeDependenciesUtils
         maven_repo_url =
             ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != "" ?
             ENV['ENTERPRISE_REPOSITORY'] :
+            ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != "" ?
+            ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] :
             "https://repo1.maven.org/maven2"
         group = "io/github/react-native-tvos"
         # Sample url from Maven:
@@ -236,6 +238,9 @@ class ReactNativeDependenciesUtils
     def self.artifact_exists(tarball_url)
         # -L is used to follow redirects, useful for the nightlies
         # I also needed to wrap the url in quotes to avoid escaping & and ?.
+        if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
+            return true
+        end
         return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
     end
 

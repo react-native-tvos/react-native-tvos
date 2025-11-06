@@ -107,7 +107,7 @@ def use_react_native! (
   ReactNativePodsUtils.warn_if_not_on_arm64()
 
   # Update ReactNativeDependencies so that we can easily switch between source and prebuilt
-  ReactNativeDependenciesUtils.setup_react_native_dependencies(prefix, ReactNativePodsUtils.core_version_for_tv_version(react_native_version))
+  ReactNativeDependenciesUtils.setup_react_native_dependencies(prefix, react_native_version)
 
   # Update ReactNativeCoreUtils so that we can easily switch between source and prebuilt
   ReactNativeCoreUtils.setup_rncore(prefix, react_native_version)

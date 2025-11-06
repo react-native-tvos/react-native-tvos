@@ -4,7 +4,6 @@
 # LICENSE file in the root directory of this source tree.
 
 require "json"
-require_relative "../scripts/cocoapods/utils.rb"
 
 begin
   react_native_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
@@ -21,7 +20,6 @@ end
 # package.json
 package = JSON.parse(File.read(File.join(react_native_path, "package.json")))
 version = package['version']
-#core_version = ReactNativePodsUtils.core_version_for_tv_version(version)
 
 source = ReactNativeDependenciesUtils.resolve_podspec_source()
 
@@ -72,7 +70,7 @@ Pod::Spec.new do |spec|
   CMD
 
   # If we are passing a local tarball, we don't want to switch between Debug and Release
-  if !ENV["RCT_USE_LOCAL_RN_DEP"] && !ENV["REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"]
+  if !ENV["RCT_USE_LOCAL_RN_DEP"]
     script_phase = {
       :name => "[RNDeps] Replace React Native Dependencies for the right configuration, if needed",
       :execution_position => :before_compile,
@@ -84,7 +82,7 @@ Pod::Spec.new do |spec|
         CONFIG="Debug"
       fi
 
-      "$NODE_BINARY" "$REACT_NATIVE_PATH/third-party-podspecs/replace_dependencies_version.js" -c "$CONFIG" -r "#{core_version}" -p "$PODS_ROOT"
+      "$NODE_BINARY" "$REACT_NATIVE_PATH/third-party-podspecs/replace_dependencies_version.js" -c "$CONFIG" -r "#{version}" -p "$PODS_ROOT"
       EOS
     }
 
