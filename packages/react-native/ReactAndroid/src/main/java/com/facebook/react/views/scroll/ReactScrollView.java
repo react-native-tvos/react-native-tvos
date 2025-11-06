@@ -1375,7 +1375,7 @@ public class ReactScrollView extends ScrollView
 
         mScroller.fling(getScrollX(), scrollY, 0, (int) flingVelocityY, 0, 0, 0, Integer.MAX_VALUE);
       } else {
-        scrollTo(getScrollX(), scrollY + (mScroller.getCurrX() - scrollerYBeforeTick));
+        scrollTo(getScrollX(), scrollY + (mScroller.getCurrY() - scrollerYBeforeTick));
       }
     }
   }
