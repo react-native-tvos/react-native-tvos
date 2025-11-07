@@ -30,10 +30,6 @@ build:
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
     - run:
-        name: Download hermesc from core release package
-        command: |
-          npx tsx ./src/download-hermesc.ts
-    - run:
         name: Copy and modify publish.gradle
         working_directory: ../..
         command: |
