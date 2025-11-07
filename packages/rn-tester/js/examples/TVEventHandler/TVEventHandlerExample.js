@@ -495,6 +495,31 @@ const TVEventHandlerView: () => React.Node = () => {
               />
             </View>
           </TouchableOpacity>
+          <Text style={{fontSize: 12 * scale}}>Unwrapped TextInput</Text>
+          <TextInput
+            ref={textInputRef}
+            onFocus={(event: $FlowFixMe) =>
+              updatePressableLog(
+                `TextInput ${event.nativeEvent.target} is focused`,
+              )
+            }
+            onBlur={(event: $FlowFixMe) =>
+              updatePressableLog(
+                `TextInput ${event.nativeEvent.target} is blurred`,
+              )
+            }
+            placeholder="Enter a value"
+            value={textInputValue}
+            style={[styles.pressableText, {color: 'red', height: 50 * scale}]}
+            placeholderTextColor="#0000ff"
+            onChange={(value: any) => {
+              setTextInputValue(value.nativeEvent.text);
+            }}
+            onSubmitEditing={(value: any) => {
+              setTextInputValue(value.nativeEvent.text);
+              console.log(value.nativeEvent.text);
+            }}
+          />
         </View>
       </ScrollView>
 
