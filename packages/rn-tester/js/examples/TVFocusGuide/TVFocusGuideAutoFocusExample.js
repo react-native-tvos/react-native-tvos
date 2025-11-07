@@ -217,7 +217,15 @@ const getSelectedItemPrefix = (selectedCategory: string) => {
   return `Category ${selectedCategory} - Item`;
 };
 
-const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
+const Row = ({
+  title,
+  focusable,
+  autoFocus,
+}: {
+  title: string,
+  focusable?: boolean,
+  autoFocus?: boolean,
+}) => {
   const [selectedCategory, setSelectedCategory] = React.useState('1');
 
   const onCategoryFocused = (event: any, id: number) => {
@@ -227,10 +235,12 @@ const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
   return (
     <View style={styles.mb5}>
       <TVFocusGuide
-        autoFocus
+        autoFocus={autoFocus !== false}
         style={styles.rowTop}
         focusable={focusable}
-        importantForAccessibility={focusable === false ? 'no-hide-descendants' : 'auto'}>
+        importantForAccessibility={
+          focusable === false ? 'no-hide-descendants' : 'auto'
+        }>
         <Text style={styles.rowTitle}>{title}</Text>
         <HList
           prefix="Category"
@@ -245,7 +255,9 @@ const Row = ({title, focusable}: {title: string, focusable?: boolean}) => {
         autoFocus
         style={styles.mb5}
         focusable={focusable}
-        importantForAccessibility={focusable === false ? 'no-hide-descendants' : 'auto'}>
+        importantForAccessibility={
+          focusable === false ? 'no-hide-descendants' : 'auto'
+        }>
         <HList
           prefix={getSelectedItemPrefix(selectedCategory)}
           itemCount={10}
@@ -470,6 +482,11 @@ const ContentArea = React.forwardRef(
           <Row title="Category Example 1" />
           <Row title="Category Example 2" />
           <Row title="Disabled Focus Subviews Example" focusable={false} />
+          <Row
+            title="Disabled Focus Subviews Example no autoFocus"
+            focusable={false}
+            autoFocus={false}
+          />
 
           <FocusableBox
             style={styles.focusToSideMenuBtn}

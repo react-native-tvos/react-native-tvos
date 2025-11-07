@@ -106,10 +106,12 @@ function TVFocusGuideView(
   });
 
   React.useEffect(() => {
-    if (destinationsProp !== null && destinationsProp !== undefined) {
+    if (focusable === false) {
+      setDestinations([]);
+    } else if (destinationsProp !== null && destinationsProp !== undefined) {
       setDestinations(destinationsProp); // $FlowFixMe[incompatible-call]
     }
-  }, [setDestinations, destinationsProp]);
+  }, [setDestinations, destinationsProp, focusable]);
 
   const enabledStyle = {display: enabled ? 'flex' : 'none'};
   const style = [styles.container, props.style, enabledStyle];
@@ -126,7 +128,7 @@ function TVFocusGuideView(
       style={style}
       ref={_setNativeRef}
       collapsable={false}
-      autoFocus={autoFocus}
+      autoFocus={focusable === false ? true : autoFocus}
       // tvOS only prop
       isTVSelectable={tvOSSelectable}
       // Android TV only prop

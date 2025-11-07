@@ -107,7 +107,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       view.isFocusable = false
       view.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
     } else {
-      view.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
+      view.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
     }
   }
 
@@ -363,8 +363,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     } else {
       view.setOnClickListener(null)
       view.isClickable = false
-      // Don't set view.setFocusable(false) because we might still want it to be focusable for
-      // accessibility reasons
+      view.isFocusable = false
     }
   }
 
