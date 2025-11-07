@@ -409,7 +409,7 @@ public class ReactEditText extends AppCompatEditText {
   // that. This method will eventually replace requestFocusInternal()
   private boolean requestFocusProgramatically() {
     boolean focused = super.requestFocus(View.FOCUS_DOWN, null);
-    if (isInTouchMode() && getShowSoftInputOnFocus()) {
+    if (getShowSoftInputOnFocus()) {
       showSoftKeyboard();
     } else {
       if (isKeyboardOpened) {

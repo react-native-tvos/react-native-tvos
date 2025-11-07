@@ -17,8 +17,14 @@ import type {
 
 import ExampleTextInput from './ExampleTextInput';
 import TextInputSharedExamples from './TextInputSharedExamples';
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 
 const ToggleDefaultPaddingExample = (): React.Node => {
   const [hasPadding, setHasPadding] = React.useState(false);
@@ -45,7 +51,57 @@ const styles = StyleSheet.create({
   wrappedText: {
     maxWidth: 300,
   },
+  touchableInputContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    gap: 20,
+  },
+  touchableWrappedInput: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+  },
 });
+
+const TouchableWrappedTextInput = (props: Partial<TextInputProps>) => {
+  const inputRef = useRef<TextInput>(null);
+  return (
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => inputRef.current?.focus()}>
+      <TextInput
+        ref={inputRef}
+        style={styles.touchableWrappedInput}
+        placeholder="Enter text here..."
+        placeholderTextColor="#666"
+        {...props}
+        onEndEditing={() => {
+          inputRef.current?.blur();
+          props.onEndEditing?.();
+        }}
+      />
+    </TouchableOpacity>
+  );
+};
+
+function WrappedInputExample(): React.JSX.Element {
+  const [input1, setInput1] = useState('');
+  const [input2, setInput2] = useState('');
+  const [input3, setInput3] = useState('');
+  return (
+    <View style={styles.inputContainer}>
+      <TouchableWrappedTextInput value={input1} onChangeText={setInput1} />
+      <TouchableWrappedTextInput value={input2} onChangeText={setInput2} />
+      <TouchableWrappedTextInput value={input3} onChangeText={setInput3} />
+      <TouchableWrappedTextInput value={input3} onChangeText={setInput3} />
+    </View>
+  );
+}
 
 const examples: Array<RNTesterModuleExample> = [
   ...TextInputSharedExamples,
@@ -446,6 +502,12 @@ const examples: Array<RNTesterModuleExample> = [
     title: 'Toggle Default Padding',
     render: function (): React.Node {
       return <ToggleDefaultPaddingExample />;
+    },
+  },
+  {
+    title: 'Wrapped TextInput',
+    render: function (): React.Node {
+      return <WrappedInputExample />;
     },
   },
 ];
