@@ -413,7 +413,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
   // that. This method will eventually replace requestFocusInternal()
   private fun requestFocusProgrammatically(): Boolean {
     val focused = super.requestFocus(FOCUS_DOWN, null)
-    if (isInTouchMode && showSoftInputOnFocus) {
+    if (showSoftInputOnFocus) {
       showSoftKeyboard()
     } else {
       if (isKeyboardOpened) {
