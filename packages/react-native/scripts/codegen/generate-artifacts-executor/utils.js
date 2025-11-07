@@ -463,14 +463,27 @@ function findDisabledLibrariesByPlatform(
 }
 
 function findReactNativeRootPath(projectRoot /* : string */) /* : string */ {
-  const reactNativePackageJsonPath = require.resolve(
-    path.join('react-native', 'package.json'),
-    {
-      paths: [projectRoot],
-    },
-  );
-
-  return path.dirname(reactNativePackageJsonPath);
+  let reactNativePackageJsonPath;
+  try {
+    reactNativePackageJsonPath = require.resolve(
+      path.join('react-native', 'package.json'),
+      {
+        paths: [projectRoot],
+      },
+    );
+    return path.dirname(reactNativePackageJsonPath);
+  } catch (e) {}
+  try {
+    reactNativePackageJsonPath = require.resolve(
+      path.join('react-native-tvos', 'package.json'),
+      {
+        paths: [projectRoot],
+      },
+    );
+    return path.dirname(reactNativePackageJsonPath);
+  } catch (e) {
+    throw new Error(e);
+  }
 }
 
 module.exports = {
