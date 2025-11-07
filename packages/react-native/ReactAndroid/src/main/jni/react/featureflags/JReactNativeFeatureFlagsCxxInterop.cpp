@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0527dbb4a838be34b80d76b11d18cea0>>
+ * @generated SignedSource<<95ebd4929bf0f98aa059ad4b8139f7b3>>
  */
 
 /**
@@ -75,6 +75,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool disableImageViewPreallocationAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableImageViewPreallocationAndroid");
+    return method(javaProvider_);
+  }
+
   bool disableMountItemReorderingAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableMountItemReorderingAndroid");
@@ -96,6 +102,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableTextLayoutManagerCacheAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableTextLayoutManagerCacheAndroid");
+    return method(javaProvider_);
+  }
+
+  bool disableViewPreallocationAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableViewPreallocationAndroid");
     return method(javaProvider_);
   }
 
@@ -565,6 +577,11 @@ bool JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated(
   return ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableImageViewPreallocationAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableMountItemReorderingAndroid();
@@ -583,6 +600,11 @@ bool JReactNativeFeatureFlagsCxxInterop::disableSubviewClippingAndroid(
 bool JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableTextLayoutManagerCacheAndroid();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::disableViewPreallocationAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableViewPreallocationAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableAccessibilityOrder(
@@ -995,6 +1017,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "disableFabricCommitInCXXAnimated",
         JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated),
       makeNativeMethod(
+        "disableImageViewPreallocationAndroid",
+        JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid),
+      makeNativeMethod(
         "disableMountItemReorderingAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableMountItemReorderingAndroid),
       makeNativeMethod(
@@ -1006,6 +1031,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "disableTextLayoutManagerCacheAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableTextLayoutManagerCacheAndroid),
+      makeNativeMethod(
+        "disableViewPreallocationAndroid",
+        JReactNativeFeatureFlagsCxxInterop::disableViewPreallocationAndroid),
       makeNativeMethod(
         "enableAccessibilityOrder",
         JReactNativeFeatureFlagsCxxInterop::enableAccessibilityOrder),

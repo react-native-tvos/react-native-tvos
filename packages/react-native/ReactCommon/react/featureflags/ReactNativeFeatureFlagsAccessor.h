@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b72070ee07df0d084009668488efb889>>
+ * @generated SignedSource<<4e1bcac109eecdaf11c62ce8c367b20d>>
  */
 
 /**
@@ -38,10 +38,12 @@ class ReactNativeFeatureFlagsAccessor {
   bool cxxNativeAnimatedRemoveJsSync();
   bool disableEarlyViewCommandExecution();
   bool disableFabricCommitInCXXAnimated();
+  bool disableImageViewPreallocationAndroid();
   bool disableMountItemReorderingAndroid();
   bool disableOldAndroidAttachmentMetricsWorkarounds();
   bool disableSubviewClippingAndroid();
   bool disableTextLayoutManagerCacheAndroid();
+  bool disableViewPreallocationAndroid();
   bool enableAccessibilityOrder();
   bool enableAccumulatedUpdatesInRawPropsAndroid();
   bool enableAndroidLinearText();
@@ -125,7 +127,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 82> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 84> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
@@ -133,10 +135,12 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> cxxNativeAnimatedRemoveJsSync_;
   std::atomic<std::optional<bool>> disableEarlyViewCommandExecution_;
   std::atomic<std::optional<bool>> disableFabricCommitInCXXAnimated_;
+  std::atomic<std::optional<bool>> disableImageViewPreallocationAndroid_;
   std::atomic<std::optional<bool>> disableMountItemReorderingAndroid_;
   std::atomic<std::optional<bool>> disableOldAndroidAttachmentMetricsWorkarounds_;
   std::atomic<std::optional<bool>> disableSubviewClippingAndroid_;
   std::atomic<std::optional<bool>> disableTextLayoutManagerCacheAndroid_;
+  std::atomic<std::optional<bool>> disableViewPreallocationAndroid_;
   std::atomic<std::optional<bool>> enableAccessibilityOrder_;
   std::atomic<std::optional<bool>> enableAccumulatedUpdatesInRawPropsAndroid_;
   std::atomic<std::optional<bool>> enableAndroidLinearText_;

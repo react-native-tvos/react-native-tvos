@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9d6ccbe6d02608901fc18ad88baab176>>
+ * @generated SignedSource<<405bf283e4631e166cd57f5dfe30d5f9>>
  */
 
 /**
@@ -26,10 +26,12 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
   private var disableFabricCommitInCXXAnimatedCache: Boolean? = null
+  private var disableImageViewPreallocationAndroidCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableOldAndroidAttachmentMetricsWorkaroundsCache: Boolean? = null
   private var disableSubviewClippingAndroidCache: Boolean? = null
   private var disableTextLayoutManagerCacheAndroidCache: Boolean? = null
+  private var disableViewPreallocationAndroidCache: Boolean? = null
   private var enableAccessibilityOrderCache: Boolean? = null
   private var enableAccumulatedUpdatesInRawPropsAndroidCache: Boolean? = null
   private var enableAndroidLinearTextCache: Boolean? = null
@@ -157,6 +159,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun disableImageViewPreallocationAndroid(): Boolean {
+    var cached = disableImageViewPreallocationAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.disableImageViewPreallocationAndroid()
+      disableImageViewPreallocationAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun disableMountItemReorderingAndroid(): Boolean {
     var cached = disableMountItemReorderingAndroidCache
     if (cached == null) {
@@ -189,6 +200,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.disableTextLayoutManagerCacheAndroid()
       disableTextLayoutManagerCacheAndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun disableViewPreallocationAndroid(): Boolean {
+    var cached = disableViewPreallocationAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.disableViewPreallocationAndroid()
+      disableViewPreallocationAndroidCache = cached
     }
     return cached
   }

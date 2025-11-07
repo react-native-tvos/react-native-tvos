@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fbc551ca005a7d8abcd2cf2e5d29a3a6>>
+ * @generated SignedSource<<bffd645aa55b941acff92ca4efe6192a>>
  */
 
 /**
@@ -40,6 +40,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun disableFabricCommitInCXXAnimated(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun disableImageViewPreallocationAndroid(): Boolean
+
   @DoNotStrip @JvmStatic public external fun disableMountItemReorderingAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean
@@ -47,6 +49,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun disableSubviewClippingAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableTextLayoutManagerCacheAndroid(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun disableViewPreallocationAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableAccessibilityOrder(): Boolean
 

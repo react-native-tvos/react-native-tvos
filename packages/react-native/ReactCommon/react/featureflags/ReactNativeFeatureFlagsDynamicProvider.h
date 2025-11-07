@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0224a638fbec556a62c58f5d84c4c662>>
+ * @generated SignedSource<<c1ffba92f08189da8b2a2726cd490afc>>
  */
 
 /**
@@ -99,6 +99,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::disableFabricCommitInCXXAnimated();
   }
 
+  bool disableImageViewPreallocationAndroid() override {
+    auto value = values_["disableImageViewPreallocationAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableImageViewPreallocationAndroid();
+  }
+
   bool disableMountItemReorderingAndroid() override {
     auto value = values_["disableMountItemReorderingAndroid"];
     if (!value.isNull()) {
@@ -133,6 +142,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::disableTextLayoutManagerCacheAndroid();
+  }
+
+  bool disableViewPreallocationAndroid() override {
+    auto value = values_["disableViewPreallocationAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableViewPreallocationAndroid();
   }
 
   bool enableAccessibilityOrder() override {

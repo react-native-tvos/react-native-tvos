@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a52734633ac33a6f8dfc521bdc6e2692>>
+ * @generated SignedSource<<77fabf68a75a0d8a563b032027e7f817>>
  * @flow strict
  * @noformat
  */
@@ -56,10 +56,12 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   cxxNativeAnimatedRemoveJsSync: Getter<boolean>,
   disableEarlyViewCommandExecution: Getter<boolean>,
   disableFabricCommitInCXXAnimated: Getter<boolean>,
+  disableImageViewPreallocationAndroid: Getter<boolean>,
   disableMountItemReorderingAndroid: Getter<boolean>,
   disableOldAndroidAttachmentMetricsWorkarounds: Getter<boolean>,
   disableSubviewClippingAndroid: Getter<boolean>,
   disableTextLayoutManagerCacheAndroid: Getter<boolean>,
+  disableViewPreallocationAndroid: Getter<boolean>,
   enableAccessibilityOrder: Getter<boolean>,
   enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean>,
   enableAndroidLinearText: Getter<boolean>,
@@ -238,6 +240,10 @@ export const disableEarlyViewCommandExecution: Getter<boolean> = createNativeFla
  */
 export const disableFabricCommitInCXXAnimated: Getter<boolean> = createNativeFlagGetter('disableFabricCommitInCXXAnimated', false);
 /**
+ * Force disable view preallocation for images triggered from createNode off the main thread on Android
+ */
+export const disableImageViewPreallocationAndroid: Getter<boolean> = createNativeFlagGetter('disableImageViewPreallocationAndroid', false);
+/**
  * Prevent FabricMountingManager from reordering mountItems, which may lead to invalid state on the UI thread
  */
 export const disableMountItemReorderingAndroid: Getter<boolean> = createNativeFlagGetter('disableMountItemReorderingAndroid', false);
@@ -253,6 +259,10 @@ export const disableSubviewClippingAndroid: Getter<boolean> = createNativeFlagGe
  * Turns off the global measurement cache used by TextLayoutManager on Android.
  */
 export const disableTextLayoutManagerCacheAndroid: Getter<boolean> = createNativeFlagGetter('disableTextLayoutManagerCacheAndroid', false);
+/**
+ * Force disable view preallocation triggered from createNode off the main thread on Android
+ */
+export const disableViewPreallocationAndroid: Getter<boolean> = createNativeFlagGetter('disableViewPreallocationAndroid', false);
 /**
  * When enabled, the accessibilityOrder prop will propagate to native platforms and define the accessibility order.
  */

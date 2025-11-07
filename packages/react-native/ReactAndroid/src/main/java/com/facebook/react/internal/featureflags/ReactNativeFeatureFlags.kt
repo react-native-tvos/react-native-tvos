@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9646ebeba75ec903be5ade7e2333f0c8>>
+ * @generated SignedSource<<01feab16132bc07b79b359178e322327>>
  */
 
 /**
@@ -67,6 +67,12 @@ public object ReactNativeFeatureFlags {
   public fun disableFabricCommitInCXXAnimated(): Boolean = accessor.disableFabricCommitInCXXAnimated()
 
   /**
+   * Force disable view preallocation for images triggered from createNode off the main thread on Android
+   */
+  @JvmStatic
+  public fun disableImageViewPreallocationAndroid(): Boolean = accessor.disableImageViewPreallocationAndroid()
+
+  /**
    * Prevent FabricMountingManager from reordering mountItems, which may lead to invalid state on the UI thread
    */
   @JvmStatic
@@ -89,6 +95,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun disableTextLayoutManagerCacheAndroid(): Boolean = accessor.disableTextLayoutManagerCacheAndroid()
+
+  /**
+   * Force disable view preallocation triggered from createNode off the main thread on Android
+   */
+  @JvmStatic
+  public fun disableViewPreallocationAndroid(): Boolean = accessor.disableViewPreallocationAndroid()
 
   /**
    * When enabled, the accessibilityOrder prop will propagate to native platforms and define the accessibility order.

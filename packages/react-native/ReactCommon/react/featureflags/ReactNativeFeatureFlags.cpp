@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a2224b72c2e27abf6a158aa1b4fe9ed0>>
+ * @generated SignedSource<<1a4d03b0d58e389dc9e9af0adf7afa9f>>
  */
 
 /**
@@ -50,6 +50,10 @@ bool ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated() {
   return getAccessor().disableFabricCommitInCXXAnimated();
 }
 
+bool ReactNativeFeatureFlags::disableImageViewPreallocationAndroid() {
+  return getAccessor().disableImageViewPreallocationAndroid();
+}
+
 bool ReactNativeFeatureFlags::disableMountItemReorderingAndroid() {
   return getAccessor().disableMountItemReorderingAndroid();
 }
@@ -64,6 +68,10 @@ bool ReactNativeFeatureFlags::disableSubviewClippingAndroid() {
 
 bool ReactNativeFeatureFlags::disableTextLayoutManagerCacheAndroid() {
   return getAccessor().disableTextLayoutManagerCacheAndroid();
+}
+
+bool ReactNativeFeatureFlags::disableViewPreallocationAndroid() {
+  return getAccessor().disableViewPreallocationAndroid();
 }
 
 bool ReactNativeFeatureFlags::enableAccessibilityOrder() {

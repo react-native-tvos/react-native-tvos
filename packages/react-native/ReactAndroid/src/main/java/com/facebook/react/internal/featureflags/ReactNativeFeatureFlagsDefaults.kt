@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<7b8a5ad9a3353ea32a39bd139e9174f7>>
+ * @generated SignedSource<<a25d191472f7777804175ef9f56521d6>>
  */
 
 /**
@@ -35,6 +35,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun disableFabricCommitInCXXAnimated(): Boolean = false
 
+  override fun disableImageViewPreallocationAndroid(): Boolean = false
+
   override fun disableMountItemReorderingAndroid(): Boolean = false
 
   override fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean = true
@@ -42,6 +44,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun disableSubviewClippingAndroid(): Boolean = false
 
   override fun disableTextLayoutManagerCacheAndroid(): Boolean = false
+
+  override fun disableViewPreallocationAndroid(): Boolean = false
 
   override fun enableAccessibilityOrder(): Boolean = false
 

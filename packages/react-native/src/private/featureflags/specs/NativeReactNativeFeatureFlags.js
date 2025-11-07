@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<53fc9aca82f76eb0519b03187993359a>>
+ * @generated SignedSource<<5819b97ded2f415bdcff52f7f408aec6>>
  * @flow strict
  * @noformat
  */
@@ -31,10 +31,12 @@ export interface Spec extends TurboModule {
   +cxxNativeAnimatedRemoveJsSync?: () => boolean;
   +disableEarlyViewCommandExecution?: () => boolean;
   +disableFabricCommitInCXXAnimated?: () => boolean;
+  +disableImageViewPreallocationAndroid?: () => boolean;
   +disableMountItemReorderingAndroid?: () => boolean;
   +disableOldAndroidAttachmentMetricsWorkarounds?: () => boolean;
   +disableSubviewClippingAndroid?: () => boolean;
   +disableTextLayoutManagerCacheAndroid?: () => boolean;
+  +disableViewPreallocationAndroid?: () => boolean;
   +enableAccessibilityOrder?: () => boolean;
   +enableAccumulatedUpdatesInRawPropsAndroid?: () => boolean;
   +enableAndroidLinearText?: () => boolean;
