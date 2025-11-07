@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   outerContainer: {
     flex: 1,
-    margin: 50,
+    margin: Platform.isTV ? (Platform.OS === 'ios' ? 50 : 10) : 0,
   },
   bottomNavbar: {
     height: navBarHeight,
