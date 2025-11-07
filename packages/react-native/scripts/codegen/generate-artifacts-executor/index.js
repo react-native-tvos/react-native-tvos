@@ -180,6 +180,7 @@ function execute(
     }
   } catch (err) {
     codegenLog(err);
+    codegenLog(err.stack);
     process.exitCode = 1;
   }
 
