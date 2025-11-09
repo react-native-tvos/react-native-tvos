@@ -196,12 +196,13 @@ async function getNightlyTarballUrl(
 ) /*: Promise<string> */ {
   const coordinate = 'react-native-artifacts';
   const artifactName = `reactnative-dependencies-${buildType.toLowerCase()}.tar.gz`;
-
+  const namespace = 'com/facebook/react';
   return await computeNightlyTarballURL(
     version,
     buildType,
     coordinate,
     artifactName,
+    namespace,
   );
 }
 
@@ -237,6 +238,7 @@ async function reactNativeDependenciesSourceType(
 
   // For nightly tarball, we need to resolve redirects first
   const nightlyUrl = await getNightlyTarballUrl(version, buildType);
+  dependencyLog(`Trying tarball URL: ${nightlyUrl}`);
   if (await reactNativeDependenciesArtifactExists(nightlyUrl)) {
     dependencyLog('Using download prebuild nightly tarball');
     return ReactNativeDependenciesEngineSourceTypes.DOWNLOAD_PREBUILT_NIGHTLY_TARBALL;

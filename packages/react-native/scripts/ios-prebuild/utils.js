@@ -66,9 +66,10 @@ async function computeNightlyTarballURL(
   buildType /*: BuildFlavor */,
   artifactCoordinate /*: string */,
   artifactName /*: string */,
+  namespace /*: string */,
 ) /*: Promise<string> */ {
-  const xmlUrl = `https://central.sonatype.com/repository/maven-snapshots/com/facebook/hermes/${artifactCoordinate}/${version}-SNAPSHOT/maven-metadata.xml`;
-
+  const xmlUrl = `https://central.sonatype.com/repository/maven-snapshots/${namespace}/${artifactCoordinate}/${version}-SNAPSHOT/maven-metadata.xml`;
+  // console.log(`xmlUrl = ${xmlUrl}`);
   const response = await fetch(xmlUrl);
   if (!response.ok) {
     return '';
@@ -99,7 +100,7 @@ async function computeNightlyTarballURL(
   const buildNumber = buildNumberMatch[1];
 
   const fullVersion = `${version}-${timestamp}-${buildNumber}`;
-  const finalUrl = `https://central.sonatype.com/repository/maven-snapshots/com/facebook/hermes/${artifactCoordinate}/${version}-SNAPSHOT/${artifactCoordinate}-${fullVersion}-${artifactName}`;
+  const finalUrl = `https://central.sonatype.com/repository/maven-snapshots/${namespace}/${artifactCoordinate}/${version}-SNAPSHOT/${artifactCoordinate}-${fullVersion}-${artifactName}`;
   return finalUrl;
 }
 
@@ -107,6 +108,9 @@ async function computeNightlyTarballURL(
  * Computes core release version needed for finding Hermes artifacts
  */
 function coreVersionForTVVersion(version /*: string */) /*: string */ {
+  if (process.env.HERMES_VERSION === 'nightly') {
+    return version;
+  }
   const match = version.match(/(.+)-(.+)/);
   if (!match) {
     // This is not a TV release or prerelease
@@ -117,6 +121,7 @@ function coreVersionForTVVersion(version /*: string */) /*: string */ {
       utilsLog(`Overriding Hermes core version to ${nightlyBuildVersion}`);
       return nightlyBuildVersion;
     }
+
     // Otherwise, return the entire version string
     return version;
   }

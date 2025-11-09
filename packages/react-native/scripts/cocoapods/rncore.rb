@@ -348,23 +348,34 @@ class ReactNativeCoreUtils
         return "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-core-#{dsyms ? "dSYM-" : ""}#{build_type.to_s}.tar.gz"
     end
 
+    def self.read_nightly_tarball_xml(xml_url)
+        xml_file_path = "#{artifacts_dir()}/rncore-ios.xml"
+        unless File.exist?(xml_file_path)
+          tmp_file = "#{artifacts_dir()}/rncore-ios.xml.download"
+          `mkdir -p "#{artifacts_dir()}" && curl "#{xml_url}" -Lo "#{tmp_file}" && mv "#{tmp_file}" "#{xml_file_path}"`
+        end
+        return File.read(xml_file_path)
+    end
+
     def self.nightly_tarball_url(version, configuration, dsyms = false)
         artefact_coordinate = "react-native-artifacts"
         artefact_name = "reactnative-core-#{dsyms ? "dSYM-" : ""}#{configuration ? configuration : "debug"}.tar.gz"
         xml_url = "https://central.sonatype.com/repository/maven-snapshots/com/facebook/react/#{artefact_coordinate}/#{version}-SNAPSHOT/maven-metadata.xml"
 
-        response = Net::HTTP.get_response(URI(xml_url))
-        if response.is_a?(Net::HTTPSuccess)
-          xml = REXML::Document.new(response.body)
+        # response = Net::HTTP.get_response(URI(xml_url))
+        # if response.is_a?(Net::HTTPSuccess)
+        #   xml = REXML::Document.new(response.body)
+          xml_text = read_nightly_tarball_xml(xml_url)
+          xml = REXML::Document.new(xml_text)
           timestamp = xml.elements['metadata/versioning/snapshot/timestamp'].text
           build_number = xml.elements['metadata/versioning/snapshot/buildNumber'].text
           full_version = "#{version}-#{timestamp}-#{build_number}"
 
           final_url = "https://central.sonatype.com/repository/maven-snapshots/com/facebook/react/#{artefact_coordinate}/#{version}-SNAPSHOT/#{artefact_coordinate}-#{full_version}-#{artefact_name}"
           return final_url
-        else
-          return ""
-        end
+        # else
+        #   return ""
+        # end
     end
 
     def self.download_stable_rncore(react_native_path, version, configuration, dsyms = false)
