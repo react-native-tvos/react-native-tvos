@@ -20,6 +20,9 @@ version =
 configurations.maybeCreate("externalArtifacts")
 
 // [iOS] React Native Dependencies
+// TV repo uses the core artifacts, so we don't need to add them
+
+/*
 val reactNativeDependenciesDebugArtifactFile: RegularFile =
     layout.projectDirectory.file("artifacts/ReactNativeDependenciesDebug.xcframework.tar.gz")
 val reactNativeDependenciesDebugArtifact: PublishArtifact =
@@ -54,6 +57,7 @@ val reactNativeDependenciesReleaseDSYMArtifact: PublishArtifact =
       extension = "tar.gz"
       classifier = "reactnative-dependencies-dSYM-release"
     }
+ */
 
 // [iOS] React Native Core
 val reactCoreDebugArtifactFile: RegularFile =
@@ -97,10 +101,12 @@ publishing {
   publications {
     getByName("release", MavenPublication::class) {
       artifactId = "react-native-artifacts"
+      /*
       artifact(reactNativeDependenciesDebugArtifact)
       artifact(reactNativeDependenciesReleaseArtifact)
       artifact(reactNativeDependenciesDebugDSYMArtifact)
       artifact(reactNativeDependenciesReleaseDSYMArtifact)
+       */
       artifact(reactCoreDebugArtifact)
       artifact(reactCoreReleaseArtifact)
       artifact(reactCoreDebugDSYMArtifact)

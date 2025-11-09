@@ -29,7 +29,12 @@ build:
           # Root directory
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
-          set-env RCT_HERMES_V1_ENABLED 1
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            echo "Use hermes nightly build..."
+            node ./scripts/releases/use-hermes-nightly.js
+            yarn
+            set-env HERMES_VERSION nightly
+          fi
     - run:
         name: Copy and modify publish.gradle
         working_directory: ../..

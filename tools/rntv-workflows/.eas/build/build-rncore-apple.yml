@@ -40,81 +40,27 @@ build:
         name: Set up build-specific environment
         working_directory: ../..
         command: |
-          . ./tools/rntv-workflows/override-nightly-build-version.sh
           echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
           export ROOT_DIR=$PWD
           export MAVEN_ARTIFACTS_PATH=$PWD/packages/react-native/ReactAndroid/external-artifacts/artifacts
           mkdir -p $MAVEN_ARTIFACTS_PATH
           # Set up environment for subsequent steps
-          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           set-env ROOT_DIR $ROOT_DIR
+          set-env RCT_USE_RN_DEP 1
           set-env MAVEN_ARTIFACTS_PATH $MAVEN_ARTIFACTS_PATH
-          set-env RCT_HERMES_V1_ENABLED 1
-    - run:
-        name: Build RNDependencies frameworks (Debug)
-        working_directory: ../..
-        command: |
-          echo "Building RNDependencies..."
-          rm -rf packages/react-native/build
-          rm -rf packages/react-native/third-party
-          node scripts/releases/prepare-ios-prebuilds.js -s
-          node scripts/releases/prepare-ios-prebuilds.js -w
-          echo "Execute RNDependencies prebuild Debug build..."
-          node scripts/releases/prepare-ios-prebuilds.js -b -r Debug
-          if [ -d "packages/react-native/build/Build" ]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            . ./tools/rntv-workflows/override-nightly-build-version.sh
+            echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+            set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+            node ./scripts/releases/use-hermes-nightly.js
+            yarn
+            set-env HERMES_VERSION nightly
+            set-env RN_DEP_VERSION nightly
           fi
-          echo "Execute RNDependencies prebuild framework compose..."
-          node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
-    - run:
-        name: Create RNDependencies framework tarball (Debug)
-        working_directory: ../../packages/react-native/third-party
-        command: |
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.xcframework.tar.gz ReactNativeDependencies.xcframework
-    - run:
-        name: Create RNDependencies framework DSYMS tarball (Debug)
-        working_directory: ../../packages/react-native/third-party/Symbols
-        command: |
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.framework.dSYM.tar.gz *
-    - run:
-        name: Build RNDependencies frameworks (Release)
-        working_directory: ../..
-        command: |
-          echo "Building RNDependencies..."
-          rm -rf packages/react-native/build
-          rm -rf packages/react-native/third-party
-          node scripts/releases/prepare-ios-prebuilds.js -s
-          node scripts/releases/prepare-ios-prebuilds.js -w
-          echo "Execute RNDependencies prebuild Release build..."
-          node scripts/releases/prepare-ios-prebuilds.js -b -r Release
-          if [ -d "packages/react-native/build/Build" ]; then
-            cp -r packages/react-native/build/Build packages/react-native/third-party/.build
-          fi
-          echo "Execute RNDependencies prebuild framework compose..."
-          node scripts/releases/prepare-ios-prebuilds.js -c -i "$RNCORE_CODE_SIGNING_IDENTITY"
-    - run:
-        name: Create RNDependencies framework tarball (Release)
-        working_directory: ../../packages/react-native/third-party
-        command: |
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.xcframework.tar.gz ReactNativeDependencies.xcframework
-    - run:
-        name: Create RNDependencies framework DSYMS tarball (Release)
-        working_directory: ../../packages/react-native/third-party/Symbols
-        command: |
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.framework.dSYM.tar.gz *
     - run:
         name: Build RNCore framework (Debug)
         working_directory: ../../packages/react-native
         command: |
-          rm -rf ./third-party
-          mkdir -p ./third-party
-          tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesDebug.xcframework.tar.gz -C ./third-party/
-
-          # VERSION=$(jq -r '.version' ./package.json)
-          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
-          echo "$VERSION-Debug" > ./third-party/version.txt
-          cat ./third-party/version.txt
-
           node scripts/ios-prebuild -s -f Debug
           for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
           do
@@ -140,18 +86,9 @@ build:
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
           echo "RNCore Debug framework tarball created."
     - run:
-        name: Build RNCore framework (Release)
+        name: RNCore prebuild (Release)
         working_directory: ../../packages/react-native
         command: |
-          rm -rf ./third-party
-          mkdir -p ./third-party
-          tar -xzf $MAVEN_ARTIFACTS_PATH/ReactNativeDependenciesRelease.xcframework.tar.gz -C ./third-party/
-
-          # VERSION=$(jq -r '.version' ./package.json)
-          VERSION=$REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
-          echo "$VERSION-Release" > ./third-party/version.txt
-          cat ./third-party/version.txt
-
           node scripts/ios-prebuild -s -f Release
           for platform in ios ios-simulator tvos tvos-simulator mac-catalyst
           do
@@ -227,8 +164,8 @@ build:
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
-          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone-debug.tgz *)
-          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv-debug.tgz *)
+          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
+          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
     - run:
         name: Send Apple artifacts to Sonatype

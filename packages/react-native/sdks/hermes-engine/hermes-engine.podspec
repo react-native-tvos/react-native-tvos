@@ -25,7 +25,7 @@ versionProperties = Hash[*File.read("version.properties").split(/[=\n]+/)]
 if ENV['RCT_HERMES_V1_ENABLED'] == "1"
   version = versionProperties['HERMES_V1_VERSION_NAME']
 else
-  version = core_version(versionProperties['HERMES_VERSION_NAME'])
+  version = versionProperties['HERMES_VERSION_NAME']
 end
 
 source_type = hermes_source_type(version, react_native_path)
