@@ -9,6 +9,13 @@ build:
         command: |
           patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
     - run:
+        name: Run Typescript generation
+        working_directory: ../..
+        command: |
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            yarn build-types
+          fi
+    - run:
         name: Set up build-specific environment
         working_directory: ../..
         command: |
@@ -58,13 +65,6 @@ build:
         working_directory: ../..
         command: |
           ./gradlew publishAllToMavenTempLocal
-    - run:
-        name: Run Typescript generation
-        working_directory: ../..
-        command: |
-          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            yarn build-types
-          fi
     - run:
         name: Create virtualized-lists tarball
         working_directory: ../../packages/virtualized-lists
