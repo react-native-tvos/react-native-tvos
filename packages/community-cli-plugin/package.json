@@ -22,7 +22,7 @@
     "dist"
   ],
   "dependencies": {
-    "@react-native/dev-middleware": "0.79.7",
+    "@react-native/dev-middleware": "0.79.7-1",
     "chalk": "^4.0.0",
     "debug": "^2.2.0",
     "invariant": "^2.2.4",
