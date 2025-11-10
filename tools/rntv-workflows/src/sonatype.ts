@@ -44,8 +44,12 @@ const executeScriptAsync = async function () {
         throw new Error('Missing path argument');
       }
       const bundlePath = positionals[1];
-      const deploymentId = await uploadDeploymentBundleAsync(bundlePath, sonatypeConfig, autoPublish === true);
-      console.log(`${deploymentId}`);
+      try {
+        const deploymentId = await uploadDeploymentBundleAsync(bundlePath, sonatypeConfig, autoPublish === true);
+        console.log(`${deploymentId}`);
+      } catch(e: any) {
+        console.log(`Caught error in Sonatype upload: ${e}`);
+      }
       break;
     }
     case 'publish': {
