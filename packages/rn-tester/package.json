@@ -19,7 +19,6 @@
     "android": "react-native run-android",
     "build-android-hermes": "../../gradlew :packages:rn-tester:android:app:assembleDebug",
     "build-android-hermes-release": "../../gradlew :packages:rn-tester:android:app:assembleRelease",
-    "install-android-jsc": "../../gradlew :packages:rn-tester:android:app:installDebug",
     "install-android-hermes": "../../gradlew :packages:rn-tester:android:app:installDebug",
     "clean-android": "rm -rf android/app/build",
     "prepare-ios": "node ./cli.js bootstrap ios",
