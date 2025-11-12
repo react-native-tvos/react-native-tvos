@@ -1,6 +1,6 @@
 ## react-native-tvos
 
-Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` NPM package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
+Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` npm package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.81.0-0 release of this package will be derived from the 0.81.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
@@ -78,7 +78,7 @@ Minimum operating system versions:
 ## Build changes
 
 - _Native layer for Apple TV_: Changes in the React Native podspecs (in 0.73 and later) require that your application `Podfile` only have one target. This repo supports either an iOS target or a tvOS target.
-- _Maven artifacts for Android TV_: In 0.71 and later releases, the React Native Android prebuilt archives are published to Maven instead of being included in the NPM. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
+- _Maven artifacts for Android TV_: In 0.71 and later releases, the React Native Android prebuilt archives are published to Maven instead of being included in the `npm`. We are following the same model, except that the Maven artifacts will be in group `io.github.react-native-tvos` instead of `com.facebook.react`. The `@react-native/gradle-plugin` module has been upgraded so that the Android dependencies will be detected correctly during build.
 
 ## TV project creation in React Native 0.75 and later
 
