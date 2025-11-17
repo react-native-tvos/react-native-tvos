@@ -196,13 +196,12 @@ async function getNightlyTarballUrl(
 ) /*: Promise<string> */ {
   const coordinate = 'react-native-artifacts';
   const artifactName = `reactnative-dependencies-${buildType.toLowerCase()}.tar.gz`;
-  const namespace = 'com/facebook/react';
   return await computeNightlyTarballURL(
     version,
     buildType,
+    'react',
     coordinate,
     artifactName,
-    namespace,
   );
 }
 

@@ -276,20 +276,13 @@ def nightly_tarball_url(version)
 
   xml_url = "https://central.sonatype.com/repository/maven-snapshots/#{namespace}/#{artifact_coordinate}/#{version}-SNAPSHOT/maven-metadata.xml"
   hermes_log("Checking #{xml_url} ...")
-  # response = Net::HTTP.get_response(URI(xml_url))
-  # if response.is_a?(Net::HTTPSuccess)
-  #   xml = REXML::Document.new(response.body)
-    xml_text = read_nightly_tarball_xml(xml_url)
-    xml = REXML::Document.new(xml_text)
-    timestamp = xml.elements['metadata/versioning/snapshot/timestamp'].text
-    build_number = xml.elements['metadata/versioning/snapshot/buildNumber'].text
-    full_version = "#{version}-#{timestamp}-#{build_number}"
-    final_url = "https://central.sonatype.com/repository/maven-snapshots/#{namespace}/#{artifact_coordinate}/#{version}-SNAPSHOT/#{artifact_coordinate}-#{full_version}-#{artifact_name}"
-
-    return final_url
-  # else
-  #   return ""
-  # end
+  xml_text = read_nightly_tarball_xml(xml_url)
+  xml = REXML::Document.new(xml_text)
+  timestamp = xml.elements['metadata/versioning/snapshot/timestamp'].text
+  build_number = xml.elements['metadata/versioning/snapshot/buildNumber'].text
+  full_version = "#{version}-#{timestamp}-#{build_number}"
+  final_url = "https://central.sonatype.com/repository/maven-snapshots/#{namespace}/#{artifact_coordinate}/#{version}-SNAPSHOT/#{artifact_coordinate}-#{full_version}-#{artifact_name}"
+  return final_url
 end
 
 def resolve_url_redirects(url)

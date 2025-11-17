@@ -201,13 +201,12 @@ async function getNightlyTarballUrl(
 ) /*: Promise<string> */ {
   const artifactCoordinate = 'hermes-ios';
   const artifactName = `hermes-ios-${buildType.toLowerCase()}.tar.gz`;
-  const namespace = 'com/facebook/hermes';
   return await computeNightlyTarballURL(
     version,
     buildType,
+    'hermes',
     artifactCoordinate,
     artifactName,
-    namespace,
   );
 }
 
