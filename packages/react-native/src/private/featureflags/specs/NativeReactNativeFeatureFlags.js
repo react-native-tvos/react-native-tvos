@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0de9df853ee6af976b4e15f55e6b9b26>>
+ * @generated SignedSource<<54bc4f14b5fcff90483e8486a15f8bc2>>
  * @flow strict
  * @noformat
  */
@@ -30,7 +30,6 @@ export interface Spec extends TurboModule {
   +cxxNativeAnimatedEnabled?: () => boolean;
   +cxxNativeAnimatedRemoveJsSync?: () => boolean;
   +disableEarlyViewCommandExecution?: () => boolean;
-  +disableFabricCommitInCXXAnimated?: () => boolean;
   +disableImageViewPreallocationAndroid?: () => boolean;
   +disableMountItemReorderingAndroid?: () => boolean;
   +disableOldAndroidAttachmentMetricsWorkarounds?: () => boolean;
@@ -95,7 +94,10 @@ export interface Spec extends TurboModule {
   +preparedTextCacheSize?: () => number;
   +preventShadowTreeCommitExhaustion?: () => boolean;
   +shouldPressibilityUseW3CPointerEventsForHover?: () => boolean;
+  +shouldResetClickableWhenRecyclingView?: () => boolean;
+  +shouldResetOnClickListenerWhenRecyclingView?: () => boolean;
   +shouldSetEnabledBasedOnAccessibilityState?: () => boolean;
+  +shouldSetIsClickableByDefault?: () => boolean;
   +shouldTriggerResponderTransferOnScrollAndroid?: () => boolean;
   +skipActivityIdentityAssertionOnHostPause?: () => boolean;
   +traceTurboModulePromiseRejectionsOnAndroid?: () => boolean;

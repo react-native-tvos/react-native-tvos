@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b1469e448ca6f773a3095ec2cbf4bc00>>
+ * @generated SignedSource<<c0e50c34e468462ec0b019db612f2d07>>
  */
 
 /**
@@ -59,12 +59,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun disableEarlyViewCommandExecution(): Boolean = accessor.disableEarlyViewCommandExecution()
-
-  /**
-   * Prevents use of Fabric commit in C++ Animated implementation
-   */
-  @JvmStatic
-  public fun disableFabricCommitInCXXAnimated(): Boolean = accessor.disableFabricCommitInCXXAnimated()
 
   /**
    * Force disable view preallocation for images triggered from createNode off the main thread on Android
@@ -451,10 +445,28 @@ public object ReactNativeFeatureFlags {
   public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = accessor.shouldPressibilityUseW3CPointerEventsForHover()
 
   /**
+   * Reset isClickable to false when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.
+   */
+  @JvmStatic
+  public fun shouldResetClickableWhenRecyclingView(): Boolean = accessor.shouldResetClickableWhenRecyclingView()
+
+  /**
+   * Reset OnClickListener to null when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.
+   */
+  @JvmStatic
+  public fun shouldResetOnClickListenerWhenRecyclingView(): Boolean = accessor.shouldResetOnClickListenerWhenRecyclingView()
+
+  /**
    * Fix BaseViewManager to properly set view.setEnabled() based on accessibilityState.disabled.
    */
   @JvmStatic
   public fun shouldSetEnabledBasedOnAccessibilityState(): Boolean = accessor.shouldSetEnabledBasedOnAccessibilityState()
+
+  /**
+   * Sets isClickable=true by default on all React Native views on Android to improve UI harvesting detection while maintaining focusable=false to preserve expected behavior.
+   */
+  @JvmStatic
+  public fun shouldSetIsClickableByDefault(): Boolean = accessor.shouldSetIsClickableByDefault()
 
   /**
    * Do not emit touchcancel from Android ScrollView, instead native topScroll event will trigger responder transfer and terminate in RN renderer.

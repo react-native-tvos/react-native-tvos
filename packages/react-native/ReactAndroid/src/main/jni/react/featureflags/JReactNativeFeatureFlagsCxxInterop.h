@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1cb8ed4a72e9d2b8dd34694485704f60>>
+ * @generated SignedSource<<a6d7e6584be4740706031e483e7f6319>>
  */
 
 /**
@@ -43,9 +43,6 @@ class JReactNativeFeatureFlagsCxxInterop
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool disableEarlyViewCommandExecution(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
-
-  static bool disableFabricCommitInCXXAnimated(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool disableImageViewPreallocationAndroid(
@@ -240,7 +237,16 @@ class JReactNativeFeatureFlagsCxxInterop
   static bool shouldPressibilityUseW3CPointerEventsForHover(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
+  static bool shouldResetClickableWhenRecyclingView(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
+  static bool shouldResetOnClickListenerWhenRecyclingView(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
   static bool shouldSetEnabledBasedOnAccessibilityState(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
+  static bool shouldSetIsClickableByDefault(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool shouldTriggerResponderTransferOnScrollAndroid(

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9c10486574fdff78933aed6acd90533c>>
+ * @generated SignedSource<<87871166467d58a3f051e45d7786a73f>>
  */
 
 /**
@@ -44,10 +44,6 @@ bool ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() {
 
 bool ReactNativeFeatureFlags::disableEarlyViewCommandExecution() {
   return getAccessor().disableEarlyViewCommandExecution();
-}
-
-bool ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated() {
-  return getAccessor().disableFabricCommitInCXXAnimated();
 }
 
 bool ReactNativeFeatureFlags::disableImageViewPreallocationAndroid() {
@@ -306,8 +302,20 @@ bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {
   return getAccessor().shouldPressibilityUseW3CPointerEventsForHover();
 }
 
+bool ReactNativeFeatureFlags::shouldResetClickableWhenRecyclingView() {
+  return getAccessor().shouldResetClickableWhenRecyclingView();
+}
+
+bool ReactNativeFeatureFlags::shouldResetOnClickListenerWhenRecyclingView() {
+  return getAccessor().shouldResetOnClickListenerWhenRecyclingView();
+}
+
 bool ReactNativeFeatureFlags::shouldSetEnabledBasedOnAccessibilityState() {
   return getAccessor().shouldSetEnabledBasedOnAccessibilityState();
+}
+
+bool ReactNativeFeatureFlags::shouldSetIsClickableByDefault() {
+  return getAccessor().shouldSetIsClickableByDefault();
 }
 
 bool ReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid() {

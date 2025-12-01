@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0cdf0b920d8c8a083781028ff0490bf3>>
+ * @generated SignedSource<<61bc5ae981016016efc7ece3b5dd7bba>>
  */
 
 /**
@@ -67,11 +67,6 @@ bool NativeReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync(
 bool NativeReactNativeFeatureFlags::disableEarlyViewCommandExecution(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
-}
-
-bool NativeReactNativeFeatureFlags::disableFabricCommitInCXXAnimated(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
 }
 
 bool NativeReactNativeFeatureFlags::disableImageViewPreallocationAndroid(
@@ -394,9 +389,24 @@ bool NativeReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHove
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
 }
 
+bool NativeReactNativeFeatureFlags::shouldResetClickableWhenRecyclingView(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::shouldResetClickableWhenRecyclingView();
+}
+
+bool NativeReactNativeFeatureFlags::shouldResetOnClickListenerWhenRecyclingView(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::shouldResetOnClickListenerWhenRecyclingView();
+}
+
 bool NativeReactNativeFeatureFlags::shouldSetEnabledBasedOnAccessibilityState(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::shouldSetEnabledBasedOnAccessibilityState();
+}
+
+bool NativeReactNativeFeatureFlags::shouldSetIsClickableByDefault(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::shouldSetIsClickableByDefault();
 }
 
 bool NativeReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid(

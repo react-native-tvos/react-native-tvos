@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b2c2e874b05283e0ebd62899f7c417d8>>
+ * @generated SignedSource<<41539a9583965f55605a6d3e03e6f6fe>>
  */
 
 /**
@@ -25,7 +25,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
-  private var disableFabricCommitInCXXAnimatedCache: Boolean? = null
   private var disableImageViewPreallocationAndroidCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableOldAndroidAttachmentMetricsWorkaroundsCache: Boolean? = null
@@ -90,7 +89,10 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var preparedTextCacheSizeCache: Double? = null
   private var preventShadowTreeCommitExhaustionCache: Boolean? = null
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
+  private var shouldResetClickableWhenRecyclingViewCache: Boolean? = null
+  private var shouldResetOnClickListenerWhenRecyclingViewCache: Boolean? = null
   private var shouldSetEnabledBasedOnAccessibilityStateCache: Boolean? = null
+  private var shouldSetIsClickableByDefaultCache: Boolean? = null
   private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
@@ -151,15 +153,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.disableEarlyViewCommandExecution()
       disableEarlyViewCommandExecutionCache = cached
-    }
-    return cached
-  }
-
-  override fun disableFabricCommitInCXXAnimated(): Boolean {
-    var cached = disableFabricCommitInCXXAnimatedCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.disableFabricCommitInCXXAnimated()
-      disableFabricCommitInCXXAnimatedCache = cached
     }
     return cached
   }
@@ -740,11 +733,38 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun shouldResetClickableWhenRecyclingView(): Boolean {
+    var cached = shouldResetClickableWhenRecyclingViewCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.shouldResetClickableWhenRecyclingView()
+      shouldResetClickableWhenRecyclingViewCache = cached
+    }
+    return cached
+  }
+
+  override fun shouldResetOnClickListenerWhenRecyclingView(): Boolean {
+    var cached = shouldResetOnClickListenerWhenRecyclingViewCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.shouldResetOnClickListenerWhenRecyclingView()
+      shouldResetOnClickListenerWhenRecyclingViewCache = cached
+    }
+    return cached
+  }
+
   override fun shouldSetEnabledBasedOnAccessibilityState(): Boolean {
     var cached = shouldSetEnabledBasedOnAccessibilityStateCache
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.shouldSetEnabledBasedOnAccessibilityState()
       shouldSetEnabledBasedOnAccessibilityStateCache = cached
+    }
+    return cached
+  }
+
+  override fun shouldSetIsClickableByDefault(): Boolean {
+    var cached = shouldSetIsClickableByDefaultCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.shouldSetIsClickableByDefault()
+      shouldSetIsClickableByDefaultCache = cached
     }
     return cached
   }

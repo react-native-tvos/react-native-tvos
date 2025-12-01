@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3e8df9a7ff492fee6b5755c1691e150c>>
+ * @generated SignedSource<<3787bbe53523ccda093277465064d7dc>>
  */
 
 /**
@@ -30,7 +30,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool cxxNativeAnimatedEnabled() = 0;
   virtual bool cxxNativeAnimatedRemoveJsSync() = 0;
   virtual bool disableEarlyViewCommandExecution() = 0;
-  virtual bool disableFabricCommitInCXXAnimated() = 0;
   virtual bool disableImageViewPreallocationAndroid() = 0;
   virtual bool disableMountItemReorderingAndroid() = 0;
   virtual bool disableOldAndroidAttachmentMetricsWorkarounds() = 0;
@@ -95,7 +94,10 @@ class ReactNativeFeatureFlagsProvider {
   virtual double preparedTextCacheSize() = 0;
   virtual bool preventShadowTreeCommitExhaustion() = 0;
   virtual bool shouldPressibilityUseW3CPointerEventsForHover() = 0;
+  virtual bool shouldResetClickableWhenRecyclingView() = 0;
+  virtual bool shouldResetOnClickListenerWhenRecyclingView() = 0;
   virtual bool shouldSetEnabledBasedOnAccessibilityState() = 0;
+  virtual bool shouldSetIsClickableByDefault() = 0;
   virtual bool shouldTriggerResponderTransferOnScrollAndroid() = 0;
   virtual bool skipActivityIdentityAssertionOnHostPause() = 0;
   virtual bool traceTurboModulePromiseRejectionsOnAndroid() = 0;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dc1786ebed10af9cf4343d88b6336960>>
+ * @generated SignedSource<<beb262bccd5457244fb5f24a5b74cbdc>>
  */
 
 /**
@@ -45,8 +45,6 @@ class NativeReactNativeFeatureFlags
   bool cxxNativeAnimatedRemoveJsSync(jsi::Runtime& runtime);
 
   bool disableEarlyViewCommandExecution(jsi::Runtime& runtime);
-
-  bool disableFabricCommitInCXXAnimated(jsi::Runtime& runtime);
 
   bool disableImageViewPreallocationAndroid(jsi::Runtime& runtime);
 
@@ -176,7 +174,13 @@ class NativeReactNativeFeatureFlags
 
   bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 
+  bool shouldResetClickableWhenRecyclingView(jsi::Runtime& runtime);
+
+  bool shouldResetOnClickListenerWhenRecyclingView(jsi::Runtime& runtime);
+
   bool shouldSetEnabledBasedOnAccessibilityState(jsi::Runtime& runtime);
+
+  bool shouldSetIsClickableByDefault(jsi::Runtime& runtime);
 
   bool shouldTriggerResponderTransferOnScrollAndroid(jsi::Runtime& runtime);
 

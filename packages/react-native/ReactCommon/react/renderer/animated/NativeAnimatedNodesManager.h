@@ -72,6 +72,12 @@ class NativeAnimatedNodesManager {
 
   ~NativeAnimatedNodesManager() noexcept;
 
+  // Non-copyable and non-movable to prevent accidental copies or moves of this resource-heavy manager
+  NativeAnimatedNodesManager(const NativeAnimatedNodesManager &) = delete;
+  NativeAnimatedNodesManager &operator=(const NativeAnimatedNodesManager &) = delete;
+  NativeAnimatedNodesManager(NativeAnimatedNodesManager &&) = delete;
+  NativeAnimatedNodesManager &operator=(NativeAnimatedNodesManager &&) = delete;
+
   template <typename T, typename = std::enable_if_t<std::is_base_of_v<AnimatedNode, T>>>
   T *getAnimatedNode(Tag tag) const
     requires(std::is_base_of_v<AnimatedNode, T>)
@@ -179,7 +185,7 @@ class NativeAnimatedNodesManager {
 
   void updateNodes(const std::set<int> &finishedAnimationValueNodes = {}) noexcept;
 
-  folly::dynamic managedProps(Tag tag) const noexcept;
+  folly::dynamic getManagedProps(Tag tag) const noexcept;
 
   bool hasManagedProps() const noexcept;
 

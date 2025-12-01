@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5e4e22e976ce1724191c7b7e381ea5a1>>
+ * @generated SignedSource<<9fb3e60f99756f099b573d4fb852d18b>>
  */
 
 /**
@@ -66,12 +66,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableEarlyViewCommandExecution() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableEarlyViewCommandExecution");
-    return method(javaProvider_);
-  }
-
-  bool disableFabricCommitInCXXAnimated() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableFabricCommitInCXXAnimated");
     return method(javaProvider_);
   }
 
@@ -459,9 +453,27 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool shouldResetClickableWhenRecyclingView() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldResetClickableWhenRecyclingView");
+    return method(javaProvider_);
+  }
+
+  bool shouldResetOnClickListenerWhenRecyclingView() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldResetOnClickListenerWhenRecyclingView");
+    return method(javaProvider_);
+  }
+
   bool shouldSetEnabledBasedOnAccessibilityState() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldSetEnabledBasedOnAccessibilityState");
+    return method(javaProvider_);
+  }
+
+  bool shouldSetIsClickableByDefault() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldSetIsClickableByDefault");
     return method(javaProvider_);
   }
 
@@ -600,11 +612,6 @@ bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync(
 bool JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid(
@@ -927,9 +934,24 @@ bool JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsFo
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::shouldResetClickableWhenRecyclingView(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::shouldResetClickableWhenRecyclingView();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::shouldResetOnClickListenerWhenRecyclingView(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::shouldResetOnClickListenerWhenRecyclingView();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::shouldSetEnabledBasedOnAccessibilityState(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::shouldSetEnabledBasedOnAccessibilityState();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::shouldSetIsClickableByDefault(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::shouldSetIsClickableByDefault();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::shouldTriggerResponderTransferOnScrollAndroid(
@@ -1068,9 +1090,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "disableEarlyViewCommandExecution",
         JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution),
-      makeNativeMethod(
-        "disableFabricCommitInCXXAnimated",
-        JReactNativeFeatureFlagsCxxInterop::disableFabricCommitInCXXAnimated),
       makeNativeMethod(
         "disableImageViewPreallocationAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid),
@@ -1264,8 +1283,17 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "shouldPressibilityUseW3CPointerEventsForHover",
         JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover),
       makeNativeMethod(
+        "shouldResetClickableWhenRecyclingView",
+        JReactNativeFeatureFlagsCxxInterop::shouldResetClickableWhenRecyclingView),
+      makeNativeMethod(
+        "shouldResetOnClickListenerWhenRecyclingView",
+        JReactNativeFeatureFlagsCxxInterop::shouldResetOnClickListenerWhenRecyclingView),
+      makeNativeMethod(
         "shouldSetEnabledBasedOnAccessibilityState",
         JReactNativeFeatureFlagsCxxInterop::shouldSetEnabledBasedOnAccessibilityState),
+      makeNativeMethod(
+        "shouldSetIsClickableByDefault",
+        JReactNativeFeatureFlagsCxxInterop::shouldSetIsClickableByDefault),
       makeNativeMethod(
         "shouldTriggerResponderTransferOnScrollAndroid",
         JReactNativeFeatureFlagsCxxInterop::shouldTriggerResponderTransferOnScrollAndroid),

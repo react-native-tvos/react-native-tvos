@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e5affd56757a5b815ac0a16305d1a82d>>
+ * @generated SignedSource<<1de8bf337f3ea0bf88b21fcd0ec96722>>
  */
 
 /**
@@ -44,10 +44,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool disableEarlyViewCommandExecution() override {
-    return false;
-  }
-
-  bool disableFabricCommitInCXXAnimated() override {
     return false;
   }
 
@@ -307,8 +303,20 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool shouldResetClickableWhenRecyclingView() override {
+    return true;
+  }
+
+  bool shouldResetOnClickListenerWhenRecyclingView() override {
+    return true;
+  }
+
   bool shouldSetEnabledBasedOnAccessibilityState() override {
     return true;
+  }
+
+  bool shouldSetIsClickableByDefault() override {
+    return false;
   }
 
   bool shouldTriggerResponderTransferOnScrollAndroid() override {

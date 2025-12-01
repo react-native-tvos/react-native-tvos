@@ -764,10 +764,7 @@ bool NativeAnimatedNodesManager::onAnimationFrame(double timestamp) {
 
     if (driver->getIsComplete()) {
       hasFinishedAnimations = true;
-      const auto shouldRemoveJsSync =
-          ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() &&
-          !ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
-      if (shouldRemoveJsSync) {
+      if (ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync()) {
         finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
       }
     }
@@ -796,7 +793,7 @@ bool NativeAnimatedNodesManager::onAnimationFrame(double timestamp) {
   return commitProps();
 }
 
-folly::dynamic NativeAnimatedNodesManager::managedProps(
+folly::dynamic NativeAnimatedNodesManager::getManagedProps(
     Tag tag) const noexcept {
   std::lock_guard<std::mutex> lock(connectedAnimatedNodesMutex_);
   if (const auto iter = connectedAnimatedNodes_.find(tag);
@@ -965,10 +962,7 @@ AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
 
         if (driver->getIsComplete()) {
           hasFinishedAnimations = true;
-          const auto shouldRemoveJsSync =
-              ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() &&
-              !ReactNativeFeatureFlags::disableFabricCommitInCXXAnimated();
-          if (shouldRemoveJsSync) {
+          if (ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync()) {
             finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
           }
         }

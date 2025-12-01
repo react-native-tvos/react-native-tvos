@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fb735bdc4e4085fd415f21894340dd75>>
+ * @generated SignedSource<<9e0cce15cf8f23fcb91e44f59b99426b>>
  */
 
 /**
@@ -37,7 +37,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool cxxNativeAnimatedEnabled();
   bool cxxNativeAnimatedRemoveJsSync();
   bool disableEarlyViewCommandExecution();
-  bool disableFabricCommitInCXXAnimated();
   bool disableImageViewPreallocationAndroid();
   bool disableMountItemReorderingAndroid();
   bool disableOldAndroidAttachmentMetricsWorkarounds();
@@ -102,7 +101,10 @@ class ReactNativeFeatureFlagsAccessor {
   double preparedTextCacheSize();
   bool preventShadowTreeCommitExhaustion();
   bool shouldPressibilityUseW3CPointerEventsForHover();
+  bool shouldResetClickableWhenRecyclingView();
+  bool shouldResetOnClickListenerWhenRecyclingView();
   bool shouldSetEnabledBasedOnAccessibilityState();
+  bool shouldSetIsClickableByDefault();
   bool shouldTriggerResponderTransferOnScrollAndroid();
   bool skipActivityIdentityAssertionOnHostPause();
   bool traceTurboModulePromiseRejectionsOnAndroid();
@@ -132,14 +134,13 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 89> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 91> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedRemoveJsSync_;
   std::atomic<std::optional<bool>> disableEarlyViewCommandExecution_;
-  std::atomic<std::optional<bool>> disableFabricCommitInCXXAnimated_;
   std::atomic<std::optional<bool>> disableImageViewPreallocationAndroid_;
   std::atomic<std::optional<bool>> disableMountItemReorderingAndroid_;
   std::atomic<std::optional<bool>> disableOldAndroidAttachmentMetricsWorkarounds_;
@@ -204,7 +205,10 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<double>> preparedTextCacheSize_;
   std::atomic<std::optional<bool>> preventShadowTreeCommitExhaustion_;
   std::atomic<std::optional<bool>> shouldPressibilityUseW3CPointerEventsForHover_;
+  std::atomic<std::optional<bool>> shouldResetClickableWhenRecyclingView_;
+  std::atomic<std::optional<bool>> shouldResetOnClickListenerWhenRecyclingView_;
   std::atomic<std::optional<bool>> shouldSetEnabledBasedOnAccessibilityState_;
+  std::atomic<std::optional<bool>> shouldSetIsClickableByDefault_;
   std::atomic<std::optional<bool>> shouldTriggerResponderTransferOnScrollAndroid_;
   std::atomic<std::optional<bool>> skipActivityIdentityAssertionOnHostPause_;
   std::atomic<std::optional<bool>> traceTurboModulePromiseRejectionsOnAndroid_;

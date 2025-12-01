@@ -135,6 +135,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private @Nullable MaintainVisibleScrollPositionHelper mMaintainVisibleContentPositionHelper;
   private int mFadingEdgeLengthStart = 0;
   private int mFadingEdgeLengthEnd = 0;
+  private boolean mEmittedOverScrollSinceScrollBegin = false;
 
   public ReactHorizontalScrollView(Context context) {
     this(context, null);
@@ -738,6 +739,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     }
     ReactScrollViewHelper.emitScrollBeginDragEvent(this);
     mDragging = true;
+    mEmittedOverScrollSinceScrollBegin = false;
     enableFpsListener();
     getFlingAnimator().cancel();
   }
@@ -1082,6 +1084,13 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
       }
 
       // END FB SCROLLVIEW CHANGE
+    }
+
+    if (ReactNativeFeatureFlags.shouldTriggerResponderTransferOnScrollAndroid()
+        && clampedX
+        && mEmittedOverScrollSinceScrollBegin == false) {
+      ReactScrollViewHelper.emitScrollEvent(this, 0f, 0f);
+      mEmittedOverScrollSinceScrollBegin = true;
     }
 
     super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
