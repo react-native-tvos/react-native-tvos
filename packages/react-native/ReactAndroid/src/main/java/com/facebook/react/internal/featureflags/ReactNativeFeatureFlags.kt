@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c0e50c34e468462ec0b019db612f2d07>>
+ * @generated SignedSource<<5685f79f9b08afe94f5b3e8ec8ff6748>>
  */
 
 /**
@@ -47,12 +47,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun cxxNativeAnimatedEnabled(): Boolean = accessor.cxxNativeAnimatedEnabled()
-
-  /**
-   * Removes JS sync at end of native animation
-   */
-  @JvmStatic
-  public fun cxxNativeAnimatedRemoveJsSync(): Boolean = accessor.cxxNativeAnimatedRemoveJsSync()
 
   /**
    * Dispatch view commands in mount item order.
@@ -341,12 +335,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableViewRecyclingForView(): Boolean = accessor.enableViewRecyclingForView()
-
-  /**
-   * Set clipping to drawingRect of ScrollView.
-   */
-  @JvmStatic
-  public fun enableVirtualViewClippingWithoutScrollViewClipping(): Boolean = accessor.enableVirtualViewClippingWithoutScrollViewClipping()
 
   /**
    * Enables the experimental version of `VirtualViewContainerState`.

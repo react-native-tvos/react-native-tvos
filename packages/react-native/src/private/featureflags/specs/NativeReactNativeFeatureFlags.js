@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<54bc4f14b5fcff90483e8486a15f8bc2>>
+ * @generated SignedSource<<2604998265d9aa6a9b50d78502aa8d10>>
  * @flow strict
  * @noformat
  */
@@ -28,7 +28,6 @@ export interface Spec extends TurboModule {
   +commonTestFlagWithoutNativeImplementation?: () => boolean;
   +cdpInteractionMetricsEnabled?: () => boolean;
   +cxxNativeAnimatedEnabled?: () => boolean;
-  +cxxNativeAnimatedRemoveJsSync?: () => boolean;
   +disableEarlyViewCommandExecution?: () => boolean;
   +disableImageViewPreallocationAndroid?: () => boolean;
   +disableMountItemReorderingAndroid?: () => boolean;
@@ -77,7 +76,6 @@ export interface Spec extends TurboModule {
   +enableViewRecyclingForScrollView?: () => boolean;
   +enableViewRecyclingForText?: () => boolean;
   +enableViewRecyclingForView?: () => boolean;
-  +enableVirtualViewClippingWithoutScrollViewClipping?: () => boolean;
   +enableVirtualViewContainerStateExperimental?: () => boolean;
   +enableVirtualViewDebugFeatures?: () => boolean;
   +enableVirtualViewRenderState?: () => boolean;

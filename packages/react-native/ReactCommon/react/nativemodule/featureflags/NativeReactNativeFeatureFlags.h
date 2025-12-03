@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<beb262bccd5457244fb5f24a5b74cbdc>>
+ * @generated SignedSource<<a9b91d43221aae62d3a6811867a72695>>
  */
 
 /**
@@ -41,8 +41,6 @@ class NativeReactNativeFeatureFlags
   bool cdpInteractionMetricsEnabled(jsi::Runtime& runtime);
 
   bool cxxNativeAnimatedEnabled(jsi::Runtime& runtime);
-
-  bool cxxNativeAnimatedRemoveJsSync(jsi::Runtime& runtime);
 
   bool disableEarlyViewCommandExecution(jsi::Runtime& runtime);
 
@@ -139,8 +137,6 @@ class NativeReactNativeFeatureFlags
   bool enableViewRecyclingForText(jsi::Runtime& runtime);
 
   bool enableViewRecyclingForView(jsi::Runtime& runtime);
-
-  bool enableVirtualViewClippingWithoutScrollViewClipping(jsi::Runtime& runtime);
 
   bool enableVirtualViewContainerStateExperimental(jsi::Runtime& runtime);
 

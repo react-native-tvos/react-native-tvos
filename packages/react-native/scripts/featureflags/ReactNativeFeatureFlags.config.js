@@ -82,16 +82,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    cxxNativeAnimatedRemoveJsSync: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2025-06-16',
-        description: 'Removes JS sync at end of native animation',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     disableEarlyViewCommandExecution: {
       defaultValue: false,
       metadata: {
@@ -599,16 +589,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-02-05',
         description:
           'Enables View Recycling for <View> via ReactViewGroup/ReactViewManager.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableVirtualViewClippingWithoutScrollViewClipping: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2025-10-30',
-        description: 'Set clipping to drawingRect of ScrollView.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

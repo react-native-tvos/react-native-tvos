@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9fb3e60f99756f099b573d4fb852d18b>>
+ * @generated SignedSource<<66f2c701d95db2fbeefb2705ae326e08>>
  */
 
 /**
@@ -54,12 +54,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool cxxNativeAnimatedEnabled() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("cxxNativeAnimatedEnabled");
-    return method(javaProvider_);
-  }
-
-  bool cxxNativeAnimatedRemoveJsSync() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("cxxNativeAnimatedRemoveJsSync");
     return method(javaProvider_);
   }
 
@@ -351,12 +345,6 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
-  bool enableVirtualViewClippingWithoutScrollViewClipping() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableVirtualViewClippingWithoutScrollViewClipping");
-    return method(javaProvider_);
-  }
-
   bool enableVirtualViewContainerStateExperimental() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableVirtualViewContainerStateExperimental");
@@ -604,11 +592,6 @@ bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedEnabled(
   return ReactNativeFeatureFlags::cxxNativeAnimatedEnabled();
 }
 
-bool JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync();
-}
-
 bool JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
@@ -849,11 +832,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enableViewRecyclingForView(
   return ReactNativeFeatureFlags::enableViewRecyclingForView();
 }
 
-bool JReactNativeFeatureFlagsCxxInterop::enableVirtualViewClippingWithoutScrollViewClipping(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableVirtualViewClippingWithoutScrollViewClipping();
-}
-
 bool JReactNativeFeatureFlagsCxxInterop::enableVirtualViewContainerStateExperimental(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableVirtualViewContainerStateExperimental();
@@ -1085,9 +1063,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "cxxNativeAnimatedEnabled",
         JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedEnabled),
       makeNativeMethod(
-        "cxxNativeAnimatedRemoveJsSync",
-        JReactNativeFeatureFlagsCxxInterop::cxxNativeAnimatedRemoveJsSync),
-      makeNativeMethod(
         "disableEarlyViewCommandExecution",
         JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution),
       makeNativeMethod(
@@ -1231,9 +1206,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableViewRecyclingForView",
         JReactNativeFeatureFlagsCxxInterop::enableViewRecyclingForView),
-      makeNativeMethod(
-        "enableVirtualViewClippingWithoutScrollViewClipping",
-        JReactNativeFeatureFlagsCxxInterop::enableVirtualViewClippingWithoutScrollViewClipping),
       makeNativeMethod(
         "enableVirtualViewContainerStateExperimental",
         JReactNativeFeatureFlagsCxxInterop::enableVirtualViewContainerStateExperimental),

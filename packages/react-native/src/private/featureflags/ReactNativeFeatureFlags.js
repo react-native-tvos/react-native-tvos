@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a4143ac4b1da8f61f5f144362bc40209>>
+ * @generated SignedSource<<1732204fe9acf34158e7f9e4aec04161>>
  * @flow strict
  * @noformat
  */
@@ -54,7 +54,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   commonTestFlagWithoutNativeImplementation: Getter<boolean>,
   cdpInteractionMetricsEnabled: Getter<boolean>,
   cxxNativeAnimatedEnabled: Getter<boolean>,
-  cxxNativeAnimatedRemoveJsSync: Getter<boolean>,
   disableEarlyViewCommandExecution: Getter<boolean>,
   disableImageViewPreallocationAndroid: Getter<boolean>,
   disableMountItemReorderingAndroid: Getter<boolean>,
@@ -103,7 +102,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableViewRecyclingForScrollView: Getter<boolean>,
   enableViewRecyclingForText: Getter<boolean>,
   enableViewRecyclingForView: Getter<boolean>,
-  enableVirtualViewClippingWithoutScrollViewClipping: Getter<boolean>,
   enableVirtualViewContainerStateExperimental: Getter<boolean>,
   enableVirtualViewDebugFeatures: Getter<boolean>,
   enableVirtualViewRenderState: Getter<boolean>,
@@ -240,10 +238,6 @@ export const cdpInteractionMetricsEnabled: Getter<boolean> = createNativeFlagGet
  * Use a C++ implementation of Native Animated instead of the platform implementation.
  */
 export const cxxNativeAnimatedEnabled: Getter<boolean> = createNativeFlagGetter('cxxNativeAnimatedEnabled', false);
-/**
- * Removes JS sync at end of native animation
- */
-export const cxxNativeAnimatedRemoveJsSync: Getter<boolean> = createNativeFlagGetter('cxxNativeAnimatedRemoveJsSync', false);
 /**
  * Dispatch view commands in mount item order.
  */
@@ -436,10 +430,6 @@ export const enableViewRecyclingForText: Getter<boolean> = createNativeFlagGette
  * Enables View Recycling for <View> via ReactViewGroup/ReactViewManager.
  */
 export const enableViewRecyclingForView: Getter<boolean> = createNativeFlagGetter('enableViewRecyclingForView', true);
-/**
- * Set clipping to drawingRect of ScrollView.
- */
-export const enableVirtualViewClippingWithoutScrollViewClipping: Getter<boolean> = createNativeFlagGetter('enableVirtualViewClippingWithoutScrollViewClipping', true);
 /**
  * Enables the experimental version of `VirtualViewContainerState`.
  */

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<198b09049f5459ae5a037555bc57d2ee>>
+ * @generated SignedSource<<46e1f708d91d5ec45c866b8192192e72>>
  */
 
 /**
@@ -28,8 +28,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun cdpInteractionMetricsEnabled(): Boolean = false
 
   override fun cxxNativeAnimatedEnabled(): Boolean = false
-
-  override fun cxxNativeAnimatedRemoveJsSync(): Boolean = false
 
   override fun disableEarlyViewCommandExecution(): Boolean = false
 
@@ -126,8 +124,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableViewRecyclingForText(): Boolean = true
 
   override fun enableViewRecyclingForView(): Boolean = true
-
-  override fun enableVirtualViewClippingWithoutScrollViewClipping(): Boolean = true
 
   override fun enableVirtualViewContainerStateExperimental(): Boolean = false
 

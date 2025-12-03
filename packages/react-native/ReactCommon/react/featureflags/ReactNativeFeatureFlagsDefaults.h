@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1de8bf337f3ea0bf88b21fcd0ec96722>>
+ * @generated SignedSource<<a220c6699baacba2e95d610314d90c67>>
  */
 
 /**
@@ -36,10 +36,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool cxxNativeAnimatedEnabled() override {
-    return false;
-  }
-
-  bool cxxNativeAnimatedRemoveJsSync() override {
     return false;
   }
 
@@ -232,10 +228,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableViewRecyclingForView() override {
-    return true;
-  }
-
-  bool enableVirtualViewClippingWithoutScrollViewClipping() override {
     return true;
   }
 

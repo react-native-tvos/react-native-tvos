@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<87871166467d58a3f051e45d7786a73f>>
+ * @generated SignedSource<<34d260e51b2f70825c4867c98bbcf3de>>
  */
 
 /**
@@ -36,10 +36,6 @@ bool ReactNativeFeatureFlags::cdpInteractionMetricsEnabled() {
 
 bool ReactNativeFeatureFlags::cxxNativeAnimatedEnabled() {
   return getAccessor().cxxNativeAnimatedEnabled();
-}
-
-bool ReactNativeFeatureFlags::cxxNativeAnimatedRemoveJsSync() {
-  return getAccessor().cxxNativeAnimatedRemoveJsSync();
 }
 
 bool ReactNativeFeatureFlags::disableEarlyViewCommandExecution() {
@@ -232,10 +228,6 @@ bool ReactNativeFeatureFlags::enableViewRecyclingForText() {
 
 bool ReactNativeFeatureFlags::enableViewRecyclingForView() {
   return getAccessor().enableViewRecyclingForView();
-}
-
-bool ReactNativeFeatureFlags::enableVirtualViewClippingWithoutScrollViewClipping() {
-  return getAccessor().enableVirtualViewClippingWithoutScrollViewClipping();
 }
 
 bool ReactNativeFeatureFlags::enableVirtualViewContainerStateExperimental() {

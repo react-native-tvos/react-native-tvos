@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<cdd551b82f51be4eb0ca7e90ea5f572f>>
+ * @generated SignedSource<<c19ea5e9ad6435b1f8587287cacf020b>>
  */
 
 /**
@@ -27,7 +27,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var commonTestFlagCache: Boolean? = null
   private var cdpInteractionMetricsEnabledCache: Boolean? = null
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
-  private var cxxNativeAnimatedRemoveJsSyncCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
   private var disableImageViewPreallocationAndroidCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
@@ -76,7 +75,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableViewRecyclingForScrollViewCache: Boolean? = null
   private var enableViewRecyclingForTextCache: Boolean? = null
   private var enableViewRecyclingForViewCache: Boolean? = null
-  private var enableVirtualViewClippingWithoutScrollViewClippingCache: Boolean? = null
   private var enableVirtualViewContainerStateExperimentalCache: Boolean? = null
   private var enableVirtualViewDebugFeaturesCache: Boolean? = null
   private var enableVirtualViewRenderStateCache: Boolean? = null
@@ -142,16 +140,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.cxxNativeAnimatedEnabled()
       accessedFeatureFlags.add("cxxNativeAnimatedEnabled")
       cxxNativeAnimatedEnabledCache = cached
-    }
-    return cached
-  }
-
-  override fun cxxNativeAnimatedRemoveJsSync(): Boolean {
-    var cached = cxxNativeAnimatedRemoveJsSyncCache
-    if (cached == null) {
-      cached = currentProvider.cxxNativeAnimatedRemoveJsSync()
-      accessedFeatureFlags.add("cxxNativeAnimatedRemoveJsSync")
-      cxxNativeAnimatedRemoveJsSyncCache = cached
     }
     return cached
   }
@@ -632,16 +620,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableViewRecyclingForView()
       accessedFeatureFlags.add("enableViewRecyclingForView")
       enableViewRecyclingForViewCache = cached
-    }
-    return cached
-  }
-
-  override fun enableVirtualViewClippingWithoutScrollViewClipping(): Boolean {
-    var cached = enableVirtualViewClippingWithoutScrollViewClippingCache
-    if (cached == null) {
-      cached = currentProvider.enableVirtualViewClippingWithoutScrollViewClipping()
-      accessedFeatureFlags.add("enableVirtualViewClippingWithoutScrollViewClipping")
-      enableVirtualViewClippingWithoutScrollViewClippingCache = cached
     }
     return cached
   }
