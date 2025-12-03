@@ -179,6 +179,7 @@ fix_*.patch
 
 /packages/debugger-shell/build/
 /packages/*/dist/
+!/packages/debugger-frontend/dist/
 
 # Tools
 /tools/rntv-workflows/.eas/build/*/build
