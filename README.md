@@ -94,64 +94,26 @@ See the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv
 
 Using Expo's [continuous native generation (CNG)](https://docs.expo.dev/workflow/continuous-native-generation/) model, projects created this way can be used to build either mobile or TV apps, taking advantage of the full support for both mobile and TV platforms in this repo.
 
-### Project creation using the React Native Community CLI
+### Creating a new project with the Community CLI
 
-As of React Native 0.75.x, the template that used to reside in the `react-native` core package has been moved to a [new community repo](https://github.com/react-native-community/template) and will be maintained there. To support developers that wish to continue using the community CLI, we have created a [new TV template repository](https://github.com/react-native-tvos/template-tv) and will maintain a TV port of this template.
+We maintain [template-tv](https://github.com/react-native-tvos/template-tv), a TV-specific template for developers using the React Native Community CLI.
 
-> _Note:_ The new TV template will only build apps for Apple TV and Android TV. Multiple platform targets are no longer supported in React Native app Podfiles.
+> [!NOTE]
+> This template only supports Apple TV and Android TV. Multiple platform targets are no longer supported in React Native app Podfiles.
 
-To create a new project for RNTV 0.81:
-
+**Quick start:**
 ```sh
-# 
-# Init an app called 'TVTest', note that you must not be in a node module (directory with node_modules sub-directory) for this to work
-$ npx @react-native-community/cli@latest init TVTest --template @react-native-tvos/template-tv
-                                                          
-               ######                ######               
-             ###     ####        ####     ###             
-            ##          ###    ###          ##            
-            ##             ####             ##            
-            ##             ####             ##            
-            ##           ##    ##           ##            
-            ##         ###      ###         ##            
-             ##  ########################  ##             
-          ######    ###            ###    ######          
-      ###     ##    ##              ##    ##     ###      
-   ###         ## ###      ####      ### ##         ###   
-  ##           ####      ########      ####           ##  
- ##             ###     ##########     ###             ## 
-  ##           ####      ########      ####           ##  
-   ###         ## ###      ####      ### ##         ###   
-      ###     ##    ##              ##    ##     ###      
-          ######    ###            ###    ######          
-             ##  ########################  ##             
-            ##         ###      ###         ##            
-            ##           ##    ##           ##            
-            ##             ####             ##            
-            ##             ####             ##            
-            ##          ###    ###          ##            
-             ###     ####        ####     ###             
-               ######                ######               
-                                                          
+# Initialize a new app called 'TVTest'
+# This command should be run outside of any existing node project
+npx @react-native-community/cli@latest init TVTest --template @react-native-tvos/template-tv
 
-              Welcome to React Native 0.81!                
-                 Learn once, write anywhere               
+cd TVTest
 
-✔ Downloading template
-✔ Copying template
-✔ Processing template
-✔ Installing dependencies
-✔ Do you want to install CocoaPods now? Only needed if you run your project in Xcode directly … yes
-✔ Installing Ruby Gems
-✔ Installing CocoaPods dependencies  (this may take a few minutes)
-.
-.
-.
-$ cd TVTest
-# Now build and start the app in the tvOS Simulator - this will only work on a macOS machine.
+# Build and run on tvOS Simulator (macOS only, requires Apple TV simulator)
 npx react-native run-ios --simulator "Apple TV"
-# This command builds and starts the app in an Android TV emulator (needs to be created in advance).
-npx react-native run:android --device tv_api_31
+
+# Build and run on Android TV emulator (requires Android TV emulator)
+npx react-native run-android --device tv_api_31
 ```
 
 ## How to support TV specific file extensions
