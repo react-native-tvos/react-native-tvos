@@ -96,7 +96,7 @@ Using Expo's [continuous native generation (CNG)](https://docs.expo.dev/workflow
 
 ### Creating a new project with the Community CLI
 
-We maintain [template-tv](https://github.com/react-native-tvos/template-tv), a TV-specific template for developers using the React Native Community CLI.
+We maintain [template-tv](https://github.com/react-native-tvos/template-tv), a TV-specific template for developers using the React Native Community CLI. This project extends the Community CLI with `run-tvos`, `build-tvos`, and `log-tvos` commands for tvOS development.
 
 > [!NOTE]
 > This template only supports Apple TV and Android TV. Multiple platform targets are no longer supported in React Native app Podfiles.
@@ -110,7 +110,7 @@ npx @react-native-community/cli@latest init TVTest --template @react-native-tvos
 cd TVTest
 
 # Build and run on tvOS Simulator (macOS only, requires Apple TV simulator)
-npx react-native run-ios --simulator "Apple TV"
+npx react-native run-tvos --simulator "Apple TV"
 
 # Build and run on Android TV emulator (requires Android TV emulator)
 npx react-native run-android --device tv_api_31

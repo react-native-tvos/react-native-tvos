@@ -136,4 +136,21 @@ if (android != null) {
   };
 }
 
+try {
+  const apple = require('@react-native-community/cli-platform-apple');
+  const tvosCommands = require('./tvosCommands');
+
+  config.commands.push(...tvosCommands);
+  config.platforms.tvos = {
+    projectConfig: apple.getProjectConfig({platformName: 'tvos'}),
+    dependencyConfig: apple.getDependencyConfig({platformName: 'tvos'}),
+  };
+} catch {
+  if (verbose) {
+    console.warn(
+      '@react-native-community/cli-platform-apple not found, the react-native.config.js may be unusable.',
+    );
+  }
+}
+
 module.exports = config;
