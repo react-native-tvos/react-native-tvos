@@ -91,6 +91,7 @@
     "React-Core.podspec",
     "React-Core-prebuilt.podspec",
     "react-native.config.js",
+    "tvosCommands.js",
     "React.podspec",
     "React",
     "!React/Fabric/RCTThirdPartyFabricComponentsProvider.*",
