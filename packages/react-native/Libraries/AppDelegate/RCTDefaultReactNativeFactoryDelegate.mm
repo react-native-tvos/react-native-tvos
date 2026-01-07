@@ -59,9 +59,7 @@
 {
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, moduleName, initProps, YES);
 
-#if !TARGET_OS_TV
-  rootView.backgroundColor = [UIColor systemBackgroundColor];
-#endif
+  rootView.backgroundColor = [UIColor rntv_systemBackgroundColor];
 
   return rootView;
 }

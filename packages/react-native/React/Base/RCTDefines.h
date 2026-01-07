@@ -175,3 +175,10 @@
     @throw _RCTNotImplementedException(_cmd, [self class]);                                             \
   }                                                                                                     \
   _Pragma("clang diagnostic pop")
+
+/**
+ * Import system color support for all platforms
+ */
+#if __OBJC__
+#import "RCTTVColorSupport.h"
+#endif
