@@ -354,7 +354,6 @@ public abstract class com/facebook/react/ReactPackageTurboModuleManagerDelegate 
 	public fun getModule (Ljava/lang/String;)Lcom/facebook/react/turbomodule/core/interfaces/TurboModule;
 	public fun unstable_isLegacyModuleRegistered (Ljava/lang/String;)Z
 	public fun unstable_isModuleRegistered (Ljava/lang/String;)Z
-	public fun unstable_shouldEnableLegacyModuleInterop ()Z
 }
 
 public abstract class com/facebook/react/ReactPackageTurboModuleManagerDelegate$Builder {
@@ -2465,6 +2464,7 @@ public final class com/facebook/react/modules/appearance/AppearanceModule : com/
 	public fun addListener (Ljava/lang/String;)V
 	public final fun emitAppearanceChanged (Ljava/lang/String;)V
 	public fun getColorScheme ()Ljava/lang/String;
+	public fun invalidate ()V
 	public final fun invalidatePlatformColorCache ()V
 	public final fun onConfigurationChanged (Landroid/content/Context;)V
 	public fun removeListeners (D)V
@@ -2475,7 +2475,14 @@ public final class com/facebook/react/modules/appearance/AppearanceModule$Compan
 }
 
 public abstract interface class com/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme {
+	public abstract fun addSchemeChangeListener (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun getScheme ()Ljava/lang/String;
+	public abstract fun removeSchemeChangeListener (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class com/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme$DefaultImpls {
+	public static fun addSchemeChangeListener (Lcom/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme;Lkotlin/jvm/functions/Function0;)V
+	public static fun removeSchemeChangeListener (Lcom/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme;Lkotlin/jvm/functions/Function0;)V
 }
 
 public abstract interface class com/facebook/react/modules/appregistry/AppRegistry : com/facebook/react/bridge/JavaScriptModule {
@@ -3842,7 +3849,6 @@ public abstract interface class com/facebook/react/uimanager/ReactShadowNode {
 	public abstract fun getLayoutX ()F
 	public abstract fun getLayoutY ()F
 	public abstract fun getNativeChildCount ()I
-	public abstract fun getNativeKind ()Lcom/facebook/react/uimanager/NativeKind;
 	public abstract fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNode;)I
 	public abstract fun getNativeParent ()Lcom/facebook/react/uimanager/ReactShadowNode;
 	public abstract fun getPadding (I)F
@@ -3971,7 +3977,6 @@ public class com/facebook/react/uimanager/ReactShadowNodeImpl : com/facebook/rea
 	public final fun getLayoutX ()F
 	public final fun getLayoutY ()F
 	public final fun getNativeChildCount ()I
-	public fun getNativeKind ()Lcom/facebook/react/uimanager/NativeKind;
 	public synthetic fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNode;)I
 	public final fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNodeImpl;)I
 	public synthetic fun getNativeParent ()Lcom/facebook/react/uimanager/ReactShadowNode;

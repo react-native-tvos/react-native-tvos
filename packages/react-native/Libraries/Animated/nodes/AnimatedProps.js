@@ -14,7 +14,9 @@ import type {AnimatedNodeConfig} from './AnimatedNode';
 import type {AnimatedStyleAllowlist} from './AnimatedStyle';
 
 import NativeAnimatedHelper from '../../../src/private/animated/NativeAnimatedHelper';
+import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import {findNodeHandle} from '../../ReactNative/RendererProxy';
+import {getNodeFromPublicInstance} from '../../ReactPrivate/ReactNativePrivateInterface';
 import flattenStyle from '../../StyleSheet/flattenStyle';
 import {AnimatedEvent} from '../AnimatedEvent';
 import AnimatedNode from './AnimatedNode';
@@ -34,12 +36,12 @@ type TargetView = {
 type TargetViewInstance = React.ElementRef<React.ElementType>;
 
 function createAnimatedProps(
-  inputProps: {[string]: mixed},
+  inputProps: {[string]: unknown},
   allowlist: ?AnimatedPropsAllowlist,
-): [$ReadOnlyArray<string>, $ReadOnlyArray<AnimatedNode>, {[string]: mixed}] {
+): [$ReadOnlyArray<string>, $ReadOnlyArray<AnimatedNode>, {[string]: unknown}] {
   const nodeKeys: Array<string> = [];
   const nodes: Array<AnimatedNode> = [];
-  const props: {[string]: mixed} = {};
+  const props: {[string]: unknown} = {};
 
   const keys = Object.keys(inputProps);
   for (let ii = 0, length = keys.length; ii < length; ii++) {
@@ -96,12 +98,12 @@ export default class AnimatedProps extends AnimatedNode {
   _callback: () => void;
   _nodeKeys: $ReadOnlyArray<string>;
   _nodes: $ReadOnlyArray<AnimatedNode>;
-  _props: {[string]: mixed};
+  _props: {[string]: unknown};
   _target: ?TargetView = null;
   _rootTag: ?RootTag = undefined;
 
   constructor(
-    inputProps: {[string]: mixed},
+    inputProps: {[string]: unknown},
     callback: () => void,
     allowlist?: ?AnimatedPropsAllowlist,
     rootTag?: RootTag,
@@ -117,7 +119,7 @@ export default class AnimatedProps extends AnimatedNode {
   }
 
   __getValue(): Object {
-    const props: {[string]: mixed} = {};
+    const props: {[string]: unknown} = {};
 
     const keys = Object.keys(this._props);
     for (let ii = 0, length = keys.length; ii < length; ii++) {
@@ -142,7 +144,7 @@ export default class AnimatedProps extends AnimatedNode {
    * created by this `AnimatedProps` instance.
    */
   __getValueWithStaticProps(staticProps: Object): Object {
-    const props: {[string]: mixed} = {...staticProps};
+    const props: {[string]: unknown} = {...staticProps};
 
     const keys = Object.keys(staticProps);
     for (let ii = 0, length = keys.length; ii < length; ii++) {
@@ -153,7 +155,7 @@ export default class AnimatedProps extends AnimatedNode {
         const staticStyle = staticProps.style;
         const flatStaticStyle = flattenStyle(staticStyle);
         if (maybeNode instanceof AnimatedStyle) {
-          const mutableStyle: {[string]: mixed} =
+          const mutableStyle: {[string]: unknown} =
             flatStaticStyle == null
               ? {}
               : flatStaticStyle === staticStyle
@@ -194,7 +196,7 @@ export default class AnimatedProps extends AnimatedNode {
   }
 
   __getAnimatedValue(): Object {
-    const props: {[string]: mixed} = {};
+    const props: {[string]: unknown} = {};
 
     const nodeKeys = this._nodeKeys;
     const nodes = this._nodes;
@@ -251,7 +253,9 @@ export default class AnimatedProps extends AnimatedNode {
       super.__setPlatformConfig(platformConfig);
 
       if (this._target != null) {
-        this.#connectAnimatedView(this._target);
+        const target = this._target;
+        this.#connectAnimatedView(target);
+        this.#connectShadowNode(target);
       }
     }
   }
@@ -260,9 +264,10 @@ export default class AnimatedProps extends AnimatedNode {
     if (this._target?.instance === instance) {
       return;
     }
-    this._target = {instance, connectedViewTag: null};
+    const target = (this._target = {instance, connectedViewTag: null});
     if (this.__isNative) {
-      this.#connectAnimatedView(this._target);
+      this.#connectAnimatedView(target);
+      this.#connectShadowNode(target);
     }
   }
 
@@ -281,6 +286,27 @@ export default class AnimatedProps extends AnimatedNode {
       viewTag,
     );
     target.connectedViewTag = viewTag;
+  }
+
+  #connectShadowNode(target: TargetView): void {
+    if (
+      !ReactNativeFeatureFlags.cxxNativeAnimatedEnabled() ||
+      //eslint-disable-next-line
+      !ReactNativeFeatureFlags.useSharedAnimatedBackend()
+    ) {
+      return;
+    }
+
+    invariant(this.__isNative, 'Expected node to be marked as "native"');
+    // $FlowExpectedError[incompatible-type] - target.instance may be an HTMLElement but we need ReactNativeElement for Fabric
+    const shadowNode = getNodeFromPublicInstance(target.instance);
+    if (shadowNode == null) {
+      return;
+    }
+    NativeAnimatedHelper.API.connectAnimatedNodeToShadowNodeFamily(
+      this.__getNativeTag(),
+      shadowNode,
+    );
   }
 
   #disconnectAnimatedView(target: TargetView): void {

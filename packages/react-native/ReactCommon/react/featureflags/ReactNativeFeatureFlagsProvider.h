@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8d8563ead19635c98fe335864aa1cad0>>
+ * @generated SignedSource<<8e68f8be2e5f35422ae866390c76f670>>
  */
 
 /**
@@ -82,6 +82,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableVirtualViewWindowFocusDetection() = 0;
   virtual bool enableWebPerformanceAPIsByDefault() = 0;
   virtual bool fixMappingOfEventPrioritiesBetweenFabricAndReact() = 0;
+  virtual bool fixTextClippingAndroid15useBoundsForWidth() = 0;
   virtual bool fuseboxAssertSingleHostState() = 0;
   virtual bool fuseboxEnabledRelease() = 0;
   virtual bool fuseboxNetworkInspectionEnabled() = 0;
@@ -102,8 +103,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool updateRuntimeShadowNodeReferencesOnCommit() = 0;
   virtual bool useAlwaysAvailableJSErrorHandling() = 0;
   virtual bool useFabricInterop() = 0;
-  virtual bool useNativeEqualsInNativeReadableArrayAndroid() = 0;
-  virtual bool useNativeTransformHelperAndroid() = 0;
   virtual bool useNativeViewConfigsInBridgelessMode() = 0;
   virtual bool useRawPropsJsiValue() = 0;
   virtual bool useShadowNodeStateOnClone() = 0;

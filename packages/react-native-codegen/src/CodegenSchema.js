@@ -61,10 +61,8 @@ export type BooleanLiteralTypeAnnotation = $ReadOnly<{
   value: boolean,
 }>;
 
-export type StringLiteralUnionTypeAnnotation = $ReadOnly<{
-  type: 'StringLiteralUnionTypeAnnotation',
-  types: $ReadOnlyArray<StringLiteralTypeAnnotation>,
-}>;
+export type StringLiteralUnionTypeAnnotation =
+  UnionTypeAnnotation<StringLiteralTypeAnnotation>;
 
 export type VoidTypeAnnotation = $ReadOnly<{
   type: 'VoidTypeAnnotation',
@@ -130,6 +128,10 @@ export type OptionsShape = $ReadOnly<{
   // Use for components currently being renamed in paper
   // Will use new name if it is available and fallback to this name
   paperComponentNameDeprecated?: string,
+  // Use to generate C++ Props with optional types for properties defined as optional
+  generateOptionalProperties?: boolean,
+  // Use to generate C++ Props with optional types for object properties defined as optional
+  generateOptionalObjectProperties?: boolean,
 }>;
 
 export type ExtendsPropsShape = $ReadOnly<{
@@ -372,11 +374,6 @@ export type NativeModulePromiseTypeAnnotation = $ReadOnly<{
   elementType: VoidTypeAnnotation | Nullable<NativeModuleBaseTypeAnnotation>,
 }>;
 
-export type UnionTypeAnnotationMemberType =
-  | 'NumberTypeAnnotation'
-  | 'ObjectTypeAnnotation'
-  | 'StringTypeAnnotation';
-
 export type NativeModuleUnionTypeAnnotationMemberType =
   | NativeModuleObjectTypeAnnotation
   | StringLiteralTypeAnnotation
@@ -386,10 +383,8 @@ export type NativeModuleUnionTypeAnnotationMemberType =
   | StringTypeAnnotation
   | NumberTypeAnnotation;
 
-export type NativeModuleUnionTypeAnnotation = $ReadOnly<{
-  type: 'UnionTypeAnnotation',
-  memberType: UnionTypeAnnotationMemberType,
-}>;
+export type NativeModuleUnionTypeAnnotation =
+  UnionTypeAnnotation<NativeModuleUnionTypeAnnotationMemberType>;
 
 export type NativeModuleMixedTypeAnnotation = $ReadOnly<{
   type: 'MixedTypeAnnotation',
@@ -473,6 +468,7 @@ export type CompleteTypeAnnotation =
   | UnsafeAnyTypeAnnotation
   | ArrayTypeAnnotation<CompleteTypeAnnotation>
   | ObjectTypeAnnotation<CompleteTypeAnnotation>
+  | NativeModuleUnionTypeAnnotationMemberType
   // Components
   | CommandTypeAnnotation
   | CompleteReservedTypeAnnotation;

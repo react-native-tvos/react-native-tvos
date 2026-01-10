@@ -78,9 +78,124 @@ void packBackgroundColor(
     folly::dynamic& dyn,
     const AnimatedPropBase& animatedProp) {
   const auto& backgroundColor = get<SharedColor>(animatedProp);
-  if (backgroundColor) {
-    dyn.insert("backgroundColor", static_cast<int32_t>(*backgroundColor));
+  dyn.insert("backgroundColor", static_cast<int32_t>(*backgroundColor));
+}
+
+void packShadowColor(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  const auto& shadowColor = get<SharedColor>(animatedProp);
+  dyn.insert("shadowColor", static_cast<int32_t>(*shadowColor));
+}
+
+void packShadowOffset(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  const auto& shadowOffset = get<Size>(animatedProp);
+  dyn.insert(
+      "shadowOffset",
+      folly::dynamic::object("width", shadowOffset.width)(
+          "height", shadowOffset.height));
+}
+
+void packShadowOpacity(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  dyn.insert("shadowOpacity", get<Float>(animatedProp));
+}
+
+void packShadowRadius(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  dyn.insert("shadowRadius", get<Float>(animatedProp));
+}
+
+void packBorderColorEdge(
+    folly::dynamic& dyn,
+    const std::string& propName,
+    const std::optional<SharedColor>& colorValue) {
+  if (colorValue.has_value() && colorValue.value()) {
+    dyn.insert(propName, static_cast<int32_t>(*colorValue.value()));
   }
+}
+
+void packBorderColor(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  const auto& borderColors = get<CascadedBorderColors>(animatedProp);
+
+  packBorderColorEdge(dyn, "borderLeftColor", borderColors.left);
+  packBorderColorEdge(dyn, "borderTopColor", borderColors.top);
+  packBorderColorEdge(dyn, "borderRightColor", borderColors.right);
+  packBorderColorEdge(dyn, "borderBottomColor", borderColors.bottom);
+  packBorderColorEdge(dyn, "borderStartColor", borderColors.start);
+  packBorderColorEdge(dyn, "borderEndColor", borderColors.end);
+
+  if (borderColors.all.has_value() && borderColors.all.value()) {
+    dyn.insert("borderColor", static_cast<int32_t>(*borderColors.all.value()));
+  }
+}
+
+void packFilter(folly::dynamic& dyn, const AnimatedPropBase& animatedProp) {
+  const auto& filters = get<std::vector<FilterFunction>>(animatedProp);
+  auto filterArray = folly::dynamic::array();
+  for (const auto& f : filters) {
+    folly::dynamic filterObj = folly::dynamic::object();
+    std::string typeKey = toString(f.type);
+    if (std::holds_alternative<Float>(f.parameters)) {
+      filterObj[typeKey] = std::get<Float>(f.parameters);
+    } else if (std::holds_alternative<DropShadowParams>(f.parameters)) {
+      const auto& dropShadowParams = std::get<DropShadowParams>(f.parameters);
+      folly::dynamic shadowObj = folly::dynamic::object();
+      shadowObj["offsetX"] = dropShadowParams.offsetX;
+      shadowObj["offsetY"] = dropShadowParams.offsetY;
+      shadowObj["standardDeviation"] = dropShadowParams.standardDeviation;
+      shadowObj["color"] = static_cast<int32_t>(*dropShadowParams.color);
+      filterObj[typeKey] = shadowObj;
+    }
+    filterArray.push_back(filterObj);
+  }
+  dyn.insert("filter", filterArray);
+}
+
+void packOutlineColor(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  const auto& outlineColor = get<SharedColor>(animatedProp);
+  dyn.insert("outlineColor", static_cast<int32_t>(*outlineColor));
+}
+
+void packOutlineOffset(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  dyn.insert("outlineOffset", get<Float>(animatedProp));
+}
+
+void packOutlineStyle(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  const auto& outlineStyle = get<OutlineStyle>(animatedProp);
+  std::string styleStr;
+  switch (outlineStyle) {
+    case OutlineStyle::Solid:
+      styleStr = "solid";
+      break;
+    case OutlineStyle::Dotted:
+      styleStr = "dotted";
+      break;
+    case OutlineStyle::Dashed:
+      styleStr = "dashed";
+      break;
+    default:
+      throw std::runtime_error("Unknown outline style");
+  }
+  dyn.insert("outlineStyle", styleStr);
+}
+
+void packOutlineWidth(
+    folly::dynamic& dyn,
+    const AnimatedPropBase& animatedProp) {
+  dyn.insert("outlineWidth", get<Float>(animatedProp));
 }
 
 void packAnimatedProp(
@@ -103,9 +218,71 @@ void packAnimatedProp(
       packBorderRadii(dyn, *animatedProp);
       break;
 
+    case SHADOW_COLOR:
+      packShadowColor(dyn, *animatedProp);
+      break;
+
+    case SHADOW_OFFSET:
+      packShadowOffset(dyn, *animatedProp);
+      break;
+
+    case SHADOW_OPACITY:
+      packShadowOpacity(dyn, *animatedProp);
+      break;
+
+    case SHADOW_RADIUS:
+      packShadowRadius(dyn, *animatedProp);
+      break;
+
+    case BORDER_COLOR:
+      packBorderColor(dyn, *animatedProp);
+      break;
+
+    case FILTER:
+      packFilter(dyn, *animatedProp);
+      break;
+
+    case OUTLINE_COLOR:
+      packOutlineColor(dyn, *animatedProp);
+      break;
+
+    case OUTLINE_OFFSET:
+      packOutlineOffset(dyn, *animatedProp);
+      break;
+
+    case OUTLINE_STYLE:
+      packOutlineStyle(dyn, *animatedProp);
+      break;
+
+    case OUTLINE_WIDTH:
+      packOutlineWidth(dyn, *animatedProp);
+      break;
+
     case WIDTH:
     case HEIGHT:
     case FLEX:
+    case PADDING:
+    case MARGIN:
+    case POSITION:
+    case BORDER_WIDTH:
+    case ALIGN_CONTENT:
+    case ALIGN_ITEMS:
+    case ALIGN_SELF:
+    case ASPECT_RATIO:
+    case BOX_SIZING:
+    case DISPLAY:
+    case FLEX_BASIS:
+    case FLEX_DIRECTION:
+    case ROW_GAP:
+    case COLUMN_GAP:
+    case FLEX_GROW:
+    case FLEX_SHRINK:
+    case FLEX_WRAP:
+    case JUSTIFY_CONTENT:
+    case MAX_HEIGHT:
+    case MAX_WIDTH:
+    case MIN_HEIGHT:
+    case MIN_WIDTH:
       throw std::runtime_error("Tried to synchronously update layout props");
   }
 }

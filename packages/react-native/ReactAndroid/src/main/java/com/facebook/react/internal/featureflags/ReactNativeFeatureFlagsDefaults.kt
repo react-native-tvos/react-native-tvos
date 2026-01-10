@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<46e1f708d91d5ec45c866b8192192e72>>
+ * @generated SignedSource<<6bdc23594dd175a0bf4409c0e2f10552>>
  */
 
 /**
@@ -105,7 +105,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableNativeCSSParsing(): Boolean = false
 
-  override fun enableNetworkEventReporting(): Boolean = false
+  override fun enableNetworkEventReporting(): Boolean = true
 
   override fun enablePreparedTextLayout(): Boolean = false
 
@@ -137,11 +137,13 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
+  override fun fixTextClippingAndroid15useBoundsForWidth(): Boolean = false
+
   override fun fuseboxAssertSingleHostState(): Boolean = true
 
   override fun fuseboxEnabledRelease(): Boolean = false
 
-  override fun fuseboxNetworkInspectionEnabled(): Boolean = false
+  override fun fuseboxNetworkInspectionEnabled(): Boolean = true
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
@@ -177,15 +179,11 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun useFabricInterop(): Boolean = true
 
-  override fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = true
-
-  override fun useNativeTransformHelperAndroid(): Boolean = true
-
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 
   override fun useRawPropsJsiValue(): Boolean = true
 
-  override fun useShadowNodeStateOnClone(): Boolean = false
+  override fun useShadowNodeStateOnClone(): Boolean = true
 
   override fun useSharedAnimatedBackend(): Boolean = false
 

@@ -11,7 +11,6 @@ import de.undercouch.gradle.tasks.download.Download
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-  id("maven-publish")
   id("signing")
   alias(libs.plugins.android.library)
   alias(libs.plugins.download)
@@ -350,10 +349,7 @@ android {
     java.srcDirs("$hermesDir/lib/Platform/Intl/java", "$hermesDir/lib/Platform/Unicode/java")
   }
 
-  buildFeatures {
-    prefab = true
-    prefabPublishing = true
-  }
+  buildFeatures { prefab = true }
 
   dependencies {
     implementation(libs.fbjni)
@@ -365,13 +361,6 @@ android {
     jniLibs.excludes.add("**/libc++_shared.so")
     jniLibs.excludes.add("**/libjsi.so")
     jniLibs.excludes.add("**/libfbjni.so")
-  }
-
-  publishing {
-    multipleVariants {
-      withSourcesJar()
-      allVariants()
-    }
   }
 
   prefab { create("hermesvm") { headers = prefabHeadersDir.absolutePath } }
