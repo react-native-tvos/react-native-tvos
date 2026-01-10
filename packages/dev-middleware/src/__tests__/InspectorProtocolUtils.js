@@ -21,18 +21,18 @@ import {createDebuggerMock} from './InspectorDebuggerUtils';
 import {createDeviceMock} from './InspectorDeviceUtils';
 import until from 'wait-for-expect';
 
-export type CdpMessageFromTarget = $ReadOnly<{
+export type CdpMessageFromTarget = Readonly<{
   method: string,
   id?: number,
   params?: JSONSerializable,
 }>;
 
-export type CdpResponseFromTarget = $ReadOnly<{
+export type CdpResponseFromTarget = Readonly<{
   id: number,
   result: JSONSerializable,
 }>;
 
-export type CdpMessageToTarget = $ReadOnly<{
+export type CdpMessageToTarget = Readonly<{
   method: string,
   id: number,
   params?: JSONSerializable,
@@ -108,7 +108,7 @@ export async function sendFromDebuggerToTarget<Message: CdpMessageToTarget>(
 }
 
 export async function createAndConnectTarget(
-  serverRef: $ReadOnly<{
+  serverRef: Readonly<{
     serverBaseUrl: string,
     serverBaseWsUrl: string,
     ...
@@ -116,11 +116,12 @@ export async function createAndConnectTarget(
   signal: AbortSignal,
   page: PageFromDevice,
   {
-    debuggerHostHeader = null,
+    debuggerHeaders = null,
     deviceId = null,
     deviceHostHeader = null,
-  }: $ReadOnly<{
-    debuggerHostHeader?: ?string,
+  }: Readonly<{
+    debuggerHeaders?: ?{[string]: unknown},
+    debuggerOriginHeader?: ?string,
     deviceId?: ?string,
     deviceHostHeader?: ?string,
   }> = {},
@@ -151,7 +152,7 @@ export async function createAndConnectTarget(
     debugger_ = await createDebuggerMock(
       webSocketDebuggerUrl,
       signal,
-      debuggerHostHeader,
+      debuggerHeaders,
     );
     await until(() => expect(device.connect).toBeCalled());
   } catch (e) {

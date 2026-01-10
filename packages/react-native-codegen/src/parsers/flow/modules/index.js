@@ -100,7 +100,8 @@ function translateTypeAnnotation(
           );
         }
         case 'Array':
-        case '$ReadOnlyArray': {
+        case '$ReadOnlyArray':
+        case 'ReadonlyArray': {
           return emitArrayType(
             hasteModuleName,
             typeAnnotation,
@@ -113,7 +114,8 @@ function translateTypeAnnotation(
             translateTypeAnnotation,
           );
         }
-        case '$ReadOnly': {
+        case '$ReadOnly':
+        case 'Readonly': {
           assertGenericTypeAnnotationHasExactlyOneTypeParameter(
             hasteModuleName,
             typeAnnotation,
@@ -245,7 +247,18 @@ function translateTypeAnnotation(
       );
     }
     case 'UnionTypeAnnotation': {
-      return emitUnion(nullable, hasteModuleName, typeAnnotation, parser);
+      return emitUnion(
+        nullable,
+        hasteModuleName,
+        typeAnnotation,
+        types,
+        aliasMap,
+        enumMap,
+        tryParse,
+        cxxOnly,
+        translateTypeAnnotation,
+        parser,
+      );
     }
     case 'NumberLiteralTypeAnnotation': {
       return emitNumberLiteral(nullable, typeAnnotation.value);

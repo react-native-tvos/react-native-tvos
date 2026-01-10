@@ -354,7 +354,6 @@ public abstract class com/facebook/react/ReactPackageTurboModuleManagerDelegate 
 	public fun getModule (Ljava/lang/String;)Lcom/facebook/react/turbomodule/core/interfaces/TurboModule;
 	public fun unstable_isLegacyModuleRegistered (Ljava/lang/String;)Z
 	public fun unstable_isModuleRegistered (Ljava/lang/String;)Z
-	public fun unstable_shouldEnableLegacyModuleInterop ()Z
 }
 
 public abstract class com/facebook/react/ReactPackageTurboModuleManagerDelegate$Builder {
@@ -2465,6 +2464,7 @@ public final class com/facebook/react/modules/appearance/AppearanceModule : com/
 	public fun addListener (Ljava/lang/String;)V
 	public final fun emitAppearanceChanged (Ljava/lang/String;)V
 	public fun getColorScheme ()Ljava/lang/String;
+	public fun invalidate ()V
 	public final fun invalidatePlatformColorCache ()V
 	public final fun onConfigurationChanged (Landroid/content/Context;)V
 	public fun removeListeners (D)V
@@ -2475,7 +2475,14 @@ public final class com/facebook/react/modules/appearance/AppearanceModule$Compan
 }
 
 public abstract interface class com/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme {
+	public abstract fun addSchemeChangeListener (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun getScheme ()Ljava/lang/String;
+	public abstract fun removeSchemeChangeListener (Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class com/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme$DefaultImpls {
+	public static fun addSchemeChangeListener (Lcom/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme;Lkotlin/jvm/functions/Function0;)V
+	public static fun removeSchemeChangeListener (Lcom/facebook/react/modules/appearance/AppearanceModule$OverrideColorScheme;Lkotlin/jvm/functions/Function0;)V
 }
 
 public abstract interface class com/facebook/react/modules/appregistry/AppRegistry : com/facebook/react/bridge/JavaScriptModule {
@@ -3842,7 +3849,6 @@ public abstract interface class com/facebook/react/uimanager/ReactShadowNode {
 	public abstract fun getLayoutX ()F
 	public abstract fun getLayoutY ()F
 	public abstract fun getNativeChildCount ()I
-	public abstract fun getNativeKind ()Lcom/facebook/react/uimanager/NativeKind;
 	public abstract fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNode;)I
 	public abstract fun getNativeParent ()Lcom/facebook/react/uimanager/ReactShadowNode;
 	public abstract fun getPadding (I)F
@@ -3971,7 +3977,6 @@ public class com/facebook/react/uimanager/ReactShadowNodeImpl : com/facebook/rea
 	public final fun getLayoutX ()F
 	public final fun getLayoutY ()F
 	public final fun getNativeChildCount ()I
-	public fun getNativeKind ()Lcom/facebook/react/uimanager/NativeKind;
 	public synthetic fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNode;)I
 	public final fun getNativeOffsetForChild (Lcom/facebook/react/uimanager/ReactShadowNodeImpl;)I
 	public synthetic fun getNativeParent ()Lcom/facebook/react/uimanager/ReactShadowNode;
@@ -6697,12 +6702,12 @@ public final class com/facebook/react/views/virtual/VirtualViewMode : java/lang/
 	public static fun values ()[Lcom/facebook/react/views/virtual/VirtualViewMode;
 }
 
-public final class com/facebook/react/views/virtual/view/ReactVirtualView : com/facebook/react/views/view/ReactViewGroup, android/view/View$OnLayoutChangeListener, com/facebook/react/views/scroll/ReactScrollViewHelper$LayoutChangeListener, com/facebook/react/views/scroll/ReactScrollViewHelper$ScrollListener {
+public final class com/facebook/react/views/virtual/view/ReactVirtualView : com/facebook/react/views/view/ReactViewGroup, android/view/View$OnLayoutChangeListener, com/facebook/react/views/scroll/VirtualView {
 	public fun <init> (Landroid/content/Context;)V
-	public fun onLayout (Landroid/view/ViewGroup;)V
+	public fun getContainerRelativeRect ()Landroid/graphics/Rect;
+	public fun getVirtualViewID ()Ljava/lang/String;
 	public fun onLayoutChange (Landroid/view/View;IIIIIIII)V
-	public fun onLayoutChange (Landroid/view/ViewGroup;)V
-	public fun onScroll (Landroid/view/ViewGroup;Lcom/facebook/react/views/scroll/ScrollEventType;FF)V
+	public fun onModeChange (Lcom/facebook/react/views/virtual/VirtualViewMode;Landroid/graphics/Rect;)V
 	public synthetic fun recycleView$xplat_js_react_native_github_packages_react_native_ReactAndroid_src_main_java_com_facebook_react_views_view_viewAndroid ()V
 	public fun updateClippingRect (Ljava/util/Set;)V
 }
@@ -6728,41 +6733,6 @@ public final class com/facebook/react/views/virtual/view/ReactVirtualViewManager
 }
 
 public final class com/facebook/react/views/virtual/view/VirtualViewEventEmitter : com/facebook/react/views/virtual/VirtualViewModeChangeEmitter {
-	public fun <init> (IILcom/facebook/react/uimanager/events/EventDispatcher;)V
-	public fun emitModeChange (Lcom/facebook/react/views/virtual/VirtualViewMode;Landroid/graphics/Rect;Landroid/graphics/Rect;Z)V
-}
-
-public final class com/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimental : com/facebook/react/views/view/ReactViewGroup, android/view/View$OnLayoutChangeListener, com/facebook/react/views/scroll/VirtualView {
-	public fun <init> (Landroid/content/Context;)V
-	public fun getContainerRelativeRect ()Landroid/graphics/Rect;
-	public fun getVirtualViewID ()Ljava/lang/String;
-	public fun onLayoutChange (Landroid/view/View;IIIIIIII)V
-	public fun onModeChange (Lcom/facebook/react/views/virtual/VirtualViewMode;Landroid/graphics/Rect;)V
-	public synthetic fun recycleView$xplat_js_react_native_github_packages_react_native_ReactAndroid_src_main_java_com_facebook_react_views_view_viewAndroid ()V
-	public fun updateClippingRect (Ljava/util/Set;)V
-}
-
-public final class com/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimentalManager : com/facebook/react/views/view/ReactClippingViewManager, com/facebook/react/viewmanagers/VirtualViewExperimentalManagerInterface {
-	public static final field Companion Lcom/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimentalManager$Companion;
-	public static final field REACT_CLASS Ljava/lang/String;
-	public fun <init> ()V
-	public synthetic fun addEventEmitters (Lcom/facebook/react/uimanager/ThemedReactContext;Landroid/view/View;)V
-	public synthetic fun createViewInstance (Lcom/facebook/react/uimanager/ThemedReactContext;)Landroid/view/View;
-	public fun getName ()Ljava/lang/String;
-	public synthetic fun prepareToRecycleView (Lcom/facebook/react/uimanager/ThemedReactContext;Landroid/view/View;)Landroid/view/View;
-	public synthetic fun setInitialHidden (Landroid/view/View;Z)V
-	public fun setInitialHidden (Lcom/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimental;Z)V
-	public synthetic fun setNativeId (Landroid/view/View;Ljava/lang/String;)V
-	public fun setNativeId (Lcom/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimental;Ljava/lang/String;)V
-	public synthetic fun setRemoveClippedSubviews (Landroid/view/View;Z)V
-	public synthetic fun setRenderState (Landroid/view/View;I)V
-	public fun setRenderState (Lcom/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimental;I)V
-}
-
-public final class com/facebook/react/views/virtual/viewexperimental/ReactVirtualViewExperimentalManager$Companion {
-}
-
-public final class com/facebook/react/views/virtual/viewexperimental/VirtualViewEventEmitter : com/facebook/react/views/virtual/VirtualViewModeChangeEmitter {
 	public fun <init> (IILcom/facebook/react/uimanager/events/EventDispatcher;)V
 	public fun emitModeChange (Lcom/facebook/react/views/virtual/VirtualViewMode;Landroid/graphics/Rect;Landroid/graphics/Rect;Z)V
 }

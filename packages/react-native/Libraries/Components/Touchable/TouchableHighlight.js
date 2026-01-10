@@ -24,7 +24,7 @@ import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 import {cloneElement} from 'react';
 
-type TouchableHighlightBaseProps = $ReadOnly<{
+type TouchableHighlightBaseProps = Readonly<{
   /**
    * Determines what the opacity of the wrapped view should be when touch is active.
    */
@@ -50,18 +50,18 @@ type TouchableHighlightBaseProps = $ReadOnly<{
   hostRef?: React.RefSetter<React.ElementRef<typeof View>>,
 }>;
 
-export type TouchableHighlightProps = $ReadOnly<{
+export type TouchableHighlightProps = Readonly<{
   ...TouchableWithoutFeedbackProps,
   ...TVViewProps,
   ...TouchableHighlightBaseProps,
 }>;
 
-type ExtraStyles = $ReadOnly<{
+type ExtraStyles = Readonly<{
   child: ViewStyleProp,
   underlay: ViewStyleProp,
 }>;
 
-type TouchableHighlightState = $ReadOnly<{
+type TouchableHighlightState = Readonly<{
   pressability: Pressability,
   extraStyles: ?ExtraStyles,
 }>;
@@ -401,13 +401,13 @@ class TouchableHighlightImpl extends React.Component<
 
 const TouchableHighlight: component(
   ref?: React.RefSetter<React.ElementRef<typeof View>>,
-  ...props: $ReadOnly<Omit<TouchableHighlightProps, 'hostRef'>>
+  ...props: Readonly<Omit<TouchableHighlightProps, 'hostRef'>>
 ) = ({
   ref: hostRef,
   ...props
 }: {
   ref?: React.RefSetter<React.ElementRef<typeof View>>,
-  ...$ReadOnly<Omit<TouchableHighlightProps, 'hostRef'>>,
+  ...Readonly<Omit<TouchableHighlightProps, 'hostRef'>>,
 }) => <TouchableHighlightImpl {...props} hostRef={hostRef} />;
 
 TouchableHighlight.displayName = 'TouchableHighlight';

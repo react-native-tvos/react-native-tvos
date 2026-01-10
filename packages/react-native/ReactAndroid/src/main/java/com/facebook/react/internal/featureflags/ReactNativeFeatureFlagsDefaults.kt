@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<46e1f708d91d5ec45c866b8192192e72>>
+ * @generated SignedSource<<c6f0c4d72a9ef24f5352976996a5e300>>
  */
 
 /**
@@ -34,8 +34,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun disableImageViewPreallocationAndroid(): Boolean = false
 
   override fun disableMountItemReorderingAndroid(): Boolean = false
-
-  override fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean = true
 
   override fun disableSubviewClippingAndroid(): Boolean = false
 
@@ -105,7 +103,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableNativeCSSParsing(): Boolean = false
 
-  override fun enableNetworkEventReporting(): Boolean = false
+  override fun enableNetworkEventReporting(): Boolean = true
 
   override fun enablePreparedTextLayout(): Boolean = false
 
@@ -129,19 +127,15 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableVirtualViewDebugFeatures(): Boolean = false
 
-  override fun enableVirtualViewRenderState(): Boolean = true
-
-  override fun enableVirtualViewWindowFocusDetection(): Boolean = false
-
-  override fun enableWebPerformanceAPIsByDefault(): Boolean = true
-
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
+
+  override fun fixTextClippingAndroid15useBoundsForWidth(): Boolean = false
 
   override fun fuseboxAssertSingleHostState(): Boolean = true
 
   override fun fuseboxEnabledRelease(): Boolean = false
 
-  override fun fuseboxNetworkInspectionEnabled(): Boolean = false
+  override fun fuseboxNetworkInspectionEnabled(): Boolean = true
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
@@ -157,13 +151,9 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = false
 
-  override fun shouldResetClickableWhenRecyclingView(): Boolean = true
-
   override fun shouldResetOnClickListenerWhenRecyclingView(): Boolean = true
 
   override fun shouldSetEnabledBasedOnAccessibilityState(): Boolean = true
-
-  override fun shouldSetIsClickableByDefault(): Boolean = false
 
   override fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean = false
 
@@ -177,15 +167,9 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun useFabricInterop(): Boolean = true
 
-  override fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean = true
-
-  override fun useNativeTransformHelperAndroid(): Boolean = true
-
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 
-  override fun useRawPropsJsiValue(): Boolean = true
-
-  override fun useShadowNodeStateOnClone(): Boolean = false
+  override fun useShadowNodeStateOnClone(): Boolean = true
 
   override fun useSharedAnimatedBackend(): Boolean = false
 
@@ -196,8 +180,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useTurboModules(): Boolean = false
 
   override fun viewCullingOutsetRatio(): Double = 0.0
-
-  override fun virtualViewHysteresisRatio(): Double = 0.0
 
   override fun virtualViewPrerenderRatio(): Double = 5.0
 }

@@ -976,9 +976,6 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     if (mMaintainVisibleContentPositionHelper != null) {
       mMaintainVisibleContentPositionHelper.stop();
     }
-    if (mVirtualViewContainerState != null) {
-      mVirtualViewContainerState.cleanup();
-    }
   }
 
   @Override

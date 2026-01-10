@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<17400be6ee20befd9eafb094455dfb63>>
+ * @generated SignedSource<<da8de211c4b7837291853f9b79d2f8e5>>
  */
 
 /**
@@ -34,8 +34,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun disableImageViewPreallocationAndroid(): Boolean
 
   @DoNotStrip public fun disableMountItemReorderingAndroid(): Boolean
-
-  @DoNotStrip public fun disableOldAndroidAttachmentMetricsWorkarounds(): Boolean
 
   @DoNotStrip public fun disableSubviewClippingAndroid(): Boolean
 
@@ -129,13 +127,9 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableVirtualViewDebugFeatures(): Boolean
 
-  @DoNotStrip public fun enableVirtualViewRenderState(): Boolean
-
-  @DoNotStrip public fun enableVirtualViewWindowFocusDetection(): Boolean
-
-  @DoNotStrip public fun enableWebPerformanceAPIsByDefault(): Boolean
-
   @DoNotStrip public fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
+
+  @DoNotStrip public fun fixTextClippingAndroid15useBoundsForWidth(): Boolean
 
   @DoNotStrip public fun fuseboxAssertSingleHostState(): Boolean
 
@@ -157,13 +151,9 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean
 
-  @DoNotStrip public fun shouldResetClickableWhenRecyclingView(): Boolean
-
   @DoNotStrip public fun shouldResetOnClickListenerWhenRecyclingView(): Boolean
 
   @DoNotStrip public fun shouldSetEnabledBasedOnAccessibilityState(): Boolean
-
-  @DoNotStrip public fun shouldSetIsClickableByDefault(): Boolean
 
   @DoNotStrip public fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean
 
@@ -177,13 +167,7 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun useFabricInterop(): Boolean
 
-  @DoNotStrip public fun useNativeEqualsInNativeReadableArrayAndroid(): Boolean
-
-  @DoNotStrip public fun useNativeTransformHelperAndroid(): Boolean
-
   @DoNotStrip public fun useNativeViewConfigsInBridgelessMode(): Boolean
-
-  @DoNotStrip public fun useRawPropsJsiValue(): Boolean
 
   @DoNotStrip public fun useShadowNodeStateOnClone(): Boolean
 
@@ -196,8 +180,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useTurboModules(): Boolean
 
   @DoNotStrip public fun viewCullingOutsetRatio(): Double
-
-  @DoNotStrip public fun virtualViewHysteresisRatio(): Double
 
   @DoNotStrip public fun virtualViewPrerenderRatio(): Double
 }

@@ -24,7 +24,7 @@
   ],
   "bugs": "https://github.com/facebook/react-native/issues",
   "engines": {
-    "node": ">= 20.19.4"
+    "node": ">= 22.11.0"
   },
   "bin": {
     "react-native": "cli.js"
@@ -156,7 +156,7 @@
   },
   "peerDependencies": {
     "@types/react": "^19.1.1",
-    "react": "^19.2.0"
+    "react": "^19.2.3"
   },
   "peerDependenciesMeta": {
     "@types/react": {

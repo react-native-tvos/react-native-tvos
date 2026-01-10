@@ -23,7 +23,7 @@ import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
-type TouchableOpacityBaseProps = $ReadOnly<{
+type TouchableOpacityBaseProps = Readonly<{
   /**
    * Determines what the opacity of the wrapped view should be when touch is active.
    * Defaults to 0.2
@@ -34,13 +34,13 @@ type TouchableOpacityBaseProps = $ReadOnly<{
   hostRef?: ?React.RefSetter<React.ElementRef<typeof Animated.View>>,
 }>;
 
-export type TouchableOpacityProps = $ReadOnly<{
+export type TouchableOpacityProps = Readonly<{
   ...TouchableWithoutFeedbackProps,
   ...TVViewProps,
   ...TouchableOpacityBaseProps,
 }>;
 
-type TouchableOpacityState = $ReadOnly<{
+type TouchableOpacityState = Readonly<{
   anim: Animated.Value,
   pressability: Pressability,
 }>;

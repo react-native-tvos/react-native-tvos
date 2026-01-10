@@ -21,7 +21,7 @@ import * as LogBoxStyle from './LogBoxStyle';
 import * as React from 'react';
 import {useEffect} from 'react';
 
-type Props = $ReadOnly<{
+type Props = Readonly<{
   log: LogBoxLog,
   totalLogCount: number,
   level: 'warn' | 'error',

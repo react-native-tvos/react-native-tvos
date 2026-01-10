@@ -72,7 +72,7 @@ const ComponentTab = ({
   isComponentActive,
   handleNavBarPress,
   theme,
-}: $ReadOnly<{
+}: Readonly<{
   handleNavBarPress: NavBarOnPressHandler,
   isComponentActive: boolean,
   theme: RNTesterTheme,
@@ -93,7 +93,7 @@ const PlaygroundTab = ({
   isComponentActive,
   handleNavBarPress,
   theme,
-}: $ReadOnly<{
+}: Readonly<{
   handleNavBarPress: NavBarOnPressHandler,
   isComponentActive: boolean,
   theme: RNTesterTheme,
@@ -114,7 +114,7 @@ const APITab = ({
   isAPIActive,
   handleNavBarPress,
   theme,
-}: $ReadOnly<{
+}: Readonly<{
   handleNavBarPress: NavBarOnPressHandler,
   isAPIActive: boolean,
   theme: RNTesterTheme,
@@ -131,7 +131,7 @@ const APITab = ({
   />
 );
 
-type Props = $ReadOnly<{
+type Props = Readonly<{
   handleNavBarPress: NavBarOnPressHandler,
   screen: string,
   isExamplePageOpen: boolean,

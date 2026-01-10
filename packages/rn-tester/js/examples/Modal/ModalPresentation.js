@@ -70,24 +70,24 @@ function ModalPresentation() {
   }, []);
 
   const [props, setProps] = useState<ModalProps>({
-    animationType: 'none',
-    transparent: false,
-    hardwareAccelerated: false,
-    statusBarTranslucent: false,
-    navigationBarTranslucent: false,
-    presentationStyle: Platform.select({
-      ios: 'fullScreen',
-      default: undefined,
-    }),
     allowSwipeDismissal: false,
-    supportedOrientations: Platform.select({
-      ios: ['portrait'],
-      default: undefined,
-    }),
+    animationType: 'none',
+    backdropColor: undefined,
+    hardwareAccelerated: false,
+    navigationBarTranslucent: false,
     onDismiss: undefined,
     onShow: undefined,
+    presentationStyle: Platform.select({
+      default: undefined,
+      ios: 'fullScreen',
+    }),
+    statusBarTranslucent: false,
+    supportedOrientations: Platform.select({
+      default: undefined,
+      ios: ['portrait'],
+    }),
+    transparent: false,
     visible: false,
-    backdropColor: undefined,
   });
   const presentationStyle = props.presentationStyle;
   const hardwareAccelerated = props.hardwareAccelerated;
@@ -100,7 +100,7 @@ function ModalPresentation() {
   const [currentOrientation, setCurrentOrientation] = useState('unknown');
 
   type OrientationChangeEvent = Parameters<
-    $NonMaybeType<ModalProps['onOrientationChange']>,
+    NonNullable<ModalProps['onOrientationChange']>,
   >[0];
   const onOrientationChange = (event: OrientationChangeEvent) =>
     setCurrentOrientation(event.nativeEvent.orientation);
@@ -116,8 +116,8 @@ function ModalPresentation() {
           onValueChange={enabled =>
             setProps(prev => ({
               ...prev,
-              statusBarTranslucent: enabled,
               navigationBarTranslucent: false,
+              statusBarTranslucent: enabled,
             }))
           }
         />
@@ -131,8 +131,8 @@ function ModalPresentation() {
           onValueChange={enabled => {
             setProps(prev => ({
               ...prev,
-              statusBarTranslucent: enabled,
               navigationBarTranslucent: enabled,
+              statusBarTranslucent: enabled,
             }));
           }}
         />
@@ -353,34 +353,18 @@ function ModalPresentation() {
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-  },
-  rowWithSpaceBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   block: {
-    borderColor: 'rgba(0,0,0, 0.1)',
     borderBottomWidth: 1,
+    borderColor: 'rgba(0,0,0, 0.1)',
     padding: 6,
   },
   inlineBlock: {
-    padding: 6,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    borderColor: 'rgba(0,0,0, 0.1)',
     borderBottomWidth: 1,
-  },
-  title: {
-    margin: 3,
-    fontWeight: 'bold',
-  },
-  option: {
-    marginRight: 8,
-    marginTop: 6,
+    borderColor: 'rgba(0,0,0, 0.1)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 6,
   },
   modalContainer: {
     flex: 1,
@@ -391,10 +375,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-  warning: {
+  option: {
+    marginRight: 8,
+    marginTop: 6,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  rowWithSpaceBetween: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontWeight: 'bold',
     margin: 3,
-    fontSize: 12,
+  },
+  warning: {
     color: 'red',
+    fontSize: 12,
+    margin: 3,
   },
   switch: {
     width: 100,
@@ -410,8 +410,8 @@ const styles = StyleSheet.create({
 });
 
 export default ({
-  title: 'Modal Presentation',
-  name: 'basic',
   description: 'Modals can be presented with or without animation',
+  name: 'basic',
   render: (): React.Node => <ModalPresentation />,
+  title: 'Modal Presentation',
 }: RNTesterModuleExample);

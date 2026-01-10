@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a220c6699baacba2e95d610314d90c67>>
+ * @generated SignedSource<<8bbb8ef8febaca4e72f6c15af0144616>>
  */
 
 /**
@@ -49,10 +49,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool disableMountItemReorderingAndroid() override {
     return false;
-  }
-
-  bool disableOldAndroidAttachmentMetricsWorkarounds() override {
-    return true;
   }
 
   bool disableSubviewClippingAndroid() override {
@@ -192,7 +188,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableNetworkEventReporting() override {
-    return false;
+    return true;
   }
 
   bool enablePreparedTextLayout() override {
@@ -239,19 +235,11 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableVirtualViewRenderState() override {
-    return true;
-  }
-
-  bool enableVirtualViewWindowFocusDetection() override {
+  bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
     return false;
   }
 
-  bool enableWebPerformanceAPIsByDefault() override {
-    return true;
-  }
-
-  bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
+  bool fixTextClippingAndroid15useBoundsForWidth() override {
     return false;
   }
 
@@ -264,7 +252,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool fuseboxNetworkInspectionEnabled() override {
-    return false;
+    return true;
   }
 
   bool hideOffscreenVirtualViewsOnIOS() override {
@@ -295,20 +283,12 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool shouldResetClickableWhenRecyclingView() override {
-    return true;
-  }
-
   bool shouldResetOnClickListenerWhenRecyclingView() override {
     return true;
   }
 
   bool shouldSetEnabledBasedOnAccessibilityState() override {
     return true;
-  }
-
-  bool shouldSetIsClickableByDefault() override {
-    return false;
   }
 
   bool shouldTriggerResponderTransferOnScrollAndroid() override {
@@ -335,24 +315,12 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return true;
   }
 
-  bool useNativeEqualsInNativeReadableArrayAndroid() override {
-    return true;
-  }
-
-  bool useNativeTransformHelperAndroid() override {
-    return true;
-  }
-
   bool useNativeViewConfigsInBridgelessMode() override {
     return false;
   }
 
-  bool useRawPropsJsiValue() override {
-    return true;
-  }
-
   bool useShadowNodeStateOnClone() override {
-    return false;
+    return true;
   }
 
   bool useSharedAnimatedBackend() override {
@@ -372,10 +340,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   double viewCullingOutsetRatio() override {
-    return 0.0;
-  }
-
-  double virtualViewHysteresisRatio() override {
     return 0.0;
   }
 

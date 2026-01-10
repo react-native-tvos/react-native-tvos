@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<502fa8935abd547231be7980d768b817>>
+ * @generated SignedSource<<b05e1657341801ec03c9f060f4015c0f>>
  */
 
 /**
@@ -68,11 +68,6 @@ class ReactNativeFeatureFlags {
    * Prevent FabricMountingManager from reordering mountItems, which may lead to invalid state on the UI thread
    */
   RN_EXPORT static bool disableMountItemReorderingAndroid();
-
-  /**
-   * Disable some workarounds for old Android versions in TextLayoutManager logic for retrieving attachment metrics
-   */
-  RN_EXPORT static bool disableOldAndroidAttachmentMetricsWorkarounds();
 
   /**
    * Force disable subview clipping for ReactViewGroup on Android
@@ -305,24 +300,14 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableVirtualViewDebugFeatures();
 
   /**
-   * Enables reading render state when dispatching VirtualView events.
-   */
-  RN_EXPORT static bool enableVirtualViewRenderState();
-
-  /**
-   * Enables window focus detection for prioritizing VirtualView events.
-   */
-  RN_EXPORT static bool enableVirtualViewWindowFocusDetection();
-
-  /**
-   * Enable Web Performance APIs (Performance Timeline, User Timings, etc.) by default.
-   */
-  RN_EXPORT static bool enableWebPerformanceAPIsByDefault();
-
-  /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
+
+  /**
+   * Fix text clipping starting in Android 15 due to usage of useBoundsForWidth
+   */
+  RN_EXPORT static bool fixTextClippingAndroid15useBoundsForWidth();
 
   /**
    * Enable system assertion validating that Fusebox is configured with a single host. When set, the CDP backend will dynamically disable features (Perf and Network) in the event that multiple hosts are registered (undefined behaviour), and broadcast this over `ReactNativeApplication.systemStateChanged`.
@@ -375,11 +360,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool shouldPressibilityUseW3CPointerEventsForHover();
 
   /**
-   * Reset isClickable to false when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.
-   */
-  RN_EXPORT static bool shouldResetClickableWhenRecyclingView();
-
-  /**
    * Reset OnClickListener to null when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.
    */
   RN_EXPORT static bool shouldResetOnClickListenerWhenRecyclingView();
@@ -388,11 +368,6 @@ class ReactNativeFeatureFlags {
    * Fix BaseViewManager to properly set view.setEnabled() based on accessibilityState.disabled.
    */
   RN_EXPORT static bool shouldSetEnabledBasedOnAccessibilityState();
-
-  /**
-   * Sets isClickable=true by default on all React Native views on Android to improve UI harvesting detection while maintaining focusable=false to preserve expected behavior.
-   */
-  RN_EXPORT static bool shouldSetIsClickableByDefault();
 
   /**
    * Do not emit touchcancel from Android ScrollView, instead native topScroll event will trigger responder transfer and terminate in RN renderer.
@@ -425,24 +400,9 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool useFabricInterop();
 
   /**
-   * Use a native implementation of equals in NativeReadableArray.
-   */
-  RN_EXPORT static bool useNativeEqualsInNativeReadableArrayAndroid();
-
-  /**
-   * Use a native implementation of TransformHelper
-   */
-  RN_EXPORT static bool useNativeTransformHelperAndroid();
-
-  /**
    * When enabled, the native view configs are used in bridgeless mode.
    */
   RN_EXPORT static bool useNativeViewConfigsInBridgelessMode();
-
-  /**
-   * Instead of using folly::dynamic as internal representation in RawProps and RawValue, use jsi::Value
-   */
-  RN_EXPORT static bool useRawPropsJsiValue();
 
   /**
    * Use the state stored on the source shadow node when cloning it instead of reading in the most recent state on the shadow node family.
@@ -473,11 +433,6 @@ class ReactNativeFeatureFlags {
    * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
    */
   RN_EXPORT static double viewCullingOutsetRatio();
-
-  /**
-   * Sets a hysteresis window for transition between prerender and hidden modes.
-   */
-  RN_EXPORT static double virtualViewHysteresisRatio();
 
   /**
    * Initial prerender ratio for VirtualView.

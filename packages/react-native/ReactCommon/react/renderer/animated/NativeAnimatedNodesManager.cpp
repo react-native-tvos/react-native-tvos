@@ -238,6 +238,19 @@ void NativeAnimatedNodesManager::connectAnimatedNodeToView(
   }
 }
 
+void NativeAnimatedNodesManager::connectAnimatedNodeToShadowNodeFamily(
+    Tag propsNodeTag,
+    std::shared_ptr<const ShadowNodeFamily> family) noexcept {
+  react_native_assert(propsNodeTag);
+  auto node = getAnimatedNode<PropsAnimatedNode>(propsNodeTag);
+  if (node != nullptr && family != nullptr) {
+    node->connectToShadowNodeFamily(family);
+  } else {
+    LOG(WARNING)
+        << "Cannot ConnectAnimatedNodeToShadowNodeFamily, animated node has to be props type";
+  }
+}
+
 void NativeAnimatedNodesManager::disconnectAnimatedNodeFromView(
     Tag propsNodeTag,
     Tag viewTag) noexcept {
@@ -247,6 +260,9 @@ void NativeAnimatedNodesManager::disconnectAnimatedNodeFromView(
   auto node = getAnimatedNode<PropsAnimatedNode>(propsNodeTag);
   if (node != nullptr) {
     node->disconnectFromView(viewTag);
+    if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
+      node->disconnectFromShadowNodeFamily();
+    }
     {
       std::lock_guard<std::mutex> lock(connectedAnimatedNodesMutex_);
       connectedAnimatedNodes_.erase(viewTag);
@@ -501,7 +517,15 @@ void NativeAnimatedNodesManager::handleAnimatedEvent(
     // That's why, in case this is called from the UI thread, we need to
     // proactivelly trigger the animation loop to avoid showing stale
     // frames.
-    onRender();
+    if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
+#ifdef RN_USE_ANIMATION_BACKEND
+      if (auto animationBackend = animationBackend_.lock()) {
+        animationBackend->trigger();
+      }
+#endif
+    } else {
+      onRender();
+    }
   }
 }
 
@@ -635,20 +659,22 @@ void NativeAnimatedNodesManager::updateNodes(
     // in Animated, value nodes like RGBA are parents and Color node is child
     // (the opposite of tree structure)
     for (const auto childTag : nextNode.node->getChildren()) {
-      auto child = getAnimatedNode<AnimatedNode>(childTag);
-      child->activeIncomingNodes++;
-      if (child->bfsColor != animatedGraphBFSColor_) {
-        child->bfsColor = animatedGraphBFSColor_;
+      if (auto child = getAnimatedNode<AnimatedNode>(childTag)) {
+        child->activeIncomingNodes++;
+        if (child->bfsColor != animatedGraphBFSColor_) {
+          child->bfsColor = animatedGraphBFSColor_;
 #ifdef REACT_NATIVE_DEBUG
-        activeNodesCount++;
+          activeNodesCount++;
 #endif
-        const auto connectedToFinishedAnimation =
-            is_node_connected_to_finished_animation(
-                child, childTag, nextNode.connectedToFinishedAnimation);
-        nodesQueue.emplace_back(
-            NodesQueueItem{
-                .node = child,
-                .connectedToFinishedAnimation = connectedToFinishedAnimation});
+          const auto connectedToFinishedAnimation =
+              is_node_connected_to_finished_animation(
+                  child, childTag, nextNode.connectedToFinishedAnimation);
+          nodesQueue.emplace_back(
+              NodesQueueItem{
+                  .node = child,
+                  .connectedToFinishedAnimation =
+                      connectedToFinishedAnimation});
+        }
       }
     }
   }
@@ -703,26 +729,29 @@ void NativeAnimatedNodesManager::updateNodes(
     }
 
     for (auto childTag : nextNode.node->getChildren()) {
-      auto child = getAnimatedNode<AnimatedNode>(childTag);
-      child->activeIncomingNodes--;
-      if (child->activeIncomingNodes == 0 && child->activeIncomingNodes == 0) {
-        child->bfsColor = animatedGraphBFSColor_;
+      if (auto child = getAnimatedNode<AnimatedNode>(childTag)) {
+        child->activeIncomingNodes--;
+        if (child->activeIncomingNodes == 0 &&
+            child->bfsColor != animatedGraphBFSColor_) {
+          child->bfsColor = animatedGraphBFSColor_;
 #ifdef REACT_NATIVE_DEBUG
-        updatedNodesCount++;
+          updatedNodesCount++;
 #endif
-        const auto connectedToFinishedAnimation =
-            is_node_connected_to_finished_animation(
-                child, childTag, nextNode.connectedToFinishedAnimation);
-        nodesQueue.emplace_back(
-            NodesQueueItem{
-                .node = child,
-                .connectedToFinishedAnimation = connectedToFinishedAnimation});
-      }
+          const auto connectedToFinishedAnimation =
+              is_node_connected_to_finished_animation(
+                  child, childTag, nextNode.connectedToFinishedAnimation);
+          nodesQueue.emplace_back(
+              NodesQueueItem{
+                  .node = child,
+                  .connectedToFinishedAnimation =
+                      connectedToFinishedAnimation});
+        }
 #ifdef REACT_NATIVE_DEBUG
-      else if (child->bfsColor == animatedGraphBFSColor_) {
-        cyclesDetected++;
-      }
+        else if (child->bfsColor == animatedGraphBFSColor_) {
+          cyclesDetected++;
+        }
 #endif
+      }
     }
   }
 
@@ -884,13 +913,17 @@ void NativeAnimatedNodesManager::schedulePropsCommit(
     Tag viewTag,
     const folly::dynamic& props,
     bool layoutStyleUpdated,
-    bool forceFabricCommit) noexcept {
+    bool forceFabricCommit,
+    ShadowNodeFamily::Weak shadowNodeFamily) noexcept {
   if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
-    if (layoutStyleUpdated) {
-      mergeObjects(updateViewProps_[viewTag], props);
-    } else {
-      mergeObjects(updateViewPropsDirect_[viewTag], props);
+    if (forceFabricCommit) {
+      shouldRequestAsyncFlush_.insert(viewTag);
     }
+    auto& current = layoutStyleUpdated
+        ? updateViewPropsForBackend_[viewTag]
+        : updateViewPropsDirectForBackend_[viewTag];
+    current.first = std::move(shadowNodeFamily);
+    mergeObjects(current.second, props);
     return;
   }
 
@@ -917,6 +950,77 @@ void NativeAnimatedNodesManager::schedulePropsCommit(
 }
 
 #ifdef RN_USE_ANIMATION_BACKEND
+
+void NativeAnimatedNodesManager::insertMutations(
+    std::unordered_map<Tag, std::pair<ShadowNodeFamily::Weak, folly::dynamic>>&
+        updates,
+    AnimationMutations& mutations,
+    AnimatedPropsBuilder& propsBuilder,
+    bool hasLayoutUpdates) {
+  for (auto& [tag, update] : updates) {
+    auto weakFamily = update.first;
+
+    if (auto family = weakFamily.lock()) {
+      propsBuilder.storeDynamic(update.second);
+      if (shouldRequestAsyncFlush_.contains(tag)) {
+        mutations.asyncFlushSurfaces.insert(family->getSurfaceId());
+      }
+      mutations.batch.push_back(
+          AnimationMutation{
+              .tag = tag,
+              .family = family,
+              .props = propsBuilder.get(),
+              .hasLayoutUpdates = hasLayoutUpdates,
+          });
+    }
+  }
+}
+
+AnimationMutations NativeAnimatedNodesManager::onAnimationFrameForBackend(
+    AnimatedPropsBuilder& propsBuilder,
+    double timestamp) {
+  AnimationMutations mutations{};
+  // Run all active animations
+  auto hasFinishedAnimations = false;
+  std::set<int> finishedAnimationValueNodes;
+  for (const auto& [_id, driver] : activeAnimations_) {
+    driver->runAnimationStep(timestamp);
+
+    if (driver->getIsComplete()) {
+      hasFinishedAnimations = true;
+      finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
+    }
+  }
+
+  // Update all animated nodes
+  updateNodes(finishedAnimationValueNodes);
+
+  // remove finished animations
+  if (hasFinishedAnimations) {
+    std::vector<int> finishedAnimations;
+    for (const auto& [animationId, driver] : activeAnimations_) {
+      if (driver->getIsComplete()) {
+        if (getAnimatedNode<ValueAnimatedNode>(driver->getAnimatedValueTag()) !=
+            nullptr) {
+          driver->stopAnimation();
+        }
+        finishedAnimations.emplace_back(animationId);
+      }
+    }
+    for (const auto& id : finishedAnimations) {
+      activeAnimations_.erase(id);
+    }
+  }
+
+  insertMutations(updateViewPropsDirectForBackend_, mutations, propsBuilder);
+  insertMutations(updateViewPropsForBackend_, mutations, propsBuilder, true);
+
+  updateViewPropsForBackend_.clear();
+  updateViewPropsDirectForBackend_.clear();
+
+  return mutations;
+}
+
 AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
   if (!ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
     return {};
@@ -948,55 +1052,10 @@ AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
                             .count();
 
     auto timestamp = static_cast<double>(microseconds) / 1000.0;
-    bool containsChange = false;
     AnimatedPropsBuilder propsBuilder;
-    {
-      // copied from onAnimationFrame
-      // Run all active animations
-      auto hasFinishedAnimations = false;
-      std::set<int> finishedAnimationValueNodes;
-      for (const auto& [_id, driver] : activeAnimations_) {
-        driver->runAnimationStep(timestamp);
+    mutations = onAnimationFrameForBackend(propsBuilder, timestamp);
 
-        if (driver->getIsComplete()) {
-          hasFinishedAnimations = true;
-          finishedAnimationValueNodes.insert(driver->getAnimatedValueTag());
-        }
-      }
-
-      // Update all animated nodes
-      updateNodes(finishedAnimationValueNodes);
-
-      // remove finished animations
-      if (hasFinishedAnimations) {
-        std::vector<int> finishedAnimations;
-        for (const auto& [animationId, driver] : activeAnimations_) {
-          if (driver->getIsComplete()) {
-            if (getAnimatedNode<ValueAnimatedNode>(
-                    driver->getAnimatedValueTag()) != nullptr) {
-              driver->stopAnimation();
-            }
-            finishedAnimations.emplace_back(animationId);
-          }
-        }
-        for (const auto& id : finishedAnimations) {
-          activeAnimations_.erase(id);
-        }
-      }
-
-      for (auto& [tag, props] : updateViewPropsDirect_) {
-        // TODO: also handle layout props (updateViewProps_). It is skipped for
-        // now, because the backend requires shadowNodeFamilies to be able to
-        // commit to the ShadowTree
-        propsBuilder.storeDynamic(props);
-        mutations.push_back(
-            AnimationMutation{tag, nullptr, propsBuilder.get()});
-        containsChange = true;
-      }
-      updateViewPropsDirect_.clear();
-    }
-
-    if (!containsChange) {
+    if (mutations.batch.empty()) {
       // The last animation tick didn't result in any changes to the UI.
       // It is safe to assume any event animation that was in progress has
       // completed.
@@ -1013,22 +1072,26 @@ AnimationMutations NativeAnimatedNodesManager::pullAnimationMutations() {
         }
       }
 
-      // Step 2: update all nodes that are connected to the finished animations.
+      // Step 2: update all nodes that are connected to the finished
+      // animations.
       updateNodes(finishedAnimationValueNodes);
 
       isEventAnimationInProgress_ = false;
 
-      for (auto& [tag, props] : updateViewPropsDirect_) {
-        // TODO: handle layout props
-        propsBuilder.storeDynamic(props);
-        mutations.push_back(
-            AnimationMutation{tag, nullptr, propsBuilder.get()});
-      }
+      insertMutations(
+          updateViewPropsDirectForBackend_, mutations, propsBuilder);
+
+      insertMutations(
+          updateViewPropsForBackend_, mutations, propsBuilder, true);
+
+      updateViewPropsForBackend_.clear();
+      updateViewPropsDirectForBackend_.clear();
     }
   } else {
     // There is no active animation. Stop the render callback.
     stopRenderCallbackIfNeeded(false);
   }
+  shouldRequestAsyncFlush_.clear();
   return mutations;
 }
 #endif
@@ -1103,7 +1166,8 @@ void NativeAnimatedNodesManager::onRender() {
         }
       }
 
-      // Step 2: update all nodes that are connected to the finished animations.
+      // Step 2: update all nodes that are connected to the finished
+      // animations.
       updateNodes(finishedAnimationValueNodes);
 
       isEventAnimationInProgress_ = false;

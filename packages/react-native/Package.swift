@@ -37,7 +37,6 @@ let CallInvokerPath = "ReactCommon/callinvoker" // header only target
 let ReactFBReactNativeSpecPath = "React/FBReactNativeSpec" // generated
 let FBLazyVectorPath = "Libraries/FBLazyVector" // header only
 let virtualViewPath = "ReactCommon/react/renderer/components/virtualview" // header only
-let virtualViewExperimentalPath = "ReactCommon/react/renderer/components/virtualviewexperimental" // header only
 
 // MARK: Prebuilt Dependencies declaration
 let reactNativeDependencies = BinaryTarget(
@@ -454,7 +453,6 @@ let reactFabric = RNTarget(
     "components/textinput/platform/ios/",
     "components/unimplementedview",
     "components/virtualview",
-    "components/virtualviewexperimental",
     "components/root/tests",
   ],
   dependencies: [.reactNativeDependencies, .reactJsiExecutor, .rctTypesafety, .reactTurboModuleCore, .jsi, .logger, .reactDebug, .reactFeatureFlags, .reactUtils, .reactRuntimeScheduler, .reactCxxReact, .reactRendererDebug, .reactGraphics, .yoga],
@@ -541,7 +539,7 @@ let reactFabricUnimplementedView = RNTarget(
 let reactRCTFabric = RNTarget(
   name: .reactRCTFabric,
   path: "React/Fabric",
-  searchPaths: [virtualViewPath, virtualViewExperimentalPath],
+  searchPaths: [virtualViewPath],
   dependencies: [.reactNativeDependencies, .reactCore, .reactRCTImage, .yoga, .reactRCTText, .jsi, .reactFabricInputAccessory, .reactFabricModal, .reactFabricSafeAreaView, .reactFabricSwitch, .reactFabricText, .reactFabricTextInput, .reactFabricUnimplementedView, .reactFabricTextLayoutManager, .reactGraphics, .reactImageManager, .reactDebug, .reactUtils, .reactPerformanceTimeline, .reactRendererDebug, .reactRendererConsistency, .reactRuntimeScheduler, .reactRCTAnimation, .reactJsInspector, .reactJsInspectorNetwork, .reactJsInspectorTracing, .reactFabric, .reactFabricImage, .rctSwiftUIWrapper]
 )
 
@@ -593,7 +591,11 @@ let reactRCTBlob = RNTarget(
 let reactRCTNetwork = RNTarget(
   name: .reactRCTNetwork,
   path: "Libraries/Network",
-  dependencies: [.yoga, .jsi, .reactTurboModuleCore]
+  dependencies: [.yoga, .jsi, .reactTurboModuleCore],
+  defines: [
+    CXXSetting.define("REACT_NATIVE_DEBUGGER_ENABLED", to: "1", .when(configuration: BuildConfiguration.debug)),
+    CXXSetting.define("REACT_NATIVE_DEBUGGER_ENABLED_DEVONLY", to: "1", .when(configuration: BuildConfiguration.debug)),
+  ]
 )
 
 /// React-RCTVibration.podspec
@@ -919,6 +921,8 @@ extension Target {
         .define("DEBUG", .when(configuration: .debug)),
         .define("NDEBUG", .when(configuration: .release)),
         .define("USE_HERMES", to: "1"),
+        .define("RCT_REMOVE_LEGACY_ARCH", to: "1"),
+        .define("HERMES_V1_ENABLED", to: "1"),
       ] + defines + cxxCommonHeaderPaths
 
     return .target(

@@ -6,11 +6,23 @@
  */
 
 #include "AnimationBackend.h"
+#include <react/debug/react_native_assert.h>
 #include <react/renderer/animationbackend/AnimatedPropsSerializer.h>
 #include <react/renderer/graphics/Color.h>
 #include <chrono>
+#include <set>
+#include "AnimatedPropsRegistry.h"
 
 namespace facebook::react {
+
+static const auto layoutProps = std::set<PropName>{
+    WIDTH,           HEIGHT,        FLEX,          MARGIN,      PADDING,
+    POSITION,        BORDER_WIDTH,  ALIGN_CONTENT, ALIGN_ITEMS, ALIGN_SELF,
+    ASPECT_RATIO,    BOX_SIZING,    DISPLAY,       FLEX_BASIS,  FLEX_DIRECTION,
+    ROW_GAP,         COLUMN_GAP,    FLEX_GROW,     FLEX_SHRINK, FLEX_WRAP,
+    JUSTIFY_CONTENT, MAX_HEIGHT,    MAX_WIDTH,     MIN_HEIGHT,  MIN_WIDTH,
+    STYLE_OVERFLOW,  POSITION_TYPE, DIRECTION,     Z_INDEX,
+};
 
 UIManagerNativeAnimatedDelegateBackendImpl::
     UIManagerNativeAnimatedDelegateBackendImpl(
@@ -48,57 +60,58 @@ static inline Props::Shared cloneProps(
   return newProps;
 }
 
-static inline bool mutationHasLayoutUpdates(
-    facebook::react::AnimationMutation& mutation) {
-  for (auto& animatedProp : mutation.props.props) {
-    // TODO: there should also be a check for the dynamic part
-    if (animatedProp->propName == WIDTH || animatedProp->propName == HEIGHT ||
-        animatedProp->propName == FLEX) {
-      return true;
-    }
-  }
-  return false;
-}
-
 AnimationBackend::AnimationBackend(
     StartOnRenderCallback&& startOnRenderCallback,
     StopOnRenderCallback&& stopOnRenderCallback,
     DirectManipulationCallback&& directManipulationCallback,
     FabricCommitCallback&& fabricCommitCallback,
-    UIManager* uiManager)
+    UIManager* uiManager,
+    std::shared_ptr<CallInvoker> jsInvoker)
     : startOnRenderCallback_(std::move(startOnRenderCallback)),
       stopOnRenderCallback_(std::move(stopOnRenderCallback)),
       directManipulationCallback_(std::move(directManipulationCallback)),
       fabricCommitCallback_(std::move(fabricCommitCallback)),
-      uiManager_(uiManager) {}
+      animatedPropsRegistry_(std::make_shared<AnimatedPropsRegistry>()),
+      uiManager_(uiManager),
+      jsInvoker_(std::move(jsInvoker)),
+      commitHook_(uiManager, animatedPropsRegistry_) {}
 
 void AnimationBackend::onAnimationFrame(double timestamp) {
-  std::unordered_map<Tag, AnimatedProps> updates;
-  std::unordered_map<SurfaceId, std::unordered_set<const ShadowNodeFamily*>>
-      surfaceToFamilies;
-  bool hasAnyLayoutUpdates = false;
+  std::unordered_map<SurfaceId, SurfaceUpdates> surfaceUpdates;
+  std::set<SurfaceId> asyncFlushSurfaces;
+
   for (auto& callback : callbacks) {
-    auto muatations = callback(static_cast<float>(timestamp));
-    for (auto& mutation : muatations) {
-      hasAnyLayoutUpdates |= mutationHasLayoutUpdates(mutation);
+    auto mutations = callback(static_cast<float>(timestamp));
+    asyncFlushSurfaces.merge(mutations.asyncFlushSurfaces);
+    for (auto& mutation : mutations.batch) {
       const auto family = mutation.family;
-      if (family != nullptr) {
-        surfaceToFamilies[family->getSurfaceId()].insert(family);
-      }
+      react_native_assert(family != nullptr);
+
+      auto& [families, updates, hasLayoutUpdates] =
+          surfaceUpdates[family->getSurfaceId()];
+      hasLayoutUpdates |= mutation.hasLayoutUpdates;
+      families.insert(family.get());
       updates[mutation.tag] = std::move(mutation.props);
     }
   }
 
-  if (hasAnyLayoutUpdates) {
-    commitUpdates(surfaceToFamilies, updates);
-  } else {
-    synchronouslyUpdateProps(updates);
+  animatedPropsRegistry_->update(surfaceUpdates);
+
+  for (auto& [surfaceId, updates] : surfaceUpdates) {
+    if (updates.hasLayoutUpdates) {
+      commitUpdates(surfaceId, updates);
+    } else {
+      synchronouslyUpdateProps(updates.propsMap);
+    }
   }
+
+  requestAsyncFlushForSurfaces(asyncFlushSurfaces);
 }
 
 void AnimationBackend::start(const Callback& callback, bool isAsync) {
   callbacks.push_back(callback);
-  // TODO: startOnRenderCallback_ should provide the timestamp from the platform
+  // TODO: startOnRenderCallback_ should provide the timestamp from the
+  // platform
   if (startOnRenderCallback_) {
     startOnRenderCallback_(
         [this]() {
@@ -116,53 +129,74 @@ void AnimationBackend::stop(bool isAsync) {
   callbacks.clear();
 }
 
+void AnimationBackend::trigger() {
+  onAnimationFrame(
+      std::chrono::steady_clock::now().time_since_epoch().count() / 1000);
+}
+
 void AnimationBackend::commitUpdates(
-    const std::unordered_map<
-        SurfaceId,
-        std::unordered_set<const ShadowNodeFamily*>>& surfaceToFamilies,
-    std::unordered_map<Tag, AnimatedProps>& updates) {
-  for (const auto& surfaceEntry : surfaceToFamilies) {
-    const auto& surfaceId = surfaceEntry.first;
-    const auto& surfaceFamilies = surfaceEntry.second;
-    uiManager_->getShadowTreeRegistry().visit(
-        surfaceId, [&surfaceFamilies, &updates](const ShadowTree& shadowTree) {
-          shadowTree.commit(
-              [&surfaceFamilies,
-               &updates](const RootShadowNode& oldRootShadowNode) {
-                return std::static_pointer_cast<RootShadowNode>(
-                    oldRootShadowNode.cloneMultiple(
-                        surfaceFamilies,
-                        [&surfaceFamilies, &updates](
-                            const ShadowNode& shadowNode,
-                            const ShadowNodeFragment& fragment) {
-                          auto newProps =
-                              ShadowNodeFragment::propsPlaceholder();
-                          if (surfaceFamilies.contains(
-                                  &shadowNode.getFamily())) {
-                            auto& animatedProps =
-                                updates.at(shadowNode.getTag());
-                            newProps = cloneProps(animatedProps, shadowNode);
-                          }
-                          return shadowNode.clone(
-                              {.props = newProps,
-                               .children = fragment.children,
-                               .state = shadowNode.getState(),
-                               .runtimeShadowNodeReference = false});
-                        }));
-              },
-              {.mountSynchronously = true});
-        });
-  }
+    SurfaceId surfaceId,
+    SurfaceUpdates& surfaceUpdates) {
+  auto& surfaceFamilies = surfaceUpdates.families;
+  auto& updates = surfaceUpdates.propsMap;
+  uiManager_->getShadowTreeRegistry().visit(
+      surfaceId, [&surfaceFamilies, &updates](const ShadowTree& shadowTree) {
+        shadowTree.commit(
+            [&surfaceFamilies,
+             &updates](const RootShadowNode& oldRootShadowNode) {
+              return std::static_pointer_cast<RootShadowNode>(
+                  oldRootShadowNode.cloneMultiple(
+                      surfaceFamilies,
+                      [&surfaceFamilies, &updates](
+                          const ShadowNode& shadowNode,
+                          const ShadowNodeFragment& fragment) {
+                        auto newProps = ShadowNodeFragment::propsPlaceholder();
+                        if (surfaceFamilies.contains(&shadowNode.getFamily())) {
+                          auto& animatedProps = updates.at(shadowNode.getTag());
+                          newProps = cloneProps(animatedProps, shadowNode);
+                        }
+                        return shadowNode.clone(
+                            {.props = newProps,
+                             .children = fragment.children,
+                             .state = shadowNode.getState(),
+                             .runtimeShadowNodeReference = false});
+                      }));
+            },
+            {.mountSynchronously = true});
+      });
 }
 
 void AnimationBackend::synchronouslyUpdateProps(
     const std::unordered_map<Tag, AnimatedProps>& updates) {
   for (auto& [tag, animatedProps] : updates) {
-    // TODO: We shouldn't repack it into dynamic, but for that a rewrite of
-    // directManipulationCallback_ is needed
+    // TODO: We shouldn't repack it into dynamic, but for that a rewrite
+    // of directManipulationCallback_ is needed
     auto dyn = animationbackend::packAnimatedProps(animatedProps);
     directManipulationCallback_(tag, std::move(dyn));
   }
+}
+
+void AnimationBackend::requestAsyncFlushForSurfaces(
+    const std::set<SurfaceId>& surfaces) {
+  for (const auto& surfaceId : surfaces) {
+    // perform an empty commit on the js thread, to force the commit hook to
+    // push updated shadow nodes to react through RSNRU
+    jsInvoker_->invokeAsync([this, surfaceId]() {
+      uiManager_->getShadowTreeRegistry().visit(
+          surfaceId, [](const ShadowTree& shadowTree) {
+            shadowTree.commit(
+                [](const RootShadowNode& oldRootShadowNode) {
+                  return std::static_pointer_cast<RootShadowNode>(
+                      oldRootShadowNode.ShadowNode::clone({}));
+                },
+                {.source = ShadowTreeCommitSource::AnimationEndSync});
+          });
+    });
+  }
+}
+
+void AnimationBackend::clearRegistry(SurfaceId surfaceId) {
+  animatedPropsRegistry_->clear(surfaceId);
 }
 
 } // namespace facebook::react
