@@ -564,6 +564,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 }
 
 -(bool)focusSelf {
+#ifndef RCT_REMOVE_LEGACY_ARCH
   RCTRootView *rootview = [self rootView];
   if (rootview == nil) return false;
   
@@ -575,6 +576,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
 
   [rootview setNeedsFocusUpdate];
   [rootview updateFocusIfNeeded];
+#endif
   return true;
 }
 
