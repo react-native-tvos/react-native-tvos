@@ -24,6 +24,9 @@ build:
           export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
           echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
           set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
+          # Install cmake
+          echo "Installing CMake 3.30.5..."
+          sdkmanager --install "cmake;3.30.5"
           # Location for NPM tarballs
           export NPM_TARBALL_LOCATION=$PWD/npm-tarballs
           mkdir -p $NPM_TARBALL_LOCATION
@@ -40,7 +43,7 @@ build:
             . ./tools/rntv-workflows/override-nightly-build-version.sh
             echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
             set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
-            node ./scripts/releases/use-hermes-nightly.js
+            # node ./scripts/releases/use-hermes-nightly.js
             yarn
             set-env HERMES_VERSION nightly
             set-env RN_DEP_VERSION nightly
@@ -80,21 +83,21 @@ build:
           npm pack --pack-destination $ROOT_DIR
     - run:
         name: Build RNTester app for Android and Android TV (Debug)
-        working_directory: ../../packages/rn-tester
+        working_directory: ../..
         command: |
           echo "Building RNTester..."
-          yarn build-android-hermes
+          ./gradlew :packages:rn-tester:android:app:assembleDebug
           echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION/Debug
+          cp -r packages/rn-tester/android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION/Debug
           echo "Build completed."
     - run:
         name: Build RNTester app for Android and Android TV (Release)
-        working_directory: ../../packages/rn-tester
+        working_directory: ../..
         command: |
           echo "Building RNTester..."
-          yarn build-android-hermes-release
+          ./gradlew :packages:rn-tester:android:app:assembleRelease
           echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r android/app/build/outputs/apk/release/* $RNTESTER_APK_LOCATION/Release
+          cp -r packages/rn-tester/android/app/build/outputs/apk/release/* $RNTESTER_APK_LOCATION/Release
           echo "Build completed."
     - run:
         name: Package Android artifacts
