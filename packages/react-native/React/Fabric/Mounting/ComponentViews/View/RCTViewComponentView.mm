@@ -1166,7 +1166,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   // `autoFocus`
   if (oldViewProps.autoFocus != newViewProps.autoFocus) {
     _autoFocus = newViewProps.autoFocus;
-    [self handleFocusGuide];
   }
 
   _trapFocusUp = newViewProps.trapFocusUp;
@@ -1228,7 +1227,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       [self requestFocusSelf];
     }
   }
-
+  [self handleFocusGuide];
 #endif
 
   if (_swiftUIWrapper != nullptr) {
