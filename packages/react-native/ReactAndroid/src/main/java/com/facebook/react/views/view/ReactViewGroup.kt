@@ -1403,7 +1403,13 @@ public open class ReactViewGroup public constructor(context: Context?) :
     if (isFocusDestinationsSet) {
       val destination = findDestinationView()
 
-      if (destination != null && requestFocusViewOrAncestor(destination)) {
+      // Destination is set but there's no such element on the tree
+      // Just skip it to prevent cyclic issues.
+      if (destination == null) {
+        return false
+      }
+
+      if (destination.requestFocus()) {
         return true
       }
     }
@@ -1427,9 +1433,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       }
 
       // Try moving the focus to the first focusable element otherwise.
-      if (moveFocusToFirstFocusable(this)) {
-        return true
-      }
+      return moveFocusToFirstFocusable(this)
     }
 
     return super.requestFocus(direction, previouslyFocusedRect)
@@ -1552,22 +1556,6 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
     fun setViewClipped(view: View, clipped: Boolean) {
       view.setTag(R.id.view_clipped, clipped)
-    }
-
-    private fun requestFocusViewOrAncestor(destination: View): Boolean {
-      var v: View? = destination
-      while (v != null) {
-        if (v.requestFocus()) {
-          return true
-        }
-        val parent = v.parent
-        v = if (parent is View) {
-          parent
-        } else {
-          null
-        }
-      }
-      return false
     }
   }
 }
