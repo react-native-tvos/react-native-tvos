@@ -597,7 +597,7 @@ type ScrollViewBaseProps = Readonly<{
    * top of the scroll view. This property is not supported in conjunction
    * with `horizontal={true}`.
    */
-  stickyHeaderIndices?: ?$ReadOnlyArray<number>,
+  stickyHeaderIndices?: ?ReadonlyArray<number>,
   /**
    * A React Component that will be used to render sticky headers.
    * To be used together with `stickyHeaderIndices` or with `SectionList`, defaults to `ScrollViewStickyHeader`.
@@ -631,7 +631,7 @@ type ScrollViewBaseProps = Readonly<{
    *
    * Overrides less configurable `pagingEnabled` and `snapToInterval` props.
    */
-  snapToOffsets?: ?$ReadOnlyArray<number>,
+  snapToOffsets?: ?ReadonlyArray<number>,
   /**
    * Use in conjunction with `snapToOffsets`. By default, the beginning
    * of the list counts as a snap offset. Set `snapToStart` to false to disable
@@ -1858,6 +1858,8 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
           {style: StyleSheet.compose(baseStyle, outer)},
           <NativeScrollView
             {...props}
+            // Nested scroll should always be enabled to allow the child scroll view to handle events before passing them to the refresh control parent
+            nestedScrollEnabled={props.nestedScrollEnabled ?? true}
             style={StyleSheet.compose(baseStyle, inner)}
             // $FlowFixMe[incompatible-type] - Flow only knows element refs.
             ref={scrollViewRef}>

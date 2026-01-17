@@ -732,26 +732,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    shouldResetOnClickListenerWhenRecyclingView: {
-      defaultValue: true,
-      metadata: {
-        description:
-          'Reset OnClickListener to null when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.',
-        expectedReleaseValue: true,
-        purpose: 'release',
-      },
-      ossReleaseStage: 'none',
-    },
-    shouldSetEnabledBasedOnAccessibilityState: {
-      defaultValue: true,
-      metadata: {
-        description:
-          'Fix BaseViewManager to properly set view.setEnabled() based on accessibilityState.disabled.',
-        expectedReleaseValue: true,
-        purpose: 'release',
-      },
-      ossReleaseStage: 'none',
-    },
     shouldTriggerResponderTransferOnScrollAndroid: {
       defaultValue: false,
       metadata: {
@@ -825,17 +805,6 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'experimentation',
       },
       ossReleaseStage: 'canary',
-    },
-    useShadowNodeStateOnClone: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2025-04-16',
-        description:
-          'Use the state stored on the source shadow node when cloning it instead of reading in the most recent state on the shadow node family.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'stable',
     },
     useSharedAnimatedBackend: {
       defaultValue: false,
@@ -997,16 +966,6 @@ const definitions: FeatureFlagDefinitions = {
           'Enables use of AnimatedObject for animating transform values.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    shouldUseLinkRoleForPressableText: {
-      defaultValue: true,
-      metadata: {
-        description:
-          'Set accessibilityRole to "link" for pressable Text components by default.',
-        expectedReleaseValue: true,
-        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },

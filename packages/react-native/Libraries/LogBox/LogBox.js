@@ -11,6 +11,7 @@
 import type {IgnorePattern, LogData} from './Data/LogBoxData';
 import type {ExtendedExceptionData} from './Data/parseLogBoxLog';
 
+import toExtendedError from '../../src/private/utilities/toExtendedError';
 import Platform from '../Utilities/Platform';
 import RCTLog from '../Utilities/RCTLog';
 import * as React from 'react';
@@ -23,7 +24,7 @@ interface ILogBox {
   install(): void;
   uninstall(): void;
   isInstalled(): boolean;
-  ignoreLogs($ReadOnlyArray<IgnorePattern>): void;
+  ignoreLogs(ReadonlyArray<IgnorePattern>): void;
   ignoreAllLogs(value?: boolean): void;
   clearAllLogs(): void;
   addLog(log: LogData): void;
@@ -117,7 +118,7 @@ if (__DEV__) {
     /**
      * Silence any logs that match the given strings or regexes.
      */
-    ignoreLogs(patterns: $ReadOnlyArray<IgnorePattern>): void {
+    ignoreLogs(patterns: ReadonlyArray<IgnorePattern>): void {
       LogBoxData.addIgnorePatterns(patterns);
     },
 
@@ -147,11 +148,7 @@ if (__DEV__) {
           let format = args[0];
           if (typeof format === 'string') {
             const filterResult =
-              require('../LogBox/Data/LogBoxData').checkWarningFilter(
-                // For legacy reasons, we strip the warning prefix from the message.
-                // Can remove this once we remove the warning module altogether.
-                format.replace(/^Warning: /, ''),
-              );
+              require('../LogBox/Data/LogBoxData').checkWarningFilter(format);
             if (filterResult.monitorEvent !== 'warning_unhandled') {
               if (filterResult.suppressCompletely) {
                 return;
@@ -192,8 +189,8 @@ if (__DEV__) {
               componentStackType,
             });
           }
-        } catch (err) {
-          LogBoxData.reportLogBoxError(err);
+        } catch (err: unknown) {
+          LogBoxData.reportLogBoxError(toExtendedError(err));
         }
       }
     },
@@ -237,8 +234,8 @@ if (__DEV__) {
           });
         }
       }
-    } catch (err) {
-      LogBoxData.reportLogBoxError(err);
+    } catch (err: unknown) {
+      LogBoxData.reportLogBoxError(toExtendedError(err));
     }
   };
 } else {
@@ -255,7 +252,7 @@ if (__DEV__) {
       return false;
     },
 
-    ignoreLogs(patterns: $ReadOnlyArray<IgnorePattern>): void {
+    ignoreLogs(patterns: ReadonlyArray<IgnorePattern>): void {
       // Do nothing.
     },
 

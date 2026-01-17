@@ -30,7 +30,6 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.ReactConstants;
-import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
 import com.facebook.react.uimanager.ReactAccessibilityDelegate.AccessibilityRole;
 import com.facebook.react.uimanager.ReactAccessibilityDelegate.Role;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -80,6 +79,7 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
     // Reset tags
     view.setTag(null);
     view.setTag(R.id.pointer_events, null);
+    view.setTag(R.id.important_for_interaction, null);
     view.setTag(R.id.react_test_id, null);
     view.setTag(R.id.view_tag_native_id, null);
     view.setTag(R.id.labelled_by, null);
@@ -151,9 +151,7 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
 
     // NOTE: setClickable MUST be called AFTER setOnClickListener because
     // the latter has the side effect of setting isClickable=true on some views!
-    if (ReactNativeFeatureFlags.shouldResetOnClickListenerWhenRecyclingView()) {
-      view.setOnClickListener(null);
-    }
+    view.setOnClickListener(null);
     view.setClickable(false);
     view.setFocusable(false);
     view.setFocusableInTouchMode(false);
@@ -393,15 +391,7 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
     }
     view.setTag(R.id.accessibility_state, accessibilityState);
     if (accessibilityState.hasKey("disabled")) {
-      if (ReactNativeFeatureFlags.shouldSetEnabledBasedOnAccessibilityState()) {
-        // New behavior: properly set enabled state for both true and false
-        view.setEnabled(!accessibilityState.getBoolean("disabled"));
-      } else {
-        // Old behavior: only set enabled(true) when disabled=false
-        if (!accessibilityState.getBoolean("disabled")) {
-          view.setEnabled(true);
-        }
-      }
+      view.setEnabled(!accessibilityState.getBoolean("disabled"));
     }
 
     // For states which don't have corresponding methods in

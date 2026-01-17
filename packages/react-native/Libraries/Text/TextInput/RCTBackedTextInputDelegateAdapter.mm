@@ -11,13 +11,14 @@
 
 static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingContext;
 
-#if TARGET_OS_TV
-@interface RCTBackedTextFieldDelegateAdapter () <UITextFieldDelegate>
-@end
-#else
-@interface RCTBackedTextFieldDelegateAdapter () <UITextFieldDelegate, UITextDropDelegate>
-@end
+@interface RCTBackedTextFieldDelegateAdapter () <
+    UITextFieldDelegate
+#if !TARGET_OS_TV
+    ,
+    UITextDropDelegate
 #endif
+    >
+@end
 
 @implementation RCTBackedTextFieldDelegateAdapter {
   __weak UITextField<RCTBackedTextInputViewProtocol> *_backedTextInputView;
@@ -211,13 +212,14 @@ static void *TextFieldSelectionObservingContext = &TextFieldSelectionObservingCo
 
 #pragma mark - RCTBackedTextViewDelegateAdapter (for UITextView)
 
-#if TARGET_OS_TV
-@interface RCTBackedTextViewDelegateAdapter () <UITextViewDelegate>
-@end
-#else
-@interface RCTBackedTextViewDelegateAdapter () <UITextViewDelegate, UITextDropDelegate>
-@end
+@interface RCTBackedTextViewDelegateAdapter () <
+    UITextViewDelegate
+#if !TARGET_OS_TV
+    ,
+    UITextDropDelegate
 #endif
+    >
+@end
 
 @implementation RCTBackedTextViewDelegateAdapter {
   __weak UITextView<RCTBackedTextInputViewProtocol> *_backedTextInputView;

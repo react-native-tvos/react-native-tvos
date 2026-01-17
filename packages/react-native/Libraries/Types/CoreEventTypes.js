@@ -37,7 +37,7 @@ export type ResponderSyntheticEvent<T> = Readonly<{
     indexOfSingleActiveTouch: number,
     mostRecentTimeStamp: number,
     numberActiveTouches: number,
-    touchBank: $ReadOnlyArray<
+    touchBank: ReadonlyArray<
       Readonly<{
         touchActive: boolean,
         startPageX: number,
@@ -237,7 +237,7 @@ export type NativeTouchEvent = Readonly<{
   /**
    * Array of all touch events that have changed since the last event
    */
-  changedTouches: $ReadOnlyArray<NativeTouchEvent>,
+  changedTouches: ReadonlyArray<NativeTouchEvent>,
   /**
    * 3D Touch reported force
    * @platform ios
@@ -274,7 +274,7 @@ export type NativeTouchEvent = Readonly<{
   /**
    * Array of all current touches on the screen
    */
-  touches: $ReadOnlyArray<NativeTouchEvent>,
+  touches: ReadonlyArray<NativeTouchEvent>,
 }>;
 
 export type GestureResponderEvent = ResponderSyntheticEvent<NativeTouchEvent>;

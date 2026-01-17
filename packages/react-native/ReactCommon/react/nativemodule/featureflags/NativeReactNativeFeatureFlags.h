@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<14a066fb4e2b8eaa47642dd5b28eee52>>
+ * @generated SignedSource<<6d28ea5d159f53988ca76188bc2fa5c0>>
  */
 
 /**
@@ -164,10 +164,6 @@ class NativeReactNativeFeatureFlags
 
   bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 
-  bool shouldResetOnClickListenerWhenRecyclingView(jsi::Runtime& runtime);
-
-  bool shouldSetEnabledBasedOnAccessibilityState(jsi::Runtime& runtime);
-
   bool shouldTriggerResponderTransferOnScrollAndroid(jsi::Runtime& runtime);
 
   bool skipActivityIdentityAssertionOnHostPause(jsi::Runtime& runtime);
@@ -181,8 +177,6 @@ class NativeReactNativeFeatureFlags
   bool useFabricInterop(jsi::Runtime& runtime);
 
   bool useNativeViewConfigsInBridgelessMode(jsi::Runtime& runtime);
-
-  bool useShadowNodeStateOnClone(jsi::Runtime& runtime);
 
   bool useSharedAnimatedBackend(jsi::Runtime& runtime);
 

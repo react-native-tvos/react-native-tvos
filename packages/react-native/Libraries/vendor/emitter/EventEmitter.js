@@ -16,7 +16,7 @@ export interface EventSubscription {
 }
 
 export interface IEventEmitter<
-  TEventToArgsMap: Readonly<Record<string, $ReadOnlyArray<UnsafeEventObject>>>,
+  TEventToArgsMap: Readonly<Record<string, ReadonlyArray<UnsafeEventObject>>>,
 > {
   addListener<TEvent: $Keys<TEventToArgsMap>>(
     eventType: TEvent,
@@ -41,7 +41,7 @@ interface Registration<TArgs> {
 }
 
 type Registry<
-  TEventToArgsMap: Readonly<Record<string, $ReadOnlyArray<UnsafeEventObject>>>,
+  TEventToArgsMap: Readonly<Record<string, ReadonlyArray<UnsafeEventObject>>>,
 > = {
   [K in keyof TEventToArgsMap]: Set<Registration<TEventToArgsMap[K]>>,
 };
@@ -68,8 +68,8 @@ type Registry<
  */
 export default class EventEmitter<
   TEventToArgsMap: Readonly<
-    Record<string, $ReadOnlyArray<UnsafeEventObject>>,
-  > = Readonly<Record<string, $ReadOnlyArray<UnsafeEventObject>>>,
+    Record<string, ReadonlyArray<UnsafeEventObject>>,
+  > = Readonly<Record<string, ReadonlyArray<UnsafeEventObject>>>,
 > implements IEventEmitter<TEventToArgsMap>
 {
   #registry: Registry<TEventToArgsMap>;
@@ -126,7 +126,6 @@ export default class EventEmitter<
       // Copy `registrations` to take a snapshot when we invoke `emit`, in case
       // registrations are added or removed when listeners are invoked.
       for (const registration of Array.from(registrations)) {
-        // $FlowFixMe[incompatible-type]
         registration.listener.apply(registration.context, args);
       }
     }
@@ -157,9 +156,8 @@ export default class EventEmitter<
 }
 
 function allocate<
-  TEventToArgsMap: Readonly<Record<string, $ReadOnlyArray<UnsafeEventObject>>>,
+  TEventToArgsMap: Readonly<Record<string, ReadonlyArray<UnsafeEventObject>>>,
   TEvent: $Keys<TEventToArgsMap>,
-  TEventArgs: TEventToArgsMap[TEvent],
 >(
   registry: Registry<TEventToArgsMap>,
   eventType: TEvent,

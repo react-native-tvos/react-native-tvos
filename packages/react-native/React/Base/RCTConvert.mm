@@ -461,24 +461,7 @@ RCT_MULTI_ENUM_CONVERTER(
     }),
     UIDataDetectorTypePhoneNumber,
     unsignedLongLongValue)
-
-RCT_MULTI_ENUM_CONVERTER(
-    WKDataDetectorTypes,
-    (@{
-      @"phoneNumber" : @(WKDataDetectorTypePhoneNumber),
-      @"link" : @(WKDataDetectorTypeLink),
-      @"address" : @(WKDataDetectorTypeAddress),
-      @"calendarEvent" : @(WKDataDetectorTypeCalendarEvent),
-      @"trackingNumber" : @(WKDataDetectorTypeTrackingNumber),
-      @"flightNumber" : @(WKDataDetectorTypeFlightNumber),
-      @"lookupSuggestion" : @(WKDataDetectorTypeLookupSuggestion),
-      @"none" : @(WKDataDetectorTypeNone),
-      @"all" : @(WKDataDetectorTypeAll),
-    }),
-    WKDataDetectorTypePhoneNumber,
-    unsignedLongLongValue)
-
-#endif // !TARGET_OS_TV
+#endif
 
 RCT_ENUM_CONVERTER(
     UIKeyboardAppearance,
@@ -538,6 +521,8 @@ RCT_ENUM_CONVERTER(
       @"fullScreen" : @(UIModalPresentationFullScreen),
 #if !TARGET_OS_TV
       @"pageSheet" : @(UIModalPresentationPageSheet),
+#endif
+#if !TARGET_OS_TV || __TV_OS_VERSION_MIN_REQUIRED >= 260000
       @"formSheet" : @(UIModalPresentationFormSheet),
 #endif
       @"overFullScreen" : @(UIModalPresentationOverFullScreen),

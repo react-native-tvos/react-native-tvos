@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8fa338ec73fcb7af019d877fd949543a>>
+ * @generated SignedSource<<e197fcc2185d8f75ff6d355c27975bd4>>
  */
 
 /**
@@ -282,14 +282,6 @@ bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {
   return getAccessor().shouldPressibilityUseW3CPointerEventsForHover();
 }
 
-bool ReactNativeFeatureFlags::shouldResetOnClickListenerWhenRecyclingView() {
-  return getAccessor().shouldResetOnClickListenerWhenRecyclingView();
-}
-
-bool ReactNativeFeatureFlags::shouldSetEnabledBasedOnAccessibilityState() {
-  return getAccessor().shouldSetEnabledBasedOnAccessibilityState();
-}
-
 bool ReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid() {
   return getAccessor().shouldTriggerResponderTransferOnScrollAndroid();
 }
@@ -316,10 +308,6 @@ bool ReactNativeFeatureFlags::useFabricInterop() {
 
 bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
   return getAccessor().useNativeViewConfigsInBridgelessMode();
-}
-
-bool ReactNativeFeatureFlags::useShadowNodeStateOnClone() {
-  return getAccessor().useShadowNodeStateOnClone();
 }
 
 bool ReactNativeFeatureFlags::useSharedAnimatedBackend() {

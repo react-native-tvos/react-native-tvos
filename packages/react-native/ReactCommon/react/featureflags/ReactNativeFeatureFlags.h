@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b05e1657341801ec03c9f060f4015c0f>>
+ * @generated SignedSource<<66c8c46d66dde5eb2fd19a67459c83af>>
  */
 
 /**
@@ -360,16 +360,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool shouldPressibilityUseW3CPointerEventsForHover();
 
   /**
-   * Reset OnClickListener to null when recycling views on Android to avoid accessibility tools finding views with incorrect state after recycling.
-   */
-  RN_EXPORT static bool shouldResetOnClickListenerWhenRecyclingView();
-
-  /**
-   * Fix BaseViewManager to properly set view.setEnabled() based on accessibilityState.disabled.
-   */
-  RN_EXPORT static bool shouldSetEnabledBasedOnAccessibilityState();
-
-  /**
    * Do not emit touchcancel from Android ScrollView, instead native topScroll event will trigger responder transfer and terminate in RN renderer.
    */
   RN_EXPORT static bool shouldTriggerResponderTransferOnScrollAndroid();
@@ -403,11 +393,6 @@ class ReactNativeFeatureFlags {
    * When enabled, the native view configs are used in bridgeless mode.
    */
   RN_EXPORT static bool useNativeViewConfigsInBridgelessMode();
-
-  /**
-   * Use the state stored on the source shadow node when cloning it instead of reading in the most recent state on the shadow node family.
-   */
-  RN_EXPORT static bool useShadowNodeStateOnClone();
 
   /**
    * Use shared animation backend in C++ Animated

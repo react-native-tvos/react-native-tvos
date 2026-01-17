@@ -21,6 +21,7 @@
   NSArray<UIBarButtonItemGroup *> *_initialValueLeadingBarButtonGroups;
   NSArray<UIBarButtonItemGroup *> *_initialValueTrailingBarButtonGroups;
   NSArray<NSString *> *_acceptDragAndDropTypes;
+  BOOL _disableKeyboardShortcuts;
 }
 
 static UIFont *defaultPlaceholderFont(void)
@@ -151,6 +152,7 @@ static UIColor *defaultPlaceholderColor(void)
 
 - (void)setDisableKeyboardShortcuts:(BOOL)disableKeyboardShortcuts
 {
+  _disableKeyboardShortcuts = disableKeyboardShortcuts;
 #if TARGET_OS_IOS
   // Initialize the initial values only once
   if (_initialValueLeadingBarButtonGroups == nil) {
@@ -167,8 +169,12 @@ static UIColor *defaultPlaceholderColor(void)
     self.inputAssistantItem.leadingBarButtonGroups = _initialValueLeadingBarButtonGroups;
     self.inputAssistantItem.trailingBarButtonGroups = _initialValueTrailingBarButtonGroups;
   }
-  _disableKeyboardShortcuts = disableKeyboardShortcuts;
 #endif
+}
+
+- (BOOL)disableKeyboardShortcuts
+{
+  return _disableKeyboardShortcuts;
 }
 
 #pragma mark - Overrides

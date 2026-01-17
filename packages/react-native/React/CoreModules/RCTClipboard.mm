@@ -30,17 +30,17 @@ RCT_EXPORT_METHOD(setString : (NSString *)content)
 {
 #if !TARGET_OS_TV
   UIPasteboard *clipboard = [UIPasteboard generalPasteboard];
-  clipboard.string = (content ? : @"");
+  clipboard.string = (content ?: @"");
 #endif
 }
 
 RCT_EXPORT_METHOD(getString : (RCTPromiseResolveBlock)resolve reject : (__unused RCTPromiseRejectBlock)reject)
 {
-#if TARGET_OS_TV
-    resolve(@"");
-#else
+#if !TARGET_OS_TV
   UIPasteboard *clipboard = [UIPasteboard generalPasteboard];
-  resolve((clipboard.string ? : @""));
+  resolve((clipboard.string ?: @""));
+#else
+  resolve(@"");
 #endif
 }
 

@@ -25,7 +25,6 @@ RCT_EXPORT_MODULE()
 - (void)startObserving
 {
 #if !TARGET_OS_TV
-
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 
 #define ADD_KEYBOARD_HANDLER(NAME, SELECTOR) [nc addObserver:self selector:@selector(SELECTOR:) name:NAME object:nil]
@@ -38,7 +37,6 @@ RCT_EXPORT_MODULE()
   ADD_KEYBOARD_HANDLER(UIKeyboardDidChangeFrameNotification, keyboardDidChangeFrame);
 
 #undef ADD_KEYBOARD_HANDLER
-
 #endif
 }
 
@@ -86,6 +84,7 @@ IMPLEMENT_KEYBOARD_HANDLER(keyboardDidChangeFrame)
 
 @end
 
+#if !TARGET_OS_TV
 NS_INLINE NSDictionary *RCTRectDictionaryValue(CGRect rect)
 {
   return @{
@@ -139,6 +138,14 @@ static NSDictionary *RCTParseKeyboardNotification(NSNotification *notification)
   };
 #endif
 }
+
+#else
+static NSDictionary *RCTParseKeyboardNotification(NSNotification *notification)
+{
+  return @{};
+}
+
+#endif
 
 Class RCTKeyboardObserverCls(void)
 {

@@ -25,7 +25,7 @@ using namespace facebook::react;
 @end
 
 @implementation RCTDeviceInfo {
-#if !TARGET_OS_TV
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
   UIInterfaceOrientation _currentInterfaceOrientation;
 #endif
   NSDictionary *_currentInterfaceDimensions;
@@ -109,10 +109,11 @@ RCT_EXPORT_MODULE()
                                              object:nil];
 #endif
 
-#if TARGET_OS_IOS
-
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
   _currentInterfaceOrientation = RCTKeyWindow().windowScene.interfaceOrientation;
+#endif
 
+#if TARGET_OS_IOS
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(interfaceFrameDidChange)
                                                name:UIDeviceOrientationDidChangeNotification

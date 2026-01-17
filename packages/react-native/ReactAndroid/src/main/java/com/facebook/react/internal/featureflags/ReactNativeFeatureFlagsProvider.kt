@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<da8de211c4b7837291853f9b79d2f8e5>>
+ * @generated SignedSource<<ad478388cb9a64690c71fe8fa06c1c79>>
  */
 
 /**
@@ -151,10 +151,6 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean
 
-  @DoNotStrip public fun shouldResetOnClickListenerWhenRecyclingView(): Boolean
-
-  @DoNotStrip public fun shouldSetEnabledBasedOnAccessibilityState(): Boolean
-
   @DoNotStrip public fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean
 
   @DoNotStrip public fun skipActivityIdentityAssertionOnHostPause(): Boolean
@@ -168,8 +164,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useFabricInterop(): Boolean
 
   @DoNotStrip public fun useNativeViewConfigsInBridgelessMode(): Boolean
-
-  @DoNotStrip public fun useShadowNodeStateOnClone(): Boolean
 
   @DoNotStrip public fun useSharedAnimatedBackend(): Boolean
 

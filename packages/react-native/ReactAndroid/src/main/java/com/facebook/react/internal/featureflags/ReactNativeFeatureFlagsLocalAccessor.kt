@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<77669091f5fbd91a7be1693375163c0c>>
+ * @generated SignedSource<<1403b30f4dc3d18f39303d91d6824bda>>
  */
 
 /**
@@ -88,8 +88,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var preparedTextCacheSizeCache: Double? = null
   private var preventShadowTreeCommitExhaustionCache: Boolean? = null
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
-  private var shouldResetOnClickListenerWhenRecyclingViewCache: Boolean? = null
-  private var shouldSetEnabledBasedOnAccessibilityStateCache: Boolean? = null
   private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
@@ -97,7 +95,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var useAlwaysAvailableJSErrorHandlingCache: Boolean? = null
   private var useFabricInteropCache: Boolean? = null
   private var useNativeViewConfigsInBridgelessModeCache: Boolean? = null
-  private var useShadowNodeStateOnCloneCache: Boolean? = null
   private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
@@ -745,26 +742,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
-  override fun shouldResetOnClickListenerWhenRecyclingView(): Boolean {
-    var cached = shouldResetOnClickListenerWhenRecyclingViewCache
-    if (cached == null) {
-      cached = currentProvider.shouldResetOnClickListenerWhenRecyclingView()
-      accessedFeatureFlags.add("shouldResetOnClickListenerWhenRecyclingView")
-      shouldResetOnClickListenerWhenRecyclingViewCache = cached
-    }
-    return cached
-  }
-
-  override fun shouldSetEnabledBasedOnAccessibilityState(): Boolean {
-    var cached = shouldSetEnabledBasedOnAccessibilityStateCache
-    if (cached == null) {
-      cached = currentProvider.shouldSetEnabledBasedOnAccessibilityState()
-      accessedFeatureFlags.add("shouldSetEnabledBasedOnAccessibilityState")
-      shouldSetEnabledBasedOnAccessibilityStateCache = cached
-    }
-    return cached
-  }
-
   override fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean {
     var cached = shouldTriggerResponderTransferOnScrollAndroidCache
     if (cached == null) {
@@ -831,16 +808,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.useNativeViewConfigsInBridgelessMode()
       accessedFeatureFlags.add("useNativeViewConfigsInBridgelessMode")
       useNativeViewConfigsInBridgelessModeCache = cached
-    }
-    return cached
-  }
-
-  override fun useShadowNodeStateOnClone(): Boolean {
-    var cached = useShadowNodeStateOnCloneCache
-    if (cached == null) {
-      cached = currentProvider.useShadowNodeStateOnClone()
-      accessedFeatureFlags.add("useShadowNodeStateOnClone")
-      useShadowNodeStateOnCloneCache = cached
     }
     return cached
   }

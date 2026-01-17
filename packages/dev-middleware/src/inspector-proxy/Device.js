@@ -96,7 +96,7 @@ export default class Device {
   #deviceSocket: WS;
 
   // Stores the most recent listing of device's pages, keyed by the `id` field.
-  #pages: $ReadOnlyMap<string, Page> = new Map();
+  #pages: ReadonlyMap<string, Page> = new Map();
 
   // Stores information about currently connected debugger (if any).
   #debuggerConnection: ?DebuggerConnection = null;
@@ -282,7 +282,7 @@ export default class Device {
     return this.#app;
   }
 
-  getPagesList(): $ReadOnlyArray<Page> {
+  getPagesList(): ReadonlyArray<Page> {
     if (this.#lastConnectedLegacyReactNativePage) {
       return [...this.#pages.values(), this.#createSyntheticPage()];
     } else {
@@ -480,7 +480,7 @@ export default class Device {
   /**
    * Returns `true` if a page supports the given target capability flag.
    */
-  #pageHasCapability(page: Page, flag: $Keys<TargetCapabilityFlags>): boolean {
+  #pageHasCapability(page: Page, flag: keyof TargetCapabilityFlags): boolean {
     return page.capabilities[flag] === true;
   }
 

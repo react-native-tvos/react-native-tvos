@@ -18,16 +18,21 @@
 
 using namespace facebook::react;
 
+@interface RCTSwitchComponentView () <RCTSwitchViewProtocol>
+@end
+
 #if TARGET_OS_TV
 
-@implementation RCTSwitchComponentView
+@implementation RCTSwitchComponentView {
+}
+
+- (void)setValue:(BOOL)value
+{
+}
 
 @end
 
 #else
-
-@interface RCTSwitchComponentView () <RCTSwitchViewProtocol>
-@end
 
 @implementation RCTSwitchComponentView {
   UISwitch *_switchView;
@@ -135,7 +140,7 @@ using namespace facebook::react;
 
 @end
 
-#endif // TARGET_OS_TV
+#endif
 
 Class<RCTComponentViewProtocol> RCTSwitchCls(void)
 {

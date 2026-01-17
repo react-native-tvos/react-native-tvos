@@ -20,12 +20,10 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame]) != nullptr) {
-#if TARGET_OS_TV
-      self.windowLevel = UIWindowLevelNormal;
-#else
-      self.windowLevel = UIWindowLevelStatusBar - 1;
+#if !TARGET_OS_TV
+    self.windowLevel = UIWindowLevelStatusBar - 1;
 #endif
-      self.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [UIColor clearColor];
   }
   return self;
 }
@@ -44,9 +42,7 @@
 {
   self = [super initWithWindowScene:window.windowScene];
 
-#if TARGET_OS_TV
-  self.windowLevel = UIWindowLevelNormal;
-#else
+#if !TARGET_OS_TV
   self.windowLevel = UIWindowLevelStatusBar - 1;
 #endif
   self.backgroundColor = [UIColor clearColor];

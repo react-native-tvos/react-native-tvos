@@ -34,24 +34,23 @@ static UNNotification *kInitialNotification = nil;
 + (UNNotificationContent *)UNNotificationContent:(id)json
 {
   NSDictionary<NSString *, id> *details = [self NSDictionary:json];
-  BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
   UNMutableNotificationContent *content = [UNMutableNotificationContent new];
 #if !TARGET_OS_TV
+  BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
   content.title = [RCTConvert NSString:details[@"alertTitle"]];
   content.body = [RCTConvert NSString:details[@"alertBody"]];
   content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
   content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
-#endif
-  if (details[@"applicationIconBadgeNumber"]) {
-    content.badge = [RCTConvert NSNumber:details[@"applicationIconBadgeNumber"]];
-  }
-#if !TARGET_OS_TV
   if (!isSilent) {
     NSString *soundName = [RCTConvert NSString:details[@"soundName"]];
     content.sound =
         soundName ? [UNNotificationSound soundNamed:details[@"soundName"]] : [UNNotificationSound defaultSound];
   }
 #endif
+  if (details[@"applicationIconBadgeNumber"]) {
+    content.badge = [RCTConvert NSNumber:details[@"applicationIconBadgeNumber"]];
+  }
+
   return content;
 }
 
@@ -225,14 +224,12 @@ RCT_EXPORT_MODULE()
 {
   BOOL const isRemoteNotification = IsNotificationRemote(notification);
   if (isRemoteNotification) {
-#if TARGET_OS_TV
-    NSDictionary *userInfo = nil;
-#else
+#if !TARGET_OS_TV
     NSDictionary *userInfo = @{@"notification" : notification.request.content.userInfo};
-#endif
     [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
                                                         object:self
                                                       userInfo:userInfo];
+#endif
   } else {
     [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNotificationReceived
                                                         object:self
@@ -403,14 +400,7 @@ static inline NSDictionary *RCTPromiseResolveValueForUNNotificationSettings(UNNo
 {
 #if TARGET_OS_TV
   return RCTSettingsDictForUNNotificationSettings(
-                                                  UNNotificationSettingDisabled,
-                                                  UNNotificationSettingDisabled,
-                                                  UNNotificationSettingDisabled,
-                                                  UNNotificationSettingDisabled,
-                                                  UNNotificationSettingDisabled,
-                                                  UNNotificationSettingDisabled,
-                                                  settings.authorizationStatus
-                                                  );
+      NO, settings.badgeSetting == UNNotificationSettingEnabled, NO, NO, NO, NO, settings.authorizationStatus);
 #else
   return RCTSettingsDictForUNNotificationSettings(
       settings.alertSetting == UNNotificationSettingEnabled,
@@ -582,9 +572,7 @@ RCT_EXPORT_METHOD(removeDeliveredNotifications : (NSArray<NSString *> *)identifi
 
 RCT_EXPORT_METHOD(getDeliveredNotifications : (RCTResponseSenderBlock)callback)
 {
-#if TARGET_OS_TV
-  callback(@[]);
-#else
+#if !TARGET_OS_TV
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   [center getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> *_Nonnull notifications) {
     NSMutableArray<NSDictionary *> *formattedNotifications = [NSMutableArray new];
@@ -594,6 +582,8 @@ RCT_EXPORT_METHOD(getDeliveredNotifications : (RCTResponseSenderBlock)callback)
     }
     callback(@[ formattedNotifications ]);
   }];
+#else
+  callback(@[ @[] ]);
 #endif
 }
 

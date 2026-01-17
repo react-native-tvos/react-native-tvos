@@ -618,7 +618,7 @@ declare class crypto$Hash extends stream$Duplex {
     data: string | Buffer,
     input_encoding?: 'utf8' | 'ascii' | 'latin1' | 'binary',
   ): crypto$Hash;
-  copy(options?: mixed): crypto$Hash;
+  copy(options?: unknown): crypto$Hash;
 }
 
 declare class crypto$Hmac extends stream$Duplex {
@@ -703,7 +703,7 @@ declare class crypto$KeyObject {
       format: 'der',
     }>,
   ): Buffer;
-  export(options: Readonly<{format: 'jwk'}>): mixed;
+  export(options: Readonly<{format: 'jwk'}>): unknown;
   equals(otherKeyObject: crypto$KeyObject): boolean;
 }
 
@@ -739,7 +739,7 @@ declare class crypto$X509Certificate {
   checkIssued(otherCert: crypto$X509Certificate): boolean;
   checkPrivateKey(privateKey: crypto$KeyObject): boolean;
   toJSON(): string;
-  toLegacyObject(): mixed;
+  toLegacyObject(): unknown;
   toString(): string;
   verify(publicKey: crypto$KeyObject): boolean;
 }
@@ -930,10 +930,10 @@ declare module 'crypto' {
     encoding: buffer$Encoding,
   ): crypto$KeyObject;
   declare function createPublicKey(
-    key: string | Buffer | crypto$KeyObject | mixed,
+    key: string | Buffer | crypto$KeyObject | unknown,
   ): crypto$KeyObject;
   declare function createPrivateKey(
-    key: string | Buffer | mixed,
+    key: string | Buffer | unknown,
   ): crypto$KeyObject;
   declare function generateKeyPair(
     type:
@@ -945,7 +945,7 @@ declare module 'crypto' {
       | 'ed448'
       | 'x25519'
       | 'x448',
-    options: mixed,
+    options: unknown,
     callback: (
       err: ?Error,
       publicKey: crypto$KeyObject,
@@ -962,7 +962,7 @@ declare module 'crypto' {
       | 'ed448'
       | 'x25519'
       | 'x448',
-    options: mixed,
+    options: unknown,
   ): {publicKey: crypto$KeyObject, privateKey: crypto$KeyObject, ...};
   declare function generateKey(
     type: 'hmac' | 'aes',
@@ -1887,7 +1887,7 @@ declare module 'fs' {
      */
     exclude?:
       | ((fileName: Node$Conditional<WithFileTypes, Dirent, string>) => boolean)
-      | $ReadOnlyArray<string>,
+      | ReadonlyArray<string>,
     ...
   }>;
 
@@ -1905,12 +1905,12 @@ declare module 'fs' {
    * @since v22.0.0
    */
   declare function glob(
-    pattern: string | $ReadOnlyArray<string>,
+    pattern: string | ReadonlyArray<string>,
     callback: (err: ?ErrnoError, matches: Array<string>) => void,
   ): void;
 
   declare function glob<WithFileTypes: boolean = false>(
-    pattern: string | $ReadOnlyArray<string>,
+    pattern: string | ReadonlyArray<string>,
     options: GlobOptions<WithFileTypes>,
     callback: (
       err: ?ErrnoError,
@@ -1928,7 +1928,7 @@ declare module 'fs' {
    * @returns paths of files that match the pattern.
    */
   declare function globSync<WithFileTypes: boolean = false>(
-    pattern: string | $ReadOnlyArray<string>,
+    pattern: string | ReadonlyArray<string>,
     options?: GlobOptions<WithFileTypes>,
   ): Node$Conditional<WithFileTypes, Array<Dirent>, Array<string>>;
 
@@ -2011,8 +2011,8 @@ declare module 'fs' {
       | Buffer
       | Uint8Array
       | DataView
-      | AsyncIterable<mixed>
-      | Iterable<mixed>
+      | AsyncIterable<unknown>
+      | Iterable<unknown>
       | stream$Readable,
     options: WriteOptions | string,
   ) => Promise<void>;
@@ -2142,7 +2142,7 @@ declare module 'fs' {
       mtime: number | string | Date,
     ): Promise<void>,
     glob<WithFileTypes: boolean = false>(
-      pattern: string | $ReadOnlyArray<string>,
+      pattern: string | ReadonlyArray<string>,
       options?: GlobOptions<WithFileTypes>,
     ): Node$Conditional<
       WithFileTypes,
@@ -2292,7 +2292,7 @@ declare class http$Agent<+SocketT = net$Socket> {
   constructor(options: http$agentOptions): void;
   destroy(): void;
   // $FlowFixMe[incompatible-variance]
-  freeSockets: {[name: string]: $ReadOnlyArray<SocketT>, ...};
+  freeSockets: {[name: string]: ReadonlyArray<SocketT>, ...};
   getName(options: {
     host: string,
     port: number,
@@ -2302,9 +2302,9 @@ declare class http$Agent<+SocketT = net$Socket> {
   maxFreeSockets: number;
   maxSockets: number;
   // $FlowFixMe[incompatible-variance]
-  requests: {[name: string]: $ReadOnlyArray<http$ClientRequest<SocketT>>, ...};
+  requests: {[name: string]: ReadonlyArray<http$ClientRequest<SocketT>>, ...};
   // $FlowFixMe[incompatible-variance]
-  sockets: {[name: string]: $ReadOnlyArray<SocketT>, ...};
+  sockets: {[name: string]: ReadonlyArray<SocketT>, ...};
 }
 
 declare class http$IncomingMessage<SocketT = net$Socket>
@@ -2908,17 +2908,19 @@ declare module 'perf_hooks' {
     +entryType: EntryType;
     +name: string;
     +startTime: number;
-    +detail?: mixed;
-    toJSON(): mixed;
+    +detail?: unknown;
+    toJSON(): unknown;
   }
 
-  declare export class PerformanceMark<T = mixed> extends PerformanceEntry {
+  declare export class PerformanceMark<T = unknown> extends PerformanceEntry {
     +entryType: 'mark';
     +duration: 0;
     +detail?: T;
   }
 
-  declare export class PerformanceMeasure<T = mixed> extends PerformanceEntry {
+  declare export class PerformanceMeasure<T = unknown>
+    extends PerformanceEntry
+  {
     +entryType: 'measure';
     +detail?: T;
   }
@@ -2968,11 +2970,11 @@ declare module 'perf_hooks' {
   ) => void;
 
   declare export class PerformanceObserver {
-    static supportedEntryTypes: $ReadOnlyArray<EntryType>;
+    static supportedEntryTypes: ReadonlyArray<EntryType>;
     constructor(callback: PerformanceObserverCallback): this;
     observe(
       options: Readonly<{
-        entryTypes?: $ReadOnlyArray<EntryType>,
+        entryTypes?: ReadonlyArray<EntryType>,
         type?: EntryType,
         buffered?: boolean,
       }>,
@@ -2987,12 +2989,12 @@ declare module 'perf_hooks' {
     +active: number,
   };
 
-  declare export type PerformanceMarkOptions<T = mixed> = Readonly<{
+  declare export type PerformanceMarkOptions<T = unknown> = Readonly<{
     detail?: T,
     startTime?: number,
   }>;
 
-  declare export type PerformanceMeasureOptions<T = mixed> = Readonly<{
+  declare export type PerformanceMeasureOptions<T = unknown> = Readonly<{
     detail?: T,
     duration?: number,
     end?: number | string,
@@ -3023,11 +3025,11 @@ declare module 'perf_hooks' {
     now(): number;
     setResourceTimingBufferSize(maxSize: number): void;
     +timeOrigin: number;
-    timerify<TArgs: Iterable<mixed>, TReturn>(
+    timerify<TArgs: Iterable<unknown>, TReturn>(
       fn: (...TArgs) => TReturn,
       options?: Readonly<{histogram?: RecordableHistogram}>,
     ): (...TArgs) => TReturn;
-    toJSON(): mixed;
+    toJSON(): unknown;
   }
 
   declare export var performance: Performance;
@@ -3461,7 +3463,7 @@ declare module 'stream' {
       options?: StreamPipelineOptions,
     ): Promise<void>,
     pipeline(
-      streams: $ReadOnlyArray<stream$Stream>,
+      streams: ReadonlyArray<stream$Stream>,
       options?: StreamPipelineOptions,
     ): Promise<void>,
     ...
@@ -3720,20 +3722,20 @@ declare module 'timers' {
     // [key: $SymbolDispose]: () => void;
   }
 
-  declare export function setTimeout<TArgs: Iterable<mixed>>(
-    callback: (...args: TArgs) => mixed,
+  declare export function setTimeout<TArgs: Iterable<unknown>>(
+    callback: (...args: TArgs) => unknown,
     delay?: number,
     ...args: TArgs
   ): Timeout;
 
-  declare export function setInterval<TArgs: Iterable<mixed>>(
-    callback: (...args: TArgs) => mixed,
+  declare export function setInterval<TArgs: Iterable<unknown>>(
+    callback: (...args: TArgs) => unknown,
     delay?: number,
     ...args: TArgs
   ): Timeout;
 
-  declare export function setImmediate<TArgs: Iterable<mixed>>(
-    callback: (...args: TArgs) => mixed,
+  declare export function setImmediate<TArgs: Iterable<unknown>>(
+    callback: (...args: TArgs) => unknown,
     ...args: TArgs
   ): Immediate;
 
@@ -3900,7 +3902,7 @@ declare module 'url' {
   };
 
   declare type url$URLPatternResult = {
-    inputs: $ReadOnlyArray<string | url$URLPatternInit>,
+    inputs: ReadonlyArray<string | url$URLPatternInit>,
     protocol: url$URLPatternComponentResult,
     username: url$URLPatternComponentResult,
     password: url$URLPatternComponentResult,
@@ -4104,8 +4106,8 @@ declare module 'util' {
 
   declare type util$DiffEntry = [operation: -1 | 0 | 1, value: string];
   declare function diff(
-    actual: string | $ReadOnlyArray<string>,
-    expected: string | $ReadOnlyArray<string>,
+    actual: string | ReadonlyArray<string>,
+    expected: string | ReadonlyArray<string>,
   ): Array<util$DiffEntry>;
 
   declare function getSystemErrorMessage(err: number): string;
@@ -4224,7 +4226,7 @@ declare module 'util' {
       | ForegroundColors
       | BackgroundColors
       | Modifiers
-      | $ReadOnlyArray<ForegroundColors | BackgroundColors | Modifiers>,
+      | ReadonlyArray<ForegroundColors | BackgroundColors | Modifiers>,
     text: string,
     options?: Readonly<{
       stream?: ?stream$Stream,

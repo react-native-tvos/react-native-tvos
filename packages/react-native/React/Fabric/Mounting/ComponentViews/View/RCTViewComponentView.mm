@@ -102,6 +102,9 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   if (self = [super initWithFrame:frame]) {
     _props = ViewShadowNode::defaultSharedProps();
     _reactSubviews = [NSMutableArray new];
+#if !TARGET_OS_TV
+    self.multipleTouchEnabled = YES;
+#endif
     _useCustomContainerView = NO;
     _removeClippedSubviews = NO;
 #if TARGET_OS_TV
@@ -113,8 +116,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     _tvParallaxProperties.pressMagnification = 1.0f;
     _tvParallaxProperties.pressDuration = 0.3f;
     _tvParallaxProperties.pressDelay = 0.0f;
-#else
-    self.multipleTouchEnabled = YES;
 #endif
   }
   return self;
@@ -914,6 +915,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 #if !TARGET_OS_TV
   // `accessibilityShowsLargeContentViewer`
   if (oldViewProps.accessibilityShowsLargeContentViewer != newViewProps.accessibilityShowsLargeContentViewer) {
+#if !TARGET_OS_TV
     if (@available(iOS 13.0, *)) {
       if (newViewProps.accessibilityShowsLargeContentViewer) {
         self.showsLargeContentViewer = YES;
@@ -923,13 +925,16 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
         self.showsLargeContentViewer = NO;
       }
     }
+#endif
   }
 
   // `accessibilityLargeContentTitle`
   if (oldViewProps.accessibilityLargeContentTitle != newViewProps.accessibilityLargeContentTitle) {
+#if !TARGET_OS_TV
     if (@available(iOS 13.0, *)) {
       self.largeContentTitle = RCTNSStringFromStringNilIfEmpty(newViewProps.accessibilityLargeContentTitle);
     }
+#endif
   }
 #endif
 
@@ -1590,7 +1595,8 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
     layer.shadowPath = nil;
   }
 
-#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000 /* __IPHONE_17_0 */ && !TARGET_OS_TV
+#if !TARGET_OS_TV && defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && \
+    __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000 /* __IPHONE_17_0 */
   // Stage 1.5. Cursor / Hover Effects
   if (@available(iOS 17.0, *)) {
     UIHoverStyle *hoverStyle = nil;
@@ -2011,6 +2017,10 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   // Result string is initialized lazily to prevent useless but costly allocations.
   NSMutableString *result = nil;
   for (UIView *subview in view.subviews) {
+    // Skip subviews that have accessibilityElementsHidden set to YES
+    if (subview.accessibilityElementsHidden) {
+      continue;
+    }
     NSString *label = subview.accessibilityLabel;
     if (!label) {
       label = RCTRecursiveAccessibilityLabel(subview);

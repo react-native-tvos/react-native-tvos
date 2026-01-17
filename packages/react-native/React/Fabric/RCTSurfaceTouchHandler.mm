@@ -1,4 +1,3 @@
-#if !TARGET_OS_TV
 /*
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -15,6 +14,8 @@
 #import "RCTConversions.h"
 #import "RCTSurfacePointerHandler.h"
 #import "RCTTouchableComponentViewProtocol.h"
+
+#if !TARGET_OS_TV
 
 using namespace facebook::react;
 
@@ -415,4 +416,5 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 }
 
 @end
-#endif
+
+#endif // !TARGET_OS_TV

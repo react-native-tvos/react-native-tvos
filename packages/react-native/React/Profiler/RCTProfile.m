@@ -410,6 +410,8 @@ void RCTProfileUnhookModules(RCTBridge *bridge)
                                                                                       animated:YES
                                                                                     completion:nil];
       });
+#else
+      RCTProfileControlsWindow.hidden = NO;
 #endif
     });
   } else {

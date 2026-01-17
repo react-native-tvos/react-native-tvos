@@ -19,6 +19,7 @@ import type {
 } from './parseLogBoxLog';
 
 import DebuggerSessionObserver from '../../../src/private/devsupport/rndevtools/FuseboxSessionObserver';
+import toExtendedError from '../../../src/private/utilities/toExtendedError';
 import parseErrorStack from '../../Core/Devtools/parseErrorStack';
 import NativeLogBox from '../../NativeModules/specs/NativeLogBox';
 import LogBoxLog from './LogBoxLog';
@@ -240,8 +241,8 @@ export function addLog(log: LogData): void {
           componentStackType: log.componentStackType || 'legacy',
         }),
       );
-    } catch (error) {
-      reportLogBoxError(error);
+    } catch (error: unknown) {
+      reportLogBoxError(toExtendedError(error));
     }
   });
 }
@@ -252,8 +253,8 @@ export function addException(error: ExtendedExceptionData): void {
   setImmediate(() => {
     try {
       appendNewLog(new LogBoxLog(parseLogBoxException(error)));
-    } catch (loggingError) {
-      reportLogBoxError(loggingError);
+    } catch (loggingError: unknown) {
+      reportLogBoxError(toExtendedError(loggingError));
     }
   });
 }
@@ -350,12 +351,12 @@ export function checkWarningFilter(format: string): WarningInfo {
   return warningFilter(format);
 }
 
-export function getIgnorePatterns(): $ReadOnlyArray<IgnorePattern> {
+export function getIgnorePatterns(): ReadonlyArray<IgnorePattern> {
   return Array.from(ignorePatterns);
 }
 
 export function addIgnorePatterns(
-  patterns: $ReadOnlyArray<IgnorePattern>,
+  patterns: ReadonlyArray<IgnorePattern>,
 ): void {
   const existingSize = ignorePatterns.size;
   // The same pattern may be added multiple times, but adding a new pattern
@@ -437,7 +438,7 @@ type LogBoxStateSubscriptionState = Readonly<{
 
 type SubscribedComponent = React.ComponentType<
   Readonly<{
-    logs: $ReadOnlyArray<LogBoxLog>,
+    logs: ReadonlyArray<LogBoxLog>,
     isDisabled: boolean,
     selectedLogIndex: number,
   }>,

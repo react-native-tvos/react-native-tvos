@@ -271,6 +271,7 @@ UITextSmartInsertDeleteType RCTUITextSmartInsertDeleteTypeFromOptionalBool(std::
       : UITextSmartInsertDeleteTypeDefault;
 }
 
+#if !TARGET_OS_TV
 UIDataDetectorTypes RCTUITextViewDataDetectorTypesFromStringVector(const std::vector<std::string> &dataDetectorTypes)
 {
 #if TARGET_OS_TV
@@ -302,3 +303,4 @@ UIDataDetectorTypes RCTUITextViewDataDetectorTypesFromStringVector(const std::ve
   return ret;
 #endif
 }
+#endif

@@ -40,6 +40,9 @@ using namespace facebook::react;
 @property (nonatomic, nullable) UIEditMenuInteraction *editMenuInteraction API_AVAILABLE(ios(16.0));
 
 @end
+#else
+@interface RCTParagraphComponentView ()
+@end
 #endif
 
 @implementation RCTParagraphComponentView {
@@ -282,6 +285,7 @@ using namespace facebook::react;
 
 #pragma mark - Context Menu
 
+#if !TARGET_OS_TV
 - (void)enableContextMenu
 {
 #if !TARGET_OS_TV
@@ -367,6 +371,15 @@ using namespace facebook::react;
   pasteboard.items = @[ item ];
 #endif
 }
+#else
+- (void)enableContextMenu
+{
+}
+
+- (void)disableContextMenu
+{
+}
+#endif
 
 @end
 

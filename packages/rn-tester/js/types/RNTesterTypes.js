@@ -49,8 +49,8 @@ export type SectionData<T> = {
 };
 
 export type ExamplesList = Readonly<{
-  components: $ReadOnlyArray<SectionData<RNTesterModuleInfo>>,
-  apis: $ReadOnlyArray<SectionData<RNTesterModuleInfo>>,
+  components: ReadonlyArray<SectionData<RNTesterModuleInfo>>,
+  apis: ReadonlyArray<SectionData<RNTesterModuleInfo>>,
 }>;
 
 export type ScreenTypes = 'components' | 'apis' | 'playgrounds' | null;

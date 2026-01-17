@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<870178cd77459f3cb8ebb75683584f3e>>
+ * @generated SignedSource<<b04b2269efaa4394985f1e90b5761bb2>>
  */
 
 /**
@@ -621,24 +621,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::shouldPressibilityUseW3CPointerEventsForHover();
   }
 
-  bool shouldResetOnClickListenerWhenRecyclingView() override {
-    auto value = values_["shouldResetOnClickListenerWhenRecyclingView"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::shouldResetOnClickListenerWhenRecyclingView();
-  }
-
-  bool shouldSetEnabledBasedOnAccessibilityState() override {
-    auto value = values_["shouldSetEnabledBasedOnAccessibilityState"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::shouldSetEnabledBasedOnAccessibilityState();
-  }
-
   bool shouldTriggerResponderTransferOnScrollAndroid() override {
     auto value = values_["shouldTriggerResponderTransferOnScrollAndroid"];
     if (!value.isNull()) {
@@ -700,15 +682,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useNativeViewConfigsInBridgelessMode();
-  }
-
-  bool useShadowNodeStateOnClone() override {
-    auto value = values_["useShadowNodeStateOnClone"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::useShadowNodeStateOnClone();
   }
 
   bool useSharedAnimatedBackend() override {

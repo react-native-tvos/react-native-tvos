@@ -202,6 +202,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
     hitSlopRect = null
     _overflow = Overflow.VISIBLE
     pointerEvents = PointerEvents.AUTO
+    ImportantForInteractionHelper.setImportantForInteraction(this, pointerEvents)
     childrenLayoutChangeListener = null
     onInterceptTouchEventListener = null
     needsOffscreenAlphaCompositing = false
