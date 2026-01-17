@@ -138,7 +138,7 @@ struct PointerHasher {
    * We hold the view weakly to prevent a retain cycle.
    */
   __weak UIView *_rootComponentView;
-  RCTIdentifierPool<11> _identifierPool;
+  RCTIdentifierPool<17> _identifierPool;
 
   RCTSurfacePointerHandler *_pointerHandler;
 }

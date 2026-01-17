@@ -450,7 +450,7 @@ struct PointerHasher {
    * We hold the view weakly to prevent a retain cycle.
    */
   __weak UIView *_rootComponentView;
-  RCTIdentifierPool<11> _identifierPool;
+  RCTIdentifierPool<17> _identifierPool;
 
 #if !TARGET_OS_TV
   UIHoverGestureRecognizer *_mouseHoverRecognizer API_AVAILABLE(ios(13.0));

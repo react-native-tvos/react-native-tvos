@@ -156,8 +156,8 @@
     "featureflags-check": "node ./scripts/featureflags/index.js --verify-unchanged"
   },
   "peerDependencies": {
-    "@types/react": "^19.1.0",
-    "react": "^19.1.0"
+    "@types/react": "^19.1.4",
+    "react": "^19.1.4"
   },
   "peerDependenciesMeta": {
     "@types/react": {
