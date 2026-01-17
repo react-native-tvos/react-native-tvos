@@ -1,6 +1,6 @@
 {
   "name": "@react-native/codegen",
-  "version": "0.84.0-rc.0",
+  "version": "0.84.0-rc.1",
   "description": "Code generation tools for React Native",
   "license": "MIT",
   "repository": {
@@ -18,7 +18,7 @@
   ],
   "bugs": "https://github.com/facebook/react-native/issues",
   "engines": {
-    "node": ">= 22.11.0"
+    "node": ">= 20.19.4"
   },
   "scripts": {
     "build": "yarn clean && node scripts/build.js --verbose",
