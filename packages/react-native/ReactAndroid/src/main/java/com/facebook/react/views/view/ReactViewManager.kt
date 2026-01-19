@@ -109,13 +109,13 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   @ReactProp(name = "tvFocusable")
   public open fun setTvFocusable(view: ReactViewGroup, focusable: Boolean) {
-    setFocusable(view, focusable)
     if (!focusable) {
       view.isFocusable = false
       view.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
     } else {
       view.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
     }
+    setFocusable(view, focusable)
   }
 
   @ReactProp(name = ViewProps.ACCESSIBILITY_ORDER)
