@@ -636,7 +636,7 @@ public class NetworkingModule(
                     reactApplicationContext,
                     requestId,
                     devToolsRequestId,
-                    url,
+                    response.request().url().toString(),
                     response.code(),
                     NetworkEventUtil.okHttpHeadersToMap(response.headers()),
                     response.body()?.contentLength() ?: 0L,
