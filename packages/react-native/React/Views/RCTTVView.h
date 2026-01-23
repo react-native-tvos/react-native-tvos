@@ -70,11 +70,17 @@
 
 /**
  * Send Focus Notifications to listeners
+ * @deprecated This method emits focus events to TVEventHandler, which is deprecated.
+ * Use onFocus/onBlur component props instead. Will be removed when old arch is removed.
+ * See: https://github.com/react-native-tvos/react-native-tvos/issues/1037
  */
 - (void)sendFocusNotification:(UIFocusUpdateContext *)context;
 
 /**
  * Send Blur Notifications to listeners
+ * @deprecated This method emits blur events to TVEventHandler, which is deprecated.
+ * Use onFocus/onBlur component props instead. Will be removed when old arch is removed.
+ * See: https://github.com/react-native-tvos/react-native-tvos/issues/1037
  */
 - (void)sendBlurNotification:(UIFocusUpdateContext *)context;
 
