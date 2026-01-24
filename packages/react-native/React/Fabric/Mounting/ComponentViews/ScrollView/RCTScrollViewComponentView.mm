@@ -1146,13 +1146,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if (context.nextFocusedView == self) {
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
-        [self sendFocusNotification];
         // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
         _blockFirstTouch = (unsigned long)context.focusHeading != 0;
         [self addArrowsListeners];
     } else if (context.previouslyFocusedView == self) {
         [self removeArrowsListeners];
-        [self sendBlurNotification];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
         // If scrolling is enabled:
@@ -1259,16 +1257,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         }
     }
     return [super shouldUpdateFocusInContext:context];
-}
-
-- (void)sendFocusNotification
-{
-    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:@(self.tag) target:nil];
-}
-
-- (void)sendBlurNotification
-{
-    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:nil];
 }
 
 - (NSInteger)swipeVerticalInterval
