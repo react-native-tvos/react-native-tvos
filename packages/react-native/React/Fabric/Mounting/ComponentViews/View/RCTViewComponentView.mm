@@ -265,16 +265,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   [self handleFocusGuide];
 }
 
-- (void)sendFocusNotification:(__unused UIFocusUpdateContext *)context
-{
-    [[NSNotificationCenter defaultCenter] postNavigationFocusEventWithTag:@(self.tag) target:@(self.tag)];
-}
-
-- (void)sendBlurNotification:(__unused UIFocusUpdateContext *)context
-{
-    [[NSNotificationCenter defaultCenter] postNavigationBlurEventWithTag:@(self.tag) target:@(self.tag)];
-}
-
 - (void)sendSelectNotification
 {
   [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
@@ -596,7 +586,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       [self enableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
           if (self->_eventEmitter) self->_eventEmitter->onFocus();
-          [self sendFocusNotification:context];
           [self addParallaxMotionEffects];
       } completion:^(void){}];
       // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
@@ -607,7 +596,6 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
       [coordinator addCoordinatedAnimations:^(void){
           [self removeParallaxMotionEffects];
           if (self->_eventEmitter) self->_eventEmitter->onBlur();
-          [self sendBlurNotification:context];
       } completion:^(void){}];
       [self resignFirstResponder];
     }

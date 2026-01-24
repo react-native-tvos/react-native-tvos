@@ -285,6 +285,9 @@ const TVEventHandlerView: () => React.Node = () => {
 
   useTVEventHandler(event => {
     const {eventType} = event;
+    // Filter out focus/blur events - these are deprecated in TVEventHandler.
+    // Use component-level onFocus/onBlur props instead.
+    // See: https://github.com/react-native-tvos/react-native-tvos/issues/1037
     if (eventType !== 'focus' && eventType !== 'blur') {
       setRemoteEventLog(log =>
         logWithAppendedEntry(log, logEntryForEvent(event)),
