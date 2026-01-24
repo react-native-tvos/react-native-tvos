@@ -52,6 +52,13 @@ declare module 'react-native' {
     disableGestureHandlersCancelTouches(): void;
   };
 
+  /**
+   * Hardware event received from TVEventHandler
+   * 
+   * Note: The 'blur' and 'focus' event types are deprecated and will no longer be 
+   * emitted on new architecture (Fabric). Use onFocus/onBlur component props instead.
+   * See: https://github.com/react-native-tvos/react-native-tvos/issues/1037
+   */
   export type HWEvent = {
     eventType: 'up' | 'down' | 'right' | 'left' | 'longUp' | 'longDown' | 'longRight' | 'longLeft' | 'blur' | 'focus' | 'pan' | string;
     eventKeyAction?: -1 | 1 | 0 | number | undefined;
