@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<27dfa9832869aa05987fa7cb9740f7ba>>
+ * @generated SignedSource<<f04d7cddd72c435fcce120b71366c81c>>
  */
 
 /**
@@ -119,6 +119,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableBridgelessArchitecture(): Boolean = accessor.enableBridgelessArchitecture()
+
+  /**
+   * When overflow: hidden is set, also set clipChildren to true so that clipped content does not occlude content outside the parent
+   */
+  @JvmStatic
+  public fun enableClipChildrenForOverflowHidden(): Boolean = accessor.enableClipChildrenForOverflowHidden()
 
   /**
    * Enable prop iterator setter-style construction of Props in C++ (this flag is not used in Java).
@@ -455,6 +461,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useNativeViewConfigsInBridgelessMode(): Boolean = accessor.useNativeViewConfigsInBridgelessMode()
+
+  /**
+   * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
+   */
+  @JvmStatic
+  public fun useNestedScrollViewAndroid(): Boolean = accessor.useNestedScrollViewAndroid()
 
   /**
    * Use shared animation backend in C++ Animated

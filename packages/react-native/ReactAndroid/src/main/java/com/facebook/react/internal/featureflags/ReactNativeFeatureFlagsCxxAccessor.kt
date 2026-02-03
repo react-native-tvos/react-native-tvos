@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6fb19235ba5049e07952cfa1b564e9e2>>
+ * @generated SignedSource<<9158cc3ba1ea8ea65140b582a02a5112>>
  */
 
 /**
@@ -35,6 +35,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableAndroidLinearTextCache: Boolean? = null
   private var enableAndroidTextMeasurementOptimizationsCache: Boolean? = null
   private var enableBridgelessArchitectureCache: Boolean? = null
+  private var enableClipChildrenForOverflowHiddenCache: Boolean? = null
   private var enableCppPropsIteratorSetterCache: Boolean? = null
   private var enableCustomFocusSearchOnClippedElementsAndroidCache: Boolean? = null
   private var enableDestroyShadowTreeRevisionAsyncCache: Boolean? = null
@@ -91,6 +92,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var useAlwaysAvailableJSErrorHandlingCache: Boolean? = null
   private var useFabricInteropCache: Boolean? = null
   private var useNativeViewConfigsInBridgelessModeCache: Boolean? = null
+  private var useNestedScrollViewAndroidCache: Boolean? = null
   private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
@@ -229,6 +231,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableBridgelessArchitecture()
       enableBridgelessArchitectureCache = cached
+    }
+    return cached
+  }
+
+  override fun enableClipChildrenForOverflowHidden(): Boolean {
+    var cached = enableClipChildrenForOverflowHiddenCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableClipChildrenForOverflowHidden()
+      enableClipChildrenForOverflowHiddenCache = cached
     }
     return cached
   }
@@ -733,6 +744,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useNativeViewConfigsInBridgelessMode()
       useNativeViewConfigsInBridgelessModeCache = cached
+    }
+    return cached
+  }
+
+  override fun useNestedScrollViewAndroid(): Boolean {
+    var cached = useNestedScrollViewAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useNestedScrollViewAndroid()
+      useNestedScrollViewAndroidCache = cached
     }
     return cached
   }

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b04b2269efaa4394985f1e90b5761bb2>>
+ * @generated SignedSource<<3dfbafd135e89a02524f732bb5914696>>
  */
 
 /**
@@ -178,6 +178,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableBridgelessArchitecture();
+  }
+
+  bool enableClipChildrenForOverflowHidden() override {
+    auto value = values_["enableClipChildrenForOverflowHidden"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableClipChildrenForOverflowHidden();
   }
 
   bool enableCppPropsIteratorSetter() override {
@@ -682,6 +691,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useNativeViewConfigsInBridgelessMode();
+  }
+
+  bool useNestedScrollViewAndroid() override {
+    auto value = values_["useNestedScrollViewAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useNestedScrollViewAndroid();
   }
 
   bool useSharedAnimatedBackend() override {

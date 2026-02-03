@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6410500cbf5a05b1f34efd12d1e83bdf>>
+ * @generated SignedSource<<8f93f5e6ce460e2337bbdc51bde69558>>
  */
 
 /**
@@ -57,6 +57,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun enableAndroidTextMeasurementOptimizations(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableBridgelessArchitecture(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun enableClipChildrenForOverflowHidden(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableCppPropsIteratorSetter(): Boolean
 
@@ -169,6 +171,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun useFabricInterop(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useNativeViewConfigsInBridgelessMode(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun useNestedScrollViewAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useSharedAnimatedBackend(): Boolean
 

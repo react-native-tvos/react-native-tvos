@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6d28ea5d159f53988ca76188bc2fa5c0>>
+ * @generated SignedSource<<7226a320306724ab7d4ee9836a5d35a2>>
  */
 
 /**
@@ -65,6 +65,8 @@ class NativeReactNativeFeatureFlags
   bool enableAndroidTextMeasurementOptimizations(jsi::Runtime& runtime);
 
   bool enableBridgelessArchitecture(jsi::Runtime& runtime);
+
+  bool enableClipChildrenForOverflowHidden(jsi::Runtime& runtime);
 
   bool enableCppPropsIteratorSetter(jsi::Runtime& runtime);
 
@@ -177,6 +179,8 @@ class NativeReactNativeFeatureFlags
   bool useFabricInterop(jsi::Runtime& runtime);
 
   bool useNativeViewConfigsInBridgelessMode(jsi::Runtime& runtime);
+
+  bool useNestedScrollViewAndroid(jsi::Runtime& runtime);
 
   bool useSharedAnimatedBackend(jsi::Runtime& runtime);
 

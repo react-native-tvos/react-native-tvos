@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e197fcc2185d8f75ff6d355c27975bd4>>
+ * @generated SignedSource<<fbd62713d66b440e7c18498ccd2a7c0b>>
  */
 
 /**
@@ -84,6 +84,10 @@ bool ReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations() {
 
 bool ReactNativeFeatureFlags::enableBridgelessArchitecture() {
   return getAccessor().enableBridgelessArchitecture();
+}
+
+bool ReactNativeFeatureFlags::enableClipChildrenForOverflowHidden() {
+  return getAccessor().enableClipChildrenForOverflowHidden();
 }
 
 bool ReactNativeFeatureFlags::enableCppPropsIteratorSetter() {
@@ -308,6 +312,10 @@ bool ReactNativeFeatureFlags::useFabricInterop() {
 
 bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
   return getAccessor().useNativeViewConfigsInBridgelessMode();
+}
+
+bool ReactNativeFeatureFlags::useNestedScrollViewAndroid() {
+  return getAccessor().useNestedScrollViewAndroid();
 }
 
 bool ReactNativeFeatureFlags::useSharedAnimatedBackend() {

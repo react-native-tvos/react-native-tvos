@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ddfbc841e1af5449c1fe6bde6344d289>>
+ * @generated SignedSource<<5ede2745ad5f87162c36363215bf5c4f>>
  */
 
 /**
@@ -40,6 +40,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableAndroidLinearText() = 0;
   virtual bool enableAndroidTextMeasurementOptimizations() = 0;
   virtual bool enableBridgelessArchitecture() = 0;
+  virtual bool enableClipChildrenForOverflowHidden() = 0;
   virtual bool enableCppPropsIteratorSetter() = 0;
   virtual bool enableCustomFocusSearchOnClippedElementsAndroid() = 0;
   virtual bool enableDestroyShadowTreeRevisionAsync() = 0;
@@ -96,6 +97,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useAlwaysAvailableJSErrorHandling() = 0;
   virtual bool useFabricInterop() = 0;
   virtual bool useNativeViewConfigsInBridgelessMode() = 0;
+  virtual bool useNestedScrollViewAndroid() = 0;
   virtual bool useSharedAnimatedBackend() = 0;
   virtual bool useTraitHiddenOnAndroid() = 0;
   virtual bool useTurboModuleInterop() = 0;

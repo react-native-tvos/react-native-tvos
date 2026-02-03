@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<66c8c46d66dde5eb2fd19a67459c83af>>
+ * @generated SignedSource<<bdc8ad1004183077c5a459efd6b0c8f6>>
  */
 
 /**
@@ -113,6 +113,11 @@ class ReactNativeFeatureFlags {
    * Feature flag to enable the new bridgeless architecture. Note: Enabling this will force enable the following flags: `useTurboModules` & `enableFabricRenderer`.
    */
   RN_EXPORT static bool enableBridgelessArchitecture();
+
+  /**
+   * When overflow: hidden is set, also set clipChildren to true so that clipped content does not occlude content outside the parent
+   */
+  RN_EXPORT static bool enableClipChildrenForOverflowHidden();
 
   /**
    * Enable prop iterator setter-style construction of Props in C++ (this flag is not used in Java).
@@ -393,6 +398,11 @@ class ReactNativeFeatureFlags {
    * When enabled, the native view configs are used in bridgeless mode.
    */
   RN_EXPORT static bool useNativeViewConfigsInBridgelessMode();
+
+  /**
+   * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
+   */
+  RN_EXPORT static bool useNestedScrollViewAndroid();
 
   /**
    * Use shared animation backend in C++ Animated

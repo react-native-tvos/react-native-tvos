@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<288cffd334fdaebf18b1bede7bb907c8>>
+ * @generated SignedSource<<3c268f88d2df4ad8500e29b91f1fecc0>>
  */
 
 /**
@@ -126,6 +126,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableBridgelessArchitecture() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableBridgelessArchitecture");
+    return method(javaProvider_);
+  }
+
+  bool enableClipChildrenForOverflowHidden() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableClipChildrenForOverflowHidden");
     return method(javaProvider_);
   }
 
@@ -465,6 +471,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool useNestedScrollViewAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useNestedScrollViewAndroid");
+    return method(javaProvider_);
+  }
+
   bool useSharedAnimatedBackend() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useSharedAnimatedBackend");
@@ -578,6 +590,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableAndroidTextMeasurementOptimizatio
 bool JReactNativeFeatureFlagsCxxInterop::enableBridgelessArchitecture(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableBridgelessArchitecture();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::enableClipChildrenForOverflowHidden(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableClipChildrenForOverflowHidden();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableCppPropsIteratorSetter(
@@ -860,6 +877,11 @@ bool JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode(
   return ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::useNestedScrollViewAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::useNestedScrollViewAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::useSharedAnimatedBackend(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::useSharedAnimatedBackend();
@@ -966,6 +988,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableBridgelessArchitecture",
         JReactNativeFeatureFlagsCxxInterop::enableBridgelessArchitecture),
+      makeNativeMethod(
+        "enableClipChildrenForOverflowHidden",
+        JReactNativeFeatureFlagsCxxInterop::enableClipChildrenForOverflowHidden),
       makeNativeMethod(
         "enableCppPropsIteratorSetter",
         JReactNativeFeatureFlagsCxxInterop::enableCppPropsIteratorSetter),
@@ -1134,6 +1159,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "useNativeViewConfigsInBridgelessMode",
         JReactNativeFeatureFlagsCxxInterop::useNativeViewConfigsInBridgelessMode),
+      makeNativeMethod(
+        "useNestedScrollViewAndroid",
+        JReactNativeFeatureFlagsCxxInterop::useNestedScrollViewAndroid),
       makeNativeMethod(
         "useSharedAnimatedBackend",
         JReactNativeFeatureFlagsCxxInterop::useSharedAnimatedBackend),

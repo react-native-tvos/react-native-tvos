@@ -439,7 +439,7 @@ public abstract interface class com/facebook/react/animated/AnimatedNodeValueLis
 	public abstract fun onValueUpdate (DD)V
 }
 
-public final class com/facebook/react/animated/NativeAnimatedModule : com/facebook/fbreact/specs/NativeAnimatedModuleSpec, com/facebook/react/bridge/LifecycleEventListener, com/facebook/react/bridge/UIManagerListener {
+public final class com/facebook/react/animated/NativeAnimatedModule : com/facebook/fbreact/specs/NativeAnimatedModuleSpec, com/facebook/react/bridge/LifecycleEventListener, com/facebook/react/bridge/ScrollEndedListener, com/facebook/react/bridge/UIManagerListener {
 	public static final field ANIMATED_MODULE_DEBUG Z
 	public static final field Companion Lcom/facebook/react/animated/NativeAnimatedModule$Companion;
 	public static final field NAME Ljava/lang/String;
@@ -465,6 +465,7 @@ public final class com/facebook/react/animated/NativeAnimatedModule : com/facebo
 	public fun onHostDestroy ()V
 	public fun onHostPause ()V
 	public fun onHostResume ()V
+	public fun onScrollEnded (Landroid/view/ViewGroup;)V
 	public fun queueAndExecuteBatchedOperations (Lcom/facebook/react/bridge/ReadableArray;)V
 	public fun removeAnimatedEventFromView (DLjava/lang/String;D)V
 	public fun removeListeners (D)V
@@ -1018,6 +1019,7 @@ public abstract class com/facebook/react/bridge/ReactContext : android/content/C
 	public abstract fun getNativeModule (Ljava/lang/String;)Lcom/facebook/react/bridge/NativeModule;
 	public abstract fun getNativeModules ()Ljava/util/Collection;
 	public fun getNativeModulesMessageQueueThread ()Lcom/facebook/react/bridge/queue/MessageQueueThread;
+	public fun getScrollEndedListeners ()Lcom/facebook/react/bridge/ScrollEndedListeners;
 	public abstract fun getSourceURL ()Ljava/lang/String;
 	public fun getSystemService (Ljava/lang/String;)Ljava/lang/Object;
 	public fun getUiMessageQueueThread ()Lcom/facebook/react/bridge/queue/MessageQueueThread;
@@ -1373,6 +1375,17 @@ public final class com/facebook/react/bridge/RuntimeExecutor : com/facebook/jni/
 }
 
 public final class com/facebook/react/bridge/RuntimeScheduler : com/facebook/jni/HybridClassBase {
+}
+
+public abstract interface class com/facebook/react/bridge/ScrollEndedListener {
+	public abstract fun onScrollEnded (Landroid/view/ViewGroup;)V
+}
+
+public final class com/facebook/react/bridge/ScrollEndedListeners {
+	public fun <init> ()V
+	public final fun addListener (Lcom/facebook/react/bridge/ScrollEndedListener;)V
+	public final fun notifyScrollEnded (Landroid/view/ViewGroup;)V
+	public final fun removeListener (Lcom/facebook/react/bridge/ScrollEndedListener;)V
 }
 
 public abstract interface class com/facebook/react/bridge/UIManager : com/facebook/react/bridge/PerformanceCounter {
@@ -4208,6 +4221,7 @@ public final class com/facebook/react/uimanager/ThemedReactContext : com/faceboo
 	public fun getNativeModule (Ljava/lang/String;)Lcom/facebook/react/bridge/NativeModule;
 	public fun getNativeModules ()Ljava/util/Collection;
 	public final fun getReactApplicationContext ()Lcom/facebook/react/bridge/ReactApplicationContext;
+	public fun getScrollEndedListeners ()Lcom/facebook/react/bridge/ScrollEndedListeners;
 	public fun getSourceURL ()Ljava/lang/String;
 	public final fun getSurfaceID ()Ljava/lang/String;
 	public final fun getSurfaceId ()I
@@ -5605,6 +5619,7 @@ public class com/facebook/react/views/scroll/ReactHorizontalScrollView : android
 	public fun reactSmoothScrollTo (II)V
 	public fun requestChildFocus (Landroid/view/View;Landroid/view/View;)V
 	protected fun requestChildFocusWithoutScroll (Landroid/view/View;Landroid/view/View;)V
+	public fun requestChildRectangleOnScreen (Landroid/view/View;Landroid/graphics/Rect;Z)Z
 	protected fun restoreScrollTo (II)V
 	public fun scrollTo (II)V
 	public fun scrollToPreservingMomentum (II)V
@@ -5630,6 +5645,7 @@ public class com/facebook/react/views/scroll/ReactHorizontalScrollView : android
 	public fun setScrollEnabled (Z)V
 	public fun setScrollEventThrottle (I)V
 	public fun setScrollPerfTag (Ljava/lang/String;)V
+	public fun setScrollsChildToFocus (Z)V
 	public fun setSendMomentumEvents (Z)V
 	public fun setSnapInterval (I)V
 	public fun setSnapOffsets (Ljava/util/List;)V
@@ -5684,6 +5700,7 @@ public class com/facebook/react/views/scroll/ReactHorizontalScrollViewManager : 
 	public final fun setScrollEnabled (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Z)V
 	public final fun setScrollEventThrottle (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;I)V
 	public final fun setScrollPerfTag (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Ljava/lang/String;)V
+	public final fun setScrollsChildToFocus (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Z)V
 	public final fun setSendMomentumEvents (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Z)V
 	public final fun setShowsHorizontalScrollIndicator (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Z)V
 	public final fun setSnapToAlignment (Lcom/facebook/react/views/scroll/ReactHorizontalScrollView;Ljava/lang/String;)V
@@ -5746,6 +5763,7 @@ public class com/facebook/react/views/scroll/ReactScrollView : android/widget/Sc
 	public fun reactSmoothScrollTo (II)V
 	public fun requestChildFocus (Landroid/view/View;Landroid/view/View;)V
 	protected fun requestChildFocusWithoutScroll (Landroid/view/View;Landroid/view/View;)V
+	public fun requestChildRectangleOnScreen (Landroid/view/View;Landroid/graphics/Rect;Z)Z
 	public fun scrollTo (II)V
 	public fun scrollToPreservingMomentum (II)V
 	public fun setBackgroundColor (I)V
@@ -5773,6 +5791,7 @@ public class com/facebook/react/views/scroll/ReactScrollView : android/widget/Sc
 	public fun setScrollEnabled (Z)V
 	public fun setScrollEventThrottle (I)V
 	public fun setScrollPerfTag (Ljava/lang/String;)V
+	public fun setScrollsChildToFocus (Z)V
 	public fun setSendMomentumEvents (Z)V
 	public fun setSnapInterval (I)V
 	public fun setSnapOffsets (Ljava/util/List;)V
@@ -5970,6 +5989,7 @@ public class com/facebook/react/views/scroll/ReactScrollViewManager : com/facebo
 	public final fun setScrollEnabled (Lcom/facebook/react/views/scroll/ReactScrollView;Z)V
 	public final fun setScrollEventThrottle (Lcom/facebook/react/views/scroll/ReactScrollView;I)V
 	public final fun setScrollPerfTag (Lcom/facebook/react/views/scroll/ReactScrollView;Ljava/lang/String;)V
+	public final fun setScrollsChildToFocus (Lcom/facebook/react/views/scroll/ReactScrollView;Z)V
 	public final fun setSendMomentumEvents (Lcom/facebook/react/views/scroll/ReactScrollView;Z)V
 	public final fun setShowsVerticalScrollIndicator (Lcom/facebook/react/views/scroll/ReactScrollView;Z)V
 	public final fun setSnapToAlignment (Lcom/facebook/react/views/scroll/ReactScrollView;Ljava/lang/String;)V
@@ -6592,7 +6612,6 @@ public class com/facebook/react/views/view/ReactViewGroup : android/view/ViewGro
 	protected fun drawChild (Landroid/graphics/Canvas;Landroid/view/View;J)Z
 	public fun endViewTransition (Landroid/view/View;)V
 	public final fun getAxOrderList ()Ljava/util/List;
-	protected fun getChildDrawingOrder (II)I
 	public fun getClippingRect (Landroid/graphics/Rect;)V
 	public fun getHitSlopRect ()Landroid/graphics/Rect;
 	public fun getOverflow ()Ljava/lang/String;

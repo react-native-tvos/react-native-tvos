@@ -136,6 +136,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private int mFadingEdgeLengthStart = 0;
   private int mFadingEdgeLengthEnd = 0;
   private boolean mEmittedOverScrollSinceScrollBegin = false;
+  private boolean mScrollsChildToFocus = true;
 
   public ReactHorizontalScrollView(Context context) {
     this(context, null);
@@ -199,6 +200,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     mMaintainVisibleContentPositionHelper = null;
     mFadingEdgeLengthStart = 0;
     mFadingEdgeLengthEnd = 0;
+    mScrollsChildToFocus = true;
   }
 
   /* package */ void recycleView() {
@@ -330,6 +332,10 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
 
   public void setPagingEnabled(boolean pagingEnabled) {
     mPagingEnabled = pagingEnabled;
+  }
+
+  public void setScrollsChildToFocus(boolean scrollsChildToFocus) {
+    mScrollsChildToFocus = scrollsChildToFocus;
   }
 
   public void setDecelerationRate(float decelerationRate) {
@@ -553,7 +559,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    */
   @Override
   public void requestChildFocus(View child, View focused) {
-    if (focused != null && !mPagingEnabled) {
+    if (focused != null && !mPagingEnabled && mScrollsChildToFocus) {
       scrollToChild(focused);
     }
     requestChildFocusWithoutScroll(child, focused);
@@ -566,6 +572,14 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    */
   protected void requestChildFocusWithoutScroll(View child, View focused) {
     super.requestChildFocus(child, focused);
+  }
+
+  @Override
+  public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
+    if (!mScrollsChildToFocus) {
+      return false;
+    }
+    return super.requestChildRectangleOnScreen(child, rectangle, immediate);
   }
 
   @Override
