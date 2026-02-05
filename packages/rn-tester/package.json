@@ -1,6 +1,6 @@
 {
   "name": "@react-native/tester",
-  "version": "0.84.0-rc.5",
+  "version": "0.84.0-0rc5",
   "private": true,
   "description": "React Native tester app.",
   "license": "MIT",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@react-native/new-app-screen": "0.84.0-rc.5",
-    "@react-native/popup-menu-android": "0.84.0-rc.5",
+    "@react-native/popup-menu-android": "0.84.0-0rc5",
     "flow-enums-runtime": "^0.0.6",
     "invariant": "^2.2.4",
     "nullthrows": "^1.1.1"
