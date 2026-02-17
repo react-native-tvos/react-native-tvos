@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.facebook.react.R;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
+import com.facebook.react.modules.tv.TVFocusDebugManager;
 import com.facebook.react.uimanager.BackgroundStyleApplicator;
 import com.facebook.react.uimanager.LengthPercentage;
 import com.facebook.react.uimanager.LengthPercentageType;
@@ -517,6 +519,18 @@ public class ReactScrollView extends ScrollView
       scrollToChild(focused);
     }
     requestChildFocusWithoutScroll(child, focused);
+  }
+
+  @Override
+  public boolean arrowScroll(int direction) {
+
+    if (TVFocusDebugManager.INSTANCE.getEnabled()) {
+      View currentFocused = findFocus();
+      View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
+      TVFocusDebugManager.INSTANCE.emitPreEvent(currentFocused, nextFocused, direction, getRootView());
+    }
+
+    return super.arrowScroll(direction);
   }
 
   /**

@@ -21,6 +21,7 @@ import {
   ScrollView,
   StyleSheet,
   Text as RNText,
+  TVFocusDebugPainter,
   TVFocusGuideView,
   View,
 } from 'react-native';
@@ -512,10 +513,22 @@ const TVFocusGuideAutoFocusExample = () => {
     React.useRef<?React.ElementRef<typeof TVFocusGuide>>(null);
   const theme = useTheme();
 
+  const onFocusDebugPaint = React.useCallback(event => {
+    console.log(
+      `[FocusDebug] ${event.eventType} | dir=${event.direction} | ` +
+        `current=${event.currentlyFocused?.testID ?? event.currentlyFocused?.tag ?? 'null'} → ` +
+        `next=${event.nextFocused?.testID ?? event.nextFocused?.tag ?? 'null'} | ` +
+        `focusables=${event.allFocusables.length}`,
+    );
+    // eslint-disable-next-line no-debugger
+    debugger;
+  }, []);
+
   return (
     <View style={[styles.container, {backgroundColor: theme.BackgroundColor}]}>
       <SideMenu ref={sideMenuRef} />
       <ContentArea sideMenuRef={sideMenuRef} />
+      <TVFocusDebugPainter onDidPaint={onFocusDebugPaint} />
     </View>
   );
 };

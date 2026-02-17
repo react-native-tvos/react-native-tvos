@@ -43,6 +43,7 @@ import com.facebook.react.modules.sound.SoundManagerModule
 import com.facebook.react.modules.statusbar.StatusBarModule
 import com.facebook.react.modules.toast.ToastModule
 import com.facebook.react.modules.vibration.VibrationModule
+import com.facebook.react.modules.tv.TVFocusDebugModule
 import com.facebook.react.modules.websocket.WebSocketModule
 import com.facebook.react.uimanager.ViewManager
 import com.facebook.react.views.drawer.ReactDrawerLayoutManager
@@ -93,6 +94,7 @@ import com.facebook.react.views.view.ReactViewManager
             SoundManagerModule::class,
             StatusBarModule::class,
             ToastModule::class,
+            TVFocusDebugModule::class,
             VibrationModule::class,
             WebSocketModule::class,
         ]
@@ -126,6 +128,7 @@ constructor(private val config: MainPackageConfig? = null) :
         StatusBarModule.NAME -> StatusBarModule(reactContext)
         SoundManagerModule.NAME -> SoundManagerModule(reactContext)
         ToastModule.NAME -> ToastModule(reactContext)
+        TVFocusDebugModule.NAME -> TVFocusDebugModule(reactContext)
         VibrationModule.NAME -> VibrationModule(reactContext)
         WebSocketModule.NAME -> WebSocketModule(reactContext)
         ReactDevToolsSettingsManagerModule.NAME -> ReactDevToolsSettingsManagerModule(reactContext)
@@ -270,6 +273,7 @@ constructor(private val config: MainPackageConfig? = null) :
                 StatusBarModule::class.java,
                 SoundManagerModule::class.java,
                 ToastModule::class.java,
+                TVFocusDebugModule::class.java,
                 VibrationModule::class.java,
                 WebSocketModule::class.java,
             )

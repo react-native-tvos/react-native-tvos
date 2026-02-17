@@ -371,6 +371,9 @@ module.exports = {
   get useTVEventHandler(): useTVEventHandler {
     return require('./Libraries/Components/TV/useTVEventHandler').default;
   },
+  get useFocusDebug(): useFocusDebug {
+    return require('./Libraries/Components/TV/TVFocusDebug').default;
+  },
   get TVFocusGuideView(): TVFocusGuideView {
     return require('./Libraries/Components/TV/TVFocusGuideView').default;
   },

@@ -483,4 +483,6 @@ export {default as TVFocusGuideView} from './Libraries/Components/TV/TVFocusGuid
 export type {TVRemoteEvent} from './Libraries/Types/CoreEventTypes';
 export {default as TVTextScrollView} from './Libraries/Components/TV/TVTextScrollView';
 export {default as useTVEventHandler} from './Libraries/Components/TV/useTVEventHandler';
+export {default as useFocusDebug} from './Libraries/Components/TV/TVFocusDebug';
+export type {FocusDebugEvent, FocusDebugViewInfo} from './Libraries/Components/TV/TVFocusDebug';
 // #endregion

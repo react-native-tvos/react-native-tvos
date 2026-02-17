@@ -28,6 +28,13 @@
 #import <React/RCTSurfaceHostingProxyRootView.h>
 #if TARGET_OS_TV
 #import <React/RCTTVNavigationEventNotification.h>
+
+@interface TVFocusDebugManager : NSObject
+@property (atomic) BOOL enabled;
++ (instancetype)shared;
+- (void)emitPreEvent:(UIFocusUpdateContext *)context fromRootView:(UIView *)rootView;
+- (void)emitPostEvent:(UIFocusUpdateContext *)context fromRootView:(UIView *)rootView;
+@end
 #endif
 
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
@@ -552,6 +559,14 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
+  if ([TVFocusDebugManager shared].enabled) {
+    static __weak UIFocusUpdateContext *lastPreCtx = nil;
+    if (context != lastPreCtx) {
+      lastPreCtx = context;
+      [[TVFocusDebugManager shared] emitPreEvent:context fromRootView:self.window];
+    }
+  }
+
   // This is  the `trapFocus*` logic that prevents the focus updates if
   // focus should be trapped and `nextFocusedItem` is not a child FocusEnv.
   if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
@@ -599,6 +614,10 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
           if (self->_eventEmitter) self->_eventEmitter->onBlur();
       } completion:^(void){}];
       [self resignFirstResponder];
+    }
+
+    if ([TVFocusDebugManager shared].enabled && context.nextFocusedView == self) {
+      [[TVFocusDebugManager shared] emitPostEvent:context fromRootView:self.window];
     }
 }
 

@@ -21,6 +21,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.FocusFinder
 import android.view.KeyEvent
+import com.facebook.react.modules.tv.TVFocusDebugManager
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -1298,6 +1299,19 @@ public open class ReactViewGroup public constructor(context: Context?) :
     return null
   }
 
+  private fun findClosestReactViewGroupAncestor(view: View): ReactViewGroup? {
+    var parent: ViewParent? = view.parent
+
+    while (parent != null) {
+      if (parent is ReactViewGroup) {
+        return parent
+      }
+      parent = parent.parent
+    }
+
+    return null
+  }
+
   private val focusedChildOfFocusGuide: View?
     /***
      * This is meant to be used only for TVFocusGuide.
@@ -1450,6 +1464,17 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   override fun focusSearch(focused: View, direction: Int): View? {
+    if (
+      TVFocusDebugManager.enabled &&
+        findClosestReactViewGroupAncestor(focused) === this
+    ) {
+      val root = rootView as? ViewGroup
+      val candidate = if (root != null) {
+        FocusFinder.getInstance().findNextFocus(root, focused, direction)
+      } else null
+      TVFocusDebugManager.emitPreEvent(focused, candidate, direction, rootView)
+    }
+
     /**
      * FocusSearch recursively goes all the way up to the Root view
      * and runs `FocusFinder.findNextFocus()` to determine the next focusable.

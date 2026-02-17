@@ -42,6 +42,7 @@ import com.facebook.react.R;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.common.build.ReactBuildConfig;
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
+import com.facebook.react.modules.tv.TVFocusDebugManager;
 import com.facebook.react.uimanager.BackgroundStyleApplicator;
 import com.facebook.react.uimanager.LengthPercentage;
 import com.facebook.react.uimanager.LengthPercentageType;
@@ -786,6 +787,12 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   @Override
   public boolean arrowScroll(int direction) {
     boolean handled = false;
+
+    if (TVFocusDebugManager.INSTANCE.getEnabled()) {
+         View currentFocused = findFocus();
+         View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
+          TVFocusDebugManager.INSTANCE.emitPreEvent(currentFocused, nextFocused, direction, getRootView());
+    }
 
     if (mPagingEnabled) {
       mPagedArrowScrolling = true;

@@ -30,6 +30,7 @@ import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.ReactConstants;
+import com.facebook.react.modules.tv.TVFocusDebugManager;
 import com.facebook.react.uimanager.ReactAccessibilityDelegate.AccessibilityRole;
 import com.facebook.react.uimanager.ReactAccessibilityDelegate.Role;
 import com.facebook.react.uimanager.annotations.ReactProp;
@@ -1038,6 +1039,16 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
       if (mOriginalFocusChangeListener != null) {
         mOriginalFocusChangeListener.onFocusChange(view, hasFocus);
       }
+
+      if (TVFocusDebugManager.INSTANCE.getEnabled()) {
+        if (!hasFocus) {
+          TVFocusDebugManager.INSTANCE.setLastBlurredView(new java.lang.ref.WeakReference<>(view));
+        } else {
+          View previousView = TVFocusDebugManager.INSTANCE.getLastBlurredView().get();
+          TVFocusDebugManager.INSTANCE.emitPostEvent(previousView, view, view.getRootView());
+        }
+      }
+
       int surfaceId = UIManagerHelper.getSurfaceId(view.getContext());
       if (surfaceId == View.NO_ID) {
         return;
