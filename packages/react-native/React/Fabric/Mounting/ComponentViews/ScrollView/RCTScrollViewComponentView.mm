@@ -1158,13 +1158,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if (context.nextFocusedView == self) {
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
-      [self sendFocusEvent];
+        [self sendFocusEvent];
         // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
         _blockFirstTouch = (unsigned long)context.focusHeading != 0;
         [self addArrowsListeners];
     } else if (context.previouslyFocusedView == self) {
         [self removeArrowsListeners];
-      [self sendBlurEvent];
+        [self sendBlurEvent];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
         // If scrolling is enabled:
