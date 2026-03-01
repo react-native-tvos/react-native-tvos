@@ -10,8 +10,8 @@
 
 import type {AsyncCommandResult, HermesVariant} from '../utils';
 
-import {debugCpp, isCI} from '../EnvironmentOptions';
-import {NATIVE_BUILD_OUTPUT_PATH} from '../paths';
+import {debugCpp, isCI, profileCpp} from '../EnvironmentOptions';
+import {CPP_TRACES_OUTPUT_PATH, NATIVE_BUILD_OUTPUT_PATH} from '../paths';
 import {
   getBuckModesForPlatform,
   getBuckOptionsForHermes,
@@ -19,8 +19,10 @@ import {
   runBuck2,
   runBuck2Sync,
   runCommand,
+  runCommandSync,
 } from '../utils';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 const FANTOM_TESTER_BUCK_TARGET =
@@ -47,7 +49,13 @@ export function build(options: TesterOptions): void {
     return;
   }
 
-  const tmpPath = destPath + '-' + Date.now();
+  // Use system temp directory outside the repo to avoid macOS extended
+  // attribute issues with EdenFS/NFS-backed directories
+  const tmpPath = path.join(
+    os.tmpdir(),
+    `fantom-tester-${Date.now()}-${process.pid}`,
+  );
+  const destTmpPath = destPath + '-' + Date.now() + '-' + process.pid;
 
   try {
     const result = runBuck2Sync([
@@ -68,10 +76,32 @@ export function build(options: TesterOptions): void {
       return;
     }
 
-    fs.renameSync(tmpPath, destPath);
+    // Remove extended attributes to avoid "Operation not permitted" errors
+    // when copying to EdenFS/NFS-backed directories on macOS
+    if (os.platform() === 'darwin') {
+      runCommandSync('xattr', ['-rc', tmpPath]);
+    }
+
+    fs.copyFileSync(tmpPath, destTmpPath);
+
+    try {
+      fs.renameSync(destTmpPath, destPath);
+    } catch (e: unknown) {
+      // Another process may have created the file already - that's fine
+      const code =
+        typeof e === 'object' && e != null && typeof e.code === 'string'
+          ? e.code
+          : null;
+      if (code !== 'EEXIST' && !fs.existsSync(destPath)) {
+        throw e;
+      }
+    }
   } finally {
     try {
       fs.unlinkSync(tmpPath);
+    } catch {}
+    try {
+      fs.unlinkSync(destTmpPath);
     } catch {}
   }
 }
@@ -82,6 +112,10 @@ export function run(
 ): AsyncCommandResult {
   if (isCI && debugCpp) {
     throw new Error('Cannot run Fantom with C++ debugging on CI');
+  }
+
+  if (isCI && profileCpp) {
+    throw new Error('Cannot run Fantom with C++ profiling on CI');
   }
 
   if (!isCI && !debugCpp) {
@@ -104,5 +138,46 @@ export function run(
     );
   }
 
-  return runCommand(getFantomTesterPath(options), args);
+  const testerPath = getFantomTesterPath(options);
+
+  if (profileCpp) {
+    // Ensure output directory exists
+    if (!fs.existsSync(CPP_TRACES_OUTPUT_PATH)) {
+      fs.mkdirSync(CPP_TRACES_OUTPUT_PATH, {recursive: true});
+    }
+
+    // Generate unique output path for perf data
+    const perfOutputPath = path.join(
+      CPP_TRACES_OUTPUT_PATH,
+      `perf-${Date.now()}.data`,
+    );
+
+    // Wrap command with perf record
+    // -g: enable call-graph (stack traces)
+    // -F 997: sample at 997 Hz (prime number to avoid aliasing)
+    // --call-graph dwarf: use DWARF for accurate stack traces
+    const result = runCommand('perf', [
+      'record',
+      '-g',
+      '-F',
+      '997',
+      '--call-graph',
+      'dwarf',
+      '-o',
+      perfOutputPath,
+      '--',
+      testerPath,
+      ...args,
+    ]);
+
+    // Log the output path after the command starts
+    console.log(
+      `\n🔥 C++ sampling profiler recording to: ${perfOutputPath}\n` +
+        `   View with: perf report -i ${perfOutputPath}\n`,
+    );
+
+    return result;
+  }
+
+  return runCommand(testerPath, args);
 }

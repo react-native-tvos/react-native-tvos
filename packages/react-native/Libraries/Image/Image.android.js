@@ -15,9 +15,9 @@ import type {ImageProps} from './ImageProps';
 import type {ImageSourceHeaders} from './ImageSourceUtils';
 import type {AbstractImageAndroid, ImageAndroid} from './ImageTypes.flow';
 
+import * as ReactNativeFeatureFlags from '../../src/private/featureflags/ReactNativeFeatureFlags';
 import flattenStyle from '../StyleSheet/flattenStyle';
 import StyleSheet from '../StyleSheet/StyleSheet';
-import TextAncestorContext from '../Text/TextAncestorContext';
 import ImageAnalyticsTagContext from './ImageAnalyticsTagContext';
 import {
   unstable_getImageComponentDecorator,
@@ -30,7 +30,6 @@ import NativeImageLoaderAndroid, {
   type ImageSize,
 } from './NativeImageLoaderAndroid';
 import resolveAssetSource from './resolveAssetSource';
-import TextInlineImageNativeComponent from './TextInlineImageNativeComponent';
 import * as React from 'react';
 import {use} from 'react';
 
@@ -201,17 +200,33 @@ let BaseImage: AbstractImageAndroid = ({
   let sources_;
   let headers_: ?ImageSourceHeaders;
   if (Array.isArray(source_)) {
-    style_ = [styles.base, style];
+    const {
+      headers: sourceHeaders,
+      width: sourceWidth,
+      height: sourceHeight,
+    } = source_[0];
+    headers_ = sourceHeaders;
+    // Default to the first source's width and height if only one is provided
+    if (ReactNativeFeatureFlags.fixImageSrcDimensionPropagation()) {
+      style_ = [
+        source_.length === 1 && {width: sourceWidth, height: sourceHeight},
+        styles.base,
+        style,
+      ];
+    } else {
+      style_ = [styles.base, style];
+    }
     sources_ = source_;
-    headers_ = sources_[0].headers;
   } else {
-    const {uri} = source_;
+    const {uri, width: sourceWidth, height: sourceHeight} = source_;
     if (uri === '') {
       console.warn('source.uri should not be an empty string');
     }
-    const width_ = source_.width ?? width;
-    const height_ = source_.height ?? height;
-    style_ = [{width: width_, height: height_}, styles.base, style];
+    style_ = [
+      {width: sourceWidth ?? width, height: sourceHeight ?? height},
+      styles.base,
+      style,
+    ];
     sources_ = [source_];
   }
 
@@ -309,24 +324,12 @@ let BaseImage: AbstractImageAndroid = ({
 
   const actualRef = useWrapRefWithImageAttachedCallbacks(forwardedRef);
 
-  const hasTextAncestor = use(TextAncestorContext);
   const analyticTag = use(ImageAnalyticsTagContext);
   if (analyticTag !== null) {
     nativeProps.internal_analyticTag = analyticTag;
   }
 
-  return hasTextAncestor ? (
-    <TextInlineImageNativeComponent
-      // $FlowFixMe[incompatible-type]
-      style={style_}
-      resizeMode={resizeMode_}
-      headers={headers_}
-      src={sources_}
-      ref={actualRef}
-    />
-  ) : (
-    <ImageViewNativeComponent {...nativeProps} ref={actualRef} />
-  );
+  return <ImageViewNativeComponent {...nativeProps} ref={actualRef} />;
 };
 
 let _BaseImage = BaseImage;

@@ -10,6 +10,7 @@
 
 import type {EventReporter} from '../types/EventReporter';
 import type {Experiments} from '../types/Experiments';
+import type {ReadonlyURL} from '../types/ReadonlyURL';
 import type {
   CDPClientMessage,
   CDPRequest,
@@ -63,7 +64,7 @@ type DebuggerConnection = {
   pageId: string,
   userAgent: string | null,
   customHandler: ?CustomMessageHandler,
-  debuggerRelativeBaseUrl: URL,
+  debuggerRelativeBaseUrl: ReadonlyURL,
   // Session ID assigned by the proxy for multi-debugger support
   sessionId: string,
 };
@@ -77,8 +78,8 @@ export type DeviceOptions = Readonly<{
   socket: WS,
   eventReporter: ?EventReporter,
   createMessageMiddleware: ?CreateCustomMessageHandlerFn,
-  deviceRelativeBaseUrl: URL,
-  serverRelativeBaseUrl: URL,
+  deviceRelativeBaseUrl: ReadonlyURL,
+  serverRelativeBaseUrl: ReadonlyURL,
   isProfilingBuild: boolean,
   experiments: Experiments,
 }>;
@@ -129,10 +130,10 @@ export default class Device {
 
   // A base HTTP(S) URL to this server, reachable from the device. Derived from
   // the http request that created the connection.
-  #deviceRelativeBaseUrl: URL;
+  #deviceRelativeBaseUrl: ReadonlyURL;
 
   // A base HTTP(S) URL to the server, relative to this server.
-  #serverRelativeBaseUrl: URL;
+  #serverRelativeBaseUrl: ReadonlyURL;
 
   // Logging reporting batches of cdp messages
   #cdpDebugLogging: CdpDebugLogging;
@@ -339,7 +340,7 @@ export default class Device {
       debuggerRelativeBaseUrl,
       userAgent,
     }: Readonly<{
-      debuggerRelativeBaseUrl: URL,
+      debuggerRelativeBaseUrl: ReadonlyURL,
       userAgent: string | null,
     }>,
   ) {
@@ -456,9 +457,6 @@ export default class Device {
       this.#deviceEventReporter?.logRequest(debuggerRequest, 'debugger', {
         pageId: debuggerInfo.pageId,
         frontendUserAgent: userAgent,
-        prefersFuseboxFrontend: this.#isPageFuseboxFrontend(
-          debuggerInfo.pageId,
-        ),
       });
       let processedReq = debuggerRequest;
 
@@ -679,7 +677,6 @@ export default class Device {
         this.#deviceEventReporter?.logResponse(parsedPayload, 'device', {
           pageId,
           frontendUserAgent: debuggerConnection.userAgent ?? null,
-          prefersFuseboxFrontend: this.#isPageFuseboxFrontend(pageId),
         });
       }
 
@@ -759,7 +756,6 @@ export default class Device {
       this.#deviceEventReporter?.logRequest(message, 'proxy', {
         pageId,
         frontendUserAgent: reloadablePageDebugger.userAgent ?? null,
-        prefersFuseboxFrontend: this.#isPageFuseboxFrontend(pageId),
       });
       this.#sendMessageToDevice({
         event: 'wrappedEvent',
@@ -910,9 +906,6 @@ export default class Device {
       this.#deviceEventReporter?.logRequest(resumeMessage, 'proxy', {
         pageId: debuggerInfo.pageId,
         frontendUserAgent: debuggerInfo.userAgent ?? null,
-        prefersFuseboxFrontend: this.#isPageFuseboxFrontend(
-          debuggerInfo.pageId,
-        ),
       });
       this.#sendMessageToDevice({
         event: 'wrappedEvent',
@@ -983,7 +976,6 @@ export default class Device {
         this.#deviceEventReporter?.logResponse(response, 'proxy', {
           pageId,
           frontendUserAgent: debuggerInfo.userAgent ?? null,
-          prefersFuseboxFrontend: this.#isPageFuseboxFrontend(pageId),
         });
         return null;
       default:
@@ -1063,7 +1055,6 @@ export default class Device {
       this.#deviceEventReporter?.logResponse(response, 'proxy', {
         pageId,
         frontendUserAgent: debuggerInfo.userAgent ?? null,
-        prefersFuseboxFrontend: this.#isPageFuseboxFrontend(pageId),
       });
     };
     const sendErrorResponse = (error: string) => {
@@ -1078,7 +1069,6 @@ export default class Device {
       this.#deviceEventReporter?.logResponse(response, 'proxy', {
         pageId,
         frontendUserAgent: debuggerInfo.userAgent ?? null,
-        prefersFuseboxFrontend: this.#isPageFuseboxFrontend(pageId),
       });
     };
 
@@ -1166,15 +1156,6 @@ export default class Device {
         }),
       );
     }
-  }
-
-  #isPageFuseboxFrontend(pageId: ?string): boolean | null {
-    const page = pageId == null ? null : this.#pages.get(pageId);
-    if (page == null) {
-      return null;
-    }
-
-    return this.#pageHasCapability(page, 'prefersFuseboxFrontend');
   }
 
   dangerouslyGetSocket(): WS {

@@ -16,6 +16,7 @@ const lazyImports = require('./lazy-imports');
 const EXCLUDED_FIRST_PARTY_PATHS = [
   /[/\\]node_modules[/\\]/,
   /[/\\]packages[/\\]react-native[/\\]/,
+  /[/\\]packages[/\\]jest-preset[/\\]/,
   /[/\\]packages[/\\]virtualized-lists[/\\]/,
   /[/\\]private[/\\]react-native-fantom[/\\]/,
 ];
@@ -50,6 +51,8 @@ const getPreset = (src, options, babel) => {
   const transformProfile =
     options?.unstable_transformProfile ?? babel?.caller(getTransformProfile);
 
+  const dev = options?.dev ?? babel.env('development');
+
   // Hermes V1 (aka Static Hermes) uses more optimised profiles.
   // There is currently no difference between stable and canary, but canary
   // may in future be used to test features in pre-prod Hermes versions.
@@ -65,7 +68,7 @@ const getPreset = (src, options, babel) => {
   // Use native generators in release mode because it has already yielded perf
   // wins. The next release of Hermes will close this gap, so this won't
   // be permanent.
-  const enableRegenerator = isHermesV1 && options.dev;
+  const enableRegenerator = isHermesV1 && dev;
 
   // Preserve class syntax and related if we're using Hermes V1.
   const preserveClasses = isHermesV1;
@@ -154,11 +157,11 @@ const getPreset = (src, options, babel) => {
     ]);
   }
 
-  if (options && options.dev && !options.disableDeepImportWarnings) {
+  if (options && dev && !options.disableDeepImportWarnings) {
     firstPartyPlugins.push([require('../plugin-warn-on-deep-imports.js')]);
   }
 
-  if (options && options.dev && !options.useTransformReactJSXExperimental) {
+  if (options && dev && !options.useTransformReactJSXExperimental) {
     extraPlugins.push([require('@babel/plugin-transform-react-jsx-source')]);
     extraPlugins.push([require('@babel/plugin-transform-react-jsx-self')]);
   }
@@ -261,12 +264,6 @@ const getPreset = (src, options, babel) => {
 };
 
 module.exports = (options, babel) => {
-  if (options.withDevTools == null) {
-    const env = process.env.BABEL_ENV || process.env.NODE_ENV;
-    if (!env || env === 'development') {
-      return getPreset(null, {...options, dev: true}, babel);
-    }
-  }
   return getPreset(null, options, babel);
 };
 

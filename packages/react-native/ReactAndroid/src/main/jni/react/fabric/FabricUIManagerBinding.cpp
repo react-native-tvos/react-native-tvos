@@ -52,7 +52,13 @@ void FabricUIManagerBinding::setPixelDensity(float pointScaleFactor) {
 }
 
 void FabricUIManagerBinding::driveCxxAnimations() {
-  getScheduler()->animationTick();
+  auto scheduler = getScheduler();
+  if (!scheduler) {
+    LOG(ERROR)
+        << "FabricUIManagerBinding::driveCxxAnimations: scheduler disappeared";
+    return;
+  }
+  scheduler->animationTick();
 }
 
 void FabricUIManagerBinding::driveAnimationBackend(jdouble frameTimeMs) {
@@ -695,6 +701,23 @@ void FabricUIManagerBinding::schedulerShouldRenderTransactions(
   }
 }
 
+void FabricUIManagerBinding::schedulerShouldMergeReactRevision(
+    SurfaceId surfaceId) {
+  std::shared_lock lock(installMutex_);
+  auto mountingManager =
+      getMountingManager("schedulerShouldMergeReactRevision");
+  if (mountingManager) {
+    mountingManager->scheduleReactRevisionMerge(surfaceId);
+  }
+}
+
+void FabricUIManagerBinding::mergeReactRevision(SurfaceId surfaceId) {
+  std::shared_lock lock(installMutex_);
+  scheduler_->getUIManager()->getShadowTreeRegistry().visit(
+      surfaceId,
+      [](const ShadowTree& shadowTree) { shadowTree.mergeReactRevision(); });
+}
+
 void FabricUIManagerBinding::schedulerDidRequestPreliminaryViewAllocation(
     const ShadowNode& shadowNode) {
   using namespace std::literals::string_view_literals;
@@ -717,7 +740,7 @@ void FabricUIManagerBinding::schedulerDidRequestPreliminaryViewAllocation(
   // to be destroyed if the ShadowNode is destroyed but it was never mounted
   // on the screen.
   if (shadowNode.getTraits().check(ShadowNodeTraits::Trait::FormsView)) {
-    shadowNode.getFamily().onUnmountedFamilyDestroyed(
+    shadowNode.getFamilyShared()->onUnmountedFamilyDestroyed(
         [weakMountingManager =
              std::weak_ptr(mountingManager)](const ShadowNodeFamily& family) {
           if (auto mountingManager = weakMountingManager.lock()) {
@@ -832,6 +855,8 @@ void FabricUIManagerBinding::registerNatives() {
       makeNativeMethod(
           "setAnimationBackendChoreographer",
           FabricUIManagerBinding::setAnimationBackendChoreographer),
+      makeNativeMethod(
+          "mergeReactRevision", FabricUIManagerBinding::mergeReactRevision),
   });
 }
 

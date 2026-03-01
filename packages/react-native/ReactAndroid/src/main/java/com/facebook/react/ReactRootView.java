@@ -13,6 +13,7 @@ import static com.facebook.react.uimanager.common.UIManagerType.FABRIC;
 import static com.facebook.react.uimanager.common.UIManagerType.LEGACY;
 import static com.facebook.systrace.Systrace.TRACE_TAG_REACT;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
@@ -213,8 +214,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       return;
     }
 
-    EventDispatcher eventDispatcher =
-        UIManagerHelper.getEventDispatcher(reactContext, getUIManagerType());
+    EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcher(reactContext);
     if (eventDispatcher != null) {
       mJSTouchDispatcher.onChildStartedNativeGesture(ev, eventDispatcher, reactContext);
       if (childView != null && mJSPointerDispatcher != null) {
@@ -229,8 +229,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       return;
     }
 
-    EventDispatcher eventDispatcher =
-        UIManagerHelper.getEventDispatcher(getCurrentReactContext(), getUIManagerType());
+    EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcher(getCurrentReactContext());
     if (eventDispatcher != null) {
       mJSTouchDispatcher.onChildEndedNativeGesture(ev, eventDispatcher);
       if (mJSPointerDispatcher != null) {
@@ -363,8 +362,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       return;
     }
 
-    EventDispatcher eventDispatcher =
-        UIManagerHelper.getEventDispatcher(getCurrentReactContext(), getUIManagerType());
+    EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcher(getCurrentReactContext());
     if (eventDispatcher != null) {
       mJSPointerDispatcher.handleMotionEvent(event, eventDispatcher, isCapture);
     }
@@ -380,8 +378,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
       return;
     }
 
-    EventDispatcher eventDispatcher =
-        UIManagerHelper.getEventDispatcher(getCurrentReactContext(), getUIManagerType());
+    EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcher(getCurrentReactContext());
     if (eventDispatcher != null) {
       mJSTouchDispatcher.handleTouchEvent(event, eventDispatcher, getCurrentReactContext());
     }
@@ -403,8 +400,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     }
     ReactContext context = getCurrentReactContext();
     if (context != null) {
-      EventDispatcher eventDispatcher =
-          UIManagerHelper.getEventDispatcher(context, getUIManagerType());
+      EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcher(context);
       int surfaceId = UIManagerHelper.getSurfaceId(context);
       if (eventDispatcher != null) {
         mJSKeyDispatcher.handleKeyEvent(ev, eventDispatcher, surfaceId);
@@ -570,6 +566,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     return appProperties != null ? appProperties.getString("surfaceID") : null;
   }
 
+  @Override
   public AtomicInteger getState() {
     return mState;
   }
@@ -809,6 +806,9 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     }
   }
 
+  @SuppressLint("ClassImplementsFinalize") // Used for memory leak detection during development.
+  // The finalize method only performs an assertion check and doesn't do cleanup,
+  // so the typical finalize() risks (performance, deadlocks) don't apply here.
   @Override
   protected void finalize() throws Throwable {
     super.finalize();

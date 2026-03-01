@@ -48,7 +48,7 @@ JReactHostInspectorTarget::JReactHostInspectorTarget(
           // Reject the connection.
           return nullptr;
         },
-        {.nativePageReloads = true, .prefersFuseboxFrontend = true});
+        {.nativePageReloads = true});
   }
 }
 
@@ -224,9 +224,8 @@ void JReactHostInspectorTarget::recordFrameTimings(
   inspectorTarget().recordFrameTimings({
       frameTimingSequence->getId(),
       frameTimingSequence->getThreadId(),
-      frameTimingSequence->getBeginDrawingTimestamp(),
-      frameTimingSequence->getCommitTimestamp(),
-      frameTimingSequence->getEndDrawingTimestamp(),
+      frameTimingSequence->getBeginTimestamp(),
+      frameTimingSequence->getEndTimestamp(),
       frameTimingSequence->getScreenshot(),
   });
 }

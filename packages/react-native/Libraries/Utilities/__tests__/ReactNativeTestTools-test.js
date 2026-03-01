@@ -8,11 +8,11 @@
  * @format
  */
 
-import {create} from '../../../jest/renderer';
 import TextInput from '../../Components/TextInput/TextInput';
 import View from '../../Components/View/View';
 import Text from '../../Text/Text';
 import {byTestID, byTextMatching, enter, tap} from '../ReactNativeTestTools';
+import {create} from '@react-native/jest-preset/jest/renderer';
 import * as React from 'react';
 
 describe('ReactNativeTestTools', () => {

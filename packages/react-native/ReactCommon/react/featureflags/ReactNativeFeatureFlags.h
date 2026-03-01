@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bdc8ad1004183077c5a459efd6b0c8f6>>
+ * @generated SignedSource<<84e2800073ffab2313a4e27897c0c246>>
  */
 
 /**
@@ -53,6 +53,11 @@ class ReactNativeFeatureFlags {
    * Use a C++ implementation of Native Animated instead of the platform implementation.
    */
   RN_EXPORT static bool cxxNativeAnimatedEnabled();
+
+  /**
+   * When enabled, sets the default overflow style for Text components to hidden instead of visible.
+   */
+  RN_EXPORT static bool defaultTextToOverflowHidden();
 
   /**
    * Dispatch view commands in mount item order.
@@ -115,11 +120,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableBridgelessArchitecture();
 
   /**
-   * When overflow: hidden is set, also set clipChildren to true so that clipped content does not occlude content outside the parent
-   */
-  RN_EXPORT static bool enableClipChildrenForOverflowHidden();
-
-  /**
    * Enable prop iterator setter-style construction of Props in C++ (this flag is not used in Java).
    */
   RN_EXPORT static bool enableCppPropsIteratorSetter();
@@ -153,6 +153,11 @@ class ReactNativeFeatureFlags {
    * When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.
    */
   RN_EXPORT static bool enableExclusivePropsUpdateAndroid();
+
+  /**
+   * Enables Fabric commit branching to fix starvation problems and atomic JS updates.
+   */
+  RN_EXPORT static bool enableFabricCommitBranching();
 
   /**
    * This feature flag enables logs for Fabric.
@@ -305,6 +310,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableVirtualViewDebugFeatures();
 
   /**
+   * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
+   */
+  RN_EXPORT static bool fixFindShadowNodeByTagRaceCondition();
+
+  /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
@@ -375,6 +385,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool skipActivityIdentityAssertionOnHostPause();
 
   /**
+   * Sync clipToPadding on Android views with the overflow property
+   */
+  RN_EXPORT static bool syncAndroidClipToPaddingWithOverflow();
+
+  /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
    */
   RN_EXPORT static bool traceTurboModulePromiseRejectionsOnAndroid();
@@ -383,6 +398,11 @@ class ReactNativeFeatureFlags {
    * When enabled, runtime shadow node references will be updated during the commit. This allows running RSNRU from any thread without corrupting the renderer state.
    */
   RN_EXPORT static bool updateRuntimeShadowNodeReferencesOnCommit();
+
+  /**
+   * When enabled, runtime shadow node references will be updated during the commit only on the allowed thread.
+   */
+  RN_EXPORT static bool updateRuntimeShadowNodeReferencesOnCommitThread();
 
   /**
    * In Bridgeless mode, use the always available javascript error reporting pipeline.
@@ -428,6 +448,11 @@ class ReactNativeFeatureFlags {
    * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
    */
   RN_EXPORT static double viewCullingOutsetRatio();
+
+  /**
+   * Enable the View Transition API for animating transitions between views.
+   */
+  RN_EXPORT static bool viewTransitionEnabled();
 
   /**
    * Initial prerender ratio for VirtualView.

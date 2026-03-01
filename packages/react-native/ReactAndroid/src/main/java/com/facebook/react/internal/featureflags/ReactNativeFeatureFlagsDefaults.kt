@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<afd4040a9d72ea4af7a20084723506aa>>
+ * @generated SignedSource<<523e3c35d4bd1fc85f2a3bb26b8aad3f>>
  */
 
 /**
@@ -28,6 +28,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun cdpInteractionMetricsEnabled(): Boolean = false
 
   override fun cxxNativeAnimatedEnabled(): Boolean = false
+
+  override fun defaultTextToOverflowHidden(): Boolean = true
 
   override fun disableEarlyViewCommandExecution(): Boolean = false
 
@@ -53,8 +55,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableBridgelessArchitecture(): Boolean = false
 
-  override fun enableClipChildrenForOverflowHidden(): Boolean = false
-
   override fun enableCppPropsIteratorSetter(): Boolean = false
 
   override fun enableCustomFocusSearchOnClippedElementsAndroid(): Boolean = true
@@ -68,6 +68,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableEagerRootViewAttachment(): Boolean = false
 
   override fun enableExclusivePropsUpdateAndroid(): Boolean = false
+
+  override fun enableFabricCommitBranching(): Boolean = false
 
   override fun enableFabricLogs(): Boolean = false
 
@@ -129,6 +131,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableVirtualViewDebugFeatures(): Boolean = false
 
+  override fun fixFindShadowNodeByTagRaceCondition(): Boolean = false
+
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
   override fun fixTextClippingAndroid15useBoundsForWidth(): Boolean = false
@@ -157,9 +161,13 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun skipActivityIdentityAssertionOnHostPause(): Boolean = false
 
+  override fun syncAndroidClipToPaddingWithOverflow(): Boolean = false
+
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean = false
 
   override fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean = false
+
+  override fun updateRuntimeShadowNodeReferencesOnCommitThread(): Boolean = false
 
   override fun useAlwaysAvailableJSErrorHandling(): Boolean = false
 
@@ -178,6 +186,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useTurboModules(): Boolean = false
 
   override fun viewCullingOutsetRatio(): Double = 0.0
+
+  override fun viewTransitionEnabled(): Boolean = false
 
   override fun virtualViewPrerenderRatio(): Double = 5.0
 }

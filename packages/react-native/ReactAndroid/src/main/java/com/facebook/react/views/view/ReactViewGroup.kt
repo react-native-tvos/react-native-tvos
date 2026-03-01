@@ -192,6 +192,9 @@ public open class ReactViewGroup public constructor(context: Context?) :
    */
   private fun initView() {
     clipChildren = false
+    if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
+      clipToPadding = false
+    }
 
     _removeClippedSubviews = false
     inSubviewClippingLoop = false
@@ -990,8 +993,8 @@ public open class ReactViewGroup public constructor(context: Context?) :
           } else {
             Overflow.fromString(overflow)
           }
-      if (ReactNativeFeatureFlags.enableClipChildrenForOverflowHidden()) {
-        clipChildren = (_overflow == Overflow.HIDDEN)
+      if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
+        clipToPadding = _overflow != Overflow.VISIBLE
       }
       invalidate()
     }

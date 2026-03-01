@@ -85,7 +85,7 @@ Scheduler::Scheduler(
 
   auto eventPipe = [uiManager](
                        jsi::Runtime& runtime,
-                       const EventTarget* eventTarget,
+                       EventTarget* eventTarget,
                        const std::string& type,
                        ReactEventPriority priority,
                        const EventPayload& payload) {
@@ -364,6 +364,22 @@ void Scheduler::uiManagerShouldAddEventListener(
 void Scheduler::uiManagerShouldRemoveEventListener(
     const std::shared_ptr<const EventListener>& listener) {
   removeEventListener(listener);
+}
+
+void Scheduler::uiManagerDidFinishReactCommit(const ShadowTree& shadowTree) {
+  auto surfaceId = shadowTree.getSurfaceId();
+  runtimeScheduler_->scheduleRenderingUpdate(
+      surfaceId, [surfaceId, uiManager = uiManager_]() {
+        uiManager->getShadowTreeRegistry().visit(
+            surfaceId,
+            [](const ShadowTree& tree) { tree.promoteReactRevision(); });
+      });
+}
+
+void Scheduler::uiManagerDidPromoteReactRevision(const ShadowTree& shadowTree) {
+  if (delegate_ != nullptr) {
+    delegate_->schedulerShouldMergeReactRevision(shadowTree.getSurfaceId());
+  }
 }
 
 void Scheduler::uiManagerDidStartSurface(const ShadowTree& shadowTree) {

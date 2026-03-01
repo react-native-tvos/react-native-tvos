@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1c98cfbb8e70c8685faafd078002f866>>
+ * @generated SignedSource<<861e4a47ad9b2aa4ac054059082724a0>>
  */
 
 /**
@@ -37,6 +37,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool cxxNativeAnimatedEnabled() override {
     return false;
+  }
+
+  bool defaultTextToOverflowHidden() override {
+    return true;
   }
 
   bool disableEarlyViewCommandExecution() override {
@@ -87,10 +91,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableClipChildrenForOverflowHidden() override {
-    return false;
-  }
-
   bool enableCppPropsIteratorSetter() override {
     return false;
   }
@@ -116,6 +116,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableExclusivePropsUpdateAndroid() override {
+    return false;
+  }
+
+  bool enableFabricCommitBranching() override {
     return false;
   }
 
@@ -239,6 +243,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool fixFindShadowNodeByTagRaceCondition() override {
+    return false;
+  }
+
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
     return false;
   }
@@ -295,11 +303,19 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool syncAndroidClipToPaddingWithOverflow() override {
+    return false;
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     return false;
   }
 
   bool updateRuntimeShadowNodeReferencesOnCommit() override {
+    return false;
+  }
+
+  bool updateRuntimeShadowNodeReferencesOnCommitThread() override {
     return false;
   }
 
@@ -337,6 +353,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   double viewCullingOutsetRatio() override {
     return 0.0;
+  }
+
+  bool viewTransitionEnabled() override {
+    return false;
   }
 
   double virtualViewPrerenderRatio() override {

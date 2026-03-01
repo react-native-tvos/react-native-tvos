@@ -444,8 +444,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   @ReactProp(name = ViewProps.COLLAPSABLE)
   @Suppress("UNUSED_PARAMETER")
   public open fun setCollapsable(view: ReactViewGroup, collapsable: Boolean) {
-    // no-op: it's here only so that "collapsable" property is exported to JS. The value is actually
-    // handled in NativeViewHierarchyOptimizer
+    // no-op: it's here only so that "collapsable" property is exported to JS.
   }
 
   @ReactProp(name = ViewProps.COLLAPSABLE_CHILDREN)
@@ -458,8 +457,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   public open fun setFocusable(view: ReactViewGroup, focusable: Boolean) {
     if (focusable) {
       view.setOnClickListener {
-        val eventDispatcher =
-            UIManagerHelper.getEventDispatcherForReactTag((view.context as ReactContext), view.id)
+        val eventDispatcher = UIManagerHelper.getEventDispatcher(view.context as ReactContext)
         eventDispatcher?.dispatchEvent(
             ViewGroupClickEvent(UIManagerHelper.getSurfaceId(view.context), view.id)
         )

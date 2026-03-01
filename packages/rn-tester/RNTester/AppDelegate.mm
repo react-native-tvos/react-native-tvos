@@ -7,7 +7,9 @@
 
 #import "AppDelegate.h"
 
+#if !TARGET_OS_TV
 #import <UserNotifications/UserNotifications.h>
+#endif
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTDefines.h>
@@ -16,7 +18,9 @@
 #import <ReactCommon/RCTSampleTurboModule.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 
+#if !TARGET_OS_TV
 #import <React/RCTPushNotificationManager.h>
+#endif
 
 #import <NativeCxxModuleExample/NativeCxxModuleExample.h>
 #ifndef RN_DISABLE_OSS_PLUGIN_HEADER
@@ -36,8 +40,13 @@
 
 static NSString *kBundlePath = @"js/RNTesterApp.ios";
 
+#if !TARGET_OS_TV
 @interface AppDelegate () <UNUserNotificationCenterDelegate>
 @end
+#else
+@interface AppDelegate ()
+@end
+#endif
 
 @implementation AppDelegate
 
@@ -63,7 +72,9 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
                                                  inWindow:self.window
                                         initialProperties:[self prepareInitialProps]
                                             launchOptions:launchOptions];
+#if !TARGET_OS_TV
   [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+#endif
   RCTUseKeyWindowForSystemStyle(true);
   [self setMainWindowBackground];
 
@@ -114,6 +125,7 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
   return [super getTurboModule:name jsInvoker:jsInvoker];
 }
 
+#if !TARGET_OS_TV
 // Required for the remoteNotificationsRegistered event.
 - (void)application:(__unused UIApplication *)application
     didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -142,7 +154,6 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
 // Required for the remoteNotificationReceived and localNotificationReceived events
 // Called when a notification is tapped from background. (Foreground notification will not be shown per
 // the presentation option selected above).
-#if !TARGET_OS_TV
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
     didReceiveNotificationResponse:(UNNotificationResponse *)response
              withCompletionHandler:(void (^)(void))completionHandler

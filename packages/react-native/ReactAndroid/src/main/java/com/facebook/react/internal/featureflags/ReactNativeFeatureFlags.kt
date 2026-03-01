@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f04d7cddd72c435fcce120b71366c81c>>
+ * @generated SignedSource<<477777b9a795b57f3bb3eaeb030738a9>>
  */
 
 /**
@@ -47,6 +47,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun cxxNativeAnimatedEnabled(): Boolean = accessor.cxxNativeAnimatedEnabled()
+
+  /**
+   * When enabled, sets the default overflow style for Text components to hidden instead of visible.
+   */
+  @JvmStatic
+  public fun defaultTextToOverflowHidden(): Boolean = accessor.defaultTextToOverflowHidden()
 
   /**
    * Dispatch view commands in mount item order.
@@ -121,12 +127,6 @@ public object ReactNativeFeatureFlags {
   public fun enableBridgelessArchitecture(): Boolean = accessor.enableBridgelessArchitecture()
 
   /**
-   * When overflow: hidden is set, also set clipChildren to true so that clipped content does not occlude content outside the parent
-   */
-  @JvmStatic
-  public fun enableClipChildrenForOverflowHidden(): Boolean = accessor.enableClipChildrenForOverflowHidden()
-
-  /**
    * Enable prop iterator setter-style construction of Props in C++ (this flag is not used in Java).
    */
   @JvmStatic
@@ -167,6 +167,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableExclusivePropsUpdateAndroid(): Boolean = accessor.enableExclusivePropsUpdateAndroid()
+
+  /**
+   * Enables Fabric commit branching to fix starvation problems and atomic JS updates.
+   */
+  @JvmStatic
+  public fun enableFabricCommitBranching(): Boolean = accessor.enableFabricCommitBranching()
 
   /**
    * This feature flag enables logs for Fabric.
@@ -349,6 +355,12 @@ public object ReactNativeFeatureFlags {
   public fun enableVirtualViewDebugFeatures(): Boolean = accessor.enableVirtualViewDebugFeatures()
 
   /**
+   * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
+   */
+  @JvmStatic
+  public fun fixFindShadowNodeByTagRaceCondition(): Boolean = accessor.fixFindShadowNodeByTagRaceCondition()
+
+  /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   @JvmStatic
@@ -433,6 +445,12 @@ public object ReactNativeFeatureFlags {
   public fun skipActivityIdentityAssertionOnHostPause(): Boolean = accessor.skipActivityIdentityAssertionOnHostPause()
 
   /**
+   * Sync clipToPadding on Android views with the overflow property
+   */
+  @JvmStatic
+  public fun syncAndroidClipToPaddingWithOverflow(): Boolean = accessor.syncAndroidClipToPaddingWithOverflow()
+
+  /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
    */
   @JvmStatic
@@ -443,6 +461,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean = accessor.updateRuntimeShadowNodeReferencesOnCommit()
+
+  /**
+   * When enabled, runtime shadow node references will be updated during the commit only on the allowed thread.
+   */
+  @JvmStatic
+  public fun updateRuntimeShadowNodeReferencesOnCommitThread(): Boolean = accessor.updateRuntimeShadowNodeReferencesOnCommitThread()
 
   /**
    * In Bridgeless mode, use the always available javascript error reporting pipeline.
@@ -497,6 +521,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun viewCullingOutsetRatio(): Double = accessor.viewCullingOutsetRatio()
+
+  /**
+   * Enable the View Transition API for animating transitions between views.
+   */
+  @JvmStatic
+  public fun viewTransitionEnabled(): Boolean = accessor.viewTransitionEnabled()
 
   /**
    * Initial prerender ratio for VirtualView.

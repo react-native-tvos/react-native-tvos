@@ -82,6 +82,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    defaultTextToOverflowHidden: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-02-13',
+        description:
+          'When enabled, sets the default overflow style for Text components to hidden instead of visible.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     disableEarlyViewCommandExecution: {
       defaultValue: false,
       metadata: {
@@ -212,16 +223,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'canary',
     },
-    enableClipChildrenForOverflowHidden: {
-      defaultValue: false,
-      metadata: {
-        description:
-          'When overflow: hidden is set, also set clipChildren to true so that clipped content does not occlude content outside the parent',
-        expectedReleaseValue: true,
-        purpose: 'release',
-      },
-      ossReleaseStage: 'none',
-    },
     enableCppPropsIteratorSetter: {
       defaultValue: false,
       metadata: {
@@ -293,6 +294,16 @@ const definitions: FeatureFlagDefinitions = {
           'When enabled, Android will disable Props 1.5 raw value merging when Props 2.0 is available.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableFabricCommitBranching: {
+      defaultValue: false,
+      metadata: {
+        description:
+          'Enables Fabric commit branching to fix starvation problems and atomic JS updates.',
+        expectedReleaseValue: true,
+        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },
@@ -614,6 +625,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    fixFindShadowNodeByTagRaceCondition: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-25',
+        description:
+          'Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     fixMappingOfEventPrioritiesBetweenFabricAndReact: {
       defaultValue: false,
       metadata: {
@@ -764,6 +786,16 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    syncAndroidClipToPaddingWithOverflow: {
+      defaultValue: false,
+      metadata: {
+        description:
+          'Sync clipToPadding on Android views with the overflow property',
+        expectedReleaseValue: true,
+        purpose: 'release',
+      },
+      ossReleaseStage: 'none',
+    },
     traceTurboModulePromiseRejectionsOnAndroid: {
       defaultValue: false,
       metadata: {
@@ -780,6 +812,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-04-15',
         description:
           'When enabled, runtime shadow node references will be updated during the commit. This allows running RSNRU from any thread without corrupting the renderer state.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    updateRuntimeShadowNodeReferencesOnCommitThread: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-11',
+        description:
+          'When enabled, runtime shadow node references will be updated during the commit only on the allowed thread.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -879,6 +922,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    viewTransitionEnabled: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-09',
+        description:
+          'Enable the View Transition API for animating transitions between views.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     virtualViewPrerenderRatio: {
       defaultValue: 5,
       metadata: {
@@ -933,6 +987,27 @@ const definitions: FeatureFlagDefinitions = {
           'Disable prop maintainVisibleContentPosition in ScrollView',
         expectedReleaseValue: false,
         purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    externalElementInspectionEnabled: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-02-04',
+        description:
+          'Enable the external inspection API for DevTools to communicate with the Inspector overlay.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    fixImageSrcDimensionPropagation: {
+      defaultValue: true,
+      metadata: {
+        description:
+          'Fix image dimensions not being passed through when src is used',
+        expectedReleaseValue: true,
+        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },
