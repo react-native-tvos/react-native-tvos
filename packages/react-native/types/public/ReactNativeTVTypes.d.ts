@@ -43,6 +43,89 @@ declare module 'react-native' {
 
   export const useTVEventHandler: (handleEvent: (event: HWEvent) => void) => void;
 
+  export type FocusDebugDirection =
+    | 'up'
+    | 'down'
+    | 'left'
+    | 'right'
+    | 'forward'
+    | 'backward'
+    | 'unknown';
+
+  export interface FocusDebugFrame {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+
+  export interface FocusDebugViewInfo {
+    tag: number;
+    viewName: string;
+    testID?: string | undefined;
+    closestInstance?: unknown;
+    componentStack?: string | undefined;
+    frame: FocusDebugFrame;
+    focusProps: {
+      focusable: boolean;
+      hasTVPreferredFocus: boolean;
+      trapFocusUp: boolean;
+      trapFocusDown: boolean;
+      trapFocusLeft: boolean;
+      trapFocusRight: boolean;
+      autoFocus: boolean;
+    };
+  }
+
+  export type FocusDebugRequestFocusReason =
+    | 'destinations'
+    | 'destinationMissing'
+    | 'autoFocusLastFocused'
+    | 'autoFocusLastFocusedDetached'
+    | 'autoFocusFirstFocusable'
+    | 'superFallback';
+
+  export interface FocusDebugRequestFocusStep {
+    index: number;
+    depth: number;
+    from: FocusDebugViewInfo;
+    to: FocusDebugViewInfo | null;
+    reason: FocusDebugRequestFocusReason;
+    success: boolean;
+  }
+
+  export interface FocusDebugRequestFocusTrace {
+    chainId: number;
+    success: boolean;
+    steps: FocusDebugRequestFocusStep[];
+  }
+
+  export interface FocusDebugEvent {
+    eventType: 'focusSearch' | 'post' | 'requestFocus';
+    timestamp: number;
+    direction: FocusDebugDirection;
+    currentlyFocused: FocusDebugViewInfo | null;
+    nextFocused: FocusDebugViewInfo | null;
+    allFocusables: FocusDebugViewInfo[];
+    requestFocusTrace?: FocusDebugRequestFocusTrace | undefined;
+  }
+
+  export interface FocusDebugPainterProps {
+    enabled?: boolean | undefined;
+    showAllFocusables?: boolean | undefined;
+    showCurrentlyFocused?: boolean | undefined;
+    showNextFocused?: boolean | undefined;
+    showFocusSearch?: boolean | undefined;
+    showPost?: boolean | undefined;
+    showRequestFocus?: boolean | undefined;
+    showRequestFocusLabels?: boolean | undefined;
+    onDidPaint?: ((event: FocusDebugEvent) => void) | undefined;
+    style?: ViewProps['style'] | undefined;
+  }
+
+  export const useFocusDebug: (callback: (event: FocusDebugEvent) => void) => void;
+  export const TVFocusDebugPainter: React.ComponentType<FocusDebugPainterProps>;
+
   export const TVEventControl: {
     enableTVMenuKey(): void;
     disableTVMenuKey(): void;

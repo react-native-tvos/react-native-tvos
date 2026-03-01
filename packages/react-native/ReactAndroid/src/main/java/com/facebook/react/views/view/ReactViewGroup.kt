@@ -631,7 +631,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       index++
     }
 
-    return firstFocusableElement!!
+    return firstFocusableElement
   }
 
   private fun moveFocusToFirstFocusable(viewGroup: ReactViewGroup): Boolean {
@@ -1424,43 +1424,128 @@ public open class ReactViewGroup public constructor(context: Context?) :
       return super.requestFocus(direction, previouslyFocusedRect)
     }
 
-    if (isFocusDestinationsSet) {
-      val destination = findDestinationView()
-
-      // Destination is set but there's no such element on the tree
-      // Just skip it to prevent cyclic issues.
-      if (destination == null) {
-        return false
+    val shouldTraceRequestFocus = TVFocusDebugManager.enabled
+    val traceDepth =
+      if (shouldTraceRequestFocus) {
+        TVFocusDebugManager.beginRequestFocusCall(this, direction, rootView)
+      } else {
+        0
       }
+    var result = false
 
-      if (destination.requestFocus()) {
-        return true
-      }
-    }
+    try {
+      if (isFocusDestinationsSet) {
+        val destination = findDestinationView()
 
-    if (this.autoFocus) {
-      val lastFocusedElem = lastFocusedElement!!.get()
-
-      if (lastFocusedElem != null) {
-        if (lastFocusedElem.isAttachedToWindow) {
-          lastFocusedElem.requestFocus()
-          return true
+        // Destination is set but there's no such element on the tree
+        // Just skip it to prevent cyclic issues.
+        if (destination == null) {
+          if (shouldTraceRequestFocus) {
+            TVFocusDebugManager.recordRequestFocusStep(
+              from = this,
+              to = null,
+              reason = TVFocusDebugManager.RequestFocusReason.DESTINATION_MISSING,
+              success = false,
+              depth = traceDepth,
+            )
+          }
+          result = false
+          return false
         }
 
-        /**
-         * `lastFocusedElem` can get detached based on application logic.
-         * If the code reaches here, that means we're dealing with that case.
-         * We should set `lastFocusedElem` to null and let the focus determination
-         * logic below to do its magic and redirect focus to the first element.
-         */
-        lastFocusedElement = WeakReference(null)
+        val destinationResult = destination.requestFocus()
+        if (shouldTraceRequestFocus) {
+          TVFocusDebugManager.recordRequestFocusStep(
+            from = this,
+            to = destination,
+            reason = TVFocusDebugManager.RequestFocusReason.DESTINATIONS,
+            success = destinationResult,
+            depth = traceDepth,
+          )
+        }
+        if (destinationResult) {
+          result = true
+          return true
+        }
       }
 
-      // Try moving the focus to the first focusable element otherwise.
-      return moveFocusToFirstFocusable(this)
-    }
+      if (this.autoFocus) {
+        val lastFocusedElem = lastFocusedElement!!.get()
 
-    return super.requestFocus(direction, previouslyFocusedRect)
+        if (lastFocusedElem != null) {
+          if (lastFocusedElem.isAttachedToWindow) {
+            val lastFocusedResult = lastFocusedElem.requestFocus()
+            if (shouldTraceRequestFocus) {
+              TVFocusDebugManager.recordRequestFocusStep(
+                from = this,
+                to = lastFocusedElem,
+                reason = TVFocusDebugManager.RequestFocusReason.AUTO_FOCUS_LAST_FOCUSED,
+                success = lastFocusedResult,
+                depth = traceDepth,
+              )
+            }
+            result = true
+            return true
+          }
+
+          if (shouldTraceRequestFocus) {
+            TVFocusDebugManager.recordRequestFocusStep(
+              from = this,
+              to = lastFocusedElem,
+              reason = TVFocusDebugManager.RequestFocusReason.AUTO_FOCUS_LAST_FOCUSED_DETACHED,
+              success = false,
+              depth = traceDepth,
+            )
+          }
+
+          /**
+           * `lastFocusedElem` can get detached based on application logic.
+           * If the code reaches here, that means we're dealing with that case.
+           * We should set `lastFocusedElem` to null and let the focus determination
+           * logic below to do its magic and redirect focus to the first element.
+           */
+          lastFocusedElement = WeakReference(null)
+        }
+
+        val firstFocusableElement = getFirstFocusableView(this)
+        val firstFocusableResult =
+          if (firstFocusableElement != null) {
+            firstFocusableElement.requestFocus()
+          } else {
+            false
+          }
+
+        if (shouldTraceRequestFocus) {
+          TVFocusDebugManager.recordRequestFocusStep(
+            from = this,
+            to = firstFocusableElement,
+            reason = TVFocusDebugManager.RequestFocusReason.AUTO_FOCUS_FIRST_FOCUSABLE,
+            success = firstFocusableResult,
+            depth = traceDepth,
+          )
+        }
+
+        result = firstFocusableResult
+        return firstFocusableResult
+      }
+
+      val superResult = super.requestFocus(direction, previouslyFocusedRect)
+      if (shouldTraceRequestFocus) {
+        TVFocusDebugManager.recordRequestFocusStep(
+          from = this,
+          to = if (superResult) rootView.findFocus() else null,
+          reason = TVFocusDebugManager.RequestFocusReason.SUPER_FALLBACK,
+          success = superResult,
+          depth = traceDepth,
+        )
+      }
+      result = superResult
+      return superResult
+    } finally {
+      if (shouldTraceRequestFocus) {
+        TVFocusDebugManager.endRequestFocusCall(result)
+      }
+    }
   }
 
   override fun focusSearch(focused: View, direction: Int): View? {

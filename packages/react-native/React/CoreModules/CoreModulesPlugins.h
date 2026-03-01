@@ -51,6 +51,7 @@ Class RCTSourceCodeCls(void) __attribute__((used));
 Class RCTStatusBarManagerCls(void) __attribute__((used));
 Class RCTTimingCls(void) __attribute__((used));
 Class RCTTVNavigationEventEmitterCls(void) __attribute__((used));
+Class RCTTVFocusDebuggerCls(void) __attribute__((used));
 Class RCTWebSocketModuleCls(void) __attribute__((used));
 Class RCTBlobManagerCls(void) __attribute__((used));
 

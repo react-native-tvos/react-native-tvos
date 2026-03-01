@@ -514,14 +514,20 @@ const TVFocusGuideAutoFocusExample = () => {
   const theme = useTheme();
 
   const onFocusDebugPaint = React.useCallback(event => {
+    const requestFocusSummary =
+      event.eventType === 'requestFocus'
+        ? ` | chain=${event.requestFocusTrace?.chainId ?? 'n/a'} steps=${
+            event.requestFocusTrace?.steps.length ?? 0
+          } success=${event.requestFocusTrace?.success === true ? 'yes' : 'no'}`
+        : '';
+
     console.log(
       `[FocusDebug] ${event.eventType} | dir=${event.direction} | ` +
         `current=${event.currentlyFocused?.testID ?? event.currentlyFocused?.tag ?? 'null'} → ` +
         `next=${event.nextFocused?.testID ?? event.nextFocused?.tag ?? 'null'} | ` +
-        `focusables=${event.allFocusables.length}`,
+        `focusables=${event.allFocusables.length}${requestFocusSummary}`,
     );
-    // eslint-disable-next-line no-debugger
-    debugger;
+    // debugger;
   }, []);
 
   return (

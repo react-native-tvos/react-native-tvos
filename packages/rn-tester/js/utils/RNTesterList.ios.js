@@ -399,6 +399,11 @@ const Playgrounds: Array<RNTesterModuleInfo> = [
     key: 'PlaygroundExample',
     module: require('../examples/Playground/PlaygroundExample'),
   },
+  {
+    key: 'TVFocusGuideAutoFocusExample',
+    category: 'TV',
+    module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
+  },
 ];
 
 const Modules: {[key: string]: RNTesterModule} = {};

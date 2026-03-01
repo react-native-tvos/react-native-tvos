@@ -374,6 +374,10 @@ module.exports = {
   get useFocusDebug(): useFocusDebug {
     return require('./Libraries/Components/TV/TVFocusDebug').default;
   },
+  get TVFocusDebugPainter(): TVFocusDebugPainter {
+    return require('./Libraries/Components/TV/TVFocusDebug')
+      .TVFocusDebugPainter;
+  },
   get TVFocusGuideView(): TVFocusGuideView {
     return require('./Libraries/Components/TV/TVFocusGuideView').default;
   },

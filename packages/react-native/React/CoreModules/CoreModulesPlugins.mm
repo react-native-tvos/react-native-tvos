@@ -106,6 +106,10 @@ Class RCTCoreModulesClassProvider(const char *name)
     return RCTTimingCls();
   }
 
+  if (name == "TVFocusDebug"sv) {
+    return RCTTVFocusDebuggerCls();
+  }
+
   if (name == "WebSocketModule"sv) {
     return RCTWebSocketModuleCls();
   }
