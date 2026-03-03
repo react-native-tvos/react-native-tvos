@@ -1144,6 +1144,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 #pragma mark Apple TV swipe and focus handling
 
 #if TARGET_OS_TV
+- (void)sendFocusEvent
+{
+  self->_eventEmitter->onFocus();
+}
+
+- (void)sendBlurEvent
+{
+  self->_eventEmitter->onBlur();
+}
+
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
@@ -1153,11 +1163,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if (context.nextFocusedView == self) {
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
+        [self sendFocusEvent];
         // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
         _blockFirstTouch = (unsigned long)context.focusHeading != 0;
         [self addArrowsListeners];
     } else if (context.previouslyFocusedView == self) {
         [self removeArrowsListeners];
+        [self sendBlurEvent];
         [self removeSwipeGestureRecognizers];
         [self resignFirstResponder];
         // If scrolling is enabled:
