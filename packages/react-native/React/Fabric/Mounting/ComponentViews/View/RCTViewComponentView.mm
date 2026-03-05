@@ -88,6 +88,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   NSArray* _focusDestinations;
   id<UIFocusItem> _previouslyFocusedItem;
   RCTSwiftUIContainerViewWrapper *_swiftUIWrapper;
+  BOOL _shouldFocusOnMount;
 }
 
 #ifdef RCT_DYNAMIC_FRAMEWORKS
@@ -116,6 +117,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
     _tvParallaxProperties.pressMagnification = 1.0f;
     _tvParallaxProperties.pressDuration = 0.3f;
     _tvParallaxProperties.pressDelay = 0.0f;
+    
+    _shouldFocusOnMount = false;
 #endif
   }
   return self;
@@ -171,6 +174,15 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
 #pragma mark - Apple TV methods
 
+- (void)didMoveToWindow {
+  [super didMoveToWindow];
+
+  if (self->_shouldFocusOnMount) {
+    self->_shouldFocusOnMount = false;
+    [self focusSelf];
+  }
+}
+
 - (RCTSurfaceHostingProxyRootView *)containingRootView
 {
   UIView *rootview = self;
@@ -206,10 +218,8 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   if (!focusedSync) {
     // `focusSelf` function relies on `rootView` which may not be present on the first render.
     // `focusSelf` fails and returns `false` in that case. We try re-executing the same action
-    // by putting it to the main queue to make sure it runs after UI creation is completed.
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [self focusSelf];
-    });
+    // when the view has moved to the window. This is tracked by the `_shouldFocusOnMount` flag.
+    self->_shouldFocusOnMount = true;
   }
 }
 
