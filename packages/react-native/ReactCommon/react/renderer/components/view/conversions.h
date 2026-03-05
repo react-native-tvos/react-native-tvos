@@ -133,6 +133,8 @@ inline DisplayType displayTypeFromYGDisplay(YGDisplay display)
       return DisplayType::Contents;
     case YGDisplayFlex:
       return DisplayType::Flex;
+    case YGDisplayGrid:
+      return DisplayType::Grid;
   }
 }
 
@@ -496,6 +498,23 @@ inline void fromRawValue(const PropsParserContext &context, const RawValue &valu
 inline void fromRawValue(const PropsParserContext &context, const RawValue &value, yoga::FloatOptional &result)
 {
   result = value.hasType<float>() ? yoga::FloatOptional((float)value) : yoga::FloatOptional();
+}
+
+inline yoga::FloatOptional convertAspectRatio(const PropsParserContext & /*context*/, const RawValue &value)
+{
+  if (value.hasType<float>()) {
+    return yoga::FloatOptional((float)value);
+  }
+  if (ReactNativeFeatureFlags::enableNativeCSSParsing() && value.hasType<std::string>()) {
+    auto ratio = parseCSSProperty<CSSRatio>((std::string)value);
+    if (std::holds_alternative<CSSRatio>(ratio)) {
+      auto r = std::get<CSSRatio>(ratio);
+      if (!r.isDegenerate()) {
+        return yoga::FloatOptional(r.numerator / r.denominator);
+      }
+    }
+  }
+  return {};
 }
 
 inline std::optional<Float> toRadians(const RawValue &value)

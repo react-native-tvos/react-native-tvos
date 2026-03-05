@@ -26,21 +26,17 @@ from .member import (
     TypedefMember,
     VariableMember,
 )
-from .scope import (
-    CategoryScopeKind,
-    InterfaceScopeKind,
-    ProtocolScopeKind,
-    StructLikeScopeKind,
-)
+from .scope import InterfaceScopeKind, ProtocolScopeKind, StructLikeScopeKind
 from .snapshot import Snapshot
 from .template import Template
 from .utils import (
     Argument,
     extract_qualifiers,
     InitializerType,
+    normalize_angle_brackets,
+    normalize_pointer_spacing,
     parse_qualified_path,
     resolve_linked_text_name,
-    resolve_ref_text_name,
 )
 
 
@@ -64,7 +60,7 @@ def get_base_classes(
             # - prot: protection level (public, protected, private)
             # - virt: virtual inheritance (non-virtual, virtual, pure-virtual)
             # - valueOf_: the name of the base class
-            base_name = base.valueOf_
+            base_name = normalize_angle_brackets(base.valueOf_)
             base_prot = base.prot
             base_virt = base.virt
             base_refid = base.refid
@@ -281,7 +277,7 @@ def get_typedef_member(
     typedef_def: compound.memberdefType, visibility: str
 ) -> TypedefMember:
     typedef_name = typedef_def.get_name()
-    typedef_type = resolve_ref_text_name(typedef_def.get_type())
+    typedef_type = resolve_linked_text_name(typedef_def.get_type())[0]
     typedef_argstring = typedef_def.get_argsstring()
     typedef_definition = typedef_def.definition
 
@@ -338,10 +334,22 @@ def get_property_member(
     Get the property member from a member definition.
     """
     property_name = member_def.get_name()
-    property_type = resolve_ref_text_name(member_def.get_type()).strip()
+    property_type = resolve_linked_text_name(member_def.get_type())[0].strip()
     accessor = member_def.accessor if hasattr(member_def, "accessor") else None
     is_readable = getattr(member_def, "readable", "no") == "yes"
     is_writable = getattr(member_def, "writable", "no") == "yes"
+
+    # Handle block properties: Doxygen splits the block type across <type> and <argsstring>
+    # <type> = "void(^"
+    # <argsstring> = ")(NSString *eventName, NSDictionary *event, NSNumber *reactTag)"
+    # We need to combine them: "void(^eventInterceptor)(NSString *, NSDictionary *, NSNumber *)"
+    if property_type.endswith("(^"):
+        argsstring = member_def.get_argsstring()
+        if argsstring:
+            # Normalize pointer spacing in the argsstring
+            normalized_argsstring = normalize_pointer_spacing(argsstring)
+            property_type = f"{property_type}{property_name}{normalized_argsstring}"
+            property_name = ""
 
     return PropertyMember(
         property_name,
@@ -364,7 +372,7 @@ def create_enum_scope(snapshot: Snapshot, enum_def: compound.EnumdefType) -> Non
     Create an enum scope in the snapshot.
     """
     scope = snapshot.create_enum(enum_def.qualifiedname)
-    scope.kind.type = resolve_ref_text_name(enum_def.get_type())
+    scope.kind.type = resolve_linked_text_name(enum_def.get_type())[0]
     scope.location = enum_def.location.file
 
     for enum_value_def in enum_def.enumvalue:
@@ -382,15 +390,40 @@ def create_enum_scope(snapshot: Snapshot, enum_def: compound.EnumdefType) -> Non
         )
 
 
+def _is_category_member(member_def: compound.MemberdefType) -> bool:
+    """
+    Check if a member comes from a category based on its definition.
+
+    Doxygen merges category members into the base interface XML output, but the
+    member's definition field contains the category name in parentheses, e.g.:
+    "int RCTBridgeProxy(Cxx)::cxxOnlyProperty"
+
+    We use this to filter out category members from the interface scope.
+    """
+    definition = member_def.definition
+    if not definition:
+        return False
+
+    # Look for pattern: ClassName(CategoryName)::memberName
+    # The definition contains the qualified name with category info
+    return bool(re.search(r"\w+\([^)]+\)::", definition))
+
+
 def _process_objc_sections(
     snapshot: Snapshot,
     scope,
     section_defs: list,
     location_file: str,
     scope_type: str,
+    filter_category_members: bool = False,
 ) -> None:
     """
     Common section processing for protocols and interfaces.
+
+    Args:
+        filter_category_members: If True, skip members that come from categories.
+            This is used for interfaces since Doxygen incorrectly merges category
+            members into the base interface XML output.
     """
     for section_def in section_defs:
         kind = section_def.kind
@@ -405,11 +438,15 @@ def _process_objc_sections(
             if member_type == "attrib":
                 for member_def in section_def.memberdef:
                     if member_def.kind == "variable":
+                        if filter_category_members and _is_category_member(member_def):
+                            continue
                         scope.add_member(
                             get_variable_member(member_def, visibility, is_static)
                         )
             elif member_type == "func":
                 for function_def in section_def.memberdef:
+                    if filter_category_members and _is_category_member(function_def):
+                        continue
                     scope.add_member(
                         get_function_member(function_def, visibility, is_static)
                     )
@@ -418,6 +455,8 @@ def _process_objc_sections(
                     if member_def.kind == "enum":
                         create_enum_scope(snapshot, member_def)
                     elif member_def.kind == "typedef":
+                        if filter_category_members and _is_category_member(member_def):
+                            continue
                         scope.add_member(get_typedef_member(member_def, visibility))
                     else:
                         print(
@@ -428,6 +467,8 @@ def _process_objc_sections(
         elif visibility == "property":
             for member_def in section_def.memberdef:
                 if member_def.kind == "property":
+                    if filter_category_members and _is_category_member(member_def):
+                        continue
                     scope.add_member(
                         get_property_member(member_def, "public", is_static)
                     )
@@ -471,7 +512,24 @@ def create_interface_scope(
 
     interface_scope = snapshot.create_interface(interface_name)
     base_classes = get_base_classes(scope_def, base_class=InterfaceScopeKind.Base)
-    interface_scope.kind.add_base(base_classes)
+
+    # Doxygen incorrectly splits "Foo <Protocol1, Protocol2>" into separate base classes:
+    # "Foo", "<Protocol1>", "<Protocol2>". Combine them back into "Foo <Protocol1, Protocol2>".
+    combined_bases = []
+    for base in base_classes:
+        if base.name.startswith("<") and base.name.endswith(">") and combined_bases:
+            prev_name = combined_bases[-1].name
+            protocol = base.name[1:-1]  # Strip < and >
+            if "<" in prev_name and prev_name.endswith(">"):
+                # Previous base already has protocols, merge inside the brackets
+                combined_bases[-1].name = f"{prev_name[:-1]}, {protocol}>"
+            else:
+                # First protocol for this base class
+                combined_bases[-1].name = f"{prev_name} <{protocol}>"
+        else:
+            combined_bases.append(base)
+
+    interface_scope.kind.add_base(combined_bases)
     interface_scope.location = scope_def.location.file
 
     _process_objc_sections(
@@ -480,6 +538,7 @@ def create_interface_scope(
         scope_def.sectiondef,
         scope_def.location.file,
         "interface",
+        filter_category_members=True,
     )
 
 

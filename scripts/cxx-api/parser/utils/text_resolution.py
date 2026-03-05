@@ -83,33 +83,68 @@ def extract_namespace_from_refid(refid: str) -> str:
 
 def normalize_angle_brackets(text: str) -> str:
     """Doxygen adds spaces around < and > to avoid XML ambiguity.
-    e.g. "NSArray< id< RCTBridgeMethod > > *" -> "NSArray<id<RCTBridgeMethod>> *"
+    e.g. "NSArray< id< RCTBridgeMethod > > *" -> "NSArray<id<RCTBridgeMethod>>*"
     """
     text = re.sub(r"<\s+", "<", text)
     text = re.sub(r"\s+>", ">", text)
     return text
 
 
-def resolve_ref_text_name(type_def: compound.refTextType) -> str:
-    """Resolve the text content of a refTextType."""
-    if hasattr(type_def, "content_") and type_def.content_:
-        name = ""
-        for part in type_def.content_:
-            if part.category == 1:  # MixedContainer.CategoryText
-                name += part.value
-            elif part.category == 3:  # MixedContainer.CategoryComplex (ref element)
-                if hasattr(part.value, "get_valueOf_"):
-                    name += part.value.get_valueOf_()
-                elif hasattr(part.value, "valueOf_"):
-                    name += part.value.valueOf_
-                else:
-                    name += str(part.value)
-        return normalize_angle_brackets(name)
+def normalize_nullability(text: str) -> str:
+    """Normalize Objective-C nullability annotations to a consistent form.
 
-    if type_def.ref:
-        return normalize_angle_brackets(type_def.ref[0].get_valueOf_())
+    There are three forms of nullability annotations in Objective-C:
+    - nonnull/nullable (context-sensitive keywords, typically used as prefix)
+    - _Nonnull/_Nullable (type qualifiers, can appear after the type)
+    - __nonnull/__nullable (legacy Apple macros, deprecated but still used)
 
-    return normalize_angle_brackets(type_def.get_valueOf_())
+    This function normalizes all forms to _Nonnull/_Nullable, which is the
+    most flexible form that can be used in any position.
+    """
+    # Normalize __nonnull -> _Nonnull (must come before nonnull)
+    text = re.sub(r"\b__nonnull\b", "_Nonnull", text)
+    # Normalize nonnull -> _Nonnull (negative lookbehind to avoid _Nonnull)
+    text = re.sub(r"(?<!_)\bnonnull\b", "_Nonnull", text)
+
+    # Normalize __nullable -> _Nullable (must come before nullable)
+    text = re.sub(r"\b__nullable\b", "_Nullable", text)
+    # Normalize nullable -> _Nullable (negative lookbehind to avoid _Nullable)
+    text = re.sub(r"(?<!_)\bnullable\b", "_Nullable", text)
+
+    return text
+
+
+def normalize_pointer_spacing(text: str) -> str:
+    """Normalize spacing around pointer (*) and reference (&, &&) symbols.
+
+    Doxygen outputs types with a space before * and &, e.g.:
+    - "NSString *" -> "NSString*"
+    - "int &" -> "int&"
+    - "T &&" -> "T&&"
+
+    But for function arguments like "NSString *name", we want "NSString* name"
+    (space moved from before * to after *).
+
+    This normalizes to have no space before the pointer/reference symbol,
+    while preserving the space after if there's an identifier following.
+    """
+    # For patterns like "Type *name" -> "Type* name" (move space from before to after)
+    # Match: word/type character or > followed by space(s), then *, then word char
+    text = re.sub(r"(\w|>)\s+\*(\w)", r"\1* \2", text)
+    # For patterns like "Type *" at end or before comma/paren/angle/open-paren -> "Type*"
+    text = re.sub(r"(\w|>)\s+\*(?=\s*[,)>(]|$)", r"\1*", text)
+    # For patterns like "Type *" followed by another * (pointer to pointer)
+    text = re.sub(r"(\w|>)\s+\*(?=\*)", r"\1*", text)
+
+    # Same for && (rvalue reference)
+    text = re.sub(r"(\w|>)\s+&&(\w)", r"\1&& \2", text)
+    text = re.sub(r"(\w|>)\s+&&(?=\s*[,)>(]|$)", r"\1&&", text)
+
+    # Same for & (lvalue reference) - but don't match &&
+    text = re.sub(r"(\w|>)\s+&(?!&)(\w)", r"\1& \2", text)
+    text = re.sub(r"(\w|>)\s+&(?!&)(?=\s*[,)>(]|$)", r"\1&", text)
+
+    return text
 
 
 class InitializerType(Enum):
@@ -167,7 +202,12 @@ def resolve_linked_text_name(
             initialier_type = InitializerType.BRACE
             name = name[1:-1].strip()
 
-    return (normalize_angle_brackets(name.strip()), initialier_type)
+    return (
+        normalize_nullability(
+            normalize_pointer_spacing(normalize_angle_brackets(name.strip()))
+        ),
+        initialier_type,
+    )
 
 
 def _qualify_text_with_refid(text: str, refid: str) -> str:
