@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<861e4a47ad9b2aa4ac054059082724a0>>
+ * @generated SignedSource<<517d97078b1494ef3a3557ae4ed1d1aa>>
  */
 
 /**
@@ -103,6 +103,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableDifferentiatorMutationVectorPreallocation() override {
+    return false;
+  }
+
   bool enableDoubleMeasurementFixAndroid() override {
     return false;
   }
@@ -195,6 +199,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableNativeViewPropTransformations() override {
+    return false;
+  }
+
   bool enableNetworkEventReporting() override {
     return true;
   }
@@ -252,6 +260,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool fixTextClippingAndroid15useBoundsForWidth() override {
+    return false;
+  }
+
+  bool fixYogaFlexBasisFitContentInMainAxis() override {
     return false;
   }
 
@@ -348,6 +360,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool useTurboModules() override {
+    return false;
+  }
+
+  bool useUnorderedMapInDifferentiator() override {
     return false;
   }
 

@@ -82,6 +82,7 @@ add_react_common_subdir(react/debug)
 add_react_common_subdir(react/featureflags)
 add_react_common_subdir(react/performance/cdpmetrics)
 add_react_common_subdir(react/performance/timeline)
+add_react_common_subdir(react/renderer/animated)
 add_react_common_subdir(react/renderer/animationbackend)
 add_react_common_subdir(react/renderer/animations)
 add_react_common_subdir(react/renderer/attributedstring)
@@ -89,6 +90,7 @@ add_react_common_subdir(react/renderer/componentregistry)
 add_react_common_subdir(react/renderer/mounting)
 add_react_common_subdir(react/renderer/scheduler)
 add_react_common_subdir(react/renderer/telemetry)
+add_react_common_subdir(react/renderer/viewtransition)
 add_react_common_subdir(react/renderer/uimanager)
 add_react_common_subdir(react/renderer/bridging)
 add_react_common_subdir(react/renderer/core)
@@ -201,6 +203,7 @@ add_library(reactnative
           $<TARGET_OBJECTS:react_newarchdefaults>
           $<TARGET_OBJECTS:react_performance_cdpmetrics>
           $<TARGET_OBJECTS:react_performance_timeline>
+          $<TARGET_OBJECTS:react_renderer_animated>
           $<TARGET_OBJECTS:react_renderer_animationbackend>
           $<TARGET_OBJECTS:react_renderer_animations>
           $<TARGET_OBJECTS:react_renderer_attributedstring>
@@ -223,6 +226,7 @@ add_library(reactnative
           $<TARGET_OBJECTS:react_renderer_textlayoutmanager>
           $<TARGET_OBJECTS:react_renderer_uimanager>
           $<TARGET_OBJECTS:react_renderer_uimanager_consistency>
+          $<TARGET_OBJECTS:react_renderer_viewtransition>
           $<TARGET_OBJECTS:react_utils>
           $<TARGET_OBJECTS:reactnativeblob>
           $<TARGET_OBJECTS:reactnativejni>
@@ -295,6 +299,7 @@ target_include_directories(reactnative
         $<TARGET_PROPERTY:react_newarchdefaults,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_performance_cdpmetrics,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_performance_timeline,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:react_renderer_animated,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_renderer_animationbackend,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_renderer_animations,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_renderer_attributedstring,INTERFACE_INCLUDE_DIRECTORIES>
@@ -318,6 +323,7 @@ target_include_directories(reactnative
         $<TARGET_PROPERTY:react_renderer_textlayoutmanager,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_renderer_uimanager,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_renderer_uimanager_consistency,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:react_renderer_viewtransition,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:react_utils,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:reactnativeblob,INTERFACE_INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:reactnativejni,INTERFACE_INCLUDE_DIRECTORIES>

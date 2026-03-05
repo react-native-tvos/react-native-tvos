@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0356babbe4e65071e6cc56a06e68b944>>
+ * @generated SignedSource<<8d4ab9ca1446252585606d87ecf8ed46>>
  */
 
 /**
@@ -139,6 +139,11 @@ bool NativeReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync(
   return ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync();
 }
 
+bool NativeReactNativeFeatureFlags::enableDifferentiatorMutationVectorPreallocation(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableDifferentiatorMutationVectorPreallocation();
+}
+
 bool NativeReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid();
@@ -254,6 +259,11 @@ bool NativeReactNativeFeatureFlags::enableNativeCSSParsing(
   return ReactNativeFeatureFlags::enableNativeCSSParsing();
 }
 
+bool NativeReactNativeFeatureFlags::enableNativeViewPropTransformations(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableNativeViewPropTransformations();
+}
+
 bool NativeReactNativeFeatureFlags::enableNetworkEventReporting(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableNetworkEventReporting();
@@ -327,6 +337,11 @@ bool NativeReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndR
 bool NativeReactNativeFeatureFlags::fixTextClippingAndroid15useBoundsForWidth(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::fixTextClippingAndroid15useBoundsForWidth();
+}
+
+bool NativeReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis();
 }
 
 bool NativeReactNativeFeatureFlags::fuseboxAssertSingleHostState(
@@ -447,6 +462,11 @@ bool NativeReactNativeFeatureFlags::useTurboModuleInterop(
 bool NativeReactNativeFeatureFlags::useTurboModules(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useTurboModules();
+}
+
+bool NativeReactNativeFeatureFlags::useUnorderedMapInDifferentiator(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useUnorderedMapInDifferentiator();
 }
 
 double NativeReactNativeFeatureFlags::viewCullingOutsetRatio(

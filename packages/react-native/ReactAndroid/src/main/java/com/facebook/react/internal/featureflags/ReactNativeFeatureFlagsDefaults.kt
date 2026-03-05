@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<523e3c35d4bd1fc85f2a3bb26b8aad3f>>
+ * @generated SignedSource<<89cd07b543fc079341bb3a5d90e50d13>>
  */
 
 /**
@@ -61,6 +61,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableDestroyShadowTreeRevisionAsync(): Boolean = false
 
+  override fun enableDifferentiatorMutationVectorPreallocation(): Boolean = false
+
   override fun enableDoubleMeasurementFixAndroid(): Boolean = false
 
   override fun enableEagerMainQueueModulesOnIOS(): Boolean = false
@@ -107,6 +109,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableNativeCSSParsing(): Boolean = false
 
+  override fun enableNativeViewPropTransformations(): Boolean = false
+
   override fun enableNetworkEventReporting(): Boolean = true
 
   override fun enablePreparedTextLayout(): Boolean = false
@@ -136,6 +140,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
   override fun fixTextClippingAndroid15useBoundsForWidth(): Boolean = false
+
+  override fun fixYogaFlexBasisFitContentInMainAxis(): Boolean = false
 
   override fun fuseboxAssertSingleHostState(): Boolean = true
 
@@ -184,6 +190,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useTurboModuleInterop(): Boolean = false
 
   override fun useTurboModules(): Boolean = false
+
+  override fun useUnorderedMapInDifferentiator(): Boolean = false
 
   override fun viewCullingOutsetRatio(): Double = 0.0
 

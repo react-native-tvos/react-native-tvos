@@ -62,12 +62,9 @@ std::shared_ptr<TurboModule> TurboModuleManager::operator()(
     }
   }
 
-  if (auto turboModule =
-          DefaultTurboModules::getTurboModule(name, jsInvoker_)) {
-    return turboModule;
-  }
-
-  if (name == AnimatedModule::kModuleName) {
+  if (animatedNodesManagerProvider_ != nullptr &&
+      name == AnimatedModule::kModuleName) {
+    // when animatedNodesManagerProvider_ is null, defer to default
     return std::make_shared<AnimatedModule>(
         jsInvoker_, animatedNodesManagerProvider_);
   } else if (name == AppStateModule::kModuleName) {
@@ -91,8 +88,6 @@ std::shared_ptr<TurboModule> TurboModuleManager::operator()(
         jsInvoker_, webSocketClientFactory_);
   } else if (name == NativeExceptionsManager::kModuleName) {
     return std::make_shared<NativeExceptionsManager>(onJsError_, jsInvoker_);
-  } else if (name == NativePerformance::kModuleName) {
-    return std::make_shared<NativePerformance>(jsInvoker_);
   } else if (name == NativeIntersectionObserver::kModuleName) {
     return std::make_shared<NativeIntersectionObserver>(jsInvoker_);
   } else if (name == NativeMutationObserver::kModuleName) {
@@ -103,6 +98,11 @@ std::shared_ptr<TurboModule> TurboModuleManager::operator()(
     if (logBoxSurfaceDelegate_) {
       return std::make_shared<LogBoxModule>(jsInvoker_, logBoxSurfaceDelegate_);
     }
+  }
+
+  if (auto turboModule =
+          DefaultTurboModules::getTurboModule(name, jsInvoker_)) {
+    return turboModule;
   }
 
   LOG(WARNING) << "Failed to load TurboModule: " << name;

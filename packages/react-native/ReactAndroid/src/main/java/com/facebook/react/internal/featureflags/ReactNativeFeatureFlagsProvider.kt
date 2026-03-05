@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bbaa4d1498f606886341d34a62acb508>>
+ * @generated SignedSource<<e3051a7aec6e7da31a65eb2d58fcd64b>>
  */
 
 /**
@@ -61,6 +61,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableDestroyShadowTreeRevisionAsync(): Boolean
 
+  @DoNotStrip public fun enableDifferentiatorMutationVectorPreallocation(): Boolean
+
   @DoNotStrip public fun enableDoubleMeasurementFixAndroid(): Boolean
 
   @DoNotStrip public fun enableEagerMainQueueModulesOnIOS(): Boolean
@@ -107,6 +109,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableNativeCSSParsing(): Boolean
 
+  @DoNotStrip public fun enableNativeViewPropTransformations(): Boolean
+
   @DoNotStrip public fun enableNetworkEventReporting(): Boolean
 
   @DoNotStrip public fun enablePreparedTextLayout(): Boolean
@@ -136,6 +140,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
 
   @DoNotStrip public fun fixTextClippingAndroid15useBoundsForWidth(): Boolean
+
+  @DoNotStrip public fun fixYogaFlexBasisFitContentInMainAxis(): Boolean
 
   @DoNotStrip public fun fuseboxAssertSingleHostState(): Boolean
 
@@ -184,6 +190,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useTurboModuleInterop(): Boolean
 
   @DoNotStrip public fun useTurboModules(): Boolean
+
+  @DoNotStrip public fun useUnorderedMapInDifferentiator(): Boolean
 
   @DoNotStrip public fun viewCullingOutsetRatio(): Double
 

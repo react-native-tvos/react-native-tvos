@@ -2049,16 +2049,6 @@ public final class com/facebook/react/devsupport/StackTraceHelper$StackFrameImpl
 	public fun toJSON ()Lorg/json/JSONObject;
 }
 
-public final class com/facebook/react/devsupport/inspector/DevSupportHttpClient {
-	public static final field INSTANCE Lcom/facebook/react/devsupport/inspector/DevSupportHttpClient;
-	public static final fun addRequestHeader (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun getHttpClient ()Lokhttp3/OkHttpClient;
-	public final fun getWebsocketClient ()Lokhttp3/OkHttpClient;
-	public static final fun httpScheme (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun removeRequestHeader (Ljava/lang/String;)V
-	public static final fun wsScheme (Ljava/lang/String;)Ljava/lang/String;
-}
-
 public abstract interface class com/facebook/react/devsupport/interfaces/BundleLoadCallback {
 	public fun onError (Ljava/lang/Exception;)V
 	public abstract fun onSuccess ()V
@@ -2261,6 +2251,7 @@ public class com/facebook/react/fabric/FabricUIManager : com/facebook/react/brid
 	public fun receiveEvent (IILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
 	public fun receiveEvent (IILjava/lang/String;ZLcom/facebook/react/bridge/WritableMap;I)V
 	public fun receiveEvent (IILjava/lang/String;ZLcom/facebook/react/bridge/WritableMap;IZ)V
+	public fun receiveEvent (IILjava/lang/String;ZLcom/facebook/react/bridge/WritableMap;IZJ)V
 	public fun receiveEvent (ILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
 	public fun removeUIManagerEventListener (Lcom/facebook/react/bridge/UIManagerListener;)V
 	public fun resolveCustomDirectEventName (Ljava/lang/String;)Ljava/lang/String;
@@ -2287,6 +2278,7 @@ public final class com/facebook/react/fabric/mounting/SurfaceMountingManager {
 	public final fun attachRootView (Landroid/view/View;Lcom/facebook/react/uimanager/ThemedReactContext;)V
 	public final fun deleteView (I)V
 	public final fun enqueuePendingEvent (ILjava/lang/String;ZLcom/facebook/react/bridge/WritableMap;I)V
+	public final fun enqueuePendingEvent (ILjava/lang/String;ZLcom/facebook/react/bridge/WritableMap;IJ)V
 	public final fun getContext ()Lcom/facebook/react/uimanager/ThemedReactContext;
 	public final fun getSurfaceId ()I
 	public final fun getView (I)Landroid/view/View;
@@ -4794,17 +4786,25 @@ public final class com/facebook/react/uimanager/events/NativeGestureUtil {
 
 public abstract interface class com/facebook/react/uimanager/events/RCTEventEmitter : com/facebook/react/bridge/JavaScriptModule {
 	public abstract fun receiveEvent (ILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
+	public abstract fun receiveTouches (Ljava/lang/String;Lcom/facebook/react/bridge/WritableArray;Lcom/facebook/react/bridge/WritableArray;)V
+}
+
+public final class com/facebook/react/uimanager/events/RCTEventEmitter$DefaultImpls {
+	public static fun receiveTouches (Lcom/facebook/react/uimanager/events/RCTEventEmitter;Ljava/lang/String;Lcom/facebook/react/bridge/WritableArray;Lcom/facebook/react/bridge/WritableArray;)V
 }
 
 public abstract interface class com/facebook/react/uimanager/events/RCTModernEventEmitter : com/facebook/react/uimanager/events/RCTEventEmitter {
 	public abstract fun receiveEvent (IILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
 	public abstract fun receiveEvent (IILjava/lang/String;ZILcom/facebook/react/bridge/WritableMap;I)V
+	public abstract fun receiveEvent (IILjava/lang/String;ZILcom/facebook/react/bridge/WritableMap;IJ)V
 	public abstract fun receiveEvent (ILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
 }
 
 public final class com/facebook/react/uimanager/events/RCTModernEventEmitter$DefaultImpls {
 	public static fun receiveEvent (Lcom/facebook/react/uimanager/events/RCTModernEventEmitter;IILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
+	public static fun receiveEvent (Lcom/facebook/react/uimanager/events/RCTModernEventEmitter;IILjava/lang/String;ZILcom/facebook/react/bridge/WritableMap;IJ)V
 	public static fun receiveEvent (Lcom/facebook/react/uimanager/events/RCTModernEventEmitter;ILjava/lang/String;Lcom/facebook/react/bridge/WritableMap;)V
+	public static fun receiveTouches (Lcom/facebook/react/uimanager/events/RCTModernEventEmitter;Ljava/lang/String;Lcom/facebook/react/bridge/WritableArray;Lcom/facebook/react/bridge/WritableArray;)V
 }
 
 public final class com/facebook/react/uimanager/events/TouchEvent : com/facebook/react/uimanager/events/Event {

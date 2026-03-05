@@ -40,6 +40,7 @@ class MemberKind(IntEnum):
     FUNCTION = 3
     OPERATOR = 4
     VARIABLE = 5
+    FRIEND = 6
 
 
 class Member(ABC):
@@ -355,6 +356,78 @@ class TypedefMember(Member):
         else:
             result += f" {self.type} {name};"
 
+        return result
+
+
+class PropertyMember(Member):
+    def __init__(
+        self,
+        name: str,
+        type: str,
+        visibility: str,
+        is_static: bool,
+        accessor: str | None,
+        is_readable: bool,
+        is_writable: bool,
+    ) -> None:
+        super().__init__(name, visibility)
+        self.type: str = type
+        self.is_static: bool = is_static
+        self.accessor: str | None = accessor
+        self.is_readable: bool = is_readable
+        self.is_writable: bool = is_writable
+
+    @property
+    def member_kind(self) -> MemberKind:
+        return MemberKind.VARIABLE
+
+    def to_string(
+        self,
+        indent: int = 0,
+        qualification: str | None = None,
+        hide_visibility: bool = False,
+    ) -> str:
+        name = self._get_qualified_name(qualification)
+        result = " " * indent
+
+        if not hide_visibility:
+            result += self.visibility + " "
+
+        attributes = []
+        if self.accessor:
+            attributes.append(self.accessor)
+        if not self.is_writable and self.is_readable:
+            attributes.append("readonly")
+
+        attrs_str = f"({', '.join(attributes)}) " if attributes else ""
+
+        if self.is_static:
+            result += "static "
+
+        result += f"@property {attrs_str}{self.type} {name};"
+
+        return result
+
+
+class FriendMember(Member):
+    def __init__(self, name: str, visibility: str = "public") -> None:
+        super().__init__(name, visibility)
+
+    @property
+    def member_kind(self) -> MemberKind:
+        return MemberKind.FRIEND
+
+    def to_string(
+        self,
+        indent: int = 0,
+        qualification: str | None = None,
+        hide_visibility: bool = False,
+    ) -> str:
+        name = self._get_qualified_name(qualification)
+        result = " " * indent
+        if not hide_visibility:
+            result += self.visibility + " "
+        result += f"friend {name};"
         return result
 
 

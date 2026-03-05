@@ -255,6 +255,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableDifferentiatorMutationVectorPreallocation: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-28',
+        description:
+          'Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableDoubleMeasurementFixAndroid: {
       defaultValue: false,
       metadata: {
@@ -496,6 +507,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableNativeViewPropTransformations: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'When enabled, View.js passes aria-*, id, and tabIndex props directly to native, relying on C++ prop parsing instead of JS-side transformations.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableNetworkEventReporting: {
       defaultValue: true,
       metadata: {
@@ -657,6 +679,17 @@ const definitions: FeatureFlagDefinitions = {
         purpose: 'experimentation',
       },
       ossReleaseStage: 'experimental',
+    },
+    fixYogaFlexBasisFitContentInMainAxis: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'When enabled, Yoga will not apply a FitContent constraint in the main axis during flex basis computation for non-measure container nodes. This prevents unnecessary re-measurement and cascading clones when a sibling changes size in a ScrollView.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
     },
     fuseboxAssertSingleHostState: {
       defaultValue: true,
@@ -911,6 +944,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'canary',
     },
+    useUnorderedMapInDifferentiator: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     viewCullingOutsetRatio: {
       defaultValue: 0,
       metadata: {
@@ -986,6 +1030,17 @@ const definitions: FeatureFlagDefinitions = {
         description:
           'Disable prop maintainVisibleContentPosition in ScrollView',
         expectedReleaseValue: false,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableOptimizedBoxShadowParsing: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'Hoists regex patterns to module scope and optimizes parseLength in processBoxShadow for improved performance.',
+        expectedReleaseValue: true,
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',

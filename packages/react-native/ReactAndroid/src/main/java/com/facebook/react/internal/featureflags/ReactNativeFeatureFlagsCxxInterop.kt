@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ec036cff49622b8c2b52d2f9eaa59e6c>>
+ * @generated SignedSource<<2bf2a1dec031145181f6bc28c50cf32a>>
  */
 
 /**
@@ -66,6 +66,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun enableDestroyShadowTreeRevisionAsync(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun enableDifferentiatorMutationVectorPreallocation(): Boolean
+
   @DoNotStrip @JvmStatic public external fun enableDoubleMeasurementFixAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableEagerMainQueueModulesOnIOS(): Boolean
@@ -112,6 +114,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun enableNativeCSSParsing(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun enableNativeViewPropTransformations(): Boolean
+
   @DoNotStrip @JvmStatic public external fun enableNetworkEventReporting(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enablePreparedTextLayout(): Boolean
@@ -141,6 +145,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
 
   @DoNotStrip @JvmStatic public external fun fixTextClippingAndroid15useBoundsForWidth(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun fixYogaFlexBasisFitContentInMainAxis(): Boolean
 
   @DoNotStrip @JvmStatic public external fun fuseboxAssertSingleHostState(): Boolean
 
@@ -189,6 +195,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun useTurboModuleInterop(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useTurboModules(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun useUnorderedMapInDifferentiator(): Boolean
 
   @DoNotStrip @JvmStatic public external fun viewCullingOutsetRatio(): Double
 

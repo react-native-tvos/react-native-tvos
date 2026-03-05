@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9d81f74c5926706ee353813e594575e8>>
+ * @generated SignedSource<<faa098824843d977ad6207d243284603>>
  */
 
 /**
@@ -102,6 +102,10 @@ bool ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync() {
   return getAccessor().enableDestroyShadowTreeRevisionAsync();
 }
 
+bool ReactNativeFeatureFlags::enableDifferentiatorMutationVectorPreallocation() {
+  return getAccessor().enableDifferentiatorMutationVectorPreallocation();
+}
+
 bool ReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid() {
   return getAccessor().enableDoubleMeasurementFixAndroid();
 }
@@ -194,6 +198,10 @@ bool ReactNativeFeatureFlags::enableNativeCSSParsing() {
   return getAccessor().enableNativeCSSParsing();
 }
 
+bool ReactNativeFeatureFlags::enableNativeViewPropTransformations() {
+  return getAccessor().enableNativeViewPropTransformations();
+}
+
 bool ReactNativeFeatureFlags::enableNetworkEventReporting() {
   return getAccessor().enableNetworkEventReporting();
 }
@@ -252,6 +260,10 @@ bool ReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact()
 
 bool ReactNativeFeatureFlags::fixTextClippingAndroid15useBoundsForWidth() {
   return getAccessor().fixTextClippingAndroid15useBoundsForWidth();
+}
+
+bool ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis() {
+  return getAccessor().fixYogaFlexBasisFitContentInMainAxis();
 }
 
 bool ReactNativeFeatureFlags::fuseboxAssertSingleHostState() {
@@ -348,6 +360,10 @@ bool ReactNativeFeatureFlags::useTurboModuleInterop() {
 
 bool ReactNativeFeatureFlags::useTurboModules() {
   return getAccessor().useTurboModules();
+}
+
+bool ReactNativeFeatureFlags::useUnorderedMapInDifferentiator() {
+  return getAccessor().useUnorderedMapInDifferentiator();
 }
 
 double ReactNativeFeatureFlags::viewCullingOutsetRatio() {

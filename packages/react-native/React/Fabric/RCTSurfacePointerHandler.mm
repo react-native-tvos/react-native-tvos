@@ -293,6 +293,7 @@ static PointerEvent CreatePointerEventFromActivePointer(
   PointerEvent event = {};
   event.pointerId = activePointer.identifier;
   event.pointerType = PointerTypeCStringFromUITouchType(activePointer.touchType);
+  event.timeStamp = RCTHighResTimeStampFromSeconds(activePointer.timestamp);
 
   if (eventType == RCTPointerEventTypeCancel) {
     event.clientPoint = RCTPointFromCGPoint(CGPointZero);
@@ -353,7 +354,8 @@ static PointerEvent CreatePointerEventFromIncompleteHoverData(
     CGPoint clientLocation,
     CGPoint screenLocation,
     CGPoint offsetLocation,
-    UIKeyModifierFlags modifierFlags)
+    UIKeyModifierFlags modifierFlags,
+    HighResTimeStamp timeStamp)
 {
   PointerEvent event = {};
   event.pointerId = pointerId;
@@ -373,6 +375,7 @@ static PointerEvent CreatePointerEventFromIncompleteHoverData(
   event.tangentialPressure = 0.0;
   event.twist = 0;
   event.isPrimary = true;
+  event.timeStamp = timeStamp;
 
   return event;
 }
@@ -781,8 +784,11 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)act
 
   modifierFlags = recognizer.modifierFlags;
 
+  // For hover events, use the current time as we don't have a precise timestamp
+  HighResTimeStamp eventTimestamp = HighResTimeStamp::now();
+
   PointerEvent event = CreatePointerEventFromIncompleteHoverData(
-      pointerId, pointerType, clientLocation, screenLocation, offsetLocation, modifierFlags);
+      pointerId, pointerType, clientLocation, screenLocation, offsetLocation, modifierFlags, eventTimestamp);
 
   SharedTouchEventEmitter eventEmitter = GetTouchEmitterFromView(targetView, offsetLocation);
   if (eventEmitter != nil) {

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<774ffd15e1fd9a79bb7b3f6c4719ba23>>
+ * @generated SignedSource<<6be8bbcc220f1dc15ce0817152bcaf91>>
  */
 
 /**
@@ -216,6 +216,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enableDestroyShadowTreeRevisionAsync();
   }
 
+  bool enableDifferentiatorMutationVectorPreallocation() override {
+    auto value = values_["enableDifferentiatorMutationVectorPreallocation"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableDifferentiatorMutationVectorPreallocation();
+  }
+
   bool enableDoubleMeasurementFixAndroid() override {
     auto value = values_["enableDoubleMeasurementFixAndroid"];
     if (!value.isNull()) {
@@ -423,6 +432,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enableNativeCSSParsing();
   }
 
+  bool enableNativeViewPropTransformations() override {
+    auto value = values_["enableNativeViewPropTransformations"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableNativeViewPropTransformations();
+  }
+
   bool enableNetworkEventReporting() override {
     auto value = values_["enableNetworkEventReporting"];
     if (!value.isNull()) {
@@ -556,6 +574,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::fixTextClippingAndroid15useBoundsForWidth();
+  }
+
+  bool fixYogaFlexBasisFitContentInMainAxis() override {
+    auto value = values_["fixYogaFlexBasisFitContentInMainAxis"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::fixYogaFlexBasisFitContentInMainAxis();
   }
 
   bool fuseboxAssertSingleHostState() override {
@@ -772,6 +799,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useTurboModules();
+  }
+
+  bool useUnorderedMapInDifferentiator() override {
+    auto value = values_["useUnorderedMapInDifferentiator"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useUnorderedMapInDifferentiator();
   }
 
   double viewCullingOutsetRatio() override {

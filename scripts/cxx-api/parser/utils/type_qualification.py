@@ -31,6 +31,10 @@ def qualify_type_str(type_str: str, scope: Scope) -> str:
     if not type_str:
         return type_str
 
+    # Names starting with "::" are already globally qualified - skip re-qualification
+    if type_str.lstrip().startswith("::"):
+        return type_str
+
     # Handle template arguments first: qualify types inside angle brackets
     angle_start = type_str.find("<")
     if angle_start != -1:
@@ -46,12 +50,22 @@ def qualify_type_str(type_str: str, scope: Scope) -> str:
             # Split template arguments and qualify each one
             args = _split_arguments(template_args)
             qualified_args = [qualify_type_str(arg.strip(), scope) for arg in args]
-            qualified_template = "< " + ", ".join(qualified_args) + " >"
+            qualified_template = "<" + ", ".join(qualified_args) + ">"
 
             # Recursively qualify the suffix (handles nested templates, pointers, etc.)
             qualified_suffix = qualify_type_str(suffix, scope) if suffix else ""
 
             return qualified_prefix + qualified_template + qualified_suffix
+
+    # Handle leading qualifiers (const, volatile) that prevent qualify_name
+    # from matching.  Strip them, qualify the rest, and prepend back.
+    for qualifier in ("const ", "volatile "):
+        if type_str.startswith(qualifier):
+            inner = type_str[len(qualifier) :]
+            qualified_inner = qualify_type_str(inner, scope)
+            if qualified_inner != inner:
+                return qualifier + qualified_inner
+            break
 
     # Try qualifying the entire string (handles simple cases without templates)
     qualified = scope.qualify_name(type_str)

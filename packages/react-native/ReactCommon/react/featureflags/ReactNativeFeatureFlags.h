@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<84e2800073ffab2313a4e27897c0c246>>
+ * @generated SignedSource<<7cd54b66686446e890246a4b4836bb69>>
  */
 
 /**
@@ -135,6 +135,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableDestroyShadowTreeRevisionAsync();
 
   /**
+   * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
+   */
+  RN_EXPORT static bool enableDifferentiatorMutationVectorPreallocation();
+
+  /**
    * When enabled a subset of components will avoid double measurement on Android.
    */
   RN_EXPORT static bool enableDoubleMeasurementFixAndroid();
@@ -250,6 +255,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableNativeCSSParsing();
 
   /**
+   * When enabled, View.js passes aria-*, id, and tabIndex props directly to native, relying on C++ prop parsing instead of JS-side transformations.
+   */
+  RN_EXPORT static bool enableNativeViewPropTransformations();
+
+  /**
    * Enable network event reporting hooks in each native platform through `NetworkReporter` (Web Perf APIs + CDP). This flag should be combined with `fuseboxNetworkInspectionEnabled` to enable Network CDP debugging.
    */
   RN_EXPORT static bool enableNetworkEventReporting();
@@ -323,6 +333,11 @@ class ReactNativeFeatureFlags {
    * Fix text clipping starting in Android 15 due to usage of useBoundsForWidth
    */
   RN_EXPORT static bool fixTextClippingAndroid15useBoundsForWidth();
+
+  /**
+   * When enabled, Yoga will not apply a FitContent constraint in the main axis during flex basis computation for non-measure container nodes. This prevents unnecessary re-measurement and cascading clones when a sibling changes size in a ScrollView.
+   */
+  RN_EXPORT static bool fixYogaFlexBasisFitContentInMainAxis();
 
   /**
    * Enable system assertion validating that Fusebox is configured with a single host. When set, the CDP backend will dynamically disable features (Perf and Network) in the event that multiple hosts are registered (undefined behaviour), and broadcast this over `ReactNativeApplication.systemStateChanged`.
@@ -443,6 +458,11 @@ class ReactNativeFeatureFlags {
    * When enabled, NativeModules will be executed by using the TurboModule system
    */
   RN_EXPORT static bool useTurboModules();
+
+  /**
+   * Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.
+   */
+  RN_EXPORT static bool useUnorderedMapInDifferentiator();
 
   /**
    * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.

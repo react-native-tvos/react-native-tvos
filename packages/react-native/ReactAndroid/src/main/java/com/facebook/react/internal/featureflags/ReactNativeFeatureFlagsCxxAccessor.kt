@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c7b6ea7f1672df7bb3396375378784c5>>
+ * @generated SignedSource<<98c5f6184864381e579a9df82741928b>>
  */
 
 /**
@@ -39,6 +39,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableCppPropsIteratorSetterCache: Boolean? = null
   private var enableCustomFocusSearchOnClippedElementsAndroidCache: Boolean? = null
   private var enableDestroyShadowTreeRevisionAsyncCache: Boolean? = null
+  private var enableDifferentiatorMutationVectorPreallocationCache: Boolean? = null
   private var enableDoubleMeasurementFixAndroidCache: Boolean? = null
   private var enableEagerMainQueueModulesOnIOSCache: Boolean? = null
   private var enableEagerRootViewAttachmentCache: Boolean? = null
@@ -62,6 +63,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableMainQueueCoordinatorOnIOSCache: Boolean? = null
   private var enableModuleArgumentNSNullConversionIOSCache: Boolean? = null
   private var enableNativeCSSParsingCache: Boolean? = null
+  private var enableNativeViewPropTransformationsCache: Boolean? = null
   private var enableNetworkEventReportingCache: Boolean? = null
   private var enablePreparedTextLayoutCache: Boolean? = null
   private var enablePropsUpdateReconciliationAndroidCache: Boolean? = null
@@ -77,6 +79,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var fixFindShadowNodeByTagRaceConditionCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
   private var fixTextClippingAndroid15useBoundsForWidthCache: Boolean? = null
+  private var fixYogaFlexBasisFitContentInMainAxisCache: Boolean? = null
   private var fuseboxAssertSingleHostStateCache: Boolean? = null
   private var fuseboxEnabledReleaseCache: Boolean? = null
   private var fuseboxNetworkInspectionEnabledCache: Boolean? = null
@@ -101,6 +104,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
   private var useTurboModulesCache: Boolean? = null
+  private var useUnorderedMapInDifferentiatorCache: Boolean? = null
   private var viewCullingOutsetRatioCache: Double? = null
   private var viewTransitionEnabledCache: Boolean? = null
   private var virtualViewPrerenderRatioCache: Double? = null
@@ -272,6 +276,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableDestroyShadowTreeRevisionAsync()
       enableDestroyShadowTreeRevisionAsyncCache = cached
+    }
+    return cached
+  }
+
+  override fun enableDifferentiatorMutationVectorPreallocation(): Boolean {
+    var cached = enableDifferentiatorMutationVectorPreallocationCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableDifferentiatorMutationVectorPreallocation()
+      enableDifferentiatorMutationVectorPreallocationCache = cached
     }
     return cached
   }
@@ -483,6 +496,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun enableNativeViewPropTransformations(): Boolean {
+    var cached = enableNativeViewPropTransformationsCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableNativeViewPropTransformations()
+      enableNativeViewPropTransformationsCache = cached
+    }
+    return cached
+  }
+
   override fun enableNetworkEventReporting(): Boolean {
     var cached = enableNetworkEventReportingCache
     if (cached == null) {
@@ -614,6 +636,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.fixTextClippingAndroid15useBoundsForWidth()
       fixTextClippingAndroid15useBoundsForWidthCache = cached
+    }
+    return cached
+  }
+
+  override fun fixYogaFlexBasisFitContentInMainAxis(): Boolean {
+    var cached = fixYogaFlexBasisFitContentInMainAxisCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.fixYogaFlexBasisFitContentInMainAxis()
+      fixYogaFlexBasisFitContentInMainAxisCache = cached
     }
     return cached
   }
@@ -830,6 +861,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useTurboModules()
       useTurboModulesCache = cached
+    }
+    return cached
+  }
+
+  override fun useUnorderedMapInDifferentiator(): Boolean {
+    var cached = useUnorderedMapInDifferentiatorCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useUnorderedMapInDifferentiator()
+      useUnorderedMapInDifferentiatorCache = cached
     }
     return cached
   }

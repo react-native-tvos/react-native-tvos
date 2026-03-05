@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5ac93ed057017f8d1a388b8029614f18>>
+ * @generated SignedSource<<72294df9c57d40232a21ab83bcbd12cc>>
  */
 
 /**
@@ -87,6 +87,9 @@ class JReactNativeFeatureFlagsCxxInterop
   static bool enableDestroyShadowTreeRevisionAsync(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
+  static bool enableDifferentiatorMutationVectorPreallocation(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
   static bool enableDoubleMeasurementFixAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
@@ -156,6 +159,9 @@ class JReactNativeFeatureFlagsCxxInterop
   static bool enableNativeCSSParsing(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
+  static bool enableNativeViewPropTransformations(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
   static bool enableNetworkEventReporting(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
@@ -199,6 +205,9 @@ class JReactNativeFeatureFlagsCxxInterop
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool fixTextClippingAndroid15useBoundsForWidth(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
+  static bool fixYogaFlexBasisFitContentInMainAxis(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool fuseboxAssertSingleHostState(
@@ -271,6 +280,9 @@ class JReactNativeFeatureFlagsCxxInterop
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool useTurboModules(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
+  static bool useUnorderedMapInDifferentiator(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static double viewCullingOutsetRatio(

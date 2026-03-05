@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c075c9058ed6fa1761209cdabea376f5>>
+ * @generated SignedSource<<d5bb1c1fbe9804482f6aded674a4b118>>
  */
 
 /**
@@ -44,6 +44,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableCppPropsIteratorSetter() = 0;
   virtual bool enableCustomFocusSearchOnClippedElementsAndroid() = 0;
   virtual bool enableDestroyShadowTreeRevisionAsync() = 0;
+  virtual bool enableDifferentiatorMutationVectorPreallocation() = 0;
   virtual bool enableDoubleMeasurementFixAndroid() = 0;
   virtual bool enableEagerMainQueueModulesOnIOS() = 0;
   virtual bool enableEagerRootViewAttachment() = 0;
@@ -67,6 +68,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableMainQueueCoordinatorOnIOS() = 0;
   virtual bool enableModuleArgumentNSNullConversionIOS() = 0;
   virtual bool enableNativeCSSParsing() = 0;
+  virtual bool enableNativeViewPropTransformations() = 0;
   virtual bool enableNetworkEventReporting() = 0;
   virtual bool enablePreparedTextLayout() = 0;
   virtual bool enablePropsUpdateReconciliationAndroid() = 0;
@@ -82,6 +84,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool fixFindShadowNodeByTagRaceCondition() = 0;
   virtual bool fixMappingOfEventPrioritiesBetweenFabricAndReact() = 0;
   virtual bool fixTextClippingAndroid15useBoundsForWidth() = 0;
+  virtual bool fixYogaFlexBasisFitContentInMainAxis() = 0;
   virtual bool fuseboxAssertSingleHostState() = 0;
   virtual bool fuseboxEnabledRelease() = 0;
   virtual bool fuseboxNetworkInspectionEnabled() = 0;
@@ -106,6 +109,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useTraitHiddenOnAndroid() = 0;
   virtual bool useTurboModuleInterop() = 0;
   virtual bool useTurboModules() = 0;
+  virtual bool useUnorderedMapInDifferentiator() = 0;
   virtual double viewCullingOutsetRatio() = 0;
   virtual bool viewTransitionEnabled() = 0;
   virtual double virtualViewPrerenderRatio() = 0;

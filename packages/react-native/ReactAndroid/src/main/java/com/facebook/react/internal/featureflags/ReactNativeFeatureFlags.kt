@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<477777b9a795b57f3bb3eaeb030738a9>>
+ * @generated SignedSource<<66d3b8ed600077a287d6d7d8f6230b7b>>
  */
 
 /**
@@ -145,6 +145,12 @@ public object ReactNativeFeatureFlags {
   public fun enableDestroyShadowTreeRevisionAsync(): Boolean = accessor.enableDestroyShadowTreeRevisionAsync()
 
   /**
+   * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
+   */
+  @JvmStatic
+  public fun enableDifferentiatorMutationVectorPreallocation(): Boolean = accessor.enableDifferentiatorMutationVectorPreallocation()
+
+  /**
    * When enabled a subset of components will avoid double measurement on Android.
    */
   @JvmStatic
@@ -283,6 +289,12 @@ public object ReactNativeFeatureFlags {
   public fun enableNativeCSSParsing(): Boolean = accessor.enableNativeCSSParsing()
 
   /**
+   * When enabled, View.js passes aria-*, id, and tabIndex props directly to native, relying on C++ prop parsing instead of JS-side transformations.
+   */
+  @JvmStatic
+  public fun enableNativeViewPropTransformations(): Boolean = accessor.enableNativeViewPropTransformations()
+
+  /**
    * Enable network event reporting hooks in each native platform through `NetworkReporter` (Web Perf APIs + CDP). This flag should be combined with `fuseboxNetworkInspectionEnabled` to enable Network CDP debugging.
    */
   @JvmStatic
@@ -371,6 +383,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun fixTextClippingAndroid15useBoundsForWidth(): Boolean = accessor.fixTextClippingAndroid15useBoundsForWidth()
+
+  /**
+   * When enabled, Yoga will not apply a FitContent constraint in the main axis during flex basis computation for non-measure container nodes. This prevents unnecessary re-measurement and cascading clones when a sibling changes size in a ScrollView.
+   */
+  @JvmStatic
+  public fun fixYogaFlexBasisFitContentInMainAxis(): Boolean = accessor.fixYogaFlexBasisFitContentInMainAxis()
 
   /**
    * Enable system assertion validating that Fusebox is configured with a single host. When set, the CDP backend will dynamically disable features (Perf and Network) in the event that multiple hosts are registered (undefined behaviour), and broadcast this over `ReactNativeApplication.systemStateChanged`.
@@ -515,6 +533,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useTurboModules(): Boolean = accessor.useTurboModules()
+
+  /**
+   * Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.
+   */
+  @JvmStatic
+  public fun useUnorderedMapInDifferentiator(): Boolean = accessor.useUnorderedMapInDifferentiator()
 
   /**
    * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.

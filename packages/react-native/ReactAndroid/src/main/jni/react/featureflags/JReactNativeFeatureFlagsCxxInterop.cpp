@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<45063df01d7ce8726b4a7d901f1b3341>>
+ * @generated SignedSource<<95380ca380ce7c5d3d2293b105d42247>>
  */
 
 /**
@@ -153,6 +153,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool enableDifferentiatorMutationVectorPreallocation() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDifferentiatorMutationVectorPreallocation");
+    return method(javaProvider_);
+  }
+
   bool enableDoubleMeasurementFixAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableDoubleMeasurementFixAndroid");
@@ -291,6 +297,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool enableNativeViewPropTransformations() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableNativeViewPropTransformations");
+    return method(javaProvider_);
+  }
+
   bool enableNetworkEventReporting() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableNetworkEventReporting");
@@ -378,6 +390,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool fixTextClippingAndroid15useBoundsForWidth() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixTextClippingAndroid15useBoundsForWidth");
+    return method(javaProvider_);
+  }
+
+  bool fixYogaFlexBasisFitContentInMainAxis() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixYogaFlexBasisFitContentInMainAxis");
     return method(javaProvider_);
   }
 
@@ -525,6 +543,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool useUnorderedMapInDifferentiator() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("useUnorderedMapInDifferentiator");
+    return method(javaProvider_);
+  }
+
   double viewCullingOutsetRatio() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jdouble()>("viewCullingOutsetRatio");
@@ -642,6 +666,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableDestroyShadowTreeRevisionAsync(
   return ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableDifferentiatorMutationVectorPreallocation(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableDifferentiatorMutationVectorPreallocation();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableDoubleMeasurementFixAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid();
@@ -757,6 +786,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableNativeCSSParsing(
   return ReactNativeFeatureFlags::enableNativeCSSParsing();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::enableNativeViewPropTransformations(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableNativeViewPropTransformations();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::enableNetworkEventReporting(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableNetworkEventReporting();
@@ -830,6 +864,11 @@ bool JReactNativeFeatureFlagsCxxInterop::fixMappingOfEventPrioritiesBetweenFabri
 bool JReactNativeFeatureFlagsCxxInterop::fixTextClippingAndroid15useBoundsForWidth(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::fixTextClippingAndroid15useBoundsForWidth();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::fixYogaFlexBasisFitContentInMainAxis(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::fuseboxAssertSingleHostState(
@@ -952,6 +991,11 @@ bool JReactNativeFeatureFlagsCxxInterop::useTurboModules(
   return ReactNativeFeatureFlags::useTurboModules();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::useUnorderedMapInDifferentiator(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::useUnorderedMapInDifferentiator();
+}
+
 double JReactNativeFeatureFlagsCxxInterop::viewCullingOutsetRatio(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::viewCullingOutsetRatio();
@@ -1056,6 +1100,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableDestroyShadowTreeRevisionAsync",
         JReactNativeFeatureFlagsCxxInterop::enableDestroyShadowTreeRevisionAsync),
       makeNativeMethod(
+        "enableDifferentiatorMutationVectorPreallocation",
+        JReactNativeFeatureFlagsCxxInterop::enableDifferentiatorMutationVectorPreallocation),
+      makeNativeMethod(
         "enableDoubleMeasurementFixAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableDoubleMeasurementFixAndroid),
       makeNativeMethod(
@@ -1125,6 +1172,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableNativeCSSParsing",
         JReactNativeFeatureFlagsCxxInterop::enableNativeCSSParsing),
       makeNativeMethod(
+        "enableNativeViewPropTransformations",
+        JReactNativeFeatureFlagsCxxInterop::enableNativeViewPropTransformations),
+      makeNativeMethod(
         "enableNetworkEventReporting",
         JReactNativeFeatureFlagsCxxInterop::enableNetworkEventReporting),
       makeNativeMethod(
@@ -1169,6 +1219,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "fixTextClippingAndroid15useBoundsForWidth",
         JReactNativeFeatureFlagsCxxInterop::fixTextClippingAndroid15useBoundsForWidth),
+      makeNativeMethod(
+        "fixYogaFlexBasisFitContentInMainAxis",
+        JReactNativeFeatureFlagsCxxInterop::fixYogaFlexBasisFitContentInMainAxis),
       makeNativeMethod(
         "fuseboxAssertSingleHostState",
         JReactNativeFeatureFlagsCxxInterop::fuseboxAssertSingleHostState),
@@ -1241,6 +1294,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "useTurboModules",
         JReactNativeFeatureFlagsCxxInterop::useTurboModules),
+      makeNativeMethod(
+        "useUnorderedMapInDifferentiator",
+        JReactNativeFeatureFlagsCxxInterop::useUnorderedMapInDifferentiator),
       makeNativeMethod(
         "viewCullingOutsetRatio",
         JReactNativeFeatureFlagsCxxInterop::viewCullingOutsetRatio),

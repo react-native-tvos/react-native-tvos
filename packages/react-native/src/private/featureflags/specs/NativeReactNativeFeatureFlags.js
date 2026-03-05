@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3495a8cf9d3d820e37d082b3d62e2b91>>
+ * @generated SignedSource<<ccccc6f57bfde06d8a3b6fcd13aee065>>
  * @flow strict
  * @noformat
  */
@@ -44,6 +44,7 @@ export interface Spec extends TurboModule {
   +enableCppPropsIteratorSetter?: () => boolean;
   +enableCustomFocusSearchOnClippedElementsAndroid?: () => boolean;
   +enableDestroyShadowTreeRevisionAsync?: () => boolean;
+  +enableDifferentiatorMutationVectorPreallocation?: () => boolean;
   +enableDoubleMeasurementFixAndroid?: () => boolean;
   +enableEagerMainQueueModulesOnIOS?: () => boolean;
   +enableEagerRootViewAttachment?: () => boolean;
@@ -67,6 +68,7 @@ export interface Spec extends TurboModule {
   +enableMainQueueCoordinatorOnIOS?: () => boolean;
   +enableModuleArgumentNSNullConversionIOS?: () => boolean;
   +enableNativeCSSParsing?: () => boolean;
+  +enableNativeViewPropTransformations?: () => boolean;
   +enableNetworkEventReporting?: () => boolean;
   +enablePreparedTextLayout?: () => boolean;
   +enablePropsUpdateReconciliationAndroid?: () => boolean;
@@ -82,6 +84,7 @@ export interface Spec extends TurboModule {
   +fixFindShadowNodeByTagRaceCondition?: () => boolean;
   +fixMappingOfEventPrioritiesBetweenFabricAndReact?: () => boolean;
   +fixTextClippingAndroid15useBoundsForWidth?: () => boolean;
+  +fixYogaFlexBasisFitContentInMainAxis?: () => boolean;
   +fuseboxAssertSingleHostState?: () => boolean;
   +fuseboxEnabledRelease?: () => boolean;
   +fuseboxNetworkInspectionEnabled?: () => boolean;
@@ -106,6 +109,7 @@ export interface Spec extends TurboModule {
   +useTraitHiddenOnAndroid?: () => boolean;
   +useTurboModuleInterop?: () => boolean;
   +useTurboModules?: () => boolean;
+  +useUnorderedMapInDifferentiator?: () => boolean;
   +viewCullingOutsetRatio?: () => number;
   +viewTransitionEnabled?: () => boolean;
   +virtualViewPrerenderRatio?: () => number;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6ba661fd9ce6aeff6cc9269848230618>>
+ * @generated SignedSource<<d84f2a5d22b85dc51c5e224dc276b508>>
  */
 
 /**
@@ -51,6 +51,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableCppPropsIteratorSetter();
   bool enableCustomFocusSearchOnClippedElementsAndroid();
   bool enableDestroyShadowTreeRevisionAsync();
+  bool enableDifferentiatorMutationVectorPreallocation();
   bool enableDoubleMeasurementFixAndroid();
   bool enableEagerMainQueueModulesOnIOS();
   bool enableEagerRootViewAttachment();
@@ -74,6 +75,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableMainQueueCoordinatorOnIOS();
   bool enableModuleArgumentNSNullConversionIOS();
   bool enableNativeCSSParsing();
+  bool enableNativeViewPropTransformations();
   bool enableNetworkEventReporting();
   bool enablePreparedTextLayout();
   bool enablePropsUpdateReconciliationAndroid();
@@ -89,6 +91,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool fixFindShadowNodeByTagRaceCondition();
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
   bool fixTextClippingAndroid15useBoundsForWidth();
+  bool fixYogaFlexBasisFitContentInMainAxis();
   bool fuseboxAssertSingleHostState();
   bool fuseboxEnabledRelease();
   bool fuseboxNetworkInspectionEnabled();
@@ -113,6 +116,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool useTraitHiddenOnAndroid();
   bool useTurboModuleInterop();
   bool useTurboModules();
+  bool useUnorderedMapInDifferentiator();
   double viewCullingOutsetRatio();
   bool viewTransitionEnabled();
   double virtualViewPrerenderRatio();
@@ -127,7 +131,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 84> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 88> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
@@ -148,6 +152,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableCppPropsIteratorSetter_;
   std::atomic<std::optional<bool>> enableCustomFocusSearchOnClippedElementsAndroid_;
   std::atomic<std::optional<bool>> enableDestroyShadowTreeRevisionAsync_;
+  std::atomic<std::optional<bool>> enableDifferentiatorMutationVectorPreallocation_;
   std::atomic<std::optional<bool>> enableDoubleMeasurementFixAndroid_;
   std::atomic<std::optional<bool>> enableEagerMainQueueModulesOnIOS_;
   std::atomic<std::optional<bool>> enableEagerRootViewAttachment_;
@@ -171,6 +176,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableMainQueueCoordinatorOnIOS_;
   std::atomic<std::optional<bool>> enableModuleArgumentNSNullConversionIOS_;
   std::atomic<std::optional<bool>> enableNativeCSSParsing_;
+  std::atomic<std::optional<bool>> enableNativeViewPropTransformations_;
   std::atomic<std::optional<bool>> enableNetworkEventReporting_;
   std::atomic<std::optional<bool>> enablePreparedTextLayout_;
   std::atomic<std::optional<bool>> enablePropsUpdateReconciliationAndroid_;
@@ -186,6 +192,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> fixFindShadowNodeByTagRaceCondition_;
   std::atomic<std::optional<bool>> fixMappingOfEventPrioritiesBetweenFabricAndReact_;
   std::atomic<std::optional<bool>> fixTextClippingAndroid15useBoundsForWidth_;
+  std::atomic<std::optional<bool>> fixYogaFlexBasisFitContentInMainAxis_;
   std::atomic<std::optional<bool>> fuseboxAssertSingleHostState_;
   std::atomic<std::optional<bool>> fuseboxEnabledRelease_;
   std::atomic<std::optional<bool>> fuseboxNetworkInspectionEnabled_;
@@ -210,6 +217,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> useTraitHiddenOnAndroid_;
   std::atomic<std::optional<bool>> useTurboModuleInterop_;
   std::atomic<std::optional<bool>> useTurboModules_;
+  std::atomic<std::optional<bool>> useUnorderedMapInDifferentiator_;
   std::atomic<std::optional<double>> viewCullingOutsetRatio_;
   std::atomic<std::optional<bool>> viewTransitionEnabled_;
   std::atomic<std::optional<double>> virtualViewPrerenderRatio_;

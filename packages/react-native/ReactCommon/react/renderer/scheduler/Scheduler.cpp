@@ -88,11 +88,12 @@ Scheduler::Scheduler(
                        EventTarget* eventTarget,
                        const std::string& type,
                        ReactEventPriority priority,
-                       const EventPayload& payload) {
+                       const EventPayload& payload,
+                       HighResTimeStamp eventTimestamp) {
     uiManager->visitBinding(
         [&](const UIManagerBinding& uiManagerBinding) {
           uiManagerBinding.dispatchEvent(
-              runtime, eventTarget, type, priority, payload);
+              runtime, eventTarget, type, priority, payload, eventTimestamp);
         },
         runtime);
   };
@@ -157,6 +158,13 @@ Scheduler::Scheduler(
   }
   uiManager_->setAnimationDelegate(animationDelegate);
 
+  // Initialize ViewTransitionModule
+  if (ReactNativeFeatureFlags::viewTransitionEnabled()) {
+    viewTransitionModule_ = std::make_unique<ViewTransitionModule>();
+    viewTransitionModule_->setUIManager(uiManager_.get());
+    uiManager_->setViewTransitionDelegate(viewTransitionModule_.get());
+  }
+
   uiManager->registerMountHook(*eventPerformanceLogger_);
 }
 
@@ -186,6 +194,7 @@ Scheduler::~Scheduler() {
   // The thread-safety of this operation is guaranteed by this requirement.
   uiManager_->setDelegate(nullptr);
   uiManager_->setAnimationDelegate(nullptr);
+  uiManager_->setViewTransitionDelegate(nullptr);
 
   if (cdpMetricsReporter_) {
     performanceEntryReporter_->removeEventListener(&*cdpMetricsReporter_);

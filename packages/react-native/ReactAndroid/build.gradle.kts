@@ -277,6 +277,11 @@ val preparePrefab by
                           "../ReactCommon/react/renderer/animationbackend/",
                           "react/renderer/animationbackend/",
                       ),
+                      // react_renderer_viewtransition
+                      Pair(
+                          "../ReactCommon/react/renderer/viewtransition/",
+                          "react/renderer/viewtransition/",
+                      ),
                   ),
               ),
               PrefabPreprocessingEntry(

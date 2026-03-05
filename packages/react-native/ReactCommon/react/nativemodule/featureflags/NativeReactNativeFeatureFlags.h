@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2b82eb6d91d0b4437aa3b25f0488fe3e>>
+ * @generated SignedSource<<f4899e4dbc3299b5680e61b094373d41>>
  */
 
 /**
@@ -74,6 +74,8 @@ class NativeReactNativeFeatureFlags
 
   bool enableDestroyShadowTreeRevisionAsync(jsi::Runtime& runtime);
 
+  bool enableDifferentiatorMutationVectorPreallocation(jsi::Runtime& runtime);
+
   bool enableDoubleMeasurementFixAndroid(jsi::Runtime& runtime);
 
   bool enableEagerMainQueueModulesOnIOS(jsi::Runtime& runtime);
@@ -120,6 +122,8 @@ class NativeReactNativeFeatureFlags
 
   bool enableNativeCSSParsing(jsi::Runtime& runtime);
 
+  bool enableNativeViewPropTransformations(jsi::Runtime& runtime);
+
   bool enableNetworkEventReporting(jsi::Runtime& runtime);
 
   bool enablePreparedTextLayout(jsi::Runtime& runtime);
@@ -149,6 +153,8 @@ class NativeReactNativeFeatureFlags
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact(jsi::Runtime& runtime);
 
   bool fixTextClippingAndroid15useBoundsForWidth(jsi::Runtime& runtime);
+
+  bool fixYogaFlexBasisFitContentInMainAxis(jsi::Runtime& runtime);
 
   bool fuseboxAssertSingleHostState(jsi::Runtime& runtime);
 
@@ -197,6 +203,8 @@ class NativeReactNativeFeatureFlags
   bool useTurboModuleInterop(jsi::Runtime& runtime);
 
   bool useTurboModules(jsi::Runtime& runtime);
+
+  bool useUnorderedMapInDifferentiator(jsi::Runtime& runtime);
 
   double viewCullingOutsetRatio(jsi::Runtime& runtime);
 

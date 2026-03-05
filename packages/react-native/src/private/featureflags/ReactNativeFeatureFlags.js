@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fece18f7b3b23de103a64eca1a76a4c6>>
+ * @generated SignedSource<<fa176f1e72870e3d1a639780bbd3fab5>>
  * @flow strict
  * @noformat
  */
@@ -33,6 +33,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   animatedShouldUseSingleOp: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   disableMaintainVisibleContentPosition: Getter<boolean>,
+  enableOptimizedBoxShadowParsing: Getter<boolean>,
   externalElementInspectionEnabled: Getter<boolean>,
   fixImageSrcDimensionPropagation: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
@@ -66,6 +67,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableCppPropsIteratorSetter: Getter<boolean>,
   enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean>,
   enableDestroyShadowTreeRevisionAsync: Getter<boolean>,
+  enableDifferentiatorMutationVectorPreallocation: Getter<boolean>,
   enableDoubleMeasurementFixAndroid: Getter<boolean>,
   enableEagerMainQueueModulesOnIOS: Getter<boolean>,
   enableEagerRootViewAttachment: Getter<boolean>,
@@ -89,6 +91,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableMainQueueCoordinatorOnIOS: Getter<boolean>,
   enableModuleArgumentNSNullConversionIOS: Getter<boolean>,
   enableNativeCSSParsing: Getter<boolean>,
+  enableNativeViewPropTransformations: Getter<boolean>,
   enableNetworkEventReporting: Getter<boolean>,
   enablePreparedTextLayout: Getter<boolean>,
   enablePropsUpdateReconciliationAndroid: Getter<boolean>,
@@ -104,6 +107,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   fixFindShadowNodeByTagRaceCondition: Getter<boolean>,
   fixMappingOfEventPrioritiesBetweenFabricAndReact: Getter<boolean>,
   fixTextClippingAndroid15useBoundsForWidth: Getter<boolean>,
+  fixYogaFlexBasisFitContentInMainAxis: Getter<boolean>,
   fuseboxAssertSingleHostState: Getter<boolean>,
   fuseboxEnabledRelease: Getter<boolean>,
   fuseboxNetworkInspectionEnabled: Getter<boolean>,
@@ -128,6 +132,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   useTraitHiddenOnAndroid: Getter<boolean>,
   useTurboModuleInterop: Getter<boolean>,
   useTurboModules: Getter<boolean>,
+  useUnorderedMapInDifferentiator: Getter<boolean>,
   viewCullingOutsetRatio: Getter<number>,
   viewTransitionEnabled: Getter<boolean>,
   virtualViewPrerenderRatio: Getter<number>,
@@ -157,6 +162,11 @@ export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaS
  * Disable prop maintainVisibleContentPosition in ScrollView
  */
 export const disableMaintainVisibleContentPosition: Getter<boolean> = createJavaScriptFlagGetter('disableMaintainVisibleContentPosition', false);
+
+/**
+ * Hoists regex patterns to module scope and optimizes parseLength in processBoxShadow for improved performance.
+ */
+export const enableOptimizedBoxShadowParsing: Getter<boolean> = createJavaScriptFlagGetter('enableOptimizedBoxShadowParsing', false);
 
 /**
  * Enable the external inspection API for DevTools to communicate with the Inspector overlay.
@@ -274,6 +284,10 @@ export const enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean> = 
  */
 export const enableDestroyShadowTreeRevisionAsync: Getter<boolean> = createNativeFlagGetter('enableDestroyShadowTreeRevisionAsync', false);
 /**
+ * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
+ */
+export const enableDifferentiatorMutationVectorPreallocation: Getter<boolean> = createNativeFlagGetter('enableDifferentiatorMutationVectorPreallocation', false);
+/**
  * When enabled a subset of components will avoid double measurement on Android.
  */
 export const enableDoubleMeasurementFixAndroid: Getter<boolean> = createNativeFlagGetter('enableDoubleMeasurementFixAndroid', false);
@@ -366,6 +380,10 @@ export const enableModuleArgumentNSNullConversionIOS: Getter<boolean> = createNa
  */
 export const enableNativeCSSParsing: Getter<boolean> = createNativeFlagGetter('enableNativeCSSParsing', false);
 /**
+ * When enabled, View.js passes aria-*, id, and tabIndex props directly to native, relying on C++ prop parsing instead of JS-side transformations.
+ */
+export const enableNativeViewPropTransformations: Getter<boolean> = createNativeFlagGetter('enableNativeViewPropTransformations', false);
+/**
  * Enable network event reporting hooks in each native platform through `NetworkReporter` (Web Perf APIs + CDP). This flag should be combined with `fuseboxNetworkInspectionEnabled` to enable Network CDP debugging.
  */
 export const enableNetworkEventReporting: Getter<boolean> = createNativeFlagGetter('enableNetworkEventReporting', true);
@@ -425,6 +443,10 @@ export const fixMappingOfEventPrioritiesBetweenFabricAndReact: Getter<boolean> =
  * Fix text clipping starting in Android 15 due to usage of useBoundsForWidth
  */
 export const fixTextClippingAndroid15useBoundsForWidth: Getter<boolean> = createNativeFlagGetter('fixTextClippingAndroid15useBoundsForWidth', false);
+/**
+ * When enabled, Yoga will not apply a FitContent constraint in the main axis during flex basis computation for non-measure container nodes. This prevents unnecessary re-measurement and cascading clones when a sibling changes size in a ScrollView.
+ */
+export const fixYogaFlexBasisFitContentInMainAxis: Getter<boolean> = createNativeFlagGetter('fixYogaFlexBasisFitContentInMainAxis', false);
 /**
  * Enable system assertion validating that Fusebox is configured with a single host. When set, the CDP backend will dynamically disable features (Perf and Network) in the event that multiple hosts are registered (undefined behaviour), and broadcast this over `ReactNativeApplication.systemStateChanged`.
  */
@@ -521,6 +543,10 @@ export const useTurboModuleInterop: Getter<boolean> = createNativeFlagGetter('us
  * When enabled, NativeModules will be executed by using the TurboModule system
  */
 export const useTurboModules: Getter<boolean> = createNativeFlagGetter('useTurboModules', false);
+/**
+ * Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.
+ */
+export const useUnorderedMapInDifferentiator: Getter<boolean> = createNativeFlagGetter('useUnorderedMapInDifferentiator', false);
 /**
  * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
  */
