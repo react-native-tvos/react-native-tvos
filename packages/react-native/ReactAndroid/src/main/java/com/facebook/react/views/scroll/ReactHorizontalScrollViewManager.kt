@@ -157,6 +157,20 @@ constructor(private val fpsListener: FpsListener? = null) :
     view.setSnapToEnd(snapToEnd)
   }
 
+  @ReactProp(name = "scrollSnapType")
+  public fun setScrollSnapType(view: ReactHorizontalScrollView, value: String?) {
+    android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollViewManager] setScrollSnapType: $value")
+    view.setScrollSnapType(value)
+  }
+
+  @ReactProp(name = "scrollPadding")
+  public fun setScrollPadding(view: ReactHorizontalScrollView, value: Float) {
+    val density = getDisplayMetricDensity()
+    val px = (value * density).toInt()
+    android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollViewManager] setScrollPadding: value=$value density=$density px=$px")
+    view.setScrollPadding(px)
+  }
+
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)
   public fun setRemoveClippedSubviews(
       view: ReactHorizontalScrollView,

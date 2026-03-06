@@ -132,7 +132,7 @@
 
 - (id<UIScrollViewDelegate>)delegate
 {
-  return _publicDelegate;
+  return [super delegate];
 }
 
 - (void)setDelegate:(id<UIScrollViewDelegate>)delegate

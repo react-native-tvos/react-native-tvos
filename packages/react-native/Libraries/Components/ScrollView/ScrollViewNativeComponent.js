@@ -86,6 +86,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           borderLeftColor: {
             process: require('../../StyleSheet/processColor').default,
           },
+          scrollSnapType: true,
+          scrollPadding: true,
           pointerEvents: true,
           isInvertedVirtualizedList: true,
         },
@@ -152,6 +154,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           showsHorizontalScrollIndicator: true,
           showsVerticalScrollIndicator: true,
           showsScrollIndex: true,
+          scrollSnapType: true,
+          scrollPadding: true,
           snapToAlignment: true,
           snapToEnd: true,
           snapToInterval: true,

@@ -62,6 +62,7 @@ import com.facebook.react.views.scroll.ReactScrollViewHelper.HasScrollState;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.HasSmoothScroll;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.HasStateWrapper;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.ReactScrollViewScrollState;
+import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.systrace.Systrace;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -134,6 +135,8 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private @Nullable MaintainVisibleScrollPositionHelper mMaintainVisibleContentPositionHelper;
   private int mFadingEdgeLengthStart = 0;
   private int mFadingEdgeLengthEnd = 0;
+  private @Nullable String mScrollSnapType;
+  private int mScrollPadding;
 
   public ReactHorizontalScrollView(Context context) {
     this(context, null);
@@ -382,6 +385,14 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     invalidate();
   }
 
+  public void setScrollSnapType(@Nullable String scrollSnapType) {
+    mScrollSnapType = scrollSnapType;
+  }
+
+  public void setScrollPadding(int scrollPadding) {
+    mScrollPadding = scrollPadding;
+  }
+
   @Override
   protected float getLeftFadingEdgeStrength() {
     float max = Math.max(mFadingEdgeLengthStart, mFadingEdgeLengthEnd);
@@ -539,6 +550,93 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   /**
+   * Walks up the view hierarchy from the focused view to find a ReactViewGroup
+   * with scrollSnapAlign set. Returns a two-element array [snapTarget, alignment]
+   * or null if not found.
+   */
+  private @Nullable Object[] findScrollSnapAlign(View focused) {
+    View view = focused;
+    View snapTarget = null;
+    String alignment = null;
+    while (view != null && view != this) {
+      if (view instanceof ReactViewGroup) {
+        String snap = ((ReactViewGroup) view).getScrollSnapAlign();
+        if (snap != null) {
+          alignment = snap;
+          snapTarget = view;
+        }
+      }
+      if (view.getParent() instanceof View) {
+        view = (View) view.getParent();
+      } else {
+        break;
+      }
+    }
+    if (alignment != null && snapTarget != null) {
+      return new Object[] {snapTarget, alignment};
+    }
+    return null;
+  }
+
+  /**
+   * Attempts to scroll-snap to the focused child based on scrollSnapType/scrollSnapAlign.
+   * Returns true if snap scrolling was performed, false otherwise.
+   */
+  private boolean tryScrollSnapToChild(View focused) {
+    android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollView] tryScrollSnapToChild: mScrollSnapType=" + mScrollSnapType);
+    if (!"mandatory".equals(mScrollSnapType)) {
+      return false;
+    }
+
+    Object[] result = findScrollSnapAlign(focused);
+    if (result == null) {
+      android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollView] tryScrollSnapToChild: no snap align found in hierarchy");
+      return false;
+    }
+
+    View snapTarget = (View) result[0];
+    String alignment = (String) result[1];
+
+    Rect rect = new Rect();
+    snapTarget.getDrawingRect(rect);
+    offsetDescendantRectToMyCoords(snapTarget, rect);
+
+    int viewportWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+    int focusedLeft = rect.left;
+    int focusedRight = rect.right;
+    int focusedCenterX = (focusedLeft + focusedRight) / 2;
+
+    android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollView] tryScrollSnapToChild: alignment=" + alignment
+        + " rect=" + rect + " viewportWidth=" + viewportWidth + " scrollPadding=" + mScrollPadding);
+
+    int targetOffset;
+    switch (alignment) {
+      case "start":
+        targetOffset = focusedLeft - mScrollPadding;
+        break;
+      case "center":
+        targetOffset = focusedCenterX - (viewportWidth / 2) + (mScrollPadding / 2);
+        break;
+      case "end":
+        targetOffset = focusedRight - viewportWidth + mScrollPadding;
+        break;
+      default:
+        return false;
+    }
+
+    if (mSnapInterval > 0) {
+      targetOffset = (int) (Math.floor((double) targetOffset / mSnapInterval) * mSnapInterval);
+    }
+
+    int maxScrollX = Math.max(0, computeHorizontalScrollRange() - getWidth());
+    targetOffset = Math.max(0, Math.min(targetOffset, maxScrollX));
+
+    android.util.Log.d("ScrollSnap", "[ReactHorizontalScrollView] tryScrollSnapToChild: scrolling to x=" + targetOffset + " (max=" + maxScrollX + ")");
+    reactSmoothScrollTo(targetOffset, getScrollY());
+    return true;
+  }
+
+  /**
    * Since ReactHorizontalScrollView handles layout changes on JS side, it does not call
    * super.onlayout due to which mIsLayoutDirty flag in HorizontalScrollView remains true and
    * prevents scrolling to child when requestChildFocus is called. Overriding this method and
@@ -547,8 +645,12 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    */
   @Override
   public void requestChildFocus(View child, View focused) {
-    if (focused != null && !mPagingEnabled) {
-      scrollToChild(focused);
+    if (focused != null) {
+      if (!tryScrollSnapToChild(focused)) {
+        if (!mPagingEnabled) {
+          scrollToChild(focused);
+        }
+      }
     }
     requestChildFocusWithoutScroll(child, focused);
   }

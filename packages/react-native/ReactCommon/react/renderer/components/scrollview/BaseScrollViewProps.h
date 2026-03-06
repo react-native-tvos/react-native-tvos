@@ -31,6 +31,8 @@ class BaseScrollViewProps : public ViewProps {
 
 #if TARGET_OS_TV
   bool showsScrollIndex{true};
+  std::optional<std::string> scrollSnapType;
+  Float scrollPadding{0};
 #endif
   bool alwaysBounceHorizontal{};
   bool alwaysBounceVertical{};

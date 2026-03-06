@@ -4,7 +4,33 @@ import type { View, ScrollViewProps, HostComponent, EventSubscription, TVParalla
 declare module 'react-native' {
   export type FocusDestination = null | number | React.Component<any, any> | React.ComponentClass<any>;
 
+  interface ScrollViewProps {
+    /**
+     * Controls the scroll snap axis for focus-based scrolling on TV.
+     * When set, allows scrollSnapAlign-based scrolling even without isTVSelectable.
+     *
+     * @platform tv
+     */
+    scrollSnapType?: 'mandatory' | 'none' | undefined;
+
+    /**
+     * Adds padding offset to the scroll snap position.
+     * Applied based on the scrollSnapAlign value of the focused child.
+     *
+     * @platform tv
+     */
+    scrollPadding?: number | undefined;
+  }
+
   interface ViewProps {
+  /**
+   * Controls the scroll snap alignment when this view receives focus inside a ScrollView.
+   * Used with scrollSnapType on the parent ScrollView.
+   *
+   * @platform tv
+   */
+  scrollSnapAlign?: 'start' | 'center' | 'end' | undefined;
+
   /**
    * Android TV only prop
    */

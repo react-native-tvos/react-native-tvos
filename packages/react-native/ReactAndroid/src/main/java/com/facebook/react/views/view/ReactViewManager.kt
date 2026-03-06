@@ -190,6 +190,11 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     view.setTrapFocusRight(enabled)
   }
 
+  @ReactProp(name = "scrollSnapAlign")
+  public open fun setScrollSnapAlign(view: ReactViewGroup, value: String?) {
+    android.util.Log.d("ScrollSnap", "[ReactViewManager] setScrollSnapAlign: $value on view=${view.id}")
+    view.scrollSnapAlign = value
+  }
 
   @ReactProp(name = ViewProps.BACKGROUND_IMAGE, customType = "BackgroundImage")
   public open fun setBackgroundImage(view: ReactViewGroup, backgroundImage: ReadableArray?) {

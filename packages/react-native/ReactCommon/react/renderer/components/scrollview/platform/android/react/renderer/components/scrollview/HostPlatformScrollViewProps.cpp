@@ -65,7 +65,25 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
                     rawProps,
                     "endFillColor",
                     sourceProps.endFillColor,
-                    clearColor())) {}
+                    clearColor())),
+      scrollSnapType(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.scrollSnapType
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "scrollSnapType",
+                    sourceProps.scrollSnapType,
+                    {})),
+      scrollPadding(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.scrollPadding
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "scrollPadding",
+                    sourceProps.scrollPadding,
+                    {})) {}
 
 void HostPlatformScrollViewProps::setProp(
     const PropsParserContext& context,
@@ -85,6 +103,8 @@ void HostPlatformScrollViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(fadingEdgeLength);
     RAW_SET_PROP_SWITCH_CASE_BASIC(overScrollMode);
     RAW_SET_PROP_SWITCH_CASE_BASIC(endFillColor);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapType);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollPadding);
   }
 }
 
@@ -394,6 +414,18 @@ folly::dynamic HostPlatformScrollViewProps::getDiffProps(
 
   if (endFillColor != oldProps->endFillColor) {
     result["endFillColor"] = *endFillColor;
+  }
+
+  if (scrollSnapType != oldProps->scrollSnapType) {
+    if (scrollSnapType.has_value()) {
+      result["scrollSnapType"] = scrollSnapType.value();
+    } else {
+      result["scrollSnapType"] = folly::dynamic(nullptr);
+    }
+  }
+
+  if (scrollPadding != oldProps->scrollPadding) {
+    result["scrollPadding"] = scrollPadding;
   }
 
   return result;
