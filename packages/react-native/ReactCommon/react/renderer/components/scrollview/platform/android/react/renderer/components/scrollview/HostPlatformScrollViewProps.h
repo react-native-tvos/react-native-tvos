@@ -33,6 +33,9 @@ class HostPlatformScrollViewProps : public BaseScrollViewProps {
   std::string overScrollMode{"auto"};
   SharedColor endFillColor{clearColor()};
 
+  std::optional<std::string> scrollSnapType{};
+  Float scrollPadding{0};
+
 #pragma mark - DebugStringConvertible
 
 #if RN_DEBUG_STRING_CONVERTIBLE
