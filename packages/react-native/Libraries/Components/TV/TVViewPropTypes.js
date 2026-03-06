@@ -124,4 +124,11 @@ export type TVViewProps = $ReadOnly<{|
    *
    */
   nextFocusUp?: ?number,
+
+  /**
+   * Scroll snap alignment (used with snapToAlignment="item" in ScrollView).
+   *
+   */
+  scrollSnapAlign?: ?('start' | 'center' | 'end'),
+
 |}>;

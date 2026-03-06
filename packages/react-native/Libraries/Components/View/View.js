@@ -158,6 +158,12 @@ component View(
     resolvedProps = processedProps;
   }
 
+  // Views with scrollSnapAlign must not be flattened by Fabric, otherwise
+  // the prop never reaches the native view and scroll snapping breaks.
+  if (processedProps.scrollSnapAlign != null) {
+    processedProps.collapsable = false;
+  }
+
   const actualView =
     ref == null ? (
       <ViewNativeComponent {...resolvedProps} />

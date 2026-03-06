@@ -100,6 +100,15 @@ HostPlatformViewProps::HostPlatformViewProps(
           "trapFocusRight",
           sourceProps.trapFocusRight,
           false)),
+      scrollSnapAlign(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.scrollSnapAlign
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "scrollSnapAlign",
+                    sourceProps.scrollSnapAlign,
+                    {})),
       needsOffscreenAlphaCompositing(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
               ? sourceProps.needsOffscreenAlphaCompositing
@@ -219,6 +228,7 @@ void HostPlatformViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE(nativeForeground, "nativeForegroundAndroid");
     RAW_SET_PROP_SWITCH_CASE_BASIC(focusable);
     RAW_SET_PROP_SWITCH_CASE_BASIC(hasTVPreferredFocus);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapAlign);
     RAW_SET_PROP_SWITCH_CASE_BASIC(needsOffscreenAlphaCompositing);
     RAW_SET_PROP_SWITCH_CASE_BASIC(renderToHardwareTextureAndroid);
     RAW_SET_PROP_SWITCH_CASE_BASIC(screenReaderFocusable);
@@ -1074,6 +1084,14 @@ folly::dynamic HostPlatformViewProps::getDiffProps(
       result["nextFocusUp"] = nextFocusUp.value();
     } else {
       result["nextFocusUp"] = folly::dynamic(nullptr);
+    }
+  }
+
+  if (scrollSnapAlign != oldProps->scrollSnapAlign) {
+    if (scrollSnapAlign.has_value()) {
+      result["scrollSnapAlign"] = scrollSnapAlign.value();
+    } else {
+      result["scrollSnapAlign"] = folly::dynamic(nullptr);
     }
   }
 

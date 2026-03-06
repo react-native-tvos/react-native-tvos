@@ -515,8 +515,9 @@ export interface ScrollViewPropsIOS {
    *      - `start` (the default) will align the snap at the left (horizontal) or top (vertical)
    *      - `center` will align the snap in the center
    *      - `end` will align the snap at the right (horizontal) or bottom (vertical)
+   *      - `item` will align the snap according to the value of `scrollSnapAlign` for individual items in the scroll view (TV platforms only).
    */
-  snapToAlignment?: 'start' | 'center' | 'end' | undefined;
+  snapToAlignment?: 'start' | 'center' | 'end' | 'item' | undefined;
 
   /**
    * Fires when the scroll view scrolls to top after the status bar has been tapped

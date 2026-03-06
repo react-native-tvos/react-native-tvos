@@ -87,6 +87,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   BOOL _trapFocusRight;
   NSArray* _focusDestinations;
   id<UIFocusItem> _previouslyFocusedItem;
+  NSString *_scrollSnapAlign;
   RCTSwiftUIContainerViewWrapper *_swiftUIWrapper;
   BOOL _shouldFocusOnMount;
 }
@@ -442,6 +443,13 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   _motionEffectsAdded = NO;
 }
 
+- (NSString *)scrollSnapAlign
+{
+#if TARGET_OS_TV
+  return _scrollSnapAlign;
+#endif
+  return nil;
+}
 
 - (BOOL)isTVFocusGuide
 {
@@ -1175,6 +1183,15 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   _trapFocusDown = newViewProps.trapFocusDown;
   _trapFocusLeft = newViewProps.trapFocusLeft;
   _trapFocusRight = newViewProps.trapFocusRight;
+
+  // `scrollSnapAlign`
+  if (oldViewProps.scrollSnapAlign != newViewProps.scrollSnapAlign) {
+    if (newViewProps.scrollSnapAlign.has_value()) {
+      _scrollSnapAlign = [[NSString alloc] initWithUTF8String:newViewProps.scrollSnapAlign.value().c_str()];
+    } else {
+      _scrollSnapAlign = nil;
+    }
+  }
 #endif
 
   _needsInvalidateLayer = _needsInvalidateLayer || needsInvalidateLayer;

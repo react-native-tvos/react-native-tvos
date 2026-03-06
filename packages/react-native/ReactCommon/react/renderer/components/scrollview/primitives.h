@@ -12,7 +12,7 @@
 
 namespace facebook::react {
 
-enum class ScrollViewSnapToAlignment { Start, Center, End };
+enum class ScrollViewSnapToAlignment { Start, Center, End, Item };
 
 enum class ScrollViewIndicatorStyle { Default, Black, White };
 
