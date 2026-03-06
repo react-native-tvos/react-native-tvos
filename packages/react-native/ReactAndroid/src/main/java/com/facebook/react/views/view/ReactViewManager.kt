@@ -147,22 +147,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   @ReactProp(name = "hasTVPreferredFocus")
   public open fun setTVPreferredFocus(view: ReactViewGroup, hasTVPreferredFocus: Boolean) {
-    /*
-     * React prop functions like this one gets called repeatedly on the New Architecture
-     * no matter the prop has changed or not. Contrary to others, `hasTVPreferredFocus` has
-     * a side effect, calling `requestFocus` function on the view which disrupts the user flow
-     * and should only called once when the property changes to `true.
-     * We keep a special state in the View class and run a comparison here to mitigate
-     * that problem.
-     */
-    if (view.hasTVPreferredFocus == hasTVPreferredFocus) return;
-    view.hasTVPreferredFocus = hasTVPreferredFocus;
-
-    if (hasTVPreferredFocus) {
-      view.isFocusable = true
-      view.isFocusableInTouchMode = true
-      view.requestFocus()
-    }
+    view.setPreferredFocus(hasTVPreferredFocus)
   }
 
   @ReactProp(name = "autoFocus")

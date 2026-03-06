@@ -112,7 +112,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
   private var trapFocusDown = false
   private var trapFocusLeft = false
   private var trapFocusRight = false
-  public var hasTVPreferredFocus: Boolean = false
+  private var hasTVPreferredFocus: Boolean = false
 
   /**
    * This listener will be set for child views when `removeClippedSubview` property is enabled. When
@@ -1611,6 +1611,32 @@ public open class ReactViewGroup public constructor(context: Context?) :
       accessibilityStateChangeListener?.let { am.removeAccessibilityStateChangeListener(it) }
     }
     accessibilityStateChangeListener = null
+  }
+
+  public fun setPreferredFocus(value: Boolean) {
+    /*
+     * React prop functions like this one gets called repeatedly on the New Architecture
+     * no matter the prop has changed or not. Contrary to others, `hasTVPreferredFocus` has
+     * a side effect, calling `requestFocus` function on the view which disrupts the user flow
+     * and should only called once when the property changes to `true.
+     * We keep a special state in the View class and run a comparison here to mitigate
+     * that problem.
+     */
+    if (this.hasTVPreferredFocus == value) {
+      return
+    }
+    this.hasTVPreferredFocus = value
+    if (value) {
+      isFocusable = value
+      isFocusableInTouchMode = value
+      /*
+       * View's AccessibilityNode is registered in onAttachedToWindow, so we can't use requestFocus() directly here.
+       * Otherwise, focus may split into different talkback focus and regular focus, confusing the user.
+       * Use requestFocusFromJS() to postpone focus if node is not yet attached.
+       * This way, we make sure AccessibilityNode is already registered and both regular and a11y focus will succeed.
+       */
+      requestFocusFromJS()
+    }
   }
 
   private companion object {
