@@ -398,6 +398,7 @@ export default class Pressability {
   _touchActivateTime: ?number;
   _touchState: TouchState = 'NOT_RESPONDER';
   _longPressSent: boolean = false;
+  _tvPressInReceived: boolean = false;
 
   constructor(config: PressabilityConfig) {
     this.configure(config);
@@ -416,6 +417,7 @@ export default class Pressability {
     this._cancelLongPressDelayTimeout();
     this._cancelPressDelayTimeout();
     this._cancelPressOutDelayTimeout();
+    this._tvPressInReceived = false;
 
     // Ensure that, if any async event handlers are fired after unmount
     // due to a race, we don't call any configured callbacks.
@@ -443,6 +445,7 @@ export default class Pressability {
           return;
         }
 
+        this._tvPressInReceived = true;
         this._longPressSent = false;
 
         const {onPressIn, onLongPress} = this._config;
@@ -463,6 +466,10 @@ export default class Pressability {
         if (this._config.disabled === true) {
           return;
         }
+        if (!this._tvPressInReceived) {
+          return;
+        }
+        this._tvPressInReceived = false;
         this._cancelLongPressDelayTimeout();
         const {onPress, onLongPress, onPressOut, android_disableSound} =
           this._config;
