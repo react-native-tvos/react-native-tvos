@@ -132,7 +132,10 @@
 
 - (id<UIScrollViewDelegate>)delegate
 {
-  return [super delegate];
+  if (_scrollSnapEnabled) {
+    return [super delegate];
+  }
+  return _publicDelegate;
 }
 
 - (void)setDelegate:(id<UIScrollViewDelegate>)delegate

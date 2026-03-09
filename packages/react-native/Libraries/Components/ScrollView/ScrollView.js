@@ -789,6 +789,8 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
       );
     }
 
+    this._warnIfScrollSnapConflict();
+
     this._keyboardMetrics = Keyboard.metrics();
     this._additionalScrollOffset = 0;
 
@@ -822,6 +824,8 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
     if (prevContentInsetTop !== newContentInsetTop) {
       this._scrollAnimatedValue.setOffset(newContentInsetTop || 0);
     }
+
+    this._warnIfScrollSnapConflict(prevProps);
 
     this._updateAnimatedNodeAttachment();
   }
@@ -1017,6 +1021,31 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
       }
       Commands.zoomToRect(component, rect, animated !== false);
     };
+
+  _warnIfScrollSnapConflict(prevProps?: ScrollViewProps) {
+    const hasConflict =
+      this.props.scrollSnapType != null &&
+      (this.props.snapToInterval != null ||
+        this.props.snapToAlignment != null);
+    if (!hasConflict) {
+      return;
+    }
+    // On update, only warn when the conflict is newly introduced.
+    if (
+      prevProps != null &&
+      prevProps.scrollSnapType != null &&
+      (prevProps.snapToInterval != null || prevProps.snapToAlignment != null)
+    ) {
+      return;
+    }
+    console.warn(
+      'ScrollView: `scrollSnapType` should not be used together with ' +
+        '`snapToInterval` or `snapToAlignment`. `scrollSnapType` provides ' +
+        'focus-driven snapping for TV, while `snapToInterval`/' +
+        '`snapToAlignment` provide momentum-based snapping. Using both ' +
+        'may cause unexpected scrolling behavior.',
+    );
+  }
 
   _textInputFocusError() {
     console.warn('Error measuring text field.');

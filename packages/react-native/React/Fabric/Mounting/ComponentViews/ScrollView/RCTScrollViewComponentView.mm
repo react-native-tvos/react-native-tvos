@@ -470,6 +470,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     scrollView.keyboardDismissMode = RCTUIKeyboardDismissModeFromProps(newScrollViewProps);
   }
 
+#if TARGET_OS_TV
+  if (oldScrollViewProps.scrollSnapType != newScrollViewProps.scrollSnapType) {
+    scrollView.scrollSnapEnabled = newScrollViewProps.scrollSnapType.has_value() &&
+        newScrollViewProps.scrollSnapType.value() == "mandatory";
+  }
+#endif
+
   [super updateProps:props oldProps:oldProps];
 }
 
@@ -1185,6 +1192,65 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     return marker;
 }
 
+- (void)_handleScrollSnapForFocusedView:(UIView *)focusedView
+{
+    const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
+    UIView *snapAlignView = nil;
+    NSString *scrollSnapAlign = [self findScrollSnapAlignInView:focusedView foundView:&snapAlignView];
+    if (scrollSnapAlign == nil || snapAlignView == nil) {
+        return;
+    }
+
+    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+    CGRect focusedFrame = [snapAlignView convertRect:snapAlignView.bounds toView:_scrollView];
+    CGFloat targetOffset;
+    CGFloat scrollPadding = scrollProps.scrollPadding;
+
+    BOOL isHorizontalSnap = _scrollView.contentSize.width > self.frame.size.width;
+    // Determine axis-specific properties
+    CGFloat viewportSize, focusedOrigin, focusedSize, currentOffset, maxContentSize;
+    if (isHorizontalSnap) {
+        viewportSize = scrollView.bounds.size.width;
+        focusedOrigin = focusedFrame.origin.x;
+        focusedSize = focusedFrame.size.width;
+        currentOffset = scrollView.contentOffset.x;
+        maxContentSize = scrollView.contentSize.width;
+    } else {
+        viewportSize = scrollView.bounds.size.height;
+        focusedOrigin = focusedFrame.origin.y;
+        focusedSize = focusedFrame.size.height;
+        currentOffset = scrollView.contentOffset.y;
+        maxContentSize = scrollView.contentSize.height;
+    }
+    // Calculate target offset based on scrollSnapAlign (unified for both axes)
+    if ([scrollSnapAlign isEqualToString:@"start"]) {
+        targetOffset = focusedOrigin - scrollPadding;
+    } else if ([scrollSnapAlign isEqualToString:@"center"]) {
+        CGFloat viewportCenter = viewportSize / 2;
+        CGFloat focusedCenter = focusedOrigin + (focusedSize / 2);
+        targetOffset = focusedCenter - viewportCenter + (scrollPadding / 2);
+    } else if ([scrollSnapAlign isEqualToString:@"end"]) {
+        targetOffset = (focusedOrigin + focusedSize) - viewportSize + scrollPadding;
+    } else {
+        targetOffset = currentOffset;
+    }
+
+    // Apply snap-to-interval if configured
+    if (scrollView.snapToInterval > 0) {
+        CGFloat interval = scrollView.snapToInterval;
+        targetOffset = floor(targetOffset / interval) * interval;
+    }
+
+    // Clamp to valid range
+    CGFloat maxOffset = MAX(maxContentSize - viewportSize, 0);
+    targetOffset = MAX(0, MIN(targetOffset, maxOffset));
+    CGPoint targetContentOffset = isHorizontalSnap
+        ? CGPointMake(targetOffset, scrollView.contentOffset.y)
+        : CGPointMake(scrollView.contentOffset.x, targetOffset);
+    self.preferredContentOffset = targetContentOffset;
+    [self setContentOffset:targetContentOffset animated:YES];
+}
+
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
@@ -1223,59 +1289,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
             }
         }
     } else if ([context.nextFocusedView isDescendantOfView:_scrollView]) {
-        // Focus marker-based scrolling: Check if the focused view has a scrollSnapAlign
-        UIView *snapAlignView = nil;
-        NSString *scrollSnapAlign = [self findScrollSnapAlignInView:context.nextFocusedView foundView:&snapAlignView];
-        if (scrollSnapAlign != nil && snapAlignView != nil) {
-            RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-            CGRect focusedFrame = [snapAlignView convertRect:snapAlignView.bounds toView:_scrollView];
-            CGFloat targetOffset;
-            CGFloat scrollPadding = scrollProps.scrollPadding;
-
-            BOOL isHorizontalSnap = _scrollView.contentSize.width > self.frame.size.width;
-            // Determine axis-specific properties
-            CGFloat viewportSize, focusedOrigin, focusedSize, currentOffset, maxContentSize;
-            if (isHorizontalSnap) {
-                viewportSize = scrollView.bounds.size.width;
-                focusedOrigin = focusedFrame.origin.x;
-                focusedSize = focusedFrame.size.width;
-                currentOffset = scrollView.contentOffset.x;
-                maxContentSize = scrollView.contentSize.width;
-            } else {
-                viewportSize = scrollView.bounds.size.height;
-                focusedOrigin = focusedFrame.origin.y;
-                focusedSize = focusedFrame.size.height;
-                currentOffset = scrollView.contentOffset.y;
-                maxContentSize = scrollView.contentSize.height;
-            }
-            // Calculate target offset based on scrollSnapAlign (unified for both axes)
-            if ([scrollSnapAlign isEqualToString:@"start"]) {
-                targetOffset = focusedOrigin - scrollPadding;
-            } else if ([scrollSnapAlign isEqualToString:@"center"]) {
-                CGFloat viewportCenter = viewportSize / 2;
-                CGFloat focusedCenter = focusedOrigin + (focusedSize / 2);
-                targetOffset = focusedCenter - viewportCenter + (scrollPadding / 2);
-            } else if ([scrollSnapAlign isEqualToString:@"end"]) {
-                targetOffset = (focusedOrigin + focusedSize) - viewportSize + scrollPadding;
-            } else {
-                targetOffset = currentOffset;
-            }
-
-            // Apply snap-to-interval if configured
-            if (scrollView.snapToInterval > 0) {
-                CGFloat interval = scrollView.snapToInterval;
-                targetOffset = floor(targetOffset / interval) * interval;
-            }
-
-            // Clamp to valid range
-            CGFloat maxOffset = MAX(maxContentSize - viewportSize, 0);
-            targetOffset = MAX(0, MIN(targetOffset, maxOffset));
-            CGPoint targetContentOffset = isHorizontalSnap
-            ? CGPointMake(targetOffset, scrollView.contentOffset.y)
-            : CGPointMake(scrollView.contentOffset.x, targetOffset);
-            self.preferredContentOffset = targetContentOffset;
-            [self setContentOffset:targetContentOffset animated:YES];
-        }
+        [self _handleScrollSnapForFocusedView:context.nextFocusedView];
     }
 }
 

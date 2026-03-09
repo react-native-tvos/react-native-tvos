@@ -192,7 +192,6 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
 
   @ReactProp(name = "scrollSnapAlign")
   public open fun setScrollSnapAlign(view: ReactViewGroup, value: String?) {
-    android.util.Log.d("ScrollSnap", "[ReactViewManager] setScrollSnapAlign: $value on view=${view.id}")
     view.scrollSnapAlign = value
   }
 

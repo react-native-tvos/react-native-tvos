@@ -143,7 +143,6 @@ constructor(private val fpsListener: FpsListener? = null) :
 
   @ReactProp(name = "scrollSnapType")
   public fun setScrollSnapType(view: ReactScrollView, value: String?) {
-    android.util.Log.d("ScrollSnap", "[ReactScrollViewManager] setScrollSnapType: $value")
     view.setScrollSnapType(value)
   }
 
@@ -151,7 +150,6 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setScrollPadding(view: ReactScrollView, value: Float) {
     val density = getDisplayMetricDensity()
     val px = (value * density).toInt()
-    android.util.Log.d("ScrollSnap", "[ReactScrollViewManager] setScrollPadding: value=$value density=$density px=$px")
     view.setScrollPadding(px)
   }
 

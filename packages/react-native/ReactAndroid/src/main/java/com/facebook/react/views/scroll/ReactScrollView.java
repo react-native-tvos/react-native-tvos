@@ -62,7 +62,6 @@ import com.facebook.react.views.scroll.ReactScrollViewHelper.HasScrollState;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.HasSmoothScroll;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.HasStateWrapper;
 import com.facebook.react.views.scroll.ReactScrollViewHelper.ReactScrollViewScrollState;
-import com.facebook.react.views.view.ReactViewGroup;
 import com.facebook.systrace.Systrace;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -511,88 +510,35 @@ public class ReactScrollView extends ScrollView
   }
 
   /**
-   * Walks up the view hierarchy from the focused view to find a ReactViewGroup
-   * with scrollSnapAlign set. Returns a two-element array [snapTarget, alignment]
-   * or null if not found.
-   */
-  private @Nullable Object[] findScrollSnapAlign(View focused) {
-    View view = focused;
-    View snapTarget = null;
-    String alignment = null;
-    while (view != null && view != this) {
-      if (view instanceof ReactViewGroup) {
-        String snap = ((ReactViewGroup) view).getScrollSnapAlign();
-        if (snap != null) {
-          alignment = snap;
-          snapTarget = view;
-        }
-      }
-      if (view.getParent() instanceof View) {
-        view = (View) view.getParent();
-      } else {
-        break;
-      }
-    }
-    if (alignment != null && snapTarget != null) {
-      return new Object[] {snapTarget, alignment};
-    }
-    return null;
-  }
-
-  /**
    * Attempts to scroll-snap to the focused child based on scrollSnapType/scrollSnapAlign.
    * Returns true if snap scrolling was performed, false otherwise.
    */
   private boolean tryScrollSnapToChild(View focused) {
-    android.util.Log.d("ScrollSnap", "[ReactScrollView] tryScrollSnapToChild: mScrollSnapType=" + mScrollSnapType);
     if (!"mandatory".equals(mScrollSnapType)) {
       return false;
     }
 
-    Object[] result = findScrollSnapAlign(focused);
+    kotlin.Pair<View, String> result = ReactScrollViewHelper.findScrollSnapAlign(focused, this);
     if (result == null) {
-      android.util.Log.d("ScrollSnap", "[ReactScrollView] tryScrollSnapToChild: no snap align found in hierarchy");
       return false;
     }
 
-    View snapTarget = (View) result[0];
-    String alignment = (String) result[1];
+    View snapTarget = result.getFirst();
+    String alignment = result.getSecond();
 
     Rect rect = new Rect();
     snapTarget.getDrawingRect(rect);
     offsetDescendantRectToMyCoords(snapTarget, rect);
 
     int viewportHeight = getHeight() - getPaddingTop() - getPaddingBottom();
-    int focusedTop = rect.top;
-    int focusedBottom = rect.bottom;
-    int focusedCenterY = (focusedTop + focusedBottom) / 2;
-
-    android.util.Log.d("ScrollSnap", "[ReactScrollView] tryScrollSnapToChild: alignment=" + alignment
-        + " rect=" + rect + " viewportHeight=" + viewportHeight + " scrollPadding=" + mScrollPadding);
-
-    int targetOffset;
-    switch (alignment) {
-      case "start":
-        targetOffset = focusedTop - mScrollPadding;
-        break;
-      case "center":
-        targetOffset = focusedCenterY - (viewportHeight / 2) + (mScrollPadding / 2);
-        break;
-      case "end":
-        targetOffset = focusedBottom - viewportHeight + mScrollPadding;
-        break;
-      default:
-        return false;
-    }
-
-    if (mSnapInterval > 0) {
-      targetOffset = (int) (Math.floor((double) targetOffset / mSnapInterval) * mSnapInterval);
-    }
-
     int maxScrollY = getMaxScrollY();
-    targetOffset = Math.max(0, Math.min(targetOffset, maxScrollY));
 
-    android.util.Log.d("ScrollSnap", "[ReactScrollView] tryScrollSnapToChild: scrolling to y=" + targetOffset + " (max=" + maxScrollY + ")");
+    Integer targetOffset = ReactScrollViewHelper.computeScrollSnapOffset(
+        rect.top, rect.bottom, viewportHeight, alignment, mSnapInterval, mScrollPadding, maxScrollY);
+    if (targetOffset == null) {
+      return false;
+    }
+
     reactSmoothScrollTo(getScrollX(), targetOffset);
     return true;
   }

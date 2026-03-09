@@ -11,6 +11,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.facebook.react.uimanager.StateWrapper
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.common.UIManagerType
 import com.facebook.react.uimanager.common.ViewUtil
+import com.facebook.react.views.view.ReactViewGroup
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.abs
@@ -567,6 +569,70 @@ public object ReactScrollViewHelper {
     host.updateClippingRect(ancestorIdList)
 
     return host.findViewById(nextFocusableViewId)
+  }
+
+  /**
+   * Walks up the view hierarchy from the focused view to find a ReactViewGroup with
+   * scrollSnapAlign set. Returns a Pair of (snapTarget, alignment) or null if not found.
+   *
+   * Shared by [ReactScrollView] and [ReactHorizontalScrollView].
+   */
+  @JvmStatic
+  public fun findScrollSnapAlign(focused: View, scrollView: ViewGroup): Pair<View, String>? {
+    var view: View? = focused
+    var snapTarget: View? = null
+    var alignment: String? = null
+    while (view != null && view !== scrollView) {
+      if (view is ReactViewGroup) {
+        val snap = view.scrollSnapAlign
+        if (snap != null) {
+          alignment = snap
+          snapTarget = view
+        }
+      }
+      val parent = view.parent
+      view = if (parent is View) parent else null
+    }
+    return if (alignment != null && snapTarget != null) Pair(snapTarget, alignment) else null
+  }
+
+  /**
+   * Computes the target scroll offset for scroll-snap based on the focused view's position,
+   * alignment, snap interval, scroll padding, and maximum scroll range.
+   *
+   * Returns the clamped target offset, or null if the alignment is unknown.
+   *
+   * Shared by [ReactScrollView] and [ReactHorizontalScrollView].
+   *
+   * @param focusedStart the start coordinate of the snap target in scroll view coordinates
+   * @param focusedEnd the end coordinate of the snap target in scroll view coordinates
+   * @param viewportSize the visible viewport size on the scroll axis
+   * @param alignment the scrollSnapAlign value ("start", "center", or "end")
+   * @param snapInterval the snap interval (0 if not set)
+   * @param scrollPadding the scroll padding value
+   * @param maxScrollOffset the maximum scroll offset for clamping
+   */
+  @JvmStatic
+  public fun computeScrollSnapOffset(
+      focusedStart: Int,
+      focusedEnd: Int,
+      viewportSize: Int,
+      alignment: String,
+      snapInterval: Int,
+      scrollPadding: Int,
+      maxScrollOffset: Int,
+  ): Int? {
+    val focusedCenter = (focusedStart + focusedEnd) / 2
+    var targetOffset = when (alignment) {
+      "start" -> focusedStart - scrollPadding
+      "center" -> focusedCenter - (viewportSize / 2) + (scrollPadding / 2)
+      "end" -> focusedEnd - viewportSize + scrollPadding
+      else -> return null
+    }
+    if (snapInterval > 0) {
+      targetOffset = (Math.floor(targetOffset.toDouble() / snapInterval) * snapInterval).toInt()
+    }
+    return Math.max(0, Math.min(targetOffset, maxScrollOffset))
   }
 
   @JvmStatic
