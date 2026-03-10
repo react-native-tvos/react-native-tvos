@@ -69,6 +69,8 @@ export type ScrollViewNativeProps = $ReadOnly<{
   scrollPerfTag?: ?string,
   scrollToOverflowEnabled?: ?boolean,
   scrollsToTop?: ?boolean,
+  scrollSnapType?: ?('mandatory' | 'none'),
+  scrollPadding?: ?number,
   sendMomentumEvents?: ?boolean,
   showsHorizontalScrollIndicator?: ?boolean,
   showsScrollIndex?: ?boolean,
