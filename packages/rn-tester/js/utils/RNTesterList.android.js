@@ -92,6 +92,11 @@ const Components: Array<RNTesterModuleInfo> = [
     module: require('../examples/ScrollView/ScrollViewAnimatedExample'),
   },
   {
+    key: 'ScrollViewTVSnapExample',
+    category: 'TV',
+    module: require('../examples/ScrollView/ScrollViewTVSnapExample'),
+  },
+  {
     key: 'TVTextScrollViewExample',
     category: 'TV',
     module: require('../examples/TVTextScrollView/TVTextScrollViewExample'),
