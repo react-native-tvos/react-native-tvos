@@ -20,6 +20,8 @@ const {
   View,
 } = require('react-native');
 
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+
 const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
 
@@ -179,7 +181,7 @@ exports.examples = [
       );
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
 class Item extends React.PureComponent<{|
   msg?: string,
