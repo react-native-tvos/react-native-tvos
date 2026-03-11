@@ -654,6 +654,8 @@ type ScrollViewBaseProps = $ReadOnly<{
    * This can improve scrolling performance on long lists. The default value is
    * true.
    */
+  scrollSnapType?: ?('mandatory' | 'none'),
+  scrollPadding?: ?number,
   removeClippedSubviews?: ?boolean,
   /**
    * A RefreshControl component, used to provide pull-to-refresh
