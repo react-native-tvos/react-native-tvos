@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
 const React = require('react');
@@ -28,14 +30,14 @@ exports.examples = [
       return <DirectionalNextFocusExample />;
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
 const scale = Platform.OS === 'android' ? 0.5 : 1.0;
 
 const width = 200 * scale;
 const height = 120 * scale;
 
-const Button = React.forwardRef((props: $FlowFixMeProps, ref: $FlowFixMe) => {
+const Button = React.forwardRef((props: any, ref: $FlowFixMe) => {
   return (
     <RNTesterThemeContext.Consumer>
       {theme => {
@@ -61,7 +63,7 @@ const Button = React.forwardRef((props: $FlowFixMeProps, ref: $FlowFixMe) => {
   );
 });
 
-const ThemedView = (props: $FlowFixMeProps) => (
+const ThemedView = (props: any) => (
   <RNTesterThemeContext.Consumer>
     {theme => {
       return (
