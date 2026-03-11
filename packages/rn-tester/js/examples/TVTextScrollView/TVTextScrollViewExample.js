@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+
 const React = require('react');
 const {
   Dimensions,
@@ -179,7 +181,7 @@ exports.examples = [
       );
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
 class Item extends React.PureComponent<{|
   msg?: string,

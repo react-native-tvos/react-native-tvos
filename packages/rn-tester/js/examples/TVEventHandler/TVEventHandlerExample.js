@@ -10,23 +10,25 @@
 
 'use strict';
 
-import * as React from 'react';
-import ReactNative, {ScrollView, type TVRemoteEvent} from 'react-native';
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
-const {
+import * as React from 'react';
+import {
+  Platform,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  View,
-  useTVEventHandler,
-  Platform,
-  Pressable,
   TouchableHighlight,
   TouchableNativeFeedback,
   TouchableOpacity,
   TVEventControl,
   TVFocusGuideView,
-} = ReactNative;
+  type TVRemoteEvent,
+  View,
+  useTVEventHandler,
+} from 'react-native';
 
 const focusHandler = (event: $FlowFixMe, props: any) => {
   if (props.noBubbledEvents) {
@@ -136,13 +138,11 @@ const PressableNonfunctionalButton = (props: {
     </Pressable>
   );
 };
-const TouchableOpacityButton = (props: {
-  title: string,
-  log: (entry: string) => void,
-}) => {
+const TouchableOpacityButton = (props: any) => {
+  const {title, log, ...rest} = props;
   return (
     <TouchableOpacity
-      {...props}
+      {...rest}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -155,13 +155,11 @@ const TouchableOpacityButton = (props: {
   );
 };
 
-const TouchableHighlightButton = (props: {
-  title: string,
-  log: (entry: string) => void,
-}) => {
+const TouchableHighlightButton = (props: any) => {
+  const {title, log, ...rest} = props;
   return (
     <TouchableHighlight
-      {...props}
+      {...rest}
       style={styles.pressable}
       onFocus={(event: any) => focusHandler(event, props)}
       onBlur={(event: any) => blurHandler(event, props)}
@@ -174,13 +172,11 @@ const TouchableHighlightButton = (props: {
   );
 };
 
-const TouchableNativeFeedbackButton = (props: {
-  title: string,
-  log: (entry: string) => void,
-}) => {
+const TouchableNativeFeedbackButton = (props: any) => {
+  const {title, log, ...rest} = props;
   return (
     <TouchableNativeFeedback
-      {...props}
+      {...rest}
       background={TouchableNativeFeedback.SelectableBackground()}
       onPress={() => pressEventHandler('onPress', props)}
       onLongPress={() => pressEventHandler('onLongPress', props)}
@@ -550,4 +546,4 @@ exports.examples = [
       return <TVEventHandlerView />;
     },
   },
-];
+] as Array<RNTesterModuleExample>;

@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+
 import {useTheme} from '../../components/RNTesterTheme';
 
 const React = require('react');
@@ -28,14 +30,14 @@ exports.examples = [
       return <TVFocusGuideExample />;
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
 const screenHeight = ReactNative.Dimensions.get('window').height;
 const scale = screenHeight / 1080;
 const width = 200 * scale;
 const height = 120 * scale;
 
-const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
+const Button = React.forwardRef((props: any, ref: any) => {
   const theme = useTheme();
   return (
     <Pressable
@@ -52,7 +54,7 @@ const Button = React.forwardRef((props: $FlowFixMeProps, ref: any) => {
   );
 });
 
-const ThemedView = (props: $FlowFixMeProps) => {
+const ThemedView = (props: any) => {
   const theme = useTheme();
   return (
     <View style={[styles.buttonStyle, props.style]}>
