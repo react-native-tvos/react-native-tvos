@@ -11,6 +11,7 @@
 'use strict';
 
 import type {FocusEvent} from '../../../../react-native/Libraries/Types/CoreEventTypes';
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import {useTheme} from '../../components/RNTesterTheme';
 import React from 'react';
@@ -36,10 +37,10 @@ exports.examples = [
       return <TVFocusGuideAutoFocusExample />;
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
 // Set it to false to see the behavior without TVFocusGuide.
-const FOCUS_GUIDE_ENABLED = true;
+const FOCUS_GUIDE_ENABLED: boolean = true;
 
 const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
@@ -85,7 +86,7 @@ const FocusableBox = React.memo(
         style: $FlowFixMe,
         hasTVPreferredFocus?: boolean,
       },
-      forwardRef,
+      forwardRef: any,
     ) => {
       const theme = useTheme();
       const {id, width, height, text, slow, style} = props;
@@ -209,7 +210,7 @@ const HList = React.forwardRef(
 );
 
 const categoryData = [1, 2, 3, 4, 5];
-const getSelectedItemPrefix = (selectedCategory: string) => {
+const getSelectedItemPrefix = (selectedCategory: string | null) => {
   if (selectedCategory === null) {
     return 'Item';
   }
