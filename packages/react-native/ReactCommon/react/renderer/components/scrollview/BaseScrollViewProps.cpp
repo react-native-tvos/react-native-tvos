@@ -32,6 +32,15 @@ BaseScrollViewProps::BaseScrollViewProps(
                     "showsScrollIndex",
                     sourceProps.showsScrollIndex,
                     {})),
+      snapToItemPadding(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.snapToItemPadding
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "snapToItemPadding",
+                    sourceProps.snapToItemPadding,
+                    (Float)0)),
 #endif
       alwaysBounceHorizontal(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
@@ -400,6 +409,7 @@ void BaseScrollViewProps::setProp(
   switch (hash) {
 #if TARGET_OS_TV
     RAW_SET_PROP_SWITCH_CASE_BASIC(showsScrollIndex);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(snapToItemPadding);
 #endif
     RAW_SET_PROP_SWITCH_CASE_BASIC(alwaysBounceHorizontal);
     RAW_SET_PROP_SWITCH_CASE_BASIC(alwaysBounceVertical);

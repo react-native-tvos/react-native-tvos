@@ -132,6 +132,9 @@
 
 - (id<UIScrollViewDelegate>)delegate
 {
+  if (_scrollSnapEnabled) {
+    return [super delegate];
+  }
   return _publicDelegate;
 }
 
