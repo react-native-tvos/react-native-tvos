@@ -242,6 +242,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     }
   }
 
+  @Override
   public boolean getScrollEnabled() {
     return mScrollEnabled;
   }
@@ -1651,6 +1652,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    * <p>`smoothScrollTo` changes `contentOffset` and we need to keep `contentOffset` in sync between
    * scroll view and state. Calling raw `smoothScrollTo` doesn't update state.
    */
+  @Override
   public void reactSmoothScrollTo(int x, int y) {
     ReactScrollViewHelper.smoothScrollTo(this, x, y);
     setPendingContentOffsets(x, y);
@@ -1794,6 +1796,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   @Nullable
+  @Override
   public StateWrapper getStateWrapper() {
     return mStateWrapper;
   }

@@ -94,10 +94,18 @@ static void computeFlexBasisForChild(
   const bool isColumnStyleDimDefined =
       child->hasDefiniteLength(Dimension::Height, ownerHeight);
 
-  if (resolvedFlexBasis.isDefined() &&
-      (yoga::isDefined(mainAxisSize) ||
-       (!node->hasErrata(Errata::FlexBasisFitContentInMainAxis) &&
-        resolvedFlexBasis.unwrap() > 0))) {
+  const bool fixFlexBasisFitContent =
+      node->getConfig()->isExperimentalFeatureEnabled(
+          ExperimentalFeature::FixFlexBasisFitContent);
+
+  bool useResolvedFlexBasis =
+      resolvedFlexBasis.isDefined() && yoga::isDefined(mainAxisSize);
+  if (fixFlexBasisFitContent && resolvedFlexBasis.isDefined() &&
+      resolvedFlexBasis.unwrap() > 0) {
+    useResolvedFlexBasis = true;
+  }
+
+  if (useResolvedFlexBasis) {
     if (child->getLayout().computedFlexBasis.isUndefined() ||
         (child->getConfig()->isExperimentalFeatureEnabled(
              ExperimentalFeature::WebFlexBasis) &&
@@ -159,58 +167,35 @@ static void computeFlexBasisForChild(
 
     // The W3C spec doesn't say anything about the 'overflow' property, but all
     // major browsers appear to implement the following logic.
-    //
-    // In the cross axis, children should always be bounded by the parent's
-    // available space (FitContent). In the main axis, the flex basis should
-    // be the child's intrinsic size under max-content constraint.
-    //
-    // The legacy behavior (FlexBasisFitContentInMainAxis errata) applies a
-    // FitContent constraint in the main axis for non-scroll containers, which
-    // causes unnecessary re-measurement and cascading clones when the parent's
-    // content-determined size changes (e.g. when a sibling's height changes
-    // in a ScrollView).
-    //
-    // The corrected behavior leaves the main axis unconstrained for container
-    // children (no measure function), and preserves the FitContent constraint
-    // for measure function nodes (e.g. text) to support text wrapping.
-    if (node->hasErrata(Errata::FlexBasisFitContentInMainAxis)) {
-      // Legacy behavior: apply FitContent in both axes (except main axis for
-      // scroll containers).
-      if ((!isMainAxisRow && node->style().overflow() == Overflow::Scroll) ||
-          node->style().overflow() != Overflow::Scroll) {
-        if (yoga::isUndefined(childWidth) && yoga::isDefined(width)) {
-          childWidth = width;
-          childWidthSizingMode = SizingMode::FitContent;
-        }
+    if ((!isMainAxisRow && node->style().overflow() == Overflow::Scroll) ||
+        node->style().overflow() != Overflow::Scroll) {
+      if (yoga::isUndefined(childWidth) && yoga::isDefined(width)) {
+        childWidth = width;
+        childWidthSizingMode = SizingMode::FitContent;
       }
+    }
 
-      if ((isMainAxisRow && node->style().overflow() == Overflow::Scroll) ||
-          node->style().overflow() != Overflow::Scroll) {
-        if (yoga::isUndefined(childHeight) && yoga::isDefined(height)) {
-          childHeight = height;
-          childHeightSizingMode = SizingMode::FitContent;
-        }
-      }
-    } else {
-      // Corrected behavior: only apply FitContent in the cross axis, or in
-      // the main axis for measure function nodes in non-scroll containers.
-      if (!isMainAxisRow ||
+    // For height in the main axis (column direction): when the
+    // FixFlexBasisFitContent feature is enabled, skip FitContent for
+    // non-measure container children. This makes the flex basis independent
+    // of the parent's content-determined height, preventing unnecessary
+    // re-measurement cascades when a sibling changes size in a ScrollView.
+    //
+    // We only optimize the height (column) axis because text wrapping depends
+    // on width constraints propagating through container nodes. Removing
+    // FitContent from the width axis would cause text inside nested
+    // containers to stop wrapping.
+    bool applyHeightFitContent =
+        isMainAxisRow || node->style().overflow() != Overflow::Scroll;
+    if (fixFlexBasisFitContent) {
+      applyHeightFitContent = isMainAxisRow ||
           (child->hasMeasureFunc() &&
-           node->style().overflow() != Overflow::Scroll)) {
-        if (yoga::isUndefined(childWidth) && yoga::isDefined(width)) {
-          childWidth = width;
-          childWidthSizingMode = SizingMode::FitContent;
-        }
-      }
-
-      if (isMainAxisRow ||
-          (child->hasMeasureFunc() &&
-           node->style().overflow() != Overflow::Scroll)) {
-        if (yoga::isUndefined(childHeight) && yoga::isDefined(height)) {
-          childHeight = height;
-          childHeightSizingMode = SizingMode::FitContent;
-        }
-      }
+           node->style().overflow() != Overflow::Scroll);
+    }
+    if (applyHeightFitContent && yoga::isUndefined(childHeight) &&
+        yoga::isDefined(height)) {
+      childHeight = height;
+      childHeightSizingMode = SizingMode::FitContent;
     }
 
     const auto& childStyle = child->style();
@@ -1472,18 +1457,15 @@ static void calculateLayoutImpl(
 
   // STEP 3: DETERMINE FLEX BASIS FOR EACH ITEM
 
-  // When this node is measured with MaxContent (corrected
-  // FlexBasisFitContentInMainAxis behavior), availableInnerHeight/Width is NaN.
+  // When this node is measured with MaxContent (FixFlexBasisFitContent
+  // behavior), availableInnerHeight is NaN.
   // To preserve percentage resolution for descendants, derive a definite
-  // owner-size from the parent-provided ownerHeight/ownerWidth.
+  // owner-size from the parent-provided ownerHeight.
   float ownerWidthForChildren = availableInnerWidth;
   float ownerHeightForChildren = availableInnerHeight;
 
-  if (!node->hasErrata(Errata::FlexBasisFitContentInMainAxis)) {
-    // Do not propagate the fallback when this node is a direct child of a
-    // scroll container. In scroll contexts, the scroll axis is intentionally
-    // indefinite and percentage-based children should not resolve against the
-    // viewport size.
+  if (node->getConfig()->isExperimentalFeatureEnabled(
+          ExperimentalFeature::FixFlexBasisFitContent)) {
     const auto* owner = node->getOwner();
     const bool isChildOfScrollContainer =
         owner != nullptr && owner->style().overflow() == Overflow::Scroll;

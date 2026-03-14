@@ -54,6 +54,8 @@ extern
  * like any ordinary UIView. You can have multiple RCTRootViews on screen at
  * once, all controlled by the same JavaScript application.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wdeprecated"
 __attribute__((deprecated("This API will be removed along with the legacy architecture.")))
 #if TARGET_OS_TV
 @interface RCTRootView : UIView <RCTTVRemoteSelectHandlerDelegate>
@@ -189,5 +191,7 @@ __attribute__((deprecated("This API will be removed along with the legacy archit
 - (void)cancelTouches;
 
 @end
+
+#pragma clang diagnostic pop
 
 NS_ASSUME_NONNULL_END

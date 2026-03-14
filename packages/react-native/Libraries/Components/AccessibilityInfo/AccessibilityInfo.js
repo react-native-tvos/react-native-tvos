@@ -213,8 +213,8 @@ const AccessibilityInfo = {
    * The result is `true` when high text contrast is enabled and `false` otherwise.
    */
   isHighTextContrastEnabled(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (Platform.OS === 'android') {
+    if (Platform.OS === 'android') {
+      return new Promise((resolve, reject) => {
         if (NativeAccessibilityInfoAndroid?.isHighTextContrastEnabled != null) {
           NativeAccessibilityInfoAndroid.isHighTextContrastEnabled(resolve);
         } else {
@@ -224,10 +224,10 @@ const AccessibilityInfo = {
             ),
           );
         }
-      } else {
-        return Promise.resolve(false);
-      }
-    });
+      });
+    } else {
+      return Promise.resolve(false);
+    }
   },
 
   /**
@@ -237,10 +237,10 @@ const AccessibilityInfo = {
    * The result is `true` when dark system colors is enabled and `false` otherwise.
    */
   isDarkerSystemColorsEnabled(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (Platform.OS === 'android') {
-        return Promise.resolve(false);
-      } else {
+    if (Platform.OS === 'android') {
+      return Promise.resolve(false);
+    } else {
+      return new Promise((resolve, reject) => {
         if (
           NativeAccessibilityManagerIOS?.getCurrentDarkerSystemColorsState !=
           null
@@ -256,8 +256,8 @@ const AccessibilityInfo = {
             ),
           );
         }
-      }
-    });
+      });
+    }
   },
 
   /**
@@ -269,10 +269,10 @@ const AccessibilityInfo = {
    * See https://reactnative.dev/docs/accessibilityinfo#prefersCrossFadeTransitions
    */
   prefersCrossFadeTransitions(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (Platform.OS === 'android') {
-        return Promise.resolve(false);
-      } else {
+    if (Platform.OS === 'android') {
+      return Promise.resolve(false);
+    } else {
+      return new Promise((resolve, reject) => {
         if (
           NativeAccessibilityManagerIOS?.getCurrentPrefersCrossFadeTransitionsState !=
           null
@@ -288,8 +288,8 @@ const AccessibilityInfo = {
             ),
           );
         }
-      }
-    });
+      });
+    }
   },
 
   /**
@@ -424,7 +424,7 @@ const AccessibilityInfo = {
    *
    * See https://reactnative.dev/docs/accessibilityinfo#addeventlistener
    */
-  addEventListener<K: keyof AccessibilityEventDefinitions>(
+  addEventListener<K extends keyof AccessibilityEventDefinitions>(
     eventName: K,
     // $FlowFixMe[incompatible-type] - Flow bug with unions and generics (T128099423)
     handler: (...AccessibilityEventDefinitions[K]) => void,

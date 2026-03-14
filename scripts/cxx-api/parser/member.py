@@ -19,6 +19,7 @@ from .utils import (
     parse_type_with_argstrings,
     qualify_arguments,
     qualify_parsed_type,
+    qualify_template_args_only,
     qualify_type_str,
 )
 
@@ -142,6 +143,10 @@ class VariableMember(Member):
     def close(self, scope: Scope):
         self._fp_arguments = qualify_arguments(self._fp_arguments, scope)
         self._parsed_type = qualify_parsed_type(self._parsed_type, scope)
+        # Qualify template arguments in variable name for explicit specializations
+        # e.g., "default_value<MyType>" -> "default_value<ns::MyType>"
+        if "<" in self.name:
+            self.name = qualify_template_args_only(self.name, scope)
 
     def _is_function_pointer(self) -> bool:
         """Check if this variable is a function pointer type."""
@@ -166,11 +171,11 @@ class VariableMember(Member):
         if self.is_constexpr:
             result += "constexpr "
 
-        if self.is_const and not self.is_constexpr:
-            result += "const "
-
         if self.is_mutable:
             result += "mutable "
+
+        if self.is_const and not self.is_constexpr:
+            result += "const "
 
         if self._is_function_pointer():
             formatted_args = format_arguments(self._fp_arguments)
@@ -237,6 +242,10 @@ class FunctionMember(Member):
     def close(self, scope: Scope):
         self.type = qualify_type_str(self.type, scope)
         self.arguments = qualify_arguments(self.arguments, scope)
+        # Qualify template arguments in function name for explicit specializations
+        # e.g., "convert<MyType>" -> "convert<ns::MyType>"
+        if "<" in self.name:
+            self.name = qualify_template_args_only(self.name, scope)
 
     def to_string(
         self,
@@ -324,6 +333,19 @@ class TypedefMember(Member):
     def _is_function_pointer(self) -> bool:
         """Check if this typedef is a function pointer type."""
         return self.argstring is not None and self.argstring.startswith(")(")
+
+    def get_value(self) -> str:
+        if self.keyword == "using":
+            return format_parsed_type(self._parsed_type)
+        elif self._is_function_pointer():
+            formatted_args = format_arguments(self._fp_arguments)
+            qualified_type = format_parsed_type(self._parsed_type)
+            if "(*" in qualified_type:
+                return f"{qualified_type})({formatted_args})"
+            else:
+                return f"{qualified_type}(*)({formatted_args})"
+        else:
+            return self.type
 
     def to_string(
         self,
