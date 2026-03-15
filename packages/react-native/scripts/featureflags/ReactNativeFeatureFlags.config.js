@@ -911,6 +911,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'canary',
     },
+    useUnorderedMapInDifferentiator: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     viewCullingOutsetRatio: {
       defaultValue: 0,
       metadata: {
@@ -986,6 +997,17 @@ const definitions: FeatureFlagDefinitions = {
         description:
           'Disable prop maintainVisibleContentPosition in ScrollView',
         expectedReleaseValue: false,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableOptimizedBoxShadowParsing: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-02-26',
+        description:
+          'Hoists regex patterns to module scope and optimizes parseLength in processBoxShadow for improved performance.',
+        expectedReleaseValue: true,
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',
