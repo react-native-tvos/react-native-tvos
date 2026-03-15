@@ -146,6 +146,13 @@ constructor(private val fpsListener: FpsListener? = null) :
     view.setSnapToEnd(snapToEnd)
   }
 
+  @ReactProp(name = "snapToItemPadding")
+  public fun setSnapToItemPadding(view: ReactScrollView, value: Float) {
+    val density = getDisplayMetricDensity()
+    val px = (value * density).toInt()
+    view.setSnapToItemPadding(px)
+  }
+
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)
   public fun setRemoveClippedSubviews(view: ReactScrollView, removeClippedSubviews: Boolean) {
     view.removeClippedSubviews = removeClippedSubviews

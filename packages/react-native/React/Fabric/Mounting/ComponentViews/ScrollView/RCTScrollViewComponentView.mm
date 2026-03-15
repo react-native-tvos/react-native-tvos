@@ -30,6 +30,7 @@
 #import <React/RCTTVRemoteHandler.h>
 #import <React/RCTTVNavigationEventNotification.h>
 #import "React/RCTI18nUtil.h"
+#import "RCTViewComponentView.h"
 #endif
 
 using namespace facebook::react;
@@ -40,6 +41,7 @@ static NSString *kOnScrollEndEvent = @"onScrollEnded";
 
 static const CGFloat kClippingLeeway = 44.0;
 static const float TV_DEFAULT_SWIPE_DURATION = 0.3;
+static const CGPoint NO_PREFERRED_CONTENT_OFFSET = CGPointMake(CGFLOAT_MIN, CGFLOAT_MIN);
 
 static UIScrollViewKeyboardDismissMode RCTUIKeyboardDismissModeFromProps(const ScrollViewProps &props)
 {
@@ -96,6 +98,8 @@ RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrollView, NSInt
     RCTScrollViewProtocol,
     RCTScrollableProtocol,
     RCTEnhancedScrollViewOverridingDelegate>
+
+@property (nonatomic, assign) CGPoint preferredContentOffset;
 
 @end
 
@@ -172,6 +176,7 @@ RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrollView, NSInt
     _endDraggingSensitivityMultiplier = 1;
       
     _tvRemoteGestureRecognizers = [NSMutableDictionary new];
+    _preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
   }
 
   return self;
@@ -465,6 +470,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     scrollView.keyboardDismissMode = RCTUIKeyboardDismissModeFromProps(newScrollViewProps);
   }
 
+#if TARGET_OS_TV
+  if (oldScrollViewProps.snapToAlignment != newScrollViewProps.snapToAlignment) {
+    scrollView.scrollSnapEnabled = newScrollViewProps.snapToAlignment == ScrollViewSnapToAlignment::Item;
+  }
+#endif
+
   [super updateProps:props oldProps:oldProps];
 }
 
@@ -729,7 +740,10 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-  if (fabs(_endDraggingSensitivityMultiplier - 1) > 0.0001f) {
+    if (!CGPointEqualToPoint(self.preferredContentOffset, NO_PREFERRED_CONTENT_OFFSET))
+    {
+        *targetContentOffset = self.preferredContentOffset;
+    } else if (fabs(_endDraggingSensitivityMultiplier - 1) > 0.0001f) {
     if (targetContentOffset->y > 0) {
       const CGFloat travel = targetContentOffset->y - scrollView.contentOffset.y;
       targetContentOffset->y = scrollView.contentOffset.y + travel * _endDraggingSensitivityMultiplier;
@@ -1154,20 +1168,110 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
   self->_eventEmitter->onBlur();
 }
 
+// Focus marker helper: traverses view hierarchy to find scrollSnapAlign prop
+// Returns the view that has the property via the output parameter
+- (NSString *)findScrollSnapAlignInView:(UIView *)view foundView:(UIView **)outView
+{
+    UIView *testView = view;
+    UIView *snapTarget;
+    NSString *marker;
+
+    while (testView && testView != self) {
+        if (![testView isKindOfClass:RCTViewComponentView.class])
+        {
+            testView = [testView superview];
+            continue;
+        }
+        RCTViewComponentView *componentView = (RCTViewComponentView *)testView;
+
+        const auto &viewProps = static_cast<const facebook::react::BaseViewProps &>(*componentView.props);
+        if (viewProps.scrollSnapAlign.has_value() && !viewProps.scrollSnapAlign.value().empty()) {
+            marker = [NSString stringWithUTF8String:viewProps.scrollSnapAlign.value().c_str()];
+            snapTarget = componentView;
+        }
+
+        testView = [testView superview];
+    }
+    *outView = snapTarget;
+    return marker;
+}
+
+- (void)_handleScrollSnapForFocusedView:(UIView *)focusedView
+{
+    const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
+    UIView *snapAlignView = nil;
+    NSString *scrollSnapAlign = [self findScrollSnapAlignInView:focusedView foundView:&snapAlignView];
+    if (scrollSnapAlign == nil || snapAlignView == nil) {
+        return;
+    }
+
+    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+    CGRect focusedFrame = [snapAlignView convertRect:snapAlignView.bounds toView:_scrollView];
+    CGFloat targetOffset;
+    CGFloat snapToItemPadding = scrollProps.snapToItemPadding;
+
+    BOOL isHorizontalSnap = _scrollView.contentSize.width > self.frame.size.width;
+    // Determine axis-specific properties
+    CGFloat viewportSize, focusedOrigin, focusedSize, currentOffset, maxContentSize;
+    if (isHorizontalSnap) {
+        viewportSize = scrollView.bounds.size.width;
+        focusedOrigin = focusedFrame.origin.x;
+        focusedSize = focusedFrame.size.width;
+        currentOffset = scrollView.contentOffset.x;
+        maxContentSize = scrollView.contentSize.width;
+    } else {
+        viewportSize = scrollView.bounds.size.height;
+        focusedOrigin = focusedFrame.origin.y;
+        focusedSize = focusedFrame.size.height;
+        currentOffset = scrollView.contentOffset.y;
+        maxContentSize = scrollView.contentSize.height;
+    }
+    // Calculate target offset based on scrollSnapAlign (unified for both axes)
+    if ([scrollSnapAlign isEqualToString:@"start"]) {
+        targetOffset = focusedOrigin - snapToItemPadding;
+    } else if ([scrollSnapAlign isEqualToString:@"center"]) {
+        CGFloat viewportCenter = viewportSize / 2;
+        CGFloat focusedCenter = focusedOrigin + (focusedSize / 2);
+        targetOffset = focusedCenter - viewportCenter + (snapToItemPadding / 2);
+    } else if ([scrollSnapAlign isEqualToString:@"end"]) {
+        targetOffset = (focusedOrigin + focusedSize) - viewportSize + snapToItemPadding;
+    } else {
+        targetOffset = currentOffset;
+    }
+
+    // Apply snap-to-interval if configured
+    if (scrollView.snapToInterval > 0) {
+        CGFloat interval = scrollView.snapToInterval;
+        targetOffset = floor(targetOffset / interval) * interval;
+    }
+
+    // Clamp to valid range
+    CGFloat maxOffset = MAX(maxContentSize - viewportSize, 0);
+    targetOffset = MAX(0, MIN(targetOffset, maxOffset));
+    CGPoint targetContentOffset = isHorizontalSnap
+        ? CGPointMake(targetOffset, scrollView.contentOffset.y)
+        : CGPointMake(scrollView.contentOffset.x, targetOffset);
+    self.preferredContentOffset = targetContentOffset;
+    [_scrollView setContentOffset:targetContentOffset animated:YES];
+}
+
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-    if (context.previouslyFocusedView == context.nextFocusedView || !_props->isTVSelectable) {
+    self.preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
+    const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
+    BOOL hasItemSnapAlignment = scrollProps.snapToAlignment == ScrollViewSnapToAlignment::Item;
+    if (context.previouslyFocusedView == context.nextFocusedView || (!_props->isTVSelectable && !hasItemSnapAlignment)) {
         return;
     }
-    if (context.nextFocusedView == self) {
+    if (_props->isTVSelectable && context.nextFocusedView == self) {
         [self becomeFirstResponder];
         [self addSwipeGestureRecognizers];
         [self sendFocusEvent];
         // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
         _blockFirstTouch = (unsigned long)context.focusHeading != 0;
         [self addArrowsListeners];
-    } else if (context.previouslyFocusedView == self) {
+    } else if (_props->isTVSelectable && context.previouslyFocusedView == self) {
         [self removeArrowsListeners];
         [self sendBlurEvent];
         [self removeSwipeGestureRecognizers];
@@ -1190,6 +1294,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                 [self scrollToHorizontalOffset:scrollView.contentSize.width];
             }
         }
+    } else if ([context.nextFocusedView isDescendantOfView:_scrollView]) {
+        [self _handleScrollSnapForFocusedView:context.nextFocusedView];
     }
 }
 

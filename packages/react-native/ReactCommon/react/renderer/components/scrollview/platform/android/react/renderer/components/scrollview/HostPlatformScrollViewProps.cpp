@@ -65,7 +65,16 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
                     rawProps,
                     "endFillColor",
                     sourceProps.endFillColor,
-                    clearColor())) {}
+                    clearColor())),
+      snapToItemPadding(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.snapToItemPadding
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "snapToItemPadding",
+                    sourceProps.snapToItemPadding,
+                    {})) {}
 
 void HostPlatformScrollViewProps::setProp(
     const PropsParserContext& context,
@@ -85,6 +94,7 @@ void HostPlatformScrollViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(fadingEdgeLength);
     RAW_SET_PROP_SWITCH_CASE_BASIC(overScrollMode);
     RAW_SET_PROP_SWITCH_CASE_BASIC(endFillColor);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(snapToItemPadding);
   }
 }
 
@@ -327,6 +337,9 @@ folly::dynamic HostPlatformScrollViewProps::getDiffProps(
       case ScrollViewSnapToAlignment::End:
         result["snapToAlignment"] = "end";
         break;
+      case ScrollViewSnapToAlignment::Item:
+        result["snapToAlignment"] = "item";
+        break;
     }
   }
 
@@ -394,6 +407,10 @@ folly::dynamic HostPlatformScrollViewProps::getDiffProps(
 
   if (endFillColor != oldProps->endFillColor) {
     result["endFillColor"] = *endFillColor;
+  }
+
+  if (snapToItemPadding != oldProps->snapToItemPadding) {
+    result["snapToItemPadding"] = snapToItemPadding;
   }
 
   return result;

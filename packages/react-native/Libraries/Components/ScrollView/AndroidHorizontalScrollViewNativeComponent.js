@@ -53,6 +53,7 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
     removeClippedSubviews: true,
     borderTopRightRadius: true,
     borderLeftColor: colorAttribute,
+    snapToItemPadding: true,
     pointerEvents: true,
     scrollsChildToFocus: true,
   },

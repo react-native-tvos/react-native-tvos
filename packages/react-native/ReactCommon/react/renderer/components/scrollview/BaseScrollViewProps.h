@@ -31,6 +31,7 @@ class BaseScrollViewProps : public ViewProps {
 
 #if TARGET_OS_TV
   bool showsScrollIndex{true};
+  Float snapToItemPadding{0};
 #endif
   bool alwaysBounceHorizontal{};
   bool alwaysBounceVertical{};

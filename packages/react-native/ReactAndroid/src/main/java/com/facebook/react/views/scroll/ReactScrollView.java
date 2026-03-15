@@ -10,6 +10,7 @@ package com.facebook.react.views.scroll;
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_CENTER;
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_DISABLED;
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_END;
+import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_ITEM;
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_START;
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.findNextFocusableView;
 
@@ -134,6 +135,7 @@ public class ReactScrollView extends ScrollView
   private int mFadingEdgeLengthEnd;
   private boolean mEmittedOverScrollSinceScrollBegin;
   private boolean mScrollsChildToFocus = true;
+  private int mSnapToItemPadding;
 
   public ReactScrollView(Context context) {
     this(context, null);
@@ -360,6 +362,10 @@ public class ReactScrollView extends ScrollView
     invalidate();
   }
 
+  public void setSnapToItemPadding(int snapToItemPadding) {
+    mSnapToItemPadding = snapToItemPadding;
+  }
+
   @Override
   protected float getTopFadingEdgeStrength() {
     float max = Math.max(mFadingEdgeLengthStart, mFadingEdgeLengthEnd);
@@ -505,6 +511,40 @@ public class ReactScrollView extends ScrollView
   }
 
   /**
+   * Attempts to scroll-snap to the focused child based on snapToAlignment/scrollSnapAlign.
+   * Returns true if snap scrolling was performed, false otherwise.
+   */
+  private boolean tryScrollSnapToChild(View focused) {
+    if (mSnapToAlignment != SNAP_ALIGNMENT_ITEM) {
+      return false;
+    }
+
+    kotlin.Pair<View, String> result = ReactScrollViewHelper.findScrollSnapAlign(focused, this);
+    if (result == null) {
+      return false;
+    }
+
+    View snapTarget = result.getFirst();
+    String alignment = result.getSecond();
+
+    Rect rect = new Rect();
+    snapTarget.getDrawingRect(rect);
+    offsetDescendantRectToMyCoords(snapTarget, rect);
+
+    int viewportHeight = getHeight() - getPaddingTop() - getPaddingBottom();
+    int maxScrollY = getMaxScrollY();
+
+    Integer targetOffset = ReactScrollViewHelper.computeScrollSnapOffset(
+        rect.top, rect.bottom, viewportHeight, alignment, mSnapInterval, mSnapToItemPadding, maxScrollY);
+    if (targetOffset == null) {
+      return false;
+    }
+
+    reactSmoothScrollTo(getScrollX(), targetOffset);
+    return true;
+  }
+
+  /**
    * Since ReactScrollView handles layout changes on JS side, it does not call super.onlayout due to
    * which mIsLayoutDirty flag in ScrollView remains true and prevents scrolling to child when
    * requestChildFocus is called. Overriding this method and scrolling to child without checking any
@@ -514,7 +554,9 @@ public class ReactScrollView extends ScrollView
   @Override
   public void requestChildFocus(View child, View focused) {
     if (focused != null && mScrollsChildToFocus) {
-      scrollToChild(focused);
+      if (!tryScrollSnapToChild(focused)) {
+        scrollToChild(focused);
+      }
     }
     requestChildFocusWithoutScroll(child, focused);
   }
@@ -705,7 +747,7 @@ public class ReactScrollView extends ScrollView
             && (mPagingEnabled
                 || mSnapInterval != 0
                 || mSnapOffsets != null
-                || mSnapToAlignment != SNAP_ALIGNMENT_DISABLED)) {
+                || (mSnapToAlignment != SNAP_ALIGNMENT_DISABLED && mSnapToAlignment != SNAP_ALIGNMENT_ITEM))) {
           // Cancel any pending post-touch runnable and reschedule
           if (mPostTouchRunnable != null) {
             removeCallbacks(mPostTouchRunnable);
@@ -1075,7 +1117,7 @@ public class ReactScrollView extends ScrollView
     }
 
     // pagingEnabled only allows snapping one interval at a time
-    if (mSnapInterval == 0 && mSnapOffsets == null && mSnapToAlignment == SNAP_ALIGNMENT_DISABLED) {
+    if (mSnapInterval == 0 && mSnapOffsets == null && (mSnapToAlignment == SNAP_ALIGNMENT_DISABLED || mSnapToAlignment == SNAP_ALIGNMENT_ITEM)) {
       smoothScrollAndSnap(velocityY);
       return;
     }
@@ -1114,7 +1156,7 @@ public class ReactScrollView extends ScrollView
         }
       }
 
-    } else if (mSnapToAlignment != SNAP_ALIGNMENT_DISABLED) {
+    } else if (mSnapToAlignment != SNAP_ALIGNMENT_DISABLED && mSnapToAlignment != SNAP_ALIGNMENT_ITEM) {
       if (mSnapInterval > 0) {
         double ratio = (double) targetOffset / mSnapInterval;
         smallerOffset =

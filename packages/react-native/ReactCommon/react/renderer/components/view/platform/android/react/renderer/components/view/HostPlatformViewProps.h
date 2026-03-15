@@ -47,6 +47,7 @@ class HostPlatformViewProps : public BaseViewProps {
   bool trapFocusDown{false};
   bool trapFocusLeft{false};
   bool trapFocusRight{false};
+  std::optional<std::string> scrollSnapAlign{};
 
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};

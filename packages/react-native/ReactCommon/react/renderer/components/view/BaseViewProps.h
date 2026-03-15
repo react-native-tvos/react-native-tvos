@@ -124,6 +124,10 @@ class BaseViewProps : public YogaStylableProps, public AccessibilityProps {
 
   bool removeClippedSubviews{false};
 
+#if TARGET_OS_TV
+  std::optional<std::string> scrollSnapAlign;
+#endif
+
 #pragma mark - Convenience Methods
 
   CascadedBorderWidths getBorderWidths() const;
