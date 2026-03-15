@@ -58,6 +58,7 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
     borderLeftColor: {
       process: require('../../StyleSheet/processColor').default,
     },
+    snapToItemPadding: true,
     pointerEvents: true,
   },
 };

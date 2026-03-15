@@ -447,7 +447,16 @@ BaseViewProps::BaseViewProps(
                     rawProps,
                     "removeClippedSubviews",
                     sourceProps.removeClippedSubviews,
-                    false)) {}
+                    false))
+#if TARGET_OS_TV
+      ,scrollSnapAlign(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.scrollSnapAlign : convertRawProp(
+          context,
+          rawProps,
+          "scrollSnapAlign",
+          sourceProps.scrollSnapAlign,
+          {}))
+#endif
+      {}
 
 #define VIEW_EVENT_CASE(eventType)                      \
   case CONSTEXPR_RAW_PROPS_KEY_HASH("on" #eventType): { \
@@ -518,6 +527,7 @@ void BaseViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusDown);
     RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusLeft);
     RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusRight);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapAlign);
 #endif
     // events field
     VIEW_EVENT_CASE(PointerEnter);
