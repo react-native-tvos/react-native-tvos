@@ -80,6 +80,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, nullable) UIFocusGuide *focusGuideLeft;
 @property(nonatomic, nullable) UIFocusGuide *focusGuideRight;
 @property(nonatomic, nullable, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
+
+- (NSString *)scrollSnapAlign;
 #endif
 
 /**
