@@ -144,8 +144,37 @@ const VerticalExample = ({align}: {align: 'start' | 'center' | 'end'}) => (
         <View key={i} scrollSnapAlign={align} style={{marginBottom: px(16)}}>
           <Card
             label={`Row ${i + 1}`}
-            width={600}
+            width={400}
             height={120}
+            colorIndex={i + 5}
+          />
+        </View>
+      ))}
+    </ScrollView>
+  </View>
+);
+
+const mixedItemAlignment = (i: number): any =>
+  ['start', 'center', 'end'][i % 3];
+const mixedItemHeight = (i: number) => [100, 200, 150, 50, 300][i % 5];
+
+// Example: Vertical scroll with snap align, mixed heights and alignments
+const VerticalMixedExample = () => (
+  <View>
+    <SectionHeader title={`Vertical — snapAlignMixed`} />
+    <ScrollView
+      snapToAlignment="item"
+      showsVerticalScrollIndicator={false}
+      style={{height: px(500)}}>
+      {Array.from({length: 10}, (_, i) => (
+        <View
+          key={i}
+          scrollSnapAlign={mixedItemAlignment(i)}
+          style={{marginBottom: px(16)}}>
+          <Card
+            label={`Row ${i + 1} align ${mixedItemAlignment(i)}`}
+            width={450}
+            height={mixedItemHeight(i)}
             colorIndex={i + 5}
           />
         </View>
@@ -203,6 +232,7 @@ const ScrollViewTVSnapExample = (): any => {
           <VerticalExample align={'start'} />
           <VerticalExample align={'center'} />
           <VerticalExample align={'end'} />
+          <VerticalMixedExample />
         </View>
         <View scrollSnapAlign="center">
           <HorizontalExample align={'start'} />
