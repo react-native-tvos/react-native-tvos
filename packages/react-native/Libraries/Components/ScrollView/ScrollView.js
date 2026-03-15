@@ -620,8 +620,15 @@ type ScrollViewBaseProps = Readonly<{
    *   - `'start'` (the default) will align the snap at the left (horizontal) or top (vertical)
    *   - `'center'` will align the snap in the center
    *   - `'end'` will align the snap at the right (horizontal) or bottom (vertical)
+   *   - `'item'` will align the snap according to the value of `scrollSnapAlign` for individual items in the scroll view (TV platforms only).
    */
-  snapToAlignment?: ?('start' | 'center' | 'end'),
+  snapToAlignment?: ?('start' | 'center' | 'end' | 'item'),
+  /**
+   * Padding applied when snapping to items using `snapToAlignment="item"`.
+   * This is set on the parent scroll view, not directly on child items.
+   * Only used when `snapToAlignment` is set to `'item'`.
+   */
+  snapToItemPadding?: ?number,
   /**
    * When set, causes the scroll view to stop at multiples of the value of
    * `snapToInterval`. This can be used for paginating through children

@@ -29,6 +29,10 @@ inline void fromRawValue(const PropsParserContext &context, const RawValue &valu
     result = ScrollViewSnapToAlignment::End;
     return;
   }
+  if (string == "item") {
+    result = ScrollViewSnapToAlignment::Item;
+    return;
+  }
   abort();
 }
 
@@ -116,6 +120,8 @@ inline std::string toString(const ScrollViewSnapToAlignment &value)
       return "center";
     case ScrollViewSnapToAlignment::End:
       return "end";
+    case ScrollViewSnapToAlignment::Item:
+      return "item";
   }
 }
 

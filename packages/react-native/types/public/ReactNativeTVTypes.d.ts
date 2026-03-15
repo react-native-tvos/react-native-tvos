@@ -4,7 +4,24 @@ import type { View, ScrollViewProps, HostComponent, EventSubscription, TVParalla
 declare module 'react-native' {
   export type FocusDestination = null | number | React.Component<any, any> | React.ComponentClass<any>;
 
+  interface ScrollViewProps {
+    /**
+     * Padding applied when snapping to items using `snapToAlignment="item"`.
+     * Set on the parent scroll view, not directly on child items.
+     * Only used when `snapToAlignment` is set to `'item'`.
+     */
+    snapToItemPadding?: number | undefined;
+  }
+
   interface ViewProps {
+  /**
+   * Controls the scroll snap alignment when this view receives focus inside a ScrollView.
+   * Used with snapToAlignment="item" on the parent ScrollView.
+   *
+   * @platform tv
+   */
+  scrollSnapAlign?: 'start' | 'center' | 'end' | undefined;
+
   /**
    * Android TV only prop
    */
@@ -54,8 +71,8 @@ declare module 'react-native' {
 
   /**
    * Hardware event received from TVEventHandler
-   * 
-   * Note: The 'blur' and 'focus' event types are deprecated and will no longer be 
+   *
+   * Note: The 'blur' and 'focus' event types are deprecated and will no longer be
    * emitted on new architecture (Fabric). Use onFocus/onBlur component props instead.
    * See: https://github.com/react-native-tvos/react-native-tvos/issues/1037
    */
