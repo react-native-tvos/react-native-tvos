@@ -10,6 +10,8 @@
 
 'use strict';
 
+import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+
 import {useTheme} from '../../components/RNTesterTheme';
 
 const React = require('react');
@@ -33,9 +35,9 @@ exports.examples = [
       return <DynamicNextFocusExample />;
     },
   },
-];
+] as Array<RNTesterModuleExample>;
 
-const Button = React.memo((props: $FlowFixMeProps) => {
+const Button = React.memo((props: any) => {
   const onRefAssign = (ref: $FlowFixMe) => {
     props.onRefAssign?.(props.index, ref);
   };
@@ -61,7 +63,7 @@ const DynamicNextFocusExample = () => {
 
   const refs = React.useRef({});
   const onRefAssign = React.useCallback(
-    (index: $FlowFixMe, ref: React$Node) => {
+    (index: $FlowFixMe, ref: React.Node) => {
       refs.current[index] = ref;
     },
     [],
