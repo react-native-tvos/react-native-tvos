@@ -599,13 +599,10 @@ void YogaLayoutableShadowNode::layoutTree(
 
   {
     TraceSection s2("YogaLayoutableShadowNode::configureYogaTree");
-    YGErrata defaultErrata = YGErrataAll;
-    if (ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis()) {
-      defaultErrata = static_cast<YGErrata>(
-          defaultErrata & ~YGErrataFlexBasisFitContentInMainAxis);
-    }
     configureYogaTree(
-        layoutContext.pointScaleFactor, defaultErrata, swapLeftAndRight);
+        layoutContext.pointScaleFactor,
+        YGErrataAll /*defaultErrata*/,
+        swapLeftAndRight);
   }
 
   auto minimumSize = layoutConstraints.minimumSize;
@@ -900,6 +897,11 @@ yoga::Config& YogaLayoutableShadowNode::initializeYogaConfig(
     YGConfigSetPointScaleFactor(
         &config, YGConfigGetPointScaleFactor(previousConfig));
     YGConfigSetErrata(&config, YGConfigGetErrata(previousConfig));
+  }
+
+  if (ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis()) {
+    YGConfigSetExperimentalFeatureEnabled(
+        &config, YGExperimentalFeatureFixFlexBasisFitContent, true);
   }
 
   return config;

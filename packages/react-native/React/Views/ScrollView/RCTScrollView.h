@@ -21,12 +21,15 @@
 
 @protocol UIScrollViewDelegate;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Wdeprecated"
 __attribute__((deprecated("This API will be removed along with the legacy architecture.")))
 #if TARGET_OS_TV
 @interface RCTScrollView : RCTTVView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
 #else
 @interface RCTScrollView : RCTView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol>
 #endif
+#pragma clang diagnostic pop
 
 - (instancetype)initWithEventDispatcher:(id<RCTEventDispatcherProtocol>)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
@@ -80,9 +83,10 @@ __attribute__((deprecated("This API will be removed along with the legacy archit
 @end
 
 @interface UIView (RCTScrollView)
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
 - (void)reactUpdateResponderOffsetForScrollView:(RCTScrollView *)scrollView;
-
+#pragma clang diagnostic pop
 @end
 
 @interface RCTScrollView (Internal)

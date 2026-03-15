@@ -11,9 +11,9 @@ from typing import Generic, TypeVar
 
 from natsort import natsort_keygen, natsorted
 
-from .member import FriendMember, Member, MemberKind
+from .member import FriendMember, Member, MemberKind, TypedefMember
 from .template import Template, TemplateList
-from .utils import parse_qualified_path
+from .utils import parse_qualified_path, qualify_template_args_only, qualify_type_str
 
 
 # Pre-create natsort key function for efficiency
@@ -26,6 +26,10 @@ class ScopeKind(ABC):
 
     @abstractmethod
     def to_string(self, scope: Scope) -> str:
+        pass
+
+    def close(self, scope: Scope) -> None:
+        """Called when the scope is closed. Override to perform cleanup."""
         pass
 
     def print_scope(self, scope: Scope) -> None:
@@ -71,6 +75,11 @@ class StructLikeScopeKind(ScopeKind):
                 self.template_list.add(t)
         else:
             self.template_list.add(template)
+
+    def close(self, scope: Scope) -> None:
+        """Qualify base class names and their template arguments."""
+        for base in self.base_classes:
+            base.name = qualify_type_str(base.name, scope)
 
     def to_string(self, scope: Scope) -> str:
         result = ""
@@ -174,6 +183,11 @@ class ProtocolScopeKind(ScopeKind):
         else:
             self.base_classes.append(base)
 
+    def close(self, scope: Scope) -> None:
+        """Qualify base class names and their template arguments."""
+        for base in self.base_classes:
+            base.name = qualify_type_str(base.name, scope)
+
     def to_string(self, scope: Scope) -> str:
         result = ""
 
@@ -224,6 +238,11 @@ class InterfaceScopeKind(ScopeKind):
                 self.base_classes.append(b)
         else:
             self.base_classes.append(base)
+
+    def close(self, scope: Scope) -> None:
+        """Qualify base class names and their template arguments."""
+        for base in self.base_classes:
+            base.name = qualify_type_str(base.name, scope)
 
     def to_string(self, scope: Scope) -> str:
         result = ""
@@ -292,18 +311,23 @@ class Scope(Generic[ScopeKindT]):
         self.kind: ScopeKindT = kind
         self.parent_scope: Scope | None = None
         self.inner_scopes: dict[str, Scope] = {}
-        self._members: list[Member] = []
         self.location: str | None = None
+        self._members: list[Member] = []
+        self._private_typedefs: dict[str, TypedefMember] = {}
 
     def get_qualified_name(self) -> str:
         """
-        Get the qualified name of the scope.
+        Get the qualified name of the scope, with template arguments qualified.
         """
         path = []
         current_scope = self
         while current_scope is not None:
             if current_scope.name is not None:
-                path.append(current_scope.name)
+                # Qualify template arguments in the scope name if it has any
+                name = current_scope.name
+                if "<" in name and current_scope.parent_scope is not None:
+                    name = qualify_template_args_only(name, current_scope.parent_scope)
+                path.append(name)
             current_scope = current_scope.parent_scope
         path.reverse()
         return "::".join(path)
@@ -328,10 +352,31 @@ class Scope(Generic[ScopeKindT]):
 
         current_scope = self
         # Walk up to find a scope that contains the first path segment
+        # Check both inner_scopes AND members (for type aliases, etc.)
         base_first = self._get_base_name(path[0])
-        while (
-            current_scope is not None and base_first not in current_scope.inner_scopes
-        ):
+        while current_scope is not None:
+            # Check if it's an inner scope
+            if base_first in current_scope.inner_scopes:
+                break
+
+            # Skip self-qualification if name matches current scope's name
+            if (
+                current_scope.name
+                and self._get_base_name(current_scope.name) == base_first
+            ):
+                current_scope = current_scope.parent_scope
+                continue
+
+            # Check if it's a member (type alias, variable, etc.)
+            for m in current_scope._members:
+                if m.name == base_first and not isinstance(m, FriendMember):
+                    prefix = current_scope.get_qualified_name()
+                    return f"{prefix}::{name}" if prefix else name
+
+            # Check private typedefs: substitute with the expanded definition
+            if len(path) == 1 and base_first in current_scope._private_typedefs:
+                return current_scope._private_typedefs[base_first].get_value()
+
             current_scope = current_scope.parent_scope
 
         if current_scope is None:
@@ -364,16 +409,18 @@ class Scope(Generic[ScopeKindT]):
                     if anchor_prefix:
                         return f"{anchor_prefix}::{suffix}"
                     return suffix
-            elif any(
-                isinstance(m, FriendMember) and m.name == base_name
-                for m in current_scope._members
-            ):
-                # The name matches a friend declaration, not a real member.
-                # Re-qualify from the remaining segments so the type resolves
-                # to its actual definition rather than the friend's owning class.
-                remaining = "::".join(path[i:])
-                return self.qualify_name(remaining)
             else:
+                # Segment not found as an inner scope or a real member of
+                # the current scope.  When inside a struct-like scope this
+                # typically means Doxygen's refid-based qualification
+                # incorrectly placed a type under a compound that does not
+                # actually contain it — for example a friend declaration or
+                # an inherited constructor reported as a member ref. Try
+                # to re-qualify from the remaining unmatched segments so the
+                # type resolves against the broader scope hierarchy.
+                if isinstance(current_scope.kind, StructLikeScopeKind):
+                    remaining = "::".join(path[i:])
+                    return self.qualify_name(remaining)
                 return None
 
         # Return qualified name with preserved template arguments
@@ -382,6 +429,15 @@ class Scope(Generic[ScopeKindT]):
             return f"{prefix}::{'::'.join(matched_segments)}"
         else:
             return "::".join(matched_segments)
+
+    def add_private_typedef(self, member: TypedefMember) -> None:
+        """
+        Store a private typedef for use during type resolution.
+
+        Private typedefs are not included in the snapshot output, but their
+        definitions are substituted for references to them in public members.
+        """
+        self._private_typedefs[member.name] = member
 
     def add_member(self, member: Member | None) -> None:
         """
@@ -401,8 +457,13 @@ class Scope(Generic[ScopeKindT]):
         """
         Close the scope by setting the kind of all temporary scopes.
         """
+        for typedef in self._private_typedefs.values():
+            typedef.close(self)
+
         for member in self.get_members():
             member.close(self)
+
+        self.kind.close(self)
 
         for _, inner_scope in self.inner_scopes.items():
             inner_scope.close()

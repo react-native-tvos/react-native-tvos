@@ -117,8 +117,6 @@ const char* YGErrataToString(const YGErrata value) {
       return "absolute-position-without-insets-excludes-padding";
     case YGErrataAbsolutePercentAgainstInnerSize:
       return "absolute-percent-against-inner-size";
-    case YGErrataFlexBasisFitContentInMainAxis:
-      return "flex-basis-fit-content-in-main-axis";
     case YGErrataAll:
       return "all";
     case YGErrataClassic:
@@ -131,6 +129,8 @@ const char* YGExperimentalFeatureToString(const YGExperimentalFeature value) {
   switch (value) {
     case YGExperimentalFeatureWebFlexBasis:
       return "web-flex-basis";
+    case YGExperimentalFeatureFixFlexBasisFitContent:
+      return "fix-flex-basis-fit-content";
   }
   return "unknown";
 }

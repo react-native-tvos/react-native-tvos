@@ -15,7 +15,7 @@ import {createShadowNodeReferenceGetterRef} from '../ShadowNodeRevisionGetter';
 import * as Fantom from '@react-native/fantom';
 import * as React from 'react';
 import {ScrollView, View} from 'react-native';
-import {fixYogaFlexBasisFitContentInMainAxis} from 'react-native/src/private/featureflags/ReactNativeFeatureFlags';
+import * as ReactNativeFeatureFlags from 'react-native/src/private/featureflags/ReactNativeFeatureFlags';
 
 test('base case when cloning results in revision +1', () => {
   const root = Fantom.createRoot();
@@ -35,7 +35,7 @@ test('base case when cloning results in revision +1', () => {
   expect(getRevision()).toBe(2);
 });
 
-test('changing height of the top item in ScrollView results in excessive cloning', () => {
+test('changing height of sibling in ScrollView does not clone unrelated descendants', () => {
   const root = Fantom.createRoot();
   const [getRevision, ref] = createShadowNodeReferenceGetterRef();
 
@@ -71,10 +71,9 @@ test('changing height of the top item in ScrollView results in excessive cloning
     );
   });
 
-  if (fixYogaFlexBasisFitContentInMainAxis()) {
+  if (ReactNativeFeatureFlags.fixYogaFlexBasisFitContentInMainAxis()) {
     expect(getRevision()).toBe(1);
   } else {
-    // TODO(T225268793): the below assertion should be: `expect(getRevision()).toBe(1);`
     expect(getRevision()).toBe(2);
   }
 });
