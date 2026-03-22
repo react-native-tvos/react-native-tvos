@@ -641,7 +641,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       index++
     }
 
-    return firstFocusableElement!!
+    return firstFocusableElement
   }
 
   private fun moveFocusToFirstFocusable(viewGroup: ReactViewGroup): Boolean {
