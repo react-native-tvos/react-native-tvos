@@ -6537,10 +6537,10 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-hermes-compiler@0.17.0-commitly-202603241654-672b5c862:
-  version "0.17.0-commitly-202603241654-672b5c862"
-  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-0.17.0-commitly-202603241654-672b5c862.tgz#9825b9156f97c031ab669f38c01f8a641986cc0f"
-  integrity sha512-ze8vKNqr/ved+T0rPnUAZiAqWR3VmLmfIIl86k8YOeLqcGWPzTP/TOW1WnWInGEswJ+9YGJSEmgzjZqejqo8FA==
+hermes-compiler@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-0.0.0.tgz#8d9f6a0b2740ce34d71258fec684e7b6bfd97efa"
+  integrity sha512-boVFutx6ME/Km2mB6vvsQcdnazEYYI/jV1pomx1wcFUG/EVqTkr5CU0CW9bKipOA/8Hyu3NYwW3THg2Q1kNCfA==
 
 hermes-eslint@0.34.0:
   version "0.34.0"
@@ -8892,9 +8892,9 @@ node-fetch@^2.2.0:
     whatwg-url "^5.0.0"
 
 node-forge@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.3.tgz#0ad80f6333b3a0045e827ac20b7f735f93716751"
-  integrity sha512-rLvcdSyRCyouf6jcOIPe/BgwG/d7hKjzMKOas33/pHEr6gbq18IK9zV7DiPvzsz0oBJPme6qr6H6kGZuI9/DZg==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.4.0.tgz#1c7b7d8bdc2d078739f58287d589d903a11b2fc2"
+  integrity sha512-LarFH0+6VfriEhqMMcLX2F7SwSXeWwnEAJEsYm5QKWchiVYVvJyV9v7UDvUv+w5HO23ZpQTXDv/GxdDdMyOuoQ==
 
 node-int64@^0.4.0:
   version "0.4.0"
