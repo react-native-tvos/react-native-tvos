@@ -36,8 +36,6 @@ class ViewTransitionModule : public UIManagerViewTransitionDelegate {
   // restore cancellation
   void restoreViewTransitionName(const ShadowNode &shadowNode) override;
 
-  void captureLayoutMetricsFromRoot(const ShadowNode &shadowNode) override;
-
   void startViewTransition(
       std::function<void()> mutationCallback,
       std::function<void()> onReadyCallback,
@@ -62,14 +60,9 @@ class ViewTransitionModule : public UIManagerViewTransitionDelegate {
   };
 
  private:
-  void onTransitionAnimationEnd(const std::unordered_set<std::string> &names, Tag newTag, Tag oldTag);
-
   // registry of layout of old/new views
   std::unordered_map<std::string, AnimationKeyFrameView> oldLayout_{};
   std::unordered_map<std::string, AnimationKeyFrameView> newLayout_{};
-  // temporary registry of measured layout metrics keyed by tag
-  std::unordered_map<Tag, LayoutMetrics> capturedLayoutMetricsFromRoot_{};
-
   // tag -> names registry, populated during applyViewTransitionName
   // Note that tag and name are not 1:1 mapping
   // - In some nested composition 2 names are mappped to the same tag
@@ -78,6 +71,8 @@ class ViewTransitionModule : public UIManagerViewTransitionDelegate {
 
   // used for cancel/restore viewTransitionName
   std::unordered_map<Tag, std::unordered_set<std::string>> cancelledNameRegistry_{};
+
+  LayoutMetrics captureLayoutMetricsFromRoot(const ShadowNode &shadowNode);
 
   UIManager *uiManager_{nullptr};
 

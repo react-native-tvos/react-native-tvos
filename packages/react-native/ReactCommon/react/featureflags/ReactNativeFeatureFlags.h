@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<4811a81c7839f2be5c8a127e6c8e310b>>
+ * @generated SignedSource<<a218accbb46d69a2d1bf54e0213b3421>>
  */
 
 /**
@@ -335,11 +335,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
 
   /**
-   * Fix text clipping starting in Android 15 due to usage of useBoundsForWidth
-   */
-  RN_EXPORT static bool fixTextClippingAndroid15useBoundsForWidth();
-
-  /**
    * Fix flex basis computation to not apply FitContent constraint in the main axis for non-measure container nodes, preventing unnecessary re-measurement in scroll containers.
    */
   RN_EXPORT static bool fixYogaFlexBasisFitContentInMainAxis();
@@ -438,6 +433,11 @@ class ReactNativeFeatureFlags {
    * Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.
    */
   RN_EXPORT static bool useFabricInterop();
+
+  /**
+   * Use Longest Increasing Subsequence algorithm in the Differentiator to minimize REMOVE/INSERT mutations during child list reconciliation.
+   */
+  RN_EXPORT static bool useLISAlgorithmInDifferentiator();
 
   /**
    * When enabled, the native view configs are used in bridgeless mode.

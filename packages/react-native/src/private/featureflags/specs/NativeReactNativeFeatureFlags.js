@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<85ddaee522fc3be8546aef21cf236e9a>>
+ * @generated SignedSource<<9ce25b0fb29f19a0c26bbfab58bd5112>>
  * @flow strict
  * @noformat
  */
@@ -84,7 +84,6 @@ export interface Spec extends TurboModule {
   +enableVirtualViewDebugFeatures?: () => boolean;
   +fixFindShadowNodeByTagRaceCondition?: () => boolean;
   +fixMappingOfEventPrioritiesBetweenFabricAndReact?: () => boolean;
-  +fixTextClippingAndroid15useBoundsForWidth?: () => boolean;
   +fixYogaFlexBasisFitContentInMainAxis?: () => boolean;
   +fuseboxAssertSingleHostState?: () => boolean;
   +fuseboxEnabledRelease?: () => boolean;
@@ -105,6 +104,7 @@ export interface Spec extends TurboModule {
   +updateRuntimeShadowNodeReferencesOnCommitThread?: () => boolean;
   +useAlwaysAvailableJSErrorHandling?: () => boolean;
   +useFabricInterop?: () => boolean;
+  +useLISAlgorithmInDifferentiator?: () => boolean;
   +useNativeViewConfigsInBridgelessMode?: () => boolean;
   +useNestedScrollViewAndroid?: () => boolean;
   +useSharedAnimatedBackend?: () => boolean;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<25d1f9cb509dbd8274e3a00237d2ea62>>
+ * @generated SignedSource<<a83664d06b336a11217fbf44fbb1658f>>
  */
 
 /**
@@ -576,15 +576,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::fixMappingOfEventPrioritiesBetweenFabricAndReact();
   }
 
-  bool fixTextClippingAndroid15useBoundsForWidth() override {
-    auto value = values_["fixTextClippingAndroid15useBoundsForWidth"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::fixTextClippingAndroid15useBoundsForWidth();
-  }
-
   bool fixYogaFlexBasisFitContentInMainAxis() override {
     auto value = values_["fixYogaFlexBasisFitContentInMainAxis"];
     if (!value.isNull()) {
@@ -763,6 +754,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useFabricInterop();
+  }
+
+  bool useLISAlgorithmInDifferentiator() override {
+    auto value = values_["useLISAlgorithmInDifferentiator"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useLISAlgorithmInDifferentiator();
   }
 
   bool useNativeViewConfigsInBridgelessMode() override {

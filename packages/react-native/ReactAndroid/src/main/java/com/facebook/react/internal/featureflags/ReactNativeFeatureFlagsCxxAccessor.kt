@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d284f066f036908977797a381a044dfa>>
+ * @generated SignedSource<<0d98c7f7d2762c248a9670a447b5a93e>>
  */
 
 /**
@@ -79,7 +79,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableVirtualViewDebugFeaturesCache: Boolean? = null
   private var fixFindShadowNodeByTagRaceConditionCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
-  private var fixTextClippingAndroid15useBoundsForWidthCache: Boolean? = null
   private var fixYogaFlexBasisFitContentInMainAxisCache: Boolean? = null
   private var fuseboxAssertSingleHostStateCache: Boolean? = null
   private var fuseboxEnabledReleaseCache: Boolean? = null
@@ -100,6 +99,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var updateRuntimeShadowNodeReferencesOnCommitThreadCache: Boolean? = null
   private var useAlwaysAvailableJSErrorHandlingCache: Boolean? = null
   private var useFabricInteropCache: Boolean? = null
+  private var useLISAlgorithmInDifferentiatorCache: Boolean? = null
   private var useNativeViewConfigsInBridgelessModeCache: Boolean? = null
   private var useNestedScrollViewAndroidCache: Boolean? = null
   private var useSharedAnimatedBackendCache: Boolean? = null
@@ -642,15 +642,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
-  override fun fixTextClippingAndroid15useBoundsForWidth(): Boolean {
-    var cached = fixTextClippingAndroid15useBoundsForWidthCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.fixTextClippingAndroid15useBoundsForWidth()
-      fixTextClippingAndroid15useBoundsForWidthCache = cached
-    }
-    return cached
-  }
-
   override fun fixYogaFlexBasisFitContentInMainAxis(): Boolean {
     var cached = fixYogaFlexBasisFitContentInMainAxisCache
     if (cached == null) {
@@ -827,6 +818,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useFabricInterop()
       useFabricInteropCache = cached
+    }
+    return cached
+  }
+
+  override fun useLISAlgorithmInDifferentiator(): Boolean {
+    var cached = useLISAlgorithmInDifferentiatorCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useLISAlgorithmInDifferentiator()
+      useLISAlgorithmInDifferentiatorCache = cached
     }
     return cached
   }

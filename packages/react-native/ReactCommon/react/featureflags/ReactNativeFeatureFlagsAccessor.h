@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<06dba77b9b76d06d5c338ed8a97e33f5>>
+ * @generated SignedSource<<96104345e25766f663c6bcb6f1af036d>>
  */
 
 /**
@@ -91,7 +91,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableVirtualViewDebugFeatures();
   bool fixFindShadowNodeByTagRaceCondition();
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
-  bool fixTextClippingAndroid15useBoundsForWidth();
   bool fixYogaFlexBasisFitContentInMainAxis();
   bool fuseboxAssertSingleHostState();
   bool fuseboxEnabledRelease();
@@ -112,6 +111,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool updateRuntimeShadowNodeReferencesOnCommitThread();
   bool useAlwaysAvailableJSErrorHandling();
   bool useFabricInterop();
+  bool useLISAlgorithmInDifferentiator();
   bool useNativeViewConfigsInBridgelessMode();
   bool useNestedScrollViewAndroid();
   bool useSharedAnimatedBackend();
@@ -194,7 +194,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableVirtualViewDebugFeatures_;
   std::atomic<std::optional<bool>> fixFindShadowNodeByTagRaceCondition_;
   std::atomic<std::optional<bool>> fixMappingOfEventPrioritiesBetweenFabricAndReact_;
-  std::atomic<std::optional<bool>> fixTextClippingAndroid15useBoundsForWidth_;
   std::atomic<std::optional<bool>> fixYogaFlexBasisFitContentInMainAxis_;
   std::atomic<std::optional<bool>> fuseboxAssertSingleHostState_;
   std::atomic<std::optional<bool>> fuseboxEnabledRelease_;
@@ -215,6 +214,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> updateRuntimeShadowNodeReferencesOnCommitThread_;
   std::atomic<std::optional<bool>> useAlwaysAvailableJSErrorHandling_;
   std::atomic<std::optional<bool>> useFabricInterop_;
+  std::atomic<std::optional<bool>> useLISAlgorithmInDifferentiator_;
   std::atomic<std::optional<bool>> useNativeViewConfigsInBridgelessMode_;
   std::atomic<std::optional<bool>> useNestedScrollViewAndroid_;
   std::atomic<std::optional<bool>> useSharedAnimatedBackend_;

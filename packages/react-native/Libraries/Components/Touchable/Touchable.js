@@ -930,7 +930,7 @@ const TouchableMixinImpl = {
     }
   },
 
-  withoutDefaultFocusAndBlur: ({}: {...}),
+  withoutDefaultFocusAndBlur: {} as {...},
 };
 
 /**

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5966ef11ee71a38059decda1c529fd6f>>
+ * @generated SignedSource<<17bd69842b715020e73d2ff55f1b07ba>>
  * @flow strict
  * @noformat
  */
@@ -33,9 +33,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   animatedShouldUseSingleOp: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   disableMaintainVisibleContentPosition: Getter<boolean>,
-  enableOptimizedBoxShadowParsing: Getter<boolean>,
   externalElementInspectionEnabled: Getter<boolean>,
-  fixImageSrcDimensionPropagation: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
   shouldUseAnimatedObjectForTransform: Getter<boolean>,
@@ -107,7 +105,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableVirtualViewDebugFeatures: Getter<boolean>,
   fixFindShadowNodeByTagRaceCondition: Getter<boolean>,
   fixMappingOfEventPrioritiesBetweenFabricAndReact: Getter<boolean>,
-  fixTextClippingAndroid15useBoundsForWidth: Getter<boolean>,
   fixYogaFlexBasisFitContentInMainAxis: Getter<boolean>,
   fuseboxAssertSingleHostState: Getter<boolean>,
   fuseboxEnabledRelease: Getter<boolean>,
@@ -128,6 +125,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   updateRuntimeShadowNodeReferencesOnCommitThread: Getter<boolean>,
   useAlwaysAvailableJSErrorHandling: Getter<boolean>,
   useFabricInterop: Getter<boolean>,
+  useLISAlgorithmInDifferentiator: Getter<boolean>,
   useNativeViewConfigsInBridgelessMode: Getter<boolean>,
   useNestedScrollViewAndroid: Getter<boolean>,
   useSharedAnimatedBackend: Getter<boolean>,
@@ -166,19 +164,9 @@ export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaS
 export const disableMaintainVisibleContentPosition: Getter<boolean> = createJavaScriptFlagGetter('disableMaintainVisibleContentPosition', false);
 
 /**
- * Hoists regex patterns to module scope and optimizes parseLength in processBoxShadow for improved performance.
- */
-export const enableOptimizedBoxShadowParsing: Getter<boolean> = createJavaScriptFlagGetter('enableOptimizedBoxShadowParsing', false);
-
-/**
  * Enable the external inspection API for DevTools to communicate with the Inspector overlay.
  */
 export const externalElementInspectionEnabled: Getter<boolean> = createJavaScriptFlagGetter('externalElementInspectionEnabled', true);
-
-/**
- * Fix image dimensions not being passed through when src is used
- */
-export const fixImageSrcDimensionPropagation: Getter<boolean> = createJavaScriptFlagGetter('fixImageSrcDimensionPropagation', true);
 
 /**
  * Fixing an edge case where the current window size is not properly calculated with fast scrolling. Window size collapsed to 1 element even if windowSize more than the current amount of elements
@@ -264,7 +252,7 @@ export const enableAndroidAntialiasedBorderRadiusClipping: Getter<boolean> = cre
 /**
  * Enables linear text rendering on Android wherever subpixel text rendering is enabled
  */
-export const enableAndroidLinearText: Getter<boolean> = createNativeFlagGetter('enableAndroidLinearText', false);
+export const enableAndroidLinearText: Getter<boolean> = createNativeFlagGetter('enableAndroidLinearText', true);
 /**
  * Enables various optimizations throughout the path of measuring text on Android.
  */
@@ -446,10 +434,6 @@ export const fixFindShadowNodeByTagRaceCondition: Getter<boolean> = createNative
  */
 export const fixMappingOfEventPrioritiesBetweenFabricAndReact: Getter<boolean> = createNativeFlagGetter('fixMappingOfEventPrioritiesBetweenFabricAndReact', false);
 /**
- * Fix text clipping starting in Android 15 due to usage of useBoundsForWidth
- */
-export const fixTextClippingAndroid15useBoundsForWidth: Getter<boolean> = createNativeFlagGetter('fixTextClippingAndroid15useBoundsForWidth', false);
-/**
  * Fix flex basis computation to not apply FitContent constraint in the main axis for non-measure container nodes, preventing unnecessary re-measurement in scroll containers.
  */
 export const fixYogaFlexBasisFitContentInMainAxis: Getter<boolean> = createNativeFlagGetter('fixYogaFlexBasisFitContentInMainAxis', false);
@@ -529,6 +513,10 @@ export const useAlwaysAvailableJSErrorHandling: Getter<boolean> = createNativeFl
  * Should this application enable the Fabric Interop Layer for Android? If yes, the application will behave so that it can accept non-Fabric components and render them on Fabric. This toggle is controlling extra logic such as custom event dispatching that are needed for the Fabric Interop Layer to work correctly.
  */
 export const useFabricInterop: Getter<boolean> = createNativeFlagGetter('useFabricInterop', true);
+/**
+ * Use Longest Increasing Subsequence algorithm in the Differentiator to minimize REMOVE/INSERT mutations during child list reconciliation.
+ */
+export const useLISAlgorithmInDifferentiator: Getter<boolean> = createNativeFlagGetter('useLISAlgorithmInDifferentiator', false);
 /**
  * When enabled, the native view configs are used in bridgeless mode.
  */

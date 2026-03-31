@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bfb72cee88230c56d2c101be808ef300>>
+ * @generated SignedSource<<f86521eb5833e76014b3197a6ab23b60>>
  */
 
 /**
@@ -262,10 +262,6 @@ bool ReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact()
   return getAccessor().fixMappingOfEventPrioritiesBetweenFabricAndReact();
 }
 
-bool ReactNativeFeatureFlags::fixTextClippingAndroid15useBoundsForWidth() {
-  return getAccessor().fixTextClippingAndroid15useBoundsForWidth();
-}
-
 bool ReactNativeFeatureFlags::fixYogaFlexBasisFitContentInMainAxis() {
   return getAccessor().fixYogaFlexBasisFitContentInMainAxis();
 }
@@ -344,6 +340,10 @@ bool ReactNativeFeatureFlags::useAlwaysAvailableJSErrorHandling() {
 
 bool ReactNativeFeatureFlags::useFabricInterop() {
   return getAccessor().useFabricInterop();
+}
+
+bool ReactNativeFeatureFlags::useLISAlgorithmInDifferentiator() {
+  return getAccessor().useLISAlgorithmInDifferentiator();
 }
 
 bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
