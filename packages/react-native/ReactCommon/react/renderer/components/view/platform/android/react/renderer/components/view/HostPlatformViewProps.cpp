@@ -419,7 +419,7 @@ static void updateBorderStyleProps(
           break;
       }
     } else {
-      result["borderStyle"] = NULL;
+      result["borderStyle"] = folly::dynamic(nullptr);
     }
   }
 }

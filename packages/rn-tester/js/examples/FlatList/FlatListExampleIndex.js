@@ -29,7 +29,7 @@ import onViewableItemsChanged_waitForInteractionExample from './FlatList-onViewa
 import StickyHeadersExample from './FlatList-stickyHeaders';
 import WithSeparatorsExample from './FlatList-withSeparators';
 
-export default ({
+export default {
   framework: 'React',
   title: 'FlatList',
   category: 'ListView',
@@ -56,4 +56,4 @@ export default ({
     onViewableItemsChanged_horizontal_offScreen,
     AdditionalRenderRegionsExample,
   ],
-}: RNTesterModule);
+} as RNTesterModule;

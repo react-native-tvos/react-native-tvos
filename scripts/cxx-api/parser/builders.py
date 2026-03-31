@@ -14,6 +14,7 @@ This module contains:
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 from doxmlparser import compound
 
@@ -38,8 +39,32 @@ from .utils import (
     normalize_pointer_spacing,
     parse_qualified_path,
     resolve_linked_text_name,
+    split_specialization,
 )
-from .utils.argument_parsing import _find_matching_angle, _split_arguments
+from .utils.argument_parsing import (
+    _find_matching_angle,
+    _split_arguments,
+    format_parsed_type,
+    parse_type_with_argstrings,
+)
+
+
+@dataclass
+class ParsedSectionKind:
+    """Parsed representation of a Doxygen section kind string (e.g. 'public-static-func')."""
+
+    visibility: str
+    is_static: bool
+    member_type: str
+
+    @classmethod
+    def parse(cls, kind: str) -> ParsedSectionKind:
+        parts = kind.split("-")
+        return cls(
+            visibility=parts[0],
+            is_static="static" in parts,
+            member_type=parts[-1],
+        )
 
 
 ######################
@@ -124,8 +149,7 @@ def _fix_inherited_constructor_name(
         return
 
     class_unqualified_name = parse_qualified_path(compound_name)[-1]
-    # Strip template args for comparison
-    class_base_name = class_unqualified_name.split("<")[0]
+    class_base_name, _ = split_specialization(class_unqualified_name)
 
     if func_member.name != class_base_name:
         func_member.name = class_unqualified_name
@@ -142,8 +166,14 @@ def get_base_classes(
 ) -> list:
     """
     Get the base classes of a compound object.
+
+    Deduplicates base classes by name. Doxygen can emit duplicate
+    ``basecompoundref`` entries when a class inherits constructors via
+    ``using Base::Base;`` — the using-declaration is incorrectly reported
+    as an additional base class reference.
     """
     base_classes = []
+    seen_names: set[str] = set()
     if compound_object.basecompoundref:
         for base in compound_object.basecompoundref:
             # base is a compoundRefType with:
@@ -159,6 +189,10 @@ def get_base_classes(
             if base_prot == "private":
                 # Ignore private base classes
                 continue
+
+            if base_name in seen_names:
+                continue
+            seen_names.add(base_name)
 
             base_classes.append(
                 base_class(
@@ -249,7 +283,7 @@ def get_variable_member(
         if initializer_type == InitializerType.BRACE:
             is_brace_initializer = True
 
-    return VariableMember(
+    member = VariableMember(
         variable_name,
         variable_type,
         visibility,
@@ -262,6 +296,10 @@ def get_variable_member(
         variable_argstring,
         is_brace_initializer,
     )
+
+    member.add_template(get_template_params(member_def))
+
+    return member
 
 
 def get_doxygen_params(
@@ -284,6 +322,16 @@ def get_doxygen_params(
             if param.get_type()
             else ""
         )
+
+        # Doxygen may incorrectly cross-reference parameter names inside
+        # inline function pointer types to member variables of the enclosing
+        # class, producing qualified paths like "const void*
+        # ns::Class::data" instead of "const void* data".  Re-parse the
+        # type through parse_type_with_argstrings which delegates to
+        # _parse_single_argument — that already strips "::" from names.
+        segments = parse_type_with_argstrings(param_type)
+        if len(segments) > 1:
+            param_type = format_parsed_type(segments)
         param_name = param.declname or param.defname or None
         param_default = (
             resolve_linked_text_name(param.defval)[0].strip() if param.defval else None
@@ -310,8 +358,48 @@ def get_doxygen_params(
                     + param_array
                 )
                 param_name = None
+            elif param_name:
+                param_name += param_array
             else:
                 param_type += param_array
+
+        # Handle pointer-to-member-function types where the name must be
+        # embedded inside the declarator group.  Doxygen gives:
+        #   type = "void(ns::*)() const", name = "asFoo"
+        # We need to produce:
+        #   "void(ns::*asFoo)() const"
+        if param_name:
+            m = re.search(r"\([^)]*::\*\)", param_type)
+            if m:
+                # Insert name before the closing ')' of the ptr-to-member group
+                insert_pos = m.end() - 1
+                param_type = (
+                    param_type[:insert_pos] + param_name + param_type[insert_pos:]
+                )
+                param_name = None
+        else:
+            # Doxygen bug: for pointer-to-member-function params with
+            # ref-qualifiers (& or &&), Doxygen incorrectly embeds the
+            # parameter name in the type string between cv-qualifiers
+            # and the ref-qualifier, and omits <declname> entirely:
+            #   <type>R(ns::*)() const asFoo &amp;</type>
+            # Detect this pattern and reconstruct the correct type:
+            #   R(ns::*asFoo)() const &
+            m = re.search(
+                r"(\([^)]*::\*\))"  # group 1: ptr-to-member declarator
+                r"(.+?)"  # group 2: param list + cv-qualifiers
+                r"\s+([a-zA-Z_]\w*)"  # group 3: misplaced identifier
+                r"\s*(&{1,2})\s*$",  # group 4: ref-qualifier
+                param_type,
+            )
+            if m:
+                param_type = (
+                    param_type[: m.end(1) - 1]  # up to ')' of (ns::*)
+                    + m.group(3)  # insert extracted name
+                    + param_type[m.end(1) - 1 : m.end(2)]  # ')' + params + cv-quals
+                    + " "
+                    + m.group(4)  # ref-qualifier
+                )
 
         qualifiers, core_type = extract_qualifiers(param_type)
         arguments.append((qualifiers, core_type, param_name, param_default))
@@ -517,11 +605,10 @@ def _process_objc_sections(
             members into the base interface XML output.
     """
     for section_def in section_defs:
-        kind = section_def.kind
-        parts = kind.split("-")
-        visibility = parts[0]
-        is_static = "static" in parts
-        member_type = parts[-1]
+        section = ParsedSectionKind.parse(section_def.kind)
+        visibility = section.visibility
+        is_static = section.is_static
+        member_type = section.member_type
 
         if visibility == "private":
             if member_type == "type":
@@ -558,7 +645,9 @@ def _process_objc_sections(
                             f"Unknown section member kind: {member_def.kind} in {location_file}"
                         )
             else:
-                print(f"Unknown {scope_type} section kind: {kind} in {location_file}")
+                print(
+                    f"Unknown {scope_type} section kind: {section_def.kind} in {location_file}"
+                )
         elif visibility == "property":
             for member_def in section_def.memberdef:
                 if member_def.kind == "property":
@@ -674,11 +763,10 @@ def create_class_scope(
     class_scope.location = compound_object.location.file
 
     for section_def in compound_object.sectiondef:
-        kind = section_def.kind
-        parts = kind.split("-")
-        visibility = parts[0]
-        is_static = "static" in parts
-        member_type = parts[-1]
+        section = ParsedSectionKind.parse(section_def.kind)
+        visibility = section.visibility
+        is_static = section.is_static
+        member_type = section.member_type
 
         if visibility == "private":
             if member_type == "type":
@@ -727,7 +815,7 @@ def create_class_scope(
                         )
             else:
                 print(
-                    f"Unknown class section kind: {kind} in {compound_object.location.file}"
+                    f"Unknown class section kind: {section_def.kind} in {compound_object.location.file}"
                 )
         elif visibility == "friend":
             pass
