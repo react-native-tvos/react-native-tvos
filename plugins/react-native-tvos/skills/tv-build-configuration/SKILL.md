@@ -25,37 +25,13 @@ Hermes is fully working on both Apple TV and Android TV and is **enabled by defa
 
 ## New Architecture (Fabric)
 
-React Native TV fully implements the New Architecture identically to the core repo. See [The New Architecture Is Here](https://reactnative.dev/blog/2024/10/23/the-new-architecture-is-here).
-
-### Opting Out of New Architecture
-
-If needed, you can disable the New Architecture:
-
-**Expo apps:**
-See [Expo's documentation](https://docs.expo.dev/guides/new-architecture/#disable-the-new-architecture-in-an-existing-project).
-
-**Apple TV:**
-
-```sh
-RCT_NEW_ARCH_ENABLED=0 bundle exec pod install
-```
-
-**Android TV:**
-
-Edit `android/gradle.properties`:
-
-```diff
--newArchEnabled=true
-+newArchEnabled=false
-```
-
-Then do a clean rebuild.
+As of React Native TV 0.83 and later, only the new architecture is supported.
 
 ## Apple TV Podfile Configuration
 
 React Native podspecs (0.73+) require that your application `Podfile` only have **one target**. This repo supports either an iOS target or a tvOS target, not both simultaneously.
 
-The RNTester app's `Podfile` and `RNTesterPods.xcodeproj` have been modified to work for tvOS and serve as reference examples.
+The RNTester app's scripts include one that modifies the Podfile, Xcode project, and launch screen to allow building the RNTester app for TV
 
 ## Android TV Maven Artifacts
 
