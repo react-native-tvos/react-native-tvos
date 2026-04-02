@@ -30,6 +30,7 @@ import androidx.appcompat.widget.TintContextWrapper;
 import androidx.core.view.AccessibilityDelegateCompat;
 import androidx.core.view.ViewCompat;
 import androidx.customview.widget.ExploreByTouchHelper;
+import com.facebook.react.views.common.UiModeUtils;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.Nullsafe;
@@ -151,12 +152,36 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
     //         mViewFlags = SOUND_EFFECTS_ENABLED | HAPTIC_FEEDBACK_ENABLED |
     // LAYOUT_DIRECTION_INHERIT;
     setEnabled(true);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      setFocusable(View.FOCUSABLE_AUTO);
-    }
+    // Changed from FOCUSABLE_AUTO to NOT_FOCUSABLE to prevent Android TV's
+    // focus engine from landing on text views when no other views are available
+    setFocusable(View.NOT_FOCUSABLE);
 
     setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE);
     updateView(); // call after changing ellipsizeLocation in particular
+  }
+
+  // On Android TV, prevent text views from becoming focusable.
+  // ReactTextAnchorViewManager.setAccessible() ties isFocusable to the
+  // "accessible" prop, which causes Android TV's D-pad focus engine to land
+  // on text views inside recycled list items (FlashList), triggering
+  // requestChildFocus -> scrollToChild scroll jumps.
+  // On non-TV devices, focusability is left unchanged for accessibility.
+  @Override
+  public void setFocusable(boolean focusable) {
+    if (UiModeUtils.isTVDevice(getContext())) {
+      super.setFocusable(false);
+    } else {
+      super.setFocusable(focusable);
+    }
+  }
+
+  @Override
+  public void setFocusable(int focusable) {
+    if (UiModeUtils.isTVDevice(getContext())) {
+      super.setFocusable(View.NOT_FOCUSABLE);
+    } else {
+      super.setFocusable(focusable);
+    }
   }
 
   private static WritableMap inlineViewJson(
