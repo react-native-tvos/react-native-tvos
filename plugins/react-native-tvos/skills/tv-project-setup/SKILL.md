@@ -42,9 +42,17 @@ Latest versions: https://www.npmjs.com/package/react-native-tvos?activeTab=versi
 
 ## Option 1: Expo (Recommended)
 
-As of React Native 0.75.x, the core team recommends Expo for new projects. See the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide.
+As of React Native 0.75.x, the core team recommends Expo for new projects. Using Expo's [continuous native generation (CNG)](https://docs.expo.dev/workflow/continuous-native-generation/) model, projects can build either mobile or TV apps from the same codebase.
 
-Using Expo's [continuous native generation (CNG)](https://docs.expo.dev/workflow/continuous-native-generation/) model, projects can build either mobile or TV apps from the same codebase.
+To create a new project with Expo Router (similar to a project created from Expo's default new project template), use the `with-router-tv` template from the Expo examples repository:
+
+```
+yarn create expo TVProject -e with-router-tv
+```
+
+Similar commands can be used for new projects with other package managers, as described in Expo documentation.
+
+For more details on Expo projects for TV, see the [Building Expo apps for TV](https://docs.expo.dev/guides/building-for-tv/) guide.
 
 ## Option 2: Community CLI
 
