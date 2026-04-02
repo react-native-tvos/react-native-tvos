@@ -57,10 +57,3 @@ Builds using the precompiled framework also require:
 
 Both are included in React Native core releases and are not separately distributed.
 
-## Accessibility
-
-An additional `accessibilityFocus` [accessibility action](https://reactnative.dev/docs/accessibility#accessibility-actions) is available on Android for detecting focus changes on every accessible element (like `Text`) when TalkBack is enabled.
-
-## LogBox
-
-The LogBox error/warning display works on TV platforms, with adjustments to make controls accessible to the focus engine.
