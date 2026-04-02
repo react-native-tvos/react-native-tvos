@@ -1,5 +1,5 @@
 ---
-name: tv-platform-detection
+name: rntv-platform-detection
 description: Use when detecting if an app is running on a TV platform, using Platform.isTV or Platform.isTVOS, or configuring TV-specific file extensions in Metro for platform-specific code.
 version: 1.0.0
 license: MIT

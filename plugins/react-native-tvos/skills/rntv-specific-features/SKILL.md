@@ -1,5 +1,5 @@
 ---
-name: tv-specific-features
+name: rntv-specific-features
 description: Use when implementing TV-specific features including focus-based navigation, TVFocusGuideView, focus trapping, Pressable/Touchable focus events, VirtualizedList TV focus, nextFocus direction props, TV remote control input, TVEventHandler, useTVEventHandler, TVEventControl, Apple TV Siri remote configuration, accessibility on TV, or LogBox on TV.
 version: 1.0.0
 license: MIT
@@ -22,9 +22,9 @@ license: MIT
 
 ## When NOT to Use
 
-- Platform detection — use the `tv-platform-detection` skill instead
-- Build configuration — use the `tv-build-configuration` skill instead
-- Creating a new project — use the `tv-project-setup` skill instead
+- Platform detection — use the `rntv-platform-detection` skill instead
+- Build configuration — use the `rntv-build-configuration` skill instead
+- Creating a new project — use the `rntv-project-create` skill instead
 
 ---
 

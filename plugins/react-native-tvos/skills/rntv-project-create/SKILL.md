@@ -1,5 +1,5 @@
 ---
-name: tv-project-setup
+name: rntv-project-create
 description: Use when creating a new React Native TV project for Apple TV or Android TV, setting up package.json for react-native-tvos, or choosing between Expo and Community CLI for TV development.
 version: 1.0.0
 license: MIT
