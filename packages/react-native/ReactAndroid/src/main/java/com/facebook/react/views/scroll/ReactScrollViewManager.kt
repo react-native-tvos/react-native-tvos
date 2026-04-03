@@ -148,6 +148,11 @@ constructor(private val fpsListener: FpsListener? = null) :
     view.setSnapToItemPadding(px)
   }
 
+  @ReactProp(name = "scrollAnimationEnabled", defaultBoolean = true)
+  public fun setScrollAnimationEnabled(view: ReactScrollView, value: Boolean) {
+    view.setScrollAnimationEnabled(value)
+  }
+
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)
   public fun setRemoveClippedSubviews(view: ReactScrollView, removeClippedSubviews: Boolean) {
     view.removeClippedSubviews = removeClippedSubviews

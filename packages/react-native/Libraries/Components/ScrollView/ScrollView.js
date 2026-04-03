@@ -663,6 +663,12 @@ type ScrollViewBaseProps = $ReadOnly<{
    */
   removeClippedSubviews?: ?boolean,
   /**
+   * (TV only)
+   * When false, the scroll view will jump to the correct offset without animation
+   * when focus changes. Defaults to true.
+   */
+  scrollAnimationEnabled?: ?boolean,
+  /**
    * A RefreshControl component, used to provide pull-to-refresh
    * functionality for the ScrollView. Only works for vertical ScrollViews
    * (`horizontal` prop must be `false`).
