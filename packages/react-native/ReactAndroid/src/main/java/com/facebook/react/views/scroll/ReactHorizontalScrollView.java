@@ -706,18 +706,6 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     return scrollDelta != 0 && Math.abs(scrollDelta) < (mTempRect.width() / 2);
   }
 
-  /** Returns whether the given view is a descendant of the given ancestor */
-  private static boolean isDescendantOf(View view, View ancestor) {
-    ViewParent parent = view.getParent();
-    while (parent != null) {
-      if (parent == ancestor) {
-        return true;
-      }
-      parent = parent.getParent();
-    }
-    return false;
-  }
-
   private void scrollToChild(View child) {
     int scrollDelta = getScrollDelta(child);
 
@@ -894,7 +882,7 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
         View currentFocused = findFocus();
         View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
         View rootChild = getContentView();
-        if (rootChild != null && nextFocused != null && isDescendantOf(nextFocused, rootChild)) {
+        if (rootChild != null && nextFocused != null && isDescendantOf(rootChild, nextFocused)) {
           if (mSnapToAlignment == SNAP_ALIGNMENT_ITEM) {
             // When snapToAlignment is "item", don't use smoothScrollToNextPage (which scrolls
             // by full page width and ignores snapToItemPadding). Instead just request focus —
