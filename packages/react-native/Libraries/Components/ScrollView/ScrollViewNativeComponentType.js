@@ -73,6 +73,7 @@ export type ScrollViewNativeProps = Readonly<{
   snapToItemPadding?: ?number,
   sendMomentumEvents?: ?boolean,
   showsHorizontalScrollIndicator?: ?boolean,
+  scrollAnimationEnabled?: ?boolean,
   showsScrollIndex?: ?boolean,
   showsVerticalScrollIndicator?: ?boolean,
   snapToAlignment?: ?('start' | 'center' | 'end' | 'item'),

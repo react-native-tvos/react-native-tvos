@@ -54,6 +54,7 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
     borderTopRightRadius: true,
     borderLeftColor: colorAttribute,
     snapToItemPadding: true,
+    scrollAnimationEnabled: true,
     pointerEvents: true,
     scrollsChildToFocus: true,
   },
