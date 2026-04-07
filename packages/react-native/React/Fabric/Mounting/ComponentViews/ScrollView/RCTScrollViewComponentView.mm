@@ -434,6 +434,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
   scrollView.snapToStart = newScrollViewProps.snapToStart;
   scrollView.snapToEnd = newScrollViewProps.snapToEnd;
+#if TARGET_OS_TV
+  scrollView.scrollAnimationEnabled = newScrollViewProps.scrollAnimationEnabled;
+#endif
 
   if (oldScrollViewProps.snapToOffsets != newScrollViewProps.snapToOffsets) {
     NSMutableArray<NSNumber *> *snapToOffsets = [NSMutableArray array];
@@ -1247,7 +1250,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         ? CGPointMake(targetOffset, scrollView.contentOffset.y)
         : CGPointMake(scrollView.contentOffset.x, targetOffset);
     self.preferredContentOffset = targetContentOffset;
-    [_scrollView setContentOffset:targetContentOffset animated:YES];
+    [_scrollView setContentOffset:targetContentOffset animated:scrollProps.scrollAnimationEnabled];
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
@@ -1256,7 +1259,18 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     self.preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
     const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
     BOOL hasItemSnapAlignment = scrollProps.snapToAlignment == ScrollViewSnapToAlignment::Item;
-    if (context.previouslyFocusedView == context.nextFocusedView || (!_props->isTVSelectable && !hasItemSnapAlignment)) {
+    if (context.previouslyFocusedView == context.nextFocusedView) {
+        return;
+    }
+    if (!_props->isTVSelectable && !hasItemSnapAlignment) {
+        if (!scrollProps.scrollAnimationEnabled && [context.nextFocusedView isDescendantOfView:_scrollView]) {
+            // When animations are disabled and there's no snap alignment, manually scroll
+            // the focused view into view instantly. We can't let UIScrollView's default
+            // focus handling do this because it uses deceleration (timer-based) that can't
+            // be blocked by the animation-blocking layer.
+            CGRect targetRect = [context.nextFocusedView convertRect:context.nextFocusedView.bounds toView:_scrollView];
+            [_scrollView scrollRectToVisible:targetRect animated:NO];
+        }
         return;
     }
     if (_props->isTVSelectable && context.nextFocusedView == self) {
@@ -1424,10 +1438,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         limitedOffset = MAX(limitedOffset, 0.0);
         limitedOffset = MIN(limitedOffset, maxOffset);
 
-        [UIView animateWithDuration:[self swipeDuration] animations:^{
+        const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
+        if (scrollProps.scrollAnimationEnabled) {
+            [UIView animateWithDuration:[self swipeDuration] animations:^{
+                self.scrollView.contentOffset =
+                CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+            }];
+        } else {
             self.scrollView.contentOffset =
             CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
-        }];
+        }
     });
 }
 
@@ -1448,10 +1468,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         limitedOffset = MAX(limitedOffset, 0.0);
         limitedOffset = MIN(limitedOffset, maxOffset);
 
-        [UIView animateWithDuration:[self swipeDuration] animations:^{
+        const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
+        if (scrollProps.scrollAnimationEnabled) {
+            [UIView animateWithDuration:[self swipeDuration] animations:^{
+                self.scrollView.contentOffset =
+                CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
+            }];
+        } else {
             self.scrollView.contentOffset =
             CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
-        }];
+        }
     });
 }
 

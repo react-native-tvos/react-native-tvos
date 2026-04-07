@@ -100,6 +100,12 @@ const Components: Array<RNTesterModuleInfo> = [
     supportsTVOS: true,
   },
   {
+    key: 'ScrollViewTVScrollAnimationExample',
+    category: 'TV',
+    module: require('../examples/ScrollView/ScrollViewTVScrollAnimationExample'),
+    supportsTVOS: true,
+  },
+  {
     key: 'SectionListIndex',
     module: require('../examples/SectionList/SectionListIndex'),
     supportsTVOS: true,

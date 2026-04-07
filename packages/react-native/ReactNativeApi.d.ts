@@ -4401,6 +4401,7 @@ declare type ScrollViewBaseProps = {
   readonly pagingEnabled?: boolean
   readonly refreshControl?: React.JSX.Element
   readonly removeClippedSubviews?: boolean
+  readonly scrollAnimationEnabled?: boolean
   readonly scrollEnabled?: boolean
   readonly scrollEventThrottle?: number
   readonly scrollViewRef?: React.Ref<PublicScrollViewInstance>
@@ -4505,6 +4506,7 @@ declare type ScrollViewNativeProps = Readonly<
     pagingEnabled?: boolean
     persistentScrollbar?: boolean
     pinchGestureEnabled?: boolean
+    scrollAnimationEnabled?: boolean
     scrollEnabled?: boolean
     scrollEventThrottle?: number
     scrollIndicatorInsets?: EdgeInsetsProp
