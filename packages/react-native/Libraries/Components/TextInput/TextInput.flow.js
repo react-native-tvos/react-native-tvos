@@ -127,6 +127,7 @@ type TextInputSubmitEditingEventData = Readonly<{
   ...TargetEvent,
   eventCount: number,
   text: string,
+  action?: 'submit' | 'next' | 'previous',
   ...
 }>;
 

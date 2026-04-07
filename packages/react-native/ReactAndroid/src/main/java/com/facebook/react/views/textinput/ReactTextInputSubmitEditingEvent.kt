@@ -11,11 +11,12 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.events.Event
 
-/** Event emitted by EditText native view when the user submits the text. */
+/** Event emitted by EditText native view when the user triggers an IME editor action. */
 internal class ReactTextInputSubmitEditingEvent(
     surfaceId: Int,
     viewId: Int,
     private val text: String,
+    private val action: String = ACTION_SUBMIT,
 ) : Event<ReactTextInputSubmitEditingEvent>(surfaceId, viewId) {
   override fun getEventName(): String = EVENT_NAME
 
@@ -23,6 +24,7 @@ internal class ReactTextInputSubmitEditingEvent(
     return Arguments.createMap().apply {
       putInt("target", viewTag)
       putString("text", text)
+      putString("action", action)
     }
   }
 
@@ -30,5 +32,8 @@ internal class ReactTextInputSubmitEditingEvent(
 
   companion object {
     private const val EVENT_NAME = "topSubmitEditing"
+    const val ACTION_SUBMIT = "submit"
+    const val ACTION_NEXT = "next"
+    const val ACTION_PREVIOUS = "previous"
   }
 }
