@@ -755,6 +755,13 @@ export interface ScrollViewProps
   removeClippedSubviews?: boolean | undefined;
 
   /**
+   * (TV only)
+   * When false, the scroll view will jump to the correct offset without animation
+   * when focus changes. Defaults to true.
+   */
+  scrollAnimationEnabled?: boolean | undefined;
+
+  /**
    * When true, shows a horizontal scroll indicator.
    */
   showsHorizontalScrollIndicator?: boolean | undefined;
