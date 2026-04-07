@@ -52,6 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL snapToEnd;
 @property (nonatomic, copy) NSArray<NSNumber *> *snapToOffsets;
 @property (nonatomic, assign) BOOL scrollSnapEnabled;
+@property (nonatomic, assign) BOOL scrollAnimationEnabled;
 
 /*
  * Makes `setContentOffset:` method no-op when given `block` is executed.

@@ -262,6 +262,58 @@ class Game2048 extends React.Component {
   
   - _TVTextScrollView_: On Apple TV, a ScrollView will not scroll unless there are focusable items inside it or above/below it.  This component works on both Apple TV and Android TV, using native code to allow scrolling using swipe gestures from the remote control.
 
+  - _ScrollView snap alignment_: The existing `snapToAlignment` prop has been extended with a new `'item'` value that enables per-item snap alignment on TV. Instead of snapping all items uniformly to `'start'`, `'center'`, or `'end'`, each child can specify its own alignment via the `scrollSnapAlign` View prop. Optional padding can be applied with `snapToItemPadding` on the ScrollView.
+
+  | Prop (ScrollView) | Value | Description |
+  |---|---|---|
+  | snapToAlignment | `'item'` | Enables per-item snap alignment (TV only). Requires `snapToInterval` to be set. |
+  | snapToItemPadding | number? | Extra padding (in dp/pt) applied around items when snapping. Only used with `snapToAlignment="item"`. |
+
+  | Prop (View) | Value | Description |
+  |---|---|---|
+  | scrollSnapAlign | `'start'` \| `'center'` \| `'end'` | Controls where this item snaps inside its parent ScrollView. Only used when the parent has `snapToAlignment="item"`. |
+
+  ```jsx
+  <ScrollView
+    horizontal
+    snapToInterval={300}
+    snapToAlignment="item"
+    snapToItemPadding={20}>
+    <Pressable scrollSnapAlign="start" style={{width: 300}}>
+      <Text>Snaps to start</Text>
+    </Pressable>
+    <Pressable scrollSnapAlign="center" style={{width: 200}}>
+      <Text>Snaps to center</Text>
+    </Pressable>
+    <Pressable scrollSnapAlign="end" style={{width: 300}}>
+      <Text>Snaps to end</Text>
+    </Pressable>
+  </ScrollView>
+  ```
+
+  - _ScrollView animation control_: The `scrollAnimationEnabled` prop allows disabling scroll animations when focus changes on TV. When set to `false`, the scroll view jumps instantly to the focused item instead of animating. This only affects TV platforms and has no effect on mobile.
+
+  | Prop (ScrollView) | Value | Description |
+  |---|---|---|
+  | scrollAnimationEnabled | boolean? | When `false`, disables animated scrolling on focus change. Defaults to `true`. TV only. |
+
+  ```jsx
+  <ScrollView horizontal scrollAnimationEnabled={false}>
+    <Pressable style={{width: 300}}><Text>Item 1</Text></Pressable>
+    <Pressable style={{width: 300}}><Text>Item 2</Text></Pressable>
+    <Pressable style={{width: 300}}><Text>Item 3</Text></Pressable>
+  </ScrollView>
+  ```
+
+  - _Interaction with existing ScrollView props_: The TV scroll props build on top of existing React Native ScrollView behavior. Here is how they interact:
+
+    - `snapToAlignment="item"` does not require `snapToInterval` to be set. It works as a standalone snapping mode where each child's `scrollSnapAlign` determines the snap position. If `snapToInterval` is also set, the interval is applied as an additional constraint after the item offset is computed.
+    - `snapToAlignment="item"` should not be combined with `pagingEnabled`. Both attempt to control scroll positioning independently, which leads to unpredictable behavior. Use one or the other.
+    - `snapToStart` and `snapToEnd` work independently of `snapToAlignment="item"`. They control edge behavior during swipe/drag momentum (whether the scroll view snaps to the first or last position), but do not affect focus driven item snapping.
+    - `scrollAnimationEnabled={false}` disables all scroll animations, including programmatic `scrollTo({animated: true})` calls. When disabled, all scrolling is instant.
+    - `decelerationRate` has no effect when `scrollAnimationEnabled={false}`, since there is no animation to decelerate.
+    - `scrollAnimationEnabled` and `snapToAlignment="item"` work well together. Snapping still occurs, but instantly instead of animated.
+
   - _VirtualizedList_: We extend `VirtualizedList` to make virtualization work well with focus management in mind. All of the improvements that we made are automatically available to all the VirtualizedList based components such as `FlatList`.
     - Defaults: VirtualizeList contents are automatically wrapped with a `TVFocusGuideView` with `trapFocus*` properties enabled depending on the orientation of the list. This default makes sure that focus doesn't leave the list accidentally due to a virtualization issue etc. until reaching the beginning or the end of the list.
     - New Props:
