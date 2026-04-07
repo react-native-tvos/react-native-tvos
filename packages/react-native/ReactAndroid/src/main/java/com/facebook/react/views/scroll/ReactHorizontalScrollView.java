@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.HorizontalScrollView;
 import android.widget.OverScroller;
@@ -38,6 +39,7 @@ import androidx.core.view.ViewCompat.FocusDirection;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.infer.annotation.Nullsafe;
+import com.facebook.react.views.common.UiModeUtils;
 import com.facebook.react.R;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.common.build.ReactBuildConfig;
@@ -136,6 +138,8 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private int mFadingEdgeLengthStart = 0;
   private int mFadingEdgeLengthEnd = 0;
   private int mSnapToItemPadding;
+  private boolean mScrollAnimationEnabled = true;
+  private boolean mBlockScrollDelta = false;
 
   public ReactHorizontalScrollView(Context context) {
     this(context, null);
@@ -248,8 +252,20 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   @Override
+  public void computeScroll() {
+    if (UiModeUtils.isTVDevice(getContext())
+        && !mScrollAnimationEnabled
+        && mScroller != null
+        && !mScroller.isFinished()) {
+      mScroller.forceFinished(true);
+      return;
+    }
+    super.computeScroll();
+  }
+
+  @Override
   protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
-    if (!mScrollEnabled) {
+    if (!mScrollEnabled || mBlockScrollDelta) {
       return 0;
     }
     return super.computeScrollDeltaToGetChildRectOnScreen(rect);
@@ -386,6 +402,10 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
 
   public void setSnapToItemPadding(int snapToItemPadding) {
     mSnapToItemPadding = snapToItemPadding;
+  }
+
+  public void setScrollAnimationEnabled(boolean scrollAnimationEnabled) {
+    mScrollAnimationEnabled = scrollAnimationEnabled;
   }
 
   @Override
@@ -603,7 +623,11 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    * unblocks such customization.
    */
   protected void requestChildFocusWithoutScroll(View child, View focused) {
+    // Temporarily block HorizontalScrollView's internal scrollToChild from running
+    // during super.requestChildFocus — we've already handled scrolling in requestChildFocus.
+    mBlockScrollDelta = true;
     super.requestChildFocus(child, focused);
+    mBlockScrollDelta = false;
   }
 
   @Override
@@ -652,6 +676,18 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     int scrollDelta = getScrollDelta(descendent);
     descendent.getDrawingRect(mTempRect);
     return scrollDelta != 0 && Math.abs(scrollDelta) < (mTempRect.width() / 2);
+  }
+
+  /** Returns whether the given view is a descendant of the given ancestor */
+  private static boolean isDescendantOf(View view, View ancestor) {
+    ViewParent parent = view.getParent();
+    while (parent != null) {
+      if (parent == ancestor) {
+        return true;
+      }
+      parent = parent.getParent();
+    }
+    return false;
   }
 
   private void scrollToChild(View child) {
@@ -796,21 +832,42 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   public boolean arrowScroll(int direction) {
     boolean handled = false;
 
-    if (mPagingEnabled) {
+    if (!mScrollAnimationEnabled) {
+      // When scroll animation is disabled, find the next focusable and request focus directly.
+      // This must come before the mPagingEnabled check because snapToInterval on Android
+      // auto-enables paging, and the paging branch uses smoothScrollToNextPage which
+      // scrolls by full page width instead of by snap interval.
+      // requestChildFocus → tryScrollSnapToChild/scrollToChild handles instant scrolling.
+      View currentFocused = findFocus();
+      View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
+      if (nextFocused != null && nextFocused != currentFocused && nextFocused != this) {
+        nextFocused.requestFocus(direction);
+        handled = true;
+      }
+    } else if (mPagingEnabled) {
       mPagedArrowScrolling = true;
 
       if (getChildCount() > 0) {
         View currentFocused = findFocus();
         View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
         View rootChild = getContentView();
-        if (rootChild != null && nextFocused != null && nextFocused.getParent() == rootChild) {
-          if (!isScrolledInView(nextFocused) && !isMostlyScrolledInView(nextFocused)) {
-            smoothScrollToNextPage(direction);
+        if (rootChild != null && nextFocused != null && isDescendantOf(nextFocused, rootChild)) {
+          if (mSnapToAlignment == SNAP_ALIGNMENT_ITEM) {
+            // When snapToAlignment is "item", don't use smoothScrollToNextPage (which scrolls
+            // by full page width and ignores snapToItemPadding). Instead just request focus —
+            // requestChildFocus → tryScrollSnapToChild handles scrolling with correct padding.
+            nextFocused.requestFocus();
+          } else {
+            if (!isScrolledInView(nextFocused) && !isMostlyScrolledInView(nextFocused)) {
+              smoothScrollToNextPage(direction);
+            }
+            nextFocused.requestFocus();
           }
-          nextFocused.requestFocus();
           handled = true;
         } else {
-          smoothScrollToNextPage(direction);
+          if (mSnapToAlignment != SNAP_ALIGNMENT_ITEM) {
+            smoothScrollToNextPage(direction);
+          }
           handled = true;
         }
       }
@@ -1595,7 +1652,11 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
    * scroll view and state. Calling raw `smoothScrollTo` doesn't update state.
    */
   public void reactSmoothScrollTo(int x, int y) {
-    ReactScrollViewHelper.smoothScrollTo(this, x, y);
+    if (mScrollAnimationEnabled || !UiModeUtils.isTVDevice(getContext())) {
+      ReactScrollViewHelper.smoothScrollTo(this, x, y);
+    } else {
+      scrollTo(x, y);
+    }
     setPendingContentOffsets(x, y);
   }
 

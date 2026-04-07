@@ -59,6 +59,7 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig = {
       process: require('../../StyleSheet/processColor').default,
     },
     snapToItemPadding: true,
+    scrollAnimationEnabled: true,
     pointerEvents: true,
   },
 };
