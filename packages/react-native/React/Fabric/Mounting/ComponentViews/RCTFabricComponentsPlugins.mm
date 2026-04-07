@@ -31,6 +31,7 @@ Class<RCTComponentViewProtocol> RCTFabricComponentsProvider(const char *name) {
     {"TextInput", RCTTextInputCls},
     {"UnimplementedNativeView", RCTUnimplementedNativeViewCls},
     {"View", RCTViewCls},
+    {"VirtualView", VirtualViewCls},
     {"Image", RCTImageCls},
     {"ModalHostView", RCTModalHostViewCls},
   };

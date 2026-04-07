@@ -390,7 +390,7 @@ function isReactNativeCoreLibrary(libraryName /*: string */) /*: boolean */ {
  * Validates that components are defined in at most one library.
  */
 function parseiOSAnnotations(
-  libraries /*: $ReadOnlyArray<$FlowFixMe> */,
+  libraries /*: ReadonlyArray<$FlowFixMe> */,
 ) /*: {[string]: $FlowFixMe} */ {
   const mLibraryMap /*: {[string]: $FlowFixMe} */ = {};
   const cLibraryMap /*: {[string]: $FlowFixMe} */ = {};

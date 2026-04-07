@@ -11,11 +11,13 @@
 // On Apple TV, this implements back navigation using the TV remote's menu button.
 // On iOS, this just implements a stub.
 
+import type {HardwareBackPressEvent} from './HardwareBackPressEvent';
+
 const TVEventHandler = require('../Components/TV/TVEventHandler').default;
 const Platform = require('./Platform').default;
 
 type BackPressEventName = 'backPress' | 'hardwareBackPress';
-type BackPressHandler = () => ?boolean;
+type BackPressHandler = (event: HardwareBackPressEvent) => ?boolean;
 
 function emptyFunction(): void {}
 
