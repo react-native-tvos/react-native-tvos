@@ -9,6 +9,28 @@
 #import <React/RCTUtils.h>
 #import <react/utils/FloatComparison.h>
 
+#if TARGET_OS_TV
+// Layer subclass that can block all animations when scrollAnimationEnabled is NO.
+// This intercepts animations at the point they're added to the layer, which catches
+// all animation sources: UIView animations, focus coordinator animations, and
+// Core Animation implicit/explicit animations.
+@interface RCTScrollViewLayer : CALayer
+@property (nonatomic, assign) BOOL blockAnimations;
+@end
+
+@implementation RCTScrollViewLayer
+
+- (void)addAnimation:(CAAnimation *)anim forKey:(NSString *)key
+{
+  if (_blockAnimations) {
+    return;
+  }
+  [super addAnimation:anim forKey:key];
+}
+
+@end
+#endif
+
 @interface RCTEnhancedScrollView () <UIScrollViewDelegate>
 @end
 
@@ -16,6 +38,13 @@
   __weak id<UIScrollViewDelegate> _publicDelegate;
   BOOL _isSetContentOffsetDisabled;
 }
+
+#if TARGET_OS_TV
++ (Class)layerClass
+{
+  return [RCTScrollViewLayer class];
+}
+#endif
 
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
 {
@@ -28,9 +57,18 @@
   return [super automaticallyNotifiesObserversForKey:key];
 }
 
+- (void)setScrollAnimationEnabled:(BOOL)scrollAnimationEnabled
+{
+  _scrollAnimationEnabled = scrollAnimationEnabled;
+#if TARGET_OS_TV
+  ((RCTScrollViewLayer *)self.layer).blockAnimations = !scrollAnimationEnabled;
+#endif
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
+    _scrollAnimationEnabled = YES;
     // We set the default behavior to "never" so that iOS
     // doesn't do weird things to UIScrollView insets automatically
     // and keeps it as an opt-in behavior.
@@ -101,6 +139,46 @@
       RCTSanitizeNaNValue(contentOffset.x, @"scrollView.contentOffset.x"),
       RCTSanitizeNaNValue(contentOffset.y, @"scrollView.contentOffset.y"));
 }
+
+- (void)setContentOffset:(CGPoint)contentOffset animated:(BOOL)animated
+{
+  if (_isSetContentOffsetDisabled) {
+    return;
+  }
+#if TARGET_OS_TV
+  animated = animated && _scrollAnimationEnabled;
+#endif
+  [super setContentOffset:CGPointMake(
+      RCTSanitizeNaNValue(contentOffset.x, @"scrollView.contentOffset.x"),
+      RCTSanitizeNaNValue(contentOffset.y, @"scrollView.contentOffset.y"))
+                 animated:animated];
+}
+
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated
+{
+#if TARGET_OS_TV
+  animated = animated && _scrollAnimationEnabled;
+#endif
+  [super scrollRectToVisible:rect animated:animated];
+}
+
+#if TARGET_OS_TV
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+  if (_scrollAnimationEnabled) {
+    [super didUpdateFocusInContext:context withAnimationCoordinator:coordinator];
+    return;
+  }
+
+  // When scrollAnimationEnabled is NO, don't call super and don't scroll here.
+  // RCTScrollViewComponentView.didUpdateFocusInContext handles all scrolling
+  // (both snap and non-snap cases) when animation is disabled. Scrolling here
+  // as well would cause conflicts — e.g. at the end of a snapToInterval list,
+  // this method computes a "just make visible" position while the component view
+  // computes the correct snapped position, causing a bounce effect.
+}
+#endif
 
 - (void)setFrame:(CGRect)frame
 {

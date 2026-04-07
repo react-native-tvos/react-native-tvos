@@ -11,6 +11,14 @@ declare module 'react-native' {
      * Only used when `snapToAlignment` is set to `'item'`.
      */
     snapToItemPadding?: number | undefined;
+
+    /**
+     * When false, the scroll view will jump to the correct offset without animation
+     * when focus changes. Defaults to true.
+     *
+     * @platform tv
+     */
+    scrollAnimationEnabled?: boolean | undefined;
   }
 
   interface ViewProps {
