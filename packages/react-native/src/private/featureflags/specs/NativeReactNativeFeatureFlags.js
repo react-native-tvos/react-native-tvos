@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9ce25b0fb29f19a0c26bbfab58bd5112>>
+ * @generated SignedSource<<7a3aa334314a39c580979d81b8921046>>
  * @flow strict
  * @noformat
  */
@@ -37,7 +37,6 @@ export interface Spec extends TurboModule {
   +disableViewPreallocationAndroid?: () => boolean;
   +enableAccessibilityOrder?: () => boolean;
   +enableAccumulatedUpdatesInRawPropsAndroid?: () => boolean;
-  +enableAndroidAntialiasedBorderRadiusClipping?: () => boolean;
   +enableAndroidLinearText?: () => boolean;
   +enableAndroidTextMeasurementOptimizations?: () => boolean;
   +enableBridgelessArchitecture?: () => boolean;
@@ -89,6 +88,7 @@ export interface Spec extends TurboModule {
   +fuseboxEnabledRelease?: () => boolean;
   +fuseboxFrameRecordingEnabled?: () => boolean;
   +fuseboxNetworkInspectionEnabled?: () => boolean;
+  +fuseboxScreenshotCaptureEnabled?: () => boolean;
   +hideOffscreenVirtualViewsOnIOS?: () => boolean;
   +overrideBySynchronousMountPropsAtMountingAndroid?: () => boolean;
   +perfIssuesEnabled?: () => boolean;

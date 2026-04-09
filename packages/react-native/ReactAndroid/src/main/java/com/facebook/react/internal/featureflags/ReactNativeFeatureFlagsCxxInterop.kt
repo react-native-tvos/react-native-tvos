@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<01dbfbb85643951c562e2cf1725387ff>>
+ * @generated SignedSource<<aa4a2ab7af66d857da4318ac2e75899b>>
  */
 
 /**
@@ -51,8 +51,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun enableAccessibilityOrder(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean
-
-  @DoNotStrip @JvmStatic public external fun enableAndroidAntialiasedBorderRadiusClipping(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableAndroidLinearText(): Boolean
 
@@ -155,6 +153,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun fuseboxFrameRecordingEnabled(): Boolean
 
   @DoNotStrip @JvmStatic public external fun fuseboxNetworkInspectionEnabled(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun fuseboxScreenshotCaptureEnabled(): Boolean
 
   @DoNotStrip @JvmStatic public external fun hideOffscreenVirtualViewsOnIOS(): Boolean
 

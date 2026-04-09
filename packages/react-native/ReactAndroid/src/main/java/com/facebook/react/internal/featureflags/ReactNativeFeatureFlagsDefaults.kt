@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5a6e678b586f0ad291c6a4d090dce5b5>>
+ * @generated SignedSource<<64e64370e52e5b78bda7d8371dca65c8>>
  */
 
 /**
@@ -46,8 +46,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableAccessibilityOrder(): Boolean = false
 
   override fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = false
-
-  override fun enableAndroidAntialiasedBorderRadiusClipping(): Boolean = false
 
   override fun enableAndroidLinearText(): Boolean = true
 
@@ -150,6 +148,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun fuseboxFrameRecordingEnabled(): Boolean = false
 
   override fun fuseboxNetworkInspectionEnabled(): Boolean = true
+
+  override fun fuseboxScreenshotCaptureEnabled(): Boolean = false
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 

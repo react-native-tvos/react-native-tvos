@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c47da5069c3dfd7a287125bd0dfbc0c0>>
+ * @generated SignedSource<<eacf6769e8598f88fe1790149e437f3f>>
  */
 
 /**
@@ -101,12 +101,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = accessor.enableAccumulatedUpdatesInRawPropsAndroid()
-
-  /**
-   * Enable antialiased border radius clipping for Android API 28 and below using manual masking with Porter-Duff compositing
-   */
-  @JvmStatic
-  public fun enableAndroidAntialiasedBorderRadiusClipping(): Boolean = accessor.enableAndroidAntialiasedBorderRadiusClipping()
 
   /**
    * Enables linear text rendering on Android wherever subpixel text rendering is enabled
@@ -413,6 +407,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun fuseboxNetworkInspectionEnabled(): Boolean = accessor.fuseboxNetworkInspectionEnabled()
+
+  /**
+   * Enable Page.captureScreenshot CDP method support in the React Native DevTools CDP backend. This flag is global and should not be changed across React Host lifetimes.
+   */
+  @JvmStatic
+  public fun fuseboxScreenshotCaptureEnabled(): Boolean = accessor.fuseboxScreenshotCaptureEnabled()
 
   /**
    * Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views

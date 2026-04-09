@@ -107,19 +107,6 @@ category RCTConvert(CoreLocation) {
   public virtual static CLLocationDistance CLLocationDistance:(id json);
 }
 
-category RCTConvert(Deprecated) {
-  protected typedef NSArray NSArrayArray;
-  protected typedef NSArray NSDictionaryArray;
-  protected typedef NSArray NSNumberArray;
-  protected typedef NSArray NSStringArray;
-  protected typedef NSArray NSStringArrayArray;
-  protected typedef NSArray NSURLArray;
-  protected typedef NSArray RCTFileURLArray;
-  protected typedef NSArray UIColorArray;
-  public virtual static CGImageRef CGImage:(id json);
-  public virtual static UIImage* UIImage:(id json);
-}
-
 category RCTConvert(DynamicTypeRamp) {
   public virtual static RCTDynamicTypeRamp RCTDynamicTypeRamp:(_Nullable id json);
 }
@@ -246,29 +233,6 @@ category RCTCxxConvert(NativeWebSocketModule_SpecConnectOptions) {
   public virtual static RCTManagedPointer* JS_NativeWebSocketModule_SpecConnectOptions:(id json);
 }
 
-category RCTFabricSurface(Deprecated) {
-  public virtual instancetype initWithBridge:moduleName:initialProperties:(RCTBridge* bridge, NSString* moduleName, NSDictionary* initialProperties);
-}
-
-category RCTFabricSurface(Internal) {
-  public virtual const facebook::react::SurfaceHandler& surfaceHandler();
-}
-
-category RCTImageStoreManager(Deprecated) {
-  public virtual NSString* storeImage:(UIImage* image);
-  public virtual UIImage* imageForTag:(NSString* imageTag);
-  public virtual void getImageForTag:withBlock:(NSString* imageTag, void(^)(UIImage* image) block);
-}
-
-category RCTRootView(Deprecated) {
-  public @property (assign, readonly) CGSize intrinsicSize;
-  public virtual void cancelTouches();
-}
-
-category RCTScrollView(Internal) {
-  public virtual void updateContentSizeIfNeeded();
-}
-
 category RCTScrollViewComponentView(ScrollableProtocol) {
 }
 
@@ -286,7 +250,6 @@ category RCTSurfacePresenter(Surface) {
   public @property (assign, readonly) RCTMountingManager* mountingManager;
   public @property (assign, readonly) RCTScheduler* scheduler;
   public virtual _Nullable RCTFabricSurface* surfaceForRootTag:(ReactTag rootTag);
-  public virtual _Nullable UIView* findComponentViewWithTag_DO_NOT_USE_DEPRECATED:(NSInteger tag);
   public virtual id<RCTSurfaceProtocol> createFabricSurfaceForModuleName:initialProperties:(NSString* moduleName, NSDictionary* initialProperties);
   public virtual void addObserver:(id<RCTSurfacePresenterObserver> observer);
   public virtual void registerSurface:(RCTFabricSurface* surface);
@@ -302,7 +265,6 @@ category UIImage(React) {
 }
 
 category UIView(ComponentViewProtocol) {
-  public virtual _Nullable NSSet<NSString*>* propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN();
   public virtual facebook::react::Props::Shared props();
   public virtual static std::vector<facebook::react::ComponentDescriptorProvider> supplementalComponentDescriptorProviders();
   public virtual void finalizeUpdates:(RNComponentViewUpdateMask updateMask);
@@ -310,7 +272,6 @@ category UIView(ComponentViewProtocol) {
   public virtual void mountChildComponentView:index:(UIView<RCTComponentViewProtocol>* childComponentView, NSInteger index);
   public virtual void prepareForRecycle();
   public virtual void setIsJSResponder:(BOOL isJSResponder);
-  public virtual void setPropKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN:(_Nullable NSSet<NSString*>* props);
   public virtual void unmountChildComponentView:index:(UIView<RCTComponentViewProtocol>* childComponentView, NSInteger index);
   public virtual void updateClippedSubviewsWithClipRect:relativeToView:(CGRect clipRect, UIView* clipView);
   public virtual void updateEventEmitter:(const facebook::react::EventEmitter::Shared& eventEmitter);
@@ -818,7 +779,6 @@ interface RCTBridgeModuleDecorator : public NSObject {
   public @property (strong, readonly) RCTBundleManager* bundleManager;
   public @property (strong, readonly) RCTCallableJSModules* callableJSModules;
   public @property (strong, readonly) RCTModuleRegistry* moduleRegistry;
-  public @property (strong, readonly) RCTViewRegistry* viewRegistry_DEPRECATED;
   public virtual instancetype initWithViewRegistry:moduleRegistry:bundleManager:callableJSModules:(RCTViewRegistry* viewRegistry, RCTModuleRegistry* moduleRegistry, RCTBundleManager* bundleManager, RCTCallableJSModules* callableJSModules);
   public virtual void attachInteropAPIsToModule:(id<RCTBridgeModule> bridgeModule);
 }
@@ -1177,7 +1137,6 @@ interface RCTEventDispatcher : public NSObject <RCTEventDispatcherProtocol, RCTI
 interface RCTEventEmitter : public NSObject <RCTBridgeModule, RCTInvalidating> {
   public @property (weak) RCTBridge* bridge;
   public @property (weak) RCTModuleRegistry* moduleRegistry;
-  public @property (weak) RCTViewRegistry* viewRegistry_DEPRECATED;
   public virtual NSArray<NSString*>* supportedEvents();
   public virtual instancetype initWithDisabledObservation();
   public virtual void addListener:(NSString* eventName);
@@ -1345,7 +1304,6 @@ interface RCTImageView : public RCTView {
   public @property (assign) UIEdgeInsets capInsets;
   public @property (assign) UIImageRenderingMode renderingMode;
   public @property (copy) NSArray<RCTImageSource*>* imageSources;
-  public @property (copy) NSString* internal_analyticTag;
   public @property (strong) UIImage* defaultImage;
   public virtual instancetype initWithBridge:(RCTBridge* bridge);
 }
@@ -1586,8 +1544,6 @@ interface RCTModuleData : public NSObject <RCTInvalidating> {
   public @property (strong, readonly) Class moduleClass;
   public @property (strong, readonly) dispatch_queue_t methodQueue;
   public @property (weak) id<RCTModuleDataCallInvokerProvider> callInvokerProvider;
-  public virtual instancetype initWithModuleClass:bridge:moduleRegistry:viewRegistry_DEPRECATED:bundleManager:callableJSModules:(Class moduleClass, RCTBridge* bridge, RCTModuleRegistry* moduleRegistry, RCTViewRegistry* viewRegistry_DEPRECATED, RCTBundleManager* bundleManager, RCTCallableJSModules* callableJSModules);
-  public virtual instancetype initWithModuleInstance:bridge:moduleRegistry:viewRegistry_DEPRECATED:bundleManager:callableJSModules:(id<RCTBridgeModule> instance, RCTBridge* bridge, RCTModuleRegistry* moduleRegistry, RCTViewRegistry* viewRegistry_DEPRECATED, RCTBundleManager* bundleManager, RCTCallableJSModules* callableJSModules);
   public virtual void gatherConstants();
 }
 
@@ -1929,7 +1885,6 @@ interface RCTSafeAreaViewManager : public RCTViewManager {
 interface RCTScheduler : public NSObject {
   public @property (assign, readonly) const std::shared_ptr<facebook::react::UIManager> uiManager;
   public @property (weak) id<RCTSchedulerDelegate> delegate;
-  public virtual const facebook::react::ComponentDescriptor* findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN:(facebook::react::ComponentHandle handle);
   public virtual instancetype initWithToolbox:(facebook::react::SchedulerToolbox toolbox);
   public virtual void addEventListener:(const std::shared_ptr<facebook::react::EventListener>& listener);
   public virtual void animationTick();
@@ -1956,7 +1911,6 @@ interface RCTScrollEvent : public NSObject <RCTEvent> {
 }
 
 interface RCTScrollView : public RCTView <UIScrollViewDelegate, RCTScrollableProtocol, RCTAutoInsetsProtocol> {
-  public @property (assign) BOOL DEPRECATED_sendUpdatedChildFrames;
   public @property (assign) BOOL automaticallyAdjustContentInsets;
   public @property (assign) BOOL automaticallyAdjustKeyboardInsets;
   public @property (assign) BOOL centerContent;
@@ -1987,8 +1941,8 @@ interface RCTScrollView : public RCTView <UIScrollViewDelegate, RCTScrollablePro
 interface RCTScrollViewComponentView {
   protected  __pad0__;
   public @property (assign) CGRect firstResponderFocus;
+  public @property (strong) UIScrollView* scrollView;
   public @property (strong, readonly) RCTGenericDelegateSplitter<id<UIScrollViewDelegate>>* scrollViewDelegateSplitter;
-  public @property (strong, readonly) UIScrollView* scrollView;
   public @property (strong, readonly) UIView* containerView;
   public @property (weak) UIView* firstResponderViewOutsideScrollView;
   public virtual static _Nullable RCTScrollViewComponentView* findScrollViewComponentViewForView:(UIView* view);
@@ -2505,7 +2459,6 @@ interface RCTViewComponentView : public UIView <RCTComponentViewProtocol, RCTTou
   public @property (strong, readonly) NSObject* accessibilityElement;
   public virtual BOOL wantsToCooptLabel();
   public virtual NSString* accessibilityLabelForCoopting();
-  public virtual NSString* componentViewName_DO_NOT_USE_THIS_IS_BROKEN();
   public virtual UIView* betterHitTest:withEvent:(CGPoint point, UIEvent* event);
   public virtual void finalizeUpdates:(RNComponentViewUpdateMask updateMask);
   public virtual void prepareForRecycle();
@@ -3043,7 +2996,6 @@ protocol RCTBridgeModule : public NSObject {
   public @property (weak) RCTBundleManager* bundleManager;
   public @property (weak) RCTCallableJSModules* callableJSModules;
   public @property (weak) RCTModuleRegistry* moduleRegistry;
-  public @property (weak) RCTViewRegistry* viewRegistry_DEPRECATED;
   public @property (weak, readonly) RCTBridge* bridge;
   public virtual NSArray<id<RCTBridgeMethod>>* methodsToExport();
   public virtual NSDictionary* constantsToExport();
@@ -3075,7 +3027,6 @@ protocol RCTComponentViewFactoryComponentProvider : public NSObject {
 
 protocol RCTComponentViewProtocol : public NSObject {
   public virtual BOOL isJSResponder();
-  public virtual _Nullable NSSet<NSString*>* propKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN();
   public virtual facebook::react::Props::Shared props();
   public virtual static facebook::react::ComponentDescriptorProvider componentDescriptorProvider();
   public virtual static std::vector<facebook::react::ComponentDescriptorProvider> supplementalComponentDescriptorProviders();
@@ -3085,7 +3036,6 @@ protocol RCTComponentViewProtocol : public NSObject {
   public virtual void mountChildComponentView:index:(UIView<RCTComponentViewProtocol>* childComponentView, NSInteger index);
   public virtual void prepareForRecycle();
   public virtual void setIsJSResponder:(BOOL isJSResponder);
-  public virtual void setPropKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN:(_Nullable NSSet<NSString*>* props);
   public virtual void unmountChildComponentView:index:(UIView<RCTComponentViewProtocol>* childComponentView, NSInteger index);
   public virtual void updateEventEmitter:(const facebook::react::EventEmitter::Shared& eventEmitter);
   public virtual void updateLayoutMetrics:oldLayoutMetrics:(const facebook::react::LayoutMetrics& layoutMetrics, const facebook::react::LayoutMetrics& oldLayoutMetrics);
@@ -3436,7 +3386,6 @@ protocol RCTSurfacePresenterObserver : public NSObject {
 }
 
 protocol RCTSurfacePresenterStub : public NSObject {
-  public virtual _Nullable UIView* findComponentViewWithTag_DO_NOT_USE_DEPRECATED:(NSInteger tag);
   public virtual id<RCTSurfaceProtocol> createFabricSurfaceForModuleName:initialProperties:(NSString* moduleName, NSDictionary* initialProperties);
   public virtual void addObserver:(id<RCTSurfacePresenterObserver> observer);
   public virtual void removeObserver:(id<RCTSurfacePresenterObserver> observer);
@@ -4093,7 +4042,6 @@ double facebook::react::getCPUTimeNanos();
 double facebook::react::interpolate(double inputValue, double inputMin, double inputMax, double outputMin, double outputMax, std::string_view extrapolateLeft, std::string_view extrapolateRight);
 double facebook::react::round(double value) noexcept;
 facebook::jsi::Value facebook::react::createPromiseAsJSIValue(facebook::jsi::Runtime& rt, facebook::react::PromiseSetupFunctionType&& func);
-facebook::react::AttributedString facebook::react::ensurePlaceholderIfEmpty_DO_NOT_USE(const facebook::react::AttributedString& attributedString);
 facebook::react::Color facebook::react::hostPlatformColorFromComponents(facebook::react::ColorComponents components);
 facebook::react::Color facebook::react::hostPlatformColorFromRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 facebook::react::ColorComponents facebook::react::colorComponentsFromColor(facebook::react::SharedColor color);
@@ -4720,7 +4668,6 @@ class facebook::react::BaseTextInputProps : public facebook::react::HostPlatform
   public facebook::react::SharedColor placeholderTextColor;
   public facebook::react::SharedColor selectionColor;
   public facebook::react::SharedColor selectionHandleColor;
-  public facebook::react::SharedColor underlineColorAndroid;
   public facebook::react::SubmitBehavior getNonDefaultSubmitBehavior() const;
   public facebook::react::SubmitBehavior submitBehavior;
   public facebook::react::TextAttributes getEffectiveTextAttributes(facebook::react::Float fontSizeMultiplier) const;
@@ -4978,7 +4925,6 @@ class facebook::react::ComponentDescriptorRegistry {
   public bool hasComponentDescriptorAt(facebook::react::ComponentHandle componentHandle) const;
   public const facebook::react::ComponentDescriptor& at(const std::string& componentName) const;
   public const facebook::react::ComponentDescriptor& at(facebook::react::ComponentHandle componentHandle) const;
-  public const facebook::react::ComponentDescriptor* findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN(facebook::react::ComponentHandle componentHandle) const;
   public facebook::react::ComponentDescriptor::Shared getFallbackComponentDescriptor() const;
   public using Shared = std::shared_ptr<const facebook::react::ComponentDescriptorRegistry>;
   public void setFallbackComponentDescriptor(const facebook::react::SharedComponentDescriptor& descriptor);
@@ -5104,7 +5050,6 @@ class facebook::react::EventBeat {
   public virtual void requestSynchronous() const;
   public virtual ~EventBeat() = default;
   public void setBeatCallback(facebook::react::EventBeat::BeatCallback beatCallback);
-  public void unstable_setInduceCallback(std::function<void()> callback);
 }
 
 struct facebook::react::EventBeat::OwnerBox {
@@ -5119,7 +5064,6 @@ class facebook::react::EventDispatcher {
   public void dispatchEvent(facebook::react::RawEvent&& rawEvent) const;
   public void dispatchStateUpdate(facebook::react::StateUpdate&& stateUpdate, facebook::react::EventQueue::UpdateMode updateMode) const;
   public void dispatchUniqueEvent(facebook::react::RawEvent&& rawEvent) const;
-  public void experimental_flushSync() const;
   public void removeListener(const std::shared_ptr<const facebook::react::EventListener>& listener) const;
 }
 
@@ -5145,8 +5089,6 @@ class facebook::react::EventEmitter {
   public void dispatchUniqueEvent(std::string type, folly::dynamic&& payload, facebook::react::HighResTimeStamp eventTimestamp) const;
   public void setEnabled(bool enabled);
   public void setShadowNodeFamily(std::weak_ptr<const facebook::react::ShadowNodeFamily> shadowNodeFamily);
-  template <typename Lambda>
-  public void experimental_flushSync(Lambda syncFunc) const;
 }
 
 class facebook::react::EventListenerContainer {
@@ -5185,7 +5127,6 @@ class facebook::react::EventQueue {
   public void enqueueEvent(facebook::react::RawEvent&& rawEvent) const;
   public void enqueueStateUpdate(facebook::react::StateUpdate&& stateUpdate, facebook::react::EventQueue::UpdateMode updateMode = facebook::react::EventQueue::UpdateMode::Asynchronous) const;
   public void enqueueUniqueEvent(facebook::react::RawEvent&& rawEvent) const;
-  public void experimental_flushSync() const;
 }
 
 enum facebook::react::EventQueue::UpdateMode {
@@ -5375,7 +5316,6 @@ class facebook::react::ImageProps : public facebook::react::HostPlatformViewProp
   public facebook::react::ImageSources sources;
   public facebook::react::SharedColor overlayColor;
   public facebook::react::SharedColor tintColor;
-  public std::string internal_analyticTag;
   public std::string resizeMethod;
   public void setProp(const facebook::react::PropsParserContext& context, facebook::react::RawPropsPropNameHash hash, const char* propName, const facebook::react::RawValue& value);
 }
@@ -5692,7 +5632,6 @@ struct facebook::react::JSModulesUnbundle::Module {
 class facebook::react::JSRuntime {
   public virtual facebook::jsi::Runtime& getRuntime() noexcept = 0;
   public virtual facebook::react::jsinspector_modern::RuntimeTargetDelegate& getRuntimeTargetDelegate();
-  public virtual void unstable_initializeOnJsThread();
   public virtual ~JSRuntime() = default;
 }
 
@@ -6469,6 +6408,11 @@ class facebook::react::NativeVibrationSpecJSI : public facebook::react::ObjCTurb
   public NativeVibrationSpecJSI(const facebook::react::ObjCTurboModule::InitParams& params);
 }
 
+class facebook::react::NativeViewTransition : public facebook::react::NativeViewTransitionCxxSpec<facebook::react::NativeViewTransition> {
+  public NativeViewTransition(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
+  public std::optional<facebook::jsi::Object> getViewTransitionInstance(facebook::jsi::Runtime& rt, const std::string& name, const std::string& pseudo);
+}
+
 class facebook::react::NativeWebSocketModuleSpecJSI : public facebook::react::ObjCTurboModule {
   public NativeWebSocketModuleSpecJSI(const facebook::react::ObjCTurboModule::InitParams& params);
 }
@@ -7091,7 +7035,6 @@ class facebook::react::SafeAreaViewState {
 
 class facebook::react::Scheduler : public facebook::react::UIManagerDelegate {
   public Scheduler(const facebook::react::SchedulerToolbox& schedulerToolbox, facebook::react::UIManagerAnimationDelegate* animationDelegate, facebook::react::SchedulerDelegate* delegate);
-  public const facebook::react::ComponentDescriptor* findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN(facebook::react::ComponentHandle handle) const;
   public facebook::react::SchedulerDelegate* getDelegate() const;
   public std::shared_ptr<const facebook::react::ContextContainer> getContextContainer() const;
   public std::shared_ptr<facebook::react::UIManager> getUIManager() const;
@@ -7262,7 +7205,6 @@ class facebook::react::ShadowNodeFamily : public facebook::jsi::NativeState {
   public facebook::react::SharedEventEmitter getEventEmitter() const;
   public facebook::react::SurfaceId getSurfaceId() const;
   public facebook::react::Tag getTag() const;
-  public mutable std::unique_ptr<folly::dynamic> nativeProps_DEPRECATED;
   public std::shared_ptr<const facebook::react::State> getMostRecentState() const;
   public using AncestorList = std::vector<std::pair<std::reference_wrapper<const facebook::react::ShadowNode>, int>>;
   public using Shared = std::shared_ptr<facebook::react::ShadowNodeFamily>;
@@ -7797,11 +7739,9 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public facebook::react::UIManagerViewTransitionDelegate* getViewTransitionDelegate() const;
   public std::shared_ptr<const facebook::react::ContextContainer> getContextContainer() const;
   public std::shared_ptr<const facebook::react::ShadowNode> findNodeAtPoint(const std::shared_ptr<const facebook::react::ShadowNode>& shadowNode, facebook::react::Point point) const;
-  public std::shared_ptr<const facebook::react::ShadowNode> findShadowNodeByTag_DEPRECATED(facebook::react::Tag tag) const;
   public std::shared_ptr<const facebook::react::ShadowNode> getNewestCloneOfShadowNode(const facebook::react::ShadowNode& shadowNode) const;
   public std::shared_ptr<facebook::react::ShadowNode> cloneNode(const facebook::react::ShadowNode& shadowNode, const std::shared_ptr<const std::vector<std::shared_ptr<const facebook::react::ShadowNode>>>& children, facebook::react::RawProps rawProps) const;
   public std::shared_ptr<facebook::react::ShadowNode> createNode(facebook::react::Tag tag, const std::string& componentName, facebook::react::SurfaceId surfaceId, facebook::react::RawProps props, facebook::react::InstanceHandle::Shared instanceHandle) const;
-  public std::weak_ptr<facebook::react::UIManagerAnimationBackend> unstable_getAnimationBackend();
   public virtual facebook::react::RootShadowNode::Unshared shadowTreeWillCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& oldRootShadowNode, const facebook::react::RootShadowNode::Unshared& newRootShadowNode, const facebook::react::ShadowTree::CommitOptions& commitOptions) const override;
   public virtual void shadowTreeDidFinishReactCommit(const facebook::react::ShadowTree& shadowTree) const override;
   public virtual void shadowTreeDidFinishTransaction(std::shared_ptr<const facebook::react::MountingCoordinator> mountingCoordinator, bool mountSynchronously) const override;
@@ -7821,7 +7761,6 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public void setDelegate(facebook::react::UIManagerDelegate* delegate);
   public void setIsJSResponder(const std::shared_ptr<const facebook::react::ShadowNode>& shadowNode, bool isJSResponder, bool blockNativeResponder) const;
   public void setNativeAnimatedDelegate(std::weak_ptr<facebook::react::UIManagerNativeAnimatedDelegate> delegate);
-  public void setNativeProps_DEPRECATED(const std::shared_ptr<const facebook::react::ShadowNode>& shadowNode, facebook::react::RawProps rawProps) const;
   public void setOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback);
   public void setSurfaceProps(facebook::react::SurfaceId surfaceId, const std::string& moduleName, const folly::dynamic& props, facebook::react::DisplayMode displayMode) const noexcept;
   public void setViewTransitionDelegate(facebook::react::UIManagerViewTransitionDelegate* delegate);
@@ -7831,7 +7770,6 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public void synchronouslyUpdateViewOnUIThread(facebook::react::Tag tag, const folly::dynamic& props);
   public void unregisterCommitHook(facebook::react::UIManagerCommitHook& commitHook);
   public void unregisterMountHook(facebook::react::UIManagerMountHook& mountHook);
-  public void unstable_setAnimationBackend(std::shared_ptr<facebook::react::UIManagerAnimationBackend> animationBackend);
   public void updateShadowTree(std::unordered_map<facebook::react::Tag, folly::dynamic>&& tagToProps);
   public void updateState(const facebook::react::StateUpdate& stateUpdate) const;
   public void visitBinding(const std::function<void(const facebook::react::UIManager::UIManagerBinding& uiManagerBinding)>& callback, facebook::jsi::Runtime& runtime) const;
@@ -8262,6 +8200,7 @@ enum facebook::react::BlendMode {
   Multiply,
   Normal,
   Overlay,
+  PlusLighter,
   Saturation,
   Screen,
   SoftLight,
@@ -11296,6 +11235,12 @@ class facebook::react::NativeVibrationCxxSpec : public facebook::react::TurboMod
 }
 
 template <typename T>
+class facebook::react::NativeViewTransitionCxxSpec : public facebook::react::TurboModule {
+  protected NativeViewTransitionCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
+  public static constexpr std::string_view kModuleName;
+}
+
+template <typename T>
 class facebook::react::NativeWebSocketModuleCxxSpec : public facebook::react::TurboModule {
   protected NativeWebSocketModuleCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public static constexpr std::string_view kModuleName;
@@ -12722,16 +12667,21 @@ class facebook::react::jsinspector_modern::HostTargetDelegate : public facebook:
   public facebook::react::jsinspector_modern::HostTargetDelegate& operator=(facebook::react::jsinspector_modern::HostTargetDelegate&&) = delete;
   public virtual facebook::react::jsinspector_modern::HostTargetMetadata getMetadata() = 0;
   public virtual facebook::react::jsinspector_modern::HostTargetTracingDelegate* getTracingDelegate();
+  public virtual void captureScreenshot(const facebook::react::jsinspector_modern::HostTargetDelegate::PageCaptureScreenshotRequest&, const std::function<void(std::optional<std::string> base64Data)>& callback);
   public virtual void loadNetworkResource(const facebook::react::jsinspector_modern::LoadNetworkResourceRequest&, facebook::react::jsinspector_modern::ScopedExecutor<facebook::react::jsinspector_modern::NetworkRequestListener>) override;
   public virtual void onReload(const facebook::react::jsinspector_modern::HostTargetDelegate::PageReloadRequest& request) = 0;
   public virtual void onSetPausedInDebuggerMessage(const facebook::react::jsinspector_modern::HostTargetDelegate::OverlaySetPausedInDebuggerMessageRequest& request) = 0;
-  public virtual void unstable_onPerfIssueAdded(const facebook::react::jsinspector_modern::PerfIssuePayload&);
   public virtual ~HostTargetDelegate() override;
 }
 
 struct facebook::react::jsinspector_modern::HostTargetDelegate::OverlaySetPausedInDebuggerMessageRequest {
   public bool operator==(const facebook::react::jsinspector_modern::HostTargetDelegate::OverlaySetPausedInDebuggerMessageRequest& rhs) const;
   public std::optional<std::string> message;
+}
+
+struct facebook::react::jsinspector_modern::HostTargetDelegate::PageCaptureScreenshotRequest {
+  public std::optional<int> quality;
+  public std::optional<std::string> format;
 }
 
 struct facebook::react::jsinspector_modern::HostTargetDelegate::PageReloadRequest {
@@ -12789,7 +12739,6 @@ class facebook::react::jsinspector_modern::ILocalConnection : public facebook::r
 
 class facebook::react::jsinspector_modern::IPageStatusListener : public facebook::react::jsinspector_modern::IDestructible {
   public virtual void onPageRemoved(int);
-  public virtual void unstable_onHostTargetAdded();
   public virtual ~IPageStatusListener() = 0;
 }
 
@@ -12819,6 +12768,7 @@ class facebook::react::jsinspector_modern::InspectorFlags {
   public bool getIsProfilingBuild() const;
   public bool getNetworkInspectionEnabled() const;
   public bool getPerfIssuesEnabled() const;
+  public bool getScreenshotCaptureEnabled() const;
   public static facebook::react::jsinspector_modern::InspectorFlags& getInstance();
   public void dangerouslyDisableFuseboxForTest();
   public void dangerouslyResetFlags();
@@ -12964,6 +12914,7 @@ class facebook::react::jsinspector_modern::RuntimeAgent {
   public const facebook::react::jsinspector_modern::ExecutionContextDescription& getExecutionContextDescription() const;
   public facebook::react::jsinspector_modern::RuntimeAgent::ExportedState getExportedState();
   public void notifyBindingCalled(const std::string& bindingName, const std::string& payload);
+  public void notifyFastRefreshComplete();
   public ~RuntimeAgent();
 }
 
@@ -14784,7 +14735,6 @@ const char* facebook::yoga::toString(facebook::yoga::Direction e);
 const char* facebook::yoga::toString(facebook::yoga::Display e);
 const char* facebook::yoga::toString(facebook::yoga::Edge e);
 const char* facebook::yoga::toString(facebook::yoga::Errata e);
-const char* facebook::yoga::toString(facebook::yoga::ExperimentalFeature e);
 const char* facebook::yoga::toString(facebook::yoga::FlexDirection e);
 const char* facebook::yoga::toString(facebook::yoga::GridTrackType e);
 const char* facebook::yoga::toString(facebook::yoga::Gutter e);
@@ -14804,7 +14754,6 @@ constexpr YGDirection facebook::yoga::unscopedEnum(facebook::yoga::Direction sco
 constexpr YGDisplay facebook::yoga::unscopedEnum(facebook::yoga::Display scoped);
 constexpr YGEdge facebook::yoga::unscopedEnum(facebook::yoga::Edge scoped);
 constexpr YGErrata facebook::yoga::unscopedEnum(facebook::yoga::Errata scoped);
-constexpr YGExperimentalFeature facebook::yoga::unscopedEnum(facebook::yoga::ExperimentalFeature scoped);
 constexpr YGFlexDirection facebook::yoga::unscopedEnum(facebook::yoga::FlexDirection scoped);
 constexpr YGGridTrackType facebook::yoga::unscopedEnum(facebook::yoga::GridTrackType scoped);
 constexpr YGGutter facebook::yoga::unscopedEnum(facebook::yoga::Gutter scoped);
@@ -14830,7 +14779,6 @@ constexpr facebook::yoga::Direction facebook::yoga::scopedEnum(YGDirection unsco
 constexpr facebook::yoga::Display facebook::yoga::scopedEnum(YGDisplay unscoped);
 constexpr facebook::yoga::Edge facebook::yoga::scopedEnum(YGEdge unscoped);
 constexpr facebook::yoga::Errata facebook::yoga::scopedEnum(YGErrata unscoped);
-constexpr facebook::yoga::ExperimentalFeature facebook::yoga::scopedEnum(YGExperimentalFeature unscoped);
 constexpr facebook::yoga::FlexDirection facebook::yoga::scopedEnum(YGFlexDirection unscoped);
 constexpr facebook::yoga::FloatOptional facebook::yoga::maxOrDefined(facebook::yoga::FloatOptional lhs, facebook::yoga::FloatOptional rhs);
 constexpr facebook::yoga::GridTrackType facebook::yoga::scopedEnum(YGGridTrackType unscoped);
@@ -14917,10 +14865,8 @@ class facebook::yoga::Config : public YGConfig {
   public Config(YGLogger logger);
   public YGNodeRef cloneNode(YGNodeConstRef node, YGNodeConstRef owner, size_t childIndex) const;
   public bool hasErrata(facebook::yoga::Errata errata) const;
-  public bool isExperimentalFeatureEnabled(facebook::yoga::ExperimentalFeature feature) const;
   public bool useWebDefaults() const;
   public facebook::yoga::Errata getErrata() const;
-  public facebook::yoga::ExperimentalFeatureSet getEnabledExperiments() const;
   public float getPointScaleFactor() const;
   public static const facebook::yoga::Config& getDefault();
   public uint32_t getVersion() const noexcept;
@@ -14930,7 +14876,6 @@ class facebook::yoga::Config : public YGConfig {
   public void setCloneNodeCallback(YGCloneNodeFunc cloneNode);
   public void setContext(void* context);
   public void setErrata(facebook::yoga::Errata errata);
-  public void setExperimentalFeatureEnabled(facebook::yoga::ExperimentalFeature feature, bool enabled);
   public void setLogger(YGLogger logger);
   public void setPointScaleFactor(float pointScaleFactor);
   public void setUseWebDefaults(bool useWebDefaults);
@@ -15729,8 +15674,6 @@ struct JS::NativeDeviceInfo::DimensionsPayload::Builder {
 struct JS::NativeDeviceInfo::DimensionsPayload::Builder::Input {
   protected std::optional<JS::NativeDeviceInfo::DisplayMetrics::Builder> screen;
   protected std::optional<JS::NativeDeviceInfo::DisplayMetrics::Builder> window;
-  protected std::optional<JS::NativeDeviceInfo::DisplayMetricsAndroid::Builder> screenPhysicalPixels;
-  protected std::optional<JS::NativeDeviceInfo::DisplayMetricsAndroid::Builder> windowPhysicalPixels;
 }
 
 struct JS::NativeDeviceInfo::DisplayMetrics {
@@ -15831,7 +15774,6 @@ struct JS::NativeImageEditor::OptionsSize {
 struct JS::NativeNetworkingIOS::SpecSendRequestQuery {
   protected NSString* method() const;
   protected NSString* responseType() const;
-  protected NSString* unstable_devToolsRequestId() const;
   protected NSString* url() const;
   protected SpecSendRequestQuery(NSDictionary* const v);
   protected bool incrementalUpdates() const;

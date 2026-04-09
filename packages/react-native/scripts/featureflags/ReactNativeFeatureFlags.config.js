@@ -80,7 +80,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'none',
+      ossReleaseStage: 'experimental',
     },
     defaultTextToOverflowHidden: {
       defaultValue: true,
@@ -175,17 +175,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2024-12-10',
         description:
           'When enabled, Android will accumulate updates in rawProps to reduce the number of mounting instructions for cascading re-renders.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableAndroidAntialiasedBorderRadiusClipping: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2025-11-14',
-        description:
-          'Enable antialiased border radius clipping for Android API 28 and below using manual masking with Porter-Duff compositing',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -731,6 +720,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    fuseboxScreenshotCaptureEnabled: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-04-01',
+        description:
+          'Enable Page.captureScreenshot CDP method support in the React Native DevTools CDP backend. This flag is global and should not be changed across React Host lifetimes.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     hideOffscreenVirtualViewsOnIOS: {
       defaultValue: false,
       metadata: {
@@ -931,7 +931,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'none',
+      ossReleaseStage: 'experimental',
     },
     useTraitHiddenOnAndroid: {
       defaultValue: false,

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0461c053059cd8e566296db2a3c9a82e>>
+ * @generated SignedSource<<30d3bbe294fb92c10cd6c1aed5ca0272>>
  */
 
 /**
@@ -59,8 +59,6 @@ class NativeReactNativeFeatureFlags
   bool enableAccessibilityOrder(jsi::Runtime& runtime);
 
   bool enableAccumulatedUpdatesInRawPropsAndroid(jsi::Runtime& runtime);
-
-  bool enableAndroidAntialiasedBorderRadiusClipping(jsi::Runtime& runtime);
 
   bool enableAndroidLinearText(jsi::Runtime& runtime);
 
@@ -163,6 +161,8 @@ class NativeReactNativeFeatureFlags
   bool fuseboxFrameRecordingEnabled(jsi::Runtime& runtime);
 
   bool fuseboxNetworkInspectionEnabled(jsi::Runtime& runtime);
+
+  bool fuseboxScreenshotCaptureEnabled(jsi::Runtime& runtime);
 
   bool hideOffscreenVirtualViewsOnIOS(jsi::Runtime& runtime);
 

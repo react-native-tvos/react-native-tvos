@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<880f137911af6d2a9d383ebd68ddc300>>
+ * @generated SignedSource<<367bb35175543888c27d2e26a049289c>>
  */
 
 /**
@@ -108,12 +108,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableAccumulatedUpdatesInRawPropsAndroid() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableAccumulatedUpdatesInRawPropsAndroid");
-    return method(javaProvider_);
-  }
-
-  bool enableAndroidAntialiasedBorderRadiusClipping() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableAndroidAntialiasedBorderRadiusClipping");
     return method(javaProvider_);
   }
 
@@ -423,6 +417,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool fuseboxScreenshotCaptureEnabled() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fuseboxScreenshotCaptureEnabled");
+    return method(javaProvider_);
+  }
+
   bool hideOffscreenVirtualViewsOnIOS() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("hideOffscreenVirtualViewsOnIOS");
@@ -641,11 +641,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enableAccessibilityOrder(
 bool JReactNativeFeatureFlagsCxxInterop::enableAccumulatedUpdatesInRawPropsAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::enableAndroidAntialiasedBorderRadiusClipping(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableAndroidAntialiasedBorderRadiusClipping();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableAndroidLinearText(
@@ -903,6 +898,11 @@ bool JReactNativeFeatureFlagsCxxInterop::fuseboxNetworkInspectionEnabled(
   return ReactNativeFeatureFlags::fuseboxNetworkInspectionEnabled();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::fuseboxScreenshotCaptureEnabled(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::fuseboxScreenshotCaptureEnabled();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::hideOffscreenVirtualViewsOnIOS(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS();
@@ -1101,9 +1101,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableAccumulatedUpdatesInRawPropsAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableAccumulatedUpdatesInRawPropsAndroid),
       makeNativeMethod(
-        "enableAndroidAntialiasedBorderRadiusClipping",
-        JReactNativeFeatureFlagsCxxInterop::enableAndroidAntialiasedBorderRadiusClipping),
-      makeNativeMethod(
         "enableAndroidLinearText",
         JReactNativeFeatureFlagsCxxInterop::enableAndroidLinearText),
       makeNativeMethod(
@@ -1256,6 +1253,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "fuseboxNetworkInspectionEnabled",
         JReactNativeFeatureFlagsCxxInterop::fuseboxNetworkInspectionEnabled),
+      makeNativeMethod(
+        "fuseboxScreenshotCaptureEnabled",
+        JReactNativeFeatureFlagsCxxInterop::fuseboxScreenshotCaptureEnabled),
       makeNativeMethod(
         "hideOffscreenVirtualViewsOnIOS",
         JReactNativeFeatureFlagsCxxInterop::hideOffscreenVirtualViewsOnIOS),

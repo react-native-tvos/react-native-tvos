@@ -7,9 +7,10 @@
 
 #include <fbjni/fbjni.h>
 
-#include "BlobCollector.h"
+#include "FabricMountingManagerTestHelper.h"
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*unused*/) {
-  return facebook::jni::initialize(
-      vm, [] { facebook::react::BlobModuleJSIBindings::registerNatives(); });
+  return facebook::jni::initialize(vm, [] {
+    facebook::react::FabricMountingManagerTestHelper::registerNatives();
+  });
 }

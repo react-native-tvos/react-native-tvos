@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f86521eb5833e76014b3197a6ab23b60>>
+ * @generated SignedSource<<252f40100280324a528cced3c2c40176>>
  */
 
 /**
@@ -72,10 +72,6 @@ bool ReactNativeFeatureFlags::enableAccessibilityOrder() {
 
 bool ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid() {
   return getAccessor().enableAccumulatedUpdatesInRawPropsAndroid();
-}
-
-bool ReactNativeFeatureFlags::enableAndroidAntialiasedBorderRadiusClipping() {
-  return getAccessor().enableAndroidAntialiasedBorderRadiusClipping();
 }
 
 bool ReactNativeFeatureFlags::enableAndroidLinearText() {
@@ -280,6 +276,10 @@ bool ReactNativeFeatureFlags::fuseboxFrameRecordingEnabled() {
 
 bool ReactNativeFeatureFlags::fuseboxNetworkInspectionEnabled() {
   return getAccessor().fuseboxNetworkInspectionEnabled();
+}
+
+bool ReactNativeFeatureFlags::fuseboxScreenshotCaptureEnabled() {
+  return getAccessor().fuseboxScreenshotCaptureEnabled();
 }
 
 bool ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS() {

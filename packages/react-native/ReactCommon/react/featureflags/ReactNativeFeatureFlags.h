@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a218accbb46d69a2d1bf54e0213b3421>>
+ * @generated SignedSource<<a561d93b455e4092342a4fddb6143dac>>
  */
 
 /**
@@ -98,11 +98,6 @@ class ReactNativeFeatureFlags {
    * When enabled, Android will accumulate updates in rawProps to reduce the number of mounting instructions for cascading re-renders.
    */
   RN_EXPORT static bool enableAccumulatedUpdatesInRawPropsAndroid();
-
-  /**
-   * Enable antialiased border radius clipping for Android API 28 and below using manual masking with Porter-Duff compositing
-   */
-  RN_EXPORT static bool enableAndroidAntialiasedBorderRadiusClipping();
 
   /**
    * Enables linear text rendering on Android wherever subpixel text rendering is enabled
@@ -358,6 +353,11 @@ class ReactNativeFeatureFlags {
    * Enable network inspection support in the React Native DevTools CDP backend. Requires `enableBridgelessArchitecture`. This flag is global and should not be changed across React Host lifetimes.
    */
   RN_EXPORT static bool fuseboxNetworkInspectionEnabled();
+
+  /**
+   * Enable Page.captureScreenshot CDP method support in the React Native DevTools CDP backend. This flag is global and should not be changed across React Host lifetimes.
+   */
+  RN_EXPORT static bool fuseboxScreenshotCaptureEnabled();
 
   /**
    * Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views

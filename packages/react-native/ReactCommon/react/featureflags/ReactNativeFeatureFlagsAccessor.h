@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<96104345e25766f663c6bcb6f1af036d>>
+ * @generated SignedSource<<cdcc4286891855d51cf9e9f2d990bfa1>>
  */
 
 /**
@@ -44,7 +44,6 @@ class ReactNativeFeatureFlagsAccessor {
   bool disableViewPreallocationAndroid();
   bool enableAccessibilityOrder();
   bool enableAccumulatedUpdatesInRawPropsAndroid();
-  bool enableAndroidAntialiasedBorderRadiusClipping();
   bool enableAndroidLinearText();
   bool enableAndroidTextMeasurementOptimizations();
   bool enableBridgelessArchitecture();
@@ -96,6 +95,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool fuseboxEnabledRelease();
   bool fuseboxFrameRecordingEnabled();
   bool fuseboxNetworkInspectionEnabled();
+  bool fuseboxScreenshotCaptureEnabled();
   bool hideOffscreenVirtualViewsOnIOS();
   bool overrideBySynchronousMountPropsAtMountingAndroid();
   bool perfIssuesEnabled();
@@ -147,7 +147,6 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> disableViewPreallocationAndroid_;
   std::atomic<std::optional<bool>> enableAccessibilityOrder_;
   std::atomic<std::optional<bool>> enableAccumulatedUpdatesInRawPropsAndroid_;
-  std::atomic<std::optional<bool>> enableAndroidAntialiasedBorderRadiusClipping_;
   std::atomic<std::optional<bool>> enableAndroidLinearText_;
   std::atomic<std::optional<bool>> enableAndroidTextMeasurementOptimizations_;
   std::atomic<std::optional<bool>> enableBridgelessArchitecture_;
@@ -199,6 +198,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> fuseboxEnabledRelease_;
   std::atomic<std::optional<bool>> fuseboxFrameRecordingEnabled_;
   std::atomic<std::optional<bool>> fuseboxNetworkInspectionEnabled_;
+  std::atomic<std::optional<bool>> fuseboxScreenshotCaptureEnabled_;
   std::atomic<std::optional<bool>> hideOffscreenVirtualViewsOnIOS_;
   std::atomic<std::optional<bool>> overrideBySynchronousMountPropsAtMountingAndroid_;
   std::atomic<std::optional<bool>> perfIssuesEnabled_;
