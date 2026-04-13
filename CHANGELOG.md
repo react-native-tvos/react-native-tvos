@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.85.1
+
+### Fixed
+
+- **Animated**: Share animation backend enabled as experimental([401b1620dc](https://github.com/facebook/react-native/commit/401b1620dc674b3f7b9e88a783baca68a2f94ebc) by [@cortinico](https://github.com/cortinico))
+
+#### Android specific
+
+- **Networking**: FormData uploads broken in debug builds ([0d1b70ee22](https://github.com/facebook/react-native/commit/0d1b70ee225a2e9970364ddda323071aa0a7e485) by [@riteshshukla04](https://github.com/riteshshukla04))
+
 ## v0.85.0
 
 ### Breaking
