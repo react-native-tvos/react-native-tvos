@@ -402,7 +402,11 @@ export type AndroidTextInputNativeProps = Readonly<{
    * Invalid if `multiline={true}` is specified.
    */
   onSubmitEditing?: ?BubblingEventHandler<
-    Readonly<{target: Int32, text: string}>,
+    Readonly<{
+      target: Int32,
+      text: string,
+      action?: 'submit' | 'next' | 'previous',
+    }>,
   >,
 
   /**
