@@ -928,6 +928,11 @@ public open class ReactTextInputManager public constructor() :
                   reactContext.surfaceId,
                   editText.id,
                   editText.text.toString(),
+                  action = when (actionId) {
+                    EditorInfo.IME_ACTION_NEXT -> ReactTextInputSubmitEditingEvent.ACTION_NEXT
+                    EditorInfo.IME_ACTION_PREVIOUS -> ReactTextInputSubmitEditingEvent.ACTION_PREVIOUS
+                    else -> ReactTextInputSubmitEditingEvent.ACTION_SUBMIT
+                  },
               )
           )
         }
