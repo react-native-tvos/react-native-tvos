@@ -428,6 +428,7 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
   // (no connection to any specific "submitting" process).
 
   if (_eventEmitter && shouldSubmit) {
+    // iOS & tvOS only supports "submit"; action defaults to "submit" in the emitter.
     static_cast<const TextInputEventEmitter &>(*_eventEmitter).onSubmitEditing([self _textInputMetrics]);
   }
   return shouldSubmit;

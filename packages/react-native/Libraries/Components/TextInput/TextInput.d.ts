@@ -554,6 +554,7 @@ export type TextInputEndEditingEvent =
  */
 export interface TextInputSubmitEditingEventData {
   text: string;
+  action: 'submit' | 'next' | 'previous';
 }
 
 /**

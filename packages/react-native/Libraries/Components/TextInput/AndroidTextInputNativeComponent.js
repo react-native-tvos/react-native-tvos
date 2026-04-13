@@ -429,7 +429,7 @@ export type AndroidTextInputNativeProps = Readonly<{
     Readonly<{
       target: Int32,
       text: string,
-      action?: 'submit' | 'next' | 'previous',
+      action: 'submit' | 'next' | 'previous',
     }>,
   >,
 

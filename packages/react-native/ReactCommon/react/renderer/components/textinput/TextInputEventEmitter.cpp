@@ -161,8 +161,19 @@ void TextInputEventEmitter::onEndEditing(
 }
 
 void TextInputEventEmitter::onSubmitEditing(
-    const Metrics& textInputMetrics) const {
-  dispatchTextInputEvent("submitEditing", textInputMetrics);
+    const Metrics& textInputMetrics,
+    const std::string& action) const {
+  dispatchEvent(
+      "submitEditing", [textInputMetrics, action](jsi::Runtime& runtime) {
+        auto payload =
+            textInputMetricsPayload(runtime, textInputMetrics, false)
+                .asObject(runtime);
+        payload.setProperty(
+            runtime,
+            "action",
+            jsi::String::createFromUtf8(runtime, action));
+        return payload;
+      });
 }
 
 void TextInputEventEmitter::onKeyPress(

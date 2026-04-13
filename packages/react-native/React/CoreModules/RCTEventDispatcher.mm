@@ -99,6 +99,10 @@ RCT_EXPORT_MODULE()
     body[@"text"] = [text copy];
   }
 
+  if (type == RCTTextEventTypeSubmit) {
+    body[@"action"] = @"submit";
+  }
+
   if (key != nullptr) {
     if (key.length == 0) {
       key = @"Backspace"; // backspace
