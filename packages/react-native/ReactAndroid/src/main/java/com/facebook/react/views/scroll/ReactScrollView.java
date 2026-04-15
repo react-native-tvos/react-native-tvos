@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -546,6 +547,24 @@ public class ReactScrollView extends ScrollView
     return true;
   }
 
+  @Override
+  public boolean arrowScroll(int direction) {
+    if (mSnapToAlignment == SNAP_ALIGNMENT_ITEM) {
+      // When snapToAlignment is "item", find the next focusable and request focus directly.
+      // This avoids super.arrowScroll() which starts its own scroll animation that conflicts
+      // with tryScrollSnapToChild's snap scrolling.
+      // requestChildFocus → tryScrollSnapToChild handles scrolling.
+      View currentFocused = findFocus();
+      View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
+      if (nextFocused != null && nextFocused != currentFocused && nextFocused != this) {
+        nextFocused.requestFocus(direction);
+        return true;
+      }
+      return false;
+    }
+    return super.arrowScroll(direction);
+  }
+
   /**
    * Since ReactScrollView handles layout changes on JS side, it does not call super.onlayout due to
    * which mIsLayoutDirty flag in ScrollView remains true and prevents scrolling to child when
@@ -621,9 +640,8 @@ public class ReactScrollView extends ScrollView
         && !mScrollAnimationEnabled
         && mScroller != null
         && !mScroller.isFinished()) {
-      // When scroll animation is disabled, just abort any in-flight smooth scroll.
-      // The correct position has already been set synchronously by
-      // requestChildFocus → tryScrollSnapToChild/scrollToChild.
+      // Jump instantly to the target position instead of animating.
+      scrollTo(mScroller.getFinalX(), mScroller.getFinalY());
       mScroller.forceFinished(true);
       return;
     }
