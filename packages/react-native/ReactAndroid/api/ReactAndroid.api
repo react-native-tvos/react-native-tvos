@@ -943,6 +943,7 @@ public abstract class com/facebook/react/bridge/ReactContext : android/content/C
 	protected field mInteropModuleRegistry Lcom/facebook/react/bridge/interop/InteropModuleRegistry;
 	public fun <init> (Landroid/content/Context;)V
 	public fun addActivityEventListener (Lcom/facebook/react/bridge/ActivityEventListener;)V
+	public fun addExtraWindowEventListener (Lcom/facebook/react/interfaces/ExtraWindowEventListener;)V
 	public fun addLifecycleEventListener (Lcom/facebook/react/bridge/LifecycleEventListener;)V
 	public fun addWindowFocusChangeListener (Lcom/facebook/react/bridge/WindowFocusChangeListener;)V
 	public fun assertOnJSQueueThread ()V
@@ -986,6 +987,8 @@ public abstract class com/facebook/react/bridge/ReactContext : android/content/C
 	public fun isOnNativeModulesQueueThread ()Z
 	public fun isOnUiQueueThread ()Z
 	public fun onActivityResult (Landroid/app/Activity;IILandroid/content/Intent;)V
+	public fun onExtraWindowCreate (Landroid/view/Window;)V
+	public fun onExtraWindowDestroy (Landroid/view/Window;)V
 	public fun onHostDestroy ()V
 	public fun onHostDestroy (Z)V
 	public fun onHostPause ()V
@@ -995,6 +998,7 @@ public abstract class com/facebook/react/bridge/ReactContext : android/content/C
 	public fun onWindowFocusChange (Z)V
 	public abstract fun registerSegment (ILjava/lang/String;Lcom/facebook/react/bridge/Callback;)V
 	public fun removeActivityEventListener (Lcom/facebook/react/bridge/ActivityEventListener;)V
+	public fun removeExtraWindowEventListener (Lcom/facebook/react/interfaces/ExtraWindowEventListener;)V
 	public fun removeLifecycleEventListener (Lcom/facebook/react/bridge/LifecycleEventListener;)V
 	public fun removeWindowFocusChangeListener (Lcom/facebook/react/bridge/WindowFocusChangeListener;)V
 	public fun resetPerfStats ()V
@@ -2303,6 +2307,11 @@ public final class com/facebook/react/fabric/mounting/SurfaceMountingManager {
 	public final fun updateProps (ILcom/facebook/react/bridge/ReadableMap;)V
 	public final fun updatePropsSynchronously (ILcom/facebook/react/bridge/ReadableMap;)V
 	public final fun updateState (ILcom/facebook/react/uimanager/StateWrapper;)V
+}
+
+public abstract interface class com/facebook/react/interfaces/ExtraWindowEventListener {
+	public abstract fun onExtraWindowCreate (Landroid/view/Window;)V
+	public abstract fun onExtraWindowDestroy (Landroid/view/Window;)V
 }
 
 public abstract interface class com/facebook/react/interfaces/TaskInterface {
@@ -4149,6 +4158,7 @@ public final class com/facebook/react/uimanager/ThemedReactContext : com/faceboo
 	public fun <init> (Lcom/facebook/react/bridge/ReactApplicationContext;Landroid/content/Context;Ljava/lang/String;)V
 	public fun <init> (Lcom/facebook/react/bridge/ReactApplicationContext;Landroid/content/Context;Ljava/lang/String;I)V
 	public synthetic fun <init> (Lcom/facebook/react/bridge/ReactApplicationContext;Landroid/content/Context;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun addExtraWindowEventListener (Lcom/facebook/react/interfaces/ExtraWindowEventListener;)V
 	public fun addLifecycleEventListener (Lcom/facebook/react/bridge/LifecycleEventListener;)V
 	public fun destroy ()V
 	public fun getCatalystInstance ()Lcom/facebook/react/bridge/CatalystInstance;
@@ -4174,7 +4184,10 @@ public final class com/facebook/react/uimanager/ThemedReactContext : com/faceboo
 	public fun hasNativeModule (Ljava/lang/Class;)Z
 	public fun hasReactInstance ()Z
 	public fun isBridgeless ()Z
+	public fun onExtraWindowCreate (Landroid/view/Window;)V
+	public fun onExtraWindowDestroy (Landroid/view/Window;)V
 	public fun registerSegment (ILjava/lang/String;Lcom/facebook/react/bridge/Callback;)V
+	public fun removeExtraWindowEventListener (Lcom/facebook/react/interfaces/ExtraWindowEventListener;)V
 	public fun removeLifecycleEventListener (Lcom/facebook/react/bridge/LifecycleEventListener;)V
 }
 
