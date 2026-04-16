@@ -7,6 +7,7 @@
 
 package com.facebook.react.views.view
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.view.Window
@@ -15,6 +16,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.facebook.react.util.AndroidVersion
 import com.facebook.react.views.common.UiModeUtils
 
 // The light scrim color used in the platform API 29+
@@ -35,6 +37,32 @@ public var isEdgeToEdgeFeatureFlagOn: Boolean = false
 
 public fun setEdgeToEdgeFeatureFlagOn() {
   isEdgeToEdgeFeatureFlagOn = true
+}
+
+internal fun updateEdgeToEdgeFeatureFlag(activity: Activity) {
+  // When the app targets SDK 35+, edge-to-edge may be enforced by the OS even if the
+  // feature flag wasn't explicitly set. In that case, turn the flag on to match.
+  if (AndroidVersion.isAtLeastTargetSdk35(activity)) {
+    if (Build.VERSION.SDK_INT >= AndroidVersion.VERSION_CODE_BAKLAVA) {
+      // The device is running Android 16+ (where edge-to-edge is always enforced)
+      isEdgeToEdgeFeatureFlagOn = true
+    } else {
+      val attributes = intArrayOf(AndroidVersion.ATTR_WINDOW_OPT_OUT_EDGE_TO_EDGE_ENFORCEMENT)
+      val typedArray = activity.theme.obtainStyledAttributes(attributes)
+
+      // The device is running Android 15 with / without opting out
+      isEdgeToEdgeFeatureFlagOn =
+          try {
+            !typedArray.getBoolean(0, false)
+          } finally {
+            typedArray.recycle()
+          }
+    }
+  }
+
+  if (isEdgeToEdgeFeatureFlagOn) {
+    activity.window.enableEdgeToEdge()
+  }
 }
 
 @Suppress("DEPRECATION")
