@@ -261,6 +261,8 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
         && !mScrollAnimationEnabled
         && mScroller != null
         && !mScroller.isFinished()) {
+      // Jump instantly to the target position instead of animating.
+      scrollTo(mScroller.getFinalX(), mScroller.getFinalY());
       mScroller.forceFinished(true);
       return;
     }
@@ -863,12 +865,11 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   public boolean arrowScroll(int direction) {
     boolean handled = false;
 
-    if (!mScrollAnimationEnabled) {
-      // When scroll animation is disabled, find the next focusable and request focus directly.
-      // This must come before the mPagingEnabled check because snapToInterval on Android
-      // auto-enables paging, and the paging branch uses smoothScrollToNextPage which
-      // scrolls by full page width instead of by snap interval.
-      // requestChildFocus → tryScrollSnapToChild/scrollToChild handles instant scrolling.
+    if (mSnapToAlignment == SNAP_ALIGNMENT_ITEM) {
+      // When snapToAlignment is "item", find the next focusable and request focus directly.
+      // This avoids super.arrowScroll() which starts its own scroll animation that conflicts
+      // with tryScrollSnapToChild's snap scrolling.
+      // requestChildFocus → tryScrollSnapToChild handles scrolling.
       View currentFocused = findFocus();
       View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
       if (nextFocused != null && nextFocused != currentFocused && nextFocused != this) {
