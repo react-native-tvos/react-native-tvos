@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
-extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
-
 extern NSString * _Nonnull const RCTTVEnablePanGestureNotification;
 extern NSString * _Nonnull const RCTTVDisablePanGestureNotification;
 
@@ -23,17 +20,17 @@ extern NSString * _Nonnull const RCTTVDisableGestureHandlersCancelTouchesNotific
 - (instancetype _Nonnull )initWithView:(UIView * _Nonnull)view;
 - (instancetype _Nonnull )init __attribute__((unavailable("init not available, use initWithView:")));
 
-+ (BOOL)useMenuKey;
-+ (void)setUseMenuKey:(BOOL)useMenuKey;
+// Back handler counter: pressesBegan on RCTRootView claims the menu press
+// only when this counter is greater than zero. Managed by useBackHandler / BackHandler.
++ (void)incrementBackHandlerCount;
++ (void)decrementBackHandlerCount;
++ (int32_t)backHandlerCount;
 
 + (BOOL)usePanGesture;
 + (void)setUsePanGesture:(BOOL)usePanGesture;
 
 + (BOOL)gestureHandlersCancelTouches;
 + (void)setGestureHandlersCancelTouches:(BOOL)cancelTouches;
-
-- (void)enableTVMenuKey;
-- (void)disableTVMenuKey;
 
 @end
 #endif

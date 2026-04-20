@@ -108,8 +108,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : coder)
 {
 #if TARGET_OS_TV
   self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:_modalViewController.view];
-  [self.tvRemoteHandler disableTVMenuKey];
-
   [_modalViewController.view addGestureRecognizer:_menuButtonGestureRecognizer];
 #endif
 }

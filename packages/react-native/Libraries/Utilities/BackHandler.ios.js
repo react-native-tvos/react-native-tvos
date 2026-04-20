@@ -15,6 +15,8 @@ import type {HardwareBackPressEvent} from './HardwareBackPressEvent';
 
 const TVEventHandler = require('../Components/TV/TVEventHandler').default;
 const Platform = require('./Platform').default;
+const NativeTVNavigationEventEmitter =
+  require('../../src/private/specs_DEPRECATED/modules/NativeTVNavigationEventEmitter').default;
 
 type BackPressEventName = 'backPress' | 'hardwareBackPress';
 type BackPressHandler = (event: HardwareBackPressEvent) => ?boolean;
@@ -73,6 +75,9 @@ let BackHandler: TBackHandler = {
 };
 
 if (Platform.isTV) {
+  // Deprecated: use useBackHandler instead. Kept for backward compatibility
+  // (e.g. React Navigation). addEventListener/removeEventListener keep the
+  // native back handler counter in sync for unmigrated callers.
   const _backPressSubscriptions = new Set<() => ?boolean>();
 
   TVEventHandler.addListener(function (evt) {
@@ -90,6 +95,8 @@ if (Platform.isTV) {
       }
 
       if (invokeDefault) {
+        // exitApp is a no-op on tvOS; reached only when a handler returns
+        // false, which is a misuse (use enabled:false instead).
         BackHandler.exitApp();
       }
     }
@@ -103,6 +110,10 @@ if (Platform.isTV) {
       _handler: () => ?boolean,
     ): {remove: () => void, ...} {
       _backPressSubscriptions.add(_handler);
+      // Keep the native counter in sync for unmigrated callers.
+      if (NativeTVNavigationEventEmitter != null) {
+        NativeTVNavigationEventEmitter.incrementBackHandlerCount();
+      }
       return {
         remove: () => BackHandler.removeEventListener(_eventName, _handler),
       };
@@ -112,7 +123,12 @@ if (Platform.isTV) {
       _eventName: BackPressEventName,
       _handler: () => ?boolean,
     ) {
-      _backPressSubscriptions.delete(_handler);
+      if (_backPressSubscriptions.has(_handler)) {
+        _backPressSubscriptions.delete(_handler);
+        if (NativeTVNavigationEventEmitter != null) {
+          NativeTVNavigationEventEmitter.decrementBackHandlerCount();
+        }
+      }
     },
   };
 }

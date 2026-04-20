@@ -69,7 +69,9 @@ declare module 'react-native' {
   export const useTVEventHandler: (handleEvent: (event: HWEvent) => void) => void;
 
   export const TVEventControl: {
+    /** @deprecated Use useBackHandler instead. */
     enableTVMenuKey(): void;
+    /** @deprecated Use useBackHandler instead. */
     disableTVMenuKey(): void;
     enableTVPanGesture(): void;
     disableTVPanGesture(): void;

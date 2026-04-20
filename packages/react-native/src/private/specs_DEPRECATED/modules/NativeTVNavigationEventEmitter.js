@@ -15,12 +15,15 @@ import * as TurboModuleRegistry from '../../../../Libraries/TurboModule/TurboMod
 export interface Spec extends TurboModule {
   +addListener: (eventName: string) => void;
   +removeListeners: (count: number) => void;
-  +enableTVMenuKey: () => void;
-  +disableTVMenuKey: () => void;
   +enableTVPanGesture: () => void;
   +disableTVPanGesture: () => void;
   +enableGestureHandlersCancelTouches: () => void;
   +disableGestureHandlersCancelTouches: () => void;
+  // Counter-based gate: pressesBegan on RCTRootView claims the menu press
+  // only when this counter is > 0. Incremented when a useBackHandler instance
+  // becomes enabled, decremented when it becomes disabled or unmounts.
+  +incrementBackHandlerCount: () => void;
+  +decrementBackHandlerCount: () => void;
 }
 
 export default (TurboModuleRegistry.get<Spec>('TVNavigationEventEmitter'): ?Spec);

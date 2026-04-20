@@ -59,18 +59,16 @@ RCT_EXPORT_MODULE()
 #if TARGET_OS_TV
 
 #pragma mark -
-#pragma mark Methods moved from old RCTTVMenuBridge
+#pragma mark Back handler counter
 
-RCT_EXPORT_METHOD(enableTVMenuKey)
+RCT_EXPORT_METHOD(incrementBackHandlerCount)
 {
-    [RCTTVRemoteHandler setUseMenuKey:YES];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableMenuKeyNotification object:nil];
+    [RCTTVRemoteHandler incrementBackHandlerCount];
 }
 
-RCT_EXPORT_METHOD(disableTVMenuKey)
+RCT_EXPORT_METHOD(decrementBackHandlerCount)
 {
-    [RCTTVRemoteHandler setUseMenuKey:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableMenuKeyNotification object:nil];
+    [RCTTVRemoteHandler decrementBackHandlerCount];
 }
 
 RCT_EXPORT_METHOD(enableTVPanGesture)

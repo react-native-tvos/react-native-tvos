@@ -11,13 +11,33 @@ import NativeTVNavigationEventEmitter from '../../../src/private/specs_DEPRECATE
 import Platform from '../../Utilities/Platform';
 
 const TVEventControl = {
+  /**
+   * @deprecated Use useBackHandler instead. The menu key is now managed
+   * automatically via a reference-counted gate. Calling this method is a
+   * no-op and will be removed in a future release.
+   */
   enableTVMenuKey: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
-      NativeTVNavigationEventEmitter.enableTVMenuKey();
+    if (__DEV__) {
+      console.warn(
+        'TVEventControl.enableTVMenuKey() is deprecated. ' +
+          'Use the useBackHandler hook instead. ' +
+          'The menu key is now managed automatically.',
+      );
+    }
   },
+  /**
+   * @deprecated Use useBackHandler instead. The menu key is now managed
+   * automatically via a reference-counted gate. Calling this method is a
+   * no-op and will be removed in a future release.
+   */
   disableTVMenuKey: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
-      NativeTVNavigationEventEmitter.disableTVMenuKey();
+    if (__DEV__) {
+      console.warn(
+        'TVEventControl.disableTVMenuKey() is deprecated. ' +
+          'Use the useBackHandler hook instead. ' +
+          'The menu key is now managed automatically.',
+      );
+    }
   },
   enableTVPanGesture: () => {
     Platform.isTV && NativeTVNavigationEventEmitter &&

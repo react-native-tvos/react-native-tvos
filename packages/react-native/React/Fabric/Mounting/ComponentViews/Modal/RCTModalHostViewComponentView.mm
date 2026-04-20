@@ -169,8 +169,6 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 - (void)enableEventHandlers
 {
   _tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:_viewController.view];
-  [_tvRemoteHandler disableTVMenuKey];
-
   [_viewController.view addGestureRecognizer:_menuButtonGestureRecognizer];
 }
 

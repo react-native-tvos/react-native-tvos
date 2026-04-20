@@ -8,8 +8,6 @@
 
 #import "RCTTVRemoteHandler.h"
 
-#import <UIKit/UIGestureRecognizerSubclass.h>
-
 #import "RCTAssert.h"
 #import "RCTBridge.h"
 #import "RCTEventDispatcher.h"
@@ -22,9 +20,6 @@
 #import "RCTView.h"
 #import "UIView+React.h"
 
-NSString *const RCTTVEnableMenuKeyNotification = @"RCTTVEnableMenuKeyNotification";
-NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotification";
-
 NSString *const RCTTVEnablePanGestureNotification = @"RCTTVEnablePanGestureNotification";
 NSString *const RCTTVDisablePanGestureNotification = @"RCTTVDisablePanGestureNotification";
 
@@ -34,7 +29,6 @@ NSString *const RCTTVDisableGestureHandlersCancelTouchesNotification = @"RCTTVDi
 @interface RCTTVRemoteHandler()
 
 @property (nonatomic, copy, readonly) NSDictionary<NSString *, UIGestureRecognizer *> *tvRemoteGestureRecognizers;
-@property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *tvPanGestureRecognizer;
 @property (nonatomic, weak) UIView *view;
 
@@ -45,21 +39,36 @@ NSString *const RCTTVDisableGestureHandlersCancelTouchesNotification = @"RCTTVDi
 }
 
 #pragma mark -
-#pragma mark Static settings for menu key and pan gesture
+#pragma mark Static settings
 
-static __volatile BOOL __useMenuKey = NO;
+// Counter of currently enabled JS back handler subscriptions.
+// pressesBegan on RCTRootView claims the menu press only when this is > 0.
+// All reads and writes are dispatched to the main queue.
+static volatile int32_t __backHandlerCount = 0;
+
++ (void)incrementBackHandlerCount
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __backHandlerCount++;
+    });
+}
+
++ (void)decrementBackHandlerCount
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (__backHandlerCount > 0) {
+            __backHandlerCount--;
+        }
+    });
+}
+
++ (int32_t)backHandlerCount
+{
+    return __backHandlerCount;
+}
+
 static __volatile BOOL __usePanGesture = NO;
 static __volatile BOOL __gestureHandlersCancelTouches = YES;
-
-+ (BOOL)useMenuKey
-{
-    return __useMenuKey;
-}
-
-+ (void)setUseMenuKey:(BOOL)useMenuKey
-{
-    __useMenuKey = useMenuKey;
-}
 
 + (BOOL)usePanGesture
 {
@@ -106,10 +115,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 {
     _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
   // Recognizers for Apple TV remote buttons
-
-  // Menu recognizer
-  self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
-  self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
 
   // Pan gesture recognizer
   self.tvPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -200,16 +205,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 - (void)attachToView
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(enableTVMenuKey)
-                                                 name:RCTTVEnableMenuKeyNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(disableTVMenuKey)
-                                                 name:RCTTVDisableMenuKeyNotification
-                                               object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(enableTVPanGesture)
                                                  name:RCTTVEnablePanGestureNotification
                                                object:nil];
@@ -233,11 +228,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
       [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
     }
-    if ([RCTTVRemoteHandler useMenuKey]) {
-        [self enableTVMenuKey];
-    } else {
-        [self disableTVMenuKey];
-    }
     if ([RCTTVRemoteHandler usePanGesture]) {
         [self enableTVPanGesture];
     } else {
@@ -247,9 +237,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 
 - (void)detachFromView
 {
-    if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-        [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
-    }
     if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
         [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
     }
@@ -257,40 +244,21 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
       [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVEnableMenuKeyNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVDisableMenuKeyNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:RCTTVEnablePanGestureNotification
                                                   object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:RCTTVDisablePanGestureNotification
                                                   object:nil];
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVEnableGestureHandlersCancelTouchesNotification
+                                                  object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:RCTTVDisableGestureHandlersCancelTouchesNotification
+                                                  object:nil];
 }
 
 # pragma mark -
 # pragma mark Notification handlers
-
-- (void)enableTVMenuKey
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-            [self.view addGestureRecognizer:self.tvMenuKeyRecognizer];
-        }
-    });
-}
-
-- (void)disableTVMenuKey
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-            [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
-        }
-    });
-}
 
 - (void)enableTVPanGesture
 {
@@ -316,8 +284,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = YES;
     }
-    // Issue #678: menu key should not be included
-    // [self.tvMenuKeyRecognizer setCancelsTouchesInView:YES];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:YES];
   });
 }
@@ -328,8 +294,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
     for (NSString *name in [self.tvRemoteGestureRecognizers allKeys]) {
       self.tvRemoteGestureRecognizers[name].cancelsTouchesInView = NO;
     }
-    // Issue #678: menu key should not be included
-    // [self.tvMenuKeyRecognizer setCancelsTouchesInView:NO];
     [self.tvPanGestureRecognizer setCancelsTouchesInView:NO];
   });
 }
@@ -340,11 +304,6 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 - (void)playPausePressed:(UIGestureRecognizer *)r
 {
     [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPlayPause keyAction:r.eventKeyAction tag:nil target:nil];
-}
-
-- (void)menuPressed:(UIGestureRecognizer *)r
-{
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventMenu keyAction:r.eventKeyAction tag:nil target:nil];
 }
 
 - (void)longPlayPausePressed:(UIGestureRecognizer *)r

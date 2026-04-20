@@ -132,6 +132,37 @@ NSString *const RCTContentDidAppearNotification = @"RCTContentDidAppearNotificat
 }
 #endif // TARGET_OS_TV
 
+#if TARGET_OS_TV
+// Gate the menu/back button on the JS back handler counter.
+// pressesBegan claims the press so UIKit delivers pressesEnded to this
+// responder. When counter == 0 both methods call super, propagating the
+// press up to UIApplication which backgrounds the app.
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+  for (UIPress *press in presses) {
+    if (press.type == UIPressTypeMenu && [RCTTVRemoteHandler backHandlerCount] > 0) {
+      return; // claimed; notification fires on pressesEnded
+    }
+  }
+  [super pressesBegan:presses withEvent:event];
+}
+
+- (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+  for (UIPress *press in presses) {
+    if (press.type == UIPressTypeMenu && [RCTTVRemoteHandler backHandlerCount] > 0) {
+      [[NSNotificationCenter defaultCenter]
+          postNavigationPressEventWithType:RCTTVRemoteEventMenu
+                                 keyAction:RCTTVRemoteEventKeyActionUp
+                                       tag:nil
+                                    target:nil];
+      return;
+    }
+  }
+  [super pressesEnded:presses withEvent:event];
+}
+#endif // TARGET_OS_TV
+
 - (instancetype)initWithBundleURL:(NSURL *)bundleURL
                        moduleName:(NSString *)moduleName
                 initialProperties:(NSDictionary *)initialProperties
