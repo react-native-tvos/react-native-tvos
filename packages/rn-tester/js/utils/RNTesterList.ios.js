@@ -173,6 +173,12 @@ const Components: Array<RNTesterModuleInfo> = [
 const APIs: Array<RNTesterModuleInfo> = (
   [
     {
+      key: 'TVBackHandlerExample',
+      category: 'TV',
+      module: require('../examples/TVBackHandler/TVBackHandlerExample'),
+      supportsTVOS: true,
+    },
+    {
       key: 'TVEventHandlerExample',
       category: 'TV',
       module: require('../examples/TVEventHandler/TVEventHandlerExample'),
