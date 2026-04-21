@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2c9c4c2ef57882df723930daa933afd8>>
+ * @generated SignedSource<<411aef7b1b977407b52e4f23e95db0a5>>
  */
 
 /**
@@ -456,6 +456,18 @@ class ReactNativeFeatureFlagsJavaProvider
   bool preventShadowTreeCommitExhaustion() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("preventShadowTreeCommitExhaustion");
+    return method(javaProvider_);
+  }
+
+  bool redBoxV2Android() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("redBoxV2Android");
+    return method(javaProvider_);
+  }
+
+  bool redBoxV2IOS() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("redBoxV2IOS");
     return method(javaProvider_);
   }
 
@@ -933,6 +945,16 @@ bool JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion(
   return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::redBoxV2Android(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::redBoxV2Android();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::redBoxV2IOS(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::redBoxV2IOS();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
@@ -1274,6 +1296,12 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "preventShadowTreeCommitExhaustion",
         JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion),
+      makeNativeMethod(
+        "redBoxV2Android",
+        JReactNativeFeatureFlagsCxxInterop::redBoxV2Android),
+      makeNativeMethod(
+        "redBoxV2IOS",
+        JReactNativeFeatureFlagsCxxInterop::redBoxV2IOS),
       makeNativeMethod(
         "shouldPressibilityUseW3CPointerEventsForHover",
         JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover),
