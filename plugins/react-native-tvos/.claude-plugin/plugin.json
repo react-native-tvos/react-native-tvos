@@ -1,0 +1,6 @@
+{
+  "name": "react-native-tvos",
+  "version": "1.0.0",
+  "description": "Skills for building React Native apps for Apple TV and Android TV using react-native-tvos",
+  "author": { "name": "react-native-tvos team" }
+}
