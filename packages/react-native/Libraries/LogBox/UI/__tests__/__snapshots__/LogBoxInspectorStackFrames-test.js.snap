@@ -78,20 +78,42 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
       }
     >
       <View
-        style={
-          Array [
-            Object {
-              "backgroundColor": "transparent",
-            },
-            Object {
-              "borderRadius": 5,
-              "flex": 1,
-              "paddingHorizontal": 10,
-              "paddingVertical": 4,
-            },
-          ]
+        accessibilityState={
+          Object {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
         }
+        accessibilityValue={
+          Object {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onPressIn={[Function]}
+        onPressOut={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
       >
+        onFocus=
+        onBlur=
+        style=
+        &gt;
         <Text
           id="logbox_stack_frame_text"
           style={
@@ -149,9 +171,20 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
             "selected": undefined,
           }
         }
+        accessibilityValue={
+          Object {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
         accessible={true}
+        collapsable={false}
         focusable={true}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
         onPressIn={[Function]}
         onPressOut={[Function]}
         onResponderGrant={[Function]}
@@ -160,17 +193,11 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
-        style={
-          Array [
-            Object {
-              "backgroundColor": "transparent",
-            },
-            Object {
-              "borderRadius": 5,
-            },
-          ]
-        }
       >
+        onFocus=
+        onBlur=
+        style=
+        &gt;
         <Text
           style={
             Object {

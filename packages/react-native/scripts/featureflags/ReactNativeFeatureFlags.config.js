@@ -180,17 +180,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableAndroidLinearText: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2025-09-09',
-        description:
-          'Enables linear text rendering on Android wherever subpixel text rendering is enabled',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     enableAndroidTextMeasurementOptimizations: {
       defaultValue: false,
       metadata: {
@@ -1050,6 +1039,17 @@ const definitions: FeatureFlagDefinitions = {
         description:
           'Disable prop maintainVisibleContentPosition in ScrollView',
         expectedReleaseValue: false,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableNativeEventTargetEventDispatching: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-04-13',
+        description:
+          'When enabled, the React Native renderer dispatches events through the W3C EventTarget API (addEventListener/dispatchEvent) instead of the legacy plugin-based system.',
+        expectedReleaseValue: true,
         purpose: 'experimentation',
       },
       ossReleaseStage: 'none',

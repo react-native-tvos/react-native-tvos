@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c1a9cae31188e176d2c76ef8da3198f8>>
+ * @generated SignedSource<<1167117e59b7fdcb0139a41b37e26ded>>
  * @flow strict
  * @noformat
  */
@@ -33,6 +33,7 @@ export type ReactNativeFeatureFlagsJsOnly = $ReadOnly<{
   animatedShouldUseSingleOp: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   disableMaintainVisibleContentPosition: Getter<boolean>,
+  enableNativeEventTargetEventDispatching: Getter<boolean>,
   externalElementInspectionEnabled: Getter<boolean>,
   fixVirtualizeListCollapseWindowSize: Getter<boolean>,
   isLayoutAnimationEnabled: Getter<boolean>,
@@ -58,7 +59,6 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   disableViewPreallocationAndroid: Getter<boolean>,
   enableAccessibilityOrder: Getter<boolean>,
   enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean>,
-  enableAndroidLinearText: Getter<boolean>,
   enableAndroidTextMeasurementOptimizations: Getter<boolean>,
   enableBridgelessArchitecture: Getter<boolean>,
   enableCppPropsIteratorSetter: Getter<boolean>,
@@ -164,6 +164,11 @@ export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaS
 export const disableMaintainVisibleContentPosition: Getter<boolean> = createJavaScriptFlagGetter('disableMaintainVisibleContentPosition', false);
 
 /**
+ * When enabled, the React Native renderer dispatches events through the W3C EventTarget API (addEventListener/dispatchEvent) instead of the legacy plugin-based system.
+ */
+export const enableNativeEventTargetEventDispatching: Getter<boolean> = createJavaScriptFlagGetter('enableNativeEventTargetEventDispatching', false);
+
+/**
  * Enable the external inspection API for DevTools to communicate with the Inspector overlay.
  */
 export const externalElementInspectionEnabled: Getter<boolean> = createJavaScriptFlagGetter('externalElementInspectionEnabled', true);
@@ -245,10 +250,6 @@ export const enableAccessibilityOrder: Getter<boolean> = createNativeFlagGetter(
  * When enabled, Android will accumulate updates in rawProps to reduce the number of mounting instructions for cascading re-renders.
  */
 export const enableAccumulatedUpdatesInRawPropsAndroid: Getter<boolean> = createNativeFlagGetter('enableAccumulatedUpdatesInRawPropsAndroid', false);
-/**
- * Enables linear text rendering on Android wherever subpixel text rendering is enabled
- */
-export const enableAndroidLinearText: Getter<boolean> = createNativeFlagGetter('enableAndroidLinearText', true);
 /**
  * Enables various optimizations throughout the path of measuring text on Android.
  */
