@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.85.2
+
+### Added
+
+- **Animated**: Add pushAnimationMutations to AnimationBackend for targeted event-driven animation updates ([e4f0509973](https://github.com/facebook/react-native/commit/e4f0509973241d43f969401f81e85f0cd25ccc94) by Bartlomiej Bloniarz)
+
+### Fixed
+
+- **Animated**: Fix potential data corruption in animation backend when ShadowTree commits are retried by copying RawProps instead of moving them ([77d3df8cab](https://github.com/facebook/react-native/commit/77d3df8cab3dccfd4fefad6a80603fadcfc45106) by Bartlomiej Bloniarz)
+
+#### iOS specific
+
+- **Dev Server**: Fix "Loading from Metro..." banner getting stuck after reloads in quick succession ([e122c24c27](https://github.com/facebook/react-native/commit/e122c24c273f5fb6e0a2d6b1c961d75ac9bc90b7) by [@alanjhughes](https://github.com/alanjhughes))
+
 ## v0.83.5
 
 ### Fixed
