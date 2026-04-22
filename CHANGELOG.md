@@ -14,21 +14,6 @@
 
 - **Dev Server**: Fix "Loading from Metro..." banner getting stuck after reloads in quick succession ([e122c24c27](https://github.com/facebook/react-native/commit/e122c24c273f5fb6e0a2d6b1c961d75ac9bc90b7) by [@alanjhughes](https://github.com/alanjhughes))
 
-## v0.83.5
-
-### Fixed
-
-- **Appearance**: Fix color scheme in appearance state after setting it to unspecified ([c338d19](https://github.com/facebook/react-native/commit/c338d19a1d4dfeb06ca796176a23f6b07457ac50) by [@ismarbesic](https://github.com/ismarbesic))
-
-#### Android specific
-
-- **Networking**: File:// URIs passed to fetch() or XMLHttpRequest no longer fail (https://github.com/facebook/react-native/issues/54626) ([3cf6bff](https://github.com/facebook/react-native/commit/3cf6bff25d106c2f25b6c7cfce6295bd812013bf) by [@bhamiltoncx](https://github.com/bhamiltoncx))
-
-#### iOS specific
-
-- **Build**: Bump fmt to 12.1.0 to fix Xcode 26.4 ([faeef2b90a](https://github.com/facebook/react-native/commit/faeef2b90a56633ad44289b994d31e7ce590b145) by [@leotm](https://github.com/leotm))
-- **Hermes**: Fix Hermes crash when async void TurboModule method throws NSException by re-throwing instead of converting to JSError on wrong thread ([a9a976a](https://github.com/facebook/react-native/commit/a9a976af89c3cd52e7f742109e24dbc6ebf09aa9) by [@fabriziocucci](https://github.com/fabriziocucci))
-
 ## v0.85.1
 
 ### Fixed
@@ -435,6 +420,31 @@
 - **Touch Handling**: Remove redundant gesture to tap button when the layer beneath is already tappable ([8b8cceac89](https://github.com/facebook/react-native/commit/8b8cceac89a5962fb2bc52025702f2c023d41055) by [@emily8rown](https://github.com/emily8rown))
 - **Touch Handling**: Respect `cancelsTouchesInView` when canceling touches in `RCTSurfaceTouchHandler` ([5634e8a601](https://github.com/facebook/react-native/commit/5634e8a601caf0faa174bac3511929de767609ac) by [@intmain](https://github.com/intmain))
 - **View**: Fix duplicate shadow bug during component recycling by cleaning up visual layers in prepareForRecycle ([7dcedf1def](https://github.com/facebook/react-native/commit/7dcedf1def880163ab7ca07b2575a8153029a925) by Atharv Soni)
+
+## v0.83.6
+
+### Fixed
+
+- Provide symbol fallbacks for `inspector-modern/chrome/Registration.h` when `HERMES_V1_ENABLED` is set ([efc4cf4ea9](https://github.com/facebook/react-native/commit/efc4cf4ea963894ef6c5ed57bab16e46c4d6e5ca) by [@huntie](https://github.com/huntie))
+
+#### iOS specific
+
+- Fix "Loading from Metro..." banner getting stuck after reloads in quick succession. ([e122c24c27](https://github.com/facebook/react-native/commit/e122c24c273f5fb6e0a2d6b1c961d75ac9bc90b7) by [@alanjhughes](https://github.com/alanjhughes))
+
+## v0.83.5
+
+### Fixed
+
+- **Appearance**: Fix color scheme in appearance state after setting it to unspecified ([c338d19](https://github.com/facebook/react-native/commit/c338d19a1d4dfeb06ca796176a23f6b07457ac50) by [@ismarbesic](https://github.com/ismarbesic))
+
+#### Android specific
+
+- **Networking**: File:// URIs passed to fetch() or XMLHttpRequest no longer fail (https://github.com/facebook/react-native/issues/54626) ([3cf6bff](https://github.com/facebook/react-native/commit/3cf6bff25d106c2f25b6c7cfce6295bd812013bf) by [@bhamiltoncx](https://github.com/bhamiltoncx))
+
+#### iOS specific
+
+- **Build**: Bump fmt to 12.1.0 to fix Xcode 26.4 ([faeef2b90a](https://github.com/facebook/react-native/commit/faeef2b90a56633ad44289b994d31e7ce590b145) by [@leotm](https://github.com/leotm))
+- **Hermes**: Fix Hermes crash when async void TurboModule method throws NSException by re-throwing instead of converting to JSError on wrong thread ([a9a976a](https://github.com/facebook/react-native/commit/a9a976af89c3cd52e7f742109e24dbc6ebf09aa9) by [@fabriziocucci](https://github.com/fabriziocucci))
 
 ## v0.83.4
 
