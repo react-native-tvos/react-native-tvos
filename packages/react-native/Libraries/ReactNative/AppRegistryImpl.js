@@ -22,8 +22,8 @@ import type {
   WrapperComponentProvider,
 } from './AppRegistry.flow';
 
+import createPerformanceLogger from '../Utilities/createPerformanceLogger';
 import SceneTracker from '../Utilities/SceneTracker';
-import DeprecatedPerformanceLoggerStub from './DeprecatedPerformanceLoggerStub';
 import {coerceDisplayMode} from './DisplayMode';
 import HeadlessJsTaskError from './HeadlessJsTaskError';
 import invariant from 'invariant';
@@ -81,19 +81,20 @@ export function registerComponent(
   componentProvider: ComponentProvider,
   section?: boolean,
 ): string {
+  const scopedPerformanceLogger = createPerformanceLogger();
   runnables[appKey] = (appParameters, displayMode) => {
     const renderApplication = require('./renderApplication').default;
     renderApplication(
       componentProviderInstrumentationHook(
         componentProvider,
-        DeprecatedPerformanceLoggerStub,
+        scopedPerformanceLogger,
       ),
       appParameters.initialProps,
       appParameters.rootTag,
       wrapperComponentProvider && wrapperComponentProvider(appParameters),
       rootViewStyleProvider && rootViewStyleProvider(appParameters),
       true, // fabric - deprecated, always true
-      undefined, // formerly scopedPerformanceLogger; reserved positional slot
+      scopedPerformanceLogger,
       appKey === 'LogBox', // is logbox
       appKey,
       displayMode,
