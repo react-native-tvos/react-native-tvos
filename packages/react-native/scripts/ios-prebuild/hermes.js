@@ -53,8 +53,12 @@ async function prepareHermesArtifactsAsync(
 
   // Only check if the artifacts folder exists if we are not using a local tarball
   if (!localPath) {
-    // Resolve the version from the environment variable or use the default version
-    let resolvedVersion = process.env.HERMES_VERSION ?? 'latest-v1';
+    // Resolve the version from the environment variable. When unset, fall back to the
+    // version pinned in sdks/hermes-engine/version.properties (what CI uses) rather than
+    // 'nightly', so a local prebuild doesn't silently consume a rolling snapshot that
+    // may have changed link-time behavior (e.g. autolinking new system frameworks).
+    let resolvedVersion =
+      process.env.HERMES_VERSION ?? getPinnedHermesVersionFromProperties();
 
     if (resolvedVersion === 'latest-v1') {
       hermesLog('Using latest-v1 tarball');
@@ -121,6 +125,33 @@ async function getLatestV1VersionFromNPM() /*: Promise<string> */ {
   const latestV1 = json.version;
   hermesLog(`Using version ${latestV1}`);
   return latestV1;
+}
+
+function getPinnedHermesVersionFromProperties() /*: string */ {
+  try {
+    const propertiesPath = path.resolve(
+      __dirname,
+      '..',
+      '..',
+      'sdks',
+      'hermes-engine',
+      'version.properties',
+    );
+    const match = fs
+      .readFileSync(propertiesPath, 'utf8')
+      .match(/^HERMES_VERSION_NAME=(.+)$/m);
+    if (match) {
+      const pinned = match[1].trim();
+      hermesLog(`Defaulting HERMES_VERSION to ${pinned} (from version.properties)`);
+      return pinned;
+    }
+  } catch (e) {
+    hermesLog(
+      `Could not read pinned Hermes version from version.properties; falling back to latest v1. (${e.message})`,
+      'warn',
+    );
+  }
+  return getLatestV1VersionFromNPM();
 }
 
 async function getNightlyVersionFromNPM() /*: Promise<string> */ {
