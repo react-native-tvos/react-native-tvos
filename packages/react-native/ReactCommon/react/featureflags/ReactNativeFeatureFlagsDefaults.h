@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e5cb288d29ac6b37d1bfe05a104a0757>>
+ * @generated SignedSource<<9ecc86af8bcf928fb5c51c49406cb2ff>>
  */
 
 /**
@@ -288,6 +288,14 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool preventShadowTreeCommitExhaustion() override {
+    return false;
+  }
+
+  bool redBoxV2Android() override {
+    return false;
+  }
+
+  bool redBoxV2IOS() override {
     return false;
   }
 
