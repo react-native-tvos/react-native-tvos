@@ -1,4 +1,5 @@
 #!/bin/bash
+# This script should be run from the top of the monorepo
 
 # Fail if anything errors
 set -eox pipefail
