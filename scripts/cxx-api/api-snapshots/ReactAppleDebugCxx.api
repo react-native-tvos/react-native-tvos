@@ -4120,6 +4120,7 @@ std::pair<facebook::react::Float, facebook::react::Float> facebook::react::calcu
 std::string facebook::react::base64Encode(const std::string_view s);
 std::string facebook::react::componentNameByReactViewName(std::string viewName);
 std::string facebook::react::generateRandomUuidString();
+std::string facebook::react::toString(const double& value);
 std::string facebook::react::toString(const facebook::react::AccessibilityRole& accessibilityRole);
 std::string facebook::react::toString(const facebook::react::AttributedString::Range& range);
 std::string facebook::react::toString(const facebook::react::BlendMode& blendMode);
@@ -4202,8 +4203,6 @@ bool facebook::react::floatEquality(T a, T b, T epsilon = static_cast<T>(faceboo
 template <typename T>
 facebook::react::ModuleConstants<T> facebook::react::typedConstants(typename T::Builder::Input&& value);
 template <typename T>
-void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& rawValue, T& result);
-template <typename T>
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& rawValue, T& result, T defaultValue);
 template <typename T>
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& rawValue, std::optional<T>& result);
@@ -4211,6 +4210,8 @@ template <typename T>
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& rawValue, std::vector<T>& result);
 template <typename T>
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& rawValue, std::vector<std::vector<T>>& result);
+template <typename T>
+void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& rawValue, T& result);
 template <typename TManager>
 std::shared_ptr<TManager> facebook::react::getManagerByName(std::shared_ptr<const facebook::react::ContextContainer>& contextContainer, const char name[]);
 uint8_t facebook::react::alphaFromColor(facebook::react::SharedColor color) noexcept;
@@ -4239,10 +4240,8 @@ void facebook::react::fromRawValue(const facebook::react::PropsParserContext& co
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::BorderCurve& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::BorderStyle& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::ContentInsetAdjustmentBehavior& result);
-void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::CornerInsets& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::Cursor& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::DynamicTypeRamp& result);
-void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::EdgeInsets& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::EllipsizeMode& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::FontStyle& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::FontVariant& result);
@@ -4253,7 +4252,6 @@ void facebook::react::fromRawValue(const facebook::react::PropsParserContext& co
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::KeyboardType& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::LineBreakStrategy& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::OutlineStyle& result);
-void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::Point& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::PointerEventsMode& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::ReturnKeyType& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::Role& result);
@@ -4263,7 +4261,6 @@ void facebook::react::fromRawValue(const facebook::react::PropsParserContext& co
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::ScrollViewSnapToAlignment& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::Selection& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::SharedColor& result);
-void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::Size& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::TextAlignment& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::TextBreakStrategy& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, facebook::react::TextDecorationLineType& result);
@@ -4288,11 +4285,15 @@ void facebook::react::fromRawValue(const facebook::react::PropsParserContext& co
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext& context, const facebook::react::RawValue& value, std::vector<facebook::react::FilterFunction>& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::AccessibilityValue& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::BlendMode& result);
+void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::CornerInsets& result);
+void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::EdgeInsets& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::ImageResizeMode& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::ImageSource& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::Isolation& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::LayoutConformance& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::LineBreakMode& result);
+void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::Point& result);
+void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::Size& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::SubmitBehavior& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::TextAlignmentVertical& result);
 void facebook::react::fromRawValue(const facebook::react::PropsParserContext&, const facebook::react::RawValue& value, facebook::react::ValueUnit& result);
@@ -6702,7 +6703,7 @@ class facebook::react::RAMBundleRegistry {
 
 class facebook::react::RCTBlobCollector : public facebook::jsi::HostObject {
   public RCTBlobCollector(RCTBlobManager* blobManager, const std::string& blobId);
-  public static void install(RCTBlobManager* blobManager);
+  public static void install(facebook::jsi::Runtime& runtime, RCTBlobManager* blobManager);
   public ~RCTBlobCollector();
 }
 
@@ -7197,14 +7198,14 @@ class facebook::react::ShadowNode : public facebook::react::Sealable, public fac
   public std::shared_ptr<facebook::react::ShadowNode> cloneTree(const facebook::react::ShadowNodeFamily& shadowNodeFamily, const std::function<std::shared_ptr<facebook::react::ShadowNode>(const facebook::react::ShadowNode& oldShadowNode)>& callback) const;
   public using AncestorList = std::vector<std::pair<std::reference_wrapper<const facebook::react::ShadowNode>, int>>;
   public virtual void appendChild(const std::shared_ptr<const facebook::react::ShadowNode>& child);
-  public virtual void completeClone(const facebook::react::ShadowNode& sourceShadowNode, const facebook::react::ShadowNodeFragment& fragment);
+  public virtual void completeClone(const facebook::react::ShadowNode&, const facebook::react::ShadowNodeFragment&);
   public virtual void replaceChild(const facebook::react::ShadowNode& oldChild, const std::shared_ptr<const facebook::react::ShadowNode>& newChild, size_t suggestedIndex = std::numeric_limits<size_t>::max());
-  public virtual ~ShadowNode() override = default;
   public void sealRecursive() const;
   public void setMounted(bool mounted) const;
   public void setRuntimeShadowNodeReference(const std::shared_ptr<facebook::react::ShadowNodeWrapper>& runtimeShadowNodeReference) const;
   public void transferRuntimeShadowNodeReference(const std::shared_ptr<const facebook::react::ShadowNode>& destinationShadowNode, const facebook::react::ShadowNodeFragment& fragment) const;
   public void updateRuntimeShadowNodeReference(const std::shared_ptr<const facebook::react::ShadowNode>& destinationShadowNode) const;
+  public ~ShadowNode() override = default;
 }
 
 class facebook::react::ShadowNodeFamily : public facebook::jsi::NativeState {
@@ -12603,6 +12604,11 @@ class facebook::react::jsinspector_modern::ConsoleTaskOrchestrator {
   public ~ConsoleTaskOrchestrator() = default;
 }
 
+class facebook::react::jsinspector_modern::EmulationAgent {
+  public EmulationAgent(facebook::react::jsinspector_modern::FrontendChannel frontendChannel, facebook::react::jsinspector_modern::HostTargetController& hostTargetController);
+  public bool handleRequest(const facebook::react::jsinspector_modern::cdp::PreparsedRequest& req);
+}
+
 class facebook::react::jsinspector_modern::ExecutionContextManager {
   public int32_t allocateExecutionContextId();
 }
@@ -12700,6 +12706,7 @@ class facebook::react::jsinspector_modern::HostTargetDelegate : public facebook:
   public HostTargetDelegate(facebook::react::jsinspector_modern::HostTargetDelegate&&) = delete;
   public facebook::react::jsinspector_modern::HostTargetDelegate& operator=(const facebook::react::jsinspector_modern::HostTargetDelegate&) = delete;
   public facebook::react::jsinspector_modern::HostTargetDelegate& operator=(facebook::react::jsinspector_modern::HostTargetDelegate&&) = delete;
+  public virtual bool onSetEmulatedMedia(const facebook::react::jsinspector_modern::HostTargetDelegate::SetEmulatedMediaRequest&);
   public virtual facebook::react::jsinspector_modern::HostTargetMetadata getMetadata() = 0;
   public virtual facebook::react::jsinspector_modern::HostTargetTracingDelegate* getTracingDelegate();
   public virtual std::optional<std::string> captureScreenshot(const facebook::react::jsinspector_modern::HostTargetDelegate::PageCaptureScreenshotRequest&);
@@ -12723,6 +12730,11 @@ struct facebook::react::jsinspector_modern::HostTargetDelegate::PageReloadReques
   public bool operator==(const facebook::react::jsinspector_modern::HostTargetDelegate::PageReloadRequest& rhs) const;
   public std::optional<bool> ignoreCache;
   public std::optional<std::string> scriptToEvaluateOnLoad;
+}
+
+struct facebook::react::jsinspector_modern::HostTargetDelegate::SetEmulatedMediaRequest {
+  public bool operator==(const facebook::react::jsinspector_modern::HostTargetDelegate::SetEmulatedMediaRequest& rhs) const;
+  public std::string colorScheme;
 }
 
 class facebook::react::jsinspector_modern::HostTargetTraceRecording {

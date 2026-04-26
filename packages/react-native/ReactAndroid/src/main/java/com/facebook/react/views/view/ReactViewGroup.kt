@@ -68,8 +68,6 @@ import com.facebook.react.uimanager.ReactOverflowViewWithInset
 import com.facebook.react.uimanager.ReactPointerEventsView
 import com.facebook.react.uimanager.ReactZIndexedViewGroup
 import com.facebook.react.uimanager.UIManagerHelper
-import com.facebook.react.uimanager.common.UIManagerType
-import com.facebook.react.uimanager.common.ViewUtil.getUIManagerType
 import com.facebook.react.uimanager.events.EventDispatcher
 import com.facebook.react.uimanager.events.PressInEvent
 import com.facebook.react.uimanager.events.PressOutEvent
@@ -193,9 +191,6 @@ public open class ReactViewGroup public constructor(context: Context?) :
    */
   private fun initView() {
     clipChildren = false
-    if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
-      clipToPadding = false
-    }
 
     _removeClippedSubviews = false
     inSubviewClippingLoop = false
@@ -994,9 +989,6 @@ public open class ReactViewGroup public constructor(context: Context?) :
           } else {
             Overflow.fromString(overflow)
           }
-      if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
-        clipToPadding = _overflow != Overflow.VISIBLE
-      }
       invalidate()
     }
 
@@ -1023,11 +1015,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   override fun draw(canvas: Canvas) {
-    if (
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            getUIManagerType(this) == UIManagerType.FABRIC &&
-            needsIsolatedLayer(this)
-    ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && needsIsolatedLayer(this)) {
       // Check if the view is a stacking context and has children, if it does, do the rendering
       // offscreen and then composite back. This follows the idea of group isolation on blending
       // https://www.w3.org/TR/compositing-1/#isolationblending
@@ -1062,11 +1050,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
     }
 
     var mixBlendMode: BlendMode? = null
-    if (
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            getUIManagerType(this) == UIManagerType.FABRIC &&
-            needsIsolatedLayer(this)
-    ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && needsIsolatedLayer(this)) {
       mixBlendMode = child.getTag(R.id.mix_blend_mode) as? BlendMode
       if (mixBlendMode != null) {
         val p = Paint()

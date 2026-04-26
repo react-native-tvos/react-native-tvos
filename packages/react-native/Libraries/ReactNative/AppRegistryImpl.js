@@ -26,7 +26,6 @@ import createPerformanceLogger from '../Utilities/createPerformanceLogger';
 import SceneTracker from '../Utilities/SceneTracker';
 import {coerceDisplayMode} from './DisplayMode';
 import HeadlessJsTaskError from './HeadlessJsTaskError';
-import {unmountComponentAtNodeAndRemoveContainer} from './RendererProxy';
 import invariant from 'invariant';
 
 type TaskCanceller = () => void;
@@ -94,7 +93,7 @@ export function registerComponent(
       appParameters.rootTag,
       wrapperComponentProvider && wrapperComponentProvider(appParameters),
       rootViewStyleProvider && rootViewStyleProvider(appParameters),
-      appParameters.fabric,
+      true, // fabric - deprecated, always true
       scopedPerformanceLogger,
       appKey === 'LogBox', // is logbox
       appKey,
@@ -210,7 +209,9 @@ export function setSurfaceProps(
  * See https://reactnative.dev/docs/appregistry#unmountapplicationcomponentatroottag
  */
 export function unmountApplicationComponentAtRootTag(rootTag: RootTag): void {
-  unmountComponentAtNodeAndRemoveContainer(rootTag);
+  console.error(
+    'Unexpected call to unmountApplicationComponentAtRootTag in Fabric.',
+  );
 }
 
 /**

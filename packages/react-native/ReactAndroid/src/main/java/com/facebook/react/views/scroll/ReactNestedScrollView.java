@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dd8221f4b150b4b3bec3dafd4b745482>>
+ * @generated SignedSource<<a0490be2c6f7eb42376e8e64abf9ce5e>>
  */
 
 /**
@@ -789,14 +789,6 @@ class ReactNestedScrollView extends NestedScrollView
   }
 
   @Override
-  public boolean getClipToPadding() {
-    if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
-      return mOverflow != Overflow.VISIBLE;
-    }
-    return super.getClipToPadding();
-  }
-
-  @Override
   public void getClippingRect(Rect outClippingRect) {
     outClippingRect.set(Assertions.assertNotNull(mClippingRect));
   }
@@ -1464,10 +1456,6 @@ class ReactNestedScrollView extends NestedScrollView
       int oldBottom) {
     if (mContentView == null) {
       return;
-    }
-
-    if (mMaintainVisibleContentPositionHelper != null) {
-      mMaintainVisibleContentPositionHelper.updateScrollPosition();
     }
 
     if (isShown() && isContentReady()) {

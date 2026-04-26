@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8496c138ce5493df84149940df0de944>>
+ * @generated SignedSource<<9222fd90d191a91893e2c58770d83259>>
  */
 
 /**
@@ -133,6 +133,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableVirtualViewDebugFeatures(): Boolean
 
+  @DoNotStrip public fun fixDifferentiatorParentTagForUnflattenCase(): Boolean
+
   @DoNotStrip public fun fixFindShadowNodeByTagRaceCondition(): Boolean
 
   @DoNotStrip public fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
@@ -161,13 +163,15 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun preventShadowTreeCommitExhaustion(): Boolean
 
+  @DoNotStrip public fun redBoxV2Android(): Boolean
+
+  @DoNotStrip public fun redBoxV2IOS(): Boolean
+
   @DoNotStrip public fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean
 
   @DoNotStrip public fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean
 
   @DoNotStrip public fun skipActivityIdentityAssertionOnHostPause(): Boolean
-
-  @DoNotStrip public fun syncAndroidClipToPaddingWithOverflow(): Boolean
 
   @DoNotStrip public fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 

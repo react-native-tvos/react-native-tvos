@@ -873,14 +873,6 @@ public class ReactScrollView extends ScrollView
   }
 
   @Override
-  public boolean getClipToPadding() {
-    if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
-      return mOverflow != Overflow.VISIBLE;
-    }
-    return super.getClipToPadding();
-  }
-
-  @Override
   public void getClippingRect(Rect outClippingRect) {
     outClippingRect.set(Assertions.assertNotNull(mClippingRect));
   }
@@ -1552,10 +1544,6 @@ public class ReactScrollView extends ScrollView
       int oldBottom) {
     if (mContentView == null) {
       return;
-    }
-
-    if (mMaintainVisibleContentPositionHelper != null) {
-      mMaintainVisibleContentPositionHelper.updateScrollPosition();
     }
 
     if (isShown() && isContentReady()) {

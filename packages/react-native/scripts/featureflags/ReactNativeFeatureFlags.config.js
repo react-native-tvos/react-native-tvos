@@ -634,6 +634,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    fixDifferentiatorParentTagForUnflattenCase: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-04-18',
+        description:
+          'Fix incorrect parentTag passed as parentTagForUpdate in the unflatten-unflatten branch of calculateShadowViewMutationsFlattener, which causes UPDATE mutations to reference a parent being created in the same batch.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     fixFindShadowNodeByTagRaceCondition: {
       defaultValue: false,
       metadata: {
@@ -785,6 +796,28 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'experimental',
     },
+    redBoxV2Android: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-03-25',
+        description:
+          'Use the redesigned RedBox error overlay on Android, styled to match the LogBox visual language.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    redBoxV2IOS: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-03-25',
+        description:
+          'Use the redesigned RedBox error overlay on iOS, styled to match the LogBox visual language.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     shouldPressibilityUseW3CPointerEventsForHover: {
       defaultValue: false,
       metadata: {
@@ -814,16 +847,6 @@ const definitions: FeatureFlagDefinitions = {
           'Skip activity identity assertion in ReactHostImpl::onHostPause()',
         expectedReleaseValue: true,
         purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    syncAndroidClipToPaddingWithOverflow: {
-      defaultValue: false,
-      metadata: {
-        description:
-          'Sync clipToPadding on Android views with the overflow property',
-        expectedReleaseValue: true,
-        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },

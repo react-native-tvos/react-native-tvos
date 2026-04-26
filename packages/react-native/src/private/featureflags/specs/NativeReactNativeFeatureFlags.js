@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0e66e4ae4407000706cd243ad17aa605>>
+ * @generated SignedSource<<5dea8e41a09f4ed658ce248121a2e981>>
  * @flow strict
  * @noformat
  */
@@ -80,6 +80,7 @@ export interface Spec extends TurboModule {
   +enableViewRecyclingForView?: () => boolean;
   +enableVirtualViewContainerStateExperimental?: () => boolean;
   +enableVirtualViewDebugFeatures?: () => boolean;
+  +fixDifferentiatorParentTagForUnflattenCase?: () => boolean;
   +fixFindShadowNodeByTagRaceCondition?: () => boolean;
   +fixMappingOfEventPrioritiesBetweenFabricAndReact?: () => boolean;
   +fixYogaFlexBasisFitContentInMainAxis?: () => boolean;
@@ -94,10 +95,11 @@ export interface Spec extends TurboModule {
   +perfMonitorV2Enabled?: () => boolean;
   +preparedTextCacheSize?: () => number;
   +preventShadowTreeCommitExhaustion?: () => boolean;
+  +redBoxV2Android?: () => boolean;
+  +redBoxV2IOS?: () => boolean;
   +shouldPressibilityUseW3CPointerEventsForHover?: () => boolean;
   +shouldTriggerResponderTransferOnScrollAndroid?: () => boolean;
   +skipActivityIdentityAssertionOnHostPause?: () => boolean;
-  +syncAndroidClipToPaddingWithOverflow?: () => boolean;
   +traceTurboModulePromiseRejectionsOnAndroid?: () => boolean;
   +updateRuntimeShadowNodeReferencesOnCommit?: () => boolean;
   +updateRuntimeShadowNodeReferencesOnCommitThread?: () => boolean;

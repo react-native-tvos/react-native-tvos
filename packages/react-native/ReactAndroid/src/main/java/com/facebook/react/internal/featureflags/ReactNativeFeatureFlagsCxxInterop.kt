@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8667d7237cea82bb5978cb19582d59c0>>
+ * @generated SignedSource<<62d1f0fcdf8e3165480da12575d62826>>
  */
 
 /**
@@ -138,6 +138,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun enableVirtualViewDebugFeatures(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun fixDifferentiatorParentTagForUnflattenCase(): Boolean
+
   @DoNotStrip @JvmStatic public external fun fixFindShadowNodeByTagRaceCondition(): Boolean
 
   @DoNotStrip @JvmStatic public external fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean
@@ -166,13 +168,15 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun preventShadowTreeCommitExhaustion(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun redBoxV2Android(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun redBoxV2IOS(): Boolean
+
   @DoNotStrip @JvmStatic public external fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean
 
   @DoNotStrip @JvmStatic public external fun shouldTriggerResponderTransferOnScrollAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun skipActivityIdentityAssertionOnHostPause(): Boolean
-
-  @DoNotStrip @JvmStatic public external fun syncAndroidClipToPaddingWithOverflow(): Boolean
 
   @DoNotStrip @JvmStatic public external fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 

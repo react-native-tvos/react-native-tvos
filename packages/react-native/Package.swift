@@ -93,6 +93,7 @@ let reactRendererConsistency = RNTarget(
 let reactDebug = RNTarget(
   name: .reactDebug,
   path: "ReactCommon/react/debug",
+  excludedPaths: ["tests", "redbox/tests"],
   dependencies: [.reactNativeDependencies]
 )
 /// React-jsi.podspec
@@ -392,7 +393,7 @@ let reactCoreModules = RNTarget(
   name: .reactCoreModules,
   path: "React/CoreModules",
   excludedPaths: ["PlatformStubs/RCTStatusBarManager.mm"],
-  dependencies: [.reactNativeDependencies, .jsi, .yoga, .reactTurboModuleCore]
+  dependencies: [.reactNativeDependencies, .jsi, .yoga, .reactTurboModuleCore, .reactFeatureFlags]
 )
 
 /// React-runtimeCore.podspec

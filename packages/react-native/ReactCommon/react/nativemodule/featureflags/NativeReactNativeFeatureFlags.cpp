@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3d49e243422f2c220ab36f3e32a78e38>>
+ * @generated SignedSource<<4b821513e808ca071104f413e15c2fd9>>
  */
 
 /**
@@ -319,6 +319,11 @@ bool NativeReactNativeFeatureFlags::enableVirtualViewDebugFeatures(
   return ReactNativeFeatureFlags::enableVirtualViewDebugFeatures();
 }
 
+bool NativeReactNativeFeatureFlags::fixDifferentiatorParentTagForUnflattenCase(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::fixDifferentiatorParentTagForUnflattenCase();
+}
+
 bool NativeReactNativeFeatureFlags::fixFindShadowNodeByTagRaceCondition(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::fixFindShadowNodeByTagRaceCondition();
@@ -389,6 +394,16 @@ bool NativeReactNativeFeatureFlags::preventShadowTreeCommitExhaustion(
   return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion();
 }
 
+bool NativeReactNativeFeatureFlags::redBoxV2Android(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::redBoxV2Android();
+}
+
+bool NativeReactNativeFeatureFlags::redBoxV2IOS(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::redBoxV2IOS();
+}
+
 bool NativeReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
@@ -402,11 +417,6 @@ bool NativeReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroi
 bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
-}
-
-bool NativeReactNativeFeatureFlags::syncAndroidClipToPaddingWithOverflow(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::syncAndroidClipToPaddingWithOverflow();
 }
 
 bool NativeReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid(

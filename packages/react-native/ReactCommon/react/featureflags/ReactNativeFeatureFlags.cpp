@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<b229243317998e64843f285f86af161c>>
+ * @generated SignedSource<<6a15a6444767342acf4da0c0c8aa6208>>
  */
 
 /**
@@ -246,6 +246,10 @@ bool ReactNativeFeatureFlags::enableVirtualViewDebugFeatures() {
   return getAccessor().enableVirtualViewDebugFeatures();
 }
 
+bool ReactNativeFeatureFlags::fixDifferentiatorParentTagForUnflattenCase() {
+  return getAccessor().fixDifferentiatorParentTagForUnflattenCase();
+}
+
 bool ReactNativeFeatureFlags::fixFindShadowNodeByTagRaceCondition() {
   return getAccessor().fixFindShadowNodeByTagRaceCondition();
 }
@@ -302,6 +306,14 @@ bool ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion() {
   return getAccessor().preventShadowTreeCommitExhaustion();
 }
 
+bool ReactNativeFeatureFlags::redBoxV2Android() {
+  return getAccessor().redBoxV2Android();
+}
+
+bool ReactNativeFeatureFlags::redBoxV2IOS() {
+  return getAccessor().redBoxV2IOS();
+}
+
 bool ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover() {
   return getAccessor().shouldPressibilityUseW3CPointerEventsForHover();
 }
@@ -312,10 +324,6 @@ bool ReactNativeFeatureFlags::shouldTriggerResponderTransferOnScrollAndroid() {
 
 bool ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause() {
   return getAccessor().skipActivityIdentityAssertionOnHostPause();
-}
-
-bool ReactNativeFeatureFlags::syncAndroidClipToPaddingWithOverflow() {
-  return getAccessor().syncAndroidClipToPaddingWithOverflow();
 }
 
 bool ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid() {

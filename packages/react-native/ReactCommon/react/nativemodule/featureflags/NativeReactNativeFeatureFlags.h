@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3e07a28d13e142ba3c734ca111eb4974>>
+ * @generated SignedSource<<55da460bc2f8c915552eeae11f0b2e3e>>
  */
 
 /**
@@ -146,6 +146,8 @@ class NativeReactNativeFeatureFlags
 
   bool enableVirtualViewDebugFeatures(jsi::Runtime& runtime);
 
+  bool fixDifferentiatorParentTagForUnflattenCase(jsi::Runtime& runtime);
+
   bool fixFindShadowNodeByTagRaceCondition(jsi::Runtime& runtime);
 
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact(jsi::Runtime& runtime);
@@ -174,13 +176,15 @@ class NativeReactNativeFeatureFlags
 
   bool preventShadowTreeCommitExhaustion(jsi::Runtime& runtime);
 
+  bool redBoxV2Android(jsi::Runtime& runtime);
+
+  bool redBoxV2IOS(jsi::Runtime& runtime);
+
   bool shouldPressibilityUseW3CPointerEventsForHover(jsi::Runtime& runtime);
 
   bool shouldTriggerResponderTransferOnScrollAndroid(jsi::Runtime& runtime);
 
   bool skipActivityIdentityAssertionOnHostPause(jsi::Runtime& runtime);
-
-  bool syncAndroidClipToPaddingWithOverflow(jsi::Runtime& runtime);
 
   bool traceTurboModulePromiseRejectionsOnAndroid(jsi::Runtime& runtime);
 

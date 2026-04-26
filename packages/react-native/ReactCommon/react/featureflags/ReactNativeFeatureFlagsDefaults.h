@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<bfb24a073dbd330c86495e7729936882>>
+ * @generated SignedSource<<5ced56c93abad63fd10f8d22fc262923>>
  */
 
 /**
@@ -247,6 +247,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool fixDifferentiatorParentTagForUnflattenCase() override {
+    return false;
+  }
+
   bool fixFindShadowNodeByTagRaceCondition() override {
     return false;
   }
@@ -303,6 +307,14 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool redBoxV2Android() override {
+    return false;
+  }
+
+  bool redBoxV2IOS() override {
+    return false;
+  }
+
   bool shouldPressibilityUseW3CPointerEventsForHover() override {
     return false;
   }
@@ -312,10 +324,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool skipActivityIdentityAssertionOnHostPause() override {
-    return false;
-  }
-
-  bool syncAndroidClipToPaddingWithOverflow() override {
     return false;
   }
 

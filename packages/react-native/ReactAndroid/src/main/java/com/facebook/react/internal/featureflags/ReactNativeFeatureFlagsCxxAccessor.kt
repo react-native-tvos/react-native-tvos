@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c2f867597d97dc97c8ded5fbd258c13c>>
+ * @generated SignedSource<<f79ca61a0da053a1661eca4d3a35b081>>
  */
 
 /**
@@ -75,6 +75,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableViewRecyclingForViewCache: Boolean? = null
   private var enableVirtualViewContainerStateExperimentalCache: Boolean? = null
   private var enableVirtualViewDebugFeaturesCache: Boolean? = null
+  private var fixDifferentiatorParentTagForUnflattenCaseCache: Boolean? = null
   private var fixFindShadowNodeByTagRaceConditionCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
   private var fixYogaFlexBasisFitContentInMainAxisCache: Boolean? = null
@@ -89,10 +90,11 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var perfMonitorV2EnabledCache: Boolean? = null
   private var preparedTextCacheSizeCache: Double? = null
   private var preventShadowTreeCommitExhaustionCache: Boolean? = null
+  private var redBoxV2AndroidCache: Boolean? = null
+  private var redBoxV2IOSCache: Boolean? = null
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
   private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
-  private var syncAndroidClipToPaddingWithOverflowCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitThreadCache: Boolean? = null
@@ -605,6 +607,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun fixDifferentiatorParentTagForUnflattenCase(): Boolean {
+    var cached = fixDifferentiatorParentTagForUnflattenCaseCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.fixDifferentiatorParentTagForUnflattenCase()
+      fixDifferentiatorParentTagForUnflattenCaseCache = cached
+    }
+    return cached
+  }
+
   override fun fixFindShadowNodeByTagRaceCondition(): Boolean {
     var cached = fixFindShadowNodeByTagRaceConditionCache
     if (cached == null) {
@@ -731,6 +742,24 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun redBoxV2Android(): Boolean {
+    var cached = redBoxV2AndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.redBoxV2Android()
+      redBoxV2AndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun redBoxV2IOS(): Boolean {
+    var cached = redBoxV2IOSCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.redBoxV2IOS()
+      redBoxV2IOSCache = cached
+    }
+    return cached
+  }
+
   override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean {
     var cached = shouldPressibilityUseW3CPointerEventsForHoverCache
     if (cached == null) {
@@ -754,15 +783,6 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.skipActivityIdentityAssertionOnHostPause()
       skipActivityIdentityAssertionOnHostPauseCache = cached
-    }
-    return cached
-  }
-
-  override fun syncAndroidClipToPaddingWithOverflow(): Boolean {
-    var cached = syncAndroidClipToPaddingWithOverflowCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.syncAndroidClipToPaddingWithOverflow()
-      syncAndroidClipToPaddingWithOverflowCache = cached
     }
     return cached
   }

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<99a7d3e814f4b037ed4496b6eee4f264>>
+ * @generated SignedSource<<eb70fd41bc36f1a49849e29bea081007>>
  */
 
 /**
@@ -361,6 +361,12 @@ public object ReactNativeFeatureFlags {
   public fun enableVirtualViewDebugFeatures(): Boolean = accessor.enableVirtualViewDebugFeatures()
 
   /**
+   * Fix incorrect parentTag passed as parentTagForUpdate in the unflatten-unflatten branch of calculateShadowViewMutationsFlattener, which causes UPDATE mutations to reference a parent being created in the same batch.
+   */
+  @JvmStatic
+  public fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = accessor.fixDifferentiatorParentTagForUnflattenCase()
+
+  /**
    * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
    */
   @JvmStatic
@@ -445,6 +451,18 @@ public object ReactNativeFeatureFlags {
   public fun preventShadowTreeCommitExhaustion(): Boolean = accessor.preventShadowTreeCommitExhaustion()
 
   /**
+   * Use the redesigned RedBox error overlay on Android, styled to match the LogBox visual language.
+   */
+  @JvmStatic
+  public fun redBoxV2Android(): Boolean = accessor.redBoxV2Android()
+
+  /**
+   * Use the redesigned RedBox error overlay on iOS, styled to match the LogBox visual language.
+   */
+  @JvmStatic
+  public fun redBoxV2IOS(): Boolean = accessor.redBoxV2IOS()
+
+  /**
    * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
    */
   @JvmStatic
@@ -461,12 +479,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun skipActivityIdentityAssertionOnHostPause(): Boolean = accessor.skipActivityIdentityAssertionOnHostPause()
-
-  /**
-   * Sync clipToPadding on Android views with the overflow property
-   */
-  @JvmStatic
-  public fun syncAndroidClipToPaddingWithOverflow(): Boolean = accessor.syncAndroidClipToPaddingWithOverflow()
 
   /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.

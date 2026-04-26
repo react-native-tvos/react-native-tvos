@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<86b3267ffa68e0f68280957aa54d5041>>
+ * @generated SignedSource<<62d1840f9a39eaceaa800542b7351a41>>
  */
 
 /**
@@ -315,6 +315,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableVirtualViewDebugFeatures();
 
   /**
+   * Fix incorrect parentTag passed as parentTagForUpdate in the unflatten-unflatten branch of calculateShadowViewMutationsFlattener, which causes UPDATE mutations to reference a parent being created in the same batch.
+   */
+  RN_EXPORT static bool fixDifferentiatorParentTagForUnflattenCase();
+
+  /**
    * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
    */
   RN_EXPORT static bool fixFindShadowNodeByTagRaceCondition();
@@ -385,6 +390,16 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool preventShadowTreeCommitExhaustion();
 
   /**
+   * Use the redesigned RedBox error overlay on Android, styled to match the LogBox visual language.
+   */
+  RN_EXPORT static bool redBoxV2Android();
+
+  /**
+   * Use the redesigned RedBox error overlay on iOS, styled to match the LogBox visual language.
+   */
+  RN_EXPORT static bool redBoxV2IOS();
+
+  /**
    * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
    */
   RN_EXPORT static bool shouldPressibilityUseW3CPointerEventsForHover();
@@ -398,11 +413,6 @@ class ReactNativeFeatureFlags {
    * Skip activity identity assertion in ReactHostImpl::onHostPause()
    */
   RN_EXPORT static bool skipActivityIdentityAssertionOnHostPause();
-
-  /**
-   * Sync clipToPadding on Android views with the overflow property
-   */
-  RN_EXPORT static bool syncAndroidClipToPaddingWithOverflow();
 
   /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.

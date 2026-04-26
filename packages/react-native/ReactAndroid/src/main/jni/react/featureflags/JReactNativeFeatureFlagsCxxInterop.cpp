@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5bac13bb6faeffdd3c5eca800f25b96a>>
+ * @generated SignedSource<<e8cf371a99a72250ea1b0104dc7f8254>>
  */
 
 /**
@@ -369,6 +369,12 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool fixDifferentiatorParentTagForUnflattenCase() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixDifferentiatorParentTagForUnflattenCase");
+    return method(javaProvider_);
+  }
+
   bool fixFindShadowNodeByTagRaceCondition() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixFindShadowNodeByTagRaceCondition");
@@ -453,6 +459,18 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
+  bool redBoxV2Android() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("redBoxV2Android");
+    return method(javaProvider_);
+  }
+
+  bool redBoxV2IOS() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("redBoxV2IOS");
+    return method(javaProvider_);
+  }
+
   bool shouldPressibilityUseW3CPointerEventsForHover() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("shouldPressibilityUseW3CPointerEventsForHover");
@@ -468,12 +486,6 @@ class ReactNativeFeatureFlagsJavaProvider
   bool skipActivityIdentityAssertionOnHostPause() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("skipActivityIdentityAssertionOnHostPause");
-    return method(javaProvider_);
-  }
-
-  bool syncAndroidClipToPaddingWithOverflow() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("syncAndroidClipToPaddingWithOverflow");
     return method(javaProvider_);
   }
 
@@ -852,6 +864,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableVirtualViewDebugFeatures(
   return ReactNativeFeatureFlags::enableVirtualViewDebugFeatures();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::fixDifferentiatorParentTagForUnflattenCase(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::fixDifferentiatorParentTagForUnflattenCase();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::fixFindShadowNodeByTagRaceCondition(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::fixFindShadowNodeByTagRaceCondition();
@@ -922,6 +939,16 @@ bool JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion(
   return ReactNativeFeatureFlags::preventShadowTreeCommitExhaustion();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::redBoxV2Android(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::redBoxV2Android();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::redBoxV2IOS(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::redBoxV2IOS();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::shouldPressibilityUseW3CPointerEventsForHover();
@@ -935,11 +962,6 @@ bool JReactNativeFeatureFlagsCxxInterop::shouldTriggerResponderTransferOnScrollA
 bool JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
-}
-
-bool JReactNativeFeatureFlagsCxxInterop::syncAndroidClipToPaddingWithOverflow(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::syncAndroidClipToPaddingWithOverflow();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid(
@@ -1219,6 +1241,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableVirtualViewDebugFeatures",
         JReactNativeFeatureFlagsCxxInterop::enableVirtualViewDebugFeatures),
       makeNativeMethod(
+        "fixDifferentiatorParentTagForUnflattenCase",
+        JReactNativeFeatureFlagsCxxInterop::fixDifferentiatorParentTagForUnflattenCase),
+      makeNativeMethod(
         "fixFindShadowNodeByTagRaceCondition",
         JReactNativeFeatureFlagsCxxInterop::fixFindShadowNodeByTagRaceCondition),
       makeNativeMethod(
@@ -1261,6 +1286,12 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "preventShadowTreeCommitExhaustion",
         JReactNativeFeatureFlagsCxxInterop::preventShadowTreeCommitExhaustion),
       makeNativeMethod(
+        "redBoxV2Android",
+        JReactNativeFeatureFlagsCxxInterop::redBoxV2Android),
+      makeNativeMethod(
+        "redBoxV2IOS",
+        JReactNativeFeatureFlagsCxxInterop::redBoxV2IOS),
+      makeNativeMethod(
         "shouldPressibilityUseW3CPointerEventsForHover",
         JReactNativeFeatureFlagsCxxInterop::shouldPressibilityUseW3CPointerEventsForHover),
       makeNativeMethod(
@@ -1269,9 +1300,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "skipActivityIdentityAssertionOnHostPause",
         JReactNativeFeatureFlagsCxxInterop::skipActivityIdentityAssertionOnHostPause),
-      makeNativeMethod(
-        "syncAndroidClipToPaddingWithOverflow",
-        JReactNativeFeatureFlagsCxxInterop::syncAndroidClipToPaddingWithOverflow),
       makeNativeMethod(
         "traceTurboModulePromiseRejectionsOnAndroid",
         JReactNativeFeatureFlagsCxxInterop::traceTurboModulePromiseRejectionsOnAndroid),

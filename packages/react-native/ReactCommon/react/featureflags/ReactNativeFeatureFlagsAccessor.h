@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dc4bf5639282b5005e86a073445a295c>>
+ * @generated SignedSource<<11a1936e637ed40b79a1aedd02932e7b>>
  */
 
 /**
@@ -87,6 +87,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool enableViewRecyclingForView();
   bool enableVirtualViewContainerStateExperimental();
   bool enableVirtualViewDebugFeatures();
+  bool fixDifferentiatorParentTagForUnflattenCase();
   bool fixFindShadowNodeByTagRaceCondition();
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
   bool fixYogaFlexBasisFitContentInMainAxis();
@@ -101,10 +102,11 @@ class ReactNativeFeatureFlagsAccessor {
   bool perfMonitorV2Enabled();
   double preparedTextCacheSize();
   bool preventShadowTreeCommitExhaustion();
+  bool redBoxV2Android();
+  bool redBoxV2IOS();
   bool shouldPressibilityUseW3CPointerEventsForHover();
   bool shouldTriggerResponderTransferOnScrollAndroid();
   bool skipActivityIdentityAssertionOnHostPause();
-  bool syncAndroidClipToPaddingWithOverflow();
   bool traceTurboModulePromiseRejectionsOnAndroid();
   bool updateRuntimeShadowNodeReferencesOnCommit();
   bool updateRuntimeShadowNodeReferencesOnCommitThread();
@@ -132,7 +134,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 89> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 91> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
@@ -189,6 +191,7 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> enableViewRecyclingForView_;
   std::atomic<std::optional<bool>> enableVirtualViewContainerStateExperimental_;
   std::atomic<std::optional<bool>> enableVirtualViewDebugFeatures_;
+  std::atomic<std::optional<bool>> fixDifferentiatorParentTagForUnflattenCase_;
   std::atomic<std::optional<bool>> fixFindShadowNodeByTagRaceCondition_;
   std::atomic<std::optional<bool>> fixMappingOfEventPrioritiesBetweenFabricAndReact_;
   std::atomic<std::optional<bool>> fixYogaFlexBasisFitContentInMainAxis_;
@@ -203,10 +206,11 @@ class ReactNativeFeatureFlagsAccessor {
   std::atomic<std::optional<bool>> perfMonitorV2Enabled_;
   std::atomic<std::optional<double>> preparedTextCacheSize_;
   std::atomic<std::optional<bool>> preventShadowTreeCommitExhaustion_;
+  std::atomic<std::optional<bool>> redBoxV2Android_;
+  std::atomic<std::optional<bool>> redBoxV2IOS_;
   std::atomic<std::optional<bool>> shouldPressibilityUseW3CPointerEventsForHover_;
   std::atomic<std::optional<bool>> shouldTriggerResponderTransferOnScrollAndroid_;
   std::atomic<std::optional<bool>> skipActivityIdentityAssertionOnHostPause_;
-  std::atomic<std::optional<bool>> syncAndroidClipToPaddingWithOverflow_;
   std::atomic<std::optional<bool>> traceTurboModulePromiseRejectionsOnAndroid_;
   std::atomic<std::optional<bool>> updateRuntimeShadowNodeReferencesOnCommit_;
   std::atomic<std::optional<bool>> updateRuntimeShadowNodeReferencesOnCommitThread_;

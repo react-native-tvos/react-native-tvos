@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1167117e59b7fdcb0139a41b37e26ded>>
+ * @generated SignedSource<<d2284ab5318acc0996c5d96835d71e07>>
  * @flow strict
  * @noformat
  */
@@ -102,6 +102,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   enableViewRecyclingForView: Getter<boolean>,
   enableVirtualViewContainerStateExperimental: Getter<boolean>,
   enableVirtualViewDebugFeatures: Getter<boolean>,
+  fixDifferentiatorParentTagForUnflattenCase: Getter<boolean>,
   fixFindShadowNodeByTagRaceCondition: Getter<boolean>,
   fixMappingOfEventPrioritiesBetweenFabricAndReact: Getter<boolean>,
   fixYogaFlexBasisFitContentInMainAxis: Getter<boolean>,
@@ -116,10 +117,11 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   perfMonitorV2Enabled: Getter<boolean>,
   preparedTextCacheSize: Getter<number>,
   preventShadowTreeCommitExhaustion: Getter<boolean>,
+  redBoxV2Android: Getter<boolean>,
+  redBoxV2IOS: Getter<boolean>,
   shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean>,
   shouldTriggerResponderTransferOnScrollAndroid: Getter<boolean>,
   skipActivityIdentityAssertionOnHostPause: Getter<boolean>,
-  syncAndroidClipToPaddingWithOverflow: Getter<boolean>,
   traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommit: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommitThread: Getter<boolean>,
@@ -423,6 +425,10 @@ export const enableVirtualViewContainerStateExperimental: Getter<boolean> = crea
  */
 export const enableVirtualViewDebugFeatures: Getter<boolean> = createNativeFlagGetter('enableVirtualViewDebugFeatures', false);
 /**
+ * Fix incorrect parentTag passed as parentTagForUpdate in the unflatten-unflatten branch of calculateShadowViewMutationsFlattener, which causes UPDATE mutations to reference a parent being created in the same batch.
+ */
+export const fixDifferentiatorParentTagForUnflattenCase: Getter<boolean> = createNativeFlagGetter('fixDifferentiatorParentTagForUnflattenCase', false);
+/**
  * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
  */
 export const fixFindShadowNodeByTagRaceCondition: Getter<boolean> = createNativeFlagGetter('fixFindShadowNodeByTagRaceCondition', false);
@@ -479,6 +485,14 @@ export const preparedTextCacheSize: Getter<number> = createNativeFlagGetter('pre
  */
 export const preventShadowTreeCommitExhaustion: Getter<boolean> = createNativeFlagGetter('preventShadowTreeCommitExhaustion', false);
 /**
+ * Use the redesigned RedBox error overlay on Android, styled to match the LogBox visual language.
+ */
+export const redBoxV2Android: Getter<boolean> = createNativeFlagGetter('redBoxV2Android', false);
+/**
+ * Use the redesigned RedBox error overlay on iOS, styled to match the LogBox visual language.
+ */
+export const redBoxV2IOS: Getter<boolean> = createNativeFlagGetter('redBoxV2IOS', false);
+/**
  * Function used to enable / disable Pressibility from using W3C Pointer Events for its hover callbacks
  */
 export const shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean> = createNativeFlagGetter('shouldPressibilityUseW3CPointerEventsForHover', false);
@@ -490,10 +504,6 @@ export const shouldTriggerResponderTransferOnScrollAndroid: Getter<boolean> = cr
  * Skip activity identity assertion in ReactHostImpl::onHostPause()
  */
 export const skipActivityIdentityAssertionOnHostPause: Getter<boolean> = createNativeFlagGetter('skipActivityIdentityAssertionOnHostPause', false);
-/**
- * Sync clipToPadding on Android views with the overflow property
- */
-export const syncAndroidClipToPaddingWithOverflow: Getter<boolean> = createNativeFlagGetter('syncAndroidClipToPaddingWithOverflow', false);
 /**
  * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
  */

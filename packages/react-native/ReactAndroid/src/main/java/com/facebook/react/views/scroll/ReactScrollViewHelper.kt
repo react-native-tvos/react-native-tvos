@@ -31,7 +31,6 @@ import com.facebook.react.uimanager.ReactClippingViewGroup
 import com.facebook.react.uimanager.StateWrapper
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.common.UIManagerType
-import com.facebook.react.uimanager.common.ViewUtil
 import com.facebook.react.views.view.ReactViewGroup
 import java.lang.ref.WeakReference
 import java.util.concurrent.CopyOnWriteArrayList
@@ -351,9 +350,6 @@ public object ReactScrollViewHelper {
           scrollX,
           scrollY,
       )
-    }
-    if (ViewUtil.getUIManagerType(scrollView.id) == UIManagerType.LEGACY) {
-      return
     }
     // NOTE: if the state wrapper is null, we shouldn't even update
     // the scroll state because there is a chance of going out of sync!

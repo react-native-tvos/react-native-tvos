@@ -497,14 +497,6 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   @Override
-  public boolean getClipToPadding() {
-    if (ReactNativeFeatureFlags.syncAndroidClipToPaddingWithOverflow()) {
-      return mOverflow != Overflow.VISIBLE;
-    }
-    return super.getClipToPadding();
-  }
-
-  @Override
   public void onDraw(Canvas canvas) {
     if (mOverflow != Overflow.VISIBLE) {
       BackgroundStyleApplicator.clipToPaddingBox(this, canvas);
@@ -1782,8 +1774,6 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     // does not work in RTL.
     if (v.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
       adjustPositionForContentChangeRTL(left, right, oldLeft, oldRight);
-    } else if (mMaintainVisibleContentPositionHelper != null) {
-      mMaintainVisibleContentPositionHelper.updateScrollPosition();
     }
     ReactScrollViewHelper.emitLayoutChangeEvent(this);
   }

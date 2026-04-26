@@ -6085,10 +6085,10 @@ flow-api-translator@0.35.0:
     hermes-transform "0.35.0"
     typescript "5.3.2"
 
-flow-bin@^0.309.0:
-  version "0.309.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.309.0.tgz#c983003377c80a558e1c4afbf47b6c38cfbca075"
-  integrity sha512-/RH68gcCY8OHzcdSVTUCw+fhDSEYmNHoovfK0EcbB4rs1Xbc5HhxhHTvr7U+h55De4bDRlE52ghH23MRP625cQ==
+flow-bin@^0.311.0:
+  version "0.311.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.311.0.tgz#a1cbef22d1cb9e05b58ffdbad1c73ed03f4122e2"
+  integrity sha512-4lXxjhPdmkeizju3F0HDCMYGkoL7hiq0W9bAW4pQpQTi56op+QZrVyMENjbCGZc+KlFBLwWkur+EkyfPTsa6xw==
 
 flow-enums-runtime@^0.0.6:
   version "0.0.6"
@@ -6537,10 +6537,10 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-hermes-compiler@0.17.0-commitly-202604202050-e3d86537b:
-  version "0.17.0-commitly-202604202050-e3d86537b"
-  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-0.17.0-commitly-202604202050-e3d86537b.tgz#9fb91bc7bc22c11f34a9d2f8ba92bf944a62e83a"
-  integrity sha512-W1APSNExy+QZ4rwszPMhniqJrTqPzP/LL/b0yvUsFz6/7u3nW+lmLpUKzWlcg3OpGnAJldEQ3NcAhv7udyludA==
+hermes-compiler@250829098.0.12:
+  version "250829098.0.12"
+  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-250829098.0.12.tgz#f523a7b71dc457a864f0c5568f77ceccc8aaff01"
+  integrity sha512-Xs6H/Ux6NT+4EGafPwwBIFCsvbViISR8itink1cGnGOkw5ErtsLclmVUCUwSNApmop+IhozKLicAHsRo1P1NMw==
 
 hermes-eslint@0.35.0:
   version "0.35.0"
@@ -7949,10 +7949,10 @@ lodash.throttle@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
   integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
 
-lodash@^4.17.11, lodash@^4.17.19, lodash@^4.17.21, lodash@~4.17.15:
-  version "4.17.23"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
-  integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
+lodash@4.18.1, lodash@^4.17.11, lodash@^4.17.19, lodash@^4.17.21, lodash@~4.17.15:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.18.1.tgz#ff2b66c1f6326d59513de2407bf881439812771c"
+  integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
 
 log-symbols@4.1.0, log-symbols@^4.1.0:
   version "4.1.0"
