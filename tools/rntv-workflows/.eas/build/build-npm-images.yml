@@ -1,0 +1,45 @@
+build:
+  name: Build Android artifacts for a release
+  steps:
+    - eas/checkout
+    - eas/install_node_modules
+    - run:
+        name: Patch @microsoft/api-extractor
+        working_directory: ../..
+        command: |
+          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
+    - run:
+        name: Run Typescript generation
+        working_directory: ../..
+        command: |
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            yarn build-types
+          fi
+    - run:
+        name: Set up build-specific environment
+        working_directory: ../..
+        command: |
+          # Set up environment for subsequent steps
+          # Location for NPM tarballs
+          export NPM_TARBALL_LOCATION=$PWD/npm-tarballs
+          mkdir -p $NPM_TARBALL_LOCATION
+          set-env NPM_TARBALL_LOCATION $NPM_TARBALL_LOCATION
+          # Root directory
+          export ROOT_DIR=$PWD
+          set-env ROOT_DIR $ROOT_DIR
+    - run:
+        name: Create virtualized-lists tarball
+        working_directory: ../../packages/virtualized-lists
+        command: |
+          npm pack --pack-destination $ROOT_DIR
+    - run:
+        name: Create react-native tarball
+        working_directory: ../../packages/react-native
+        command: |
+          npm pack --pack-destination $ROOT_DIR
+    - eas/upload_artifact:
+        name: Upload Android artifacts and NPM tarballs
+        inputs:
+          type: build-artifact
+          path: |
+            react-native-*.tgz
