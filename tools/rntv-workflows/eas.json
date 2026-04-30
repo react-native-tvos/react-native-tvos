@@ -14,8 +14,7 @@
         "image": "latest"
       },
       "withoutCredentials": true,
-      "distribution": "internal",
-      "node": "22.14.0"
+      "distribution": "internal"
     },
     "android-artifacts-main": {
       "extends": "base",
@@ -48,7 +47,7 @@
       }
     },
     "apple-artifacts": {
-      "extends": "rncore-main",
+      "extends": "apple-artifacts-main",
       "env": {
         "RNTV_RELEASE_BUILD": "1"
       }
