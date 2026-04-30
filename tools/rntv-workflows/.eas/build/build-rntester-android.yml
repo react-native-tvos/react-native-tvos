@@ -1,5 +1,5 @@
 build:
-  name: Build RNTester app for Android TV
+  name: Build RNTester for Android platforms
   steps:
     - eas/checkout
     - eas/install_node_modules
@@ -7,26 +7,70 @@ build:
         name: Set up build-specific environment
         working_directory: ../..
         command: |
-          . ./tools/rntv-workflows/override-nightly-build-version.sh
-          echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
           # Set up environment for subsequent steps
-          set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
           # Check and save sdkmanager path
           export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
           echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
           set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
+          # Install cmake
+          echo "Installing CMake 3.30.5..."
+          sdkmanager --install "cmake;3.30.5"
+          # Location for RNTester APKs
+          export RNTESTER_APK_LOCATION=$PWD/RNTester-Android
+          mkdir -p $RNTESTER_APK_LOCATION/Debug
+          mkdir -p $RNTESTER_APK_LOCATION/Release
+          set-env RNTESTER_APK_LOCATION $RNTESTER_APK_LOCATION
+          # Root directory
+          export ROOT_DIR=$PWD
+          set-env ROOT_DIR $ROOT_DIR
+          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
+            . ./tools/rntv-workflows/override-nightly-build-version.sh
+            echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
+            set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
+            # node ./scripts/releases/use-hermes-nightly.js
+            yarn
+            set-env HERMES_VERSION nightly
+            set-env RN_DEP_VERSION nightly
+          fi
     - run:
-        name: Build RNTester app for Android and Android TV
-        working_directory: ../../packages/rn-tester
+        name: Unpack build artifacts
+        working_directory: .
         command: |
-          echo "Cleaning build directories..."
-          yarn clean-android
+          DEBUG=eas:* npx eas-cli build:view $ARTIFACTS_BUILD_ID --json > build.json && true
+          curl --output ../../react-native-artifacts.tgz `node -e 'console.log(require("./build.json").artifacts.buildArtifactsUrl)'`
+          mkdir $ROOT_DIR/maven-local
+          (cd $ROOT_DIR/maven-local; tar zxf ../react-native-artifacts.tgz)
+    - run:
+        name: Build RNTester app for Android and Android TV (Debug)
+        working_directory: ../..
+        command: |
           echo "Building RNTester..."
-          yarn build-android-hermes
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          ./gradlew -PreactNativeMavenLocalPath=$ROOT_DIR/maven-local -PreactNativeArtifactVersion=$REACT_NATIVE_VERSION :packages:rn-tester:android:app:assembleDebug
+          echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
+          cp -r packages/rn-tester/android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION/Debug
           echo "Build completed."
+    - run:
+        name: Build RNTester app for Android and Android TV (Release)
+        working_directory: ../..
+        command: |
+          echo "Building RNTester..."
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          ./gradlew -PreactNativeMavenLocalPath=$ROOT_DIR/maven-local -PreactNativeArtifactVersion=$REACT_NATIVE_VERSION :packages:rn-tester:android:app:assembleRelease
+          echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
+          cp -r packages/rn-tester/android/app/build/outputs/apk/release/* $RNTESTER_APK_LOCATION/Release
+          echo "Build completed."
+    - run:
+        name: Package Android artifacts
+        working_directory: ../..
+        command: |
+          export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
+          echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
+          (cd RNTester-Android/Debug; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-debug.tgz *)
+          (cd RNTester-Android/Release; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-release.tgz *)
     - eas/upload_artifact:
-        name: Upload RNTester artifacts
+        name: Upload Android artifacts and NPM tarballs
         inputs:
-          type: application-archive
+          type: build-artifact
           path: |
-            packages/rn-tester/android/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
+            rntester-*.tgz

@@ -1,20 +1,8 @@
 build:
-  name: Build Android artifacts for a release
+  name: Build Android Maven artifacts
   steps:
     - eas/checkout
     - eas/install_node_modules
-    - run:
-        name: Patch @microsoft/api-extractor
-        working_directory: ../..
-        command: |
-          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
-    - run:
-        name: Run Typescript generation
-        working_directory: ../..
-        command: |
-          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            yarn build-types
-          fi
     - run:
         name: Set up build-specific environment
         working_directory: ../..
@@ -27,15 +15,6 @@ build:
           # Install cmake
           echo "Installing CMake 3.30.5..."
           sdkmanager --install "cmake;3.30.5"
-          # Location for NPM tarballs
-          export NPM_TARBALL_LOCATION=$PWD/npm-tarballs
-          mkdir -p $NPM_TARBALL_LOCATION
-          set-env NPM_TARBALL_LOCATION $NPM_TARBALL_LOCATION
-          # Location for RNTester APKs
-          export RNTESTER_APK_LOCATION=$PWD/RNTester-Android
-          mkdir -p $RNTESTER_APK_LOCATION/Debug
-          mkdir -p $RNTESTER_APK_LOCATION/Release
-          set-env RNTESTER_APK_LOCATION $RNTESTER_APK_LOCATION
           # Root directory
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
@@ -72,41 +51,11 @@ build:
         command: |
           ./gradlew publishAllToMavenTempLocal
     - run:
-        name: Create virtualized-lists tarball
-        working_directory: ../../packages/virtualized-lists
-        command: |
-          npm pack --pack-destination $ROOT_DIR
-    - run:
-        name: Create react-native tarball
-        working_directory: ../../packages/react-native
-        command: |
-          npm pack --pack-destination $ROOT_DIR
-    - run:
-        name: Build RNTester app for Android and Android TV (Debug)
-        working_directory: ../..
-        command: |
-          echo "Building RNTester..."
-          ./gradlew :packages:rn-tester:android:app:assembleDebug
-          echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r packages/rn-tester/android/app/build/outputs/apk/debug/* $RNTESTER_APK_LOCATION/Debug
-          echo "Build completed."
-    - run:
-        name: Build RNTester app for Android and Android TV (Release)
-        working_directory: ../..
-        command: |
-          echo "Building RNTester..."
-          ./gradlew :packages:rn-tester:android:app:assembleRelease
-          echo "Copying RNTester APKs to $RNTESTER_APK_LOCATION..."
-          cp -r packages/rn-tester/android/app/build/outputs/apk/release/* $RNTESTER_APK_LOCATION/Release
-          echo "Build completed."
-    - run:
         name: Package Android artifacts
         working_directory: ../..
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
-          (cd RNTester-Android/Debug; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-debug.tgz *)
-          (cd RNTester-Android/Release; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-androidtv-release.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz *)
     - run:
         name: Send Android artifacts to Sonatype
@@ -124,5 +73,3 @@ build:
           type: build-artifact
           path: |
             react-android-hermes-*.tgz
-            rntester-*.tgz
-            react-native-*.tgz
