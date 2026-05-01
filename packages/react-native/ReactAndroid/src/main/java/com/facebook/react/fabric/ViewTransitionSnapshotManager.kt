@@ -38,10 +38,13 @@ internal class ViewTransitionSnapshotManager(
 ) : UIManagerListener {
 
   companion object {
-    private fun captureSoftwareBitmap(view: View): Bitmap {
-      val bitmap = createBitmap(view.width, view.height)
-      view.draw(Canvas(bitmap))
-      return bitmap
+    private fun captureSoftwareBitmap(view: View): Bitmap? {
+      if (view.width > 0 && view.height > 0) {
+        val bitmap = createBitmap(view.width, view.height)
+        view.draw(Canvas(bitmap))
+        return bitmap
+      }
+      return null
     }
   }
 
@@ -96,45 +99,79 @@ internal class ViewTransitionSnapshotManager(
       } else {
         // Software fallback runs synchronously, so onBitmapCaptured always
         // completes before setViewSnapshot is called.
-        onBitmapCaptured(reactTag, captureSoftwareBitmap(view))
+        captureSoftwareBitmap(view)?.let { onBitmapCaptured(reactTag, it) }
       }
     }
   }
 
   @RequiresApi(Build.VERSION_CODES.O)
   private fun captureHardwareBitmap(view: View, reactTag: Int, window: Window) {
-    val bitmap = createBitmap(view.width, view.height)
     val location = IntArray(2)
     view.getLocationInWindow(location)
-    val rect = Rect(location[0], location[1], location[0] + view.width, location[1] + view.height)
+
+    val viewWidth = view.width
+    val viewHeight = view.height
+
+    if (viewWidth <= 0 || viewHeight <= 0) {
+      // Nothing to capture.
+      return
+    }
+
+    // The view's rect in window coordinates.
+    val viewRect = Rect(location[0], location[1], location[0] + viewWidth, location[1] + viewHeight)
+
+    // Clamp to window bounds — PixelCopy only captures what's visible on the
+    // window surface. Without clamping, off-screen portions are black/empty
+    // and the partial result gets stretched to fill the pseudo-element.
+    val windowWidth = window.decorView.width
+    val windowHeight = window.decorView.height
+    val clampedRect =
+        Rect(
+            viewRect.left.coerceAtLeast(0),
+            viewRect.top.coerceAtLeast(0),
+            viewRect.right.coerceAtMost(windowWidth),
+            viewRect.bottom.coerceAtMost(windowHeight),
+        )
+
+    if (clampedRect.isEmpty) {
+      // Entirely off-screen — nothing to capture.
+      return
+    }
+
+    val clampedBitmap = createBitmap(clampedRect.width(), clampedRect.height())
+    // Offset of the clamped region within the full view.
+    val offsetX = clampedRect.left - viewRect.left
+    val offsetY = clampedRect.top - viewRect.top
+
     // PixelCopy callback is posted to mainHandler, so onBitmapCaptured may run after
     // setViewSnapshot has already recorded the target tag for this source tag.
     try {
       PixelCopy.request(
           window,
-          rect,
-          bitmap,
+          clampedRect,
+          clampedBitmap,
           { copyResult ->
             if (copyResult == PixelCopy.SUCCESS) {
-              val hwBitmap = bitmap.copy(Bitmap.Config.HARDWARE, false)
-              if (hwBitmap != null) {
-                bitmap.recycle()
-                onBitmapCaptured(reactTag, hwBitmap)
-              } else {
-                onBitmapCaptured(reactTag, bitmap)
-              }
+              // Compose the clamped capture into a full-size bitmap at the
+              // correct offset so it aligns with the pseudo-element's bounds.
+              val fullBitmap = createBitmap(viewWidth, viewHeight)
+              Canvas(fullBitmap)
+                  .drawBitmap(clampedBitmap, offsetX.toFloat(), offsetY.toFloat(), null)
+              clampedBitmap.recycle()
+              onBitmapCaptured(reactTag, fullBitmap)
             } else {
-              bitmap.recycle()
-              onBitmapCaptured(reactTag, captureSoftwareBitmap(view))
+              // Fall back to software rendering if the view is still valid.
+              clampedBitmap.recycle()
+              captureSoftwareBitmap(view)?.let { onBitmapCaptured(reactTag, it) }
             }
           },
           mainHandler,
       )
     } catch (e: IllegalArgumentException) {
       // Window surface may have been destroyed (e.g., device idle/sleep).
-      // Fall back to software rendering.
-      bitmap.recycle()
-      onBitmapCaptured(reactTag, captureSoftwareBitmap(view))
+      // Fall back to software rendering if the view is still valid.
+      clampedBitmap.recycle()
+      captureSoftwareBitmap(view)?.let { onBitmapCaptured(reactTag, it) }
     }
   }
 

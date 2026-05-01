@@ -743,7 +743,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     overrideBySynchronousMountPropsAtMountingAndroid: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2025-09-04',
         description:
@@ -850,6 +850,16 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    syncAndroidClipBoundsWithOverflow: {
+      defaultValue: false,
+      metadata: {
+        description:
+          'Override getClipBounds on Android views to return the padding box when overflow is hidden',
+        expectedReleaseValue: true,
+        purpose: 'release',
+      },
+      ossReleaseStage: 'none',
+    },
     traceTurboModulePromiseRejectionsOnAndroid: {
       defaultValue: false,
       metadata: {
@@ -930,6 +940,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2026-01-16',
         description:
           'When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    useOptimizedViewRegistryOnAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-04-28',
+        description:
+          'Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

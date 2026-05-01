@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5ced56c93abad63fd10f8d22fc262923>>
+ * @generated SignedSource<<0041d5afda1db442c10adc9e6175e1d7>>
  */
 
 /**
@@ -288,7 +288,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool overrideBySynchronousMountPropsAtMountingAndroid() override {
-    return false;
+    return true;
   }
 
   bool perfIssuesEnabled() override {
@@ -327,6 +327,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool syncAndroidClipBoundsWithOverflow() override {
+    return false;
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     return false;
   }
@@ -356,6 +360,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool useNestedScrollViewAndroid() override {
+    return false;
+  }
+
+  bool useOptimizedViewRegistryOnAndroid() override {
     return false;
   }
 

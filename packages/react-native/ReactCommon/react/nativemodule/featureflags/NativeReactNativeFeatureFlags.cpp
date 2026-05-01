@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<4b821513e808ca071104f413e15c2fd9>>
+ * @generated SignedSource<<0d2290e74b0e522d15403896a40955cc>>
  */
 
 /**
@@ -419,6 +419,11 @@ bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
 }
 
+bool NativeReactNativeFeatureFlags::syncAndroidClipBoundsWithOverflow(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::syncAndroidClipBoundsWithOverflow();
+}
+
 bool NativeReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::traceTurboModulePromiseRejectionsOnAndroid();
@@ -457,6 +462,11 @@ bool NativeReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode(
 bool NativeReactNativeFeatureFlags::useNestedScrollViewAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useNestedScrollViewAndroid();
+}
+
+bool NativeReactNativeFeatureFlags::useOptimizedViewRegistryOnAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useOptimizedViewRegistryOnAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::useSharedAnimatedBackend(

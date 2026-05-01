@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3574e23fe8f846e408964af26cf0dd4c>>
+ * @generated SignedSource<<299507458fe84339ddf816dd58671fd3>>
  */
 
 /**
@@ -99,6 +99,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
   private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
+  private var syncAndroidClipBoundsWithOverflowCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitThreadCache: Boolean? = null
@@ -107,6 +108,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var useLISAlgorithmInDifferentiatorCache: Boolean? = null
   private var useNativeViewConfigsInBridgelessModeCache: Boolean? = null
   private var useNestedScrollViewAndroidCache: Boolean? = null
+  private var useOptimizedViewRegistryOnAndroidCache: Boolean? = null
   private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
@@ -866,6 +868,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
     return cached
   }
 
+  override fun syncAndroidClipBoundsWithOverflow(): Boolean {
+    var cached = syncAndroidClipBoundsWithOverflowCache
+    if (cached == null) {
+      cached = currentProvider.syncAndroidClipBoundsWithOverflow()
+      accessedFeatureFlags.add("syncAndroidClipBoundsWithOverflow")
+      syncAndroidClipBoundsWithOverflowCache = cached
+    }
+    return cached
+  }
+
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean {
     var cached = traceTurboModulePromiseRejectionsOnAndroidCache
     if (cached == null) {
@@ -942,6 +954,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.useNestedScrollViewAndroid()
       accessedFeatureFlags.add("useNestedScrollViewAndroid")
       useNestedScrollViewAndroidCache = cached
+    }
+    return cached
+  }
+
+  override fun useOptimizedViewRegistryOnAndroid(): Boolean {
+    var cached = useOptimizedViewRegistryOnAndroidCache
+    if (cached == null) {
+      cached = currentProvider.useOptimizedViewRegistryOnAndroid()
+      accessedFeatureFlags.add("useOptimizedViewRegistryOnAndroid")
+      useOptimizedViewRegistryOnAndroidCache = cached
     }
     return cached
   }

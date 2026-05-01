@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<37d207f0cdbf3138c1762a0ecf6f0a50>>
+ * @generated SignedSource<<23fdb2548f49853190e3a7adb82b8310>>
  */
 
 /**
@@ -153,7 +153,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
-  override fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean = false
+  override fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean = true
 
   override fun perfIssuesEnabled(): Boolean = false
 
@@ -173,6 +173,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun skipActivityIdentityAssertionOnHostPause(): Boolean = false
 
+  override fun syncAndroidClipBoundsWithOverflow(): Boolean = false
+
   override fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean = false
 
   override fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean = false
@@ -188,6 +190,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 
   override fun useNestedScrollViewAndroid(): Boolean = false
+
+  override fun useOptimizedViewRegistryOnAndroid(): Boolean = false
 
   override fun useSharedAnimatedBackend(): Boolean = false
 

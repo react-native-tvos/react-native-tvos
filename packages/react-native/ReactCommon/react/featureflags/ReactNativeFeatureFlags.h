@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<62d1840f9a39eaceaa800542b7351a41>>
+ * @generated SignedSource<<e516c670626478b1cc1a139fe52cae21>>
  */
 
 /**
@@ -415,6 +415,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool skipActivityIdentityAssertionOnHostPause();
 
   /**
+   * Override getClipBounds on Android views to return the padding box when overflow is hidden
+   */
+  RN_EXPORT static bool syncAndroidClipBoundsWithOverflow();
+
+  /**
    * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
    */
   RN_EXPORT static bool traceTurboModulePromiseRejectionsOnAndroid();
@@ -453,6 +458,11 @@ class ReactNativeFeatureFlags {
    * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
    */
   RN_EXPORT static bool useNestedScrollViewAndroid();
+
+  /**
+   * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
+   */
+  RN_EXPORT static bool useOptimizedViewRegistryOnAndroid();
 
   /**
    * Use shared animation backend in C++ Animated

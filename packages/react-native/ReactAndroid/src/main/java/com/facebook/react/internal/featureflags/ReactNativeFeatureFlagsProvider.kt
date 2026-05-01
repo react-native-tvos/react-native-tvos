@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9222fd90d191a91893e2c58770d83259>>
+ * @generated SignedSource<<8f887fb839df553b23886a61537e6991>>
  */
 
 /**
@@ -173,6 +173,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun skipActivityIdentityAssertionOnHostPause(): Boolean
 
+  @DoNotStrip public fun syncAndroidClipBoundsWithOverflow(): Boolean
+
   @DoNotStrip public fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
 
   @DoNotStrip public fun updateRuntimeShadowNodeReferencesOnCommit(): Boolean
@@ -188,6 +190,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useNativeViewConfigsInBridgelessMode(): Boolean
 
   @DoNotStrip public fun useNestedScrollViewAndroid(): Boolean
+
+  @DoNotStrip public fun useOptimizedViewRegistryOnAndroid(): Boolean
 
   @DoNotStrip public fun useSharedAnimatedBackend(): Boolean
 

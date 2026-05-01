@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d2284ab5318acc0996c5d96835d71e07>>
+ * @generated SignedSource<<c5c1e823253825a006733318458b9ff6>>
  * @flow strict
  * @noformat
  */
@@ -122,6 +122,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   shouldPressibilityUseW3CPointerEventsForHover: Getter<boolean>,
   shouldTriggerResponderTransferOnScrollAndroid: Getter<boolean>,
   skipActivityIdentityAssertionOnHostPause: Getter<boolean>,
+  syncAndroidClipBoundsWithOverflow: Getter<boolean>,
   traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommit: Getter<boolean>,
   updateRuntimeShadowNodeReferencesOnCommitThread: Getter<boolean>,
@@ -130,6 +131,7 @@ export type ReactNativeFeatureFlags = $ReadOnly<{
   useLISAlgorithmInDifferentiator: Getter<boolean>,
   useNativeViewConfigsInBridgelessMode: Getter<boolean>,
   useNestedScrollViewAndroid: Getter<boolean>,
+  useOptimizedViewRegistryOnAndroid: Getter<boolean>,
   useSharedAnimatedBackend: Getter<boolean>,
   useTraitHiddenOnAndroid: Getter<boolean>,
   useTurboModuleInterop: Getter<boolean>,
@@ -467,7 +469,7 @@ export const hideOffscreenVirtualViewsOnIOS: Getter<boolean> = createNativeFlagG
 /**
  * Override props at mounting with synchronously mounted (i.e. direct manipulation) props from Native Animated.
  */
-export const overrideBySynchronousMountPropsAtMountingAndroid: Getter<boolean> = createNativeFlagGetter('overrideBySynchronousMountPropsAtMountingAndroid', false);
+export const overrideBySynchronousMountPropsAtMountingAndroid: Getter<boolean> = createNativeFlagGetter('overrideBySynchronousMountPropsAtMountingAndroid', true);
 /**
  * Enable reporting Performance Issues (`detail.devtools.performanceIssue`). Displayed in the V2 Performance Monitor and the "Performance Issues" sub-panel in DevTools.
  */
@@ -505,6 +507,10 @@ export const shouldTriggerResponderTransferOnScrollAndroid: Getter<boolean> = cr
  */
 export const skipActivityIdentityAssertionOnHostPause: Getter<boolean> = createNativeFlagGetter('skipActivityIdentityAssertionOnHostPause', false);
 /**
+ * Override getClipBounds on Android views to return the padding box when overflow is hidden
+ */
+export const syncAndroidClipBoundsWithOverflow: Getter<boolean> = createNativeFlagGetter('syncAndroidClipBoundsWithOverflow', false);
+/**
  * Enables storing js caller stack when creating promise in native module. This is useful in case of Promise rejection and tracing the cause.
  */
 export const traceTurboModulePromiseRejectionsOnAndroid: Getter<boolean> = createNativeFlagGetter('traceTurboModulePromiseRejectionsOnAndroid', false);
@@ -536,6 +542,10 @@ export const useNativeViewConfigsInBridgelessMode: Getter<boolean> = createNativ
  * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
  */
 export const useNestedScrollViewAndroid: Getter<boolean> = createNativeFlagGetter('useNestedScrollViewAndroid', false);
+/**
+ * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
+ */
+export const useOptimizedViewRegistryOnAndroid: Getter<boolean> = createNativeFlagGetter('useOptimizedViewRegistryOnAndroid', false);
 /**
  * Use shared animation backend in C++ Animated
  */

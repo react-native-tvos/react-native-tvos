@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2a4b0d699f7e7e701defd972cd79b116>>
+ * @generated SignedSource<<30df75f444340e662066500c20e3614f>>
  */
 
 /**
@@ -720,6 +720,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::skipActivityIdentityAssertionOnHostPause();
   }
 
+  bool syncAndroidClipBoundsWithOverflow() override {
+    auto value = values_["syncAndroidClipBoundsWithOverflow"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::syncAndroidClipBoundsWithOverflow();
+  }
+
   bool traceTurboModulePromiseRejectionsOnAndroid() override {
     auto value = values_["traceTurboModulePromiseRejectionsOnAndroid"];
     if (!value.isNull()) {
@@ -790,6 +799,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useNestedScrollViewAndroid();
+  }
+
+  bool useOptimizedViewRegistryOnAndroid() override {
+    auto value = values_["useOptimizedViewRegistryOnAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::useOptimizedViewRegistryOnAndroid();
   }
 
   bool useSharedAnimatedBackend() override {
