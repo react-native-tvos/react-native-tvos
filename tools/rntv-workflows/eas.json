@@ -14,41 +14,7 @@
         "image": "latest"
       },
       "withoutCredentials": true,
-      "distribution": "internal",
-      "node": "22.14.0"
-    },
-    "rntester": {
-      "extends": "base",
-      "ios": {
-        "config": "build-rntester-apple.yml"
-      },
-      "android": {
-        "config": "build-rntester-android.yml"
-      }
-    },
-    "rncore-main": {
-      "extends": "base",
-      "ios": {
-        "config": "build-rncore-apple.yml"
-      }
-    },
-    "rncore": {
-      "extends": "rncore-main",
-      "env": {
-        "RNTV_RELEASE_BUILD": "1"
-      }
-    },
-    "rntester-apple-release-main": {
-      "extends": "base",
-      "ios": {
-        "config": "build-rntester-apple-release.yml"
-      }
-    },
-    "rntester-apple-release": {
-      "extends": "rntester-apple-release-main",
-      "env": {
-        "RNTV_RELEASE_BUILD": "1"
-      }
+      "distribution": "internal"
     },
     "android-artifacts-main": {
       "extends": "base",
@@ -58,6 +24,72 @@
     },
     "android-artifacts": {
       "extends": "android-artifacts-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rntester-android-main": {
+      "extends": "base",
+      "android": {
+        "config": "build-rntester-android.yml"
+      }
+    },
+    "rntester-android": {
+      "extends": "rntester-android-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "apple-artifacts-main": {
+      "extends": "base",
+      "ios": {
+        "config": "build-apple-artifacts.yml"
+      }
+    },
+    "apple-artifacts": {
+      "extends": "apple-artifacts-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rntester-apple-release-main": {
+      "extends": "base",
+      "env": {
+        "RNTESTER_CONFIGURATION": "release"
+      },
+      "ios": {
+        "config": "build-rntester-apple.yml"
+      }
+    },
+    "rntester-apple-release": {
+      "extends": "rntester-apple-release-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "rntester-apple-debug-main": {
+      "extends": "base",
+      "env": {
+        "RNTESTER_CONFIGURATION": "debug"
+      },
+      "ios": {
+        "config": "build-rntester-apple.yml"
+      }
+    },
+    "rntester-apple-debug": {
+      "extends": "rntester-apple-debug-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
+    "npm-images-main": {
+      "extends": "base",
+      "android": {
+        "config": "build-npm-images.yml"
+      }
+    },
+    "npm-images": {
+      "extends": "npm-images-main",
       "env": {
         "RNTV_RELEASE_BUILD": "1"
       }
