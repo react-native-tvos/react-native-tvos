@@ -15,6 +15,6 @@ public object ReactNativeVersion {
     "major" to 0,
     "minor" to 85,
     "patch" to 2,
-    "prerelease" to null
+    "prerelease" to "tv.1"
   )
 }
