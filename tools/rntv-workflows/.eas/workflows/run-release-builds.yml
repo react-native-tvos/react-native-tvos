@@ -1,25 +1,87 @@
-name: Run RNTV builds
+name: Run RNTV release builds
 
 on:
   push:
     branches: [release-*]
 
+concurrency:
+  group: ${{ workflow.filename }}-${{ github.ref }}
+  cancel_in_progress: true
+
 jobs:
   build_apple:
-    name: Create Apple artifacts and RNTester debug images
+    name: Create Apple artifacts
     type: build
     params:
       platform: ios
-      profile: rncore
+      profile: apple-artifacts
+  ##### KEEP FOR TESTING #####
+  # build_apple:
+  #   name: Create Apple artifacts
+  #   type: custom
+  #   outputs:
+  #     build_id: ${{ steps.run_script.outputs.build_id }}
+  #   steps:
+  #     - run_script:
+  #       name: Run scripts
+  #       id: run_script
+  #       outputs: [build_id]
+  #       run: |
+  #         echo "Setting output to b9ce8d5a-4fc0-45df-9a21-83f4d03cfb8e"
+  #         set-output build_id b9ce8d5a-4fc0-45df-9a21-83f4d03cfb8e
+  build_rntester_apple_debug:
+    name: Create Apple RNTester debug images
+    type: build
+    needs: [build_apple]
+    env:
+      ARTIFACTS_BUILD_ID: ${{ needs.build_apple.outputs.build_id }}
+    params:
+      platform: ios
+      profile: rntester-apple-debug
+  build_rntester_apple_release:
+    name: Create Apple RNTester release images
+    type: build
+    needs: [build_apple]
+    env:
+      ARTIFACTS_BUILD_ID: ${{ needs.build_apple.outputs.build_id }}
+    params:
+      platform: ios
+      profile: rntester-apple-release
   build_android:
-    name: Create Android artifacts and RNTester
+    name: Create Android artifacts
     type: build
     params:
       platform: android
       profile: android-artifacts
-  build_rntester_apple:
-    name: Create Apple RNTester release images
+  ##### KEEP FOR TESTING #####
+  # build_android:
+  #   name: Create Android artifacts
+  #   type: custom
+  #   outputs:
+  #     build_id: ${{ steps.run_script.outputs.build_id }}
+  #   steps:
+  #     - run_script:
+  #       name: Run scripts
+  #       id: run_script
+  #       outputs: [build_id]
+  #       run: |
+  #         echo "Setting output to 525376a4-2848-42ad-abce-046f352b400e"
+  #         set-output build_id 525376a4-2848-42ad-abce-046f352b400e
+  build_rntester_android:
+    name: Create Android RNTester images
     type: build
+    needs: [build_android]
+    env:
+      ARTIFACTS_BUILD_ID: ${{ needs.build_android.outputs.build_id }}
     params:
-      platform: ios
-      profile: rntester-apple-release
+      platform: android
+      profile: rntester-android
+  build_npm_packages:
+    name: Create NPM packages
+    type: build
+    needs: [build_rntester_android, build_rntester_apple_debug, build_rntester_apple_release]
+    params:
+      platform: android
+      profile: npm-images
+
+

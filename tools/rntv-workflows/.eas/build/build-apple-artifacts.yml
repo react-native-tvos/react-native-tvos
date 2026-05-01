@@ -86,7 +86,7 @@ build:
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
           echo "RNCore Debug framework tarball created."
     - run:
-        name: RNCore prebuild (Release)
+        name: Build RNCore framework (Release)
         working_directory: ../../packages/react-native
         command: |
           node scripts/ios-prebuild -s -f Release
@@ -121,51 +121,11 @@ build:
           echo "Publishing react-native-artifacts to Maven local repository..."
           ./gradlew :packages:react-native:ReactAndroid:external-artifacts:publishAllPublicationsToMavenTempLocalRepository
     - run:
-        name: Build RNTester for iOS using RNCore artifacts
-        working_directory: ../../packages/rn-tester
-        command: |
-          . ../../tools/rntv-workflows/ruby-env.sh
-          mkdir $ROOT_DIR/RNTester-iOS
-          export RCT_USE_RN_DEP=1
-          export RCT_USE_PREBUILT_RNCORE=1
-          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
-          echo "Building RNTester..."
-          echo "Cleaning build directories..."
-          yarn clean-ios
-          echo "Setting up RNTester..."
-          yarn setup-ios-hermes
-          echo "Building RNTester..."
-          yarn build-ios-hermes
-          echo "Build completed."
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app $ROOT_DIR/RNTester-iOS
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-iphonesimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-iOS
-    - run:
-        name: Build RNTester for tvOS using RNCore artifacts
-        working_directory: ../../packages/rn-tester
-        command: |
-          . ../../tools/rntv-workflows/ruby-env.sh
-          mkdir $ROOT_DIR/RNTester-tvOS
-          export RCT_USE_RN_DEP=1
-          export RCT_USE_PREBUILT_RNCORE=1
-          export RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY=file://$ROOT_DIR/maven-local
-          echo "Building RNTester..."
-          echo "Cleaning build directories..."
-          yarn clean-ios
-          echo "Setting up RNTester..."
-          yarn setup-tvos-hermes
-          echo "Building RNTester..."
-          yarn build-tvos-hermes
-          echo "Build completed."
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app $ROOT_DIR/RNTester-tvOS
-          cp -r $ROOT_DIR/packages/rn-tester/build/Build/Products/Debug-appletvsimulator/RNTester.app.dSYM $ROOT_DIR/RNTester-tvOS
-    - run:
         name: Package Apple artifacts
         working_directory: ../..
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
-          (cd RNTester-iOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-iphone.tgz *)
-          (cd RNTester-tvOS; tar zcf $ROOT_DIR/rntester-$REACT_NATIVE_VERSION-appletv.tgz *)
           (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
     - run:
         name: Send Apple artifacts to Sonatype
@@ -183,5 +143,4 @@ build:
           type: build-artifact
           path: |
             react-native-artifacts-*.tgz
-            rntester-*.tgz
 
