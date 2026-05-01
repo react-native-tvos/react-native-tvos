@@ -16,6 +16,39 @@ plugins {
 val reactNativeDirPath = "$rootDir/packages/react-native"
 val isNewArchEnabled = project.property("newArchEnabled") == "true"
 
+// Optional artifacts-mode toggle. When `reactNativeMavenLocalPath` is set (e.g.
+// `-PreactNativeMavenLocalPath=/tmp/maven-local`) RN-Tester consumes the
+// `react-android` AAR from that local Maven repo and the upstream Hermes AAR
+// (via the npm hermes-compiler) instead of compiling React Native from source.
+// When unset, the historical source-build behavior is preserved unchanged.
+val reactNativeMavenLocalPath: String? =
+    project.findProperty("reactNativeMavenLocalPath")?.toString()?.takeIf { it.isNotBlank() }
+val useReactNativeArtifacts: Boolean = reactNativeMavenLocalPath != null
+val reactNativeArtifactVersion: String =
+    project.findProperty("reactNativeArtifactVersion")?.toString() ?: "1000.0.0"
+val reactNativeArtifactGroup: String =
+    project.findProperty("reactNativeArtifactGroup")?.toString() ?: "io.github.react-native-tvos"
+
+if (useReactNativeArtifacts) {
+  repositories {
+    maven { url = uri(file(reactNativeMavenLocalPath!!)) }
+  }
+
+  // Workspace native modules (e.g. react-native-popup-menu-android) declare a
+  // project() dependency on :packages:react-native:ReactAndroid. When rn-tester
+  // autolinks them, that source project rides along into the runtime classpath
+  // alongside our AAR, producing duplicate classes that R8 rejects in release
+  // builds. Redirect any such project reference to the published AAR coordinate
+  // to keep the classpath single-sourced.
+  configurations.all {
+    resolutionStrategy.dependencySubstitution {
+      substitute(project(":packages:react-native:ReactAndroid"))
+          .using(module("$reactNativeArtifactGroup:react-android:$reactNativeArtifactVersion"))
+          .because("artifacts-mode: source ReactAndroid -> published AAR")
+    }
+  }
+}
+
 /**
  * This is the configuration block to customize your React Native Android app. By default you don't
  * need to apply any configuration, just uncomment the lines you need.
@@ -63,7 +96,8 @@ react {
   //   The hermes compiler command to run. By default it is 'hermesc'
   hermesCommand =
       if (
-          project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolean() == true ||
+          useReactNativeArtifacts ||
+              project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolean() == true ||
               project.findProperty("react.internal.useHermesNightly")?.toString()?.toBoolean() ==
                   true
       )
@@ -78,7 +112,12 @@ val enableProguardInReleaseBuilds = true
 
 /** This allows to customized the CMake version used for compiling RN Tester. */
 val cmakeVersion =
-    project(":packages:react-native:ReactAndroid").properties["cmake_version"].toString()
+    if (useReactNativeArtifacts) {
+      // Match ReactAndroid/build.gradle.kts default; avoids referencing the source project.
+      System.getenv("CMAKE_VERSION") ?: "3.30.5"
+    } else {
+      project(":packages:react-native:ReactAndroid").properties["cmake_version"].toString()
+    }
 
 /** Architectures to build native code for. */
 fun reactNativeArchitectures(): List<String> {
@@ -148,11 +187,16 @@ android {
 }
 
 dependencies {
-  // Build React Native from source
-  implementation(project(":packages:react-native:ReactAndroid"))
-
-  // Consume Hermes as built from source.
-  implementation(project(":packages:react-native:ReactAndroid:hermes-engine"))
+  if (useReactNativeArtifacts) {
+    // Consume the prebuilt React Native AAR from the local Maven repo. Hermes is
+    // pulled transitively via the upstream `hermes-android` AAR.
+    implementation("$reactNativeArtifactGroup:react-android:$reactNativeArtifactVersion")
+  } else {
+    // Build React Native from source
+    implementation(project(":packages:react-native:ReactAndroid"))
+    // Consume Hermes as built from source.
+    implementation(project(":packages:react-native:ReactAndroid:hermes-engine"))
+  }
 
   testImplementation(libs.junit)
   implementation(libs.androidx.profileinstaller)
@@ -186,20 +230,27 @@ tasks.withType<KotlinCompile>().configureEach {
 
 afterEvaluate {
   if (
-      (project.findProperty("react.internal.useHermesNightly") == null ||
-          project.findProperty("react.internal.useHermesNightly").toString() == "false") &&
+      !useReactNativeArtifacts &&
+          (project.findProperty("react.internal.useHermesNightly") == null ||
+              project.findProperty("react.internal.useHermesNightly").toString() == "false") &&
           (project.findProperty("react.internal.useHermesStable") == null ||
               project.findProperty("react.internal.useHermesStable").toString() == "false")
   ) {
     // As we're consuming Hermes from source, we want to make sure
-    // `hermesc` is built before we actually invoke the `emit*HermesResource` task
+    // `hermesc` is built before we actually invoke the `emit*HermesResource` task.
+    // In artifacts mode, hermesc comes from `node_modules/hermes-compiler` and the
+    // libhermes.so runtime ships in the upstream hermes-android AAR, so this is a
+    // no-op there.
     tasks
         .getByName("createBundleReleaseJsAndAssets")
         .dependsOn(":packages:react-native:ReactAndroid:hermes-engine:buildHermesC")
   }
 
-  // As RN-Tester consumes the codegen from source, we need to make sure the codegen exists before
-  // we can actually invoke it. It's built by the ReactAndroid:buildCodegenCLI task.
+  // The codegen JS lib (`node_modules/@react-native/codegen/lib/`) is required even in
+  // artifacts mode: the `react-android` AAR doesn't ship it, and Yarn workspaces resolve
+  // `@react-native/codegen` to the workspace package via a symlink, which skips the npm
+  // `prepare` step that would normally pre-build `lib/`. The buildCodegenCLI task runs
+  // the codegen package's build script and is the canonical way to produce that output.
   tasks
       .getByName("generateCodegenSchemaFromJavaScript")
       .dependsOn(":packages:react-native:ReactAndroid:buildCodegenCLI")
