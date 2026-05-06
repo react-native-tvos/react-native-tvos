@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dc3f7d9199a0f5a94b0669de35fef7a4>>
+ * @generated SignedSource<<b3ede580ac94d728a35ad265c1e34ee9>>
  */
 
 /**
@@ -191,6 +191,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableMutationObserverByDefault() override {
+    return false;
+  }
+
   bool enableNativeCSSParsing() override {
     return false;
   }
@@ -263,8 +267,16 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool fuseboxFrameRecordingEnabled() override {
+    return false;
+  }
+
   bool fuseboxNetworkInspectionEnabled() override {
     return true;
+  }
+
+  bool fuseboxScreenshotCaptureEnabled() override {
+    return false;
   }
 
   bool hideOffscreenVirtualViewsOnIOS() override {
@@ -288,6 +300,14 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool preventShadowTreeCommitExhaustion() override {
+    return false;
+  }
+
+  bool redBoxV2Android() override {
+    return false;
+  }
+
+  bool redBoxV2IOS() override {
     return false;
   }
 

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<404cef70d58d40565506ab37a4697da8>>
+ * @generated SignedSource<<825863c146e8a0dfabe809927af1f0ce>>
  */
 
 /**
@@ -105,6 +105,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableModuleArgumentNSNullConversionIOS(): Boolean = false
 
+  override fun enableMutationObserverByDefault(): Boolean = false
+
   override fun enableNativeCSSParsing(): Boolean = false
 
   override fun enableNetworkEventReporting(): Boolean = true
@@ -141,7 +143,11 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun fuseboxEnabledRelease(): Boolean = false
 
+  override fun fuseboxFrameRecordingEnabled(): Boolean = false
+
   override fun fuseboxNetworkInspectionEnabled(): Boolean = true
+
+  override fun fuseboxScreenshotCaptureEnabled(): Boolean = false
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
@@ -154,6 +160,10 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun preparedTextCacheSize(): Double = 200.0
 
   override fun preventShadowTreeCommitExhaustion(): Boolean = false
+
+  override fun redBoxV2Android(): Boolean = false
+
+  override fun redBoxV2IOS(): Boolean = false
 
   override fun shouldPressibilityUseW3CPointerEventsForHover(): Boolean = false
 
