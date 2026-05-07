@@ -142,7 +142,11 @@ if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolea
     )
   }
 
-  hermesSubstitution = "$hermesCompilerVersion-SNAPSHOT" to "Users opted to use hermes nightly"
+  // Upstream Meta publishes daily Hermes nightlies as -SNAPSHOT artifacts to
+  // Sonatype snapshots, so they append the suffix here. The TV fork instead
+  // promotes nightly Hermes V1 versions as proper Maven Central releases
+  // (no -SNAPSHOT), so use the version as-is.
+  hermesSubstitution = hermesCompilerVersion to "Users opted to use hermes nightly"
 } else {
   logger.warn(
       """
