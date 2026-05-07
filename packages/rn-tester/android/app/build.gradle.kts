@@ -188,9 +188,12 @@ android {
 
 dependencies {
   if (useReactNativeArtifacts) {
-    // Consume the prebuilt React Native AAR from the local Maven repo. Hermes is
-    // pulled transitively via the upstream `hermes-android` AAR.
+    // Consume the prebuilt React Native AAR from the local Maven repo.
     implementation("$reactNativeArtifactGroup:react-android:$reactNativeArtifactVersion")
+    // hermes-engine is published alongside react-android (see
+    // tools/rntv-workflows/.eas/build/build-android-artifacts.yml). It
+    // ships libhermesvm.so, which the react-android AAR loads at runtime.
+    implementation("$reactNativeArtifactGroup:hermes-engine:$reactNativeArtifactVersion")
   } else {
     // Build React Native from source
     implementation(project(":packages:react-native:ReactAndroid"))
