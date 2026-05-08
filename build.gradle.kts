@@ -105,6 +105,10 @@ tasks.register("build") {
 tasks.register("publishAllToMavenTempLocal") {
   description = "Publish all the artifacts to be available inside a Maven Local repository on /tmp."
   dependsOn(":packages:react-native:ReactAndroid:publishAllPublicationsToMavenTempLocalRepository")
+  // hermes-engine is published to the local Maven repo for in-repo apps
+  // (e.g. rn-tester) to consume libhermesvm.so via the artifact coordinate.
+  // It is intentionally NOT added to publishAndroidToSonatype below.
+  dependsOn(":packages:react-native:ReactAndroid:hermes-engine:publishAllPublicationsToMavenTempLocalRepository")
 }
 
 tasks.register("publishAndroidToSonatype") {
@@ -117,7 +121,7 @@ var hermesSubstitution: Pair<String, String>? = null
 if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolean() == true) {
   val hermesVersions = java.util.Properties()
   val hermesVersionPropertiesFile =
-      rootProject.file("./packages/react-native/sdks/hermes-engine/version.properties")
+      File("./packages/react-native/sdks/hermes-engine/version.properties")
   hermesVersionPropertiesFile.inputStream().use { hermesVersions.load(it) }
   val selectedHermesVersion = hermesVersions["HERMES_V1_VERSION_NAME"] as String
 
@@ -125,7 +129,7 @@ if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolea
 } else if (
     project.findProperty("react.internal.useHermesNightly")?.toString()?.toBoolean() == true
 ) {
-  val reactNativePackageJson = rootProject.file("./packages/react-native/package.json")
+  val reactNativePackageJson = File("./packages/react-native/package.json")
   val reactNativePackageJsonContent = reactNativePackageJson.readText()
   val packageJson = groovy.json.JsonSlurper().parseText(reactNativePackageJsonContent) as Map<*, *>
 
@@ -138,15 +142,11 @@ if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolea
     )
   }
 
-  val hermesV1Enabled = project.findProperty("hermesV1Enabled")?.toString()?.toBoolean() ?: true
-  // Hermes V1 stable releases are published without the -SNAPSHOT suffix.
-  // Legacy nightly builds use -SNAPSHOT.
-  val resolvedVersion =
-      if (hermesV1Enabled) hermesCompilerVersion else "$hermesCompilerVersion-SNAPSHOT"
-  val reason =
-      if (hermesV1Enabled) "Users opted to use hermes V1 stable"
-      else "Users opted to use hermes nightly"
-  hermesSubstitution = resolvedVersion to reason
+  // Upstream Meta publishes daily Hermes nightlies as -SNAPSHOT artifacts to
+  // Sonatype snapshots, so they append the suffix here. The TV fork instead
+  // promotes nightly Hermes V1 versions as proper Maven Central releases
+  // (no -SNAPSHOT), so use the version as-is.
+  hermesSubstitution = hermesCompilerVersion to "Users opted to use hermes nightly"
 } else {
   logger.warn(
       """

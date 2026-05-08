@@ -188,15 +188,21 @@ android {
 
 dependencies {
   if (useReactNativeArtifacts) {
-    // Consume the prebuilt React Native AAR from the local Maven repo. Hermes is
-    // pulled transitively via the upstream `hermes-android` AAR.
+    // React Native core comes from the prebuilt AAR in the local Maven repo.
     implementation("$reactNativeArtifactGroup:react-android:$reactNativeArtifactVersion")
   } else {
-    // Build React Native from source
+    // Build React Native core from source.
     implementation(project(":packages:react-native:ReactAndroid"))
-    // Consume Hermes as built from source.
-    implementation(project(":packages:react-native:ReactAndroid:hermes-engine"))
   }
+
+  // Hermes is wired the same way in both modes: declare a project dep on the
+  // source :hermes-engine module. The root build.gradle.kts applies an
+  // allprojects dependency-substitution rule that rewrites this reference to
+  // com.facebook.hermes:hermes-android:<hermesCompilerVersion> whenever
+  // react.internal.useHermesNightly or react.internal.useHermesStable is set
+  // — matching the Hermes coordinate the published react-android AAR is
+  // linked against. When neither flag is set, hermes builds from source.
+  implementation(project(":packages:react-native:ReactAndroid:hermes-engine"))
 
   testImplementation(libs.junit)
   implementation(libs.androidx.profileinstaller)

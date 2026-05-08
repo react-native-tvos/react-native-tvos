@@ -56,14 +56,24 @@ build:
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
+          # Full bundle (react-android + hermes-engine) for the EAS build
+          # artifact and local in-repo consumption.
           (cd maven-local; tar zcf $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz *)
+          # Sonatype-bound bundle: react-android only. hermes-engine is
+          # intentionally excluded — we publish it to the local Maven repo
+          # for in-repo apps to consume but do not redistribute it via
+          # Sonatype.
+          (cd maven-local; tar zcf $ROOT_DIR/react-android-$REACT_NATIVE_VERSION.tgz \
+            --exclude='io/github/react-native-tvos/hermes-engine' \
+            --exclude='io/github/react-native-tvos/hermes-engine/*' \
+            *)
     - run:
         name: Send Android artifacts to Sonatype
         working_directory: ../..
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           if [[ "$RNTV_RELEASE_BUILD" == "1" ]]; then
-            npx tsx tools/rntv-workflows/src/sonatype.ts upload $ROOT_DIR/react-android-hermes-$REACT_NATIVE_VERSION.tgz
+            npx tsx tools/rntv-workflows/src/sonatype.ts upload $ROOT_DIR/react-android-$REACT_NATIVE_VERSION.tgz
           else
             echo "Skipping upload to Sonatype because this is not a release build."
           fi
