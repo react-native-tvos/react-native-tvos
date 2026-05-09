@@ -22,6 +22,10 @@
  *     with `--latest=false`. Pass `--latest` to opt back in. `--latest`
  *     and `--prerelease` are mutually exclusive (GitHub does not allow a
  *     prerelease to be marked Latest).
+ *   - Starts a GitHub discussion in the `Announcements` category alongside
+ *     the release. Override with `--discussion-category <name>` or pass
+ *     `--discussion-category none` to skip. Drafts cannot have discussions
+ *     attached, so `--draft` implicitly disables this.
  *
  * Usage (run from the top of the repository):
  *   tools/rntv-workflows/src/create-release.ts [<artifactsDir>] [options]
@@ -47,6 +51,8 @@ const DEFAULT_REPO = 'react-native-tvos/react-native-tvos';
 // segment with a digit immediately after `react-native-`).
 const NPM_TARBALL_VERSION_REGEX = /^react-native(?:-tvos)?-(\d.+?)\.tgz$/;
 
+const DEFAULT_DISCUSSION_CATEGORY = 'Announcements';
+
 type ParsedArgs = {
   artifactsDir: string;
   version?: string;
@@ -54,6 +60,8 @@ type ParsedArgs = {
   repo: string;
   notesFile?: string;
   generateNotes: boolean;
+  // Resolved category name to attach a discussion to, or `null` to skip.
+  discussionCategory: string | null;
   draft: boolean;
   prerelease: boolean;
   latest: boolean;
@@ -78,9 +86,13 @@ Options:
   --repo <owner/name>      GitHub repo (default: ${DEFAULT_REPO})
   --notes-file <path>      Read release notes from a file
   --generate-notes         Auto-generate notes from PRs since the last release
-  --draft                  Create as a draft release
+  --draft                  Create as a draft release (also disables the
+                           release discussion; drafts can't have one)
   --prerelease             Mark as a pre-release (mutually exclusive with --latest)
   --latest                 Mark as the "Latest" release (default: false)
+  --discussion-category <name>
+                           Start a release discussion in this category
+                           (default: ${DEFAULT_DISCUSSION_CATEGORY}). Pass "none" to skip.
   --dry-run                Print what would be created; don't call gh
   --help, -h               Show this help`);
 }
@@ -96,6 +108,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   let prerelease = false;
   let latest = false;
   let dryRun = false;
+  let discussionCategoryRaw: string = DEFAULT_DISCUSSION_CATEGORY;
 
   const requireValue = (flag: string, value: string | undefined): string => {
     if (!value) {
@@ -136,6 +149,9 @@ function parseArgs(argv: string[]): ParsedArgs {
       case '--latest':
         latest = true;
         break;
+      case '--discussion-category':
+        discussionCategoryRaw = requireValue(arg, argv[++i]);
+        break;
       case '--dry-run':
         dryRun = true;
         break;
@@ -158,6 +174,14 @@ function parseArgs(argv: string[]): ParsedArgs {
     throw new Error('--latest and --prerelease are mutually exclusive.');
   }
 
+  // gh release create rejects --discussion-category on draft releases. Auto-
+  // suppress so users don't have to pass two flags to make a draft work, and
+  // honor an explicit "none" sentinel as opt-out for non-draft releases.
+  const isNoneSentinel =
+    discussionCategoryRaw.toLowerCase() === 'none' ||
+    discussionCategoryRaw === '';
+  const discussionCategory = draft || isNoneSentinel ? null : discussionCategoryRaw;
+
   return {
     artifactsDir: path.resolve(artifactsDir ?? process.cwd()),
     version,
@@ -165,6 +189,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     repo,
     notesFile,
     generateNotes,
+    discussionCategory,
     draft,
     prerelease,
     latest,
@@ -250,6 +275,9 @@ async function executeScriptAsync(): Promise<void> {
   // existing "Latest" release isn't accidentally displaced; pass --latest
   // to opt back in.
   ghArgs.push(args.latest ? '--latest=true' : '--latest=false');
+  if (args.discussionCategory) {
+    ghArgs.push('--discussion-category', args.discussionCategory);
+  }
   ghArgs.push(...assets);
 
   if (args.dryRun) {
