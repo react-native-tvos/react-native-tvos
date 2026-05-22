@@ -177,9 +177,13 @@ component View(
       delete resolvedProps.isTVSelectable;
     }
 
-    // Views with scrollSnapAlign must not be flattened by Fabric, otherwise
-    // the prop never reaches the native view and scroll snapping breaks.
-    if (resolvedProps.scrollSnapAlign != null) {
+    // Views with scrollSnapAlign or scrollSnapOffset must not be flattened by
+    // Fabric, otherwise the prop never reaches the native view and scroll
+    // snapping breaks.
+    if (
+      resolvedProps.scrollSnapAlign != null ||
+      resolvedProps.scrollSnapOffset != null
+    ) {
       resolvedProps.collapsable = false;
     }
 

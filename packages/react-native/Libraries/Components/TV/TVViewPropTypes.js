@@ -131,4 +131,13 @@ export type TVViewProps = $ReadOnly<{|
    */
   scrollSnapAlign?: ?('start' | 'center' | 'end'),
 
+  /**
+   * Per-item scroll snap offset in dp/pt. When set on a View inside a
+   * ScrollView with `snapToAlignment="item"`, the focus engine lands the
+   * View's top at viewport y = scrollSnapOffset. Standalone alternative to
+   * `scrollSnapAlign` — set one or the other; if both are set on the same
+   * View, `scrollSnapOffset` takes precedence.
+   */
+  scrollSnapOffset?: ?number,
+
 |}>;

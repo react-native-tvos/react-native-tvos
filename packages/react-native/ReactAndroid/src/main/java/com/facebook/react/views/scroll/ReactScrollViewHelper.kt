@@ -576,27 +576,67 @@ public object ReactScrollViewHelper {
 
   /**
    * Walks up the view hierarchy from the focused view to find a ReactViewGroup with
-   * scrollSnapAlign set. Returns a Pair of (snapTarget, alignment) or null if not found.
+   * either scrollSnapAlign or scrollSnapOffset set. Returns a Triple of (snapTarget,
+   * alignment, offsetPx) or null if neither marker was found. Exactly one of
+   * alignment/offsetPx is non-null on return.
+   *
+   * Walk is inner→outer, latest marker wins. On a single view declaring both,
+   * scrollSnapOffset wins as the more specific config.
    *
    * Shared by [ReactScrollView] and [ReactHorizontalScrollView].
    */
   @JvmStatic
-  public fun findScrollSnapAlign(focused: View, scrollView: ViewGroup): Pair<View, String>? {
+  public fun findScrollSnap(focused: View, scrollView: ViewGroup): Triple<View, String?, Int?>? {
     var view: View? = focused
     var snapTarget: View? = null
     var alignment: String? = null
+    var offset: Int? = null
     while (view != null && view !== scrollView) {
       if (view is ReactViewGroup) {
-        val snap = view.scrollSnapAlign
-        if (snap != null) {
-          alignment = snap
+        val o = view.scrollSnapOffset
+        val a = view.scrollSnapAlign
+        if (o != null) {
+          offset = o
+          alignment = null
+          snapTarget = view
+        } else if (a != null) {
+          alignment = a
+          offset = null
           snapTarget = view
         }
       }
       val parent = view.parent
       view = if (parent is View) parent else null
     }
-    return if (alignment != null && snapTarget != null) Pair(snapTarget, alignment) else null
+    return if (snapTarget != null && (alignment != null || offset != null))
+        Triple(snapTarget, alignment, offset) else null
+  }
+
+  /**
+   * Computes the target scroll offset for the per-item scrollSnapOffset path:
+   * land the snap target's leading edge at `snapOffset` pixels from the viewport origin.
+   *
+   * Returns the clamped target offset.
+   *
+   * Shared by [ReactScrollView] and [ReactHorizontalScrollView].
+   *
+   * @param focusedStart the start coordinate of the snap target in scroll view coordinates
+   * @param snapOffset the per-item pixel offset from the viewport origin
+   * @param snapInterval the snap interval (0 if not set)
+   * @param maxScrollOffset the maximum scroll offset for clamping
+   */
+  @JvmStatic
+  public fun computeScrollSnapTargetForOffset(
+      focusedStart: Int,
+      snapOffset: Int,
+      snapInterval: Int,
+      maxScrollOffset: Int,
+  ): Int {
+    var targetOffset = focusedStart - snapOffset
+    if (snapInterval > 0) {
+      targetOffset = (Math.floor(targetOffset.toDouble() / snapInterval) * snapInterval).toInt()
+    }
+    return Math.max(0, Math.min(targetOffset, maxScrollOffset))
   }
 
   /**

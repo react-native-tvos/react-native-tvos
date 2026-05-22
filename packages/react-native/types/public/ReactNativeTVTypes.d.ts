@@ -31,6 +31,15 @@ declare module 'react-native' {
   scrollSnapAlign?: 'start' | 'center' | 'end' | undefined;
 
   /**
+   * Per-item scroll snap offset in dp/pt. When set, the focus engine lands
+   * this view's top at viewport y = scrollSnapOffset. Standalone alternative
+   * to `scrollSnapAlign`; takes precedence if both are set on the same View.
+   *
+   * @platform tv
+   */
+  scrollSnapOffset?: number | undefined;
+
+  /**
    * Android TV only prop
    */
   tvFocusable?: boolean | undefined,

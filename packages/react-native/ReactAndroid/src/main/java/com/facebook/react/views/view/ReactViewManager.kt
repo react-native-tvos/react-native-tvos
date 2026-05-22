@@ -192,6 +192,11 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     view.scrollSnapAlign = value
   }
 
+  @ReactProp(name = "scrollSnapOffset", defaultFloat = Float.NaN)
+  public open fun setScrollSnapOffset(view: ReactViewGroup, value: Float) {
+    view.scrollSnapOffset = if (value.isNaN()) null else value.dpToPx().toInt()
+  }
+
   @ReactProp(name = ViewProps.BACKGROUND_IMAGE, customType = "BackgroundImage")
   public open fun setBackgroundImage(view: ReactViewGroup, backgroundImage: ReadableArray?) {
     if (backgroundImage != null && backgroundImage.size() > 0) {

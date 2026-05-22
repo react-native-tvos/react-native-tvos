@@ -578,28 +578,38 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   }
 
   /**
-   * Attempts to scroll-snap to the focused child based on snapToAlignment/scrollSnapAlign.
-   * Returns true if snap scrolling was performed, false otherwise.
+   * Attempts to scroll-snap to the focused child based on snapToAlignment/scrollSnapAlign
+   * or scrollSnapOffset. Returns true if snap scrolling was performed, false otherwise.
    */
   private boolean tryScrollSnapToChild(View focused) {
     if (mSnapToAlignment != SNAP_ALIGNMENT_ITEM) {
       return false;
     }
 
-    kotlin.Pair<View, String> result = ReactScrollViewHelper.findScrollSnapAlign(focused, this);
+    kotlin.Triple<View, String, Integer> result =
+        ReactScrollViewHelper.findScrollSnap(focused, this);
     if (result == null) {
       return false;
     }
 
     View snapTarget = result.getFirst();
     String alignment = result.getSecond();
+    Integer snapOffset = result.getThird();
 
     Rect rect = new Rect();
     snapTarget.getDrawingRect(rect);
     offsetDescendantRectToMyCoords(snapTarget, rect);
 
-    int viewportWidth = getWidth() - getPaddingLeft() - getPaddingRight();
     int maxScrollX = Math.max(0, computeHorizontalScrollRange() - getWidth());
+
+    if (snapOffset != null) {
+      int targetOffset = ReactScrollViewHelper.computeScrollSnapTargetForOffset(
+          rect.left, snapOffset, mSnapInterval, maxScrollX);
+      reactSmoothScrollTo(targetOffset, getScrollY());
+      return true;
+    }
+
+    int viewportWidth = getWidth() - getPaddingLeft() - getPaddingRight();
 
     Integer targetOffset = ReactScrollViewHelper.computeScrollSnapOffset(
         rect.left, rect.right, viewportWidth, alignment, mSnapInterval, mSnapToItemPadding, maxScrollX);
