@@ -31,6 +31,7 @@ export interface PressableAndroidRippleConfig {
   borderless?: null | boolean | undefined;
   radius?: null | number | undefined;
   foreground?: null | boolean | undefined;
+  alpha?: null | number | undefined;
 }
 
 export interface PressableProps

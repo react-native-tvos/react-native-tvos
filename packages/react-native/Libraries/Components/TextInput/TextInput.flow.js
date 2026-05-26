@@ -1057,6 +1057,7 @@ type TextInputBaseProps = Readonly<{
   textAlign?: ?('left' | 'center' | 'right'),
 }>;
 
+/** @build-types emit-as-interface Uniwind compatibility */
 export type TextInputProps = Readonly<{
   ...Omit<ViewProps, 'style' | 'experimental_accessibilityOrder'>,
   ...TextInputIOSProps,

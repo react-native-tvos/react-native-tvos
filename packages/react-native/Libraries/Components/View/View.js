@@ -11,7 +11,6 @@
 import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {ViewProps} from './ViewPropTypes';
 
-import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import TextAncestorContext from '../../Text/TextAncestorContext';
 import Platform from '../../Utilities/Platform';
 import useMergeRefs from '../../Utilities/useMergeRefs';
@@ -59,60 +58,83 @@ component View(
 
   const mergedRef = useMergeRefs(setLocalRef, ref);
 
-  let resolvedProps = props;
-  if (!ReactNativeFeatureFlags.enableNativeViewPropTransformations()) {
-    const {
-      accessibilityState,
-      accessibilityValue,
-      isTVSelectable,
-      focusable,
-      'aria-busy': ariaBusy,
-      'aria-checked': ariaChecked,
-      'aria-disabled': ariaDisabled,
-      'aria-expanded': ariaExpanded,
-      'aria-hidden': ariaHidden,
-      'aria-label': ariaLabel,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-live': ariaLive,
-      'aria-selected': ariaSelected,
-      'aria-valuemax': ariaValueMax,
-      'aria-valuemin': ariaValueMin,
-      'aria-valuenow': ariaValueNow,
-      'aria-valuetext': ariaValueText,
-      id,
-      tabIndex,
-      ...otherProps
-    } = props;
+  const {
+    accessibilityState,
+    accessibilityValue,
+    isTVSelectable,
+    focusable,
+    'aria-busy': ariaBusy,
+    'aria-checked': ariaChecked,
+    'aria-disabled': ariaDisabled,
+    'aria-expanded': ariaExpanded,
+    'aria-hidden': ariaHidden,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-live': ariaLive,
+    'aria-selected': ariaSelected,
+    'aria-valuemax': ariaValueMax,
+    'aria-valuemin': ariaValueMin,
+    'aria-valuenow': ariaValueNow,
+    'aria-valuetext': ariaValueText,
+    id,
+    tabIndex,
+    ...otherProps
+  } = props;
 
-    const processedProps = otherProps as {...ViewProps};
+  const resolvedProps = otherProps as {...ViewProps};
 
-    const parsedAriaLabelledBy = ariaLabelledBy?.split(/\s*,\s*/g);
-    if (parsedAriaLabelledBy !== undefined) {
-      processedProps.accessibilityLabelledBy = parsedAriaLabelledBy;
+  const parsedAriaLabelledBy = ariaLabelledBy?.split(/\s*,\s*/g);
+  if (parsedAriaLabelledBy !== undefined) {
+    resolvedProps.accessibilityLabelledBy = parsedAriaLabelledBy;
+  }
+
+  if (ariaLabel !== undefined) {
+    resolvedProps.accessibilityLabel = ariaLabel;
+  }
+
+  if (ariaLive !== undefined) {
+    resolvedProps.accessibilityLiveRegion =
+      ariaLive === 'off' ? 'none' : ariaLive;
+  }
+
+  if (ariaHidden !== undefined) {
+    resolvedProps.accessibilityElementsHidden = ariaHidden;
+    if (ariaHidden === true) {
+      resolvedProps.importantForAccessibility = 'no-hide-descendants';
     }
+  }
 
-    if (ariaLabel !== undefined) {
-      processedProps.accessibilityLabel = ariaLabel;
-    }
+  if (id !== undefined) {
+    resolvedProps.nativeID = id;
+  }
 
-    if (ariaLive !== undefined) {
-      processedProps.accessibilityLiveRegion =
-        ariaLive === 'off' ? 'none' : ariaLive;
-    }
+  if (tabIndex !== undefined) {
+    resolvedProps.focusable = !tabIndex;
+  }
 
-    if (ariaHidden !== undefined) {
-      processedProps.accessibilityElementsHidden = ariaHidden;
-      if (ariaHidden === true) {
-        processedProps.importantForAccessibility = 'no-hide-descendants';
-      }
-    }
+  if (
+    accessibilityState != null ||
+    ariaBusy != null ||
+    ariaChecked != null ||
+    ariaDisabled != null ||
+    ariaExpanded != null ||
+    ariaSelected != null
+  ) {
+    resolvedProps.accessibilityState = {
+      busy: ariaBusy ?? accessibilityState?.busy,
+      checked: ariaChecked ?? accessibilityState?.checked,
+      disabled: ariaDisabled ?? accessibilityState?.disabled,
+      expanded: ariaExpanded ?? accessibilityState?.expanded,
+      selected: ariaSelected ?? accessibilityState?.selected,
+    };
+  }
 
     if (id !== undefined) {
-      processedProps.nativeID = id;
+      resolvedProps.nativeID = id;
     }
 
     if (tabIndex !== undefined) {
-      processedProps.focusable = !tabIndex;
+      resolvedProps.focusable = !tabIndex;
     }
 
     if (
@@ -123,7 +145,7 @@ component View(
       ariaExpanded != null ||
       ariaSelected != null
     ) {
-      processedProps.accessibilityState = {
+      resolvedProps.accessibilityState = {
         busy: ariaBusy ?? accessibilityState?.busy,
         checked: ariaChecked ?? accessibilityState?.checked,
         disabled: ariaDisabled ?? accessibilityState?.disabled,
@@ -139,7 +161,7 @@ component View(
       ariaValueNow != null ||
       ariaValueText != null
     ) {
-      processedProps.accessibilityValue = {
+      resolvedProps.accessibilityValue = {
         max: ariaValueMax ?? accessibilityValue?.max,
         min: ariaValueMin ?? accessibilityValue?.min,
         now: ariaValueNow ?? accessibilityValue?.now,
@@ -148,21 +170,18 @@ component View(
     }
 
     if (Platform.OS === 'ios') {
-      processedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
-      delete processedProps.focusable;
+      resolvedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
+      delete resolvedProps.focusable;
     } else {
-      processedProps.focusable = focusable ?? false;
-      delete processedProps.isTVSelectable;
+      resolvedProps.focusable = focusable ?? false;
+      delete resolvedProps.isTVSelectable;
     }
 
     // Views with scrollSnapAlign must not be flattened by Fabric, otherwise
     // the prop never reaches the native view and scroll snapping breaks.
-    if (processedProps.scrollSnapAlign != null) {
-      processedProps.collapsable = false;
+    if (resolvedProps.scrollSnapAlign != null) {
+      resolvedProps.collapsable = false;
     }
-
-    resolvedProps = processedProps;
-  }
 
   const actualView =
     ref == null ? (

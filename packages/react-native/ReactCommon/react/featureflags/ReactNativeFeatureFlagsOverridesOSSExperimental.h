@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<887a3ac5f8a93cc5ae5c8d01ec1d5e46>>
+ * @generated SignedSource<<a6828a75f6c05923ad06afc7727c38e1>>
  */
 
 /**
@@ -31,15 +31,11 @@ class ReactNativeFeatureFlagsOverridesOSSExperimental : public ReactNativeFeatur
     return true;
   }
 
-  bool enableAccessibilityOrder() override {
+  bool enableRuntimeSchedulerQueueClearingOnError() override {
     return true;
   }
 
   bool enableSchedulerDelegateInvalidation() override {
-    return true;
-  }
-
-  bool enableSwiftUIBasedFilters() override {
     return true;
   }
 

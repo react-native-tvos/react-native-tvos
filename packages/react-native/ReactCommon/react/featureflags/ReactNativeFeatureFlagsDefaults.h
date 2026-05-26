@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a766c8f5fb2e531712b9e2a4eec08800>>
+ * @generated SignedSource<<ec642912de24b23bde9b4877bb763186>>
  */
 
 /**
@@ -103,10 +103,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableEagerMainQueueModulesOnIOS() override {
-    return false;
-  }
-
   bool enableEagerRootViewAttachment() override {
     return false;
   }
@@ -120,10 +116,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableFabricLogs() override {
-    return false;
-  }
-
-  bool enableFabricRenderer() override {
     return false;
   }
 
@@ -187,10 +179,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableNativeViewPropTransformations() override {
-    return false;
-  }
-
   bool enableNetworkEventReporting() override {
     return true;
   }
@@ -200,6 +188,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enablePropsUpdateReconciliationAndroid() override {
+    return false;
+  }
+
+  bool enableRuntimeSchedulerQueueClearingOnError() override {
     return false;
   }
 
@@ -239,15 +231,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableVirtualViewDebugFeatures() override {
-    return false;
-  }
-
   bool fixDifferentiatorParentTagForUnflattenCase() override {
-    return false;
-  }
-
-  bool fixFindShadowNodeByTagRaceCondition() override {
     return false;
   }
 
@@ -280,6 +264,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool hideOffscreenVirtualViewsOnIOS() override {
+    return false;
+  }
+
+  bool optimizedAnimatedPropUpdates() override {
     return false;
   }
 
@@ -347,10 +335,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return true;
   }
 
-  bool useLISAlgorithmInDifferentiator() override {
-    return false;
-  }
-
   bool useNativeViewConfigsInBridgelessMode() override {
     return false;
   }
@@ -375,19 +359,15 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool useTurboModules() override {
-    return false;
-  }
-
-  bool useUnorderedMapInDifferentiator() override {
-    return false;
-  }
-
   double viewCullingOutsetRatio() override {
     return 0.0;
   }
 
   bool viewTransitionEnabled() override {
+    return false;
+  }
+
+  bool viewTransitionUseHardwareBitmapAndroid() override {
     return false;
   }
 

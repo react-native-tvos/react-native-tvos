@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1eca66b21554b00725f2a9be894a0db9>>
+ * @generated SignedSource<<f930d8c04c79ad156af580f2818fef24>>
  */
 
 /**
@@ -109,7 +109,7 @@ public object ReactNativeFeatureFlags {
   public fun enableAndroidTextMeasurementOptimizations(): Boolean = accessor.enableAndroidTextMeasurementOptimizations()
 
   /**
-   * Feature flag to enable the new bridgeless architecture. Note: Enabling this will force enable the following flags: `useTurboModules` & `enableFabricRenderer`.
+   * Feature flag to enable the new bridgeless architecture.
    */
   @JvmStatic
   public fun enableBridgelessArchitecture(): Boolean = accessor.enableBridgelessArchitecture()
@@ -145,12 +145,6 @@ public object ReactNativeFeatureFlags {
   public fun enableDoubleMeasurementFixAndroid(): Boolean = accessor.enableDoubleMeasurementFixAndroid()
 
   /**
-   * This infra allows native modules to initialize on the main thread, during React Native init.
-   */
-  @JvmStatic
-  public fun enableEagerMainQueueModulesOnIOS(): Boolean = accessor.enableEagerMainQueueModulesOnIOS()
-
-  /**
    * Feature flag to configure eager attachment of the root view/initialisation of the JS code.
    */
   @JvmStatic
@@ -173,12 +167,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableFabricLogs(): Boolean = accessor.enableFabricLogs()
-
-  /**
-   * Enables the use of the Fabric renderer in the whole app.
-   */
-  @JvmStatic
-  public fun enableFabricRenderer(): Boolean = accessor.enableFabricRenderer()
 
   /**
    * Enables font scale changes updating layout for measurable nodes.
@@ -271,12 +259,6 @@ public object ReactNativeFeatureFlags {
   public fun enableNativeCSSParsing(): Boolean = accessor.enableNativeCSSParsing()
 
   /**
-   * When enabled, View.js passes aria-*, id, and tabIndex props directly to native, relying on C++ prop parsing instead of JS-side transformations.
-   */
-  @JvmStatic
-  public fun enableNativeViewPropTransformations(): Boolean = accessor.enableNativeViewPropTransformations()
-
-  /**
    * Enable network event reporting hooks in each native platform through `NetworkReporter` (Web Perf APIs + CDP). This flag should be combined with `fuseboxNetworkInspectionEnabled` to enable Network CDP debugging.
    */
   @JvmStatic
@@ -293,6 +275,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enablePropsUpdateReconciliationAndroid(): Boolean = accessor.enablePropsUpdateReconciliationAndroid()
+
+  /**
+   * When enabled, RuntimeScheduler_Modern clears pending tasks and rendering updates before handling an error.
+   */
+  @JvmStatic
+  public fun enableRuntimeSchedulerQueueClearingOnError(): Boolean = accessor.enableRuntimeSchedulerQueueClearingOnError()
 
   /**
    * Gates a defensive guard around Scheduler::uiManagerDidDispatchCommand and uiManagerDidFinishTransaction that prevents queued rendering-update lambdas from dereferencing the SchedulerDelegate after it has been destroyed (use-after-free).
@@ -349,22 +337,10 @@ public object ReactNativeFeatureFlags {
   public fun enableVirtualViewContainerStateExperimental(): Boolean = accessor.enableVirtualViewContainerStateExperimental()
 
   /**
-   * Enables VirtualView debug features such as logging and overlays.
-   */
-  @JvmStatic
-  public fun enableVirtualViewDebugFeatures(): Boolean = accessor.enableVirtualViewDebugFeatures()
-
-  /**
    * Fix incorrect parentTag passed as parentTagForUpdate in the unflatten-unflatten branch of calculateShadowViewMutationsFlattener, which causes UPDATE mutations to reference a parent being created in the same batch.
    */
   @JvmStatic
   public fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = accessor.fixDifferentiatorParentTagForUnflattenCase()
-
-  /**
-   * Fix a use-after-free race condition in findShadowNodeByTag_DEPRECATED by using getCurrentRevision() instead of tryCommit() with a raw pointer.
-   */
-  @JvmStatic
-  public fun fixFindShadowNodeByTagRaceCondition(): Boolean = accessor.fixFindShadowNodeByTagRaceCondition()
 
   /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
@@ -413,6 +389,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun hideOffscreenVirtualViewsOnIOS(): Boolean = accessor.hideOffscreenVirtualViewsOnIOS()
+
+  /**
+   * When enabled, uses optimized platform-specific paths to apply animated props synchronously. On Android, this uses a batched int/double buffer protocol with a single JNI call. On iOS, this passes AnimatedProps directly through the delegate chain and applies them via cloneProps, avoiding the folly::dynamic round-trip.
+   */
+  @JvmStatic
+  public fun optimizedAnimatedPropUpdates(): Boolean = accessor.optimizedAnimatedPropUpdates()
 
   /**
    * Override props at mounting with synchronously mounted (i.e. direct manipulation) props from Native Animated.
@@ -511,12 +493,6 @@ public object ReactNativeFeatureFlags {
   public fun useFabricInterop(): Boolean = accessor.useFabricInterop()
 
   /**
-   * Use Longest Increasing Subsequence algorithm in the Differentiator to minimize REMOVE/INSERT mutations during child list reconciliation.
-   */
-  @JvmStatic
-  public fun useLISAlgorithmInDifferentiator(): Boolean = accessor.useLISAlgorithmInDifferentiator()
-
-  /**
    * When enabled, the native view configs are used in bridgeless mode.
    */
   @JvmStatic
@@ -553,18 +529,6 @@ public object ReactNativeFeatureFlags {
   public fun useTurboModuleInterop(): Boolean = accessor.useTurboModuleInterop()
 
   /**
-   * When enabled, NativeModules will be executed by using the TurboModule system
-   */
-  @JvmStatic
-  public fun useTurboModules(): Boolean = accessor.useTurboModules()
-
-  /**
-   * Use std::unordered_map instead of TinyMap in the Differentiator for improved lookup performance.
-   */
-  @JvmStatic
-  public fun useUnorderedMapInDifferentiator(): Boolean = accessor.useUnorderedMapInDifferentiator()
-
-  /**
    * Outset the culling context frame with the provided ratio. The culling context frame size will be outset by width * ratio on the left and right, and height * ratio on the top and bottom.
    */
   @JvmStatic
@@ -575,6 +539,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun viewTransitionEnabled(): Boolean = accessor.viewTransitionEnabled()
+
+  /**
+   * Use hardware bitmaps for view transition snapshots on Android.
+   */
+  @JvmStatic
+  public fun viewTransitionUseHardwareBitmapAndroid(): Boolean = accessor.viewTransitionUseHardwareBitmapAndroid()
 
   /**
    * Initial prerender ratio for VirtualView.

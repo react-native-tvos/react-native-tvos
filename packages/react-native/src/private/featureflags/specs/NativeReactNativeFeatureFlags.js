@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<1fe579457854f95d09dd24e4578dbc65>>
+ * @generated SignedSource<<b939aa5058cb1f40cfd7ede879366bb5>>
  * @flow strict
  * @noformat
  */
@@ -44,12 +44,10 @@ export interface Spec extends TurboModule {
   +enableDestroyShadowTreeRevisionAsync?: () => boolean;
   +enableDifferentiatorMutationVectorPreallocation?: () => boolean;
   +enableDoubleMeasurementFixAndroid?: () => boolean;
-  +enableEagerMainQueueModulesOnIOS?: () => boolean;
   +enableEagerRootViewAttachment?: () => boolean;
   +enableExclusivePropsUpdateAndroid?: () => boolean;
   +enableFabricCommitBranching?: () => boolean;
   +enableFabricLogs?: () => boolean;
-  +enableFabricRenderer?: () => boolean;
   +enableFontScaleChangesUpdatingLayout?: () => boolean;
   +enableIOSTextBaselineOffsetPerLine?: () => boolean;
   +enableIOSViewClipToPaddingBox?: () => boolean;
@@ -65,10 +63,10 @@ export interface Spec extends TurboModule {
   +enableModuleArgumentNSNullConversionIOS?: () => boolean;
   +enableMutationObserverByDefault?: () => boolean;
   +enableNativeCSSParsing?: () => boolean;
-  +enableNativeViewPropTransformations?: () => boolean;
   +enableNetworkEventReporting?: () => boolean;
   +enablePreparedTextLayout?: () => boolean;
   +enablePropsUpdateReconciliationAndroid?: () => boolean;
+  +enableRuntimeSchedulerQueueClearingOnError?: () => boolean;
   +enableSchedulerDelegateInvalidation?: () => boolean;
   +enableSwiftUIBasedFilters?: () => boolean;
   +enableViewCulling?: () => boolean;
@@ -78,9 +76,7 @@ export interface Spec extends TurboModule {
   +enableViewRecyclingForText?: () => boolean;
   +enableViewRecyclingForView?: () => boolean;
   +enableVirtualViewContainerStateExperimental?: () => boolean;
-  +enableVirtualViewDebugFeatures?: () => boolean;
   +fixDifferentiatorParentTagForUnflattenCase?: () => boolean;
-  +fixFindShadowNodeByTagRaceCondition?: () => boolean;
   +fixMappingOfEventPrioritiesBetweenFabricAndReact?: () => boolean;
   +fixYogaFlexBasisFitContentInMainAxis?: () => boolean;
   +fuseboxAssertSingleHostState?: () => boolean;
@@ -89,6 +85,7 @@ export interface Spec extends TurboModule {
   +fuseboxNetworkInspectionEnabled?: () => boolean;
   +fuseboxScreenshotCaptureEnabled?: () => boolean;
   +hideOffscreenVirtualViewsOnIOS?: () => boolean;
+  +optimizedAnimatedPropUpdates?: () => boolean;
   +overrideBySynchronousMountPropsAtMountingAndroid?: () => boolean;
   +perfIssuesEnabled?: () => boolean;
   +perfMonitorV2Enabled?: () => boolean;
@@ -105,17 +102,15 @@ export interface Spec extends TurboModule {
   +updateRuntimeShadowNodeReferencesOnCommitThread?: () => boolean;
   +useAlwaysAvailableJSErrorHandling?: () => boolean;
   +useFabricInterop?: () => boolean;
-  +useLISAlgorithmInDifferentiator?: () => boolean;
   +useNativeViewConfigsInBridgelessMode?: () => boolean;
   +useNestedScrollViewAndroid?: () => boolean;
   +useOptimizedViewRegistryOnAndroid?: () => boolean;
   +useSharedAnimatedBackend?: () => boolean;
   +useTraitHiddenOnAndroid?: () => boolean;
   +useTurboModuleInterop?: () => boolean;
-  +useTurboModules?: () => boolean;
-  +useUnorderedMapInDifferentiator?: () => boolean;
   +viewCullingOutsetRatio?: () => number;
   +viewTransitionEnabled?: () => boolean;
+  +viewTransitionUseHardwareBitmapAndroid?: () => boolean;
   +virtualViewPrerenderRatio?: () => number;
 }
 

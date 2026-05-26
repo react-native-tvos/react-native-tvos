@@ -9,7 +9,6 @@ package com.facebook.react.fabric.mounting
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.os.SystemClock
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
@@ -626,14 +625,15 @@ internal constructor(
 
   public fun storeSynchronousMountPropsOverride(reactTag: Int, props: ReadableMap): Unit {
     if (ReactNativeFeatureFlags.overrideBySynchronousMountPropsAtMountingAndroid()) {
-      val propsMap = getMapFromPropsReadableMap(props)
-      var synchronousMountProps = tagToSynchronousMountProps[reactTag]
-      if (synchronousMountProps != null) {
-        synchronousMountProps.putAll(propsMap)
+      val propsMap = getAnimatedPropsMap(props)
+      val synchronousMountProps = tagToSynchronousMountProps[reactTag] ?: mutableMapOf()
+      clearAnimatedNullPropsMapKeys(props, synchronousMountProps)
+      synchronousMountProps.putAll(propsMap)
+      if (synchronousMountProps.isEmpty()) {
+        tagToSynchronousMountProps.remove(reactTag)
       } else {
-        synchronousMountProps = propsMap
+        tagToSynchronousMountProps[reactTag] = synchronousMountProps
       }
-      tagToSynchronousMountProps[reactTag] = synchronousMountProps
     }
   }
 
@@ -899,7 +899,16 @@ internal constructor(
       return
     }
 
-    val viewState = getViewState(reactTag)
+    val viewState = getNullableViewState(reactTag)
+    if (viewState == null) {
+      ReactSoftExceptionLogger.logSoftException(
+          ReactSoftExceptionLogger.Categories.SURFACE_MOUNTING_MANAGER_MISSING_VIEWSTATE,
+          ReactNoCrashSoftException(
+              "Unable to find viewState for tag $reactTag for updateOverflowInset"
+          ),
+      )
+      return
+    }
     // Do not layout Root Views
     if (viewState.isRoot) {
       return
@@ -965,21 +974,18 @@ internal constructor(
           }
           vs
         }
+
     val previousEventEmitterWrapper = viewState.eventEmitter
-    viewState.eventEmitter = eventEmitter
+    synchronized(viewState) {
+      viewState.eventEmitter = eventEmitter
+      // Invoke pending events queued to the view state
+      viewState.pendingEventQueue?.forEach { it.dispatch(eventEmitter) }
+      viewState.pendingEventQueue = null
+    }
 
     // Immediately destroy native side of wrapper, instead of waiting for Java GC.
     if (previousEventEmitterWrapper != eventEmitter && previousEventEmitterWrapper != null) {
       previousEventEmitterWrapper.destroy()
-    }
-
-    val pendingEventQueue = viewState.pendingEventQueue
-    if (pendingEventQueue != null) {
-      // Invoke pending event queued to the view state
-      for (viewEvent in pendingEventQueue) {
-        viewEvent.dispatch(eventEmitter)
-      }
-      viewState.pendingEventQueue = null
     }
   }
 
@@ -1191,57 +1197,6 @@ internal constructor(
   }
 
   @AnyThread
-  public fun enqueuePendingEvent(
-      reactTag: Int,
-      eventName: String,
-      canCoalesceEvent: Boolean,
-      params: WritableMap?,
-      @EventCategoryDef eventCategory: Int,
-  ): Unit {
-    enqueuePendingEvent(
-        reactTag,
-        eventName,
-        canCoalesceEvent,
-        params,
-        eventCategory,
-        SystemClock.uptimeMillis(),
-    )
-  }
-
-  @AnyThread
-  public fun enqueuePendingEvent(
-      reactTag: Int,
-      eventName: String,
-      canCoalesceEvent: Boolean,
-      params: WritableMap?,
-      @EventCategoryDef eventCategory: Int,
-      eventTimestamp: Long,
-  ): Unit {
-    // When the surface stopped we will reset the view state map. We are not going to enqueue
-    // pending events as they are not expected to be dispatched anyways.
-    val viewState = registryGet(reactTag)
-
-    if (viewState == null) {
-      // Cannot queue event without view state. Do nothing here.
-      return
-    }
-
-    val viewEvent =
-        PendingViewEvent(eventName, params, eventCategory, canCoalesceEvent, eventTimestamp)
-    UiThreadUtil.runOnUiThread {
-      val eventEmitter = viewState.eventEmitter
-      if (eventEmitter != null) {
-        viewEvent.dispatch(eventEmitter)
-      } else {
-        val queue =
-            viewState.pendingEventQueue
-                ?: LinkedList<PendingViewEvent>().also { viewState.pendingEventQueue = it }
-        queue.add(viewEvent)
-      }
-    }
-  }
-
-  @AnyThread
   internal fun dispatchEvent(
       reactTag: Int,
       eventName: String,
@@ -1252,31 +1207,43 @@ internal constructor(
   ) {
     val viewState = registryGet(reactTag)
     if (viewState == null) {
-      // This can happen if the view has disappeared from the screen (because of async events)
       FLog.i(TAG, "Unable to invoke event: %s for reactTag: %d", eventName, reactTag)
       return
     }
 
-    val eventEmitter = viewState.eventEmitter
-    if (eventEmitter == null) {
-      // The view is pre-allocated and created. However, it hasn't been mounted yet. We will have
-      // access to the event emitter later when the view is mounted. For now just save the event
-      // in the view state and trigger it later.
-      enqueuePendingEvent(
-          reactTag,
-          eventName,
-          canCoalesceEvent,
-          params,
-          eventCategory,
-          eventTimestamp,
-      )
-      return
+    var emitter = viewState.eventEmitter
+    if (emitter == null) {
+      synchronized(viewState) {
+        val emitterUnderLock = viewState.eventEmitter
+        if (emitterUnderLock != null) {
+          emitter = emitterUnderLock
+        } else {
+          // The view is pre-allocated and created. However, it hasn't been mounted yet. We will
+          // have access to the event emitter later when the view is mounted. For now just save the
+          // event in the view state and trigger it later.
+          val queue =
+              viewState.pendingEventQueue
+                  ?: LinkedList<PendingViewEvent>().also { viewState.pendingEventQueue = it }
+          queue.add(
+              PendingViewEvent(eventName, params, eventCategory, canCoalesceEvent, eventTimestamp)
+          )
+          return
+        }
+      }
     }
 
+    if (viewState.pendingEventQueue != null) {
+      // We have an emitter and also a pending event queue - we must lock
+      // and wait for the pending event queue to be cleared.
+      synchronized<Unit>(viewState) {}
+      assert(viewState.pendingEventQueue == null)
+    }
+
+    checkNotNull(emitter)
     if (canCoalesceEvent) {
-      eventEmitter.dispatchUnique(eventName, params, eventTimestamp)
+      emitter.dispatchUnique(eventName, params, eventTimestamp)
     } else {
-      eventEmitter.dispatch(eventName, params, eventCategory, eventTimestamp)
+      emitter.dispatch(eventName, params, eventCategory, eventTimestamp)
     }
   }
 
@@ -1304,9 +1271,8 @@ internal constructor(
   ) {
     var currentProps: ReactStylesDiffMap? = null
     var stateWrapper: StateWrapper? = null
-    var eventEmitter: EventEmitterWrapper? = null
-
-    @ThreadConfined(ThreadConfined.UI) var pendingEventQueue: Queue<PendingViewEvent>? = null
+    @Volatile var eventEmitter: EventEmitterWrapper? = null
+    @Volatile var pendingEventQueue: Queue<PendingViewEvent>? = null
 
     override fun toString(): String {
       val isLayoutOnly = viewManager == null
@@ -1367,7 +1333,11 @@ internal constructor(
       for ((propKey, propValue) in patchMap) {
         if (outputReadableMap.hasKey(propKey)) {
           if (propKey == PROP_TRANSFORM) {
-            assert(outputReadableMap.getType(propKey) == ReadableType.Array && propValue is List<*>)
+            val outputType = outputReadableMap.getType(propKey)
+            assert(
+                (outputType == ReadableType.Array || outputType == ReadableType.Null) &&
+                    propValue is List<*>
+            )
             val array = WritableNativeArray()
             for (item in propValue as List<*>) {
               if (item is Map<*, *>) {
@@ -1385,14 +1355,18 @@ internal constructor(
             }
             outputReadableMap.putArray(propKey, array)
           } else if (propKey == PROP_OPACITY) {
-            assert(outputReadableMap.getType(propKey) == ReadableType.Number && propValue is Number)
+            val outputType = outputReadableMap.getType(propKey)
+            assert(
+                (outputType == ReadableType.Number || outputType == ReadableType.Null) &&
+                    propValue is Number
+            )
             outputReadableMap.putDouble(propKey, (propValue as Number).toDouble())
           }
         }
       }
     }
 
-    private fun getMapFromPropsReadableMap(readableMap: ReadableMap): MutableMap<String, Any> {
+    private fun getAnimatedPropsMap(readableMap: ReadableMap): MutableMap<String, Any> {
       val outputMap = mutableMapOf<String, Any>()
 
       if (
@@ -1420,6 +1394,25 @@ internal constructor(
       }
 
       return outputMap
+    }
+
+    private fun clearAnimatedNullPropsMapKeys(
+        readableMap: ReadableMap,
+        outputMap: MutableMap<String, Any>,
+    ) {
+      // Native Animated uses synchronous null updates to restore animated-managed props.
+      // Keep this scoped to props stored by this override path today.
+      if (
+          readableMap.hasKey(PROP_TRANSFORM) &&
+              readableMap.getType(PROP_TRANSFORM) == ReadableType.Null
+      ) {
+        outputMap.remove(PROP_TRANSFORM)
+      }
+      if (
+          readableMap.hasKey(PROP_OPACITY) && readableMap.getType(PROP_OPACITY) == ReadableType.Null
+      ) {
+        outputMap.remove(PROP_OPACITY)
+      }
     }
 
     // prevents unchecked conversion warn of the <ViewGroup> type

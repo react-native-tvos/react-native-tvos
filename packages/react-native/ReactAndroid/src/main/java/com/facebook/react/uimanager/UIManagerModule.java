@@ -65,7 +65,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * blocks could allow the platform UI system to interrupt and render a partial UI state.
  *
  * <p>To facilitate this, this module enqueues operations that are then applied to native view
- * hierarchy through {@link NativeViewHierarchyManager} at the end of each transaction.
+ * hierarchy at the end of each transaction.
  *
  * <p>
  *
@@ -194,16 +194,6 @@ public class UIManagerModule extends ReactContextBaseJavaModule
   @Deprecated
   public ViewManagerRegistry getViewManagerRegistry_DO_NOT_USE() {
     return mViewManagerRegistry;
-  }
-
-  /**
-   * @deprecated This method is a stub retained for backward compatibility with third-party
-   *     libraries. It always returns null. UIImplementation is part of the Legacy Architecture and
-   *     will be removed in a future release.
-   */
-  @Deprecated
-  public UIImplementation getUIImplementation() {
-    return new UIImplementation(null, null, null, 0);
   }
 
   private static Map<String, Object> createConstants(ViewManagerResolver viewManagerResolver) {
@@ -578,12 +568,11 @@ public class UIManagerModule extends ReactContextBaseJavaModule
    * after all currently queued view updates have completed.
    *
    * @param block that contains UI logic you want to execute.
-   *     <p>Usage Example:
-   *     <p>UIManagerModule uiManager = reactContext.getNativeModule(UIManagerModule.class);
-   *     uiManager.addUIBlock(new UIBlock() { public void execute (NativeViewHierarchyManager nvhm)
-   *     { View view = nvhm.resolveView(tag); // ...execute your code on View (e.g. snapshot the
-   *     view) } });
+   * @deprecated This method is a no-op stub retained for backward compatibility. Use {@link
+   *     UIManagerListener} or View Commands instead.
    */
+  @Deprecated
+  @SuppressWarnings("deprecation")
   public void addUIBlock(UIBlock block) {}
 
   /**
@@ -591,7 +580,11 @@ public class UIManagerModule extends ReactContextBaseJavaModule
    * before all currently queued view updates have completed.
    *
    * @param block that contains UI logic you want to execute.
+   * @deprecated This method is a no-op stub retained for backward compatibility. Use {@link
+   *     UIManagerListener} or View Commands instead.
    */
+  @Deprecated
+  @SuppressWarnings("deprecation")
   public void prependUIBlock(UIBlock block) {}
 
   @Override

@@ -282,4 +282,9 @@ constexpr bool operator!=(
 
 #endif
 
+inline bool areBorderRadiiCircular(const BorderRadii &borderRadii)
+{
+  return borderRadii.isUniform() && borderRadii.topLeft.horizontal == borderRadii.topLeft.vertical;
+}
+
 } // namespace facebook::react

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ad7a835ef9cbe3a9a6121ac127038668>>
+ * @generated SignedSource<<d3b31e5d51537d44d19f72b2d48f97f4>>
  */
 
 /**
@@ -102,10 +102,6 @@ bool ReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid() {
   return getAccessor().enableDoubleMeasurementFixAndroid();
 }
 
-bool ReactNativeFeatureFlags::enableEagerMainQueueModulesOnIOS() {
-  return getAccessor().enableEagerMainQueueModulesOnIOS();
-}
-
 bool ReactNativeFeatureFlags::enableEagerRootViewAttachment() {
   return getAccessor().enableEagerRootViewAttachment();
 }
@@ -120,10 +116,6 @@ bool ReactNativeFeatureFlags::enableFabricCommitBranching() {
 
 bool ReactNativeFeatureFlags::enableFabricLogs() {
   return getAccessor().enableFabricLogs();
-}
-
-bool ReactNativeFeatureFlags::enableFabricRenderer() {
-  return getAccessor().enableFabricRenderer();
 }
 
 bool ReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout() {
@@ -186,10 +178,6 @@ bool ReactNativeFeatureFlags::enableNativeCSSParsing() {
   return getAccessor().enableNativeCSSParsing();
 }
 
-bool ReactNativeFeatureFlags::enableNativeViewPropTransformations() {
-  return getAccessor().enableNativeViewPropTransformations();
-}
-
 bool ReactNativeFeatureFlags::enableNetworkEventReporting() {
   return getAccessor().enableNetworkEventReporting();
 }
@@ -200,6 +188,10 @@ bool ReactNativeFeatureFlags::enablePreparedTextLayout() {
 
 bool ReactNativeFeatureFlags::enablePropsUpdateReconciliationAndroid() {
   return getAccessor().enablePropsUpdateReconciliationAndroid();
+}
+
+bool ReactNativeFeatureFlags::enableRuntimeSchedulerQueueClearingOnError() {
+  return getAccessor().enableRuntimeSchedulerQueueClearingOnError();
 }
 
 bool ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation() {
@@ -238,16 +230,8 @@ bool ReactNativeFeatureFlags::enableVirtualViewContainerStateExperimental() {
   return getAccessor().enableVirtualViewContainerStateExperimental();
 }
 
-bool ReactNativeFeatureFlags::enableVirtualViewDebugFeatures() {
-  return getAccessor().enableVirtualViewDebugFeatures();
-}
-
 bool ReactNativeFeatureFlags::fixDifferentiatorParentTagForUnflattenCase() {
   return getAccessor().fixDifferentiatorParentTagForUnflattenCase();
-}
-
-bool ReactNativeFeatureFlags::fixFindShadowNodeByTagRaceCondition() {
-  return getAccessor().fixFindShadowNodeByTagRaceCondition();
 }
 
 bool ReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact() {
@@ -280,6 +264,10 @@ bool ReactNativeFeatureFlags::fuseboxScreenshotCaptureEnabled() {
 
 bool ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS() {
   return getAccessor().hideOffscreenVirtualViewsOnIOS();
+}
+
+bool ReactNativeFeatureFlags::optimizedAnimatedPropUpdates() {
+  return getAccessor().optimizedAnimatedPropUpdates();
 }
 
 bool ReactNativeFeatureFlags::overrideBySynchronousMountPropsAtMountingAndroid() {
@@ -346,10 +334,6 @@ bool ReactNativeFeatureFlags::useFabricInterop() {
   return getAccessor().useFabricInterop();
 }
 
-bool ReactNativeFeatureFlags::useLISAlgorithmInDifferentiator() {
-  return getAccessor().useLISAlgorithmInDifferentiator();
-}
-
 bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
   return getAccessor().useNativeViewConfigsInBridgelessMode();
 }
@@ -374,20 +358,16 @@ bool ReactNativeFeatureFlags::useTurboModuleInterop() {
   return getAccessor().useTurboModuleInterop();
 }
 
-bool ReactNativeFeatureFlags::useTurboModules() {
-  return getAccessor().useTurboModules();
-}
-
-bool ReactNativeFeatureFlags::useUnorderedMapInDifferentiator() {
-  return getAccessor().useUnorderedMapInDifferentiator();
-}
-
 double ReactNativeFeatureFlags::viewCullingOutsetRatio() {
   return getAccessor().viewCullingOutsetRatio();
 }
 
 bool ReactNativeFeatureFlags::viewTransitionEnabled() {
   return getAccessor().viewTransitionEnabled();
+}
+
+bool ReactNativeFeatureFlags::viewTransitionUseHardwareBitmapAndroid() {
+  return getAccessor().viewTransitionUseHardwareBitmapAndroid();
 }
 
 double ReactNativeFeatureFlags::virtualViewPrerenderRatio() {

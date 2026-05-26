@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<64c70b68f010045cb9f201b26f470e01>>
+ * @generated SignedSource<<6e5342bef64efc9532ace758b994b14b>>
  */
 
 /**
@@ -61,8 +61,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableDoubleMeasurementFixAndroid(): Boolean = false
 
-  override fun enableEagerMainQueueModulesOnIOS(): Boolean = false
-
   override fun enableEagerRootViewAttachment(): Boolean = false
 
   override fun enableExclusivePropsUpdateAndroid(): Boolean = false
@@ -70,8 +68,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableFabricCommitBranching(): Boolean = false
 
   override fun enableFabricLogs(): Boolean = false
-
-  override fun enableFabricRenderer(): Boolean = false
 
   override fun enableFontScaleChangesUpdatingLayout(): Boolean = true
 
@@ -103,13 +99,13 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableNativeCSSParsing(): Boolean = false
 
-  override fun enableNativeViewPropTransformations(): Boolean = false
-
   override fun enableNetworkEventReporting(): Boolean = true
 
   override fun enablePreparedTextLayout(): Boolean = false
 
   override fun enablePropsUpdateReconciliationAndroid(): Boolean = false
+
+  override fun enableRuntimeSchedulerQueueClearingOnError(): Boolean = false
 
   override fun enableSchedulerDelegateInvalidation(): Boolean = false
 
@@ -129,11 +125,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableVirtualViewContainerStateExperimental(): Boolean = false
 
-  override fun enableVirtualViewDebugFeatures(): Boolean = false
-
   override fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = false
-
-  override fun fixFindShadowNodeByTagRaceCondition(): Boolean = false
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
@@ -150,6 +142,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun fuseboxScreenshotCaptureEnabled(): Boolean = false
 
   override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
+
+  override fun optimizedAnimatedPropUpdates(): Boolean = false
 
   override fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean = true
 
@@ -183,8 +177,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun useFabricInterop(): Boolean = true
 
-  override fun useLISAlgorithmInDifferentiator(): Boolean = false
-
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 
   override fun useNestedScrollViewAndroid(): Boolean = false
@@ -197,13 +189,11 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun useTurboModuleInterop(): Boolean = false
 
-  override fun useTurboModules(): Boolean = false
-
-  override fun useUnorderedMapInDifferentiator(): Boolean = false
-
   override fun viewCullingOutsetRatio(): Double = 0.0
 
   override fun viewTransitionEnabled(): Boolean = false
+
+  override fun viewTransitionUseHardwareBitmapAndroid(): Boolean = false
 
   override fun virtualViewPrerenderRatio(): Double = 5.0
 }

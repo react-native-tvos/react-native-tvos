@@ -20,6 +20,7 @@ import Pressability, {
 import {PressabilityDebugView} from '../../Pressability/PressabilityDebug';
 import StyleSheet, {type ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import Platform from '../../Utilities/Platform';
+import warnOnce from '../../Utilities/warnOnce';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 import {cloneElement} from 'react';
@@ -50,6 +51,7 @@ type TouchableHighlightBaseProps = Readonly<{
   hostRef?: React.RefSetter<React.ElementRef<typeof View>>,
 }>;
 
+/** @build-types emit-as-interface Uniwind compatibility */
 export type TouchableHighlightProps = Readonly<{
   ...TouchableWithoutFeedbackProps,
   ...TVViewProps,
@@ -294,6 +296,13 @@ class TouchableHighlightImpl extends React.Component<
 
   render(): React.Node {
     const child = React.Children.only<$FlowFixMe>(this.props.children);
+    if (__DEV__ && child.type === React.Fragment) {
+      warnOnce(
+        'TouchableHighlight-fragment',
+        'TouchableHighlight does not support React.Fragment as a child. ' +
+          'Wrap the children in a single host element such as <View>.',
+      );
+    }
 
     // BACKWARD-COMPATIBILITY: Focus and blur events were never supported before
     // adopting `Pressability`, so preserve that behavior.
@@ -352,8 +361,7 @@ class TouchableHighlightImpl extends React.Component<
         hitSlop={this.props.hitSlop}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
         focusable={
-          this.props.focusable !== false &&
-          this.props.isTVSelectable !== false
+          this.props.focusable !== false && this.props.isTVSelectable !== false
         }
         tvParallaxProperties={this.props.tvParallaxProperties}
         nextFocusDown={tagForComponentOrHandle(this.props.nextFocusDown)}
@@ -365,12 +373,14 @@ class TouchableHighlightImpl extends React.Component<
         testID={this.props.testID}
         ref={this.props.hostRef}
         {...eventHandlers}>
-        {cloneElement(child, {
-          style: StyleSheet.compose(
-            child.props.style,
-            this.state.extraStyles?.child,
-          ),
-        })}
+        {child.type === React.Fragment
+          ? child
+          : cloneElement(child, {
+              style: StyleSheet.compose(
+                child.props.style,
+                this.state.extraStyles?.child,
+              ),
+            })}
         {__DEV__ ? (
           <PressabilityDebugView color="green" hitSlop={this.props.hitSlop} />
         ) : null}
