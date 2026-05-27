@@ -65,6 +65,15 @@ async function prepareHermesArtifactsAsync(
     let resolvedVersion =
       process.env.HERMES_VERSION ?? getPinnedHermesVersionFromProperties();
 
+    // Legacy alias: upstream removed nightly Hermes builds in favor of Hermes
+    // V1, but several EAS workflows still export HERMES_VERSION=nightly. Map it
+    // to the 'latest-v1' dist-tag so those callers keep getting the latest dev
+    // Hermes instead of a 404 on a `hermes-ios/nightly/...` tarball.
+    if (resolvedVersion === 'nightly') {
+      hermesLog("HERMES_VERSION=nightly is no longer published; using 'latest-v1'");
+      resolvedVersion = 'latest-v1';
+    }
+
     if (resolvedVersion === 'latest-v1') {
       // TODO: rename 'latest-v1' to 'latest' once V1 is the only Hermes on npm
       hermesLog('Using latest-v1 tarball');
