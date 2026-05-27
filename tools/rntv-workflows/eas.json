@@ -13,6 +13,7 @@
         "resourceClass": "large",
         "image": "latest"
       },
+      "node": "24.13.0",
       "withoutCredentials": true,
       "distribution": "internal"
     },
