@@ -59,9 +59,9 @@ async function prepareHermesArtifactsAsync(
   // Only check if the artifacts folder exists if we are not using a local tarball
   if (!localPath) {
     // Resolve the version from the environment variable. When unset, fall back to the
-    // version pinned in sdks/hermes-engine/version.properties (what CI uses) rather than
-    // 'nightly', so a local prebuild doesn't silently consume a rolling snapshot that
-    // may have changed link-time behavior (e.g. autolinking new system frameworks).
+    // exact version pinned in sdks/hermes-engine/version.properties (what CI uses)
+    // rather than the floating 'latest-v1' dist-tag, so a local prebuild is
+    // deterministic and matches the version the rest of the build is pinned to.
     let resolvedVersion =
       process.env.HERMES_VERSION ?? getPinnedHermesVersionFromProperties();
 
@@ -154,7 +154,9 @@ function getPinnedHermesVersionFromProperties() /*: string */ {
       'warn',
     );
   }
-  return getLatestHermesVersionFromNPM();
+  // Return the sentinel string (not a Promise): the caller resolves
+  // 'latest-v1' to a concrete version via getLatestHermesVersionFromNPM().
+  return 'latest-v1';
 }
 
 /*::
