@@ -17,7 +17,9 @@
  *   - Repo: react-native-tvos/react-native-tvos.
  *   - Body: empty. Pass `--notes-file <path>` to set release notes (e.g. the
  *     output of `scripts/tv-changelog.sh`), or `--generate-notes` to let gh
- *     auto-generate a PR-based summary.
+ *     auto-generate a PR-based summary. With `--generate-notes`, pass
+ *     `--notes-start-tag <tag>` to anchor where the "What's Changed" list
+ *     begins (default: gh picks the previous release automatically).
  *   - The release is not marked as "Latest" by default — gh is invoked
  *     with `--latest=false`. Pass `--latest` to opt back in. `--latest`
  *     and `--prerelease` are mutually exclusive (GitHub does not allow a
@@ -60,6 +62,8 @@ type ParsedArgs = {
   repo: string;
   notesFile?: string;
   generateNotes: boolean;
+  // Tag to anchor `--generate-notes` (gh's --notes-start-tag).
+  notesStartTag?: string;
   // Resolved category name to attach a discussion to, or `null` to skip.
   discussionCategory: string | null;
   draft: boolean;
@@ -86,6 +90,8 @@ Options:
   --repo <owner/name>      GitHub repo (default: ${DEFAULT_REPO})
   --notes-file <path>      Read release notes from a file
   --generate-notes         Auto-generate notes from PRs since the last release
+  --notes-start-tag <tag>  With --generate-notes, anchor the changelog at this
+                           tag instead of the auto-detected previous release
   --draft                  Create as a draft release (also disables the
                            release discussion; drafts can't have one)
   --prerelease             Mark as a pre-release (mutually exclusive with --latest)
@@ -104,6 +110,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   let repo: string = DEFAULT_REPO;
   let notesFile: string | undefined;
   let generateNotes = false;
+  let notesStartTag: string | undefined;
   let draft = false;
   let prerelease = false;
   let latest = false;
@@ -140,6 +147,9 @@ function parseArgs(argv: string[]): ParsedArgs {
       case '--generate-notes':
         generateNotes = true;
         break;
+      case '--notes-start-tag':
+        notesStartTag = requireValue(arg, argv[++i]);
+        break;
       case '--draft':
         draft = true;
         break;
@@ -170,6 +180,12 @@ function parseArgs(argv: string[]): ParsedArgs {
     throw new Error('--notes-file and --generate-notes are mutually exclusive.');
   }
 
+  if (notesStartTag && !generateNotes) {
+    throw new Error(
+      '--notes-start-tag only has effect with --generate-notes; pass both or neither.',
+    );
+  }
+
   if (latest && prerelease) {
     throw new Error('--latest and --prerelease are mutually exclusive.');
   }
@@ -189,6 +205,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     repo,
     notesFile,
     generateNotes,
+    notesStartTag,
     discussionCategory,
     draft,
     prerelease,
@@ -264,6 +281,9 @@ async function executeScriptAsync(): Promise<void> {
     ghArgs.push('--notes-file', args.notesFile);
   } else if (args.generateNotes) {
     ghArgs.push('--generate-notes');
+    if (args.notesStartTag) {
+      ghArgs.push('--notes-start-tag', args.notesStartTag);
+    }
   } else {
     // gh requires one of --notes / --notes-file / --generate-notes when
     // running non-interactively.
