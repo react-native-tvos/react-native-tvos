@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6d7237856953bacb6de35ec63e859d65>>
+ * @generated SignedSource<<b653dee4b92adb7177a7cd354b5e3573>>
  */
 
 /**
@@ -288,6 +288,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enableImagePrefetchingAndroid();
   }
 
+  bool enableImageRequestDowngradingForNonVisibleImages() override {
+    auto value = values_["enableImageRequestDowngradingForNonVisibleImages"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableImageRequestDowngradingForNonVisibleImages();
+  }
+
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     auto value = values_["enableImmediateUpdateModeForContentOffsetChanges"];
     if (!value.isNull()) {
@@ -349,15 +358,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableLayoutAnimationsOnIOS();
-  }
-
-  bool enableMainQueueCoordinatorOnIOS() override {
-    auto value = values_["enableMainQueueCoordinatorOnIOS"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::enableMainQueueCoordinatorOnIOS();
   }
 
   bool enableModuleArgumentNSNullConversionIOS() override {
