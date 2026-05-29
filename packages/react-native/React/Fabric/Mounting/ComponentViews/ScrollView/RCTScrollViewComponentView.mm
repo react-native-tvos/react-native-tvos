@@ -1154,13 +1154,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 #pragma mark Apple TV swipe and focus handling
 
 #if TARGET_OS_TV
-// Focus marker helper: traverses view hierarchy to find scrollSnapAlign prop
-// Returns the view that has the property via the output parameter
-- (NSString *)findScrollSnapAlignInView:(UIView *)view foundView:(UIView **)outView
+// Focus marker helper: traverses view hierarchy to find either scrollSnapAlign
+// or scrollSnapOffset. Returns the view that has the property via the output
+// parameter and the marker type via outAlign/outOffset (exactly one non-nil on
+// return). Walk is inner→outer, latest marker wins (same as PR-1068's
+// scrollSnapAlign behavior). On a single view declaring both, scrollSnapOffset
+// wins as the more specific config.
+- (UIView *)findScrollSnapInView:(UIView *)view
+                        outAlign:(NSString **)outAlign
+                       outOffset:(NSNumber **)outOffset
 {
     UIView *testView = view;
     UIView *snapTarget;
-    NSString *marker;
+    NSString *align;
+    NSNumber *offset;
 
     while (testView && testView != self) {
         if (![testView isKindOfClass:RCTViewComponentView.class])
@@ -1171,28 +1178,37 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         RCTViewComponentView *componentView = (RCTViewComponentView *)testView;
 
         const auto &viewProps = static_cast<const facebook::react::BaseViewProps &>(*componentView.props);
-        if (viewProps.scrollSnapAlign.has_value() && !viewProps.scrollSnapAlign.value().empty()) {
-            marker = [NSString stringWithUTF8String:viewProps.scrollSnapAlign.value().c_str()];
+        if (viewProps.scrollSnapOffset.has_value()) {
+            offset = @(viewProps.scrollSnapOffset.value());
+            align = nil;
+            snapTarget = componentView;
+        } else if (viewProps.scrollSnapAlign.has_value() && !viewProps.scrollSnapAlign.value().empty()) {
+            align = [NSString stringWithUTF8String:viewProps.scrollSnapAlign.value().c_str()];
+            offset = nil;
             snapTarget = componentView;
         }
 
         testView = [testView superview];
     }
-    *outView = snapTarget;
-    return marker;
+    *outAlign = align;
+    *outOffset = offset;
+    return snapTarget;
 }
 
 - (void)_handleScrollSnapForFocusedView:(UIView *)focusedView
 {
     const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
-    UIView *snapAlignView = nil;
-    NSString *scrollSnapAlign = [self findScrollSnapAlignInView:focusedView foundView:&snapAlignView];
-    if (scrollSnapAlign == nil || snapAlignView == nil) {
+
+    NSString *scrollSnapAlign = nil;
+    NSNumber *scrollSnapOffset = nil;
+    UIView *snapTargetView = [self findScrollSnapInView:focusedView
+                                               outAlign:&scrollSnapAlign
+                                              outOffset:&scrollSnapOffset];
+    if (snapTargetView == nil || (scrollSnapAlign == nil && scrollSnapOffset == nil)) {
         return;
     }
-
     RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-    CGRect focusedFrame = [snapAlignView convertRect:snapAlignView.bounds toView:_scrollView];
+    CGRect focusedFrame = [snapTargetView convertRect:snapTargetView.bounds toView:_scrollView];
     CGFloat targetOffset;
     CGFloat snapToItemPadding = scrollProps.snapToItemPadding;
 
@@ -1212,8 +1228,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         currentOffset = scrollView.contentOffset.y;
         maxContentSize = scrollView.contentSize.height;
     }
-    // Calculate target offset based on scrollSnapAlign (unified for both axes)
-    if ([scrollSnapAlign isEqualToString:@"start"]) {
+
+    if (scrollSnapOffset != nil) {
+        // Per-item pixel offset path: land the snap target's leading edge
+        // at viewport coordinate = scrollSnapOffset.
+        targetOffset = focusedOrigin - scrollSnapOffset.doubleValue;
+    } else if ([scrollSnapAlign isEqualToString:@"start"]) {
         targetOffset = focusedOrigin - snapToItemPadding;
     } else if ([scrollSnapAlign isEqualToString:@"center"]) {
         CGFloat viewportCenter = viewportSize / 2;

@@ -5691,6 +5691,7 @@ declare type TVViewProps = {
   readonly nextFocusUp?: number
   readonly safePadding?: null | string
   readonly scrollSnapAlign?: "center" | "end" | "start"
+  readonly scrollSnapOffset?: number
   readonly tvParallaxProperties?: TVParallaxPropertiesType
   readonly onPressIn?: (event: any) => void
   readonly onPressOut?: (event: any) => void

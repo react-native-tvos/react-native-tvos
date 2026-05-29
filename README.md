@@ -272,6 +272,7 @@ class Game2048 extends React.Component {
   | Prop (View) | Value | Description |
   |---|---|---|
   | scrollSnapAlign | `'start'` \| `'center'` \| `'end'` | Controls where this item snaps inside its parent ScrollView. Only used when the parent has `snapToAlignment="item"`. |
+  | scrollSnapOffset | `number` | Per-item pixel offset (in dp/pt). When set, the focus engine lands this item's leading edge at `scrollSnapOffset` from the viewport origin. Standalone alternative to `scrollSnapAlign` — takes precedence if both are set on the same item. Only used when the parent has `snapToAlignment="item"`. |
 
   ```jsx
   <ScrollView
@@ -291,6 +292,16 @@ class Game2048 extends React.Component {
   </ScrollView>
   ```
 
+  `scrollSnapOffset` is useful when different items in the same ScrollView need to land at different positions — e.g. a hero row peeking 27dp from the top while poster rows peek 550dp:
+
+  ```jsx
+  <ScrollView snapToAlignment="item">
+    <View scrollSnapOffset={27}><Hero /></View>
+    <View scrollSnapOffset={100}><Featured /></View>
+    <View scrollSnapOffset={550}><PosterRow /></View>
+  </ScrollView>
+  ```
+
   - _ScrollView animation control_: The `scrollAnimationEnabled` prop allows disabling scroll animations when focus changes on TV. When set to `false`, the scroll view jumps instantly to the focused item instead of animating. This only affects TV platforms and has no effect on mobile.
 
   | Prop (ScrollView) | Value | Description |
@@ -307,7 +318,8 @@ class Game2048 extends React.Component {
 
   - _Interaction with existing ScrollView props_: The TV scroll props build on top of existing React Native ScrollView behavior. Here is how they interact:
 
-    - `snapToAlignment="item"` does not require `snapToInterval` to be set. It works as a standalone snapping mode where each child's `scrollSnapAlign` determines the snap position. If `snapToInterval` is also set, the interval is applied as an additional constraint after the item offset is computed.
+    - `snapToAlignment="item"` does not require `snapToInterval` to be set. It works as a standalone snapping mode where each child's `scrollSnapAlign` or `scrollSnapOffset` determines the snap position. If `snapToInterval` is also set, the interval is applied as an additional constraint after the item offset is computed.
+    - `scrollSnapOffset` ignores `snapToItemPadding`. The padding is a global value applied to `scrollSnapAlign` cases; `scrollSnapOffset` is itself a per-item pixel offset that fully specifies where the item lands.
     - `snapToAlignment="item"` should not be combined with `pagingEnabled`. Both attempt to control scroll positioning independently, which leads to unpredictable behavior. Use one or the other.
     - `snapToStart` and `snapToEnd` work independently of `snapToAlignment="item"`. They control edge behavior during swipe/drag momentum (whether the scroll view snaps to the first or last position), but do not affect focus driven item snapping.
     - `scrollAnimationEnabled={false}` disables all scroll animations, including programmatic `scrollTo({animated: true})` calls. When disabled, all scrolling is instant.

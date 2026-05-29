@@ -455,6 +455,12 @@ BaseViewProps::BaseViewProps(
           "scrollSnapAlign",
           sourceProps.scrollSnapAlign,
           {}))
+      ,scrollSnapOffset(ReactNativeFeatureFlags::enableCppPropsIteratorSetter() ? sourceProps.scrollSnapOffset : convertRawProp(
+          context,
+          rawProps,
+          "scrollSnapOffset",
+          sourceProps.scrollSnapOffset,
+          {}))
 #endif
       {}
 
@@ -528,6 +534,7 @@ void BaseViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusLeft);
     RAW_SET_PROP_SWITCH_CASE_BASIC(trapFocusRight);
     RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapAlign);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapOffset);
 #endif
     // events field
     VIEW_EVENT_CASE(PointerEnter);
