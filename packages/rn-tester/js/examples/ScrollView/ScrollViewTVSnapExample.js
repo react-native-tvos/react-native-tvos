@@ -8,7 +8,7 @@
  * @format
  */
 
-'use strict';
+
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
@@ -49,14 +49,14 @@ const Card = ({
     <Pressable
       style={({focused}) => [
         {
-          borderRadius: px(12),
-          justifyContent: 'center' as const,
           alignItems: 'center' as const,
-          borderWidth: px(3),
-          borderColor: 'transparent',
-          width: px(width),
-          height: px(height),
           backgroundColor: COLORS[colorIndex % COLORS.length],
+          borderColor: 'transparent',
+          borderRadius: px(12),
+          borderWidth: px(3),
+          height: px(height),
+          justifyContent: 'center' as const,
+          width: px(width),
         },
         focused && {borderColor: '#ffffff'},
       ]}>
@@ -64,9 +64,9 @@ const Card = ({
         <Text
           style={[
             {
+              color: 'rgba(255,255,255,0.8)',
               fontSize: px(22),
               fontWeight: '600',
-              color: 'rgba(255,255,255,0.8)',
             },
             focused && {color: '#ffffff'},
           ]}>
@@ -80,7 +80,7 @@ const Card = ({
 // Section header
 const SectionHeader = ({title}: {title: string}) => (
   <View style={{marginBottom: px(16)}}>
-    <Text style={{fontSize: px(28), fontWeight: '600', color: '#e0e0e0'}}>
+    <Text style={{color: '#e0e0e0', fontSize: px(28), fontWeight: '600' }}>
       {title}
     </Text>
   </View>
@@ -92,15 +92,64 @@ const HorizontalExample = ({align}: {align: 'start' | 'center' | 'end'}) => (
     <SectionHeader title={`Horizontal — snapAlign: ${align}`} />
     <ScrollView
       horizontal
-      snapToAlignment="item"
-      showsHorizontalScrollIndicator={false}>
+      showsHorizontalScrollIndicator={false}
+      snapToAlignment="item">
       {Array.from({length: 15}, (_, i) => (
         <View key={i} scrollSnapAlign={align} style={{marginRight: px(20)}}>
           <Card
+            colorIndex={i}
+            height={160}
             label={`Item ${i + 1}`}
             width={280}
-            height={160}
-            colorIndex={i}
+          />
+        </View>
+      ))}
+    </ScrollView>
+  </View>
+);
+
+// Example: Per-item `scrollSnapOffset` — alternative to `scrollSnapAlign`.
+// The focus engine lands the snap target's leading edge at `scrollSnapOffset`
+// pixels from the viewport origin (top of this ScrollView). Mirrors the
+// VerticalMixedExample varieties — same heights, but instead of strings
+// 'start'/'center'/'end', uses fixed numeric offsets computed to land each
+// row at the equivalent position. Demonstrates that `scrollSnapOffset` can
+// reproduce alignment behaviour without `snapToItemPadding` and adds finer
+// control: any pixel offset is valid, not just the three alignment buckets.
+const OFFSET_VIEWPORT_HEIGHT = 500;
+const offsetMixedHeight = (i: number): number =>
+  [100, 200, 150, 50, 300][i % 5];
+const offsetMixedAlignName = (i: number): string =>
+  ['start', 'center', 'end'][i % 3];
+const offsetMixedValue = (i: number): number => {
+  const h = offsetMixedHeight(i);
+  switch (i % 3) {
+    case 0: // start
+      return 0;
+    case 1: // center
+      return (OFFSET_VIEWPORT_HEIGHT - h) / 2;
+    default: // end
+      return OFFSET_VIEWPORT_HEIGHT - h;
+  }
+};
+
+const VerticalOffsetExample = () => (
+  <View>
+    <SectionHeader title={`Vertical — per-item scrollSnapOffset (mixed)`} />
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      snapToAlignment="item"
+      style={{height: px(OFFSET_VIEWPORT_HEIGHT)}}>
+      {Array.from({length: 10}, (_, i) => (
+        <View
+          key={i}
+          scrollSnapOffset={px(offsetMixedValue(i))}
+          style={{marginBottom: px(16)}}>
+          <Card
+            colorIndex={i + 5}
+            height={offsetMixedHeight(i)}
+            label={`Row ${i + 1} offset ${offsetMixedValue(i)} (≈ ${offsetMixedAlignName(i)})`}
+            width={450}
           />
         </View>
       ))}
@@ -113,18 +162,18 @@ const ScrollPaddingExample = () => (
   <View>
     <SectionHeader title="Horizontal — snapAlign: start, snapToItemPadding: 60" />
     <ScrollView
+      contentContainerStyle={{paddingVertical: px(4)}}
       horizontal
-      snapToAlignment="item"
-      snapToItemPadding={px(60)}
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{paddingVertical: px(4)}}>
+      snapToAlignment="item"
+      snapToItemPadding={px(60)}>
       {Array.from({length: 15}, (_, i) => (
         <View key={i} scrollSnapAlign="start" style={{marginRight: px(20)}}>
           <Card
+            colorIndex={i}
+            height={160}
             label={`Item ${i + 1}`}
             width={280}
-            height={160}
-            colorIndex={i}
           />
         </View>
       ))}
@@ -137,16 +186,16 @@ const VerticalExample = ({align}: {align: 'start' | 'center' | 'end'}) => (
   <View>
     <SectionHeader title={`Vertical — snapAlign: ${align}`} />
     <ScrollView
-      snapToAlignment="item"
       showsVerticalScrollIndicator={false}
+      snapToAlignment="item"
       style={{height: px(500)}}>
       {Array.from({length: 10}, (_, i) => (
         <View key={i} scrollSnapAlign={align} style={{marginBottom: px(16)}}>
           <Card
+            colorIndex={i + 5}
+            height={120}
             label={`Row ${i + 1}`}
             width={400}
-            height={120}
-            colorIndex={i + 5}
           />
         </View>
       ))}
@@ -163,8 +212,8 @@ const VerticalMixedExample = () => (
   <View>
     <SectionHeader title={`Vertical — snapAlignMixed`} />
     <ScrollView
-      snapToAlignment="item"
       showsVerticalScrollIndicator={false}
+      snapToAlignment="item"
       style={{height: px(500)}}>
       {Array.from({length: 10}, (_, i) => (
         <View
@@ -172,10 +221,10 @@ const VerticalMixedExample = () => (
           scrollSnapAlign={mixedItemAlignment(i)}
           style={{marginBottom: px(16)}}>
           <Card
+            colorIndex={i + 5}
+            height={mixedItemHeight(i)}
             label={`Row ${i + 1} align ${mixedItemAlignment(i)}`}
             width={450}
-            height={mixedItemHeight(i)}
-            colorIndex={i + 5}
           />
         </View>
       ))}
@@ -188,10 +237,10 @@ const NestedExample = () => (
   <View>
     <SectionHeader title="Nested — Vertical + Horizontal" />
     <ScrollView
-      snapToAlignment="item"
+      contentContainerStyle={{gap: px(40)}}
       showsVerticalScrollIndicator={false}
-      style={{height: px(500)}}
-      contentContainerStyle={{gap: px(40)}}>
+      snapToAlignment="item"
+      style={{height: px(500)}}>
       <View scrollSnapAlign="start">
         <HorizontalExample align={'start'} />
       </View>
@@ -206,26 +255,26 @@ const ScrollViewTVSnapExample = (): any => {
   return (
     <View
       style={{
-        flex: 1,
         backgroundColor: '#1a1a2e',
-        paddingTop: px(60),
+        flex: 1,
         paddingHorizontal: px(40),
+        paddingTop: px(60),
       }}>
       <Text
         style={{
+          color: '#ffffff',
           fontSize: px(42),
           fontWeight: '700',
-          color: '#ffffff',
           marginBottom: px(8),
         }}>
         Scroll Snap Type Demo
       </Text>
 
       <ScrollView
-        snapToAlignment="item"
+        contentContainerStyle={{gap: px(40)}}
         showsVerticalScrollIndicator={false}
-        style={{flex: 1}}
-        contentContainerStyle={{gap: px(40)}}>
+        snapToAlignment="item"
+        style={{flex: 1}}>
         <View
           scrollSnapAlign="center"
           style={{flexDirection: 'row', gap: px(16)}}>
@@ -245,6 +294,9 @@ const ScrollViewTVSnapExample = (): any => {
         </View>
         <View scrollSnapAlign="center">
           <ScrollPaddingExample />
+        </View>
+        <View scrollSnapAlign="center">
+          <VerticalOffsetExample />
         </View>
         <View scrollSnapAlign="center">
           <NestedExample />

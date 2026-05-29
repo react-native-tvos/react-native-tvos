@@ -126,6 +126,7 @@ class BaseViewProps : public YogaStylableProps, public AccessibilityProps {
 
 #if TARGET_OS_TV
   std::optional<std::string> scrollSnapAlign;
+  std::optional<int> scrollSnapOffset;
 #endif
 
 #pragma mark - Convenience Methods

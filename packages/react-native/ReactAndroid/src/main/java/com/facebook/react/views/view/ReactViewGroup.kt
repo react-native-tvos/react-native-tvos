@@ -174,6 +174,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
   private var onInterceptTouchEventListener: OnInterceptTouchEventListener? = null
   private var needsOffscreenAlphaCompositing = false
   public var scrollSnapAlign: String? = null
+  public var scrollSnapOffset: Int? = null
   private var backfaceOpacity = 0f
   private var backfaceVisible = false
   private var childrenRemovedWhileTransitioning: MutableSet<Int>? = null
