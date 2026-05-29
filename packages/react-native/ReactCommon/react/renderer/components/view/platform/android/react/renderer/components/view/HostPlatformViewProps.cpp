@@ -109,6 +109,15 @@ HostPlatformViewProps::HostPlatformViewProps(
                     "scrollSnapAlign",
                     sourceProps.scrollSnapAlign,
                     {})),
+      scrollSnapOffset(
+          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
+              ? sourceProps.scrollSnapOffset
+              : convertRawProp(
+                    context,
+                    rawProps,
+                    "scrollSnapOffset",
+                    sourceProps.scrollSnapOffset,
+                    {})),
       needsOffscreenAlphaCompositing(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
               ? sourceProps.needsOffscreenAlphaCompositing
@@ -213,6 +222,7 @@ void HostPlatformViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(focusable);
     RAW_SET_PROP_SWITCH_CASE_BASIC(hasTVPreferredFocus);
     RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapAlign);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollSnapOffset);
     RAW_SET_PROP_SWITCH_CASE_BASIC(needsOffscreenAlphaCompositing);
     RAW_SET_PROP_SWITCH_CASE_BASIC(renderToHardwareTextureAndroid);
     RAW_SET_PROP_SWITCH_CASE_BASIC(screenReaderFocusable);
@@ -1082,6 +1092,14 @@ folly::dynamic HostPlatformViewProps::getDiffProps(
       result["scrollSnapAlign"] = scrollSnapAlign.value();
     } else {
       result["scrollSnapAlign"] = folly::dynamic(nullptr);
+    }
+  }
+
+  if (scrollSnapOffset != oldProps->scrollSnapOffset) {
+    if (scrollSnapOffset.has_value()) {
+      result["scrollSnapOffset"] = scrollSnapOffset.value();
+    } else {
+      result["scrollSnapOffset"] = folly::dynamic(nullptr);
     }
   }
 
