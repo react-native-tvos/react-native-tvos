@@ -56,6 +56,18 @@ build:
             yarn
             set-env HERMES_VERSION nightly
             set-env RN_DEP_VERSION nightly
+          else
+            # Release build: pin Hermes to the V1 (Static Hermes) version the runtime
+            # actually links, mirroring mainline's prebuild-ios-core.yml. Without this,
+            # ios-prebuild defaults to HERMES_VERSION_NAME (regular Hermes), so RNCore
+            # compiles against the wrong Hermes headers — eval() is disabled and Fast
+            # Refresh breaks with "Parsing source code unsupported".
+            HERMES_VERSION=$(sed -n 's/^HERMES_V1_VERSION_NAME=//p' packages/react-native/sdks/hermes-engine/version.properties)
+            if [ "$HERMES_VERSION" == "1000.0.0" ]; then
+              HERMES_VERSION="latest-v1"
+            fi
+            echo "Pinning Hermes to V1 version: $HERMES_VERSION"
+            set-env HERMES_VERSION $HERMES_VERSION
           fi
     - run:
         name: Build RNCore framework (Debug)
