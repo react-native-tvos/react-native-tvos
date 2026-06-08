@@ -493,7 +493,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if ([self isTVFocusGuide]) {
     return NO;
   }
-  return _props->isTVSelectable;
+  return _props->isTVSelectable || (UIAccessibilityIsVoiceOverRunning() && _props->accessible);
 }
 
 // In tvOS, to support directional focus APIs, we add a UIFocusGuide for each
