@@ -170,11 +170,23 @@ using namespace facebook::react;
 
 - (BOOL)isAccessibilityElement
 {
+#if TARGET_OS_TV
+  const auto &paragraphProps = static_cast<const ParagraphProps &>(*_props);
+  return paragraphProps.accessible;
+#endif
   // All accessibility functionality of the component is implemented in `accessibilityElements` method below.
   // Hence to avoid calling all other methods from `UIAccessibilityContainer` protocol (most of them have default
   // implementations), we return here `NO`.
   return NO;
 }
+
+#if TARGET_OS_TV
+- (BOOL)canBecomeFocused
+{
+  const auto &paragraphProps = static_cast<const ParagraphProps &>(*_props);
+  return UIAccessibilityIsVoiceOverRunning() && paragraphProps.accessible;
+}
+#endif
 
 - (NSArray *)accessibilityElements
 {
