@@ -257,10 +257,13 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 }
 
 - (void)removeFocusGuide {
+  // Always drop the strong references we cached during focus updates. They
+  // can be set in didUpdateFocusInContext even when this view never created
+  // an autoFocus `focusGuide`, so guarding only on `self.focusGuide != nil`
+  // leaves them dangling across recycles.
+  _focusDestinations = nil;
+  _previouslyFocusedItem = nil;
   if (self.focusGuide != nil) {
-    _focusDestinations = nil;
-    _previouslyFocusedItem = nil;
-
     [self removeLayoutGuide:self.focusGuide];
     self.focusGuide = nil;
   }
@@ -1180,6 +1183,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideUp != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideUp];
+        self.focusGuideUp = nil;
       }
       _nextFocusUp = nil;
     }
@@ -1193,6 +1197,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideDown != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideDown];
+        self.focusGuideDown = nil;
       }
       _nextFocusDown = nil;
     }
@@ -1206,6 +1211,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideLeft != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideLeft];
+        self.focusGuideLeft = nil;
       }
       _nextFocusLeft = nil;
     }
@@ -1219,6 +1225,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideRight != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
+        self.focusGuideRight = nil;
       }
       _nextFocusRight = nil;
     }
@@ -1351,7 +1358,28 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   }
 
 #if TARGET_OS_TV
+  // Tear down focus state before this view is reused for an unrelated React
+  // node. Without this, strong ivar references to other component views and
+  // to layout guides retained by the rootview can outlive the React tree
+  // that produced them, leading to dangling autolayout anchors and crashes
+  // on the next layout / autorelease drain.
   [self removeFocusGuide];
+  [self disableDirectionalFocusGuides];
+  _nextFocusUp = nil;
+  _nextFocusDown = nil;
+  _nextFocusLeft = nil;
+  _nextFocusRight = nil;
+  _nextFocusActiveTarget = nil;
+  _focusDestinations = nil;
+  _previouslyFocusedItem = nil;
+  _autoFocus = NO;
+  _hasTVPreferredFocus = NO;
+  _trapFocusUp = NO;
+  _trapFocusDown = NO;
+  _trapFocusLeft = NO;
+  _trapFocusRight = NO;
+  _shouldFocusOnMount = NO;
+  _scrollSnapAlign = nil;
 #endif
 
   // Clean up box shadow layers to prevent cross-component contamination
