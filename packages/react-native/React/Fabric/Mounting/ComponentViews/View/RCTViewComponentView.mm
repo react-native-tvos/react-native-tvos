@@ -91,6 +91,7 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   NSString *_scrollSnapAlign;
   RCTSwiftUIContainerViewWrapper *_swiftUIWrapper;
   BOOL _shouldFocusOnMount;
+  BOOL _focusable;
 }
 
 #ifdef RCT_DYNAMIC_FRAMEWORKS
@@ -1072,6 +1073,13 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (oldViewProps.filter != newViewProps.filter) {
     needsInvalidateLayer = YES;
   }
+
+  // `focusable`
+#if TARGET_OS_TV
+  if (oldViewProps.focusable != newViewProps.focusable) {
+    _focusable = (bool)newViewProps.focusable;
+  }
+#endif
 
   // `mixBlendMode`
   if (oldViewProps.mixBlendMode != newViewProps.mixBlendMode) {
@@ -2138,6 +2146,11 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   return !super.accessibilityLabel && super.isAccessibilityElement;
 }
 
+- (BOOL)canBecomeFocused
+{
+  return _focusable;
+}
+
 - (BOOL)isAccessibilityElement
 {
   if (self.contentView != nil) {
@@ -2411,6 +2424,22 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 #endif
 }
 
+#if TARGET_OS_TV
+/// Finds the containing RCTSurfaceHostingProxyRootView by walking up the view
+/// hierarchy.
+- (RCTSurfaceHostingProxyRootView *)containingRootView
+{
+  UIView *view = self;
+  while (view != nil) {
+    if ([view isKindOfClass:[RCTSurfaceHostingProxyRootView class]]) {
+      return (RCTSurfaceHostingProxyRootView *)view;
+    }
+    view = view.superview;
+  }
+  return nil;
+}
+#endif
+
 - (void)focus
 {
   [self becomeFirstResponder];
@@ -2457,6 +2486,30 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 
   return YES;
 }
+
+#if TARGET_OS_TV
+
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+{
+  if (context.previouslyFocusedView == context.nextFocusedView) {
+    return;
+  }
+
+  // Do not resignFirstRespodner if we lost focus, let whoever took focus
+  // becomeFirstResponder thereby resigning for us. If we resign here,
+  // first responder will be assigned to some ancestor view and they
+  // can temporarily call onFocus/onBlur
+  if (context.nextFocusedView == self) {
+    [self becomeFirstResponder];
+  } else if (context.previouslyFocusedView == self && context.nextFocusedView == nil) {
+    [self resignFirstResponder];
+  }
+
+  [super didUpdateFocusInContext:context withAnimationCoordinator:coordinator];
+}
+
+#endif
 
 @end
 
