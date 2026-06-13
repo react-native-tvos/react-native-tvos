@@ -75,10 +75,19 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
   NSMutableSet<NSString *> *_accessibilityOrderNativeIDs;
   ParallaxProperties _tvParallaxProperties;
   BOOL _hasTVPreferredFocus;
-  UIView *_nextFocusUp;
-  UIView *_nextFocusDown;
-  UIView *_nextFocusLeft;
-  UIView *_nextFocusRight;
+  // Tags of the views that should receive directional focus from this view.
+  // We deliberately do not cache a UIView* here. Fabric recycles component
+  // views aggressively, and a cached UIView ref can outlive its original
+  // React node — pointing at a view that has since been reused for an
+  // unrelated node. Focusing such an orphan corrupts UIKit's focus-
+  // environment graph and crashes inside `-[UIFocusUpdateContext _didUpdateFocus]`.
+  // Storing the tag and re-resolving via `viewWithTag:` at focus time gives
+  // us the *current* owner of the tag (or nil if it's been unmounted), which
+  // is what we actually want.
+  std::optional<int32_t> _nextFocusUpTag;
+  std::optional<int32_t> _nextFocusDownTag;
+  std::optional<int32_t> _nextFocusLeftTag;
+  std::optional<int32_t> _nextFocusRightTag;
   UIView *_nextFocusActiveTarget;
   BOOL _autoFocus;
   BOOL _trapFocusUp;
@@ -509,10 +518,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (!self.isFocused) {
     return;
   }
-  if (self->_nextFocusUp != nil) {
+  UIView *rootView = [self containingRootView];
+  // Resolve the destination tag fresh on every focus event. If the tag's
+  // current owner has been unmounted (or the previous owner was recycled
+  // into something else), we deliberately want a nil — and we tear down
+  // the focus guide so we don't leak a `preferredFocusEnvironments` ref to
+  // a stale view into UIKit's focus-environment graph.
+  UIView *nextFocusUp =
+      _nextFocusUpTag.has_value() ? [rootView viewWithTag:_nextFocusUpTag.value()] : nil;
+  if (nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideUp];
+      [rootView addLayoutGuide:self.focusGuideUp];
 
       [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
@@ -520,13 +537,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
+    self.focusGuideUp.preferredFocusEnvironments = @[nextFocusUp];
+  } else if (self.focusGuideUp != nil) {
+    [rootView removeLayoutGuide:self.focusGuideUp];
+    self.focusGuideUp = nil;
   }
 
-  if (self->_nextFocusDown != nil) {
+  UIView *nextFocusDown =
+      _nextFocusDownTag.has_value() ? [rootView viewWithTag:_nextFocusDownTag.value()] : nil;
+  if (nextFocusDown != nil) {
     if (self.focusGuideDown == nil) {
       self.focusGuideDown = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideDown];
+      [rootView addLayoutGuide:self.focusGuideDown];
 
       [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
       [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
@@ -534,13 +556,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
+    self.focusGuideDown.preferredFocusEnvironments = @[nextFocusDown];
+  } else if (self.focusGuideDown != nil) {
+    [rootView removeLayoutGuide:self.focusGuideDown];
+    self.focusGuideDown = nil;
   }
 
-  if (self->_nextFocusLeft != nil) {
+  UIView *nextFocusLeft =
+      _nextFocusLeftTag.has_value() ? [rootView viewWithTag:_nextFocusLeftTag.value()] : nil;
+  if (nextFocusLeft != nil) {
     if (self.focusGuideLeft == nil) {
       self.focusGuideLeft = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideLeft];
+      [rootView addLayoutGuide:self.focusGuideLeft];
 
       [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
@@ -548,13 +575,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
+    self.focusGuideLeft.preferredFocusEnvironments = @[nextFocusLeft];
+  } else if (self.focusGuideLeft != nil) {
+    [rootView removeLayoutGuide:self.focusGuideLeft];
+    self.focusGuideLeft = nil;
   }
 
-  if (self->_nextFocusRight != nil) {
+  UIView *nextFocusRight =
+      _nextFocusRightTag.has_value() ? [rootView viewWithTag:_nextFocusRightTag.value()] : nil;
+  if (nextFocusRight != nil) {
     if (self.focusGuideRight == nil) {
       self.focusGuideRight = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideRight];
+      [rootView addLayoutGuide:self.focusGuideRight];
 
       [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
@@ -562,7 +594,10 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
     }
 
-    self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
+    self.focusGuideRight.preferredFocusEnvironments = @[nextFocusRight];
+  } else if (self.focusGuideRight != nil) {
+    [rootView removeLayoutGuide:self.focusGuideRight];
+    self.focusGuideRight = nil;
   }
 }
 // Called when focus leaves this view -- disable the directional focus guides
@@ -1177,57 +1212,53 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   // `nextFocusUp`
   if (oldViewProps.nextFocusUp != newViewProps.nextFocusUp) {
     if (newViewProps.nextFocusUp.has_value()) {
-      UIView *rootView = [self containingRootView];
-      _nextFocusUp = [rootView viewWithTag:newViewProps.nextFocusUp.value()];
+      _nextFocusUpTag = newViewProps.nextFocusUp.value();
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideUp != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideUp];
         self.focusGuideUp = nil;
       }
-      _nextFocusUp = nil;
+      _nextFocusUpTag.reset();
     }
   }
   // `nextFocusDown`
   if (oldViewProps.nextFocusDown != newViewProps.nextFocusDown) {
     if (newViewProps.nextFocusDown.has_value()) {
-      UIView *rootView = [self containingRootView];
-      _nextFocusDown = [rootView viewWithTag:newViewProps.nextFocusDown.value()];
+      _nextFocusDownTag = newViewProps.nextFocusDown.value();
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideDown != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideDown];
         self.focusGuideDown = nil;
       }
-      _nextFocusDown = nil;
+      _nextFocusDownTag.reset();
     }
   }
   // `nextFocusLeft`
   if (oldViewProps.nextFocusLeft != newViewProps.nextFocusLeft) {
     if (newViewProps.nextFocusLeft.has_value()) {
-      UIView *rootView = [self containingRootView];
-      _nextFocusLeft = [rootView viewWithTag:newViewProps.nextFocusLeft.value()];
+      _nextFocusLeftTag = newViewProps.nextFocusLeft.value();
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideLeft != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideLeft];
         self.focusGuideLeft = nil;
       }
-      _nextFocusLeft = nil;
+      _nextFocusLeftTag.reset();
     }
   }
   // `nextFocusRight`
   if (oldViewProps.nextFocusRight != newViewProps.nextFocusRight) {
     if (newViewProps.nextFocusRight.has_value()) {
-      UIView *rootView = [self containingRootView];
-      _nextFocusRight = [rootView viewWithTag:newViewProps.nextFocusRight.value()];
+      _nextFocusRightTag = newViewProps.nextFocusRight.value();
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideRight != nil) {
         [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
         self.focusGuideRight = nil;
       }
-      _nextFocusRight = nil;
+      _nextFocusRightTag.reset();
     }
   }
   
@@ -1365,10 +1396,10 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   // on the next layout / autorelease drain.
   [self removeFocusGuide];
   [self disableDirectionalFocusGuides];
-  _nextFocusUp = nil;
-  _nextFocusDown = nil;
-  _nextFocusLeft = nil;
-  _nextFocusRight = nil;
+  _nextFocusUpTag.reset();
+  _nextFocusDownTag.reset();
+  _nextFocusLeftTag.reset();
+  _nextFocusRightTag.reset();
   _nextFocusActiveTarget = nil;
   _focusDestinations = nil;
   _previouslyFocusedItem = nil;
