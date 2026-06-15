@@ -630,11 +630,10 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
       // Generally speaking, it would happen for any non-collapsable `View`.
     } else if (context.previouslyFocusedView == self) {
-      [self disableDirectionalFocusGuides];
       [coordinator addCoordinatedAnimations:^(void){
           [self removeParallaxMotionEffects];
           if (self->_eventEmitter) self->_eventEmitter->onBlur();
-      } completion:^(void){}];
+      } completion:^(void){[self disableDirectionalFocusGuides];}];
       [self resignFirstResponder];
     }
 }
