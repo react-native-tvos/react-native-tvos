@@ -14,6 +14,8 @@ import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
 
+import {useState} from 'react';
+
 const React = require('react');
 const ReactNative = require('react-native');
 
@@ -38,6 +40,7 @@ const width = 200 * scale;
 const height = 120 * scale;
 
 const Button = React.forwardRef((props: any, ref: $FlowFixMe) => {
+  const [focused, setFocused] = useState(false);
   return (
     <RNTesterThemeContext.Consumer>
       {theme => {
@@ -50,10 +53,20 @@ const Button = React.forwardRef((props: any, ref: $FlowFixMe) => {
             nextFocusRight={props.nextFocusRight}
             activeOpacity={0.7}
             onPress={props.onPress}
-            onFocus={props.onFocus}
+            onFocus={() => {
+              props.onFocus && props.onFocus();
+              setFocused(true);
+            }}
+            onBlur={() => {
+              setFocused(false);
+            }}
             style={[styles.buttonStyle, props.style]}
             ref={ref}>
-            <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
+            <Text
+              style={[
+                {color: focused ? 'red' : theme.LinkColor},
+                styles.buttonText,
+              ]}>
               {props.label}
             </Text>
           </TouchableOpacity>
@@ -145,6 +158,9 @@ const styles = StyleSheet.create({
     width,
     height,
     margin: 20 * scale,
+  },
+  focusedButtonStyle: {
+    color: 'red',
   },
   focusGuide: {
     width,
