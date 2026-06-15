@@ -41,7 +41,6 @@ const Button = React.memo((props: any) => {
   const onRefAssign = (ref: $FlowFixMe) => {
     props.onRefAssign?.(props.index, ref);
   };
-
   const theme = useTheme();
   return (
     <Pressable
@@ -51,9 +50,15 @@ const Button = React.memo((props: any) => {
         focused ? styles.buttonStyleFocused : styles.buttonStyle
       }
       ref={onRefAssign}>
-      <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
-        {props.label}
-      </Text>
+      {({focused}) => (
+        <Text
+          style={[
+            {color: focused ? 'red' : theme.LinkColor},
+            styles.buttonText,
+          ]}>
+          {props.label}
+        </Text>
+      )}
     </Pressable>
   );
 });

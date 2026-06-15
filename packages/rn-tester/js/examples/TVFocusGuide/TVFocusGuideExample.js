@@ -47,9 +47,15 @@ const Button = React.forwardRef((props: any, ref: any) => {
         focused ? styles.buttonStyleFocused : styles.buttonStyle
       }
       ref={ref}>
-      <Text style={[{color: theme.LinkColor}, styles.buttonText]}>
-        {props.label}
-      </Text>
+      {({focused}) => (
+        <Text
+          style={[
+            {color: focused ? 'red' : theme.LinkColor},
+            styles.buttonText,
+          ]}>
+          {props.label}
+        </Text>
+      )}
     </Pressable>
   );
 });
@@ -148,6 +154,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 30 * scale,
+  },
+  focusedButtonText: {
+    color: 'red',
   },
   buttonStyle: {
     width,
