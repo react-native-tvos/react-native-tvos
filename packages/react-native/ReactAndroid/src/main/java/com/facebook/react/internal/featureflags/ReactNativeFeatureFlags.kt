@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<17567d3adfba54ec2f888b50dae9efb8>>
+ * @generated SignedSource<<e5d648cb1649c713cac9ffaac905fc80>>
  */
 
 /**
@@ -497,12 +497,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useNestedScrollViewAndroid(): Boolean = accessor.useNestedScrollViewAndroid()
-
-  /**
-   * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
-   */
-  @JvmStatic
-  public fun useOptimizedViewRegistryOnAndroid(): Boolean = accessor.useOptimizedViewRegistryOnAndroid()
 
   /**
    * Use shared animation backend in C++ Animated

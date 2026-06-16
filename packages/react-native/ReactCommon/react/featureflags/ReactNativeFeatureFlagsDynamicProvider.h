@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<6db86679458aa76ebb30082ba12a32ae>>
+ * @generated SignedSource<<215e8b28994854f31f249a5e51623c87>>
  */
 
 /**
@@ -745,15 +745,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::useNestedScrollViewAndroid();
-  }
-
-  bool useOptimizedViewRegistryOnAndroid() override {
-    auto value = values_["useOptimizedViewRegistryOnAndroid"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::useOptimizedViewRegistryOnAndroid();
   }
 
   bool useSharedAnimatedBackend() override {

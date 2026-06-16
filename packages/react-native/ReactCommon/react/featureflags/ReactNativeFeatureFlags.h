@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e757dc80972dc0f4810cc3713516402d>>
+ * @generated SignedSource<<3fca574dc84a346c113e479d0583537c>>
  */
 
 /**
@@ -428,11 +428,6 @@ class ReactNativeFeatureFlags {
    * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
    */
   RN_EXPORT static bool useNestedScrollViewAndroid();
-
-  /**
-   * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
-   */
-  RN_EXPORT static bool useOptimizedViewRegistryOnAndroid();
 
   /**
    * Use shared animation backend in C++ Animated
