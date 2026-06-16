@@ -38,7 +38,7 @@ jobs:
     needs: [prebuild_apple_dependencies]
 
   build_android:
-    runs-on: 8-core-ubuntu
+    runs-on: ubuntu-latest
     if: github.repository == 'react/react-native'
     needs: [set_release_type]
     container:

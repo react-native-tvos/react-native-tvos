@@ -42,7 +42,7 @@ on:
 jobs:
   publish-react-native:
     if: inputs.mode == 'react-native'
-    runs-on: 8-core-ubuntu
+    runs-on: ubuntu-latest
     environment: npm-publish
     # `id-token: write` is required so the npm CLI can mint the OIDC
     # token that npm Trusted Publishing exchanges for a publish token.
