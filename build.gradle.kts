@@ -105,6 +105,10 @@ tasks.register("build") {
 tasks.register("publishAllToMavenTempLocal") {
   description = "Publish all the artifacts to be available inside a Maven Local repository on /tmp."
   dependsOn(":packages:react-native:ReactAndroid:publishAllPublicationsToMavenTempLocalRepository")
+  // hermes-engine is published to the local Maven repo for in-repo apps
+  // (e.g. rn-tester) to consume libhermesvm.so via the artifact coordinate.
+  // It is intentionally NOT added to publishAndroidToSonatype below.
+  dependsOn(":packages:react-native:ReactAndroid:hermes-engine:publishAllPublicationsToMavenTempLocalRepository")
 }
 
 tasks.register("publishAndroidToSonatype") {
