@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3304b4ee2c718dbf4d56b607ea09054d>>
+ * @generated SignedSource<<c909315f72b17d08b477cbfda4eff531>>
  * @flow strict
  * @noformat
  */
@@ -66,7 +66,6 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableCppPropsIteratorSetter: Getter<boolean>,
   enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean>,
   enableDestroyShadowTreeRevisionAsync: Getter<boolean>,
-  enableDifferentiatorMutationVectorPreallocation: Getter<boolean>,
   enableDoubleMeasurementFixAndroid: Getter<boolean>,
   enableEagerRootViewAttachment: Getter<boolean>,
   enableExclusivePropsUpdateAndroid: Getter<boolean>,
@@ -281,10 +280,6 @@ export const enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean> = 
  * Enables destructor calls for ShadowTreeRevision in the background to reduce UI thread work.
  */
 export const enableDestroyShadowTreeRevisionAsync: Getter<boolean> = createNativeFlagGetter('enableDestroyShadowTreeRevisionAsync', false);
-/**
- * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
- */
-export const enableDifferentiatorMutationVectorPreallocation: Getter<boolean> = createNativeFlagGetter('enableDifferentiatorMutationVectorPreallocation', false);
 /**
  * When enabled a subset of components will avoid double measurement on Android.
  */
