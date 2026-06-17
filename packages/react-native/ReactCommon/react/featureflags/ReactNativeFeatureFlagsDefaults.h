@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<613be235a200f15ac2ec48d1f5d87053>>
+ * @generated SignedSource<<6451b9c50b78b3b00fc74b137f5ca541>>
  */
 
 /**
@@ -132,10 +132,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableImagePrefetchingAndroid() override {
-    return false;
-  }
-
-  bool enableImageRequestDowngradingForNonVisibleImages() override {
     return false;
   }
 
