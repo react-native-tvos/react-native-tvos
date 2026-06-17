@@ -417,35 +417,17 @@ function assertNativeAnimatedModule(): void {
 
 let _warnedMissingNativeAnimated = false;
 
-// Whether the native driver should be forced on for every animation, overriding
-// the config (including an explicit `useNativeDriver: false`). This is only safe
-// when the shared animated backend is enabled — that backend is what makes every
-// prop drivable natively. Forcing native without it would break animations of
-// props the legacy native driver doesn't support.
-function isNativeDriverForced(): boolean {
-  return (
-    ReactNativeFeatureFlags.animatedForceNativeDriver() &&
-    ReactNativeFeatureFlags.cxxNativeAnimatedEnabled() &&
-    // eslint-disable-next-line
-    ReactNativeFeatureFlags.useSharedAnimatedBackend()
-  );
-}
-
 function shouldUseNativeDriver(
   config: Readonly<{...AnimationConfig, ...}> | EventConfig<unknown>,
 ): boolean {
-  const forceNativeDriver = isNativeDriverForced();
-
-  if (config.useNativeDriver == null && !forceNativeDriver) {
+  if (config.useNativeDriver == null) {
     console.warn(
       'Animated: `useNativeDriver` was not specified. This is a required ' +
         'option and must be explicitly set to `true` or `false`',
     );
   }
 
-  const useNativeDriver = forceNativeDriver || config.useNativeDriver === true;
-
-  if (useNativeDriver === true && !NativeAnimatedModule) {
+  if (config.useNativeDriver === true && !NativeAnimatedModule) {
     if (process.env.NODE_ENV !== 'test') {
       if (!_warnedMissingNativeAnimated) {
         console.warn(
@@ -461,7 +443,7 @@ function shouldUseNativeDriver(
     return false;
   }
 
-  return useNativeDriver;
+  return config.useNativeDriver || false;
 }
 
 function transformDataType(value: number | string): number | string {
@@ -487,7 +469,6 @@ export default {
   assertNativeAnimatedModule,
   generateNewAnimationId,
   generateNewNodeTag,
-  isNativeDriverForced,
   // $FlowExpectedError[unsafe-getters-setters] - unsafe getter lint suppression
   // $FlowExpectedError[missing-type-arg] - unsafe getter lint suppression
   get nativeEventEmitter(): NativeEventEmitter {
