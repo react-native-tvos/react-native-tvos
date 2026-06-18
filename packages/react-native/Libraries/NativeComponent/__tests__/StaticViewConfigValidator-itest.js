@@ -5,16 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @flow strict
+ * @fantom_flags enableNativeCSSParsing:false
  * @format
  */
 
-import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
-import * as StaticViewConfigValidator from '../StaticViewConfigValidator';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
-beforeAll(() => {
-  // $FlowExpectedError[cannot-write]
-  ReactNativeFeatureFlags.enableNativeCSSParsing = () => false;
-});
+import * as StaticViewConfigValidator from '../StaticViewConfigValidator';
 
 test('passes for identical configs', () => {
   const name = 'RCTView';

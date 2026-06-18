@@ -8,17 +8,24 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import {getUrlCacheBreaker, setUrlCacheBreaker} from '../AssetUtils';
+
+const originalConsoleWarn = console.warn;
 
 describe('AssetUtils', () => {
   afterEach(() => {
     // $FlowFixMe[cannot-write]
+    console.warn = originalConsoleWarn;
+    // $FlowFixMe[cannot-write]
     global.__DEV__ = true;
-    jest.clearAllMocks();
   });
 
   it('should return empty string and warn once if no cacheBreaker set (DEV)', () => {
-    const mockWarn = jest.spyOn(console, 'warn').mockReturnValue(undefined);
+    const mockWarn = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.warn = mockWarn;
     // $FlowFixMe[cannot-write]
     global.__DEV__ = true;
     expect(getUrlCacheBreaker()).toEqual('');
@@ -27,7 +34,9 @@ describe('AssetUtils', () => {
   });
 
   it('should return empty string if no cacheBreaker set in prod', () => {
-    const mockWarn = jest.spyOn(console, 'warn');
+    const mockWarn = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.warn = mockWarn;
     // $FlowFixMe[cannot-write]
     global.__DEV__ = false;
     expect(getUrlCacheBreaker()).toEqual('');

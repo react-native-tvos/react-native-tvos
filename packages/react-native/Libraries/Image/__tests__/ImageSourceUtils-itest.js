@@ -8,11 +8,16 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 const {getImageSourcesFromImageProps} = require('../ImageSourceUtils');
+
+const originalConsoleWarn = console.warn;
 
 describe('ImageSourceUtils', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    // $FlowFixMe[cannot-write]
+    console.warn = originalConsoleWarn;
   });
 
   it('source prop provided', () => {
@@ -56,8 +61,20 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(expect.objectContaining({uri: uri1, scale: 1}));
-    expect(sources[1]).toEqual(expect.objectContaining({uri: uri2, scale: 2}));
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 1,
+      uri: uri1,
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: uri2,
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should use src as default when 1x scale is not provided in srcSet', () => {
@@ -80,9 +97,27 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(expect.objectContaining({uri: uri1, scale: 3}));
-    expect(sources[1]).toEqual(expect.objectContaining({uri: uri2, scale: 2}));
-    expect(sources[2]).toEqual(expect.objectContaining({uri: uri, scale: 1}));
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 3,
+      uri: uri1,
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: uri2,
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[2]).toEqual({
+      headers: {},
+      scale: 1,
+      uri: uri,
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should use 1x as default scale if only url is provided in srcSet', () => {
@@ -101,8 +136,20 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(expect.objectContaining({uri: uri1, scale: 2}));
-    expect(sources[1]).toEqual(expect.objectContaining({uri: uri2, scale: 1}));
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: uri1,
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 1,
+      uri: uri2,
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should parse srcSet values without spaces after commas', () => {
@@ -116,15 +163,27 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(
-      expect.objectContaining({uri: 'uri1', scale: 1}),
-    );
-    expect(sources[1]).toEqual(
-      expect.objectContaining({uri: 'uri2', scale: 2}),
-    );
-    expect(sources[2]).toEqual(
-      expect.objectContaining({uri: 'uri3', scale: 3}),
-    );
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 1,
+      uri: 'uri1',
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: 'uri2',
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[2]).toEqual({
+      headers: {},
+      scale: 3,
+      uri: 'uri3',
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should parse fractional srcSet scales', () => {
@@ -138,12 +197,20 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(
-      expect.objectContaining({uri: 'uri1', scale: 1.5}),
-    );
-    expect(sources[1]).toEqual(
-      expect.objectContaining({uri: 'uri2', scale: 2}),
-    );
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 1.5,
+      uri: 'uri1',
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: 'uri2',
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should ignore srcSet entries with a bare x descriptor', () => {
@@ -158,16 +225,26 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toEqual(
-      expect.objectContaining({uri: 'uri2', scale: 2}),
-    );
-    expect(sources[1]).toEqual(
-      expect.objectContaining({uri: 'fallbackUri', scale: 1}),
-    );
+    expect(sources[0]).toEqual({
+      headers: {},
+      scale: 2,
+      uri: 'uri2',
+      width: undefined,
+      height: undefined,
+    });
+    expect(sources[1]).toEqual({
+      headers: {},
+      scale: 1,
+      uri: 'fallbackUri',
+      width: undefined,
+      height: undefined,
+    });
   });
 
   it('should warn when an unsupported scale is provided in srcSet', () => {
-    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const mockWarn = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.warn = mockWarn;
     let uri1 = 'uri1';
     let scale1 = '300w';
 
@@ -197,7 +274,7 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toHaveProperty('headers', {
+    expect(sources[0].headers).toEqual({
       ['Access-Control-Allow-Credentials']: 'true',
     });
   });
@@ -217,7 +294,7 @@ describe('ImageSourceUtils', () => {
     if (!Array.isArray(sources)) {
       throw new Error('Expected `sources` to be an array');
     }
-    expect(sources[0]).toHaveProperty('headers', {
+    expect(sources[0].headers).toEqual({
       ['Referrer-Policy']: referrerPolicy,
     });
   });
