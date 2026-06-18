@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import {AnimatedEvent} from '../../../../Libraries/Animated/AnimatedEvent';
 import AnimatedValue from '../../../../Libraries/Animated/nodes/AnimatedValue';
 import {
@@ -31,7 +33,7 @@ describe('createCompositeKeyForProps', () => {
     });
 
     it('does not search non-allowlisted props', () => {
-      const getter = jest.fn().mockReturnValue({});
+      const getter = jest.fn(() => ({}));
       const props = {
         object: {
           // $FlowExpectedError[unsafe-getters-setters]
@@ -235,7 +237,7 @@ describe('createCompositeKeyForProps', () => {
 
 describe('areCompositeKeysEqual', () => {
   it('compares identical keys without traversal', () => {
-    const getter = jest.fn().mockReturnValue({});
+    const getter = jest.fn(() => ({}));
     const compositeKey = {
       object: {
         // $FlowExpectedError[unsafe-getters-setters]

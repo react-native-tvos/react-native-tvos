@@ -8,13 +8,15 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import {AnimatedEvent} from '../../../../Libraries/Animated/AnimatedEvent';
 import createAnimatedPropsHook from '../createAnimatedPropsHook';
-import {create, update} from '@react-native/jest-preset/jest/renderer';
+import * as Fantom from '@react-native/fantom';
 import {useLayoutEffect} from 'react';
 
 describe('useAnimatedProps', () => {
-  it('returns the same ref callback when `props` changes', async () => {
+  it('returns the same ref callback when `props` changes', () => {
     const useAnimatedProps = createAnimatedPropsHook(null);
 
     const refs = [];
@@ -26,15 +28,16 @@ describe('useAnimatedProps', () => {
       return null;
     }
 
-    const root = await create(<Sentinel foo={1} />);
+    const root = Fantom.createRoot();
+    Fantom.runTask(() => root.render(<Sentinel foo={1} />));
     expect(refs.length).toBe(1);
     expect(refs[0]).toBeInstanceOf(Function);
 
-    await update(root, <Sentinel foo={2} />);
+    Fantom.runTask(() => root.render(<Sentinel foo={2} />));
     expect(refs.length).toBe(1);
   });
 
-  it('returns the same ref callback when `AnimatedEvent` is the same', async () => {
+  it('returns the same ref callback when `AnimatedEvent` is the same', () => {
     const useAnimatedProps = createAnimatedPropsHook(null);
 
     const refs = [];
@@ -48,15 +51,16 @@ describe('useAnimatedProps', () => {
 
     const event = new AnimatedEvent([{}], {useNativeDriver: true});
 
-    const root = await create(<Sentinel foo={event} />);
+    const root = Fantom.createRoot();
+    Fantom.runTask(() => root.render(<Sentinel foo={event} />));
     expect(refs.length).toBe(1);
     expect(refs[0]).toBeInstanceOf(Function);
 
-    await update(root, <Sentinel foo={event} />);
+    Fantom.runTask(() => root.render(<Sentinel foo={event} />));
     expect(refs.length).toBe(1);
   });
 
-  it('returns a new ref callback when `AnimatedEvent` changes', async () => {
+  it('returns a new ref callback when `AnimatedEvent` changes', () => {
     const useAnimatedProps = createAnimatedPropsHook(null);
 
     const refs = [];
@@ -71,11 +75,12 @@ describe('useAnimatedProps', () => {
     const eventA = new AnimatedEvent([{}], {useNativeDriver: true});
     const eventB = new AnimatedEvent([{}], {useNativeDriver: true});
 
-    const root = await create(<Sentinel foo={eventA} />);
+    const root = Fantom.createRoot();
+    Fantom.runTask(() => root.render(<Sentinel foo={eventA} />));
     expect(refs.length).toBe(1);
     expect(refs[0]).toBeInstanceOf(Function);
 
-    await update(root, <Sentinel foo={eventB} />);
+    Fantom.runTask(() => root.render(<Sentinel foo={eventB} />));
     expect(refs.length).toBe(2);
     expect(refs[1]).toBeInstanceOf(Function);
 

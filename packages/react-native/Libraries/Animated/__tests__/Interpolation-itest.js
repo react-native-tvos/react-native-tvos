@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {
   InterpolationConfigSupportedOutputType,
   InterpolationConfigType,
@@ -33,6 +35,13 @@ function createInterpolation<T extends InterpolationConfigSupportedOutputType>(
 }
 
 describe('Interpolation', () => {
+  const originalConsoleWarn = console.warn;
+
+  afterEach(() => {
+    // $FlowFixMe[cannot-write]
+    console.warn = originalConsoleWarn;
+  });
+
   it('should work with defaults', () => {
     const interpolation = createInterpolation({
       inputRange: [0, 1],
@@ -365,7 +374,10 @@ describe('Interpolation', () => {
   });
 
   it('should work with PlatformColor', () => {
-    jest.spyOn(console, 'warn').mockImplementationOnce(() => {});
+    const mockWarn = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.warn = mockWarn;
+
     const interpolation = createInterpolation({
       inputRange: [0, 1],
       outputRange: [
@@ -381,7 +393,7 @@ describe('Interpolation', () => {
     expect(interpolation(2 / 3)).toStrictEqual(
       PlatformColor('@android:color/white'),
     );
-    expect(console.warn).toBeCalledWith(
+    expect(mockWarn).toBeCalledWith(
       'PlatformColor interpolation should happen natively, here we fallback to the closest color',
     );
     expect(interpolation(1)).toStrictEqual(
@@ -389,20 +401,20 @@ describe('Interpolation', () => {
     );
   });
 
-  it.each([
+  for (const [label, outputRange, expected] of [
     ['radians', ['1rad', '2rad'], [1, 2]],
     ['degrees', ['90deg', '180deg'], [Math.PI / 2, Math.PI]],
     ['numbers', [1024, Math.PI], [1024, Math.PI]],
     ['unknown', ['5foo', '10foo'], ['5foo', '10foo']],
-  ])(
-    'should convert %s to numbers in the native config',
-    (_, outputRange, expected) => {
+  ]) {
+    it(`should convert ${label} to numbers in the native config`, () => {
       const config = new AnimatedInterpolation(
         // $FlowFixMe[incompatible-type]
         {},
+        // $FlowFixMe[incompatible-call]
         {inputRange: [0, 1], outputRange},
       ).__getNativeConfig();
       expect(config.outputRange).toEqual(expected);
-    },
-  );
+    });
+  }
 });

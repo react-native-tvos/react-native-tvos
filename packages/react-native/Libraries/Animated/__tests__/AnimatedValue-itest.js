@@ -8,9 +8,33 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
+import NativeAnimatedHelper from '../../../src/private/animated/NativeAnimatedHelper';
+import AnimatedValue from '../nodes/AnimatedValue';
+
 describe('AnimatedValue', () => {
-  let NativeAnimatedHelper;
-  let AnimatedValue;
+  // Fantom uses the real native animated module and does not support
+  // `jest.spyOn`, so we wrap the relevant `NativeAnimatedHelper.API` methods
+  // with call-through mocks that count invocations and restore them afterwards.
+  const restoreAPI: Array<() => void> = [];
+
+  function spyOnAPI(name: string) {
+    // $FlowFixMe[invalid-computed-prop]
+    const original = NativeAnimatedHelper.API[name];
+    const spy = jest.fn((...args: Array<unknown>) =>
+      original.apply(NativeAnimatedHelper.API, args),
+    );
+    // $FlowFixMe[prop-missing]
+    // $FlowFixMe[cannot-write]
+    NativeAnimatedHelper.API[name] = spy;
+    restoreAPI.push(() => {
+      // $FlowFixMe[prop-missing]
+      // $FlowFixMe[cannot-write]
+      NativeAnimatedHelper.API[name] = original;
+    });
+    return spy;
+  }
 
   function createNativeAnimatedValue(): AnimatedValue {
     return new AnimatedValue(0, {useNativeDriver: true});
@@ -32,31 +56,17 @@ describe('AnimatedValue', () => {
   }
 
   beforeEach(() => {
-    jest.resetModules();
+    spyOnAPI('createAnimatedNode');
+    spyOnAPI('dropAnimatedNode');
+    spyOnAPI('startListeningToAnimatedNodeValue');
+    spyOnAPI('setWaitingForIdentifier');
+    spyOnAPI('unsetWaitingForIdentifier');
+  });
 
-    jest.mock('../NativeAnimatedTurboModule', () => ({
-      __esModule: true,
-      default: {
-        addListener: jest.fn(),
-        createAnimatedNode: jest.fn(),
-        dropAnimatedNode: jest.fn(),
-        removeListeners: jest.fn(),
-        startListeningToAnimatedNodeValue: jest.fn(),
-        stopListeningToAnimatedNodeValue: jest.fn(),
-        extractAnimatedNodeOffset: jest.fn(),
-        // ...
-      },
-    }));
-
-    NativeAnimatedHelper =
-      require('../../../src/private/animated/NativeAnimatedHelper').default;
-    AnimatedValue = require('../nodes/AnimatedValue').default;
-
-    jest.spyOn(NativeAnimatedHelper.API, 'createAnimatedNode');
-    jest.spyOn(NativeAnimatedHelper.API, 'dropAnimatedNode');
-    jest.spyOn(NativeAnimatedHelper.API, 'startListeningToAnimatedNodeValue');
-    jest.spyOn(NativeAnimatedHelper.API, 'setWaitingForIdentifier');
-    jest.spyOn(NativeAnimatedHelper.API, 'unsetWaitingForIdentifier');
+  afterEach(() => {
+    while (restoreAPI.length > 0) {
+      restoreAPI.pop()?.();
+    }
   });
 
   it('emits update events for listeners added', () => {
@@ -217,7 +227,13 @@ describe('AnimatedValue', () => {
 
       emitMockUpdate(node, 123, 50);
 
-      const spy = jest.spyOn(node, '__onAnimatedValueUpdateReceived');
+      // $FlowFixMe[method-unbinding]
+      const original = node.__onAnimatedValueUpdateReceived;
+      const spy = jest.fn((...args: Array<unknown>) =>
+        original.apply(node, args),
+      );
+      // $FlowFixMe[cannot-write]
+      node.__onAnimatedValueUpdateReceived = spy;
 
       const mockValue = 100;
       const mockOffset = 50;
@@ -225,7 +241,8 @@ describe('AnimatedValue', () => {
       emitMockUpdate(node, mockValue, mockOffset);
 
       expect(spy).toHaveBeenCalledWith(mockValue, mockOffset);
-      spy.mockRestore();
+      // $FlowFixMe[cannot-write]
+      node.__onAnimatedValueUpdateReceived = original;
     });
   });
 });

@@ -8,19 +8,13 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
+import Animated from '../Animated';
+import AnimatedObject from '../nodes/AnimatedObject';
 import nullthrows from 'nullthrows';
 
 describe('AnimatedObject', () => {
-  let Animated;
-  let AnimatedObject;
-
-  beforeEach(() => {
-    jest.resetModules();
-
-    Animated = require('../Animated').default;
-    AnimatedObject = require('../nodes/AnimatedObject').default;
-  });
-
   it('should get the proper value', () => {
     const anim = new Animated.Value(0);
     const translateAnim = anim.interpolate({

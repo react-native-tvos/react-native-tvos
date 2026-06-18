@@ -14,7 +14,7 @@
  * @copyright 2014-2015 Gaetan Renaudeau. MIT License.
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 import bezier from '../bezier';
 
