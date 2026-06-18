@@ -8,22 +8,21 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
+import TracingStateObserver from '../TracingStateObserver';
 
 describe('TracingStateObserver', () => {
   beforeEach(() => {
-    jest.resetModules();
     delete global.__TRACING_STATE_OBSERVER__;
   });
 
   describe('without native support', () => {
     it('isTracing returns false when native observer is not available', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
       expect(TracingStateObserver.isTracing()).toBe(false);
     });
 
     it('subscribe returns a no-op unsubscribe when native observer is not available', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
       const callback = jest.fn();
       const unsubscribe = TracingStateObserver.subscribe(callback);
 
@@ -47,8 +46,6 @@ describe('TracingStateObserver', () => {
     });
 
     it('isTracing returns current tracing state', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
-
       expect(TracingStateObserver.isTracing()).toBe(false);
 
       global.__TRACING_STATE_OBSERVER__.onTracingStateChange(true);
@@ -59,7 +56,6 @@ describe('TracingStateObserver', () => {
     });
 
     it('subscribe adds callback to subscribers and returns unsubscribe function', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
       const callback = jest.fn();
 
       const unsubscribe = TracingStateObserver.subscribe(callback);
@@ -76,13 +72,12 @@ describe('TracingStateObserver', () => {
         false,
       );
 
-      callback.mockClear();
+      const callsAfterUnsubscribe = callback.mock.calls.length;
       global.__TRACING_STATE_OBSERVER__.onTracingStateChange(false);
-      expect(callback).not.toHaveBeenCalled();
+      expect(callback.mock.calls.length).toBe(callsAfterUnsubscribe);
     });
 
     it('multiple subscribers receive state changes', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
       const callback1 = jest.fn();
       const callback2 = jest.fn();
 
@@ -98,7 +93,6 @@ describe('TracingStateObserver', () => {
 
   describe('with late native support installation', () => {
     it('detects native global installed after module load', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
       expect(TracingStateObserver.isTracing()).toBe(false);
 
       const mockSubscribers = new Set<(isTracing: boolean) => void>();
@@ -115,8 +109,6 @@ describe('TracingStateObserver', () => {
     });
 
     it('subscribes when native global is installed after module load', () => {
-      const TracingStateObserver = require('../TracingStateObserver').default;
-
       const mockSubscribers = new Set<(isTracing: boolean) => void>();
       global.__TRACING_STATE_OBSERVER__ = {
         isTracing: false,

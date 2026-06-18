@@ -8,7 +8,7 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 import type {AttributeConfiguration} from '../../../Renderer/shims/ReactNativeTypes';
 

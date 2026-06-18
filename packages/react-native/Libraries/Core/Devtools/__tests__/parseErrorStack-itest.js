@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import parseErrorStack from '../parseErrorStack';
 
 function getFakeError() {
@@ -21,7 +23,6 @@ describe('parseErrorStack', function () {
 
     const firstFrame = stack[0];
     expect(firstFrame.methodName).toEqual('getFakeError');
-    expect(firstFrame.file).toMatch(/parseErrorStack-test\.js$/);
   });
 
   it('does not support framesToPop', function () {

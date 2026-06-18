@@ -8,10 +8,11 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
-let MessageQueue;
-let MessageQueueTestModule;
+const MessageQueueTestModule = require('../__mocks__/MessageQueueTestModule');
+const MessageQueue = require('../MessageQueue').default;
+
 let queue;
 
 const MODULE_IDS = 0;
@@ -41,9 +42,6 @@ const assertQueue = (
 // local callbacks stored by IDs are cleaned up.
 describe('MessageQueue', () => {
   beforeEach(() => {
-    jest.resetModules();
-    MessageQueue = require('../MessageQueue').default;
-    MessageQueueTestModule = require('../__mocks__/MessageQueueTestModule');
     queue = new MessageQueue();
     queue.registerCallableModule(
       'MessageQueueTestModule',
@@ -117,9 +115,16 @@ describe('MessageQueue', () => {
   it('should throw when calling with unknown module', () => {
     const unknownModule = 'UnknownModule',
       unknownMethod = 'UnknownMethod';
-    expect(() =>
-      queue.__callFunction(unknownModule, unknownMethod, []),
-    ).toThrow(
+    let thrownError: ?Error;
+    try {
+      queue.__callFunction(unknownModule, unknownMethod, []);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        thrownError = e;
+      }
+    }
+    expect(thrownError).toBeInstanceOf(Error);
+    expect(thrownError?.message).toContain(
       `Failed to call into JavaScript module method ${unknownModule}.${unknownMethod}()`,
     );
   });
