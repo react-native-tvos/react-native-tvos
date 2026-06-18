@@ -8,22 +8,16 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {StackFrame} from '../../../Core/NativeExceptionsManager';
 
+import LogBoxLog from '../../Data/LogBoxLog';
 import LogBoxInspectorStackFrames, {
   getCollapseMessage,
 } from '../LogBoxInspectorStackFrames';
-
-const LogBoxLog = require('../../Data/LogBoxLog').default;
-const render = require('@react-native/jest-preset/jest/renderer');
-const React = require('react');
-
-// Mock `LogBoxInspectorSection` because we are interested in snapshotting the
-// behavior of `LogBoxInspectorStackFrames`, not `LogBoxInspectorSection`.
-jest.mock('../LogBoxInspectorSection', () => ({
-  __esModule: true,
-  default: 'LogBoxInspectorSection',
-}));
+import * as Fantom from '@react-native/fantom';
+import * as React from 'react';
 
 const createLogWithFrames = (collapsedOptions: Array<?boolean>) => {
   return new LogBoxLog({
@@ -50,29 +44,35 @@ const createCollapsedFrames = (collapsedOptions: Array<?boolean>) => {
 };
 
 describe('LogBoxInspectorStackFrames', () => {
-  it('should render stack frames with 1 frame collapsed', async () => {
-    const output = await render.create(
-      <LogBoxInspectorStackFrames
-        onRetry={() => {}}
-        log={createLogWithFrames([false, true])}
-      />,
-    );
+  it('should render stack frames with 1 frame collapsed', () => {
+    const root = Fantom.createRoot();
+    Fantom.runTask(() => {
+      root.render(
+        <LogBoxInspectorStackFrames
+          onRetry={() => {}}
+          log={createLogWithFrames([false, true])}
+        />,
+      );
+    });
 
-    expect(output).toMatchSnapshot();
+    expect(root.getRenderedOutput().toJSX()).toMatchSnapshot();
   });
 
-  it('should render null for empty stack frames', async () => {
-    const output = await render.create(
-      <LogBoxInspectorStackFrames
-        onRetry={() => {}}
-        log={createLogWithFrames([])}
-      />,
-    );
+  it('should render null for empty stack frames', () => {
+    const root = Fantom.createRoot();
+    Fantom.runTask(() => {
+      root.render(
+        <LogBoxInspectorStackFrames
+          onRetry={() => {}}
+          log={createLogWithFrames([])}
+        />,
+      );
+    });
 
-    expect(output).toMatchSnapshot();
+    expect(root.getRenderedOutput().toJSX()).toMatchSnapshot();
   });
 
-  it.each([
+  const permutations: Array<[?boolean, ?boolean, ?boolean, boolean, string]> = [
     [null, null, null, true, 'No frames to show'],
     [true, null, null, true, 'See 1 collapsed frame'],
     [true, null, null, false, 'Collapse 1 frame'],
@@ -84,9 +84,18 @@ describe('LogBoxInspectorStackFrames', () => {
     [true, true, false, false, 'Collapse 2 frames'],
     [true, false, false, false, 'Collapse 1 frame'],
     [false, false, false, false, 'Showing all frames'],
-  ])(
-    'For permutation %s, %s, %s and %s, should render %s',
-    (stackOne, stackTwo, stackThree, collapsed, message) => {
+  ];
+
+  for (const [
+    stackOne,
+    stackTwo,
+    stackThree,
+    collapsed,
+    message,
+  ] of permutations) {
+    it(`For permutation ${String(stackOne)}, ${String(stackTwo)}, ${String(
+      stackThree,
+    )} and ${String(collapsed)}, should render ${message}`, () => {
       expect(
         getCollapseMessage(
           createCollapsedFrames(
@@ -96,6 +105,6 @@ describe('LogBoxInspectorStackFrames', () => {
           collapsed,
         ),
       ).toEqual(message);
-    },
-  );
+    });
+  }
 });
