@@ -8,12 +8,12 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 describe('DeviceInfo', () => {
   const DeviceInfo = require('../DeviceInfo').default;
 
   it('should give device info', () => {
-    expect(DeviceInfo.getConstants()).toHaveProperty('Dimensions');
+    expect(DeviceInfo.getConstants().Dimensions).toBeDefined();
   });
 });

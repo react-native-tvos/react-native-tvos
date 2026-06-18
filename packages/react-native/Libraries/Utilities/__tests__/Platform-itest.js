@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {PlatformSelectSpec} from '../PlatformTypes';
 
 // $FlowFixMe[missing-platform-support]

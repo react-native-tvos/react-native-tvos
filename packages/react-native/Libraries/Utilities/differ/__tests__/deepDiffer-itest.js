@@ -8,11 +8,15 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 const deepDiffer = require('../deepDiffer').default;
 
 describe('deepDiffer', function () {
+  afterEach(() => {
+    deepDiffer.unstable_setLogListeners(null);
+  });
+
   it('should diff primitives of the same type', () => {
     expect(deepDiffer(1, 2)).toBe(true);
     expect(deepDiffer(42, 42)).toBe(false);
@@ -167,31 +171,25 @@ describe('deepDiffer', function () {
     function b() {}
     const listeners = {onDifferentFunctionsIgnored: jest.fn()};
     deepDiffer.unstable_setLogListeners(listeners);
-    try {
-      deepDiffer(a, a);
-      expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
 
-      deepDiffer(a, b);
-      expect(listeners.onDifferentFunctionsIgnored.mock.calls).toEqual([
-        ['a', 'b'],
-      ]);
-    } finally {
-      deepDiffer.unstable_setLogListeners(null);
-    }
+    deepDiffer(a, a);
+    expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
+
+    deepDiffer(a, b);
+    expect(listeners.onDifferentFunctionsIgnored.mock.calls).toEqual([
+      ['a', 'b'],
+    ]);
   });
   it('should not log when explicitly considering two different functions equal', () => {
     function a() {}
     function b() {}
     const listeners = {onDifferentFunctionsIgnored: jest.fn()};
     deepDiffer.unstable_setLogListeners(listeners);
-    try {
-      deepDiffer(a, a, {unsafelyIgnoreFunctions: true});
-      expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
 
-      deepDiffer(a, b, {unsafelyIgnoreFunctions: true});
-      expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
-    } finally {
-      deepDiffer.unstable_setLogListeners(null);
-    }
+    deepDiffer(a, a, {unsafelyIgnoreFunctions: true});
+    expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
+
+    deepDiffer(a, b, {unsafelyIgnoreFunctions: true});
+    expect(listeners.onDifferentFunctionsIgnored).not.toHaveBeenCalled();
   });
 });

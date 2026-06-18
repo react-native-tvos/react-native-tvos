@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import Dimensions from '../Dimensions';
 import Platform from '../Platform';
 

@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import stringifySafe, {createStringifySafeWithLimits} from '../stringifySafe';
 
 describe('stringifySafe', () => {
@@ -24,7 +25,7 @@ describe('stringifySafe', () => {
   });
 
   it('stringifySafe stringifies function values', () => {
-    expect(stringifySafe(function () {})).toEqual('function () {}');
+    expect(stringifySafe(function () {})).toEqual('function () { [bytecode] }');
   });
 
   it('stringifySafe stringifies non-circular objects', () => {

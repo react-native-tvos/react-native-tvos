@@ -8,17 +8,26 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import warnOnce from '../warnOnce';
 
 describe('warnOnce', () => {
+  const originalConsoleWarn = console.warn;
+
+  afterEach(() => {
+    // $FlowFixMe[cannot-write]
+    console.warn = originalConsoleWarn;
+  });
+
   it('logs warning messages to the console exactly once', () => {
-    jest.restoreAllMocks();
-    jest.spyOn(console, 'warn').mockReturnValue(undefined);
+    const mockConsoleWarn = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.warn = mockConsoleWarn;
 
     warnOnce('test-message', 'This is a log message');
     warnOnce('test-message', 'This is a second log message');
 
-    expect(console.warn).toHaveBeenCalledWith('This is a log message');
-    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(mockConsoleWarn).toHaveBeenCalledTimes(1);
+    expect(mockConsoleWarn).toHaveBeenCalledWith('This is a log message');
   });
 });

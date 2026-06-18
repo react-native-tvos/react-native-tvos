@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {EventSubscription} from '../EventEmitter';
 
 import EventEmitter from '../EventEmitter';

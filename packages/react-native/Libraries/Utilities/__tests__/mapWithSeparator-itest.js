@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import mapWithSeparator from '../mapWithSeparator';
 
 describe('mapWithSeparator', () => {

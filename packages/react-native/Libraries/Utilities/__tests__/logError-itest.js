@@ -8,40 +8,50 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import logError from '../logError';
 
 describe('logError', () => {
+  const originalConsoleError = console.error;
+
+  afterEach(() => {
+    // $FlowFixMe[cannot-write]
+    console.error = originalConsoleError;
+  });
+
   it('logs error messages to the console', () => {
-    console.error.apply = jest.fn();
+    const mockConsoleError = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.error = mockConsoleError;
 
     logError('This is a log message');
 
-    expect(console.error.apply).toHaveBeenCalledWith(console, [
-      'This is a log message',
-    ]);
+    expect(mockConsoleError).toHaveBeenCalledWith('This is a log message');
   });
 
   it('logs error messages with multiple arguments to the console', () => {
-    console.error.apply = jest.fn();
+    const mockConsoleError = jest.fn();
+    // $FlowFixMe[cannot-write]
+    console.error = mockConsoleError;
 
     const data = 'log';
     logError('This is a', data, 'message');
 
-    expect(console.error.apply).toHaveBeenCalledWith(console, [
+    expect(mockConsoleError).toHaveBeenCalledWith(
       'This is a',
       'log',
       'message',
-    ]);
+    );
   });
 
   it('logs errors to the console', () => {
+    const mockConsoleError = jest.fn();
     // $FlowFixMe[cannot-write]
-    console.error = jest.fn();
+    console.error = mockConsoleError;
 
     logError(new Error('The error message'));
 
-    // $FlowFixMe[prop-missing]
-    expect(console.error.mock.calls[0][0]).toContain(
+    expect(mockConsoleError.mock.calls[0][0]).toContain(
       'Error: "The error message".  Stack:',
     );
   });

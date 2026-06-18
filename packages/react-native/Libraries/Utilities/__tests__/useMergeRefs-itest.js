@@ -8,33 +8,16 @@
  * @format
  */
 
-import type {HostInstance} from '../../../src/private/types/HostInstance';
-import type {ReactTestRenderer} from 'react-test-renderer';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
+
+import ensureInstance from '../../../src/private/__tests__/utilities/ensureInstance';
+import ReactNativeElement from '../../../src/private/webapis/dom/nodes/ReactNativeElement';
 import View from '../../Components/View/View';
 import useMergeRefs from '../useMergeRefs';
+import * as Fantom from '@react-native/fantom';
 import * as React from 'react';
-import {act, create} from 'react-test-renderer';
-
-class Screen {
-  #root: ?ReactTestRenderer;
-
-  render(children: () => React.MixedElement): void {
-    act(() => {
-      if (this.#root == null) {
-        this.#root = create(<TestComponent>{children}</TestComponent>);
-      } else {
-        this.#root.update(<TestComponent>{children}</TestComponent>);
-      }
-    });
-  }
-
-  unmount(): void {
-    act(() => {
-      this.#root?.unmount();
-    });
-  }
-}
 
 function TestComponent(
   props: Readonly<{children: () => React.MixedElement}>,
@@ -43,29 +26,49 @@ function TestComponent(
 }
 
 function id(instance: HostInstance | null): string | null {
-  // $FlowFixMe[prop-missing] - Intentional.
-  return instance?.props?.id ?? null;
+  if (instance == null) {
+    return null;
+  }
+  return ensureInstance(instance, ReactNativeElement).id;
 }
 
 test('accepts a ref callback', () => {
-  const screen = new Screen();
+  const root = Fantom.createRoot();
   const ledger: Array<{[string]: string | null}> = [];
 
   const ref = (current: HostInstance | null) => {
     ledger.push({ref: id(current)});
   };
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="foo" key="foo" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}]);
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="bar" key="bar" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="bar" key="bar" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}, {ref: null}, {ref: 'bar'}]);
 
-  screen.unmount();
+  Fantom.runTask(() => {
+    root.render(<></>);
+  });
 
   expect(ledger).toEqual([
     {ref: 'foo'},
@@ -76,7 +79,7 @@ test('accepts a ref callback', () => {
 });
 
 test('accepts a ref callback that returns a cleanup function', () => {
-  const screen = new Screen();
+  const root = Fantom.createRoot();
   const ledger: Array<{[string]: string | null}> = [];
 
   // TODO: Remove `| null` after Flow supports ref cleanup functions.
@@ -87,17 +90,35 @@ test('accepts a ref callback that returns a cleanup function', () => {
     };
   };
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="foo" key="foo" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}]);
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="bar" key="bar" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="bar" key="bar" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}, {ref: null}, {ref: 'bar'}]);
 
-  screen.unmount();
+  Fantom.runTask(() => {
+    root.render(<></>);
+  });
 
   expect(ledger).toEqual([
     {ref: 'foo'},
@@ -108,7 +129,7 @@ test('accepts a ref callback that returns a cleanup function', () => {
 });
 
 test('accepts a ref object', () => {
-  const screen = new Screen();
+  const root = Fantom.createRoot();
   const ledger: Array<{[string]: string | null}> = [];
 
   const ref = {
@@ -118,17 +139,35 @@ test('accepts a ref object', () => {
     },
   };
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="foo" key="foo" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}]);
 
-  // $FlowFixMe[react-rule-hook]
-  screen.render(() => <View id="bar" key="bar" ref={useMergeRefs(ref)} />);
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="bar" key="bar" ref={useMergeRefs(ref)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([{ref: 'foo'}, {ref: null}, {ref: 'bar'}]);
 
-  screen.unmount();
+  Fantom.runTask(() => {
+    root.render(<></>);
+  });
 
   expect(ledger).toEqual([
     {ref: 'foo'},
@@ -139,7 +178,7 @@ test('accepts a ref object', () => {
 });
 
 test('invokes refs in order', () => {
-  const screen = new Screen();
+  const root = Fantom.createRoot();
   const ledger: Array<{[string]: string | null}> = [];
 
   const refA = (current: HostInstance | null) => {
@@ -161,10 +200,16 @@ test('invokes refs in order', () => {
     },
   };
 
-  screen.render(() => (
-    // $FlowFixMe[react-rule-hook]
-    <View id="foo" key="foo" ref={useMergeRefs(refA, refB, refC, refD)} />
-  ));
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(refA, refB, refC, refD)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([
     {refA: 'foo'},
@@ -173,7 +218,9 @@ test('invokes refs in order', () => {
     {refD: 'foo'},
   ]);
 
-  screen.unmount();
+  Fantom.runTask(() => {
+    root.render(<></>);
+  });
 
   expect(ledger).toEqual([
     {refA: 'foo'},
@@ -190,7 +237,7 @@ test('invokes refs in order', () => {
 // This is actually undesirable behavior, but it's what we have so let's make
 // sure it does not change unexpectedly.
 test('invokes all refs if any ref changes', () => {
-  const screen = new Screen();
+  const root = Fantom.createRoot();
   const ledger: Array<{[string]: string | null}> = [];
 
   const refA = (current: HostInstance | null) => {
@@ -200,19 +247,31 @@ test('invokes all refs if any ref changes', () => {
     ledger.push({refB: id(current)});
   };
 
-  screen.render(() => (
-    // $FlowFixMe[react-rule-hook]
-    <View id="foo" key="foo" ref={useMergeRefs(refA, refB)} />
-  ));
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(refA, refB)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   const refAPrime = (current: HostInstance | null) => {
     ledger.push({refAPrime: id(current)});
   };
 
-  screen.render(() => (
-    // $FlowFixMe[react-rule-hook]
-    <View id="foo" key="foo" ref={useMergeRefs(refAPrime, refB)} />
-  ));
+  Fantom.runTask(() => {
+    root.render(
+      <TestComponent>
+        {() => (
+          // $FlowFixMe[react-rule-hook]
+          <View id="foo" key="foo" ref={useMergeRefs(refAPrime, refB)} />
+        )}
+      </TestComponent>,
+    );
+  });
 
   expect(ledger).toEqual([
     {refA: 'foo'},
@@ -223,7 +282,9 @@ test('invokes all refs if any ref changes', () => {
     {refB: 'foo'},
   ]);
 
-  screen.unmount();
+  Fantom.runTask(() => {
+    root.render(<></>);
+  });
 
   expect(ledger).toEqual([
     {refA: 'foo'},

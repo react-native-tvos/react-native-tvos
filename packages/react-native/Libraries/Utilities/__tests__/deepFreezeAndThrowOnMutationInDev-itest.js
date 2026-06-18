@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 const deepFreezeAndThrowOnMutationInDev =
   require('../deepFreezeAndThrowOnMutationInDev').default;
 
@@ -53,7 +55,7 @@ describe('deepFreezeAndThrowOnMutationInDev', () => {
     deepFreezeAndThrowOnMutationInDev(o);
     expect(() => {
       o.key = 'newValue';
-    }).toThrowError(
+    }).toThrow(
       'You attempted to set the key `key` with the value `"newValue"` ' +
         'on an object that is meant to be immutable and has been frozen.',
     );
@@ -66,7 +68,7 @@ describe('deepFreezeAndThrowOnMutationInDev', () => {
     deepFreezeAndThrowOnMutationInDev(o);
     expect(() => {
       o.key = 'newValue';
-    }).toThrowError(
+    }).toThrow(
       'You attempted to set the key `key` with the value `"newValue"` ' +
         'on an object that is meant to be immutable and has been frozen.',
     );
@@ -80,7 +82,7 @@ describe('deepFreezeAndThrowOnMutationInDev', () => {
     deepFreezeAndThrowOnMutationInDev(o);
     expect(() => {
       o.key1.key2.key3 = 'newValue';
-    }).toThrowError(
+    }).toThrow(
       'You attempted to set the key `key3` with the value `"newValue"` ' +
         'on an object that is meant to be immutable and has been frozen.',
     );
@@ -93,7 +95,7 @@ describe('deepFreezeAndThrowOnMutationInDev', () => {
     deepFreezeAndThrowOnMutationInDev(o);
     expect(() => {
       o.key1.key2.key3 = 'newValue';
-    }).toThrowError(
+    }).toThrow(
       'You attempted to set the key `key3` with the value `"newValue"` ' +
         'on an object that is meant to be immutable and has been frozen.',
     );
@@ -105,12 +107,14 @@ describe('deepFreezeAndThrowOnMutationInDev', () => {
     __DEV__ = true;
     const o = {oldKey: 'value'};
     deepFreezeAndThrowOnMutationInDev(o);
-    expect(() => {
+    let message;
+    try {
       // $FlowExpectedError[prop-missing]
       o.newKey = 'value';
-    }).toThrowError(
-      /(Cannot|Can't) add property newKey, object is not extensible/,
-    );
+    } catch (error: unknown) {
+      message = error instanceof Error ? error.message : String(error);
+    }
+    expect(message).toMatch(/Cannot add new property 'newKey'/);
     // $FlowExpectedError[prop-missing]
     expect(o.newKey).toBe(undefined);
   });
