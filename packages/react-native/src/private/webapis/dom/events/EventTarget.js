@@ -258,6 +258,13 @@ export default class EventTarget {
   }
 }
 
+// $FlowFixMe[cannot-write]
+Object.defineProperties(EventTarget.prototype, {
+  addEventListener: {enumerable: true},
+  removeEventListener: {enumerable: true},
+  dispatchEvent: {enumerable: true},
+});
+
 setPlatformObject(EventTarget);
 
 function validateCallback(callback: EventListener, methodName: string): void {
