@@ -203,6 +203,7 @@ jobs:
       - name: Setup node.js
         uses: ./.github/actions/setup-node
         with:
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
       # TEMPORARY DEBUG: print the OIDC token claims npm Trusted Publishing
       # matches against. A 404 from the OIDC exchange means these claims don't
