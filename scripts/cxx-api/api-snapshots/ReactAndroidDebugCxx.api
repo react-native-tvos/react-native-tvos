@@ -7415,6 +7415,7 @@ struct facebook::react::LayoutMetrics {
   public facebook::react::EdgeInsets borderWidth;
   public facebook::react::EdgeInsets contentInsets;
   public facebook::react::EdgeInsets overflowInset;
+  public facebook::react::Float fontSizeMultiplier;
   public facebook::react::Float pointScaleFactor;
   public facebook::react::LayoutDirection layoutDirection;
   public facebook::react::PositionType positionType;

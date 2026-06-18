@@ -5603,6 +5603,7 @@ struct facebook::react::LayoutContext {
 }
 
 struct facebook::react::LayoutMetrics {
+  public Float fontSizeMultiplier;
   public Float pointScaleFactor;
   public bool operator==(const facebook::react::LayoutMetrics& rhs) const = default;
   public bool wasLeftAndRightSwapped;
