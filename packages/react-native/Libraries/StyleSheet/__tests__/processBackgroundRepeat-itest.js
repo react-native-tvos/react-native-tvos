@@ -8,8 +8,7 @@
  * @format
  */
 
-'use strict';
-
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import processBackgroundRepeat from '../processBackgroundRepeat';
 
 describe('processBackgroundRepeat', () => {

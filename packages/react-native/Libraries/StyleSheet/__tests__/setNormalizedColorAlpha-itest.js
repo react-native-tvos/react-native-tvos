@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import normalizeColor from '../normalizeColor';
 import setNormalizedColorAlpha from '../setNormalizedColorAlpha';
 

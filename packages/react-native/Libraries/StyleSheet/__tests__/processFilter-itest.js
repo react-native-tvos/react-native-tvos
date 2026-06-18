@@ -10,6 +10,8 @@
 
 'use strict';
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {FilterFunction} from '../StyleSheetTypes';
 
 import processColor from '../processColor';

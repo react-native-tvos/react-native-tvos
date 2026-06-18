@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import splitLayoutProps from '../splitLayoutProps';
 
 test('splits style objects', () => {

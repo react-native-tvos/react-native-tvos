@@ -8,6 +8,7 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import processAspectRatio from '../processAspectRatio';
 
 describe('processAspectRatio', () => {
@@ -41,9 +42,15 @@ describe('processAspectRatio', () => {
   });
 
   it('should not accept invalid formats', () => {
-    expect(() => processAspectRatio('0a')).toThrowErrorMatchingSnapshot();
-    expect(() => processAspectRatio('1 / 1 1')).toThrowErrorMatchingSnapshot();
-    expect(() => processAspectRatio('auto 1/1')).toThrowErrorMatchingSnapshot();
+    expect(() => processAspectRatio('0a')).toThrow(
+      'aspectRatio must either be a number, a ratio string or `auto`. You passed: 0a',
+    );
+    expect(() => processAspectRatio('1 / 1 1')).toThrow(
+      'aspectRatio must either be a number, a ratio string or `auto`. You passed: 1 / 1 1',
+    );
+    expect(() => processAspectRatio('auto 1/1')).toThrow(
+      'aspectRatio must either be a number, a ratio string or `auto`. You passed: auto 1/1',
+    );
   });
 
   it('should ignore non string falsy types', () => {
@@ -57,8 +64,12 @@ describe('processAspectRatio', () => {
   it('should not accept non string truthy types', () => {
     const invalidThings = [() => {}, [1, 2, 3], {}];
     for (const thing of invalidThings) {
-      // $FlowExpectedError[incompatible-type]
-      expect(() => processAspectRatio(thing)).toThrowErrorMatchingSnapshot();
+      expect(() =>
+        // $FlowExpectedError[incompatible-type]
+        processAspectRatio(thing),
+      ).toThrow(
+        `aspectRatio must either be a number, a ratio string or \`auto\`. You passed: ${String(thing)}`,
+      );
     }
   });
 });
