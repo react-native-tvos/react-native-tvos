@@ -8,14 +8,14 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 const BlobRegistry = require('../BlobRegistry');
 
 describe('BlobRegistry', () => {
   describe('register', () => {
     it('does not throw error', () => {
-      expect(() => BlobRegistry.register('id1')).not.toThrowError();
+      expect(() => BlobRegistry.register('id1')).not.toThrow();
     });
 
     it('registers new id', () => {
@@ -26,7 +26,7 @@ describe('BlobRegistry', () => {
 
   describe('unregister', () => {
     it('does not throw error', () => {
-      expect(() => BlobRegistry.unregister('id3')).not.toThrowError();
+      expect(() => BlobRegistry.unregister('id3')).not.toThrow();
     });
 
     it('remove registered id', () => {

@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import FormData from '../FormData';
 
 describe('FormData', function () {
@@ -28,7 +30,7 @@ describe('FormData', function () {
       },
       fieldName: 'null',
     };
-    expect(formData.getParts()[0]).toMatchObject(expectedPart);
+    expect(formData.getParts()[0]).toEqual(expectedPart);
   });
 
   it('should return blob', function () {
@@ -48,7 +50,7 @@ describe('FormData', function () {
       },
       fieldName: 'photo',
     };
-    expect(formData.getParts()[0]).toMatchObject(expectedPart);
+    expect(formData.getParts()[0]).toEqual(expectedPart);
   });
 
   it('should return blob with the correct utf-8 handling', function () {
@@ -69,7 +71,7 @@ describe('FormData', function () {
       },
       fieldName: 'photo',
     };
-    expect(formData.getParts()[0]).toMatchObject(expectedPart);
+    expect(formData.getParts()[0]).toEqual(expectedPart);
   });
 
   it('should return non blob array', function () {
@@ -92,7 +94,7 @@ describe('FormData', function () {
       },
       fieldName: 'array',
     };
-    expect(formData.getParts()[0]).toMatchObject(expectedPart);
+    expect(formData.getParts()[0]).toEqual(expectedPart);
   });
 
   it('should return values based on the given key', function () {
@@ -101,7 +103,7 @@ describe('FormData', function () {
 
     expect(formData.getAll('username').length).toBe(2);
 
-    expect(formData.getAll('username')).toMatchObject(['Chris', 'Bob']);
+    expect(formData.getAll('username')).toEqual(['Chris', 'Bob']);
 
     formData.append('photo', {
       uri: 'arbitrary/path',
@@ -121,7 +123,7 @@ describe('FormData', function () {
       name: 'photo2.jpg',
     };
 
-    expect(formData.getAll('photo')[1]).toMatchObject(expectedPart);
+    expect(formData.getAll('photo')[1]).toEqual(expectedPart);
 
     expect(formData.getAll('file').length).toBe(0);
   });

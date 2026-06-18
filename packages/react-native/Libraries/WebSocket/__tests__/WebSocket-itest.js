@@ -8,18 +8,7 @@
  * @format
  */
 
-'use strict';
-
-jest.mock('../../EventEmitter/NativeEventEmitter');
-jest.setMock('../../BatchedBridge/NativeModules', {
-  __esModule: true,
-  default: {
-    WebSocketModule: {
-      connect: () => {},
-    },
-    PlatformConstants: {},
-  },
-});
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 const WebSocket = require('../WebSocket').default;
 
