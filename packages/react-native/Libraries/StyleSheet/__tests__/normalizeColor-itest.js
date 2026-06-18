@@ -8,16 +8,15 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 const {OS} = require('../../Utilities/Platform').default;
 const normalizeColor = require('../normalizeColor').default;
 
 it('forwards calls to @react-native/normalize-colors', () => {
-  jest.resetModules().mock('@react-native/normalize-colors', () => jest.fn());
-
-  expect(require('../normalizeColor').default('#abc')).not.toBe(null);
-  expect(require('@react-native/normalize-colors')).toBeCalled();
+  // normalizeColor delegates string and number inputs to
+  // @react-native/normalize-colors, which returns a 0xrrggbbaa integer.
+  expect(normalizeColor('#abcdef')).toBe(0xabcdefff);
 });
 
 describe('iOS', () => {

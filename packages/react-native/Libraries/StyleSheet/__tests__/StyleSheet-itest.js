@@ -8,31 +8,36 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import StyleSheet from '../StyleSheet';
 
 const setStyleAttributePreprocessor = StyleSheet.setStyleAttributePreprocessor;
 
-describe(setStyleAttributePreprocessor, () => {
-  beforeEach(() => {
-    jest.resetModules();
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
-  });
+describe('setStyleAttributePreprocessor', () => {
+  const originalConsoleWarn = console.warn;
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    // $FlowExpectedError[cannot-write]
+    console.warn = originalConsoleWarn;
   });
 
   it('should not show warning when set preprocessor first time', () => {
-    const spyConsole = jest.spyOn(global.console, 'warn');
+    const mockConsoleWarn = jest.fn();
+    // $FlowExpectedError[cannot-write]
+    console.warn = mockConsoleWarn;
+
     setStyleAttributePreprocessor(
       'fontFamily',
       (fontFamily: string) => fontFamily,
     );
-    expect(spyConsole).not.toHaveBeenCalled();
+    expect(mockConsoleWarn).not.toHaveBeenCalled();
   });
 
   it('should show warning when overwrite the preprocessor', () => {
-    const spyConsole = jest.spyOn(global.console, 'warn');
+    const mockConsoleWarn = jest.fn();
+    // $FlowExpectedError[cannot-write]
+    console.warn = mockConsoleWarn;
+
     setStyleAttributePreprocessor(
       'fontFamily',
       (fontFamily: string) => fontFamily,
@@ -41,7 +46,7 @@ describe(setStyleAttributePreprocessor, () => {
       'fontFamily',
       (fontFamily: string) => `Scoped-${fontFamily}`,
     );
-    expect(spyConsole).toHaveBeenCalledWith(
+    expect(mockConsoleWarn).toHaveBeenCalledWith(
       'Overwriting fontFamily style attribute preprocessor',
     );
   });

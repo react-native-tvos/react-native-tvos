@@ -8,6 +8,8 @@
  * @format
  */
 
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
+
 import type {BackgroundImageValue} from '../StyleSheetTypes';
 
 import processBackgroundImage from '../processBackgroundImage';

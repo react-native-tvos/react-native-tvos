@@ -8,7 +8,7 @@
  * @format
  */
 
-'use strict';
+import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 const {OS} = require('../../Utilities/Platform').default;
 const PlatformColorAndroid =
@@ -28,6 +28,13 @@ const platformSpecific =
     : x => x;
 
 describe('processColorArray', () => {
+  const originalConsoleError = console.error;
+
+  afterEach(() => {
+    // $FlowExpectedError[cannot-write]
+    console.error = originalConsoleError;
+  });
+
   describe('predefined color name array', () => {
     it('should convert array of color name type', () => {
       const colorFromStringArray = processColorArray(['red', 'white', 'black']);
@@ -46,8 +53,7 @@ describe('processColorArray', () => {
       const expectedIntArray = [0xff0a141e, 0xff1e140a, 0xff3296fa].map(
         platformSpecific,
       );
-      // $FlowFixMe[incompatible-type]
-      expect(colorFromRGBArray).toEqual(platformSpecific(expectedIntArray));
+      expect(colorFromRGBArray).toEqual(expectedIntArray);
     });
 
     it('should convert array of color type hsl(x, y%, z%)', () => {
@@ -59,8 +65,7 @@ describe('processColorArray', () => {
       const expectedIntArray = [0xffdb3dac, 0xff234786, 0xff1e541d].map(
         platformSpecific,
       );
-      // $FlowFixMe[incompatible-type]
-      expect(colorFromHSLArray).toEqual(platformSpecific(expectedIntArray));
+      expect(colorFromHSLArray).toEqual(expectedIntArray);
     });
 
     it('should return null if no array', () => {
@@ -69,7 +74,9 @@ describe('processColorArray', () => {
     });
 
     it('converts invalid colors to transparent', () => {
-      const spy = jest.spyOn(console, 'error').mockReturnValue(undefined);
+      const mockConsoleError = jest.fn();
+      // $FlowExpectedError[cannot-write]
+      console.error = mockConsoleError;
 
       const colors = ['red', '???', null, undefined, false];
       // $FlowExpectedError[incompatible-type]
@@ -80,13 +87,11 @@ describe('processColorArray', () => {
       expect(colorFromStringArray).toEqual(expectedIntArray);
 
       for (const color of colors.slice(1)) {
-        expect(spy).toHaveBeenCalledWith(
+        expect(mockConsoleError).toHaveBeenCalledWith(
           'Invalid value in color array:',
           color,
         );
       }
-
-      spy.mockRestore();
     });
   });
 
