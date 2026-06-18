@@ -21,6 +21,10 @@ import {View} from 'react-native';
 import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/ReactNativeElement';
 
 describe('<View>', () => {
+  it('has displayName', () => {
+    expect(View.displayName ?? View.name).toBe('View');
+  });
+
   describe('props', () => {
     describe('style', () => {
       describe('width and height style', () => {
@@ -1087,6 +1091,20 @@ describe('<View>', () => {
           <rn-view />,
         );
       });
+    });
+  });
+
+  describe('testID', () => {
+    it('is propagated to the mounting layer', () => {
+      const root = Fantom.createRoot();
+
+      Fantom.runTask(() => {
+        root.render(<View testID="testID" collapsable={false} />);
+      });
+
+      expect(root.getRenderedOutput({props: ['testID']}).toJSX()).toEqual(
+        <rn-view testID="testID" />,
+      );
     });
   });
 
