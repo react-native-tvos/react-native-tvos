@@ -20,7 +20,7 @@ inputs:
     default: release
   working-directory:
     required: false
-    default: "."
+    default: '.'
     description: The directory from which metro should be started
   emulator-arch:
     required: false

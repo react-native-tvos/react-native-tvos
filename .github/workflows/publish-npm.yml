@@ -17,15 +17,15 @@ name: Publish to npm
 on:
   push:
     tags:
-      - "v0.*.*" # This should match v0.X.Y
-      - "v0.*.*-rc.*" # This should match v0.X.Y-RC.0
+      - 'v0.*.*' # This should match v0.X.Y
+      - 'v0.*.*-rc.*' # This should match v0.X.Y-RC.0
     branches:
-      - "main"
-      - "*-stable"
+      - 'main'
+      - '*-stable'
   workflow_dispatch:
   # nightly build @ 2:15 AM UTC
   schedule:
-    - cron: "15 2 * * *"
+    - cron: '15 2 * * *'
 
 permissions:
   contents: read
@@ -95,11 +95,11 @@ jobs:
     container:
       image: reactnativecommunity/react-native-android:latest
       env:
-        TERM: "dumb"
+        TERM: 'dumb'
         # Set the encoding to resolve a known character encoding issue with decompressing tar.gz files in containers
         # via Gradle: https://github.com/gradle/gradle/issues/23391#issuecomment-1878979127
         LC_ALL: C.UTF8
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+        GRADLE_OPTS: '-Dorg.gradle.daemon=false'
         ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
         ORG_GRADLE_PROJECT_SIGNING_KEY: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_KEY }}
         ORG_GRADLE_PROJECT_SONATYPE_USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_SONATYPE_USERNAME }}
@@ -144,13 +144,13 @@ jobs:
     container:
       image: reactnativecommunity/react-native-android:latest
       env:
-        TERM: "dumb"
+        TERM: 'dumb'
         # Set the encoding to resolve a known character encoding issue with decompressing tar.gz files in containers
         # via Gradle: https://github.com/gradle/gradle/issues/23391#issuecomment-1878979127
         LC_ALL: C.UTF8
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+        GRADLE_OPTS: '-Dorg.gradle.daemon=false'
         # By default we only build ARM64 to save time/resources. For release/nightlies, we override this value to build all archs.
-        ORG_GRADLE_PROJECT_reactNativeArchitectures: "arm64-v8a"
+        ORG_GRADLE_PROJECT_reactNativeArchitectures: 'arm64-v8a'
         REACT_NATIVE_DOWNLOADS_DIR: /opt/react-native-downloads
     env:
       ORG_GRADLE_PROJECT_SIGNING_PWD: ${{ secrets.ORG_GRADLE_PROJECT_SIGNING_PWD }}
@@ -203,8 +203,8 @@ jobs:
       - name: Setup node.js
         uses: ./.github/actions/setup-node
         with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
       # TEMPORARY DEBUG: print the OIDC token claims npm Trusted Publishing
       # matches against. A 404 from the OIDC exchange means these claims don't
       # match the Trusted Publisher entry configured on npmjs.com (org/repo/
