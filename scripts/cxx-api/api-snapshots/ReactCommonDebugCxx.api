@@ -2700,6 +2700,7 @@ class facebook::react::PlatformTimerRegistry {
   public virtual void createTimer(uint32_t timerID, double delayMS) = 0;
   public virtual void deleteTimer(uint32_t timerID) = 0;
   public virtual void quit();
+  public virtual void setTimerManager(std::weak_ptr<facebook::react::TimerManager>);
   public virtual ~PlatformTimerRegistry() noexcept = default;
 }
 
