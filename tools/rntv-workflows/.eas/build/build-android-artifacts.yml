@@ -12,6 +12,9 @@ build:
           export ANDROID_CUSTOM_SDKMANAGER_PATH=`which sdkmanager`
           echo "ANDROID_CUSTOM_SDKMANAGER_PATH: $ANDROID_CUSTOM_SDKMANAGER_PATH"
           set-env ANDROID_CUSTOM_SDKMANAGER_PATH $ANDROID_CUSTOM_SDKMANAGER_PATH
+          # Set LC_ALL
+          export LC_ALL=C.UTF8
+          set-env LC_ALL $LC_ALL
           # Install cmake
           echo "Installing CMake 3.30.5..."
           sdkmanager --install "cmake;3.30.5"
