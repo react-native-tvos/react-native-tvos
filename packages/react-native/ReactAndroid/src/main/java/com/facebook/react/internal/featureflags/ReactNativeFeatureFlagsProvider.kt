@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a3dbeb4eec6efecc4fc355b15a984e58>>
+ * @generated SignedSource<<b1dd783c9075c9a35cbd06aa812e56c9>>
  */
 
 /**
@@ -57,8 +57,6 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableDestroyShadowTreeRevisionAsync(): Boolean
 
-  @DoNotStrip public fun enableDifferentiatorMutationVectorPreallocation(): Boolean
-
   @DoNotStrip public fun enableDoubleMeasurementFixAndroid(): Boolean
 
   @DoNotStrip public fun enableEagerRootViewAttachment(): Boolean
@@ -69,6 +67,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableFabricLogs(): Boolean
 
+  @DoNotStrip public fun enableFlexboxAutoMinSizeInStrictMode(): Boolean
+
   @DoNotStrip public fun enableFontScaleChangesUpdatingLayout(): Boolean
 
   @DoNotStrip public fun enableIOSTextBaselineOffsetPerLine(): Boolean
@@ -76,8 +76,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun enableIOSViewClipToPaddingBox(): Boolean
 
   @DoNotStrip public fun enableImagePrefetchingAndroid(): Boolean
-
-  @DoNotStrip public fun enableImageRequestDowngradingForNonVisibleImages(): Boolean
 
   @DoNotStrip public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean
 
@@ -141,8 +139,6 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun fuseboxScreenshotCaptureEnabled(): Boolean
 
-  @DoNotStrip public fun hideOffscreenVirtualViewsOnIOS(): Boolean
-
   @DoNotStrip public fun optimizedAnimatedPropUpdates(): Boolean
 
   @DoNotStrip public fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean
@@ -180,8 +176,6 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun useNativeViewConfigsInBridgelessMode(): Boolean
 
   @DoNotStrip public fun useNestedScrollViewAndroid(): Boolean
-
-  @DoNotStrip public fun useOptimizedViewRegistryOnAndroid(): Boolean
 
   @DoNotStrip public fun useSharedAnimatedBackend(): Boolean
 

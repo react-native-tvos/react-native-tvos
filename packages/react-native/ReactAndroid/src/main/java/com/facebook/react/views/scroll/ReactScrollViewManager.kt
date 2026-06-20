@@ -82,7 +82,7 @@ constructor(private val fpsListener: FpsListener? = null) :
 
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
   public fun setScrollEnabled(view: ReactScrollView, value: Boolean) {
-    view.setScrollEnabled(value)
+    view.scrollEnabled = value
 
     // Set focusable to match whether scroll is enabled. This improves keyboarding
     // experience by not making scrollview a tab stop when you cannot interact with it.
@@ -113,13 +113,13 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setSnapToInterval(view: ReactScrollView, snapToInterval: Float) {
     // snapToInterval needs to be exposed as a float because of the Javascript interface.
     val density = getDisplayMetricDensity()
-    view.setSnapInterval((snapToInterval * density).toInt())
+    view.snapInterval = (snapToInterval * density).toInt()
   }
 
   @ReactProp(name = "snapToOffsets")
   public fun setSnapToOffsets(view: ReactScrollView, snapToOffsets: ReadableArray?) {
     if (snapToOffsets == null || snapToOffsets.size() == 0) {
-      view.setSnapOffsets(null)
+      view.snapOffsets = null
       return
     }
 
@@ -128,34 +128,34 @@ constructor(private val fpsListener: FpsListener? = null) :
     for (i in 0 until snapToOffsets.size()) {
       offsets.add((snapToOffsets.getDouble(i) * density).toInt())
     }
-    view.setSnapOffsets(offsets)
+    view.snapOffsets = offsets
   }
 
   @ReactProp(name = "snapToAlignment")
   public fun setSnapToAlignment(view: ReactScrollView, alignment: String?) {
-    view.setSnapToAlignment(parseSnapToAlignment(alignment))
+    view.snapToAlignment = parseSnapToAlignment(alignment)
   }
 
   @ReactProp(name = "snapToStart")
   public fun setSnapToStart(view: ReactScrollView, snapToStart: Boolean) {
-    view.setSnapToStart(snapToStart)
+    view.snapToStart = snapToStart
   }
 
   @ReactProp(name = "snapToEnd")
   public fun setSnapToEnd(view: ReactScrollView, snapToEnd: Boolean) {
-    view.setSnapToEnd(snapToEnd)
+    view.snapToEnd = snapToEnd
   }
 
   @ReactProp(name = "snapToItemPadding")
   public fun setSnapToItemPadding(view: ReactScrollView, value: Float) {
     val density = getDisplayMetricDensity()
     val px = (value * density).toInt()
-    view.setSnapToItemPadding(px)
+    view.snapToItemPadding = px
   }
 
   @ReactProp(name = "scrollAnimationEnabled", defaultBoolean = true)
   public fun setScrollAnimationEnabled(view: ReactScrollView, value: Boolean) {
-    view.setScrollAnimationEnabled(value)
+    view.scrollAnimationEnabled = value
   }
 
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)
@@ -347,8 +347,8 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setFadingEdgeLength(view: ReactScrollView, value: Dynamic) {
     when (value.type) {
       ReadableType.Number -> {
-        view.setFadingEdgeLengthStart(value.asInt())
-        view.setFadingEdgeLengthEnd(value.asInt())
+        view.fadingEdgeLengthStart = value.asInt()
+        view.fadingEdgeLengthEnd = value.asInt()
       }
       ReadableType.Map -> {
         value.asMap()?.let { map ->
@@ -360,8 +360,8 @@ constructor(private val fpsListener: FpsListener? = null) :
           if (map.hasKey("end") && map.getInt("end") > 0) {
             end = map.getInt("end")
           }
-          view.setFadingEdgeLengthStart(start)
-          view.setFadingEdgeLengthEnd(end)
+          view.fadingEdgeLengthStart = start
+          view.fadingEdgeLengthEnd = end
         }
       }
       else -> {
@@ -400,7 +400,7 @@ constructor(private val fpsListener: FpsListener? = null) :
       props: ReactStylesDiffMap,
       stateWrapper: StateWrapper,
   ): Any? {
-    view.setStateWrapper(stateWrapper)
+    view.stateWrapper = stateWrapper
     if (
         ReactNativeFeatureFlags.enableViewCulling() ||
             ReactNativeFeatureFlags.useTraitHiddenOnAndroid()

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<86c797c19cc585b74714ca3aa75bbd6d>>
+ * @generated SignedSource<<00bb39539f4fc2dc0ad85a346bdee22b>>
  */
 
 /**
@@ -133,12 +133,6 @@ public object ReactNativeFeatureFlags {
   public fun enableDestroyShadowTreeRevisionAsync(): Boolean = accessor.enableDestroyShadowTreeRevisionAsync()
 
   /**
-   * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
-   */
-  @JvmStatic
-  public fun enableDifferentiatorMutationVectorPreallocation(): Boolean = accessor.enableDifferentiatorMutationVectorPreallocation()
-
-  /**
    * When enabled a subset of components will avoid double measurement on Android.
    */
   @JvmStatic
@@ -169,6 +163,12 @@ public object ReactNativeFeatureFlags {
   public fun enableFabricLogs(): Boolean = accessor.enableFabricLogs()
 
   /**
+   * Enables CSS Flexbox §4.5 automatic minimum sizing under strict layout conformance. When enabled, a flex item with an undefined main-axis `min-width`/`min-height` under strict conformance receives a content-derived minimum size (per spec) instead of an undefined (0) minimum. Defaults off so the behaviour can be ramped independently of strict conformance.
+   */
+  @JvmStatic
+  public fun enableFlexboxAutoMinSizeInStrictMode(): Boolean = accessor.enableFlexboxAutoMinSizeInStrictMode()
+
+  /**
    * Enables font scale changes updating layout for measurable nodes.
    */
   @JvmStatic
@@ -191,12 +191,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableImagePrefetchingAndroid(): Boolean = accessor.enableImagePrefetchingAndroid()
-
-  /**
-   * When enabled, ImageShadowNode downgrades image requests to prefetch priority when layout determines that the image does not intersect the viewport.
-   */
-  @JvmStatic
-  public fun enableImageRequestDowngradingForNonVisibleImages(): Boolean = accessor.enableImageRequestDowngradingForNonVisibleImages()
 
   /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
@@ -385,12 +379,6 @@ public object ReactNativeFeatureFlags {
   public fun fuseboxScreenshotCaptureEnabled(): Boolean = accessor.fuseboxScreenshotCaptureEnabled()
 
   /**
-   * Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views
-   */
-  @JvmStatic
-  public fun hideOffscreenVirtualViewsOnIOS(): Boolean = accessor.hideOffscreenVirtualViewsOnIOS()
-
-  /**
    * When enabled, uses optimized platform-specific paths to apply animated props synchronously. On Android, this uses a batched int/double buffer protocol with a single JNI call. On iOS, this passes AnimatedProps directly through the delegate chain and applies them via cloneProps, avoiding the folly::dynamic round-trip.
    */
   @JvmStatic
@@ -503,12 +491,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun useNestedScrollViewAndroid(): Boolean = accessor.useNestedScrollViewAndroid()
-
-  /**
-   * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
-   */
-  @JvmStatic
-  public fun useOptimizedViewRegistryOnAndroid(): Boolean = accessor.useOptimizedViewRegistryOnAndroid()
 
   /**
    * Use shared animation backend in C++ Animated

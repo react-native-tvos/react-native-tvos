@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8a9430ba71722a75779e2b5fb6564f0e>>
+ * @generated SignedSource<<928b5ecbceacccae311edf4be6685c91>>
  */
 
 /**
@@ -42,17 +42,16 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableCppPropsIteratorSetter() = 0;
   virtual bool enableCustomFocusSearchOnClippedElementsAndroid() = 0;
   virtual bool enableDestroyShadowTreeRevisionAsync() = 0;
-  virtual bool enableDifferentiatorMutationVectorPreallocation() = 0;
   virtual bool enableDoubleMeasurementFixAndroid() = 0;
   virtual bool enableEagerRootViewAttachment() = 0;
   virtual bool enableExclusivePropsUpdateAndroid() = 0;
   virtual bool enableFabricCommitBranching() = 0;
   virtual bool enableFabricLogs() = 0;
+  virtual bool enableFlexboxAutoMinSizeInStrictMode() = 0;
   virtual bool enableFontScaleChangesUpdatingLayout() = 0;
   virtual bool enableIOSTextBaselineOffsetPerLine() = 0;
   virtual bool enableIOSViewClipToPaddingBox() = 0;
   virtual bool enableImagePrefetchingAndroid() = 0;
-  virtual bool enableImageRequestDowngradingForNonVisibleImages() = 0;
   virtual bool enableImmediateUpdateModeForContentOffsetChanges() = 0;
   virtual bool enableImperativeFocus() = 0;
   virtual bool enableInteropViewManagerClassLookUpOptimizationIOS() = 0;
@@ -84,7 +83,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool fuseboxFrameRecordingEnabled() = 0;
   virtual bool fuseboxNetworkInspectionEnabled() = 0;
   virtual bool fuseboxScreenshotCaptureEnabled() = 0;
-  virtual bool hideOffscreenVirtualViewsOnIOS() = 0;
   virtual bool optimizedAnimatedPropUpdates() = 0;
   virtual bool overrideBySynchronousMountPropsAtMountingAndroid() = 0;
   virtual bool perfIssuesEnabled() = 0;
@@ -104,7 +102,6 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useFabricInterop() = 0;
   virtual bool useNativeViewConfigsInBridgelessMode() = 0;
   virtual bool useNestedScrollViewAndroid() = 0;
-  virtual bool useOptimizedViewRegistryOnAndroid() = 0;
   virtual bool useSharedAnimatedBackend() = 0;
   virtual bool useTraitHiddenOnAndroid() = 0;
   virtual bool useTurboModuleInterop() = 0;

@@ -175,8 +175,8 @@ type HermesEngineSourceType =
 */
 
 const HermesEngineSourceTypes /*:{
-  +DOWNLOAD_PREBUILD_TARBALL: "download_prebuild_tarball",
-  +LOCAL_PREBUILT_TARBALL: "local_prebuilt_tarball"
+  readonly DOWNLOAD_PREBUILD_TARBALL: "download_prebuild_tarball",
+  readonly LOCAL_PREBUILT_TARBALL: "local_prebuilt_tarball"
 } */ = {
   LOCAL_PREBUILT_TARBALL: 'local_prebuilt_tarball',
   DOWNLOAD_PREBUILD_TARBALL: 'download_prebuild_tarball',

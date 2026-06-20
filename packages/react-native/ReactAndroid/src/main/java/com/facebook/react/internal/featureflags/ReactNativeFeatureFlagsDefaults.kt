@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2eef0816572bfbe8d6a3394a8ebf854c>>
+ * @generated SignedSource<<f6cd9d59757c8afe3a130c8758232228>>
  */
 
 /**
@@ -27,7 +27,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun cdpInteractionMetricsEnabled(): Boolean = false
 
-  override fun cxxNativeAnimatedEnabled(): Boolean = false
+  override fun cxxNativeAnimatedEnabled(): Boolean = true
 
   override fun defaultTextToOverflowHidden(): Boolean = true
 
@@ -57,8 +57,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableDestroyShadowTreeRevisionAsync(): Boolean = false
 
-  override fun enableDifferentiatorMutationVectorPreallocation(): Boolean = false
-
   override fun enableDoubleMeasurementFixAndroid(): Boolean = false
 
   override fun enableEagerRootViewAttachment(): Boolean = false
@@ -69,6 +67,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableFabricLogs(): Boolean = false
 
+  override fun enableFlexboxAutoMinSizeInStrictMode(): Boolean = false
+
   override fun enableFontScaleChangesUpdatingLayout(): Boolean = true
 
   override fun enableIOSTextBaselineOffsetPerLine(): Boolean = false
@@ -76,8 +76,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableIOSViewClipToPaddingBox(): Boolean = false
 
   override fun enableImagePrefetchingAndroid(): Boolean = false
-
-  override fun enableImageRequestDowngradingForNonVisibleImages(): Boolean = false
 
   override fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = false
 
@@ -125,7 +123,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableVirtualViewContainerStateExperimental(): Boolean = false
 
-  override fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = false
+  override fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = true
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 
@@ -140,8 +138,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun fuseboxNetworkInspectionEnabled(): Boolean = true
 
   override fun fuseboxScreenshotCaptureEnabled(): Boolean = false
-
-  override fun hideOffscreenVirtualViewsOnIOS(): Boolean = false
 
   override fun optimizedAnimatedPropUpdates(): Boolean = false
 
@@ -180,8 +176,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun useNativeViewConfigsInBridgelessMode(): Boolean = false
 
   override fun useNestedScrollViewAndroid(): Boolean = false
-
-  override fun useOptimizedViewRegistryOnAndroid(): Boolean = false
 
   override fun useSharedAnimatedBackend(): Boolean = false
 

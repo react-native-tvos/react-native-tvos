@@ -8,6 +8,7 @@
  * @format
  */
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {ViewStyleProp} from '../../StyleSheet/StyleSheet';
 import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {TouchableWithoutFeedbackProps} from './TouchableWithoutFeedback';
@@ -23,6 +24,8 @@ import Platform from '../../Utilities/Platform';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 
+export type TouchableOpacityInstance = HostInstance;
+
 type TouchableOpacityBaseProps = Readonly<{
   /**
    * Determines what the opacity of the wrapped view should be when touch is active.
@@ -31,7 +34,7 @@ type TouchableOpacityBaseProps = Readonly<{
   activeOpacity?: ?number,
   style?: ?Animated.WithAnimatedValue<ViewStyleProp>,
 
-  hostRef?: ?React.RefSetter<React.ElementRef<typeof Animated.View>>,
+  hostRef?: ?React.RefSetter<TouchableOpacityInstance>,
 }>;
 
 export type TouchableOpacityProps = Readonly<{
@@ -338,13 +341,13 @@ class TouchableOpacity extends React.Component<
 }
 
 const Touchable: component(
-  ref?: React.RefSetter<React.ElementRef<typeof Animated.View>>,
+  ref?: React.RefSetter<TouchableOpacityInstance>,
   ...props: TouchableOpacityProps
 ) = ({
   ref,
   ...props
 }: {
-  ref?: React.RefSetter<React.ElementRef<typeof Animated.View>>,
+  ref?: React.RefSetter<TouchableOpacityInstance>,
   ...TouchableOpacityProps,
 }) => <TouchableOpacity {...props} hostRef={ref} />;
 

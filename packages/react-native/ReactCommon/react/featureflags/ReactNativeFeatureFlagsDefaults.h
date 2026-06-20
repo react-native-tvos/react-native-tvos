@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ae9cf762beb4851c05cdb59be0287a3c>>
+ * @generated SignedSource<<12c252cbb8f6a827e709e5fa4779abbf>>
  */
 
 /**
@@ -36,7 +36,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool cxxNativeAnimatedEnabled() override {
-    return false;
+    return true;
   }
 
   bool defaultTextToOverflowHidden() override {
@@ -95,10 +95,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableDifferentiatorMutationVectorPreallocation() override {
-    return false;
-  }
-
   bool enableDoubleMeasurementFixAndroid() override {
     return false;
   }
@@ -119,6 +115,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableFlexboxAutoMinSizeInStrictMode() override {
+    return false;
+  }
+
   bool enableFontScaleChangesUpdatingLayout() override {
     return true;
   }
@@ -132,10 +132,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableImagePrefetchingAndroid() override {
-    return false;
-  }
-
-  bool enableImageRequestDowngradingForNonVisibleImages() override {
     return false;
   }
 
@@ -232,7 +228,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool fixDifferentiatorParentTagForUnflattenCase() override {
-    return false;
+    return true;
   }
 
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
@@ -260,10 +256,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool fuseboxScreenshotCaptureEnabled() override {
-    return false;
-  }
-
-  bool hideOffscreenVirtualViewsOnIOS() override {
     return false;
   }
 
@@ -340,10 +332,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool useNestedScrollViewAndroid() override {
-    return false;
-  }
-
-  bool useOptimizedViewRegistryOnAndroid() override {
     return false;
   }
 

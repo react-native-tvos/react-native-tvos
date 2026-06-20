@@ -297,8 +297,13 @@ BaseViewProps::BaseViewProps(
               : convertRawProp(
                     context,
                     rawProps,
-                    "experimental_backgroundImage",
-                    sourceProps.backgroundImage,
+                    "backgroundImage",
+                    convertRawProp(
+                        context,
+                        rawProps,
+                        "experimental_backgroundImage",
+                        sourceProps.backgroundImage,
+                        {}),
                     {})),
       backgroundSize(
           ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
@@ -492,6 +497,7 @@ void BaseViewProps::setProp(
   switch (hash) {
     RAW_SET_PROP_SWITCH_CASE_BASIC(opacity);
     RAW_SET_PROP_SWITCH_CASE_BASIC(backgroundColor);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(backgroundImage);
     RAW_SET_PROP_SWITCH_CASE(backgroundImage, "experimental_backgroundImage");
     RAW_SET_PROP_SWITCH_CASE(backgroundSize, "experimental_backgroundSize");
     RAW_SET_PROP_SWITCH_CASE(
