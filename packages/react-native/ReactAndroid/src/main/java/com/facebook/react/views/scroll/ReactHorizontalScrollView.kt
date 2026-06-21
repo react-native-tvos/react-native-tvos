@@ -565,7 +565,7 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
             rect.left,
             rect.right,
             viewportWidth,
-            alignment,
+            alignment ?: return false,
             snapInterval,
             snapToItemPadding,
             maxScrollX,

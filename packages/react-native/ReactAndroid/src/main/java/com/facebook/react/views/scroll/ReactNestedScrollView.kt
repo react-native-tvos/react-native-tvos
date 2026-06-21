@@ -193,11 +193,11 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
   private var endBackground: Drawable? = null
   private var endFillColor = Color.TRANSPARENT
   private var disableIntervalMomentum = false
-  private var snapInterval = 0
-  private var snapOffsets: List<Int>? = null
-  private var snapToStart = true
-  private var snapToEnd = true
-  private var snapToAlignment = SNAP_ALIGNMENT_DISABLED
+  internal var snapInterval = 0
+  internal var snapOffsets: List<Int>? = null
+  internal var snapToStart = true
+  internal var snapToEnd = true
+  internal var snapToAlignment = SNAP_ALIGNMENT_DISABLED
   private var contentView: View? = null
   private var currentContentOffset: ReadableMap? = null
   private var pendingContentOffsetX = UNSET_CONTENT_OFFSET
@@ -343,26 +343,6 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     if (scroller != null && !scroller.isFinished) {
       scroller.abortAnimation()
     }
-  }
-
-  public open fun setSnapInterval(snapInterval: Int) {
-    this.snapInterval = snapInterval
-  }
-
-  public open fun setSnapOffsets(snapOffsets: List<Int>?) {
-    this.snapOffsets = snapOffsets
-  }
-
-  public open fun setSnapToStart(snapToStart: Boolean) {
-    this.snapToStart = snapToStart
-  }
-
-  public open fun setSnapToEnd(snapToEnd: Boolean) {
-    this.snapToEnd = snapToEnd
-  }
-
-  public open fun setSnapToAlignment(snapToAlignment: Int) {
-    this.snapToAlignment = snapToAlignment
   }
 
   public open fun flashScrollIndicators() {
