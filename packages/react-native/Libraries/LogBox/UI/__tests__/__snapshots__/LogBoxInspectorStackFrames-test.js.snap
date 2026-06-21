@@ -109,11 +109,20 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Array [
+            Object {
+              "backgroundColor": "transparent",
+            },
+            Object {
+              "borderRadius": 5,
+              "flex": 1,
+              "paddingHorizontal": 10,
+              "paddingVertical": 4,
+            },
+          ]
+        }
       >
-        onFocus=
-        onBlur=
-        style=
-        &gt;
         <Text
           id="logbox_stack_frame_text"
           style={
@@ -193,11 +202,17 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
         onResponderTerminate={[Function]}
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
+        style={
+          Array [
+            Object {
+              "backgroundColor": "transparent",
+            },
+            Object {
+              "borderRadius": 5,
+            },
+          ]
+        }
       >
-        onFocus=
-        onBlur=
-        style=
-        &gt;
         <Text
           style={
             Object {

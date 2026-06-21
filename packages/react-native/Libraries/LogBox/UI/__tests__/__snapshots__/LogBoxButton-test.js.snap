@@ -4,14 +4,11 @@ exports[`LogBoxButton should render Pressable and pass through props 1`] = `
 <Pressable
   focusable={true}
   hitSlop={Object {}}
+  onBlur={[Function]}
+  onFocus={[Function]}
   onPress={[Function]}
-  onPressIn={[Function]}
-  onPressOut={[Function]}
+  style={[Function]}
 >
-  onFocus=
-  onBlur=
-  style=
-  &gt;
   <Text>
     Press me
   </Text>
