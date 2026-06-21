@@ -149,9 +149,20 @@ exports[`LogBoxInspectorStackFrames should render stack frames with 1 frame coll
             "selected": undefined,
           }
         }
+        accessibilityValue={
+          Object {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
         accessible={true}
+        collapsable={false}
         focusable={true}
+        onBlur={[Function]}
         onClick={[Function]}
+        onFocus={[Function]}
         onPressIn={[Function]}
         onPressOut={[Function]}
         onResponderGrant={[Function]}
