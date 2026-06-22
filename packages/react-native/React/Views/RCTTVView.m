@@ -138,7 +138,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : unused)
     return NO;
   }
 
-  return self.isTVSelectable || (UIAccessibilityIsVoiceOverRunning() && self.isAccessibilityElement);
+  return (self.isTVSelectable);
 }
 
 - (RCTRootView * _Nullable)rootView

@@ -217,13 +217,6 @@
   return _textStorage.string;
 }
 
-#if TARGET_OS_TV
-- (BOOL)canBecomeFocused
-{
-  return UIAccessibilityIsVoiceOverRunning() && self.isAccessibilityElement;
-}
-#endif
-
 #pragma mark - Context Menu
 
 - (void)enableContextMenu
