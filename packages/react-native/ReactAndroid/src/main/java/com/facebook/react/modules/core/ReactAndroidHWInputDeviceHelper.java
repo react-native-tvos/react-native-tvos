@@ -63,6 +63,7 @@ public class ReactAndroidHWInputDeviceHelper {
           .put(KeyEvent.KEYCODE_9, "9")
           .put(KeyEvent.KEYCODE_CHANNEL_DOWN, "channelDown")
           .put(KeyEvent.KEYCODE_CHANNEL_UP, "channelUp")
+          .put(KeyEvent.KEYCODE_DEL, "delete")
           .put(KeyEvent.KEYCODE_BOOKMARK, "bookmark")
           .put(KeyEvent.KEYCODE_AVR_INPUT, "avrInput")
           .put(KeyEvent.KEYCODE_AVR_POWER, "avrPower")

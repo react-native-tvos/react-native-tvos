@@ -60,8 +60,6 @@ component LogBoxButton(
       focusable={true}
       hitSlop={hitSlop}
       onPress={onPress}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}>
       onFocus={() => {
         setFocused(true);
         onFocusChange?.(true);
