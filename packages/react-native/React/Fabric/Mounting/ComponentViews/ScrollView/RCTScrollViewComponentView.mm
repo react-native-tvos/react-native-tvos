@@ -1274,8 +1274,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     CGPoint targetContentOffset = isHorizontalSnap
         ? CGPointMake(targetOffset, scrollView.contentOffset.y)
         : CGPointMake(scrollView.contentOffset.x, targetOffset);
+    // Where the focused item should snap to. We don't scroll to it here: this view's
+    // scrollViewWillEndDragging:withVelocity:targetContentOffset: override sets
+    // *targetContentOffset = preferredContentOffset. On tvOS the focus engine routes its
+    // focus-driven scroll through that delegate, so the item snaps to this offset via the
+    // engine's own scroll, even when it's already on screen. An explicit setContentOffset here
+    // would just scroll a second time.
+    // https://developer.apple.com/documentation/uikit/uiscrollviewdelegate/scrollviewwillenddragging(_:withvelocity:targetcontentoffset:)
+    // https://developer.apple.com/forums/thread/22103?answerId=73300022#73300022
     self.preferredContentOffset = targetContentOffset;
-    [_scrollView setContentOffset:targetContentOffset animated:scrollProps.scrollAnimationEnabled];
+    if (!scrollProps.scrollAnimationEnabled) {
+        // Animations off: RCTEnhancedScrollView.didUpdateFocusInContext blocks the engine's
+        // scroll, so the delegate never fires — set the offset directly.
+        scrollView.contentOffset = targetContentOffset;
+    }
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
