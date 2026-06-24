@@ -16,7 +16,7 @@ inputs:
     default: Release
   working-directory:
     required: false
-    default: "."
+    default: '.'
     description: The directory from which metro should be started
 
 runs:

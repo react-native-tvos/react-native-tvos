@@ -11,13 +11,6 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcherProtocol.h>
 
-extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
-extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
-
-#if TARGET_OS_TV
-#import "RCTTVRemoteSelectHandler.h"
-#endif
-
 @protocol RCTRootViewDelegate;
 
 /**
@@ -57,11 +50,7 @@ extern
 #pragma clang diagnostic push
 #pragma clang diagnostic warning "-Wdeprecated"
 __attribute__((deprecated("This API will be removed along with the legacy architecture.")))
-#if TARGET_OS_TV
-@interface RCTRootView : UIView <RCTTVRemoteSelectHandlerDelegate>
-#else
 @interface RCTRootView : UIView
-#endif
 
 /**
  * - Designated initializer -

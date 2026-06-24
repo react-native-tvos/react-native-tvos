@@ -72,7 +72,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     cxxNativeAnimatedEnabled: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2025-03-14',
         description:
@@ -232,17 +232,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableDifferentiatorMutationVectorPreallocation: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-02-28',
-        description:
-          'Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     enableDoubleMeasurementFixAndroid: {
       defaultValue: false,
       metadata: {
@@ -294,6 +283,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableFlexboxAutoMinSizeInStrictMode: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-06-02',
+        description:
+          'Enables CSS Flexbox §4.5 automatic minimum sizing under strict layout conformance. When enabled, a flex item with an undefined main-axis `min-width`/`min-height` under strict conformance receives a content-derived minimum size (per spec) instead of an undefined (0) minimum. Defaults off so the behaviour can be ramped independently of strict conformance.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'experimental',
+    },
     enableFontScaleChangesUpdatingLayout: {
       defaultValue: true,
       metadata: {
@@ -332,17 +332,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-06-21',
         description:
           'When enabled, Android will build and initiate image prefetch requests on ImageShadowNode::layout',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableImageRequestDowngradingForNonVisibleImages: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-05-21',
-        description:
-          'When enabled, ImageShadowNode downgrades image requests to prefetch priority when layout determines that the image does not intersect the viewport.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -594,7 +583,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     fixDifferentiatorParentTagForUnflattenCase: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2026-04-18',
         description:
@@ -674,17 +663,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2026-04-01',
         description:
           'Enable Page.captureScreenshot CDP method support in the React Native DevTools CDP backend. This flag is global and should not be changed across React Host lifetimes.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    hideOffscreenVirtualViewsOnIOS: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2025-06-30',
-        description:
-          'Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -893,17 +871,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    useOptimizedViewRegistryOnAndroid: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-04-28',
-        description:
-          'Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     useSharedAnimatedBackend: {
       defaultValue: false,
       metadata: {
@@ -981,12 +948,45 @@ const definitions: FeatureFlagDefinitions = {
 
   jsOnly: {
     ...testDefinitions.jsOnly,
+    animatedDeferStartOfTimingAnimations: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-05-26',
+        description:
+          'When enabled, the JS Animated layer defers the start of native-driven timing animations to the first rendered frame and re-anchors timing to prevent skipping initial frames when the UI thread is busy with layout work.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    animatedForceNativeDriver: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-06-10',
+        description:
+          'When enabled, forces `useNativeDriver` to `true` for all Animated animations and events, overriding the config (including an explicit `false`). Has no effect unless the shared animated backend is enabled, which is required to support native driver for all props.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     animatedShouldDebounceQueueFlush: {
       defaultValue: false,
       metadata: {
         dateAdded: '2024-02-05',
         description:
           'Enables an experimental flush-queue debouncing in Animated.js.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    animatedShouldSyncValueBeforeStartCallback: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-06-01',
+        description:
+          'When a useNativeDriver animation completes, syncs the JS-side AnimatedValue with the post-animation value BEFORE invoking the user-supplied start({finished}) callback. Without the flag, the callback observes the pre-animation value, which can cause downstream re-renders to read stale interpolation outputs.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -1011,6 +1011,16 @@ const definitions: FeatureFlagDefinitions = {
           'Use the deferred cell render update mechanism for focus change in FlatList.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableImperativeEvents: {
+      defaultValue: false,
+      metadata: {
+        description:
+          'When enabled, ReactNativeElement and ReadOnlyText expose the public EventTarget API (addEventListener, removeEventListener, dispatchEvent). When disabled, those methods are removed from those final classes.',
+        expectedReleaseValue: true,
+        purpose: 'release',
       },
       ossReleaseStage: 'none',
     },

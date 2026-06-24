@@ -365,4 +365,6 @@ const getBackgroundProp =
 
 TouchableNativeFeedback.displayName = 'TouchableNativeFeedback';
 
+export type TouchableNativeFeedbackInstance = TouchableNativeFeedback;
+
 export default TouchableNativeFeedback;

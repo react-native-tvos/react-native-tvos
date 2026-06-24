@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2ee82b1e1dcae3ea10dbd92549d65a6c>>
+ * @generated SignedSource<<4d0952ded695aec4a52b7b581ad19979>>
  */
 
 /**
@@ -62,8 +62,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun enableDestroyShadowTreeRevisionAsync(): Boolean
 
-  @DoNotStrip @JvmStatic public external fun enableDifferentiatorMutationVectorPreallocation(): Boolean
-
   @DoNotStrip @JvmStatic public external fun enableDoubleMeasurementFixAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableEagerRootViewAttachment(): Boolean
@@ -74,6 +72,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun enableFabricLogs(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun enableFlexboxAutoMinSizeInStrictMode(): Boolean
+
   @DoNotStrip @JvmStatic public external fun enableFontScaleChangesUpdatingLayout(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableIOSTextBaselineOffsetPerLine(): Boolean
@@ -81,8 +81,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun enableIOSViewClipToPaddingBox(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableImagePrefetchingAndroid(): Boolean
-
-  @DoNotStrip @JvmStatic public external fun enableImageRequestDowngradingForNonVisibleImages(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean
 
@@ -146,8 +144,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun fuseboxScreenshotCaptureEnabled(): Boolean
 
-  @DoNotStrip @JvmStatic public external fun hideOffscreenVirtualViewsOnIOS(): Boolean
-
   @DoNotStrip @JvmStatic public external fun optimizedAnimatedPropUpdates(): Boolean
 
   @DoNotStrip @JvmStatic public external fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean
@@ -185,8 +181,6 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun useNativeViewConfigsInBridgelessMode(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useNestedScrollViewAndroid(): Boolean
-
-  @DoNotStrip @JvmStatic public external fun useOptimizedViewRegistryOnAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useSharedAnimatedBackend(): Boolean
 

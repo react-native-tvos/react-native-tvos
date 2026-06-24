@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dda96e26972d745fa18d802035194cf0>>
+ * @generated SignedSource<<57f84b7025cf1fc77f5f99dfc4653fb4>>
  */
 
 /**
@@ -94,10 +94,6 @@ bool ReactNativeFeatureFlags::enableDestroyShadowTreeRevisionAsync() {
   return getAccessor().enableDestroyShadowTreeRevisionAsync();
 }
 
-bool ReactNativeFeatureFlags::enableDifferentiatorMutationVectorPreallocation() {
-  return getAccessor().enableDifferentiatorMutationVectorPreallocation();
-}
-
 bool ReactNativeFeatureFlags::enableDoubleMeasurementFixAndroid() {
   return getAccessor().enableDoubleMeasurementFixAndroid();
 }
@@ -118,6 +114,10 @@ bool ReactNativeFeatureFlags::enableFabricLogs() {
   return getAccessor().enableFabricLogs();
 }
 
+bool ReactNativeFeatureFlags::enableFlexboxAutoMinSizeInStrictMode() {
+  return getAccessor().enableFlexboxAutoMinSizeInStrictMode();
+}
+
 bool ReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout() {
   return getAccessor().enableFontScaleChangesUpdatingLayout();
 }
@@ -132,10 +132,6 @@ bool ReactNativeFeatureFlags::enableIOSViewClipToPaddingBox() {
 
 bool ReactNativeFeatureFlags::enableImagePrefetchingAndroid() {
   return getAccessor().enableImagePrefetchingAndroid();
-}
-
-bool ReactNativeFeatureFlags::enableImageRequestDowngradingForNonVisibleImages() {
-  return getAccessor().enableImageRequestDowngradingForNonVisibleImages();
 }
 
 bool ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges() {
@@ -262,10 +258,6 @@ bool ReactNativeFeatureFlags::fuseboxScreenshotCaptureEnabled() {
   return getAccessor().fuseboxScreenshotCaptureEnabled();
 }
 
-bool ReactNativeFeatureFlags::hideOffscreenVirtualViewsOnIOS() {
-  return getAccessor().hideOffscreenVirtualViewsOnIOS();
-}
-
 bool ReactNativeFeatureFlags::optimizedAnimatedPropUpdates() {
   return getAccessor().optimizedAnimatedPropUpdates();
 }
@@ -340,10 +332,6 @@ bool ReactNativeFeatureFlags::useNativeViewConfigsInBridgelessMode() {
 
 bool ReactNativeFeatureFlags::useNestedScrollViewAndroid() {
   return getAccessor().useNestedScrollViewAndroid();
-}
-
-bool ReactNativeFeatureFlags::useOptimizedViewRegistryOnAndroid() {
-  return getAccessor().useOptimizedViewRegistryOnAndroid();
 }
 
 bool ReactNativeFeatureFlags::useSharedAnimatedBackend() {

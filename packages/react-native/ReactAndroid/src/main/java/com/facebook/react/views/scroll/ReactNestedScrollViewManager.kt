@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<585a90a2f11c5bba8b3e2d011912d302>>
+ * @generated SignedSource<<d321b1f5f7a34b5717cb7ef5300dda96>>
  */
 
 /**
@@ -90,7 +90,7 @@ constructor(private val fpsListener: FpsListener? = null) :
 
   @ReactProp(name = "scrollEnabled", defaultBoolean = true)
   public fun setScrollEnabled(view: ReactNestedScrollView, value: Boolean) {
-    view.setScrollEnabled(value)
+    view.scrollEnabled = value
 
     // Set focusable to match whether scroll is enabled. This improves keyboarding
     // experience by not making scrollview a tab stop when you cannot interact with it.
@@ -121,13 +121,13 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setSnapToInterval(view: ReactNestedScrollView, snapToInterval: Float) {
     // snapToInterval needs to be exposed as a float because of the Javascript interface.
     val density = getDisplayMetricDensity()
-    view.setSnapInterval((snapToInterval * density).toInt())
+    view.snapInterval = (snapToInterval * density).toInt()
   }
 
   @ReactProp(name = "snapToOffsets")
   public fun setSnapToOffsets(view: ReactNestedScrollView, snapToOffsets: ReadableArray?) {
     if (snapToOffsets == null || snapToOffsets.size() == 0) {
-      view.setSnapOffsets(null)
+      view.snapOffsets = null
       return
     }
 
@@ -136,22 +136,22 @@ constructor(private val fpsListener: FpsListener? = null) :
     for (i in 0 until snapToOffsets.size()) {
       offsets.add((snapToOffsets.getDouble(i) * density).toInt())
     }
-    view.setSnapOffsets(offsets)
+    view.snapOffsets = offsets
   }
 
   @ReactProp(name = "snapToAlignment")
   public fun setSnapToAlignment(view: ReactNestedScrollView, alignment: String?) {
-    view.setSnapToAlignment(parseSnapToAlignment(alignment))
+    view.snapToAlignment = parseSnapToAlignment(alignment)
   }
 
   @ReactProp(name = "snapToStart")
   public fun setSnapToStart(view: ReactNestedScrollView, snapToStart: Boolean) {
-    view.setSnapToStart(snapToStart)
+    view.snapToStart = snapToStart
   }
 
   @ReactProp(name = "snapToEnd")
   public fun setSnapToEnd(view: ReactNestedScrollView, snapToEnd: Boolean) {
-    view.setSnapToEnd(snapToEnd)
+    view.snapToEnd = snapToEnd
   }
 
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)
@@ -343,8 +343,8 @@ constructor(private val fpsListener: FpsListener? = null) :
   public fun setFadingEdgeLength(view: ReactNestedScrollView, value: Dynamic) {
     when (value.type) {
       ReadableType.Number -> {
-        view.setFadingEdgeLengthStart(value.asInt())
-        view.setFadingEdgeLengthEnd(value.asInt())
+        view.fadingEdgeLengthStart = value.asInt()
+        view.fadingEdgeLengthEnd = value.asInt()
       }
       ReadableType.Map -> {
         value.asMap()?.let { map ->
@@ -356,8 +356,8 @@ constructor(private val fpsListener: FpsListener? = null) :
           if (map.hasKey("end") && map.getInt("end") > 0) {
             end = map.getInt("end")
           }
-          view.setFadingEdgeLengthStart(start)
-          view.setFadingEdgeLengthEnd(end)
+          view.fadingEdgeLengthStart = start
+          view.fadingEdgeLengthEnd = end
         }
       }
       else -> {
@@ -396,7 +396,7 @@ constructor(private val fpsListener: FpsListener? = null) :
       props: ReactStylesDiffMap,
       stateWrapper: StateWrapper,
   ): Any? {
-    view.setStateWrapper(stateWrapper)
+    view.stateWrapper = stateWrapper
     if (
         ReactNativeFeatureFlags.enableViewCulling() ||
             ReactNativeFeatureFlags.useTraitHiddenOnAndroid()

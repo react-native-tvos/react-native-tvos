@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dcb1e3ba662f28194124dc63879f4fde>>
+ * @generated SignedSource<<f14bb4f5e859587a468b1f2a320577c0>>
  */
 
 /**
@@ -125,11 +125,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableDestroyShadowTreeRevisionAsync();
 
   /**
-   * Pre-allocate mutation vectors in the Differentiator to reduce reallocation overhead during shadow view diffing.
-   */
-  RN_EXPORT static bool enableDifferentiatorMutationVectorPreallocation();
-
-  /**
    * When enabled a subset of components will avoid double measurement on Android.
    */
   RN_EXPORT static bool enableDoubleMeasurementFixAndroid();
@@ -155,6 +150,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableFabricLogs();
 
   /**
+   * Enables CSS Flexbox §4.5 automatic minimum sizing under strict layout conformance. When enabled, a flex item with an undefined main-axis `min-width`/`min-height` under strict conformance receives a content-derived minimum size (per spec) instead of an undefined (0) minimum. Defaults off so the behaviour can be ramped independently of strict conformance.
+   */
+  RN_EXPORT static bool enableFlexboxAutoMinSizeInStrictMode();
+
+  /**
    * Enables font scale changes updating layout for measurable nodes.
    */
   RN_EXPORT static bool enableFontScaleChangesUpdatingLayout();
@@ -173,11 +173,6 @@ class ReactNativeFeatureFlags {
    * When enabled, Android will build and initiate image prefetch requests on ImageShadowNode::layout
    */
   RN_EXPORT static bool enableImagePrefetchingAndroid();
-
-  /**
-   * When enabled, ImageShadowNode downgrades image requests to prefetch priority when layout determines that the image does not intersect the viewport.
-   */
-  RN_EXPORT static bool enableImageRequestDowngradingForNonVisibleImages();
 
   /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
@@ -335,11 +330,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool fuseboxScreenshotCaptureEnabled();
 
   /**
-   * Hides offscreen VirtualViews on iOS by setting hidden = YES to avoid extra cost of views
-   */
-  RN_EXPORT static bool hideOffscreenVirtualViewsOnIOS();
-
-  /**
    * When enabled, uses optimized platform-specific paths to apply animated props synchronously. On Android, this uses a batched int/double buffer protocol with a single JNI call. On iOS, this passes AnimatedProps directly through the delegate chain and applies them via cloneProps, avoiding the folly::dynamic round-trip.
    */
   RN_EXPORT static bool optimizedAnimatedPropUpdates();
@@ -433,11 +423,6 @@ class ReactNativeFeatureFlags {
    * When enabled, ReactScrollView will extend NestedScrollView instead of ScrollView on Android for improved nested scrolling support.
    */
   RN_EXPORT static bool useNestedScrollViewAndroid();
-
-  /**
-   * Use MutableIntObjectMap with ReadWriteLock instead of ConcurrentHashMap for the view registry in SurfaceMountingManager to reduce memory overhead and GC pressure.
-   */
-  RN_EXPORT static bool useOptimizedViewRegistryOnAndroid();
 
   /**
    * Use shared animation backend in C++ Animated

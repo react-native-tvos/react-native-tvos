@@ -8,6 +8,7 @@
  * @format
  */
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {ColorValue} from '../../StyleSheet/StyleSheet';
 import type {TVViewProps} from '../TV/TVViewPropTypes';
 import type {AccessibilityState} from '../View/ViewAccessibility';
@@ -24,6 +25,8 @@ import warnOnce from '../../Utilities/warnOnce';
 import tagForComponentOrHandle from '../TV/tagForComponentOrHandle';
 import * as React from 'react';
 import {cloneElement} from 'react';
+
+export type TouchableHighlightInstance = HostInstance;
 
 type TouchableHighlightBaseProps = Readonly<{
   /**
@@ -48,7 +51,7 @@ type TouchableHighlightBaseProps = Readonly<{
   onHideUnderlay?: ?() => void,
   testOnly_pressed?: ?boolean,
 
-  hostRef?: React.RefSetter<React.ElementRef<typeof View>>,
+  hostRef?: React.RefSetter<TouchableHighlightInstance>,
 }>;
 
 /** @build-types emit-as-interface Uniwind compatibility */
@@ -410,13 +413,13 @@ class TouchableHighlightImpl extends React.Component<
 }
 
 const TouchableHighlight: component(
-  ref?: React.RefSetter<React.ElementRef<typeof View>>,
+  ref?: React.RefSetter<TouchableHighlightInstance>,
   ...props: Readonly<Omit<TouchableHighlightProps, 'hostRef'>>
 ) = ({
   ref: hostRef,
   ...props
 }: {
-  ref?: React.RefSetter<React.ElementRef<typeof View>>,
+  ref?: React.RefSetter<TouchableHighlightInstance>,
   ...Readonly<Omit<TouchableHighlightProps, 'hostRef'>>,
 }) => <TouchableHighlightImpl {...props} hostRef={hostRef} />;
 
