@@ -11,7 +11,7 @@ on:
 jobs:
   set_release_type:
     runs-on: ubuntu-latest
-    if: github.repository == 'facebook/react-native'
+    if: github.repository == 'react/react-native'
     outputs:
       RELEASE_TYPE: ${{ steps.set_release_type.outputs.RELEASE_TYPE }}
     env:
@@ -34,7 +34,7 @@ jobs:
           echo "Should I run E2E tests? ${{ inputs.run-e2e-tests }}"
 
   prebuild_apple_dependencies:
-    if: github.repository == 'facebook/react-native'
+    if: github.repository == 'react/react-native'
     uses: ./.github/workflows/prebuild-ios-dependencies.yml
     secrets: inherit
 
@@ -201,7 +201,7 @@ jobs:
           working-directory: /tmp/RNTestProject
 
   test_e2e_android_templateapp:
-    runs-on: 4-core-ubuntu
+    runs-on: ubuntu-latest
     needs: build_npm_package
     strategy:
       fail-fast: false
@@ -269,7 +269,7 @@ jobs:
           working-directory: /tmp/RNTestProject
 
   run_fantom_tests:
-    runs-on: 8-core-ubuntu
+    runs-on: ubuntu-latest
     needs: [set_release_type]
     container:
       image: reactnativecommunity/react-native-android:v20.0
@@ -288,7 +288,7 @@ jobs:
           gradle-cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
 
   build_android:
-    runs-on: 8-core-ubuntu
+    runs-on: ubuntu-latest
     needs: [set_release_type]
     container:
       image: reactnativecommunity/react-native-android:v20.0
@@ -307,7 +307,7 @@ jobs:
           gradle-cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
 
   test_e2e_android_rntester:
-    runs-on: 4-core-ubuntu
+    runs-on: ubuntu-latest
     needs: [build_android]
     strategy:
       fail-fast: false
@@ -337,7 +337,7 @@ jobs:
           flavor: ${{ matrix.flavor }}
 
   build_npm_package:
-    runs-on: 8-core-ubuntu
+    runs-on: ubuntu-latest
     needs:
       [
         set_release_type,
@@ -360,7 +360,7 @@ jobs:
           gradle-cache-encryption-key: ${{ secrets.GRADLE_CACHE_ENCRYPTION_KEY }}
 
   test_android_helloworld:
-    runs-on: 4-core-ubuntu
+    runs-on: ubuntu-latest
     needs: build_npm_package
     container:
       image: reactnativecommunity/react-native-android:v20.0
@@ -465,7 +465,7 @@ jobs:
 
   test_js:
     runs-on: ubuntu-latest
-    if: github.repository == 'facebook/react-native'
+    if: github.repository == 'react/react-native'
     strategy:
       fail-fast: false
       matrix:
@@ -480,7 +480,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-    if: github.repository == 'facebook/react-native'
+    if: github.repository == 'react/react-native'
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
