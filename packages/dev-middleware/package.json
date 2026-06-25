@@ -1,16 +1,16 @@
 {
   "name": "@react-native/dev-middleware",
-  "version": "0.83.9",
+  "version": "0.83.10",
   "description": "Dev server middleware for React Native",
   "keywords": [
     "react-native",
     "tools"
   ],
-  "homepage": "https://github.com/facebook/react-native/tree/HEAD/packages/dev-middleware#readme",
-  "bugs": "https://github.com/facebook/react-native/issues",
+  "homepage": "https://github.com/react/react-native/tree/HEAD/packages/dev-middleware#readme",
+  "bugs": "https://github.com/react/react-native/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/facebook/react-native.git",
+    "url": "git+https://github.com/react/react-native.git",
     "directory": "packages/dev-middleware"
   },
   "license": "MIT",
@@ -23,8 +23,8 @@
   ],
   "dependencies": {
     "@isaacs/ttlcache": "^1.4.1",
-    "@react-native/debugger-frontend": "0.83.9",
-    "@react-native/debugger-shell": "0.83.9",
+    "@react-native/debugger-frontend": "0.83.10",
+    "@react-native/debugger-shell": "0.83.10",
     "chrome-launcher": "^0.15.2",
     "chromium-edge-launcher": "^0.2.0",
     "connect": "^3.6.5",
@@ -39,7 +39,7 @@
     "node": ">= 20.19.4"
   },
   "devDependencies": {
-    "@react-native/debugger-shell": "0.83.9",
+    "@react-native/debugger-shell": "0.83.10",
     "selfsigned": "^2.4.1",
     "undici": "^5.29.0",
     "wait-for-expect": "^3.0.2"
