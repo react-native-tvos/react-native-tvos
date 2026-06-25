@@ -775,12 +775,23 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 
 - (void)_setAttributedString:(NSAttributedString *)attributedString
 {
+#if TARGET_OS_TV
+  // Attribute-free string prevents the tvOS keyboard from inheriting the component's small font.
+  if ([attributedString.string isEqualToString:_backedTextInputView.attributedText.string]) {
+    return;
+  }
+#else
   if ([self _textOf:attributedString equals:_backedTextInputView.attributedText]) {
     return;
   }
+#endif
   UITextRange *selectedRange = _backedTextInputView.selectedTextRange;
   NSInteger oldTextLength = _backedTextInputView.attributedText.string.length;
+#if TARGET_OS_TV
+  _backedTextInputView.attributedText = [[NSAttributedString alloc] initWithString:attributedString.string];
+#else
   _backedTextInputView.attributedText = attributedString;
+#endif
   // Updating the UITextView attributedText, for example changing the lineHeight, the color or adding
   // a new paragraph with \n, causes the cursor to move to the end of the Text and scroll.
   // This is fixed by restoring the cursor position and scrolling to that position (iOS issue 652653).
