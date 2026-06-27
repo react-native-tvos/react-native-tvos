@@ -458,7 +458,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
   internal fun requestFocusFromJS() {
     if (isAttachedToWindow) {
-      super.requestFocus(FOCUS_DOWN, null)
+      requestFocus(FOCUS_DOWN, null)
     } else {
       focusOnAttach = true
     }
