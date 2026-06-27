@@ -526,7 +526,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       HOTSPOT_UPDATE_KEY -> handleHotspotUpdate(root, args)
       "setPressed" -> handleSetPressed(root, args)
       "setDestinations" -> handleSetDestinations(root, args)
-      "requestTVFocus" -> root.requestFocus()
+      "requestTVFocus" -> root.requestFocusFromJS()
       "focus" -> handleFocus(root)
       "blur" -> handleBlur(root)
       else -> {}
