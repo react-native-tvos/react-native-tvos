@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { View, ScrollViewProps, HostComponent, EventSubscription, TVParallaxProperties } from 'react-native';
+import type { View, ScrollViewProps, HostComponent, EventSubscription, TVParallaxProperties, FocusEvent, BlurEvent } from 'react-native';
 
 declare module 'react-native' {
   export type FocusDestination = null | number | React.Component<any, any> | React.ComponentClass<any>;
@@ -151,6 +151,17 @@ declare module 'react-native' {
      * @deprecated Don't use it, no longer necessary.
      */
     safePadding?: 'both' | 'vertical' | 'horizontal' | null | undefined;
+    /**
+     * Fires once when focus enters this focus guide's subtree from outside.
+     * Unlike `onFocus`, which bubbles and fires for every descendant, this
+     * does not fire again when focus moves between descendants.
+     */
+    onFocusEnter?: ((event: FocusEvent) => void) | undefined;
+    /**
+     * Fires once when focus leaves this focus guide's subtree entirely. Does
+     * not fire when focus moves between descendants. Pairs with `onFocusEnter`.
+     */
+    onFocusLeave?: ((event: BlurEvent) => void) | undefined;
   }
 
   export type FocusGuideMethods = {
