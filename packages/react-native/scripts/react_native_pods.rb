@@ -148,6 +148,7 @@ def use_react_native! (
   pod 'React-RCTVibration', :path => "#{prefix}/Libraries/Vibration"
   pod 'React-Core/RCTWebSocket', :path => "#{prefix}/"
   pod 'React-cxxreact', :path => "#{prefix}/ReactCommon/cxxreact"
+  pod 'React-cxxstableapi', :path => "#{prefix}/ReactCommon/react/cxxstableapi"
   pod 'React-debug', :path => "#{prefix}/ReactCommon/react/debug"
   pod 'React-utils', :path => "#{prefix}/ReactCommon/react/utils"
   pod 'React-featureflags', :path => "#{prefix}/ReactCommon/react/featureflags"
