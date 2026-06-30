@@ -6726,7 +6726,7 @@ metro-config@0.85.0, metro-config@^0.85.0:
     metro-runtime "0.85.0"
     yaml "^2.6.1"
 
-metro-core@0.85.0, metro-core@^0.85.0:
+metro-core@0.85.0:
   version "0.85.0"
   resolved "https://registry.yarnpkg.com/metro-core/-/metro-core-0.85.0.tgz#5283b5f64078eea8bf7520c64fccad697390c096"
   integrity sha512-AHpD2RVtW44iTswxR79R3EIq/seKgdBBtOoQxlDnSf9z9YHBJZyqTNpT4PHHWSvmIeuo1xZ9B7OgdtV6dTOBXA==
