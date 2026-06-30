@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c41d0e6beb021a015dfefa83b53f8ebe>>
+ * @generated SignedSource<<f7cb7efa372c83876b06b1492f46003b>>
  * @flow strict
  * @noformat
  */
@@ -32,7 +32,6 @@ export type ReactNativeFeatureFlagsJsOnly = Readonly<{
   animatedDeferStartOfTimingAnimations: Getter<boolean>,
   animatedForceNativeDriver: Getter<boolean>,
   animatedShouldSyncValueBeforeStartCallback: Getter<boolean>,
-  animatedShouldUseSingleOp: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
   enableImperativeEvents: Getter<boolean>,
   enableNativeEventTargetEventDispatching: Getter<boolean>,
@@ -155,11 +154,6 @@ export const animatedForceNativeDriver: Getter<boolean> = createJavaScriptFlagGe
  * When a useNativeDriver animation completes, syncs the JS-side AnimatedValue with the post-animation value BEFORE invoking the user-supplied start({finished}) callback. Without the flag, the callback observes the pre-animation value, which can cause downstream re-renders to read stale interpolation outputs.
  */
 export const animatedShouldSyncValueBeforeStartCallback: Getter<boolean> = createJavaScriptFlagGetter('animatedShouldSyncValueBeforeStartCallback', true);
-
-/**
- * Enables an experimental mega-operation for Animated.js that replaces many calls to native with a single call into native, to reduce JSI/JNI traffic.
- */
-export const animatedShouldUseSingleOp: Getter<boolean> = createJavaScriptFlagGetter('animatedShouldUseSingleOp', true);
 
 /**
  * Use the deferred cell render update mechanism for focus change in FlatList.
