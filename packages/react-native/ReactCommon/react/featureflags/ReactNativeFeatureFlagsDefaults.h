@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d466be4c46ae5939d812dbbc5e7799b5>>
+ * @generated SignedSource<<60a53054768767e46fddbb0e3a3b59d4>>
  */
 
 /**
@@ -73,6 +73,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool enableAccumulatedUpdatesInRawPropsAndroid() override {
     return false;
+  }
+
+  bool enableAndroidFontWeightAdjustment() override {
+    return true;
   }
 
   bool enableAndroidTextMeasurementOptimizations() override {

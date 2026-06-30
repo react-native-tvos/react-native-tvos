@@ -180,6 +180,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableAndroidFontWeightAdjustment: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-06-29',
+        description:
+          'When enabled, Android Text measurement and rendering respects the system Bold text accessibility setting via `Configuration.fontWeightAdjustment`.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enableAndroidTextMeasurementOptimizations: {
       defaultValue: false,
       metadata: {
