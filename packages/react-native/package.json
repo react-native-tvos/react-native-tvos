@@ -152,7 +152,6 @@
     "@react-native/js-polyfills": "0.87.0-main",
     "@react-native/normalize-colors": "0.87.0-main",
     "@react-native/virtualized-lists": "0.87.0-main",
-    "abort-controller": "^3.0.0",
     "anser": "^1.4.9",
     "ansi-regex": "^5.0.0",
     "babel-plugin-syntax-hermes-parser": "0.36.1",
