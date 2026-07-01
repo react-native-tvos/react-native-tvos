@@ -229,6 +229,9 @@ void NativeAnimatedNodesManager::connectAnimatedNodeToView(
       connectedAnimatedNodes_.insert({viewTag, propsNodeTag});
     }
     updatedNodeTags_.insert(node->tag());
+    // Seed props_ so getManagedProps() is live at mount, without staging a
+    // commit.
+    node->collectProps();
   } else {
     LOG(WARNING)
         << "Cannot ConnectAnimatedNodeToView, animated node has to be props type";

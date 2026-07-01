@@ -6326,6 +6326,7 @@ class facebook::react::PropsAnimatedNode : public facebook::react::AnimatedNode 
   public facebook::react::Tag connectedViewTag() const;
   public folly::dynamic props();
   public virtual void update() override;
+  public void collectProps();
   public void connectToShadowNodeFamily(facebook::react::ShadowNodeFamily::Weak shadowNodeFamily);
   public void connectToView(facebook::react::Tag viewTag);
   public void disconnectFromShadowNodeFamily();
