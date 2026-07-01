@@ -91,30 +91,36 @@ export class AbortSignal extends EventTarget {
       throw new TypeError('The signals value must be an instance of Array');
     }
 
-    const controller = new AbortController();
-    const listeners = [];
-    const cleanup = () => listeners.forEach(unsubscribe => unsubscribe());
-
+    // First pass: validate that every item is an AbortSignal.
     for (let i = 0; i < signals.length; i++) {
       const signal = signals[i];
-
-      // Validate that each item is an AbortSignal
       if (!(signal instanceof AbortSignal)) {
-        cleanup(); // Remove all listeners added so far
         throw new TypeError(
           'The "signals[' +
             i +
             ']" argument must be an instance of AbortSignal',
         );
       }
+    }
 
-      // Abort immediately if one of the signals is already aborted
+    // Second pass: short-circuit if any of the signals is already aborted. No
+    // listeners have been registered yet, so there is nothing to clean up if
+    // we return early.
+    for (let i = 0; i < signals.length; i++) {
+      const signal = signals[i];
       if (signal.aborted) {
-        cleanup(); // Remove all listeners added so far
-        controller.abort(signal.reason);
-        break;
+        return AbortSignal.abort(signal.reason);
       }
+    }
 
+    // Third pass: none of the signals is aborted, so subscribe to all of them
+    // and abort the resulting signal when any of them aborts.
+    const controller = new AbortController();
+    const listeners = [];
+    const cleanup = () => listeners.forEach(unsubscribe => unsubscribe());
+
+    for (let i = 0; i < signals.length; i++) {
+      const signal = signals[i];
       const onAbort = () => {
         controller.abort(signal.reason);
         cleanup();

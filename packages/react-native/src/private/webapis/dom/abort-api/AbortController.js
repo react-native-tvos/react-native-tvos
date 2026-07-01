@@ -72,10 +72,7 @@ function getSignal(controller: AbortController): AbortSignal {
   const signal = controller[SIGNAL_KEY];
   if (signal == null) {
     throw new TypeError(
-      `Expected 'this' to be an 'AbortController' object, but got ${
-        // $FlowExpectedError[invalid-compare]
-        controller === null ? 'null' : typeof controller
-      }`,
+      `Expected 'this' to be an 'AbortController' object, but got ${typeof controller}`,
     );
   }
   return signal;

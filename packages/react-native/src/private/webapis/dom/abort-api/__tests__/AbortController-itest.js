@@ -373,6 +373,26 @@ describe('AbortController', () => {
         'The "signals[1]" argument must be an instance of AbortSignal',
       );
     });
+
+    it('should validate every element before short-circuiting on an already-aborted signal', () => {
+      const aborted = new AbortController();
+      aborted.abort(new Error('already aborted'));
+
+      let thrown;
+      try {
+        // $FlowExpectedError[incompatible-type]
+        AbortSignal.any([aborted.signal, {}]);
+      } catch (error) {
+        thrown = error;
+      }
+
+      expect(thrown).toBeInstanceOf(TypeError);
+      // $FlowExpectedError[incompatible-type]
+      const typeError: TypeError = thrown;
+      expect(typeError.message).toBe(
+        'The "signals[1]" argument must be an instance of AbortSignal',
+      );
+    });
   });
 
   describe("'timeout' static method", () => {
