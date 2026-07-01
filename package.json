@@ -37,6 +37,7 @@
     "test-generated-typescript": "tsc -p packages/react-native/types_generated/tsconfig.test.json",
     "test": "jest",
     "fantom": "./scripts/fantom.sh",
+    "fantom-cli": "./scripts/fantom-cli.sh",
     "trigger-react-native-release": "node ./scripts/releases-local/trigger-react-native-release.js",
     "update-lock": "npx yarn-deduplicate"
   },
