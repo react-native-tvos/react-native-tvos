@@ -581,12 +581,10 @@ type ScrollViewBaseProps = Readonly<{
    *     catch taps, but children of the scroll view can catch taps.
    *   - `'handled'`, the keyboard will not dismiss automatically when the tap was handled by
    *     children, (or captured by an ancestor).
-   *   - `false`, deprecated, use `'never'` instead.
-   *   - `true`, deprecated, use `'always'` instead.
    *
    * @default `'never'`
    */
-  keyboardShouldPersistTaps?: ?('always' | 'never' | 'handled' | true | false),
+  keyboardShouldPersistTaps?: ?('always' | 'never' | 'handled'),
   /**
    * When set, the scroll view will adjust the scroll position so that the first child that is
    * partially or fully visible and at or beyond `minIndexForVisible` will not change position.
@@ -888,17 +886,6 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
   };
 
   componentDidMount() {
-    if (typeof this.props.keyboardShouldPersistTaps === 'boolean') {
-      console.warn(
-        `'keyboardShouldPersistTaps={${
-          this.props.keyboardShouldPersistTaps === true ? 'true' : 'false'
-        }}' is deprecated. ` +
-          `Use 'keyboardShouldPersistTaps="${
-            this.props.keyboardShouldPersistTaps ? 'always' : 'never'
-          }"' instead`,
-      );
-    }
-
     this._keyboardMetrics = Keyboard.metrics();
     this._additionalScrollOffset = 0;
 
@@ -1483,7 +1470,6 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
     const currentlyFocusedTextInput = TextInputState.currentlyFocusedInput();
     if (
       currentlyFocusedTextInput != null &&
-      this.props.keyboardShouldPersistTaps !== true &&
       this.props.keyboardShouldPersistTaps !== 'always' &&
       this._keyboardIsDismissible() &&
       e.target !== currentlyFocusedTextInput &&
