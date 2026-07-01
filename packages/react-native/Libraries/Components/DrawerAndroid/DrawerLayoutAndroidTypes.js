@@ -27,6 +27,12 @@ export type DrawerSlideEvent = NativeSyntheticEvent<
   }>,
 >;
 
+/**
+ * DrawerLayoutAndroid is deprecated and will be removed in a future release.
+ * Use `react-native-drawer-layout` instead.
+ * @see https://reactnavigation.org/docs/drawer-layout/
+ * @deprecated
+ */
 export type DrawerLayoutAndroidProps = Readonly<{
   ...ViewProps,
 

@@ -35,8 +35,12 @@ const DRAWER_STATES = ['Idle', 'Dragging', 'Settling'] as const;
 /**
  * React component that wraps the platform `DrawerLayout` (Android only). The Drawer (typically used for navigation) is rendered with `renderNavigationView` and direct children are the main view. The navigation view is initially not visible on the screen, but can be pulled in from the side of the window specified by the `drawerPosition` prop and its width can be set by the `drawerWidth` prop.
  *
- * @see https://reactnative.dev/docs/drawerlayoutandroid
+ * DrawerLayoutAndroid is deprecated and will be removed in a future release.
+ * Use `react-native-drawer-layout` instead.
+ *
+ * @see https://reactnavigation.org/docs/drawer-layout/
  * @platform android
+ * @deprecated
  */
 class DrawerLayoutAndroid
   extends React.Component<DrawerLayoutAndroidProps, DrawerLayoutAndroidState>
