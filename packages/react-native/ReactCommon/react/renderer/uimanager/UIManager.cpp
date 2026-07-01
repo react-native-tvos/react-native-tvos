@@ -765,10 +765,10 @@ void UIManager::removeEventListener(
   }
 }
 
-void UIManager::setOnSurfaceStartCallback(
+void UIManager::addOnSurfaceStartCallback(
     UIManagerDelegate::OnSurfaceStartCallback&& callback) {
   if (delegate_ != nullptr) {
-    delegate_->uiManagerShouldSetOnSurfaceStartCallback(std::move(callback));
+    delegate_->uiManagerShouldAddOnSurfaceStartCallback(std::move(callback));
   }
 }
 

@@ -882,6 +882,7 @@ class facebook::react::AnimatedPropsRegistry {
   public std::pair<std::unordered_set<std::shared_ptr<const facebook::react::ShadowNodeFamily>>&, facebook::react::SnapshotMap&> getMap(facebook::react::SurfaceId surfaceId);
   public void clear(facebook::react::SurfaceId surfaceId);
   public void clearOnSurfaceStop(facebook::react::SurfaceId surfaceId);
+  public void initializeSurface(facebook::react::SurfaceId surfaceId);
   public void update(const std::unordered_map<facebook::react::SurfaceId, facebook::react::SurfaceUpdates>& surfaceUpdates);
 }
 
@@ -3054,8 +3055,8 @@ class facebook::react::Scheduler : public facebook::react::UIManagerDelegate {
   public virtual void uiManagerDidStartSurface(const facebook::react::ShadowTree& shadowTree) override;
   public virtual void uiManagerDidUpdateShadowTree(const std::unordered_map<facebook::react::Tag, folly::dynamic>& tagToProps) override;
   public virtual void uiManagerShouldAddEventListener(std::shared_ptr<const facebook::react::EventListener> listener) final;
+  public virtual void uiManagerShouldAddOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback) override;
   public virtual void uiManagerShouldRemoveEventListener(const std::shared_ptr<const facebook::react::EventListener>& listener) final;
-  public virtual void uiManagerShouldSetOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback) override;
   public virtual void uiManagerShouldSynchronouslyUpdateViewOnUIThread(facebook::react::Tag tag, const folly::dynamic& props) override;
   public void addEventListener(std::shared_ptr<const facebook::react::EventListener> listener);
   public void animationTick() const;
@@ -3678,6 +3679,7 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public virtual void shadowTreeDidFinishTransaction(std::shared_ptr<const facebook::react::MountingCoordinator> mountingCoordinator, bool mountSynchronously) const override;
   public virtual void shadowTreeDidPromoteReactRevision(const facebook::react::ShadowTree& shadowTree) const override;
   public void addEventListener(std::shared_ptr<const facebook::react::EventListener> listener);
+  public void addOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback);
   public void animationTick() const;
   public void appendChild(const std::shared_ptr<const facebook::react::ShadowNode>& parentShadowNode, const std::shared_ptr<const facebook::react::ShadowNode>& childShadowNode) const;
   public void completeSurface(facebook::react::SurfaceId surfaceId, const std::shared_ptr<std::vector<std::shared_ptr<const facebook::react::ShadowNode>>>& rootChildren, facebook::react::ShadowTree::CommitOptions commitOptions);
@@ -3692,7 +3694,6 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public void setDelegate(facebook::react::UIManagerDelegate* delegate);
   public void setIsJSResponder(const std::shared_ptr<const facebook::react::ShadowNode>& shadowNode, bool isJSResponder, bool blockNativeResponder) const;
   public void setNativeAnimatedDelegate(std::weak_ptr<facebook::react::UIManagerNativeAnimatedDelegate> delegate);
-  public void setOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback);
   public void setSurfaceProps(facebook::react::SurfaceId surfaceId, const std::string& moduleName, const folly::dynamic& props, facebook::react::DisplayMode displayMode) const noexcept;
   public void setViewTransitionDelegate(facebook::react::UIManagerViewTransitionDelegate* delegate);
   public void startEmptySurface(facebook::react::ShadowTree::Unique&& shadowTree) const noexcept;
@@ -3763,8 +3764,8 @@ class facebook::react::UIManagerDelegate {
   public virtual void uiManagerDidStartSurface(const facebook::react::ShadowTree& shadowTree) = 0;
   public virtual void uiManagerDidUpdateShadowTree(const std::unordered_map<facebook::react::Tag, folly::dynamic>& tagToProps) = 0;
   public virtual void uiManagerShouldAddEventListener(std::shared_ptr<const facebook::react::EventListener> listener) = 0;
+  public virtual void uiManagerShouldAddOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback) = 0;
   public virtual void uiManagerShouldRemoveEventListener(const std::shared_ptr<const facebook::react::EventListener>& listener) = 0;
-  public virtual void uiManagerShouldSetOnSurfaceStartCallback(facebook::react::UIManagerDelegate::OnSurfaceStartCallback&& callback) = 0;
   public virtual void uiManagerShouldSynchronouslyUpdateViewOnUIThread(facebook::react::Tag tag, const folly::dynamic& props) = 0;
   public virtual ~UIManagerDelegate() noexcept = default;
 }
