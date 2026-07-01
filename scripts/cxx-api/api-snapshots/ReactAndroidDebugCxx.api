@@ -1245,9 +1245,9 @@ class facebook::react::AdditionAnimatedNode : public facebook::react::OperatorAn
 }
 
 class facebook::react::AndroidAnimationChoreographer : public facebook::react::AnimationChoreographer {
-  public AndroidAnimationChoreographer(jni::alias_ref<facebook::react::JAnimationBackendChoreographer> jChoreographer);
   public virtual void pause() override;
   public virtual void resume() override;
+  public void onAnimationFrameIfActive(facebook::react::AnimationTimestamp timestamp) const;
 }
 
 class facebook::react::AndroidDrawerLayoutEventEmitter : public facebook::react::BaseViewEventEmitter {
@@ -2778,12 +2778,6 @@ class facebook::react::IntersectionObserverState {
   public static facebook::react::IntersectionObserverState Intersecting(facebook::react::Float threshold);
   public static facebook::react::IntersectionObserverState Intersecting(facebook::react::Float threshold, facebook::react::Float rootThreshold);
   public static facebook::react::IntersectionObserverState NotIntersecting();
-}
-
-class facebook::react::JAnimationBackendChoreographer : public facebook::jni::JavaClass<facebook::react::JAnimationBackendChoreographer> {
-  public static constexpr auto kJavaDescriptor;
-  public void pause() const;
-  public void resume() const;
 }
 
 class facebook::react::JBindingsInstaller : public jni::HybridClass<facebook::react::JBindingsInstaller>, public facebook::react::BindingsInstaller {

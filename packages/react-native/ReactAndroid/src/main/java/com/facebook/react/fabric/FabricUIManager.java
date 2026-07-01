@@ -1628,6 +1628,10 @@ public class FabricUIManager
         schedule();
       }
 
+      if (ReactNativeFeatureFlags.useSharedAnimatedBackend() && mBinding != null) {
+        mBinding.driveAnimationBackend(frameTimeNanos);
+      }
+
       mSynchronousEvents.clear();
     }
   }
