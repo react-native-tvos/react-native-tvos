@@ -8,12 +8,12 @@
  * @format
  */
 
-import type {ViewProps} from '../../../../Libraries/Components/View/ViewPropTypes';
-import type {ProcessedColorValue} from '../../../../Libraries/StyleSheet/processColor';
-import type {HostComponent} from '../../types/HostComponent';
+import type {ViewProps} from '../../../../../Libraries/Components/View/ViewPropTypes';
+import type {ProcessedColorValue} from '../../../../../Libraries/StyleSheet/processColor';
+import type {HostComponent} from '../../../types/HostComponent';
 
-import codegenNativeCommands from '../../../../Libraries/Utilities/codegenNativeCommands';
-import codegenNativeComponent from '../../../../Libraries/Utilities/codegenNativeComponent';
+import codegenNativeCommands from '../../../../../Libraries/Utilities/codegenNativeCommands';
+import codegenNativeComponent from '../../../../../Libraries/Utilities/codegenNativeComponent';
 import * as React from 'react';
 
 type DebuggingOverlayNativeProps = Readonly<{
