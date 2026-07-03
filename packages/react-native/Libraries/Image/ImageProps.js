@@ -338,7 +338,13 @@ export type ImageProps = Readonly<{
   style?: ?ImageStyleProp,
 }>;
 
-/** @build-types emit-as-interface Uniwind compatibility */
+/**
+ * ImageBackground is deprecated and will be removed in a future release.
+ * Use a `View` with an absolutely positioned `Image` instead.
+ * @see https://reactnative.dev/docs/imagebackground
+ * @deprecated
+ * @build-types emit-as-interface Uniwind compatibility
+ */
 export type ImageBackgroundProps = Readonly<{
   ...ImageProps,
   children?: React.Node,

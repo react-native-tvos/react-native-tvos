@@ -47,7 +47,11 @@ export type {ImageBackgroundProps} from './ImageProps';
  * });
  * ```
  *
+ * ImageBackground is deprecated and will be removed in a future release.
+ * Use a `View` with an absolutely positioned `Image` instead.
+ *
  * @see https://reactnative.dev/docs/imagebackground
+ * @deprecated
  */
 class ImageBackground extends React.Component<ImageBackgroundProps> {
   setNativeProps(props: {...}) {

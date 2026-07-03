@@ -62,7 +62,18 @@ module.exports = {
   get Image() {
     return require('./Libraries/Image/Image').default;
   },
+  /**
+   * @deprecated ImageBackground is deprecated and will be removed in a future release.
+   * Use a View with an absolutely positioned Image instead.
+   * See https://reactnative.dev/docs/imagebackground
+   */
   get ImageBackground() {
+    warnOnce(
+      'image-background-deprecated',
+      'ImageBackground is deprecated and will be removed in a future release. ' +
+        'Use a View with an absolutely positioned Image instead. ' +
+        'See https://reactnative.dev/docs/imagebackground',
+    );
     return require('./Libraries/Image/ImageBackground').default;
   },
   get InputAccessoryView() {
