@@ -433,9 +433,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   float magnification = _tvParallaxProperties.magnification;
 
   if (magnification != 1.0) {
-    [UIView animateWithDuration:0.2 animations:^{
       self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
-    }];
   }
 
   _motionEffectsAdded = YES;
@@ -447,13 +445,11 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     return;
   }
 
-  [UIView animateWithDuration:0.2 animations:^{
-    float magnification = self->_tvParallaxProperties.magnification;
-    BOOL enabled = self->_tvParallaxProperties.enabled;
-    if (enabled && magnification != 0.0 && magnification != 1.0) {
-      self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
-    }
-  }];
+  float magnification = self->_tvParallaxProperties.magnification;
+  BOOL enabled = self->_tvParallaxProperties.enabled;
+  if (enabled && magnification != 0.0 && magnification != 1.0) {
+    self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
+  }
 
   for (UIMotionEffect *effect in [self.motionEffects copy]){
     [self removeMotionEffect:effect];
@@ -606,12 +602,12 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-    if (context.previouslyFocusedView == context.nextFocusedView) {
+    if (context.previouslyFocusedItem == context.nextFocusedItem) {
       return;
     }
   
     if (_autoFocus && self.focusGuide != nil && context.previouslyFocusedItem != nil) {
-      // Whenever focus leaves the container, `nextFocusedView` is the destination, the item outside the container.
+      // Whenever focus leaves the container, `nextFocusedItem` is the destination, the item outside the container.
       // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
       // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
       // the last focused element and redirects the focus to it whenever focus comes back.
@@ -619,20 +615,20 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self handleFocusGuide];
     }
 
-    if (context.nextFocusedView == self) {
+    if (context.nextFocusedItem == self) {
       [self becomeFirstResponder];
       [self enableDirectionalFocusGuides];
-      [coordinator addCoordinatedAnimations:^(void){
-          if (self->_eventEmitter) self->_eventEmitter->onFocus();
+      if (self->_eventEmitter) self->_eventEmitter->onFocus();
+      [coordinator addCoordinatedFocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
           [self addParallaxMotionEffects];
       } completion:^(void){}];
       // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
       // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
       // Generally speaking, it would happen for any non-collapsable `View`.
-    } else if (context.previouslyFocusedView == self) {
-      [coordinator addCoordinatedAnimations:^(void){
+    } else if (context.previouslyFocusedItem == self) {
+      if (self->_eventEmitter) self->_eventEmitter->onBlur();
+      [coordinator addCoordinatedUnfocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
           [self removeParallaxMotionEffects];
-          if (self->_eventEmitter) self->_eventEmitter->onBlur();
       } completion:^(void){[self disableDirectionalFocusGuides];}];
       [self resignFirstResponder];
     }
