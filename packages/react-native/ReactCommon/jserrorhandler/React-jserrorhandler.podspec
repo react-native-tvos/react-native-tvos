@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
 
   s.dependency "React-jsi"
   s.dependency "React-cxxreact"
-  s.dependency "ReactCommon/turbomodule/bridging"
+  s.dependency "React-bridging"
   add_dependency(s, "React-featureflags")
   add_dependency(s, "React-debug")
 

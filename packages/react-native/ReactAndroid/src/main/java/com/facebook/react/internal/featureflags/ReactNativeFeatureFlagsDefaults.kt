@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f6cd9d59757c8afe3a130c8758232228>>
+ * @generated SignedSource<<4366e19b07fec7877e9d32df23ae54a6>>
  */
 
 /**
@@ -27,7 +27,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun cdpInteractionMetricsEnabled(): Boolean = false
 
-  override fun cxxNativeAnimatedEnabled(): Boolean = true
+  override fun cxxNativeAnimatedEnabled(): Boolean = false
 
   override fun defaultTextToOverflowHidden(): Boolean = true
 
@@ -46,6 +46,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableAccessibilityOrder(): Boolean = false
 
   override fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = false
+
+  override fun enableAndroidFontWeightAdjustment(): Boolean = true
 
   override fun enableAndroidTextMeasurementOptimizations(): Boolean = false
 
@@ -70,6 +72,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableFlexboxAutoMinSizeInStrictMode(): Boolean = false
 
   override fun enableFontScaleChangesUpdatingLayout(): Boolean = true
+
+  override fun enableIOSCompressedTextFrameAdjustment(): Boolean = false
 
   override fun enableIOSTextBaselineOffsetPerLine(): Boolean = false
 

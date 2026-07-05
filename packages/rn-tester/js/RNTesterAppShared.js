@@ -290,7 +290,6 @@ const RNTesterApp = ({
         {Platform.OS === 'android' ? (
           <StatusBar
             barStyle="dark-content"
-            backgroundColor={theme.GroupedBackgroundColor}
           />
         ) : null}
         {!shouldHideChrome && Platform.isTV && (

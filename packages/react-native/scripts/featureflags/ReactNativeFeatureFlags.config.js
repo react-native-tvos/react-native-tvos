@@ -72,7 +72,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     cxxNativeAnimatedEnabled: {
-      defaultValue: true,
+      defaultValue: false,
       metadata: {
         dateAdded: '2025-03-14',
         description:
@@ -80,7 +80,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'experimental',
+      ossReleaseStage: 'canary',
     },
     defaultTextToOverflowHidden: {
       defaultValue: true,
@@ -175,6 +175,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2024-12-10',
         description:
           'When enabled, Android will accumulate updates in rawProps to reduce the number of mounting instructions for cascading re-renders.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableAndroidFontWeightAdjustment: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-06-29',
+        description:
+          'When enabled, Android Text measurement and rendering respects the system Bold text accessibility setting via `Configuration.fontWeightAdjustment`.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -300,6 +311,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2025-04-07',
         description:
           'Enables font scale changes updating layout for measurable nodes.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    enableIOSCompressedTextFrameAdjustment: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-07-02',
+        description:
+          'Adjusts iOS Text drawing frames for compressed explicit line heights.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -970,34 +992,12 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    animatedShouldDebounceQueueFlush: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2024-02-05',
-        description:
-          'Enables an experimental flush-queue debouncing in Animated.js.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     animatedShouldSyncValueBeforeStartCallback: {
       defaultValue: true,
       metadata: {
         dateAdded: '2026-06-01',
         description:
           'When a useNativeDriver animation completes, syncs the JS-side AnimatedValue with the post-animation value BEFORE invoking the user-supplied start({finished}) callback. Without the flag, the callback observes the pre-animation value, which can cause downstream re-renders to read stale interpolation outputs.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    animatedShouldUseSingleOp: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2024-02-05',
-        description:
-          'Enables an experimental mega-operation for Animated.js that replaces many calls to native with a single call into native, to reduce JSI/JNI traffic.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

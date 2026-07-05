@@ -36,6 +36,7 @@ import com.facebook.react.common.ReactConstants
 import com.facebook.react.common.build.ReactBuildConfig
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags
 import com.facebook.react.uimanager.BackgroundStyleApplicator
+import com.facebook.react.uimanager.HasChildPressedStateDelay
 import com.facebook.react.uimanager.LengthPercentage
 import com.facebook.react.uimanager.LengthPercentageType
 import com.facebook.react.uimanager.MeasureSpecAssertions
@@ -86,7 +87,8 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     HasFlingAnimator,
     HasScrollEventThrottle,
     HasSmoothScroll,
-    VirtualViewContainer {
+    VirtualViewContainer,
+    HasChildPressedStateDelay {
 
   private companion object {
     private val DEBUG_MODE = false && ReactBuildConfig.DEBUG
@@ -202,6 +204,7 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
   override var stateWrapper: StateWrapper? = null
   override var scrollEventThrottle: Int = 0
   override var lastScrollDispatchTime: Long = 0L
+  override var hasChildPressedStateDelay: Boolean? = null
 
   override val virtualViewContainerState: VirtualViewContainerState
     get() =
@@ -692,6 +695,9 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
       Systrace.endSection(Systrace.TRACE_TAG_REACT)
     }
   }
+
+  override fun shouldDelayChildPressedState(): Boolean =
+      hasChildPressedStateDelay ?: super.shouldDelayChildPressedState()
 
   override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
     if (!scrollEnabled) return false
