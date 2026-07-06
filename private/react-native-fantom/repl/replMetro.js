@@ -11,7 +11,7 @@
 import type {Server as HttpServer} from 'http';
 import type {Server as HttpsServer} from 'https';
 
-import Metro from 'metro';
+import * as Metro from 'metro';
 import {mergeConfig} from 'metro-config';
 import {Server as NetServer} from 'net';
 import path from 'path';
