@@ -1188,7 +1188,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
           return super.performAccessibilityAction(host, action, args)
         }
         if (action == AccessibilityNodeInfo.ACTION_FOCUS) {
-          if (args?.let { host.interceptAccessibilityEvents(action, it) } == true) {
+          if (host.interceptAccessibilityEvents(action, args) == true) {
             return true
           }
           // Handle case when focus guide cannot find any focusable child
@@ -1206,7 +1206,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
           return super.performAccessibilityAction(host, action, args)
         }
         if (action == AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS) {
-          if (args?.let { host.interceptAccessibilityEvents(action, it) } == true) {
+          if (host.interceptAccessibilityEvents(action, args) == true) {
             return true
           }
           // Handle case when focus guide cannot find any focusable child
@@ -1265,7 +1265,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
     return this.isFocusGuideTalkbackAccessibilityDelegateSet
   }
 
-  private fun interceptAccessibilityEvents(action: Int, args: Bundle): Boolean {
+  private fun interceptAccessibilityEvents(action: Int, args: Bundle?): Boolean {
     if (!this.isTVFocusGuide) {
       return false
     }
