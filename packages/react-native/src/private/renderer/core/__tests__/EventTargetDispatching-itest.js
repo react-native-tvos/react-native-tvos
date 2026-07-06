@@ -1582,5 +1582,49 @@ const {isOSS} = Fantom.getConstants();
         expect(parentSpy).toHaveBeenCalledTimes(1);
       });
     });
+
+    describe('direct events (onLayout)', () => {
+      it('does not bubble onLayout to ancestor views via the onLayout prop', () => {
+        const root = Fantom.createRoot();
+
+        const childRef = React.createRef<React.ElementRef<typeof View>>();
+
+        const parentSpy = jest.fn();
+        const childSpy = jest.fn();
+
+        Fantom.runTask(() => {
+          root.render(
+            <View onLayout={parentSpy}>
+              <View ref={childRef} onLayout={childSpy} />
+            </View>,
+          );
+        });
+
+        // Flush the layout events emitted for both views during the initial
+        // layout pass so they are not conflated with the dispatch below.
+        Fantom.flushAllNativeEvents();
+
+        // Both onLayout handlers fired for their own layout during mount.
+        const childCallsBefore = childSpy.mock.calls.length;
+        const parentCallsBefore = parentSpy.mock.calls.length;
+
+        Fantom.dispatchNativeEvent(
+          childRef,
+          'onLayout',
+          {layout: {x: 0, y: 0, width: 100, height: 50}},
+          {
+            category: Fantom.NativeEventCategory.Discrete,
+          },
+        );
+
+        // Child's onLayout handler fires for the dispatched event
+        expect(childSpy.mock.calls.length - childCallsBefore).toBeGreaterThan(
+          0,
+        );
+        // Parent's onLayout prop handler does NOT fire from the child's event
+        // because layout is a direct (non-bubbling) event
+        expect(parentSpy.mock.calls.length - parentCallsBefore).toBe(0);
+      });
+    });
   },
 );
