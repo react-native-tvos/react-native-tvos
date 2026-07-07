@@ -11,7 +11,7 @@
 'use strict';
 
 // ----------------------------------------------------------------------------
-// react-native/asset-registry
+// Secondary react-native/asset-registry entry point.
 //
 // This is an untyped secondary entry point intended to be referenced from
 // Metro's `transformer.assetRegistryPath` config option. This entry point may

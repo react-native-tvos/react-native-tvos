@@ -10,8 +10,7 @@
 
 'use strict';
 
-require('react-native/setup-env');
-
+require('react-native/Libraries/Core/InitializeCore');
 const React = require('react');
 const ReactNative = require('react-native');
 
