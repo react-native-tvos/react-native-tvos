@@ -14,12 +14,11 @@ import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 import type {HostInstance} from 'react-native';
 
-import ensureInstance from '../../../../src/private/__tests__/utilities/ensureInstance';
 import * as Fantom from '@react-native/fantom';
+import nullthrows from 'nullthrows';
 import * as React from 'react';
 import {createRef} from 'react';
 import {View} from 'react-native';
-import ReactNativeElement from 'react-native/src/private/webapis/dom/nodes/ReactNativeElement';
 
 describe('<View>', () => {
   it('has displayName', () => {
@@ -222,10 +221,7 @@ describe('<View>', () => {
               );
             });
 
-            const viewElement = ensureInstance(
-              viewRef.current,
-              ReactNativeElement,
-            );
+            const viewElement = nullthrows(viewRef.current);
 
             const viewBounds = viewElement.getBoundingClientRect();
             expect(viewBounds.x).toBe(expectedBounds.x);
@@ -1119,7 +1115,7 @@ describe('<View>', () => {
         root.render(<View ref={elementRef} />);
       });
 
-      expect(elementRef.current).toBeInstanceOf(ReactNativeElement);
+      expect(elementRef.current).toBeInstanceOf(HTMLElement);
     });
 
     it('uses the "RN:View" tag name', () => {
@@ -1131,7 +1127,7 @@ describe('<View>', () => {
         root.render(<View ref={elementRef} />);
       });
 
-      const element = ensureInstance(elementRef.current, ReactNativeElement);
+      const element = nullthrows(elementRef.current);
       expect(element.tagName).toBe('RN:View');
     });
   });
