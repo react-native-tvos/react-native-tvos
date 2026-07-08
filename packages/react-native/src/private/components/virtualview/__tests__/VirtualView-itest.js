@@ -12,12 +12,11 @@ import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 
 import type {Rect} from '../VirtualView';
 import type {NativeModeChangeEvent} from '../VirtualViewNativeComponent';
+import type {HostInstance} from 'react-native';
 
-import ensureInstance from '../../../__tests__/utilities/ensureInstance';
 import isUnreachable from '../../../__tests__/utilities/isUnreachable';
 import {createShadowNodeReferenceCountingRef} from '../../../__tests__/utilities/ShadowNodeReferenceCounter';
 import {getNodeFromPublicInstance} from '../../../../../Libraries/ReactPrivate/ReactNativePrivateInterface';
-import ReactNativeElement from '../../../webapis/dom/nodes/ReactNativeElement';
 import VirtualView, {_logs, VirtualViewMode} from '../VirtualView';
 import * as Fantom from '@react-native/fantom';
 import nullthrows from 'nullthrows';
@@ -234,7 +233,7 @@ describe('memory management', () => {
     const root = Fantom.createRoot();
 
     let weakRef: ?WeakRef<interface {}>;
-    const callbackRef = (instance: React.ElementRef<typeof Text> | null) => {
+    const callbackRef = (instance: HostInstance | null) => {
       if (instance !== null) {
         weakRef = new WeakRef(getNodeAsObjectFromPublicInstance(instance));
       }
@@ -320,7 +319,7 @@ describe('memory management', () => {
  * Helper to reduce duplication of the mock event payload.
  */
 export function dispatchModeChangeEvent(
-  instance: unknown,
+  instance: ?HostInstance,
   mode: VirtualViewMode,
 ): void {
   const targetRect = {
@@ -363,16 +362,12 @@ export function dispatchModeChangeEvent(
     }
   }
 
-  Fantom.dispatchNativeEvent(
-    ensureInstance(instance, ReactNativeElement),
-    'onModeChange',
-    {
-      mode: mode as number,
-      targetRect,
-      // $FlowFixMe[incompatible-type] - https://fburl.com/workplace/t8a3yvuo
-      thresholdRect,
-    } as NativeModeChangeEvent,
-  );
+  Fantom.dispatchNativeEvent(nullthrows(instance), 'onModeChange', {
+    mode: mode as number,
+    targetRect,
+    // $FlowFixMe[incompatible-type] - https://fburl.com/workplace/t8a3yvuo
+    thresholdRect,
+  } as NativeModeChangeEvent);
 }
 
 /**
@@ -398,10 +393,10 @@ function createWeakRefCallback<
 /**
  * Gets the shadow node via `instance.__internalInstanceHandle.stateNode.node`.
  */
-function getNodeAsObjectFromPublicInstance(instance: unknown): interface {} {
-  const node = getNodeFromPublicInstance(
-    ensureInstance(instance, ReactNativeElement),
-  );
+function getNodeAsObjectFromPublicInstance(
+  instance: HostInstance,
+): interface {} {
+  const node = getNodeFromPublicInstance(instance);
   if (node == null || typeof node !== 'object') {
     throw new Error('Expected node to be an object, got: ' + typeof node);
   }

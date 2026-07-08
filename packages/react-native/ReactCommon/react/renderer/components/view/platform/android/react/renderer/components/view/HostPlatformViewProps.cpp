@@ -9,7 +9,6 @@
 
 #include <algorithm>
 
-#include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/renderer/components/view/accessibilityPropsConversions.h>
 #include <react/renderer/components/view/conversions.h>
 #include <react/renderer/components/view/propsConversions.h>
@@ -25,51 +24,36 @@ HostPlatformViewProps::HostPlatformViewProps(
     const RawProps& rawProps,
     const std::function<bool(const std::string&)>& filterObjectKeys)
     : BaseViewProps(context, sourceProps, rawProps, filterObjectKeys),
-      elevation(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.elevation
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "elevation",
-                    sourceProps.elevation,
-                    {})),
-      nativeBackground(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nativeBackground
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nativeBackgroundAndroid",
-                    sourceProps.nativeBackground,
-                    {})),
-      nativeForeground(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nativeForeground
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nativeForegroundAndroid",
-                    sourceProps.nativeForeground,
-                    {})),
-      focusable(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.focusable
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "focusable",
-                    sourceProps.focusable,
-                    {})),
-      hasTVPreferredFocus(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.hasTVPreferredFocus
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "hasTVPreferredFocus",
-                    sourceProps.hasTVPreferredFocus,
-                    {})),
+      elevation(convertRawProp(
+          context,
+          rawProps,
+          "elevation",
+          sourceProps.elevation,
+          {})),
+      nativeBackground(convertRawProp(
+          context,
+          rawProps,
+          "nativeBackgroundAndroid",
+          sourceProps.nativeBackground,
+          {})),
+      nativeForeground(convertRawProp(
+          context,
+          rawProps,
+          "nativeForegroundAndroid",
+          sourceProps.nativeForeground,
+          {})),
+      focusable(convertRawProp(
+          context,
+          rawProps,
+          "focusable",
+          sourceProps.focusable,
+          {})),
+      hasTVPreferredFocus(convertRawProp(
+          context,
+          rawProps,
+          "hasTVPreferredFocus",
+          sourceProps.hasTVPreferredFocus,
+          {})),
       autoFocus(convertRawProp(
           context,
           rawProps,
@@ -100,96 +84,66 @@ HostPlatformViewProps::HostPlatformViewProps(
           "trapFocusRight",
           sourceProps.trapFocusRight,
           false)),
-      scrollSnapAlign(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.scrollSnapAlign
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "scrollSnapAlign",
-                    sourceProps.scrollSnapAlign,
-                    {})),
-      scrollSnapOffset(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.scrollSnapOffset
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "scrollSnapOffset",
-                    sourceProps.scrollSnapOffset,
-                    {})),
-      needsOffscreenAlphaCompositing(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.needsOffscreenAlphaCompositing
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "needsOffscreenAlphaCompositing",
-                    sourceProps.needsOffscreenAlphaCompositing,
-                    {})),
-      renderToHardwareTextureAndroid(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.renderToHardwareTextureAndroid
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "renderToHardwareTextureAndroid",
-                    sourceProps.renderToHardwareTextureAndroid,
-                    {})),
-      screenReaderFocusable(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.screenReaderFocusable
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "screenReaderFocusable",
-                    sourceProps.screenReaderFocusable,
-                    {})),
-      nextFocusDown(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nextFocusDown
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nextFocusDown",
-                    sourceProps.nextFocusDown,
-                    {})),
-      nextFocusForward(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nextFocusForward
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nextFocusForward",
-                    sourceProps.nextFocusForward,
-                    {})),
-      nextFocusLeft(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nextFocusLeft
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nextFocusLeft",
-                    sourceProps.nextFocusLeft,
-                    {})),
-      nextFocusRight(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nextFocusRight
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nextFocusRight",
-                    sourceProps.nextFocusRight,
-                    {})),
-      nextFocusUp(
-          ReactNativeFeatureFlags::enableCppPropsIteratorSetter()
-              ? sourceProps.nextFocusUp
-              : convertRawProp(
-                    context,
-                    rawProps,
-                    "nextFocusUp",
-                    sourceProps.nextFocusUp,
-                    {})) {}
+      needsOffscreenAlphaCompositing(convertRawProp(
+          context,
+          rawProps,
+          "needsOffscreenAlphaCompositing",
+          sourceProps.needsOffscreenAlphaCompositing,
+          {})),
+      renderToHardwareTextureAndroid(convertRawProp(
+          context,
+          rawProps,
+          "renderToHardwareTextureAndroid",
+          sourceProps.renderToHardwareTextureAndroid,
+          {})),
+      screenReaderFocusable(convertRawProp(
+          context,
+          rawProps,
+          "screenReaderFocusable",
+          sourceProps.screenReaderFocusable,
+          {})),
+      nextFocusDown(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusDown",
+          sourceProps.nextFocusDown,
+          {})),
+      nextFocusForward(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusForward",
+          sourceProps.nextFocusForward,
+          {})),
+      nextFocusLeft(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusLeft",
+          sourceProps.nextFocusLeft,
+          {})),
+      nextFocusRight(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusRight",
+          sourceProps.nextFocusRight,
+          {})),
+      nextFocusUp(convertRawProp(
+          context,
+          rawProps,
+          "nextFocusUp",
+          sourceProps.nextFocusUp,
+          {})),
+      scrollSnapAlign( convertRawProp(
+          context,
+          rawProps,
+          "scrollSnapAlign",
+          sourceProps.scrollSnapAlign,
+          {})),
+      scrollSnapOffset( convertRawProp(
+          context,
+          rawProps,
+          "scrollSnapOffset",
+          sourceProps.scrollSnapOffset,
+          {})) {}
 
 void HostPlatformViewProps::setProp(
     const PropsParserContext& context,
