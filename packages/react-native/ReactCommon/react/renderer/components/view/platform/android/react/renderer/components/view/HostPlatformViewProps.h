@@ -47,8 +47,6 @@ class HostPlatformViewProps : public BaseViewProps {
   bool trapFocusDown{false};
   bool trapFocusLeft{false};
   bool trapFocusRight{false};
-  std::optional<std::string> scrollSnapAlign{};
-  std::optional<int> scrollSnapOffset{};
 
   bool needsOffscreenAlphaCompositing{false};
   bool renderToHardwareTextureAndroid{false};
@@ -60,6 +58,8 @@ class HostPlatformViewProps : public BaseViewProps {
   std::optional<int> nextFocusRight{};
   std::optional<int> nextFocusUp{};
 
+  std::optional<std::string> scrollSnapAlign{};
+  std::optional<int> scrollSnapOffset{};
 #pragma mark - Convenience Methods
 
   bool getProbablyMoreHorizontalThanVertical_DEPRECATED() const;

@@ -8,7 +8,10 @@
  * @format
  */
 
-export {
-  registerAsset,
-  getAssetByID,
-} from '@react-native/assets-registry/registry';
+'use strict';
+
+/*::
+export type {PackagerAsset} from './AndroidPathUtils';
+*/
+
+module.exports = require('./AndroidPathUtils');

@@ -1,6 +1,6 @@
 {
   "name": "@react-native/assets-registry",
-  "version": "0.87.0-main",
+  "version": "0.87.0-rc.0",
   "description": "Asset support code for React Native.",
   "license": "MIT",
   "repository": {
@@ -26,5 +26,8 @@
     "!**/__fixtures__/**",
     "!**/__mocks__/**",
     "!**/__tests__/**"
-  ]
+  ],
+  "peerDependencies": {
+    "react-native": "*"
+  }
 }
