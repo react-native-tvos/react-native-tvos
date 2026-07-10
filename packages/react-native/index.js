@@ -77,6 +77,10 @@ module.exports = {
     return require('./Libraries/Image/ImageBackground').default;
   },
   get InputAccessoryView() {
+    warnOnce(
+      'input-accessory-view-deprecated',
+      'InputAccessoryView is deprecated and will be removed in a future release.',
+    );
     return require('./Libraries/Components/TextInput/InputAccessoryView')
       .default;
   },
