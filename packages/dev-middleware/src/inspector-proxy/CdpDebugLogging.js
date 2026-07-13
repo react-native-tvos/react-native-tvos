@@ -21,7 +21,10 @@ const debugCDPMessages = require('debug')('Metro:InspectorProxyCDPMessages');
 const CDP_MESSAGES_BATCH_DEBUGGING_THROTTLE_MS = 5000;
 
 export type CDPMessageDestination =
-  'DebuggerToProxy' | 'ProxyToDebugger' | 'DeviceToProxy' | 'ProxyToDevice';
+  | 'DebuggerToProxy'
+  | 'ProxyToDebugger'
+  | 'DeviceToProxy'
+  | 'ProxyToDevice';
 
 function getCDPLogPrefix(destination: CDPMessageDestination): string {
   return util.format(

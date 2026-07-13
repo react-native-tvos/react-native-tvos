@@ -34,7 +34,12 @@ const DEBUG_NETWORK_SEND_DELAY: false = false; // Set to a number of millisecond
 
 export type NativeResponseType = 'base64' | 'blob' | 'text';
 export type ResponseType =
-  '' | 'arraybuffer' | 'blob' | 'document' | 'json' | 'text';
+  | ''
+  | 'arraybuffer'
+  | 'blob'
+  | 'document'
+  | 'json'
+  | 'text';
 export type Response = ?Object | string;
 
 type XHRInterceptor = interface {
@@ -653,11 +658,13 @@ class XMLHttpRequest extends EventTarget {
     }
     // only call onreadystatechange if there is something to abort,
     // below logic is per spec
-    if (!(
-      this.readyState === this.UNSENT ||
-      (this.readyState === this.OPENED && !this._sent) ||
-      this.readyState === this.DONE
-    )) {
+    if (
+      !(
+        this.readyState === this.UNSENT ||
+        (this.readyState === this.OPENED && !this._sent) ||
+        this.readyState === this.DONE
+      )
+    ) {
       this._reset();
       this.setReadyState(this.DONE);
     }

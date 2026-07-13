@@ -19,7 +19,11 @@ import NativeKeyboardObserver from './NativeKeyboardObserver';
 export type KeyboardEventName = keyof KeyboardEventDefinitions;
 
 export type KeyboardEventEasing =
-  'easeIn' | 'easeInEaseOut' | 'easeOut' | 'linear' | 'keyboard';
+  | 'easeIn'
+  | 'easeInEaseOut'
+  | 'easeOut'
+  | 'linear'
+  | 'keyboard';
 
 export type KeyboardMetrics = Readonly<{
   screenX: number,

@@ -21,7 +21,9 @@ import AnimatedValueXY from './nodes/AnimatedValueXY';
 import invariant from 'invariant';
 
 export type Mapping =
-  {[key: string]: Mapping, ...} | AnimatedValue | AnimatedValueXY;
+  | {[key: string]: Mapping, ...}
+  | AnimatedValue
+  | AnimatedValueXY;
 export type EventConfig<T> = {
   listener?: ?(NativeSyntheticEvent<T>) => unknown,
   useNativeDriver: boolean,

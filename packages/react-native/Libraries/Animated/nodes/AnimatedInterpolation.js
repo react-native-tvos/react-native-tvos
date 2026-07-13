@@ -28,7 +28,9 @@ import invariant from 'invariant';
 type ExtrapolateType = 'extend' | 'identity' | 'clamp';
 
 export type InterpolationConfigSupportedOutputType =
-  number | string | NativeColorValue;
+  | number
+  | string
+  | NativeColorValue;
 
 export type InterpolationConfigType<
   OutputT extends InterpolationConfigSupportedOutputType,

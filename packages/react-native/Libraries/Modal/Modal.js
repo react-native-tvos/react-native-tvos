@@ -117,7 +117,10 @@ export type ModalPropsIOS = {
    * @platform ios
    */
   presentationStyle?: ?(
-    'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen'
+    | 'fullScreen'
+    | 'pageSheet'
+    | 'formSheet'
+    | 'overFullScreen'
   ),
 
   /**

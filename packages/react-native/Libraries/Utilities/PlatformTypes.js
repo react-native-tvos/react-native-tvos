@@ -9,7 +9,12 @@
  */
 
 export type PlatformOSType =
-  'ios' | 'android' | 'macos' | 'windows' | 'web' | 'native';
+  | 'ios'
+  | 'android'
+  | 'macos'
+  | 'windows'
+  | 'web'
+  | 'native';
 
 type OptionalPlatformSelectSpec<T> = {
   [key in PlatformOSType]?: T, // eslint-disable-line no-unused-vars
@@ -254,4 +259,8 @@ type WebPlatform = {
 };
 
 export type PlatformType =
-  IOSPlatform | AndroidPlatform | WindowsPlatform | MacOSPlatform | WebPlatform;
+  | IOSPlatform
+  | AndroidPlatform
+  | WindowsPlatform
+  | MacOSPlatform
+  | WebPlatform;

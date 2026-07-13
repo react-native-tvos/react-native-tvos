@@ -23,7 +23,10 @@ export type FeatureFlagDefinitions = Readonly<{
  * - stable: the value of the feature flag will be `expectedReleaseValue` on all releases.
  */
 export type OSSReleaseStageValue =
-  'none' | 'experimental' | 'canary' | 'stable';
+  | 'none'
+  | 'experimental'
+  | 'canary'
+  | 'stable';
 
 export type CommonFeatureFlagConfig<
   TValue extends FeatureFlagValue = FeatureFlagValue,

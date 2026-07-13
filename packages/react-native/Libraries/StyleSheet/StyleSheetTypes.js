@@ -540,7 +540,12 @@ type ____LayoutStyle_Internal = Readonly<{
    *  for more details.
    */
   alignSelf?:
-    'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline',
+    | 'auto'
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'stretch'
+    | 'baseline',
 
   /** `alignContent` controls how rows align in the cross direction,
    *  overriding the `alignContent` of the parent.
@@ -731,7 +736,10 @@ type LinearGradientValue = {
 };
 
 type RadialExtent =
-  'closest-corner' | 'closest-side' | 'farthest-corner' | 'farthest-side';
+  | 'closest-corner'
+  | 'closest-side'
+  | 'farthest-corner'
+  | 'farthest-side';
 export type RadialGradientPosition =
   | {
       top: number | string,
@@ -777,7 +785,10 @@ export type BackgroundSizeValue = {
 };
 
 export type BackgroundRepeatKeyword =
-  'repeat' | 'space' | 'round' | 'no-repeat';
+  | 'repeat'
+  | 'space'
+  | 'round'
+  | 'no-repeat';
 
 export type BackgroundPositionValue =
   | {
@@ -895,7 +906,8 @@ export type ____ViewStyle_InternalBase = Readonly<{
   experimental_backgroundImage?: ReadonlyArray<BackgroundImageValue> | string,
   experimental_backgroundSize?: ReadonlyArray<BackgroundSizeValue> | string,
   experimental_backgroundPosition?:
-    ReadonlyArray<BackgroundPositionValue> | string,
+    | ReadonlyArray<BackgroundPositionValue>
+    | string,
   experimental_backgroundRepeat?: ReadonlyArray<BackgroundRepeatValue> | string,
   isolation?: 'auto' | 'isolate',
 }>;
@@ -1020,11 +1032,20 @@ type ____TextStyle_InternalBase = Readonly<{
   letterSpacing?: number,
   lineHeight?: number,
   textAlign?:
-    'auto' | 'left' | 'right' | 'center' | 'justify' | 'start' | 'end',
+    | 'auto'
+    | 'left'
+    | 'right'
+    | 'center'
+    | 'justify'
+    | 'start'
+    | 'end',
   textAlignVertical?: 'auto' | 'top' | 'bottom' | 'center',
   includeFontPadding?: boolean,
   textDecorationLine?:
-    'none' | 'underline' | 'line-through' | 'underline line-through',
+    | 'none'
+    | 'underline'
+    | 'line-through'
+    | 'underline line-through',
   textDecorationStyle?: 'solid' | 'double' | 'dotted' | 'dashed' | 'wavy',
   textDecorationColor?: ____ColorValue_Internal,
   textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase',
@@ -1072,7 +1093,12 @@ export type ____DangerouslyImpreciseStyle_Internal = Readonly<{
 }>;
 
 export type StyleProp<out T> =
-  null | void | T | false | '' | ReadonlyArray<StyleProp<T>>;
+  | null
+  | void
+  | T
+  | false
+  | ''
+  | ReadonlyArray<StyleProp<T>>;
 
 export type ____DangerouslyImpreciseStyleProp_Internal = StyleProp<
   Partial<____DangerouslyImpreciseStyle_Internal>,

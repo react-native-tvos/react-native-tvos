@@ -155,7 +155,13 @@ declare module 'jsonc-parser' {
     | 'InvalidCharacter'
     | '<unknown ParseErrorCode>';
   export type NodeType =
-    'object' | 'array' | 'property' | 'string' | 'number' | 'boolean' | 'null';
+    | 'object'
+    | 'array'
+    | 'property'
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'null';
   export type Node = {
     type: NodeType,
     value?: any,

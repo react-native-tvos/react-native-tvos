@@ -14,7 +14,11 @@ import {setPlatformObject} from '../webidl/PlatformObjects';
 
 export type DOMHighResTimeStamp = number;
 export type PerformanceEntryType =
-  'mark' | 'measure' | 'event' | 'longtask' | 'resource';
+  | 'mark'
+  | 'measure'
+  | 'event'
+  | 'longtask'
+  | 'resource';
 
 export type PerformanceEntryJSON = {
   name: string,

@@ -48,7 +48,14 @@ declare type $npm$shelljs$GrepOpts = $npm$shelljs$OptionsPoly<'-l' | '-v'>;
 declare type $npm$shelljs$SedOpts = $npm$shelljs$OptionsPoly<'-i'>;
 declare type $npm$shelljs$SortOpts = $npm$shelljs$OptionsPoly<'-n' | '-r'>;
 declare type $npm$shelljs$TestOpts =
-  '-b' | '-c' | '-d' | '-e' | '-f' | '-L' | '-p' | '-S';
+  | '-b'
+  | '-c'
+  | '-d'
+  | '-e'
+  | '-f'
+  | '-L'
+  | '-p'
+  | '-S';
 declare type $npm$shelljs$TouchOpts = {
   [key: '-a' | '-c' | '-m']: boolean,
   '-d'?: string,

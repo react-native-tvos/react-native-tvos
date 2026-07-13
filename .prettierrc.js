@@ -7,6 +7,11 @@
  * @format
  */
 
+let plugins = ['prettier-plugin-hermes-parser'];
+try {
+  plugins = require('./.prettier-plugins.fb.js');
+} catch {}
+
 module.exports = {
   arrowParens: 'avoid',
   bracketSameLine: true,
@@ -15,6 +20,7 @@ module.exports = {
   singleQuote: true,
   trailingComma: 'all',
   endOfLine: 'lf',
+  plugins,
   overrides: [
     {
       files: ['*.code-workspace'],
@@ -25,7 +31,7 @@ module.exports = {
     {
       files: ['*.js', '*.js.flow'],
       options: {
-        parser: 'flow',
+        parser: 'hermes',
       },
     },
     {

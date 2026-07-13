@@ -270,7 +270,8 @@ export type ReservedTypeAnnotation = Readonly<{
  * NativeModule Types
  */
 export type Nullable<out T extends NativeModuleTypeAnnotation> =
-  NullableTypeAnnotation<T> | T;
+  | NullableTypeAnnotation<T>
+  | T;
 
 export type NullableTypeAnnotation<out T extends NativeModuleTypeAnnotation> =
   Readonly<{
@@ -344,7 +345,8 @@ export type NativeModuleEnumMember = {
 };
 
 export type NativeModuleEnumMemberType =
-  'NumberTypeAnnotation' | 'StringTypeAnnotation';
+  | 'NumberTypeAnnotation'
+  | 'StringTypeAnnotation';
 
 export type NativeModuleEnumDeclaration = Readonly<{
   name: string,
@@ -434,10 +436,12 @@ export type NativeModuleBaseTypeAnnotation =
   | NativeModuleMixedTypeAnnotation;
 
 export type NativeModuleParamTypeAnnotation =
-  NativeModuleBaseTypeAnnotation | NativeModuleParamOnlyTypeAnnotation;
+  | NativeModuleBaseTypeAnnotation
+  | NativeModuleParamOnlyTypeAnnotation;
 
 export type NativeModuleReturnTypeAnnotation =
-  NativeModuleBaseTypeAnnotation | NativeModuleReturnOnlyTypeAnnotation;
+  | NativeModuleBaseTypeAnnotation
+  | NativeModuleReturnOnlyTypeAnnotation;
 
 export type NativeModuleTypeAnnotation =
   | NativeModuleBaseTypeAnnotation
@@ -448,7 +452,8 @@ export type NativeModuleTypeAnnotation =
 type NativeModuleParamOnlyTypeAnnotation = NativeModuleFunctionTypeAnnotation;
 
 type NativeModuleReturnOnlyTypeAnnotation =
-  NativeModulePromiseTypeAnnotation | VoidTypeAnnotation;
+  | NativeModulePromiseTypeAnnotation
+  | VoidTypeAnnotation;
 
 // Add the allowed component reserved types to the native module union
 export type CompleteReservedTypeAnnotation =

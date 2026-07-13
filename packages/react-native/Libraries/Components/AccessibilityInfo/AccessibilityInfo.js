@@ -43,7 +43,10 @@ type AccessibilityEventDefinitions = {
 };
 
 type AccessibilityEventTypes =
-  'click' | 'focus' | 'viewHoverEnter' | 'windowStateChange';
+  | 'click'
+  | 'focus'
+  | 'viewHoverEnter'
+  | 'windowStateChange';
 
 // Mapping of public event names to platform-specific event names.
 const EventNames: Map<keyof AccessibilityEventDefinitions, string> =

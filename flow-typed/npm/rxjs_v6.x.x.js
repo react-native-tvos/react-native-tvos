@@ -9,14 +9,11 @@
 declare interface rxjs$UnaryFunction<T, R> {
   (source: T): R;
 }
-declare interface rxjs$OperatorFunction<T, R> extends rxjs$UnaryFunction<
-  rxjs$Observable<T>,
-  rxjs$Observable<R>,
-> {}
+declare interface rxjs$OperatorFunction<T, R>
+  extends rxjs$UnaryFunction<rxjs$Observable<T>, rxjs$Observable<R>> {}
 declare type rxjs$FactoryOrValue<T> = T | (() => T);
-declare interface rxjs$MonoTypeOperatorFunction<
-  T,
-> extends rxjs$OperatorFunction<T, T> {}
+declare interface rxjs$MonoTypeOperatorFunction<T>
+  extends rxjs$OperatorFunction<T, T> {}
 declare interface rxjs$Timestamp<T> {
   value: T;
   timestamp: number;
@@ -50,7 +47,9 @@ declare interface rxjs$Subscribable<T> {
   ): rxjs$Unsubscribable;
 }
 declare type rxjs$ObservableInput<T> =
-  rxjs$SubscribableOrPromise<T> | Array<T> | Iterable<T>;
+  | rxjs$SubscribableOrPromise<T>
+  | Array<T>
+  | Iterable<T>;
 
 declare type rxjs$InteropObservable<T> = {
   [string | unknown]: () => rxjs$Subscribable<T>,
@@ -589,7 +588,8 @@ declare module 'rxjs' {
       (<T>(...sources: rxjs$ObservableInput<T>[]) => rxjs$Observable<T[]>),
     from<T>(
       input:
-        rxjs$ObservableInput<T> | rxjs$ObservableInput<rxjs$ObservableInput<T>>,
+        | rxjs$ObservableInput<T>
+        | rxjs$ObservableInput<rxjs$ObservableInput<T>>,
       scheduler?: rxjs$SchedulerLike,
     ): rxjs$Observable<T>,
     ArgumentOutOfRangeError: ArgumentOutOfRangeError,
@@ -630,7 +630,9 @@ declare module 'rxjs' {
     ) => rxjs$Observable<T>) &
       (<T, R>(
         ...observables: (
-          rxjs$ObservableInput<any> | rxjs$SchedulerLike | number
+          | rxjs$ObservableInput<any>
+          | rxjs$SchedulerLike
+          | number
         )[]
       ) => rxjs$Observable<R>) &
       (<T>(
@@ -3347,7 +3349,9 @@ declare module 'rxjs/webSocket' {
     _output: rxjs$Subject<T>;
     constructor(
       urlConfigOrSource:
-        string | WebSocketSubjectConfig<T> | rxjs$Observable<T>,
+        | string
+        | WebSocketSubjectConfig<T>
+        | rxjs$Observable<T>,
       destination?: rxjs$Observer<T>,
     ): void;
     lift<R>(operator: rxjs$Operator<T, R>): WebSocketSubject<R>;

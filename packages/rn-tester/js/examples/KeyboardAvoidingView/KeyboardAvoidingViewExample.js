@@ -49,7 +49,8 @@ const TextInputForm = () => {
 
 const CloseButton = (
   props:
-    {behavior: any, setModalOpen: any} | {behavior: string, setModalOpen: any},
+    | {behavior: any, setModalOpen: any}
+    | {behavior: string, setModalOpen: any},
 ) => {
   return (
     <View

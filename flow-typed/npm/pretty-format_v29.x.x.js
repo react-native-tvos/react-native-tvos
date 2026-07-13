@@ -37,7 +37,9 @@ declare type PrettyFormatPlugin =
 
 declare module 'pretty-format' {
   declare export type CompareKeys =
-    ((a: string, b: string) => number) | null | void;
+    | ((a: string, b: string) => number)
+    | null
+    | void;
   declare export function format(
     value: unknown,
     options?: ?{

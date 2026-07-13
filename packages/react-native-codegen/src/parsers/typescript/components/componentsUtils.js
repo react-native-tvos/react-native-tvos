@@ -354,7 +354,8 @@ function setDefaultValue(
         /* $FlowFixMe[invalid-compare] Error discovered during Constant Condition
          * roll out. See https://fburl.com/workplace/5whu3i34. */
         (defaultValue === null ? null : defaultValue ? defaultValue : 0) as
-          number | null;
+          | number
+          | null;
       break;
     case 'BooleanTypeAnnotation':
       /* $FlowFixMe[invalid-compare] Error discovered during Constant Condition
@@ -363,7 +364,8 @@ function setDefaultValue(
       break;
     case 'StringTypeAnnotation':
       common.default = (defaultValue === undefined ? null : defaultValue) as
-        string | null;
+        | string
+        | null;
       break;
   }
 }

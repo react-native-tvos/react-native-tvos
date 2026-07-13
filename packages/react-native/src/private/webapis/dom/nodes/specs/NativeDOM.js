@@ -19,7 +19,9 @@ export opaque type NativeElementReference = ShadowNode;
 export opaque type NativeTextReference = ShadowNode;
 
 export type NativeNodeReference =
-  NativeElementReference | NativeTextReference | RootTag;
+  | NativeElementReference
+  | NativeTextReference
+  | RootTag;
 
 export type MeasureInWindowOnSuccessCallback = (
   x: number,
@@ -56,16 +58,16 @@ export interface Spec extends TurboModule {
 
   readonly getChildNodes: (
     nativeNodeReference: unknown /* NativeNodeReference */,
-  ) => ReadonlyArray<unknown>; /* $ReadOnlyArray<InstanceHandle> */
+  ) => ReadonlyArray<unknown> /* $ReadOnlyArray<InstanceHandle> */;
 
   readonly getElementById?: (
     nativeNodeReference: unknown /* NativeNodeReference */,
     id: string,
-  ) => unknown; /* ?InstanceHandle */
+  ) => unknown /* ?InstanceHandle */;
 
   readonly getParentNode: (
     nativeNodeReference: unknown /* NativeNodeReference */,
-  ) => unknown; /* ?InstanceHandle */
+  ) => unknown /* ?InstanceHandle */;
 
   readonly isConnected: (
     nativeNodeReference: unknown /* NativeNodeReference */,
@@ -77,24 +79,24 @@ export interface Spec extends TurboModule {
 
   readonly getBorderWidth: (
     nativeElementReference: unknown /* NativeElementReference */,
-  ) => ReadonlyArray<number>; /* [topWidth: number, rightWidth: number, bottomWidth: number, leftWidth: number] */
+  ) => ReadonlyArray<number> /* [topWidth: number, rightWidth: number, bottomWidth: number, leftWidth: number] */;
 
   readonly getBoundingClientRect: (
     nativeElementReference: unknown /* NativeElementReference */,
     includeTransform: boolean,
-  ) => ReadonlyArray<number>; /* [x: number, y: number, width: number, height: number] */
+  ) => ReadonlyArray<number> /* [x: number, y: number, width: number, height: number] */;
 
   readonly getInnerSize: (
     nativeElementReference: unknown /* NativeElementReference */,
-  ) => ReadonlyArray<number>; /* [width: number, height: number] */
+  ) => ReadonlyArray<number> /* [width: number, height: number] */;
 
   readonly getScrollPosition: (
     nativeElementReference: unknown /* NativeElementReference */,
-  ) => ReadonlyArray<number>; /* [scrollLeft: number, scrollTop: number] */
+  ) => ReadonlyArray<number> /* [scrollLeft: number, scrollTop: number] */;
 
   readonly getScrollSize: (
     nativeElementReference: unknown /* NativeElementReference */,
-  ) => ReadonlyArray<number>; /* [scrollWidth: number, scrollHeight: number] */
+  ) => ReadonlyArray<number> /* [scrollWidth: number, scrollHeight: number] */;
 
   readonly getTagName: (
     nativeElementReference: unknown /* NativeElementReference */,
@@ -125,7 +127,7 @@ export interface Spec extends TurboModule {
 
   readonly getOffset: (
     nativeElementReference: unknown /* NativeElementReference */,
-  ) => ReadonlyArray<unknown>; /* [offsetParent: ?InstanceHandle, top: number, left: number] */
+  ) => ReadonlyArray<unknown> /* [offsetParent: ?InstanceHandle, top: number, left: number] */;
 
   /*
    * Special methods to handle the root node.
@@ -134,7 +136,7 @@ export interface Spec extends TurboModule {
   readonly linkRootNode?: (
     rootTag: number /* RootTag */,
     instanceHandle: unknown /* InstanceHandle */,
-  ) => unknown; /* ?NativeElementReference */
+  ) => unknown /* ?NativeElementReference */;
 
   /**
    * Legacy layout APIs (for `ReactNativeElement`).
