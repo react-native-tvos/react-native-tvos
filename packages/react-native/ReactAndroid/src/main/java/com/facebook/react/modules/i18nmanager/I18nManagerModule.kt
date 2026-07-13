@@ -7,6 +7,7 @@
 
 package com.facebook.react.modules.i18nmanager
 
+import android.os.Build
 import com.facebook.fbreact.specs.NativeI18nManagerSpec
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.annotations.ReactModule
@@ -17,7 +18,13 @@ internal class I18nManagerModule(context: ReactApplicationContext?) :
     NativeI18nManagerSpec(context) {
   override fun getTypedExportedConstants(): Map<String, Any> {
     val context = reactApplicationContext
-    val locale = context.resources.configuration.locales[0]
+    val configuration = context.resources.configuration
+    val locale =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+          configuration.locales[0]
+        } else {
+          @Suppress("DEPRECATION") configuration.locale
+        }
 
     return mapOf(
         "isRTL" to I18nUtil.instance.isRTL(context),

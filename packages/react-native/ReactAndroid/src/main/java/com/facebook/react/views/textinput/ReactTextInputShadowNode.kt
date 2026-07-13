@@ -10,6 +10,8 @@
 package com.facebook.react.views.textinput
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.os.Build
 import android.text.Layout
 import android.util.TypedValue
 import android.view.ViewGroup
@@ -43,6 +45,8 @@ import com.facebook.yoga.YogaNode
     message = "This class is part of Legacy Architecture and will be removed in a future release",
     level = DeprecationLevel.WARNING,
 )
+// Break-strategy Layout constants / EditText break-strategy accessors were added in API 23 (M).
+@TargetApi(Build.VERSION_CODES.M)
 internal class ReactTextInputShadowNode
 @JvmOverloads
 constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? = null) :
@@ -67,7 +71,8 @@ constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? = null) 
     }
 
   init {
-    textBreakStrategy = Layout.BREAK_STRATEGY_HIGH_QUALITY
+    textBreakStrategy =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Layout.BREAK_STRATEGY_HIGH_QUALITY else 0
     setMeasureFunction(this)
   }
 
@@ -122,8 +127,10 @@ constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? = null) 
         editText.setLines(numberOfLines)
       }
 
+      // EditText break-strategy accessors were introduced in API 23 (M).
       @SuppressLint("WrongConstant")
-      if (editText.breakStrategy != textBreakStrategy) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+          editText.breakStrategy != textBreakStrategy) {
         editText.breakStrategy = textBreakStrategy
       }
     }
@@ -156,6 +163,10 @@ constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? = null) 
   }
 
   override fun setTextBreakStrategy(textBreakStrategy: String?) {
+    // Layout break strategies were introduced in API 23 (M); they are unused before then.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return
+    }
     when (textBreakStrategy) {
       null,
       "simple" -> this.textBreakStrategy = Layout.BREAK_STRATEGY_SIMPLE

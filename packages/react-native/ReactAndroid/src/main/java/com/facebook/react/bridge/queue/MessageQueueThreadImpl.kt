@@ -7,6 +7,7 @@
 
 package com.facebook.react.bridge.queue
 
+import android.os.Build
 import android.os.Looper
 import android.os.Process
 import com.facebook.common.logging.FLog
@@ -104,7 +105,10 @@ private constructor(
     }
   }
 
-  public override fun isIdle(): Boolean = looper.queue.isIdle
+  public override fun isIdle(): Boolean =
+      // Looper.getQueue()/MessageQueue.isIdle() require API 23 (M); there is no pre-M way to
+      // introspect another thread's queue, so report idle to avoid blocking instrumentation.
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) looper.queue.isIdle else true
 
   public companion object {
     @JvmStatic

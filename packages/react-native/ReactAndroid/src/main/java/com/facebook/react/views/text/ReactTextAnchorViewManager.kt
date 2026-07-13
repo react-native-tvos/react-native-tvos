@@ -7,6 +7,7 @@
 
 package com.facebook.react.views.text
 
+import android.os.Build
 import android.text.Layout
 import android.text.TextUtils
 import android.text.util.Linkify
@@ -110,6 +111,10 @@ public abstract class ReactTextAnchorViewManager<
 
   @ReactProp(name = "android_hyphenationFrequency")
   internal fun setAndroidHyphenationFrequency(view: ReactTextView, frequency: String?) {
+    // Hyphenation frequency was introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return
+    }
     when (frequency) {
       null,
       "none" -> view.hyphenationFrequency = Layout.HYPHENATION_FREQUENCY_NONE

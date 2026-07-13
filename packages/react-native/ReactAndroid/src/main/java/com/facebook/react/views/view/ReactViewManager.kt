@@ -8,9 +8,11 @@
 package com.facebook.react.views.view
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.os.Build
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
@@ -395,7 +397,13 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   }
 
   @ReactProp(name = "nativeForegroundAndroid")
+  @TargetApi(Build.VERSION_CODES.M)
   public open fun setNativeForeground(view: ReactViewGroup, foreground: ReadableMap?) {
+    // ReactViewGroup extends ViewGroup (not FrameLayout), so View.setForeground crashes before
+    // API 23 (M). Treat it as a no-op on older platforms.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return
+    }
     view.foreground =
         foreground?.let { ReactDrawableHelper.createDrawableFromJSDescription(view.context, it) }
   }

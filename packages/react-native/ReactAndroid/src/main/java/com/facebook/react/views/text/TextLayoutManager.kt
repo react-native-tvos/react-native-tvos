@@ -629,6 +629,13 @@ internal object TextLayoutManager {
           else -> desiredWidth
         }
 
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      // StaticLayout.Builder (with break-strategy / hyphenation / ellipsize / maxLines support) was
+      // introduced in API 23 (M); fall back to the legacy constructor on older platforms.
+      @Suppress("DEPRECATION")
+      return StaticLayout(text, paint, layoutWidth, alignment, 1f, 0f, includeFontPadding)
+    }
+
     val builder =
         StaticLayout.Builder.obtain(text, 0, text.length, paint, layoutWidth)
             .setAlignment(alignment)

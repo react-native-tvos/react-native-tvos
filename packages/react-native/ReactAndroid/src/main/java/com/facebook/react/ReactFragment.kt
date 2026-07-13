@@ -9,7 +9,9 @@ package com.facebook.react
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Process
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -160,7 +162,11 @@ public open class ReactFragment : Fragment(), PermissionAwareActivity {
       activity?.checkPermission(permission, pid, uid) ?: 0
 
   override fun checkSelfPermission(permission: String): Int =
-      activity?.checkSelfPermission(permission) ?: 0
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        activity?.checkSelfPermission(permission) ?: 0
+      } else {
+        activity?.checkPermission(permission, Process.myPid(), Process.myUid()) ?: 0
+      }
 
   @Suppress("DEPRECATION")
   override fun requestPermissions(
@@ -169,7 +175,10 @@ public open class ReactFragment : Fragment(), PermissionAwareActivity {
       listener: PermissionListener?,
   ) {
     permissionListener = listener
-    requestPermissions(permissions, requestCode)
+    // Runtime permissions were introduced in API 23 (M); on older platforms they are install-time.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      requestPermissions(permissions, requestCode)
+    }
   }
 
   /** Builder class to help instantiate a ReactFragment. */

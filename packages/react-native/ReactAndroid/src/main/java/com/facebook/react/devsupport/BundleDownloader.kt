@@ -200,7 +200,8 @@ public class BundleDownloader public constructor(private val client: OkHttpClien
                   // The http status code for each separate chunk is in the X-Http-Status header.
                   var status = response.code()
                   if (headers.containsKey("X-Http-Status")) {
-                    status = headers.getOrDefault("X-Http-Status", "0").toInt()
+                    // Map.getOrDefault requires API 24; use Kotlin get-with-default (API 1).
+                    status = (headers["X-Http-Status"] ?: "0").toInt()
                   }
                   processBundleResult(
                       url,

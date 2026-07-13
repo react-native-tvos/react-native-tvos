@@ -9,6 +9,7 @@
 
 package com.facebook.react.views.text
 
+import android.annotation.TargetApi
 import android.graphics.Color
 import android.os.Build
 import android.text.Layout
@@ -65,6 +66,9 @@ import com.facebook.yoga.YogaUnit
 @Deprecated(
     message = "This class is part of Legacy Architecture and will be removed in a future release"
 )
+// The break-strategy / hyphenation-frequency Layout constants used below were added in API 23 (M).
+// They are compile-time int constants (runtime-safe), and the pre-M fallbacks are inlined literals.
+@TargetApi(Build.VERSION_CODES.M)
 public abstract class ReactBaseTextShadowNode
 @JvmOverloads
 public constructor(
@@ -81,8 +85,10 @@ public constructor(
   protected var numberOfLines: Int = ReactConstants.UNSET
     private set
 
-  protected var textBreakStrategy: Int = Layout.BREAK_STRATEGY_HIGH_QUALITY
-  protected var hyphenationFrequency: Int = Layout.HYPHENATION_FREQUENCY_NONE
+  protected var textBreakStrategy: Int =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Layout.BREAK_STRATEGY_HIGH_QUALITY else 0
+  protected var hyphenationFrequency: Int =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) Layout.HYPHENATION_FREQUENCY_NONE else 0
   protected var justificationMode: Int =
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         0
@@ -408,6 +414,10 @@ public constructor(
 
   @ReactProp(name = ViewProps.TEXT_BREAK_STRATEGY)
   public open fun setTextBreakStrategy(textBreakStrategy: String?) {
+    // Layout break strategies were introduced in API 23 (M); they are unused before then.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return
+    }
     this.textBreakStrategy =
         when (textBreakStrategy) {
           null,

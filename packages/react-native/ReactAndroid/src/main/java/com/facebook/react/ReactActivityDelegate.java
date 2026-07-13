@@ -252,7 +252,11 @@ public class ReactActivityDelegate {
   public void requestPermissions(
       String[] permissions, int requestCode, @Nullable PermissionListener listener) {
     mPermissionListener = listener;
-    getPlainActivity().requestPermissions(permissions, requestCode);
+    // Runtime permissions were introduced in API 23 (M). On older platforms permissions are
+    // granted at install time, so there is nothing to request.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      getPlainActivity().requestPermissions(permissions, requestCode);
+    }
   }
 
   public void onRequestPermissionsResult(

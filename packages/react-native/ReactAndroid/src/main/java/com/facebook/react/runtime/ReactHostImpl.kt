@@ -11,6 +11,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
+import android.os.Build
 import android.os.Bundle
 import androidx.core.graphics.createBitmap
 import com.facebook.common.logging.FLog
@@ -1611,7 +1612,11 @@ public class ReactHostImpl(
           when (state) {
             TracingState.ENABLED_IN_BACKGROUND_MODE,
             TracingState.ENABLED_IN_CDP_MODE -> {
-              if (InspectorFlags.getFrameRecordingEnabled()) {
+              // FrameMetrics-based frame recording requires API 24 (N). FrameTimingsObserver's
+              // listener implements Window.OnFrameMetricsAvailableListener (an API-24 interface),
+              // which would crash at construction on older platforms.
+              if (InspectorFlags.getFrameRecordingEnabled() &&
+                  Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 val observer =
                     FrameTimingsObserver(
                         _screenshotsEnabled,

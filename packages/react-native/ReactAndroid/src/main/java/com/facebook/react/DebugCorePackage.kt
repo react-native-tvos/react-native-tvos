@@ -49,5 +49,5 @@ public class DebugCorePackage public constructor() :
       reactContext: ReactApplicationContext,
       viewManagerName: String,
   ): ViewManager<*, *>? =
-      viewManagersMap.getOrDefault(viewManagerName, null)?.provider?.get() as? ViewManager<*, *>
+      viewManagersMap[viewManagerName]?.provider?.get() as? ViewManager<*, *>
 }

@@ -270,7 +270,10 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
           override fun onDestroyActionMode(mode: ActionMode) = Unit
         }
     customSelectionActionModeCallback = customActionModeCallback
-    customInsertionActionModeCallback = customActionModeCallback
+    // setCustomInsertionActionModeCallback was introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      customInsertionActionModeCallback = customActionModeCallback
+    }
   }
 
   @SuppressLint("ClassImplementsFinalize")
@@ -734,7 +737,9 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     }
     disableTextDiffing = false
 
-    if (breakStrategy != reactTextUpdate.textBreakStrategy) {
+    // TextView break strategies were introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+        breakStrategy != reactTextUpdate.textBreakStrategy) {
       breakStrategy = reactTextUpdate.textBreakStrategy
     }
 

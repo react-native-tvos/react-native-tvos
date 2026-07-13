@@ -155,7 +155,8 @@ internal class MultipartStreamReader(
     val currentTime = System.currentTimeMillis()
     if (currentTime - lastProgressEvent > 16 || isFinal) {
       lastProgressEvent = currentTime
-      val headersContentLength = headers.getOrDefault("Content-Length", "0").toLong()
+      // Map.getOrDefault requires API 24; use Kotlin's get-with-default (API 1) instead.
+      val headersContentLength = (headers["Content-Length"] ?: "0").toLong()
       listener.onChunkProgress(headers, contentLength, headersContentLength)
     }
   }

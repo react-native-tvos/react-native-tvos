@@ -8,7 +8,10 @@
 package com.facebook.react.modules.permissions
 
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Process
 import android.util.SparseArray
 import com.facebook.common.logging.FLog
 import com.facebook.fbreact.specs.NativePermissionsAndroidSpec
@@ -39,8 +42,19 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
    */
   public override fun checkPermission(permission: String, promise: Promise) {
     val context = reactApplicationContext.baseContext
-    promise.resolve(context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
+    promise.resolve(checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED)
   }
+
+  /**
+   * [Context.checkSelfPermission] was introduced in API 23 (M). On older platforms permissions are
+   * granted at install time, so fall back to [Context.checkPermission] for the current process.
+   */
+  private fun checkSelfPermission(context: Context, permission: String): Int =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        context.checkSelfPermission(permission)
+      } else {
+        context.checkPermission(permission, Process.myPid(), Process.myUid())
+      }
 
   /**
    * Check whether the app should display a message explaining why a certain permission is needed.
@@ -66,7 +80,7 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
    */
   public override fun requestPermission(permission: String, promise: Promise) {
     val context = reactApplicationContext.baseContext
-    if (context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+    if (checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
       promise.resolve(GRANTED)
       return
     }
@@ -104,7 +118,7 @@ public class PermissionsModule(reactContext: ReactApplicationContext?) :
     val context = reactApplicationContext.baseContext
     for (i in 0 until permissions.size()) {
       val perm = permissions.getString(i) ?: continue
-      if (context.checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED) {
+      if (checkSelfPermission(context, perm) == PackageManager.PERMISSION_GRANTED) {
         grantedPermissions.putString(perm, GRANTED)
         checkedPermissionsCount++
       } else {

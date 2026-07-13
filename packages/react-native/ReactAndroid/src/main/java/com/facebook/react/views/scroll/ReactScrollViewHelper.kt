@@ -12,11 +12,9 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.OverScroller
-import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat.FocusDirection
 import androidx.core.view.ViewCompat.FocusRealDirection
 import com.facebook.common.logging.FLog
@@ -248,7 +246,6 @@ public object ReactScrollViewHelper {
     scrollListeners.add(WeakReference(listener))
   }
 
-  @RequiresApi(Build.VERSION_CODES.N)
   @JvmStatic
   public fun removeScrollListener(listener: ScrollListener) {
     // Avoid using removeIf, only available in API 26+
@@ -267,7 +264,6 @@ public object ReactScrollViewHelper {
     layoutChangeListeners.add(WeakReference(listener))
   }
 
-  @RequiresApi(Build.VERSION_CODES.N)
   @JvmStatic
   public fun removeLayoutChangeListener(listener: LayoutChangeListener) {
     // Avoid using removeIf, only available in API 26+

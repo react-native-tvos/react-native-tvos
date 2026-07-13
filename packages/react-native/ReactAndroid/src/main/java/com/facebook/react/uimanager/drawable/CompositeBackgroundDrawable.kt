@@ -12,6 +12,9 @@ import android.graphics.Outline
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+// Framework LayerDrawable, kept for LayerDrawable.PADDING_MODE_STACK and the Array<Drawable?> type.
+// The superclass below is the package-local proxy (fully qualified) so getLayoutDirection() is
+// runtime-safe on API 22 — see LayerDrawable.kt.
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import com.facebook.react.common.annotations.UnstableReactNativeAPI
@@ -59,7 +62,7 @@ internal class CompositeBackgroundDrawable(
     // Holder value for currently set border radius
     var borderRadius: BorderRadiusStyle? = null,
 ) :
-    LayerDrawable(
+    com.facebook.react.uimanager.drawable.LayerDrawable(
         createLayersArray(
             originalBackground,
             outerShadows,
