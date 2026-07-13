@@ -212,21 +212,26 @@ public constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? =
       // Is used when the width is not known and the text is not boring, ie. if it contains
       // unicode characters.
       val hintWidth = ceil(desiredWidth.toDouble()).toInt()
-      val builder =
-          StaticLayout.Builder.obtain(text, 0, text.length, textPaint, hintWidth)
-              .setAlignment(alignment)
-              .setLineSpacing(0f, 1f)
-              .setIncludePad(includeFontPadding)
-              .setBreakStrategy(textBreakStrategy)
-              .setHyphenationFrequency(hyphenationFrequency)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val builder =
+            StaticLayout.Builder.obtain(text, 0, text.length, textPaint, hintWidth)
+                .setAlignment(alignment)
+                .setLineSpacing(0f, 1f)
+                .setIncludePad(includeFontPadding)
+                .setBreakStrategy(textBreakStrategy)
+                .setHyphenationFrequency(hyphenationFrequency)
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        builder.setJustificationMode(justificationMode)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          builder.setJustificationMode(justificationMode)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+          builder.setUseLineSpacingFromFallbacks(true)
+        }
+        layout = builder.build()
+      } else {
+        // StaticLayout.Builder was introduced in API 23 (M); use the legacy constructor below.
+        layout = StaticLayout(text, textPaint, hintWidth, alignment, 1f, 0f, includeFontPadding)
       }
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        builder.setUseLineSpacingFromFallbacks(true)
-      }
-      layout = builder.build()
     } else if (boring != null && (unconstrainedWidth || boring.width <= width)) {
       // Is used for single-line, boring text when the width is either unknown or bigger
       // than the width of the text.
@@ -250,22 +255,27 @@ public constructor(reactTextViewManagerCallback: ReactTextViewManagerCallback? =
         width = ceil(width.toDouble()).toFloat()
       }
 
-      val builder =
-          StaticLayout.Builder.obtain(text, 0, text.length, textPaint, width.toInt())
-              .setAlignment(alignment)
-              .setLineSpacing(0f, 1f)
-              .setIncludePad(includeFontPadding)
-              .setBreakStrategy(textBreakStrategy)
-              .setHyphenationFrequency(hyphenationFrequency)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val builder =
+            StaticLayout.Builder.obtain(text, 0, text.length, textPaint, width.toInt())
+                .setAlignment(alignment)
+                .setLineSpacing(0f, 1f)
+                .setIncludePad(includeFontPadding)
+                .setBreakStrategy(textBreakStrategy)
+                .setHyphenationFrequency(hyphenationFrequency)
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        builder.setJustificationMode(justificationMode)
-      }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          builder.setJustificationMode(justificationMode)
+        }
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        builder.setUseLineSpacingFromFallbacks(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+          builder.setUseLineSpacingFromFallbacks(true)
+        }
+        layout = builder.build()
+      } else {
+        // StaticLayout.Builder was introduced in API 23 (M); use the legacy constructor below.
+        layout = StaticLayout(text, textPaint, width.toInt(), alignment, 1f, 0f, includeFontPadding)
       }
-      layout = builder.build()
     }
     return layout
   }

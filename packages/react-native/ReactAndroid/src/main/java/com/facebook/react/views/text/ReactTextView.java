@@ -119,7 +119,10 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
 
     // Defaults for these fields:
     // https://github.com/aosp-mirror/platform_frameworks_base/blob/master/core/java/android/widget/TextView.java#L1061
-    setBreakStrategy(Layout.BREAK_STRATEGY_SIMPLE);
+    // Break strategies were introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      setBreakStrategy(Layout.BREAK_STRATEGY_SIMPLE);
+    }
     setMovementMethod(getDefaultMovementMethod());
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       setJustificationMode(Layout.JUSTIFICATION_MODE_NONE);
@@ -156,7 +159,10 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
     // focus engine from landing on text views when no other views are available
     setFocusable(View.NOT_FOCUSABLE);
 
-    setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE);
+    // Hyphenation frequency was introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE);
+    }
     updateView(); // call after changing ellipsizeLocation in particular
   }
 
@@ -375,8 +381,10 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
             mMinimumFontSize,
             mNumberOfLines,
             getIncludeFontPadding(),
-            getBreakStrategy(),
-            getHyphenationFrequency(),
+            // Break strategy / hyphenation getters were introduced in API 23 (M); pass a -1
+            // sentinel before then (the value is unused by the legacy StaticLayout path).
+            (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? -1 : getBreakStrategy(),
+            (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) ? -1 : getHyphenationFrequency(),
             // always passing ALIGN_NORMAL here should be fine, since this method doesn't depend on
             // how exactly lines are aligned, just their width
             Layout.Alignment.ALIGN_NORMAL,
@@ -439,7 +447,8 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
       if (nextTextAlign != getGravityHorizontal()) {
         setGravityHorizontal(nextTextAlign);
       }
-      if (getBreakStrategy() != update.getTextBreakStrategy()) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+          && getBreakStrategy() != update.getTextBreakStrategy()) {
         setBreakStrategy(update.getTextBreakStrategy());
       }
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -660,13 +669,19 @@ public class ReactTextView extends AppCompatTextView implements ReactCompoundVie
 
   @Override
   public void setBreakStrategy(int breakStrategy) {
-    super.setBreakStrategy(breakStrategy);
+    // TextView.setBreakStrategy was introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      super.setBreakStrategy(breakStrategy);
+    }
     mShouldAdjustSpannableFontSize = true;
   }
 
   @Override
   public void setHyphenationFrequency(int hyphenationFrequency) {
-    super.setHyphenationFrequency(hyphenationFrequency);
+    // TextView.setHyphenationFrequency was introduced in API 23 (M).
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      super.setHyphenationFrequency(hyphenationFrequency);
+    }
     mShouldAdjustSpannableFontSize = true;
   }
 

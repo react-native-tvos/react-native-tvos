@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -60,6 +61,11 @@ internal class DebugOverlayController(private val reactContext: ReactContext) {
     @JvmStatic
     fun requestPermission(context: Context) {
       // Get permission to show debug overlay in dev builds.
+      // Settings.canDrawOverlays / ACTION_MANAGE_OVERLAY_PERMISSION were introduced in API 23 (M);
+      // on older platforms the overlay permission is granted at install time.
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        return
+      }
       if (!Settings.canDrawOverlays(context)) {
         val intent =
             Intent(
@@ -79,8 +85,8 @@ internal class DebugOverlayController(private val reactContext: ReactContext) {
 
     private fun permissionCheck(context: Context): Boolean {
       // Get permission to show debug overlay in dev builds.
-      // overlay permission not yet granted
-      return Settings.canDrawOverlays(context)
+      // overlay permission not yet granted (always granted at install time before API 23 (M))
+      return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
     }
 
     private fun canHandleIntent(context: Context, intent: Intent): Boolean {

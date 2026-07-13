@@ -17,7 +17,6 @@ import android.graphics.Path
 import android.graphics.PathEffect
 import android.graphics.PixelFormat
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import com.facebook.react.uimanager.PixelUtil.pxToDp
 import com.facebook.react.uimanager.style.BorderRadiusStyle
 import com.facebook.react.uimanager.style.ComputedBorderRadius

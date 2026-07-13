@@ -103,6 +103,12 @@ internal class FrameTimingsObserver(
         if (!isTracing) {
           return@OnFrameMetricsAvailableListener
         }
+        // FrameMetrics#getMetric requires API 24 (N). This listener is only ever registered on
+        // API 24+ (see isSupported / the guarded construction in ReactHostImpl), so this is a
+        // defensive no-op that also makes the API level explicit to the linter.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+          return@OnFrameMetricsAvailableListener
+        }
         val beginTimestamp = frameMetrics.getMetric(FrameMetrics.VSYNC_TIMESTAMP)
         val endTimestamp = beginTimestamp + frameMetrics.getMetric(FrameMetrics.TOTAL_DURATION)
         emitFrameTiming(beginTimestamp, endTimestamp)

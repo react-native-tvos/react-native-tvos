@@ -14,6 +14,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
+import android.os.Build
 import android.util.TypedValue
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException
 import com.facebook.react.bridge.ReadableMap
@@ -83,7 +84,10 @@ public object ReactDrawableHelper {
   private fun setRadius(drawableDescriptionDict: ReadableMap, drawable: Drawable?): Drawable? {
     if (drawableDescriptionDict.hasKey("rippleRadius") && drawable is RippleDrawable) {
       val rippleRadius = drawableDescriptionDict.getDouble("rippleRadius")
-      drawable.radius = PixelUtil.toPixelFromDIP(rippleRadius).toInt()
+      // RippleDrawable.setRadius was introduced in API 23 (M).
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        drawable.radius = PixelUtil.toPixelFromDIP(rippleRadius).toInt()
+      }
     }
     return drawable
   }
@@ -102,7 +106,12 @@ public object ReactDrawableHelper {
                 true,
             )
         ) {
-          context.resources.getColor(resolveOutValue.resourceId, context.theme)
+          // Resources.getColor(int, Theme) was introduced in API 23 (M).
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.resources.getColor(resolveOutValue.resourceId, context.theme)
+          } else {
+            @Suppress("DEPRECATION") context.resources.getColor(resolveOutValue.resourceId)
+          }
         } else {
           throw JSApplicationIllegalArgumentException(
               "Attribute colorControlHighlight couldn't be resolved into a drawable"

@@ -237,7 +237,8 @@ internal object UIManagerModuleConstantsHelper {
         // Since event maps are client based Map interface, it could be immutable
         if (destValue !is HashMap<*, *>) {
           destValue = HashMap(destValue)
-          dest.replace(key, destValue as MutableMap<*, *>)
+          // Map.replace requires API 24; the key is already present, so put (API 1) is equivalent.
+          dest[key] = destValue as MutableMap<*, *>
         }
         @Suppress("UNCHECKED_CAST")
         recursiveMerge(destValue as MutableMap<String, Any>, sourceValue as MutableMap<String, Any>)
