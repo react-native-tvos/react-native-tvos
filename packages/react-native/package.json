@@ -30,20 +30,19 @@
     "react-native": "cli.js"
   },
   "main": "./index.js",
-  "types": "types",
   "exports": {
     ".": {
-      "react-native-strict-api": "./types_generated/index.d.ts",
-      "types": "./types/index.d.ts",
+      "react-native-legacy-deep-imports": "./types/index.d.ts",
+      "types": "./types_generated/index.d.ts",
       "default": "./index.js"
     },
     "./Libraries/*": {
-      "react-native-strict-api": null,
-      "types": "./Libraries/*.d.ts",
+      "react-native-legacy-deep-imports": "./Libraries/*.d.ts",
+      "types": null,
       "default": "./Libraries/*.js"
     },
     "./Libraries/*.js": {
-      "react-native-strict-api": null,
+      "types": null,
       "default": "./Libraries/*.js"
     },
     "./scripts/*": "./scripts/*",
@@ -51,7 +50,16 @@
       "types": null,
       "default": "./src/asset-registry.js"
     },
+    "./react-private-interface": {
+      "types": null,
+      "default": "./src/react-private-interface.js"
+    },
     "./setup-env": "./src/setup-env.js",
+    "./unstable-internals-do-not-use": {
+      "react-native-unstable-internals": "./src/unstable-internals-do-not-use.d.ts",
+      "types": null,
+      "default": "./src/unstable-internals-do-not-use.js"
+    },
     "./src/fb_internal/*": "./src/fb_internal/*",
     "./package.json": "./package.json"
   },
@@ -158,8 +166,8 @@
     "hermes-compiler": "0.0.0",
     "invariant": "^2.2.4",
     "memoize-one": "^5.0.0",
-    "metro-runtime": "^0.86.0",
-    "metro-source-map": "^0.86.0",
+    "metro-runtime": "^0.87.0",
+    "metro-source-map": "^0.87.0",
     "nullthrows": "^1.1.1",
     "pretty-format": "^29.7.0",
     "promise": "^8.3.0",

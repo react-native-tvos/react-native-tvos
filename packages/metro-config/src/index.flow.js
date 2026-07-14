@@ -59,7 +59,7 @@ export function getDefaultConfig(projectRoot: string): ConfigT {
       unstable_conditionNames: ['react-native'],
     },
     serializer: {
-      // Note: This option is overridden in cli-plugin-metro (getOverrideConfig)
+      // NOTE: Overridden in community-cli-plugin
       getModulesRunBeforeMainModule: () => [
         require.resolve('react-native/setup-env'),
       ],
@@ -85,12 +85,10 @@ export function getDefaultConfig(projectRoot: string): ConfigT {
     transformer: {
       allowOptionalDependencies: true,
       assetRegistryPath: 'react-native/asset-registry',
-      asyncRequireModulePath: require.resolve(
-        'metro-runtime/src/modules/asyncRequire',
-      ),
-      babelTransformerPath: require.resolve(
-        '@react-native/metro-babel-transformer',
-      ),
+      asyncRequireModulePath:
+        require.resolve('metro-runtime/src/modules/asyncRequire'),
+      babelTransformerPath:
+        require.resolve('@react-native/metro-babel-transformer'),
       getTransformOptions: async () => ({
         transform: {
           experimentalImportSupport: false,

@@ -203,13 +203,13 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableBridgelessArchitecture: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         description: 'Feature flag to enable the new bridgeless architecture.',
         expectedReleaseValue: true,
         purpose: 'release',
       },
-      ossReleaseStage: 'canary',
+      ossReleaseStage: 'stable',
     },
     enableCppPropsIteratorSetter: {
       defaultValue: false,
@@ -666,14 +666,14 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'none',
+      ossReleaseStage: 'experimental',
     },
     fuseboxNetworkInspectionEnabled: {
       defaultValue: true,
       metadata: {
         dateAdded: '2024-01-31',
         description:
-          'Enable network inspection support in the React Native DevTools CDP backend. Requires `enableBridgelessArchitecture`. This flag is global and should not be changed across React Host lifetimes.',
+          'Enable network inspection support in the React Native DevTools CDP backend. This flag is global and should not be changed across React Host lifetimes.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -688,7 +688,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'none',
+      ossReleaseStage: 'experimental',
     },
     optimizedAnimatedPropUpdates: {
       defaultValue: false,
@@ -1014,17 +1014,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableDirectEventsInEventTarget: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-07-06',
-        description:
-          'When enabled (together with enableNativeEventTargetEventDispatching), direct events (those that neither bubble nor capture, such as onLayout) are dispatched only to the target node via a fast path that skips construction and traversal of the ancestor event path.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     enableImperativeEvents: {
       defaultValue: false,
       metadata: {
@@ -1033,8 +1022,10 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'release',
       },
+      // TODO: This should be "canary" now but the OSS renderer cannot be upgraded with the necessary changes until React 19.3.0 is released.
       ossReleaseStage: 'none',
     },
+    // TODO: This feature flag should be shipped and clean up now, but the OSS renderer cannot be upgraded with the necessary changes until React 19.3.0 is released.
     enableNativeEventTargetEventDispatching: {
       defaultValue: false,
       metadata: {

@@ -47,12 +47,13 @@ jobs:
           yarn lint
           yarn --cwd packages/react-native-codegen build
           yarn --cwd packages/react-native-codegen-typescript-test build
-          yarn test-typescript
-      - name: Run Typescript generation
+          yarn test-typescript-legacy
+      - name: Run and test Typescript generation
         id: typescript-gen
         working_directory: ../..
         run: |
           yarn build-types
+          yarn test-generated-typescript
       - name: Run Jest tests
         id: test-jest
         working_directory: ../..   

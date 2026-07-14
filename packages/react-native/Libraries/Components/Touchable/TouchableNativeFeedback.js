@@ -41,8 +41,7 @@ export type TouchableNativeFeedbackProps = Readonly<{
     | Readonly<{
         type: 'ThemeAttrAndroid',
         attribute:
-          | 'selectableItemBackground'
-          | 'selectableItemBackgroundBorderless',
+          'selectableItemBackground' | 'selectableItemBackgroundBorderless',
         rippleRadius: ?number,
       }>
     | Readonly<{

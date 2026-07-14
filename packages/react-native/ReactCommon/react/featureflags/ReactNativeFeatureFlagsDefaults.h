@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<55b72a39db4ebe2fb696fee409eeb52e>>
+ * @generated SignedSource<<1efca375c1144d97d8e5da75bada9654>>
  */
 
 /**
@@ -84,7 +84,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableBridgelessArchitecture() override {
-    return false;
+    return true;
   }
 
   bool enableCppPropsIteratorSetter() override {
