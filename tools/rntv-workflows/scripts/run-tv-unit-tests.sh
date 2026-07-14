@@ -11,6 +11,7 @@ yarn --cwd packages/react-native featureflags-check --update
 yarn lint
 yarn --cwd packages/react-native-codegen build
 yarn --cwd packages/react-native-codegen-typescript-test build
-yarn test-typescript
+yarn test-typescript-legacy
 npx jest packages/react-native -u
 yarn build-types
+yarn test-generated-typescript
