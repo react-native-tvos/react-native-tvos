@@ -5512,7 +5512,7 @@ declare namespace TurboModuleRegistry {
 }
 declare type TVEventControl = typeof TVEventControl
 declare type TVEventHandler = typeof TVEventHandler
-declare type TVEventHandlerCallback = (event: any) => void
+declare type TVEventHandlerCallback = (event: TVRemoteEvent_2) => void
 declare type TVEventHandlerType = {
   addListener: (callback: TVEventHandlerCallback) => EventSubscription
 }
@@ -5566,6 +5566,19 @@ declare type TVRemoteEvent = {
   readonly eventType: string
   readonly tag?: number
   readonly target?: number
+}
+declare type TVRemoteEvent_2 = {
+  body: TVRemoteEventBody | undefined
+  eventKeyAction: number | undefined
+  eventType: string
+  tag: number | undefined
+}
+declare type TVRemoteEventBody = {
+  state: string
+  velocityX: number
+  velocityY: number
+  x: number
+  y: number
 }
 declare class TVTextScrollView extends React.Component<
   Omit<
@@ -6203,7 +6216,7 @@ export {
   SwitchProps, // 4ed9c57f
   Systrace, // 626d178c
   TVEventControl, // 93ef27f1
-  TVEventHandler, // 74736fc8
+  TVEventHandler, // 684a3200
   TVFocusGuideView, // c09fec87
   TVRemoteEvent, // 920bc385
   TVTextScrollView, // 3fff19a5

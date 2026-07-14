@@ -25,7 +25,22 @@ type TVRemoteEventDefinitions = {
 let __nativeTVNavigationEventEmitter: ?NativeEventEmitter<TVRemoteEventDefinitions> =
   null;
 
-type TVEventHandlerCallback = (event: any) => void;
+type TVRemoteEventBody = {
+  state: string,
+  x: number,
+  y: number,
+  velocityX: number,
+  velocityY: number,
+};
+
+type TVRemoteEvent = {
+  eventType: string,
+  eventKeyAction: ?number,
+  tag: ?number,
+  body: ?TVRemoteEventBody,
+};
+
+type TVEventHandlerCallback = (event: TVRemoteEvent) => void;
 type TVEventHandlerType = {
   addListener: (callback: TVEventHandlerCallback) => EventSubscription,
 };
