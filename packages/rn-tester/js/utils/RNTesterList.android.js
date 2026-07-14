@@ -279,6 +279,10 @@ const APIs: Array<RNTesterModuleInfo> = (
         .default,
     },
     {
+      key: 'FocusEnterLeaveExample',
+      module: require('../examples/FocusEventsExample/FocusEnterLeaveExample'),
+    },
+    {
       key: 'InvalidPropsExample',
       module: require('../examples/InvalidProps/InvalidPropsExample'),
     },
