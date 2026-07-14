@@ -1014,17 +1014,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableDirectEventsInEventTarget: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-07-06',
-        description:
-          'When enabled (together with enableNativeEventTargetEventDispatching), direct events (those that neither bubble nor capture, such as onLayout) are dispatched only to the target node via a fast path that skips construction and traversal of the ancestor event path.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     enableImperativeEvents: {
       defaultValue: false,
       metadata: {

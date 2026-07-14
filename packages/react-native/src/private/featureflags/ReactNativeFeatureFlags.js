@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<71e307d568421d49e3943f58c4fcb163>>
+ * @generated SignedSource<<81820f6c8f87bd90ed861ad9ddb153bb>>
  * @flow strict
  * @noformat
  */
@@ -33,7 +33,6 @@ export type ReactNativeFeatureFlagsJsOnly = Readonly<{
   animatedForceNativeDriver: Getter<boolean>,
   animatedShouldSyncValueBeforeStartCallback: Getter<boolean>,
   deferFlatListFocusChangeRenderUpdate: Getter<boolean>,
-  enableDirectEventsInEventTarget: Getter<boolean>,
   enableImperativeEvents: Getter<boolean>,
   enableNativeEventTargetEventDispatching: Getter<boolean>,
   externalElementInspectionEnabled: Getter<boolean>,
@@ -161,11 +160,6 @@ export const animatedShouldSyncValueBeforeStartCallback: Getter<boolean> = creat
  * Use the deferred cell render update mechanism for focus change in FlatList.
  */
 export const deferFlatListFocusChangeRenderUpdate: Getter<boolean> = createJavaScriptFlagGetter('deferFlatListFocusChangeRenderUpdate', false);
-
-/**
- * When enabled (together with enableNativeEventTargetEventDispatching), direct events (those that neither bubble nor capture, such as onLayout) are dispatched only to the target node via a fast path that skips construction and traversal of the ancestor event path.
- */
-export const enableDirectEventsInEventTarget: Getter<boolean> = createJavaScriptFlagGetter('enableDirectEventsInEventTarget', false);
 
 /**
  * When enabled, ReactNativeElement and ReadOnlyText expose the public EventTarget API (addEventListener, removeEventListener, dispatchEvent). When disabled, those methods are removed from those final classes.
