@@ -17,6 +17,12 @@
  * byte-identical output either way.
  */
 
+const {
+  buildI18nStringsBundle,
+  buildReactPrivacyManifest,
+  collectLprojDirs,
+  serializePrivacyManifest,
+} = require('./framework-resources');
 const {computeInventory} = require('./headers-inventory');
 const {
   DEPS_NAMESPACES,
@@ -138,6 +144,28 @@ function emitReactFrameworkHeaders(
   const slices = fs
     .readdirSync(xcfwPath)
     .filter(d => fs.existsSync(path.join(xcfwPath, d, 'React.framework')));
+
+  // Aggregate the privacy manifests of the pods baked into React.framework into
+  // one root-level PrivacyInfo.xcprivacy, so the prebuilt artifact carries them
+  // for both CocoaPods-prebuilt and SwiftPM (source builds get them from the
+  // podspecs instead). Built once, embedded per slice.
+  const privacyManifest = buildReactPrivacyManifest(rnRoot);
+
+  // Build RCTI18nStrings.bundle ONCE into a temp stage, then clone it into each
+  // slice below — mirrors the privacy manifest (computed once, embedded per
+  // slice) instead of rebuilding the bundle inside the slice loop. The stage is
+  // only created when there are locales to bundle.
+  let i18nStage = null;
+  let i18nBundleStage = null;
+  let i18nLocales = 0;
+  if (collectLprojDirs(rnRoot).length > 0) {
+    i18nStage = fs.mkdtempSync(
+      path.join(path.dirname(xcfwPath), '.i18n-stage-'),
+    );
+    i18nBundleStage = path.join(i18nStage, 'RCTI18nStrings.bundle');
+    i18nLocales = buildI18nStringsBundle(rnRoot, i18nBundleStage);
+  }
+
   for (const slice of slices) {
     const fwk = path.join(xcfwPath, slice, 'React.framework');
     fs.rmSync(path.join(fwk, 'Headers'), {recursive: true, force: true});
@@ -148,11 +176,29 @@ function emitReactFrameworkHeaders(
       path.join(fwk, 'Modules', 'module.modulemap'),
       renderReactModuleMap(plan.privateReactHeaders),
     );
+    if (privacyManifest != null) {
+      fs.writeFileSync(
+        path.join(fwk, 'PrivacyInfo.xcprivacy'),
+        serializePrivacyManifest(privacyManifest),
+      );
+    }
+    // Clone the prebuilt RCTI18nStrings.bundle so the framework-aware
+    // RCTLocalizedString loader resolves React-Core's strings in prebuilt/SPM.
+    if (i18nLocales > 0 && i18nBundleStage != null) {
+      const dest = path.join(fwk, 'RCTI18nStrings.bundle');
+      fs.rmSync(dest, {recursive: true, force: true});
+      execFileSync('/bin/cp', [CP_FLAGS, i18nBundleStage, dest]);
+    }
   }
   fs.rmSync(stage, {recursive: true, force: true});
+  if (i18nStage != null) {
+    fs.rmSync(i18nStage, {recursive: true, force: true});
+  }
   console.log(
     `headers-compose: React.framework spec layout -> ${slices.join(', ')} ` +
-      `(${plan.react.length} headers, umbrella ${plan.umbrella.length})`,
+      `(${plan.react.length} headers, umbrella ${plan.umbrella.length}` +
+      `${privacyManifest != null ? ', +PrivacyInfo.xcprivacy' : ''}` +
+      `${i18nLocales > 0 ? `, +RCTI18nStrings.bundle (${i18nLocales} locales)` : ''})`,
   );
 }
 
