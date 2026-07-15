@@ -92,6 +92,7 @@ const SDK_PREFIXES = new Set([
   'Accessibility',
   'AVFoundation',
   'AVKit',
+  'CFNetwork',
   'CommonCrypto',
   'CoreFoundation',
   'CoreGraphics',
