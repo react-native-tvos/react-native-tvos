@@ -157,6 +157,22 @@ jobs:
           pattern: prebuild-ios-core-headers-${{ matrix.flavor }}-*
           path: packages/react-native/.build/headers
           merge-multiple: true
+      - name: Download ReactNativeDependencies
+        if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v7
+        with:
+          name: ReactNativeDependencies${{ matrix.flavor }}.xcframework.tar.gz
+          path: /tmp/third-party/
+      - name: Extract ReactNativeDependencies
+        if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          # ReactNativeHeaders.xcframework (built by the compose step) folds in
+          # the third-party deps namespaces (folly/glog/boost/...), so the deps
+          # headers must be staged here too — not just in build-slices.
+          tar -xzf /tmp/third-party/ReactNativeDependencies${{ matrix.flavor }}.xcframework.tar.gz -C /tmp/third-party/
+          mkdir -p packages/react-native/third-party/
+          mv /tmp/third-party/packages/react-native/third-party/ReactNativeDependencies.xcframework packages/react-native/third-party/ReactNativeDependencies.xcframework
       - name: Setup Keychain
         if: ${{ steps.restore-ios-xcframework.outputs.cache-hit != 'true' && env.REACT_ORG_CODE_SIGNING_P12_CERT != '' }}
         uses: apple-actions/import-codesign-certs@v3 # https://github.com/marketplace/actions/import-code-signing-certificates
@@ -173,11 +189,24 @@ jobs:
         run: |
           cd packages/react-native
           node scripts/ios-prebuild -c -f "${{ matrix.flavor }}" -i "React Org"
+      - name: Verify composed headers
+        if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
+        run: |
+          # Generator-time header gate: include-health ratchet, structural
+          # byte-compare of module maps/umbrellas against the spec render, and
+          # compile smokes (React module + every namespace module + the
+          # privileged-consumer/Expo fixtures). Catches consumer-facing header
+          # regressions here instead of in downstream builds.
+          cd packages/react-native
+          node scripts/ios-prebuild/headers-verify.js --flavor "${{ matrix.flavor }}"
       - name: Compress and Rename XCFramework
         if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
         run: |
           cd packages/react-native/.build/output/xcframeworks/${{matrix.flavor}}
-          tar -cz -f ../ReactCore${{matrix.flavor}}.xcframework.tar.gz React.xcframework
+          # Ship BOTH xcframeworks: React-Core-prebuilt's prepare_command flattens
+          # ReactNativeHeaders.xcframework's Headers (incl. module.modulemap) into the
+          # pod. Omitting it leaves consumers without React-Core-prebuilt/Headers/module.modulemap.
+          tar -cz -f ../ReactCore${{matrix.flavor}}.xcframework.tar.gz React.xcframework ReactNativeHeaders.xcframework
       - name: Compress and Rename dSYM
         if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
         run: |
