@@ -22,6 +22,7 @@ require_relative './cocoapods/privacy_manifest_utils.rb'
 require_relative './cocoapods/spm.rb'
 require_relative './cocoapods/rncore.rb'
 require_relative './cocoapods/rncore_facades.rb'
+require_relative './cocoapods/rndeps_facades.rb'
 # Importing to expose use_native_modules!
 require_relative './cocoapods/autolinking.rb'
 
@@ -242,6 +243,17 @@ def use_react_native! (
     # Install prebuilt React Native Core and React Native Dependencies
     ReactNativeCoreUtils.rncore_log("Using React Native Core and React Native Dependencies prebuilt versions.")
     pod 'ReactNativeDependencies', :podspec => "#{prefix}/third-party-podspecs/ReactNativeDependencies.podspec", :modular_headers => true
+
+    # Facades: community pods' hardcoded s.dependency "RCT-Folly"/"glog"/... must
+    # resolve locally instead of from trunk. See __docs__/prebuilt-deps.md.
+    RNDepsFacades.generate(react_native_path, Pod::Config.instance.installation_root, min_ios_version_supported)
+    pod 'DoubleConversion', :path => RNDepsFacades.facade_path('DoubleConversion')
+    pod 'glog', :path => RNDepsFacades.facade_path('glog')
+    pod 'boost', :path => RNDepsFacades.facade_path('boost')
+    pod 'fast_float', :path => RNDepsFacades.facade_path('fast_float')
+    pod 'fmt', :path => RNDepsFacades.facade_path('fmt')
+    pod 'RCT-Folly', :path => RNDepsFacades.facade_path('RCT-Folly')
+    pod 'SocketRocket', :path => RNDepsFacades.facade_path('SocketRocket')
 
     if !ReactNativeCoreUtils.build_rncore_from_source()
       pod 'React-Core-prebuilt', :podspec => "#{prefix}/React-Core-prebuilt.podspec", :modular_headers => true

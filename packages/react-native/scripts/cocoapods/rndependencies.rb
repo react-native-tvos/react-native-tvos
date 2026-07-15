@@ -6,6 +6,7 @@
 require "json"
 require 'net/http'
 require 'rexml/document'
+require 'shellwords'
 
 require_relative './utils.rb'
 
@@ -36,7 +37,7 @@ def add_rn_third_party_dependencies(s)
         header_search_paths = current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] || []
 
         if header_search_paths.is_a?(String)
-            header_search_paths = header_search_paths.split(" ")
+            header_search_paths = Shellwords.shellsplit(header_search_paths)
         end
 
         header_search_paths << "$(PODS_ROOT)/glog"
@@ -47,10 +48,24 @@ def add_rn_third_party_dependencies(s)
         header_search_paths << "$(PODS_ROOT)/SocketRocket"
         header_search_paths << "$(PODS_ROOT)/RCT-Folly"
 
-        current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] = header_search_paths
+        # uniq so a second call on the same spec can't duplicate entries.
+        current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] = header_search_paths.uniq
     else
+        # Prebuilt-deps mode: this pod SELF-SERVES the third-party headers from its
+        # own xcframework (incl. SocketRocket - sole supplier in this mode). See
+        # scripts/cocoapods/__docs__/prebuilt-deps.md for the full contract.
         s.dependency "ReactNativeDependencies"
-        current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] ||= [] << "$(PODS_ROOT)/ReactNativeDependencies"
+
+        header_search_paths = current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] || []
+        if header_search_paths.is_a?(String)
+            header_search_paths = Shellwords.shellsplit(header_search_paths)
+        end
+        # Artifact headers are flattened into the pod-local Headers/ by the podspec
+        # prepare_command (see __docs__/prebuilt-deps.md).
+        header_search_paths << "$(PODS_ROOT)/ReactNativeDependencies/Headers"
+
+        # uniq so a second call on the same spec can't duplicate entries.
+        current_pod_target_xcconfig["HEADER_SEARCH_PATHS"] = header_search_paths.uniq
     end
 
     s.pod_target_xcconfig = current_pod_target_xcconfig
