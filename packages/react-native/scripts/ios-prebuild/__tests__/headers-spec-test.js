@@ -72,6 +72,11 @@ const validManifest = () => ({
       'objc-modular-candidate',
     ),
     entry('React_RCTAppDelegate/RCTAppDelegate.h', 'objc-modular-candidate'),
+    // Bucketed objc-modular-candidate because its only C++ include
+    // (<jsinspector-modern/tracing/...> → react/timing/primitives.h) is behind
+    // a `#ifdef __cplusplus` guard; the inventory's umbrella-safety fixpoint
+    // follows unguarded edges only. It must still be kept OUT of the umbrella.
+    entry('React/RCTFrameTimingsObserver.h', 'objc-modular-candidate'),
   ],
 });
 
@@ -162,6 +167,28 @@ describe('R10 per-namespace umbrella (React_RCTAppDelegate)', () => {
     );
     expect(() => planFromInventoryForTest(m)).toThrow(
       /umbrella namespace 'React_RCTAppDelegate'/,
+    );
+  });
+});
+
+describe('R4 umbrella excludes C++-guarded foreign-namespace headers', () => {
+  test('a guarded-C++ objc-modular-candidate header is kept out of the umbrella', () => {
+    const plan = planFromInventoryForTest(validManifest());
+    // RCTFrameTimingsObserver.h is objc-modular-candidate for a pure-ObjC
+    // consumer, but reaches react/timing/primitives.h once the __cplusplus
+    // guard opens (Swift/C++-interop compiles the React module as ObjC++).
+    // primitives.h is owned by ReactNativeHeaders_react, so an umbrella entry
+    // would make one header live in two modules → C++ redefinition.
+    expect(plan.umbrella).not.toContain('React/RCTFrameTimingsObserver.h');
+  });
+
+  test('fails closed when an excluded header is absent from the inventory', () => {
+    const m = validManifest();
+    m.headers = m.headers.filter(
+      x => x.naturalPath !== 'React/RCTFrameTimingsObserver.h',
+    );
+    expect(() => planFromInventoryForTest(m)).toThrow(
+      /RCTFrameTimingsObserver\.h is absent/,
     );
   });
 });

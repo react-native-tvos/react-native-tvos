@@ -143,6 +143,24 @@ const EXTERN_INLINE_RE /*: RegExp */ =
 
 const MODULE_IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
+// R4 umbrella exclusion: ObjC headers whose ONLY C++ include is behind a
+// `#ifdef __cplusplus` guard, so the inventory buckets them
+// objc-modular-candidate — the reachability fixpoint (headers-inventory.js)
+// follows UNGUARDED edges only, modelling a pure-ObjC consumer. But the React
+// framework module is compiled as Objective-C++ by Swift/C++-interop consumers:
+// the guard opens, the umbrella transitively includes the foreign C++ header,
+// and that header is ALSO owned by the ReactNativeHeaders_<ns> module. One
+// physical header, two modules → C++ redefinition ("could not build module
+// 'React'"). Keeping the header OUT of the umbrella leaves it shipped and
+// textually importable (`#import <React/...>`); its guarded C++ includes then
+// resolve at the consumer's use site, exactly as PRIVATE_REACT_HEADERS.textual
+// (R9) already handles the unguarded objc-blocked case.
+// Found empirically: RCTFrameTimingsObserver.h (#56015) reaches
+// react/timing/primitives.h via <jsinspector-modern/tracing/FrameTimingSequence.h>.
+const UMBRELLA_CXX_GUARDED_EXCLUSIONS /*: Set<string> */ = new Set([
+  'React/RCTFrameTimingsObserver.h',
+]);
+
 // R9: Private React headers — a curated allowlist of `<React/...>` headers that
 // privileged framework consumers (e.g. Expo) import, but which the public
 // umbrella (R4) excludes (they are `+`-suffixed and/or objc-blocked). They are
@@ -202,8 +220,29 @@ function validatePrivateReactHeaders(manifest /*: any */) /*: void */ {
   }
 }
 
+// Fail closed if an umbrella exclusion drifts: the header must still exist in
+// the inventory. If it was removed/renamed the stale exclusion would silently
+// stop matching and the header would re-enter the umbrella — reintroducing the
+// dual-module redefinition. Force the list to be updated instead.
+function validateUmbrellaExclusions(manifest /*: any */) /*: void */ {
+  const naturals = new Set(manifest.headers.map(h => h.naturalPath));
+  for (const np of UMBRELLA_CXX_GUARDED_EXCLUSIONS) {
+    if (!naturals.has(np)) {
+      throw new Error(
+        `Umbrella exclusion ${np} is absent from the inventory ` +
+          `(removed/renamed in source?). Update ` +
+          `UMBRELLA_CXX_GUARDED_EXCLUSIONS.`,
+      );
+    }
+  }
+}
+
 function isUmbrellaSafe(h /*: any */, rnRoot /*: string */) /*: boolean */ {
-  if (h.bucket !== 'objc-modular-candidate' || h.naturalPath.includes('+')) {
+  if (
+    h.bucket !== 'objc-modular-candidate' ||
+    h.naturalPath.includes('+') ||
+    UMBRELLA_CXX_GUARDED_EXCLUSIONS.has(h.naturalPath)
+  ) {
     return false;
   }
   try {
@@ -254,6 +293,7 @@ function planFromInventory(
 ) /*: HeadersSpecPlan */ {
   const root = rnRoot ?? manifest.root ?? RN_ROOT;
   validatePrivateReactHeaders(manifest); // R9: fail closed on allowlist drift
+  validateUmbrellaExclusions(manifest); // R4: fail closed on exclusion drift
   const react /*: Array<SpecEntry> */ = [];
   const reactNativeHeaders /*: Array<SpecEntry> */ = [];
   const umbrella /*: Array<string> */ = [];
