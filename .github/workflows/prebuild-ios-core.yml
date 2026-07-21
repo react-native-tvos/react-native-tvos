@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: packages/react-native/.build/output/xcframeworks
-          key: v3-ios-core-xcframework-${{ matrix.flavor }}-${{ hashFiles('packages/react-native/Package.swift', 'packages/react-native/scripts/ios-prebuild/*.js', 'packages/react-native/scripts/ios-prebuild.js', 'packages/react-native/React/**/*', 'packages/react-native/ReactCommon/**/*', 'packages/react-native/Libraries/**/*') }}
+          key: v4-ios-core-xcframework-${{ matrix.flavor }}-${{ hashFiles('packages/react-native/Package.swift', 'packages/react-native/scripts/ios-prebuild/*.js', 'packages/react-native/scripts/ios-prebuild.js', 'packages/react-native/React/**/*', 'packages/react-native/ReactCommon/**/*', 'packages/react-native/Libraries/**/*') }}
       - name: Setup node.js
         if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
         uses: ./.github/actions/setup-node
@@ -200,7 +200,7 @@ jobs:
           # privileged-consumer/Expo fixtures). Catches consumer-facing header
           # regressions here instead of in downstream builds.
           cd packages/react-native
-          node scripts/ios-prebuild/headers-verify.js --flavor "${{ matrix.flavor }}"
+          node scripts/ios-prebuild/headers-verify.js --flavor "${{ matrix.flavor }}" ${{ inputs.version-type != '' && '--require-stamped-version' || '' }}
       - name: Compress and Rename XCFramework
         if: steps.restore-ios-xcframework.outputs.cache-hit != 'true'
         run: |
@@ -246,4 +246,4 @@ jobs:
             packages/react-native/.build/output/xcframeworks/ReactCore${{matrix.flavor}}.xcframework.tar.gz
             packages/react-native/.build/output/xcframeworks/ReactCore${{matrix.flavor}}.framework.dSYM.tar.gz
             packages/react-native/.build/output/xcframeworks/ReactNativeHeaders${{matrix.flavor}}.xcframework.tar.gz
-          key: v3-ios-core-xcframework-${{ matrix.flavor }}-${{ hashFiles('packages/react-native/Package.swift', 'packages/react-native/scripts/ios-prebuild/*.js', 'packages/react-native/scripts/ios-prebuild.js', 'packages/react-native/React/**/*', 'packages/react-native/ReactCommon/**/*', 'packages/react-native/Libraries/**/*') }}
+          key: v4-ios-core-xcframework-${{ matrix.flavor }}-${{ hashFiles('packages/react-native/Package.swift', 'packages/react-native/scripts/ios-prebuild/*.js', 'packages/react-native/scripts/ios-prebuild.js', 'packages/react-native/React/**/*', 'packages/react-native/ReactCommon/**/*', 'packages/react-native/Libraries/**/*') }}
