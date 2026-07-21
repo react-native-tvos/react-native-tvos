@@ -21,6 +21,7 @@
 #import <React/RCTConversions.h>
 #import <React/RCTLinearGradient.h>
 #import <React/RCTLocalizedString.h>
+#import <React/RCTLog.h>
 #import <React/RCTRadialGradient.h>
 #import <react/featureflags/ReactNativeFeatureFlags.h>
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
@@ -1009,6 +1010,13 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
     } else {
       // Can't accurately calculate box shadow, so fall back to pixel-based shadow.
       layer.shadowPath = nil;
+
+      RCTLogAdvice(
+          @"View #%ld of type %@ has a shadow set but cannot calculate "
+           "shadow efficiently. Consider setting a solid background color to "
+           "fix this or applying the shadow to a more specific component.",
+          (long)self.tag,
+          [self class]);
     }
   } else {
     layer.shadowPath = nil;
