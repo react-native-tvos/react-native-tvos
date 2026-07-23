@@ -723,7 +723,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   _isJSResponder = NO;
   _removeClippedSubviews = NO;
   _reactSubviews = [NSMutableArray new];
-  _layoutMetrics = {};
+  _layoutMetrics = EmptyLayoutMetrics;
 }
 
 - (void)setPropKeysManagedByAnimated_DO_NOT_USE_THIS_IS_BROKEN:(NSSet<NSString *> *_Nullable)props
