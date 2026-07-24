@@ -202,8 +202,7 @@ N/A`;
     it('Returns the pr url', async () => {
       const currentVersion = '0.79.0-rc5';
       const token = 'token';
-      const expectedPrURL =
-        'https://github.com/react/react-native/pulls/1234';
+      const expectedPrURL = 'https://github.com/react/react-native/pulls/1234';
 
       const returnedObject = {
         status: 201,

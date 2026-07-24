@@ -274,8 +274,7 @@ View the whole changelog in the [CHANGELOG.md file](https://github.com/react/rea
       );
       expect(response).toEqual({
         id: 1,
-        html_url:
-          'https://github.com/react/react-native/releases/tag/v0.77.1',
+        html_url: 'https://github.com/react/react-native/releases/tag/v0.77.1',
       });
     });
 
@@ -327,8 +326,7 @@ View the whole changelog in the [CHANGELOG.md file](https://github.com/react/rea
       );
       expect(response).toEqual({
         id: 1,
-        html_url:
-          'https://github.com/react/react-native/releases/tag/v0.77.1',
+        html_url: 'https://github.com/react/react-native/releases/tag/v0.77.1',
       });
     });
 
