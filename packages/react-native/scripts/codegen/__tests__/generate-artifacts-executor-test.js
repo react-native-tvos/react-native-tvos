@@ -507,3 +507,41 @@ describe('findFilesWithExtension', () => {
     ]);
   });
 });
+
+describe('generateSchemaInfos', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
+
+  it('forwards the platform (not the array map index) to combineSchemasInFileList', () => {
+    const mockCombineSchemasInFileList = jest.fn(
+      (_files: ReadonlyArray<string>, _platform: string) => ({}),
+    );
+    jest.mock('../codegen-utils', () => ({
+      getCombineJSToSchema: () => ({
+        combineSchemasInFileList: mockCombineSchemasInFileList,
+      }),
+    }));
+    // Avoid touching the filesystem for podspec discovery.
+    jest.mock('tinyglobby', () => ({globSync: () => []}));
+
+    const {
+      generateSchemaInfos,
+    } = require('../generate-artifacts-executor/generateSchemaInfos');
+
+    const libraries = [
+      {config: {name: 'LibA', jsSrcsDir: 'src'}, libraryPath: '/tmp/libA'},
+      {config: {name: 'LibB', jsSrcsDir: 'src'}, libraryPath: '/tmp/libB'},
+    ];
+
+    generateSchemaInfos(libraries, 'ios');
+
+    // Regression guard: previously `libraries.map(generateSchemaInfo)` handed the
+    // array index to generateSchemaInfo as the platform. Every call must receive
+    // the real platform string instead.
+    expect(mockCombineSchemasInFileList).toHaveBeenCalledTimes(2);
+    for (const call of mockCombineSchemasInFileList.mock.calls) {
+      expect(call[1]).toBe('ios');
+    }
+  });
+});
