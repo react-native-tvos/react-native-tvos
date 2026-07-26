@@ -1,9 +1,9 @@
 import { test } from 'shelljs';
-import path from 'path';
+import path from 'node:path';
 import { promises as fs } from 'node:fs';
-import { Readable } from 'stream';
+import { Readable } from 'node:stream';
 import spawnAsync from '@expo/spawn-async';
-import { writeFile } from 'fs/promises';
+import { writeFile } from 'node:fs/promises';
 
 export const downloadFileAsync = async (
   url: string | URL | Request,

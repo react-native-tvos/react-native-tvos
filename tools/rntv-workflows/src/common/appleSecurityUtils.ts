@@ -2,7 +2,7 @@
 
 import spawnAsync from '@expo/spawn-async'
 
-import { spawnSync } from 'child_process';
+import { spawnSync } from 'node:child_process';
 
 type ExecOptions = spawnAsync.SpawnOptions;
 

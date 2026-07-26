@@ -1,7 +1,7 @@
 'use strict';
 
-import path from 'path';
-import { promises as fs } from 'fs';
+import path from 'node:path';
+import { promises as fs } from 'node:fs';
 import spawnAsync from '@expo/spawn-async';
 
 import {

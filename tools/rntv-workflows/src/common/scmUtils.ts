@@ -12,7 +12,7 @@
 
 import spawnAsync from '@expo/spawn-async';
 import {echo, test} from 'shelljs';
-import path from 'path';
+import path from 'node:path';
 
 import {repoConstants, easConstants} from './constants';
 import {removeDirectoryIfNeededAsync, unpackTarArchiveAsync} from './fileUtils';

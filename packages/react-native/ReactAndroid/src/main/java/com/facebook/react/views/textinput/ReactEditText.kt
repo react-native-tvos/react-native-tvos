@@ -140,7 +140,9 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
   private var didAttachToWindow = false
   private var selectTextOnFocus = false
   private var placeholder: String? = null
-  private var overflow = Overflow.VISIBLE
+  internal var overflow = Overflow.VISIBLE
+    private set
+
   private var wasMultiline = false
 
   public var stateWrapper: StateWrapper? = null
@@ -260,6 +262,13 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
             if (contextMenuHidden) {
               return false
             }
+            // setTextIsSelectable(true) (see onAttachedToWindow) makes the platform Editor
+            // treat this view as read-only selectable text and skip its "Show the IME to be
+            // able to replace text" branch when a selection or insertion action mode starts
+            // (Editor#startActionModeInternal gates it on !isTextSelectable()). Compensate
+            // here so long-pressing an editable input summons the keyboard, matching stock
+            // EditText behavior.
+            showSoftKeyboardIfEditable()
             menu.removeItem(android.R.id.pasteAsPlainText)
             return true
           }
@@ -533,6 +542,14 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     }
     if (!focused) {
       isKeyboardOpened = false
+    }
+    // Gaining focus with a non-collapsed selection means focus arrived through a
+    // long-press text selection rather than a tap or programmatic focus — the one focus
+    // path that never requests the soft keyboard (see onCreateActionMode). The action
+    // mode can be created before this view becomes the IME-served view, so request the
+    // keyboard again now that focus has landed.
+    if (focused && hasSelection()) {
+      showSoftKeyboardIfEditable()
     }
   }
 
@@ -969,6 +986,14 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
 
   protected fun showSoftKeyboard(): Boolean = inputMethodManager.showSoftInput(this, 0)
 
+  // Mirrors the guard on requestFocusProgrammatically(), plus editability ("editable"
+  // prop maps to isEnabled): never summon the keyboard for a read-only input.
+  private fun showSoftKeyboardIfEditable() {
+    if (isEnabled && isInTouchMode && showSoftInputOnFocus) {
+      showSoftKeyboard()
+    }
+  }
+
   protected fun hideSoftKeyboard() {
     inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
   }
@@ -1222,13 +1247,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
   }
 
   public fun setOverflow(overflow: String?) {
-    if (overflow == null) {
-      this.overflow = Overflow.VISIBLE
-    } else {
-      val parsedOverflow = Overflow.fromString(overflow)
-      this.overflow = parsedOverflow ?: Overflow.VISIBLE
-    }
-
+    this.overflow = Overflow.fromString(overflow)
     invalidate()
   }
 

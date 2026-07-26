@@ -13,9 +13,9 @@ import {PackageJSON, PackageInfo, PackagesFilter, ProjectInfo} from './types';
 
 import {repoConstants} from './constants';
 import {parseAnyVersion} from './versionUtils';
-import {promises as fs} from 'fs';
+import {promises as fs} from 'node:fs';
 import glob from 'glob';
-import path from 'path';
+import path from 'node:path';
 
 const {repoName, repoPath} = repoConstants;
 

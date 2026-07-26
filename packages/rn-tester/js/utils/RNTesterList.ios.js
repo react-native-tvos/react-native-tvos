@@ -338,6 +338,10 @@ const APIs: Array<RNTesterModuleInfo> = (
       module: require('../examples/Snapshot/SnapshotExample'),
     },
     {
+      key: 'TestLibraryExample',
+      module: require('../examples/TestLibrary/TestLibraryExample'),
+    },
+    {
       key: 'TimerExample',
       module: require('../examples/Timer/TimerExample'),
     },

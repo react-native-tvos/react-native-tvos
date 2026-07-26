@@ -1,7 +1,7 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
 import { deleteKeychain, installCertIntoTemporaryKeychain, pemCertificateFromKeychain, throwErrorIfCertificateExpired } from "./common/appleSecurityUtils";
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 
 async function executeScriptAsync() {
 

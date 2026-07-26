@@ -59,6 +59,7 @@ import com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_END
 import com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_ITEM
 import com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNMENT_START
 import com.facebook.react.views.scroll.ReactScrollViewHelper.findNextFocusableView
+import com.facebook.react.views.view.ImportantForInteractionHelper
 import com.facebook.systrace.Systrace
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -107,6 +108,10 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
   override var hasChildPressedStateDelay: Boolean? = null
 
   public open var pointerEvents: PointerEvents = PointerEvents.AUTO
+    set(value) {
+      field = value
+      ImportantForInteractionHelper.setImportantForInteraction(this, value, _overflow)
+    }
 
   public open var fadingEdgeLengthStart: Int = 0
     set(value) {
@@ -368,11 +373,13 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
         if (overflow == null) {
           Overflow.SCROLL
         } else {
-          Overflow.fromString(overflow)
-              ?: if (ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid())
-                  Overflow.VISIBLE
-              else Overflow.SCROLL
+          Overflow.fromString(
+              overflow,
+              if (ReactNativeFeatureFlags.enablePropsUpdateReconciliationAndroid()) Overflow.VISIBLE
+              else Overflow.SCROLL,
+          )
         }
+    ImportantForInteractionHelper.setImportantForInteraction(this, pointerEvents, _overflow)
     invalidate()
   }
 
