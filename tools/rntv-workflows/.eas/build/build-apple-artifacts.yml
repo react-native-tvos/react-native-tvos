@@ -76,15 +76,22 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.xcframework.tar.gz React.xcframework ReactNativeHeaders.xcframework
           echo "RNCore Debug framework tarball created."
     - run:
-        name: Create RNCore framework DSYMS tarball (Debug)
+        name: Create RNCore DSYMS tarball (Debug)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug/Symbols
         command: |
-          echo "Create RNCore framework tarball..."
+          echo "Create RNCore DSYMS tarball..."
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreDebug.framework.dSYM.tar.gz *
-          echo "RNCore Debug framework tarball created."
+          echo "RNCore Debug DSYMS tarball created."
+    - run:
+        name: Create RNCore headers tarball (Debug)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Debug
+        command: |
+          echo "Create RNCore headers tarball..."
+          cp ReactNativeHeaders.xcframework.tar.gz $MAVEN_ARTIFACTS_PATH/ReactNativeHeadersDebug.xcframework.tar.gz
+          echo "RNCore Debug headers tarball created."
     - run:
         name: Build RNCore framework (Release)
         working_directory: ../../packages/react-native
@@ -105,15 +112,22 @@ build:
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
         command: |
           echo "Create RNCore framework tarball..."
-          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.xcframework.tar.gz React.xcframework
+          tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.xcframework.tar.gz React.xcframework ReactNativeHeaders.xcframework
           echo "RNCore Release framework tarball created."
     - run:
-        name: Create RNCore framework DSYMS tarball (Release)
+        name: Create RNCore DSYMS tarball (Release)
         working_directory: ../../packages/react-native/.build/output/xcframeworks/Release/Symbols
         command: |
-          echo "Create RNCore framework tarball..."
+          echo "Create RNCore DSYMS tarball..."
           tar zcf $MAVEN_ARTIFACTS_PATH/ReactCoreRelease.framework.dSYM.tar.gz *
-          echo "RNCore Release framework tarball created."
+          echo "RNCore Release DSYMS tarball created."
+    - run:
+        name: Create RNCore headers tarball (Release)
+        working_directory: ../../packages/react-native/.build/output/xcframeworks/Release
+        command: |
+          echo "Create RNCore headers tarball..."
+          cp ReactNativeHeaders.xcframework.tar.gz $MAVEN_ARTIFACTS_PATH/ReactNativeHeadersRelease.xcframework.tar.gz
+          echo "RNCore Release headers tarball created."
     - run:
         name: Create RNCore framework Maven artifacts
         working_directory: ../..
