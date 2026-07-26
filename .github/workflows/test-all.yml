@@ -136,6 +136,7 @@ jobs:
         with:
           flavor: ${{ matrix.flavor }}
           use-frameworks: true
+          build-from-source: true
           run-unit-tests: false # tests for dynamic frameworks are already run in the test_ios_rntester job; this is to just a test build from source (no prebuilds)
 
   test_ios_rntester:
@@ -155,6 +156,12 @@ jobs:
         uses: ./.github/actions/test-ios-rntester
         with:
           use-frameworks: ${{ matrix.frameworks }}
+          # Consume the prebuilt artifacts in the dynamic-frameworks cells too:
+          # prebuilt + use_frameworks is the config of the 2026-07-03
+          # SocketRocket dual-copy regression, previously covered by no lane
+          # (source-built dynamic frameworks stay covered by
+          # test_ios_rntester_dynamic_frameworks).
+          use-prebuilds: true
           flavor: ${{ matrix.flavor }}
 
   test_e2e_ios_rntester:
