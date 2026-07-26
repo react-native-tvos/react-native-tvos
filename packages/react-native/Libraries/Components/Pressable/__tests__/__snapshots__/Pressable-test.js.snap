@@ -114,6 +114,8 @@ exports[`<Pressable android_ripple /> on Android should not crash with an unreso
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -163,6 +165,8 @@ exports[`<Pressable android_ripple /> on Android should not crash with an unreso
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -212,6 +216,8 @@ exports[`<Pressable android_ripple /> on Android should set nativeBackgroundAndr
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -261,6 +267,8 @@ exports[`<Pressable android_ripple /> on Android should set nativeBackgroundAndr
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -306,6 +314,8 @@ exports[`<Pressable android_ripple /> on Android should set nativeBackgroundAndr
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}
@@ -351,6 +361,8 @@ exports[`<Pressable android_ripple /> on Android should set nativeBackgroundAndr
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
+  onPressIn={[Function]}
+  onPressOut={[Function]}
   onResponderGrant={[Function]}
   onResponderMove={[Function]}
   onResponderRelease={[Function]}

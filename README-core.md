@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/facebook/react-native/blob/HEAD/LICENSE">
+  <a href="https://github.com/react/react-native/blob/HEAD/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="React Native is released under the MIT license." />
   </a>
   <a href="https://www.npmjs.org/package/react-native">
@@ -38,7 +38,7 @@
   <span> · </span>
   <a href="https://reactnative.dev/help">Community</a>
   <span> · </span>
-  <a href="https://github.com/facebook/react-native/blob/HEAD/.github/SUPPORT.md">Support</a>
+  <a href="https://github.com/react/react-native/blob/HEAD/.github/SUPPORT.md">Support</a>
 </h3>
 
 React Native brings [**React**'s][r] declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform.
@@ -52,7 +52,7 @@ React Native is developed and supported by many companies and individual core co
 
 [r]: https://react.dev/
 [p]: https://reactnative.dev/docs/out-of-tree-platforms
-[e]: https://github.com/facebook/react-native/blob/HEAD/ECOSYSTEM.md
+[e]: https://github.com/react/react-native/blob/HEAD/ECOSYSTEM.md
 
 ## Contents
 
@@ -123,13 +123,13 @@ Read our [**Contributing Guide**][contribute] to learn about our development pro
 
 You can learn more about our vision for React Native in the [**Roadmap**][roadmap].
 
-[roadmap]: https://github.com/facebook/react-native/wiki/Roadmap
+[roadmap]: https://github.com/react/react-native/wiki/Roadmap
 
 ### Good First Issues
 
 We have a list of [good first issues][gfi] that contain bugs which have a relatively limited scope. This is a great place to get started, gain experience, and get familiar with our contribution process.
 
-[gfi]: https://github.com/facebook/react-native/labels/good%20first%20issue
+[gfi]: https://github.com/react/react-native/labels/good%20first%20issue
 
 ### Discussions
 
@@ -141,4 +141,4 @@ Larger discussions and proposals are discussed in [**@react-native-community/dis
 
 React Native is MIT licensed, as found in the [LICENSE][l] file.
 
-[l]: https://github.com/facebook/react-native/blob/main/LICENSE
+[l]: https://github.com/react/react-native/blob/main/LICENSE

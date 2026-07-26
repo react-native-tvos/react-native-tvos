@@ -13,7 +13,6 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 import {RNTesterThemeContext} from '../../components/RNTesterTheme';
-
 import {useState} from 'react';
 
 const React = require('react');
