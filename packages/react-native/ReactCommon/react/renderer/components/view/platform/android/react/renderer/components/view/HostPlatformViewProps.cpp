@@ -42,6 +42,18 @@ HostPlatformViewProps::HostPlatformViewProps(
           "nativeForegroundAndroid",
           sourceProps.nativeForeground,
           {})),
+      focusable(convertRawProp(
+          context,
+          rawProps,
+          "focusable",
+          sourceProps.focusable,
+          {})),
+      hasTVPreferredFocus(convertRawProp(
+          context,
+          rawProps,
+          "hasTVPreferredFocus",
+          sourceProps.hasTVPreferredFocus,
+          {})),
       autoFocus(convertRawProp(
           context,
           rawProps,
@@ -72,18 +84,6 @@ HostPlatformViewProps::HostPlatformViewProps(
           "trapFocusRight",
           sourceProps.trapFocusRight,
           false)),
-      focusable(convertRawProp(
-          context,
-          rawProps,
-          "focusable",
-          sourceProps.focusable,
-          {})),
-      hasTVPreferredFocus(convertRawProp(
-          context,
-          rawProps,
-          "hasTVPreferredFocus",
-          sourceProps.hasTVPreferredFocus,
-          {})),
       needsOffscreenAlphaCompositing(convertRawProp(
           context,
           rawProps,
