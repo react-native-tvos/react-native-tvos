@@ -19,9 +19,37 @@ const fs = require('fs');
 const path = require('path');
 
 const {execSync, execFileSync} = childProcess;
-const {createLogger} = utils;
+const {createLogger, findFirst} = utils;
 
 const frameworkLog = createLogger('XCFramework');
+
+function resolveHermesHeaders(
+  buildFolder /*: string */,
+  required /*: boolean */,
+) /*: ?string */ {
+  const hermesArtifacts = path.join(buildFolder, 'artifacts', 'hermes');
+  const baseInclude = path.join(hermesArtifacts, 'destroot', 'include');
+  if (fs.existsSync(path.join(baseInclude, 'hermes', 'hermes.h'))) {
+    return baseInclude;
+  }
+
+  const includeDir = findFirst(hermesArtifacts, name => name === 'include', 8);
+  if (
+    includeDir != null &&
+    fs.existsSync(path.join(includeDir, 'hermes', 'hermes.h'))
+  ) {
+    return includeDir;
+  }
+
+  if (required) {
+    throw new Error(
+      'Cannot compose ReactNativeHeaders: <hermes/...> will not resolve because ' +
+        "hermes/hermes.h is missing. Stage the hermes-ios tarball's " +
+        'destroot/include into .build/artifacts/hermes before composing.',
+    );
+  }
+  return null;
+}
 
 function buildXCFrameworks(
   rootFolder /*: string */,
@@ -29,6 +57,7 @@ function buildXCFrameworks(
   frameworkFolders /*: Array<string> */,
   buildType /*: BuildFlavor */,
   identity /*: ?string */,
+  requireHermes /*: boolean */ = false,
 ) {
   // Let's run codegen for FBReactNativeSpec otherwise some headers will be missing
   generateFBReactNativeSpecIOS('.');
@@ -103,19 +132,9 @@ function buildXCFrameworks(
   // ReactNativeHeaders so consumers resolve `<hermes/hermes.h>` out of the box
   // (same fold ensureHeadersLayout does consumer-side). The hermes-ios tarball
   // is staged at .build/artifacts/hermes/destroot/include by the hermes prebuild
-  // step; pass it when its `hermes/` namespace is present, else null (then
-  // `<hermes/...>` stays consumer-composed, as before).
-  const hermesInclude = path.resolve(
-    process.cwd(),
-    '.build',
-    'artifacts',
-    'hermes',
-    'destroot',
-    'include',
-  );
-  const hermesHeaders = fs.existsSync(path.join(hermesInclude, 'hermes'))
-    ? hermesInclude
-    : null;
+  // step; pass it when its `hermes/` namespace is present, else null for local
+  // development. CI release composition requires it and fails closed.
+  const hermesHeaders = resolveHermesHeaders(buildFolder, requireHermes);
   const headersXcfw = buildReactNativeHeadersXcframework(
     path.dirname(outputPath),
     plan,
@@ -271,4 +290,5 @@ function signXCFramework(
 
 module.exports = {
   buildXCFrameworks,
+  resolveHermesHeaders,
 };
