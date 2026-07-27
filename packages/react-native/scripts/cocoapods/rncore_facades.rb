@@ -126,7 +126,7 @@ module RNCoreFacades
                 "homepage" => "https://reactnative.dev/",
                 "license" => "MIT",
                 "authors" => "Meta Platforms, Inc. and its affiliates",
-                "platforms" => { "ios" => ios_version },
+                "platforms" => { "ios" => ios_version, "tvos" => ios_version },
                 # Required podspec attribute, but never fetched: the pod is installed
                 # as a LOCAL pod (`:path => <dir>`), which uses this spec in place and
                 # ships no source_files. Placeholder only.
