@@ -32,6 +32,11 @@ on:
         description: Existing draft release ID when resuming post-release recovery
         required: false
         type: string
+      skip-podfile:
+        description: Skip an already-completed Podfile.lock recovery
+        required: false
+        default: false
+        type: boolean
   # nightly build @ 2:15 AM UTC
   schedule:
     - cron: '15 2 * * *'
@@ -316,7 +321,7 @@ jobs:
       always() &&
       needs.determine_mode.result == 'success' &&
       ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
-       needs.determine_mode.outputs.mode == 'post-release')
+       (needs.determine_mode.outputs.mode == 'post-release' && !inputs.skip-podfile))
     uses: ./.github/workflows/bump-podfile-lock.yml
     secrets: inherit
     with:
@@ -336,7 +341,7 @@ jobs:
     secrets: inherit
     with:
       releaseVersion: ${{ needs.determine_mode.outputs.release-tag }}
-      checkoutRef: ${{ needs.determine_mode.outputs.release-tag }}
+      checkoutRef: ${{ inputs.draft-release-id != '' && github.ref || needs.determine_mode.outputs.release-tag }}
       releaseId: ${{ inputs.draft-release-id }}
       hermesVersion: ${{ needs.set_hermes_versions.outputs.HERMES_VERSION }}
       hermesV1Version: ${{ needs.set_hermes_versions.outputs.HERMES_V1_VERSION }}
