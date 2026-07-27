@@ -943,7 +943,7 @@ async function processArtifact(
     return localPath;
   };
 
-  let tarPath: string;
+  let tarPath /*: string */ = '';
   let fromShared = false;
   if (isLocalTarball) {
     tarPath = url;
@@ -970,7 +970,7 @@ async function processArtifact(
     onProgress(xcframeworkName, 0, 0, 0, false, 0);
   }
   const tmpExtractDir = path.join(outputDir, '.extract-tmp', label);
-  let xcfwPath: string;
+  let xcfwPath /*: string */ = '';
   try {
     xcfwPath = extractXCFramework(tarPath, tmpExtractDir);
   } catch (e) {
@@ -1349,7 +1349,7 @@ function validateArtifactsCache(
   if (!fs.existsSync(artifactsJsonPath)) {
     return `artifacts.json missing in ${artifactsDir}`;
   }
-  let json: {[string]: {xcframeworkPath: string, url: string}};
+  let json /*: {[string]: {xcframeworkPath: string, url: string}} */ = {};
   try {
     // $FlowFixMe[unclear-type] JSON.parse returns any
     const parsed /*: any */ = JSON.parse(
