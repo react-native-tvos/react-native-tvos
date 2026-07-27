@@ -37,6 +37,7 @@ const {
 const {
   CATALYST_STUB_SLICE,
   DEFAULT_STUB_SLICES,
+  TV_STUB_SLICES,
   buildDepsHeadersXcframework,
   composeHeadersOnlyXcframework,
 } = require('./headers-xcframework');
@@ -297,8 +298,8 @@ function buildReactNativeHeadersXcframework(
 
   // ---- compose (stub archives + create-xcframework) ----
   const slices = includeCatalyst
-    ? [...DEFAULT_STUB_SLICES, CATALYST_STUB_SLICE]
-    : DEFAULT_STUB_SLICES;
+    ? [...DEFAULT_STUB_SLICES, ...TV_STUB_SLICES, CATALYST_STUB_SLICE]
+    : [...DEFAULT_STUB_SLICES, ...TV_STUB_SLICES];
   const outXcfw = composeHeadersOnlyXcframework(
     outDir,
     'ReactNativeHeaders',
