@@ -53,6 +53,18 @@ const DEFAULT_STUB_SLICES /*: Array<StubSlice> */ = [
   },
 ];
 
+const TV_STUB_SLICES /*: Array<StubSlice> */ = [
+  {name: 'tvos', sdk: 'appletvos', targets: ['arm64-apple-tvos15.0']},
+  {
+    name: 'tvos-simulator',
+    sdk: 'appletvsimulator',
+    targets: [
+      'arm64-apple-tvos15.0-simulator',
+      'x86_64-apple-tvos15.0-simulator',
+    ],
+  },
+];
+
 // Mac Catalyst slice — used by the real compose (the cached-artifact
 // repackage path skips it to stay fast; React.xcframework carries it).
 const CATALYST_STUB_SLICE /*: StubSlice */ = {
@@ -275,6 +287,7 @@ function buildDepsHeadersXcframework(
 module.exports = {
   CATALYST_STUB_SLICE,
   DEFAULT_STUB_SLICES,
+  TV_STUB_SLICES,
   DEPS_HEADERS_XCFRAMEWORK_NAME,
   buildDepsHeadersXcframework,
   composeHeadersOnlyXcframework,
