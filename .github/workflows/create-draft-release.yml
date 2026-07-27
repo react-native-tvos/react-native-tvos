@@ -3,6 +3,12 @@ name: Create Draft Release
 on:
   workflow_call:
     inputs:
+      releaseVersion:
+        required: false
+        type: string
+      checkoutRef:
+        required: false
+        type: string
       hermesVersion:
         required: false
         type: string
@@ -20,6 +26,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.REACT_NATIVE_BOT_GITHUB_TOKEN }}
+          ref: ${{ inputs.checkoutRef || github.ref }}
           fetch-depth: 0
           fetch-tags: true
       - name: Install dependencies
@@ -35,7 +42,7 @@ jobs:
         with:
           script: |
             const {createDraftRelease} = require('./.github/workflow-scripts/createDraftRelease.js');
-            const version = '${{ github.ref_name }}';
+            const version = '${{ inputs.releaseVersion || github.ref_name }}';
             const {isLatest} = require('./.github/workflow-scripts/publishTemplate.js');
             return (await createDraftRelease(version, isLatest(), '${{secrets.REACT_NATIVE_BOT_GITHUB_TOKEN}}', '${{ inputs.hermesVersion }}', '${{ inputs.hermesV1Version }}')).id;
           result-encoding: string
@@ -46,7 +53,7 @@ jobs:
         with:
           script: |
             const {uploadReleaseAssetsForDotSlashFiles} = require('./scripts/releases/upload-release-assets-for-dotslash.js');
-            const version = '${{ github.ref_name }}';
+            const version = '${{ inputs.releaseVersion || github.ref_name }}';
             await uploadReleaseAssetsForDotSlashFiles({
               version,
               token: '${{secrets.REACT_NATIVE_BOT_GITHUB_TOKEN}}',
