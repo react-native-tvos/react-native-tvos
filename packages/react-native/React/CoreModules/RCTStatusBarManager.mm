@@ -136,14 +136,14 @@ RCT_EXPORT_MODULE()
   [self emitEvent:kStatusBarFrameWillChange forNotification:notification];
 }
 
-RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
+- (void)getHeight:(RCTResponseSenderBlock)callback
 {
   callback(@[ @{
     @"height" : @(RCTUIStatusBarManager().statusBarFrame.size.height),
   } ]);
 }
 
-RCT_EXPORT_METHOD(setStyle : (NSString *)style animated : (BOOL)animated)
+- (void)setStyle:(NSString *)style animated:(BOOL)animated
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     UIStatusBarStyle statusBarStyle = [RCTConvert UIStatusBarStyle:style];
@@ -159,7 +159,7 @@ RCT_EXPORT_METHOD(setStyle : (NSString *)style animated : (BOOL)animated)
   });
 }
 
-RCT_EXPORT_METHOD(setHidden : (BOOL)hidden withAnimation : (NSString *)withAnimation)
+- (void)setHidden:(BOOL)hidden withAnimation:(NSString *)withAnimation
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     UIStatusBarAnimation animation = [RCTConvert UIStatusBarAnimation:withAnimation];
