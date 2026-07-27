@@ -278,6 +278,11 @@ const APIs: Array<RNTesterModuleInfo> = (
       module: require('../examples/PointerEvents/PointerEventsExample'),
     },
     {
+      key: 'PushNotificationIOSExample',
+      module: require('../examples/PushNotificationIOS/PushNotificationIOSExample'),
+      category: 'iOS',
+    },
+    {
       key: 'RCTRootViewIOSExample',
       module: require('../examples/RCTRootView/RCTRootViewIOSExample'),
     },
