@@ -9,6 +9,9 @@ on:
       checkoutRef:
         required: false
         type: string
+      releaseId:
+        required: false
+        type: string
       hermesVersion:
         required: false
         type: string
@@ -37,6 +40,7 @@ jobs:
           git config --local user.email "bot@reactnative.dev"
           git config --local user.name "React Native Bot"
       - name: Create draft release
+        if: inputs.releaseId == ''
         uses: actions/github-script@v8
         id: create-draft-release
         with:
@@ -49,7 +53,7 @@ jobs:
       - name: Upload release assets for DotSlash
         uses: actions/github-script@v8
         env:
-          RELEASE_ID: ${{ steps.create-draft-release.outputs.result }}
+          RELEASE_ID: ${{ inputs.releaseId || steps.create-draft-release.outputs.result }}
         with:
           script: |
             const {uploadReleaseAssetsForDotSlashFiles} = require('./scripts/releases/upload-release-assets-for-dotslash.js');

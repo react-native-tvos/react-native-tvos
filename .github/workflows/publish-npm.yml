@@ -28,6 +28,10 @@ on:
         description: Tag whose successful publish needs post-release recovery
         required: false
         type: string
+      draft-release-id:
+        description: Existing draft release ID when resuming post-release recovery
+        required: false
+        type: string
   # nightly build @ 2:15 AM UTC
   schedule:
     - cron: '15 2 * * *'
@@ -48,6 +52,7 @@ jobs:
       - id: mode
         env:
           RECOVERY_RELEASE_TAG: ${{ inputs.release-tag }}
+          RECOVERY_DRAFT_RELEASE_ID: ${{ inputs.draft-release-id }}
         run: |
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             echo "mode=release" >> $GITHUB_OUTPUT
@@ -56,6 +61,10 @@ jobs:
           elif [[ -n "$RECOVERY_RELEASE_TAG" ]]; then
             if [[ ! "$RECOVERY_RELEASE_TAG" =~ ^v0\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
               echo "Invalid release tag: $RECOVERY_RELEASE_TAG" >&2
+              exit 1
+            fi
+            if [[ -n "$RECOVERY_DRAFT_RELEASE_ID" && ! "$RECOVERY_DRAFT_RELEASE_ID" =~ ^[0-9]+$ ]]; then
+              echo "Invalid draft release ID: $RECOVERY_DRAFT_RELEASE_ID" >&2
               exit 1
             fi
             echo "mode=post-release" >> $GITHUB_OUTPUT
@@ -234,7 +243,7 @@ jobs:
       always() &&
       needs.determine_mode.result == 'success' &&
       ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
-       needs.determine_mode.outputs.mode == 'post-release')
+       (needs.determine_mode.outputs.mode == 'post-release' && inputs.draft-release-id == ''))
     env:
       REACT_NATIVE_BOT_GITHUB_TOKEN: ${{ secrets.REACT_NATIVE_BOT_GITHUB_TOKEN }}
     steps:
@@ -294,7 +303,7 @@ jobs:
       always() &&
       needs.determine_mode.result == 'success' &&
       ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
-       needs.determine_mode.outputs.mode == 'post-release')
+       (needs.determine_mode.outputs.mode == 'post-release' && inputs.draft-release-id == ''))
     uses: ./.github/workflows/generate-changelog.yml
     secrets: inherit
     with:
@@ -319,13 +328,15 @@ jobs:
     if: |
       always() &&
       needs.determine_mode.result == 'success' &&
-      needs.generate_changelog.result == 'success' &&
       needs.set_hermes_versions.result == 'success' &&
-      (needs.determine_mode.outputs.mode == 'release' || needs.determine_mode.outputs.mode == 'post-release')
+      ((needs.determine_mode.outputs.mode == 'release' && needs.generate_changelog.result == 'success') ||
+       (needs.determine_mode.outputs.mode == 'post-release' &&
+        (needs.generate_changelog.result == 'success' || inputs.draft-release-id != '')))
     uses: ./.github/workflows/create-draft-release.yml
     secrets: inherit
     with:
       releaseVersion: ${{ needs.determine_mode.outputs.release-tag }}
       checkoutRef: ${{ needs.determine_mode.outputs.release-tag }}
+      releaseId: ${{ inputs.draft-release-id }}
       hermesVersion: ${{ needs.set_hermes_versions.outputs.HERMES_VERSION }}
       hermesV1Version: ${{ needs.set_hermes_versions.outputs.HERMES_V1_VERSION }}
