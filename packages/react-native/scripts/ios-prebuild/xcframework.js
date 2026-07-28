@@ -87,7 +87,14 @@ function buildXCFrameworks(
     emitReactFrameworkHeaders,
   } = require('./headers-compose');
   const plan = computeSpecPlan(rootFolder);
-  emitReactFrameworkHeaders(outputPath, plan, rootFolder);
+  // Built header tree from the slice jobs (downloaded to `.build/headers`).
+  // When present, the compose sources header CONTENT from here (see
+  // stageEntries) so build-time generated/stamped headers — notably the
+  // version-stamped ReactNativeVersion.h — ship without re-stamping this
+  // checkout. Absent (e.g. a local compose with no prior build) → source tree.
+  const builtHeadersDir = path.join(buildFolder, 'headers');
+  const overlayDir = fs.existsSync(builtHeadersDir) ? builtHeadersDir : null;
+  emitReactFrameworkHeaders(outputPath, plan, rootFolder, overlayDir);
   // ReactNativeHeaders is PURE-RN — the third-party deps namespaces ship in
   // the ReactNativeDependenciesHeaders sidecar built by the deps prebuild
   // (scripts/releases/ios-prebuild), so the core compose no longer needs the
@@ -115,6 +122,7 @@ function buildXCFrameworks(
     rootFolder,
     true, // include the mac-catalyst slice in the real compose
     hermesHeaders,
+    overlayDir,
   );
 
   if (identity) {
