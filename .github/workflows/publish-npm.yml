@@ -23,6 +23,20 @@ on:
       - 'main'
       - '*-stable'
   workflow_dispatch:
+    inputs:
+      release-tag:
+        description: Tag whose successful publish needs post-release recovery
+        required: false
+        type: string
+      draft-release-id:
+        description: Existing draft release ID when resuming post-release recovery
+        required: false
+        type: string
+      skip-podfile:
+        description: Skip an already-completed Podfile.lock recovery
+        required: false
+        default: false
+        type: boolean
   # nightly build @ 2:15 AM UTC
   schedule:
     - cron: '15 2 * * *'
@@ -38,12 +52,29 @@ jobs:
     outputs:
       mode: ${{ steps.mode.outputs.mode }}
       release-type: ${{ steps.mode.outputs.release-type }}
+      release-tag: ${{ steps.mode.outputs.release-tag }}
     steps:
       - id: mode
+        env:
+          RECOVERY_RELEASE_TAG: ${{ inputs.release-tag }}
+          RECOVERY_DRAFT_RELEASE_ID: ${{ inputs.draft-release-id }}
         run: |
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
             echo "mode=release" >> $GITHUB_OUTPUT
             echo "release-type=release" >> $GITHUB_OUTPUT
+            echo "release-tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          elif [[ -n "$RECOVERY_RELEASE_TAG" ]]; then
+            if [[ ! "$RECOVERY_RELEASE_TAG" =~ ^v0\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+              echo "Invalid release tag: $RECOVERY_RELEASE_TAG" >&2
+              exit 1
+            fi
+            if [[ -n "$RECOVERY_DRAFT_RELEASE_ID" && ! "$RECOVERY_DRAFT_RELEASE_ID" =~ ^[0-9]+$ ]]; then
+              echo "Invalid draft release ID: $RECOVERY_DRAFT_RELEASE_ID" >&2
+              exit 1
+            fi
+            echo "mode=post-release" >> $GITHUB_OUTPUT
+            echo "release-type=" >> $GITHUB_OUTPUT
+            echo "release-tag=$RECOVERY_RELEASE_TAG" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "schedule" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "mode=nightly" >> $GITHUB_OUTPUT
             echo "release-type=nightly" >> $GITHUB_OUTPUT
@@ -54,17 +85,21 @@ jobs:
       - run: |
           echo "Mode: ${{ steps.mode.outputs.mode }}"
           echo "Release type: ${{ steps.mode.outputs.release-type }}"
+          echo "Release tag: ${{ steps.mode.outputs.release-tag }}"
 
   # ─── Release-only: extract Hermes version for draft release ──────
   set_hermes_versions:
     runs-on: ubuntu-latest
-    if: github.ref_type == 'tag'
+    needs: [determine_mode]
+    if: needs.determine_mode.outputs.mode == 'release' || needs.determine_mode.outputs.mode == 'post-release'
     outputs:
       HERMES_VERSION: ${{ steps.set_hermes_versions.outputs.HERMES_VERSION }}
       HERMES_V1_VERSION: ${{ steps.set_hermes_versions.outputs.HERMES_V1_VERSION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.determine_mode.outputs.release-tag }}
       - id: set_hermes_versions
         run: |
           echo "Setting hermes versions to latest"
@@ -209,13 +244,18 @@ jobs:
   post_publish:
     runs-on: ubuntu-latest
     needs: [determine_mode, publish_react_native]
-    if: needs.determine_mode.outputs.mode == 'release'
+    if: |
+      always() &&
+      needs.determine_mode.result == 'success' &&
+      ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
+       (needs.determine_mode.outputs.mode == 'post-release' && inputs.draft-release-id == ''))
     env:
       REACT_NATIVE_BOT_GITHUB_TOKEN: ${{ secrets.REACT_NATIVE_BOT_GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          ref: ${{ needs.determine_mode.outputs.release-tag }}
           fetch-depth: 0
           fetch-tags: true
       - name: Publish @react-native-community/template
@@ -225,7 +265,7 @@ jobs:
           github-token: ${{ secrets.REACT_NATIVE_BOT_GITHUB_TOKEN }}
           script: |
             const {publishTemplate} = require('./.github/workflow-scripts/publishTemplate.js')
-            const version = "${{ github.ref_name }}"
+            const version = "${{ needs.determine_mode.outputs.release-tag }}"
             const isDryRun = false
             await publishTemplate(github, version, isDryRun);
       - name: Wait for template to be published
@@ -235,14 +275,14 @@ jobs:
           github-token: ${{ secrets.REACT_NATIVE_BOT_GITHUB_TOKEN }}
           script: |
             const {verifyPublishedTemplate, isLatest} = require('./.github/workflow-scripts/publishTemplate.js')
-            const version = "${{ github.ref_name }}"
+            const version = "${{ needs.determine_mode.outputs.release-tag }}"
             await verifyPublishedTemplate(version, isLatest());
       - name: Update rn-diff-purge to generate upgrade-support diff
         run: |
           curl -X POST https://api.github.com/repos/react-native-community/rn-diff-purge/dispatches \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer $REACT_NATIVE_BOT_GITHUB_TOKEN" \
-            -d "{\"event_type\": \"publish\", \"client_payload\": { \"version\": \"${{ github.ref_name }}\" }}"
+            -d "{\"event_type\": \"publish\", \"client_payload\": { \"version\": \"${{ needs.determine_mode.outputs.release-tag }}\" }}"
       - name: Verify Release is on NPM
         timeout-minutes: 3
         uses: actions/github-script@v8
@@ -251,34 +291,57 @@ jobs:
           script: |
             const {verifyReleaseOnNpm} = require('./.github/workflow-scripts/verifyReleaseOnNpm.js');
             const {isLatest} = require('./.github/workflow-scripts/publishTemplate.js');
-            const version = "${{ github.ref_name }}";
+            const version = "${{ needs.determine_mode.outputs.release-tag }}";
             await verifyReleaseOnNpm(version, isLatest());
       - name: Verify that artifacts are on Maven
         uses: actions/github-script@v8
         with:
           script: |
             const {verifyArtifactsAreOnMaven} = require('./.github/workflow-scripts/verifyArtifactsAreOnMaven.js');
-            const version = "${{ github.ref_name }}";
+            const version = "${{ needs.determine_mode.outputs.release-tag }}";
             await verifyArtifactsAreOnMaven(version);
 
   # ─── Release-only: changelog, podfile bump, draft release ────────
   generate_changelog:
     needs: [determine_mode, publish_react_native]
-    if: needs.determine_mode.outputs.mode == 'release'
+    if: |
+      always() &&
+      needs.determine_mode.result == 'success' &&
+      ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
+       (needs.determine_mode.outputs.mode == 'post-release' && inputs.draft-release-id == ''))
     uses: ./.github/workflows/generate-changelog.yml
     secrets: inherit
+    with:
+      releaseVersion: ${{ needs.determine_mode.outputs.release-tag }}
+      checkoutRef: ${{ needs.determine_mode.outputs.release-tag }}
 
   bump_podfile_lock:
     needs: [determine_mode, publish_react_native]
-    if: needs.determine_mode.outputs.mode == 'release'
+    if: |
+      always() &&
+      needs.determine_mode.result == 'success' &&
+      ((needs.determine_mode.outputs.mode == 'release' && needs.publish_react_native.result == 'success') ||
+       (needs.determine_mode.outputs.mode == 'post-release' && !inputs.skip-podfile))
     uses: ./.github/workflows/bump-podfile-lock.yml
     secrets: inherit
+    with:
+      releaseVersion: ${{ needs.determine_mode.outputs.release-tag }}
+      checkoutRef: ${{ needs.determine_mode.outputs.release-tag }}
 
   create_draft_release:
     needs: [determine_mode, generate_changelog, set_hermes_versions]
-    if: needs.determine_mode.outputs.mode == 'release'
+    if: |
+      always() &&
+      needs.determine_mode.result == 'success' &&
+      needs.set_hermes_versions.result == 'success' &&
+      ((needs.determine_mode.outputs.mode == 'release' && needs.generate_changelog.result == 'success') ||
+       (needs.determine_mode.outputs.mode == 'post-release' &&
+        (needs.generate_changelog.result == 'success' || inputs.draft-release-id != '')))
     uses: ./.github/workflows/create-draft-release.yml
     secrets: inherit
     with:
+      releaseVersion: ${{ needs.determine_mode.outputs.release-tag }}
+      checkoutRef: ${{ inputs.draft-release-id != '' && github.ref || needs.determine_mode.outputs.release-tag }}
+      releaseId: ${{ inputs.draft-release-id }}
       hermesVersion: ${{ needs.set_hermes_versions.outputs.HERMES_VERSION }}
       hermesV1Version: ${{ needs.set_hermes_versions.outputs.HERMES_V1_VERSION }}

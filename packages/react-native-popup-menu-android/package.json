@@ -1,7 +1,12 @@
 {
   "name": "@react-native/popup-menu-android",
-  "version": "0.86.1",
+  "version": "0.86.2",
   "description": "PopupMenu for the Android platform",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/react/react-native.git",
+    "directory": "packages/react-native-popup-menu-android"
+  },
   "main": "index.js",
   "files": [
     "js",
@@ -21,12 +26,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@react-native/codegen": "0.86.1"
+    "@react-native/codegen": "0.86.2"
   },
   "peerDependencies": {
     "@types/react": "^19.1.0",
     "react": "*",
-    "react-native": "0.86.1"
+    "react-native": "0.86.2"
   },
   "peerDependenciesMeta": {
     "@types/react": {
