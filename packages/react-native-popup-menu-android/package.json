@@ -1,6 +1,6 @@
 {
   "name": "@react-native/popup-menu-android",
-  "version": "0.86.2",
+  "version": "0.86.2-0",
   "description": "PopupMenu for the Android platform",
   "repository": {
     "type": "git",
