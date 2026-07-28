@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.87.0-rc.3
+
+### Breaking
+
+#### iOS specific
+
+- Ship a version-stamped ReactNativeVersion.h in the prebuilt iOS core artifacts instead of the 1000.0.0 dev sentinel ([95df50034b](https://github.com/react/react-native/commit/95df50034ba5ce11f4b70bbb6bf692e3691297dc) by [@chrfalch](https://github.com/chrfalch))
+
+### Fixed
+
+- **Strict TypeScript API**: Optional property types are now widened to explicitly include `| undefined` for `exactOptionalPropertyTypes` compatibility ([0fc76bb527](https://github.com/react/react-native/commit/0fc76bb5278098649672e0407a3de580b8706fa4) by [@zeyap](https://github.com/zeyap))
+- Fix `parentNode`/`parentElement` returning the document instead of the containing element for `<Modal>` and other nested root host views, which severed capture/bubble event propagation to ancestors rendered above them ([e410ff5471](https://github.com/react/react-native/commit/e410ff547179f5c7ad198744f7be88117ccdef0c) by [@rubennorte](https://github.com/rubennorte))
+
+#### iOS specific
+
+- Fix Swift C++-interop build failure (implicit copy constructor of TraceRecordingState/HostTracingProfile) for libraries using cxx interop with prebuilt React Native core ([38611186f5](https://github.com/react/react-native/commit/38611186f5867bd578a269872986a5753c8b41fe) by [@chrfalch](https://github.com/chrfalch))
+
+
 ## v0.87.0-rc.2
 
 ### Breaking
