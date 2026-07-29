@@ -28,13 +28,16 @@ const falseStrings = new Set([
   'N',
 ]);
 
+// Callers pass process.env values, which are undefined when unset. An unset
+// variable belongs to neither set, so it takes defaultValue either way.
 export const boolValueFromString: (
-  testString: string,
+  testString: string | undefined,
   defaultValue?: boolean,
 ) => boolean = (testString, defaultValue) => {
+  const value = testString ?? '';
   return defaultValue === true
-    ? !falseStrings.has(testString)
-    : trueStrings.has(testString);
+    ? !falseStrings.has(value)
+    : trueStrings.has(value);
 };
 
 
