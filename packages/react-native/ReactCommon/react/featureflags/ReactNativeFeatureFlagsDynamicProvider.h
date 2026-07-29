@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f57d4dc1053e9751cc2fa7b5f930ef6b>>
+ * @generated SignedSource<<a629be7af38470ec0cff8391dad1ee1e>>
  */
 
 /**
@@ -304,6 +304,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableImagePrefetchingAndroid();
+  }
+
+  bool enableImageTransparentTintColor() override {
+    auto value = values_["enableImageTransparentTintColor"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enableImageTransparentTintColor();
   }
 
   bool enableImmediateUpdateModeForContentOffsetChanges() override {

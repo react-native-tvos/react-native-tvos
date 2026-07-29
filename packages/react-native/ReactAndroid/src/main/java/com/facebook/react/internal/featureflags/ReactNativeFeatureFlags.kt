@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2544e292c44dabe82ad82a9b08a08f08>>
+ * @generated SignedSource<<2fc347cdb33327437d29e5fd91e24011>>
  */
 
 /**
@@ -203,6 +203,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableImagePrefetchingAndroid(): Boolean = accessor.enableImagePrefetchingAndroid()
+
+  /**
+   * When enabled, Image `tintColor` is handled as a true optional: any defined color is applied as a tint — including `transparent` (alpha 0), which renders the image invisible — and an unset value clears a previously applied tint. When disabled, the prior behavior is preserved, where a transparent `tintColor` is treated as unassigned and the image renders untinted.
+   */
+  @JvmStatic
+  public fun enableImageTransparentTintColor(): Boolean = accessor.enableImageTransparentTintColor()
 
   /**
    * Dispatches state updates for content offset changes synchronously on the main thread.
