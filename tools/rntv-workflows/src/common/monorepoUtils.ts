@@ -76,9 +76,9 @@ export async function getWorkspaceRootAsync() /*: Promise<PackageInfo> */ {
 
 async function parsePackageInfoAsync(
   packageJsonPath: string,
-) /*: Promise<[string, PackageInfo]> */ {
+): Promise<[string, PackageInfo]> {
   const packagePath = path.dirname(packageJsonPath);
-  const packageJson /*: PackageJson */ = JSON.parse(
+  const packageJson: PackageJSON = JSON.parse(
     await fs.readFile(packageJsonPath, 'utf-8'),
   );
 
@@ -90,7 +90,7 @@ async function parsePackageInfoAsync(
       path: packagePath,
       packageJson,
     },
-  ] as PackageInfo[];
+  ];
 }
 
 /**
@@ -111,7 +111,7 @@ export async function updatePackageJsonAsync(
     'dependencies',
     'devDependencies',
     'peerDependencies',
-  ]) {
+  ] as const) {
     const deps = packageJson[dependencyField];
 
     if (deps == null) {
