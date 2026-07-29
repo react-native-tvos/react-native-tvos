@@ -4,7 +4,6 @@
 # Fail if anything errors
 set -eox pipefail
 
-#./tools/rntv-workflows/rename-virtualized-lists.sh
 yarn
 patch -p1 < tools/rntv-workflows/microsoft-api-extractor.patch
 yarn --cwd packages/react-native featureflags-check --update
