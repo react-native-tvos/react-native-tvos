@@ -20,6 +20,21 @@ export type DependencyContext = Readonly<{
 let cachedProjectInfo;
 
 /**
+ * The tvOS fork publishes `react-native` as `react-native-tvos`, and
+ * `@react-native/virtualized-lists` as `@react-native-tvos/virtualized-lists`.
+ * That rename is committed on release branches but deliberately not on main,
+ * so an import may name either spelling regardless of which one the workspace
+ * currently declares. Mapping both directions lets type generation resolve in
+ * either state without the package.json rename having to be applied first.
+ */
+const TVOS_PACKAGE_ALIASES = new Map<string, string>([
+  ['react-native', 'react-native-tvos'],
+  ['react-native-tvos', 'react-native'],
+  ['@react-native/virtualized-lists', '@react-native-tvos/virtualized-lists'],
+  ['@react-native-tvos/virtualized-lists', '@react-native/virtualized-lists'],
+]);
+
+/**
  * Resolve the location of an import path to a file path in the project.
  *
  * This is a specific dependency resolver for type imports in the React
@@ -38,15 +53,21 @@ async function simpleResolve(
     });
   }
 
-  // Resolve exact '@react-native/<package>' import
-  if (importPath in cachedProjectInfo) {
-    const packageJson = cachedProjectInfo[importPath].packageJson;
+  // Resolve exact '@react-native/<package>' import, falling back to the tvOS
+  // alias of the imported name when the workspace declares the other spelling.
+  const packageName =
+    importPath in cachedProjectInfo
+      ? importPath
+      : TVOS_PACKAGE_ALIASES.get(importPath);
+
+  if (packageName != null && packageName in cachedProjectInfo) {
+    const packageJson = cachedProjectInfo[packageName].packageJson;
 
     if (packageJson.main !== undefined) {
-      return path.join(cachedProjectInfo[importPath].path, packageJson.main);
+      return path.join(cachedProjectInfo[packageName].path, packageJson.main);
     }
 
-    return path.join(cachedProjectInfo[importPath].path, 'index.js');
+    return path.join(cachedProjectInfo[packageName].path, 'index.js');
   }
 
   // Resolve relative import within the project

@@ -89,7 +89,7 @@ function versionToString(versionInfo: Version) {
   return `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}${prereleaseString}`;
 }
 
-function extractMatchIfValid(versionStr /*: string */) {
+function extractMatchIfValid(versionStr: string) {
   const match = versionStr.match(VERSION_REGEX);
   if (!match) {
     throw new Error(
@@ -225,7 +225,7 @@ function isMain(version: Version) /*: boolean */ {
   );
 }
 
-function isValidPrealpha(version /*: Version */) /*: boolean */ {
+function isValidPrealpha(version: Version): boolean {
   return !!(
     version.major === '0' &&
     version.minor === '0' &&

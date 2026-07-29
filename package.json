@@ -24,6 +24,7 @@
     "lint-markdown": "markdownlint-cli2 2>&1",
     "lint": "eslint --max-warnings 0 .",
     "preinstall": "node ./scripts/try-set-hermes-compiler-prebuilt.js",
+    "postinstall": "tsx ./tools/rntv-workflows/src/link-react-native-alias.ts",
     "prettier": "prettier --write \"./**/*.{js,md,yml,ts,tsx}\"",
     "shellcheck": "./.github/workflow-scripts/analyze_scripts.sh",
     "start": "yarn --cwd packages/rn-tester start",

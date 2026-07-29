@@ -24,11 +24,6 @@ jobs:
     image: latest
     steps:
       - uses: eas/checkout
-      - name: Rename virtualized-lists dependency for TV
-        id: rename-virtualized-lists
-        working_directory: ../..
-        run: |
-          ./tools/rntv-workflows/rename-virtualized-lists.sh
       - name: Install dependencies
         id: install
         working_directory: ../..
