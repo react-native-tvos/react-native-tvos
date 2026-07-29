@@ -938,7 +938,8 @@ public class FabricUIManager
       long layoutEndTime,
       long finishTransactionStartTime,
       long finishTransactionEndTime,
-      int affectedLayoutNodesCount) {
+      int affectedLayoutNodesCount,
+      boolean synchronous) {
     // When Binding.cpp calls scheduleMountItems during a commit phase, it always calls with
     // a BatchMountItem. No other sites call into this with a BatchMountItem, and Binding.cpp only
     // calls scheduleMountItems with a BatchMountItem.
@@ -952,8 +953,9 @@ public class FabricUIManager
     } else {
       shouldSchedule = mountItem != null;
     }
-    // In case of sync rendering, this could be called on the UI thread. Otherwise,
-    // it should ~always be called on the JS thread.
+    // In the push model, this is ~always called on the JS thread, or on the UI
+    // thread in case of sync rendering.
+    // In the pull model, this is always called on the UI thread, at pull time.
     for (UIManagerListener listener : mListeners) {
       listener.didScheduleMountItems(this);
     }
@@ -968,16 +970,22 @@ public class FabricUIManager
 
     if (shouldSchedule) {
       Assertions.assertNotNull(mountItem, "MountItem is null");
-      mMountItemDispatcher.addMountItem(mountItem);
-      if (UiThreadUtil.isOnUiThread()) {
-        Runnable runnable =
-            new GuardedRunnable(mReactApplicationContext) {
-              @Override
-              public void runGuarded() {
-                mMountItemDispatcher.tryDispatchMountItems();
-              }
-            };
-        runnable.run();
+      if (synchronous) {
+        // Pull model: we are already on the UI thread, inside the dispatcher's loop executing
+        // a PullTransactionMountItem. We don't schedule the item, we execute it directly.
+        mountItem.execute(mMountingManager);
+      } else {
+        mMountItemDispatcher.addMountItem(mountItem);
+        if (UiThreadUtil.isOnUiThread()) {
+          Runnable runnable =
+              new GuardedRunnable(mReactApplicationContext) {
+                @Override
+                public void runGuarded() {
+                  mMountItemDispatcher.tryDispatchMountItems();
+                }
+              };
+          runnable.run();
+        }
       }
     }
 

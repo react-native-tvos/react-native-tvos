@@ -2368,12 +2368,13 @@ class facebook::react::FabricMountingManager {
   public void destroyUnmountedShadowNode(const facebook::react::ShadowNodeFamily& family);
   public void dispatchCommand(const facebook::react::ShadowView& shadowView, const std::string& commandName, const folly::dynamic& args);
   public void drainPreallocateViewsQueue();
-  public void executeMount(const facebook::react::MountingTransaction& transaction);
+  public void executeMount(const facebook::react::MountingTransaction& transaction, bool synchronous = false);
   public void maybePreallocateShadowNode(const facebook::react::ShadowNode& shadowNode);
   public void onAllAnimationsComplete();
   public void onAnimationStarted();
   public void onSurfaceStart(facebook::react::SurfaceId surfaceId);
   public void onSurfaceStop(facebook::react::SurfaceId surfaceId);
+  public void onTransactionAvailable(facebook::react::SurfaceId surfaceId);
   public void preallocateShadowView(const facebook::react::ShadowView& shadowView);
   public void scheduleReactRevisionMerge(facebook::react::SurfaceId surfaceId);
   public void sendAccessibilityEvent(const facebook::react::ShadowView& shadowView, const std::string& eventType);
