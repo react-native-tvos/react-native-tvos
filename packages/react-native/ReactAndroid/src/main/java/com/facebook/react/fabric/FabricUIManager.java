@@ -27,6 +27,7 @@ import android.view.accessibility.AccessibilityEvent;
 import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.view.ViewCompat.FocusDirection;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
@@ -65,6 +66,7 @@ import com.facebook.react.fabric.mounting.mountitems.DispatchCommandMountItem;
 import com.facebook.react.fabric.mounting.mountitems.MountItem;
 import com.facebook.react.fabric.mounting.mountitems.MountItemFactory;
 import com.facebook.react.fabric.mounting.mountitems.PrefetchResourcesMountItem;
+import com.facebook.react.fabric.mounting.mountitems.PullTransactionMountItem;
 import com.facebook.react.fabric.mounting.mountitems.SynchronousMountItem;
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
 import com.facebook.react.internal.featureflags.ReactNativeNewArchitectureFeatureFlags;
@@ -1008,6 +1010,26 @@ public class FabricUIManager
           layoutEndTime,
           affectedLayoutNodesCount);
       ReactMarker.logFabricMarker(ReactMarkerConstants.FABRIC_COMMIT_END, null, commitNumber);
+    }
+  }
+
+  /**
+   * Pull model: called from C++ via JNI (usually on the commit thread) to signal that a transaction
+   * is available for {@code surfaceId}. Enqueues a PullTransactionMountItem so the UI thread pulls
+   * and applies the transaction itself, preserving mount-item ordering.
+   */
+  @SuppressWarnings("unused")
+  @AnyThread
+  @ThreadConfined(ANY)
+  @VisibleForTesting
+  void onTransactionAvailable(int surfaceId) {
+    FabricUIManagerBinding binding = mBinding;
+    if (binding == null) {
+      return;
+    }
+    mMountItemDispatcher.addMountItem(new PullTransactionMountItem(surfaceId, binding));
+    if (UiThreadUtil.isOnUiThread()) {
+      mMountItemDispatcher.tryDispatchMountItems();
     }
   }
 
