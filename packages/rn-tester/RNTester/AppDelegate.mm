@@ -51,7 +51,7 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self];
+  self.reactNativeFactory = [[RCTReactNativeFactory alloc] initWithDelegate:self releaseLevel:[self releaseLevel]];
 #if USE_OSS_CODEGEN
   self.dependencyProvider = [RCTAppDependencyProvider new];
 #endif
@@ -77,6 +77,11 @@ static NSString *kBundlePath = @"js/RNTesterApp.ios";
 #endif
 
   return YES;
+}
+
+- (RCTReleaseLevel)releaseLevel
+{
+  return RCTReleaseLevel::Stable;
 }
 
 - (NSDictionary *)prepareInitialProps
