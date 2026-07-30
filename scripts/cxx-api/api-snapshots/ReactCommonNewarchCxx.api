@@ -2022,6 +2022,12 @@ class facebook::react::LayoutAnimationStatusDelegate {
 class facebook::react::LayoutConformanceShadowNode : public facebook::react::ConcreteShadowNode<facebook::react::LayoutConformanceShadowNodeComponentName, facebook::react::YogaLayoutableShadowNode, facebook::react::LayoutConformanceProps> {
 }
 
+class facebook::react::LayoutEventEmitter : public facebook::react::UIManagerCommitHook {
+  public virtual void commitHookWasRegistered(const facebook::react::UIManager&) noexcept override;
+  public virtual void commitHookWasUnregistered(const facebook::react::UIManager&) noexcept override;
+  public virtual void shadowTreeDidCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& rootShadowNode, const std::vector<const facebook::react::LayoutableShadowNode*>& affectedLayoutableNodes) noexcept override;
+}
+
 class facebook::react::LayoutableShadowNode : public facebook::react::ShadowNode {
   public LayoutableShadowNode(const facebook::react::ShadowNode& sourceShadowNode, const facebook::react::ShadowNodeFragment& fragment);
   public LayoutableShadowNode(const facebook::react::ShadowNodeFragment& fragment, const facebook::react::ShadowNodeFamily::Shared& family, facebook::react::ShadowNodeTraits traits);
