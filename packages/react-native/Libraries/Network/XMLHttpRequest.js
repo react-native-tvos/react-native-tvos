@@ -513,7 +513,10 @@ class XMLHttpRequest extends EventTarget {
     if (this.readyState !== this.OPENED) {
       throw new Error('Request has not been opened');
     }
-    this._headers[header.toLowerCase()] = String(value);
+    const key = header.toLowerCase();
+    const existing = this._headers[key];
+    this._headers[key] =
+      existing !== undefined ? existing + ', ' + String(value) : String(value);
   }
 
   /**
