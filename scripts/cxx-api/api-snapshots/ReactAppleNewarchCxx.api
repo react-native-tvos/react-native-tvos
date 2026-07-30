@@ -6805,6 +6805,7 @@ class facebook::react::ShadowTree {
 
 class facebook::react::ShadowTreeDelegate {
   public virtual facebook::react::RootShadowNode::Unshared shadowTreeWillCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& oldRootShadowNode, const facebook::react::RootShadowNode::Unshared& newRootShadowNode, const facebook::react::ShadowTreeCommitOptions& commitOptions) const = 0;
+  public virtual void shadowTreeDidCommit(const facebook::react::ShadowTree&, const facebook::react::RootShadowNode::Shared&, const std::vector<const facebook::react::LayoutableShadowNode*>&) const;
   public virtual void shadowTreeDidFinishReactCommit(const facebook::react::ShadowTree& shadowTree) const = 0;
   public virtual void shadowTreeDidFinishTransaction(std::shared_ptr<const facebook::react::MountingCoordinator> mountingCoordinator, bool mountSynchronously) const = 0;
   public virtual void shadowTreeDidPromoteReactRevision(const facebook::react::ShadowTree& shadowTree) const = 0;
@@ -7292,6 +7293,7 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public std::shared_ptr<facebook::react::ShadowNode> cloneNode(const facebook::react::ShadowNode& shadowNode, const std::shared_ptr<const std::vector<std::shared_ptr<const facebook::react::ShadowNode>>>& children, facebook::react::RawProps rawProps) const;
   public std::shared_ptr<facebook::react::ShadowNode> createNode(facebook::react::Tag tag, const std::string& componentName, facebook::react::SurfaceId surfaceId, facebook::react::RawProps props, facebook::react::InstanceHandle::Shared instanceHandle) const;
   public virtual facebook::react::RootShadowNode::Unshared shadowTreeWillCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& oldRootShadowNode, const facebook::react::RootShadowNode::Unshared& newRootShadowNode, const facebook::react::ShadowTree::CommitOptions& commitOptions) const override;
+  public virtual void shadowTreeDidCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& rootShadowNode, const std::vector<const facebook::react::LayoutableShadowNode*>& affectedLayoutableNodes) const noexcept override;
   public virtual void shadowTreeDidFinishReactCommit(const facebook::react::ShadowTree& shadowTree) const override;
   public virtual void shadowTreeDidFinishTransaction(std::shared_ptr<const facebook::react::MountingCoordinator> mountingCoordinator, bool mountSynchronously) const override;
   public virtual void shadowTreeDidPromoteReactRevision(const facebook::react::ShadowTree& shadowTree) const override;
@@ -7363,6 +7365,7 @@ class facebook::react::UIManagerCommitHook {
   public virtual facebook::react::RootShadowNode::Unshared shadowTreeWillCommit(const facebook::react::ShadowTree&, const facebook::react::RootShadowNode::Shared&, const facebook::react::RootShadowNode::Unshared& newRootShadowNode) noexcept;
   public virtual void commitHookWasRegistered(const facebook::react::UIManager& uiManager) noexcept = 0;
   public virtual void commitHookWasUnregistered(const facebook::react::UIManager& uiManager) noexcept = 0;
+  public virtual void shadowTreeDidCommit(const facebook::react::ShadowTree&, const facebook::react::RootShadowNode::Shared&, const std::vector<const facebook::react::LayoutableShadowNode*>&) noexcept;
   public virtual ~UIManagerCommitHook() noexcept = default;
 }
 

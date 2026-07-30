@@ -463,6 +463,9 @@ CommitStatus ShadowTree::tryCommit(
     }
   }
 
+  delegate_.shadowTreeDidCommit(
+      *this, newRevision.rootShadowNode, affectedLayoutableNodes);
+
   emitLayoutEvents(affectedLayoutableNodes);
 
   if (isReactBranch) {
