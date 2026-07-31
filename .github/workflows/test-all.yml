@@ -203,6 +203,40 @@ jobs:
       fail-on-error: true
     secrets: inherit
 
+  test_ios_spm_rntester:
+    needs:
+      [
+        prebuild_apple_dependencies,
+        prebuild_react_native_core,
+        check_code_changes,
+      ]
+    if: ${{ needs.prebuild_react_native_core.result == 'success' && needs.check_code_changes.outputs.should_test_ios == 'true' }}
+    uses: ./.github/workflows/test-ios-spm-rntester.yml
+    secrets: inherit
+
+  test_ios_spm_helloworld:
+    needs:
+      [
+        prebuild_apple_dependencies,
+        prebuild_react_native_core,
+        check_code_changes,
+      ]
+    if: ${{ needs.prebuild_react_native_core.result == 'success' && needs.check_code_changes.outputs.should_test_ios == 'true' }}
+    uses: ./.github/workflows/test-ios-spm-helloworld.yml
+    secrets: inherit
+
+  test_ios_spm_newapp:
+    needs:
+      [
+        build_npm_package,
+        prebuild_apple_dependencies,
+        prebuild_react_native_core,
+        check_code_changes,
+      ]
+    if: ${{ needs.prebuild_react_native_core.result == 'success' && needs.build_npm_package.result == 'success' && needs.check_code_changes.outputs.should_test_ios == 'true' }}
+    uses: ./.github/workflows/test-ios-spm-newapp.yml
+    secrets: inherit
+
   test_e2e_android_templateapp:
     needs: [build_npm_package, build_android]
     if: ${{ always() && needs.build_android.result == 'success' && needs.build_npm_package.result == 'success' }}
