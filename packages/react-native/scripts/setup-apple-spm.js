@@ -85,14 +85,18 @@ const {
 const {
   generateAutolinkingConfig,
   parseConfigCommandJson,
+  readEnvConfigCommand,
+  resolveEnvConfigCommand,
 } = require('./spm/generate-spm-autolinking-config');
 const {main: generatePackage} = require('./spm/generate-spm-package');
 const {findSourcePath} = require('./spm/generate-spm-package');
 const {
+  SPM_INJECTED_MARKER,
   cleanupDanglingJavaScriptCoreRef,
   cleanupLeftoverPodsGroup,
   findInjectedXcodeproj,
   injectSpmIntoExistingXcodeproj,
+  readPinnedConfigCommand,
   removeSpmInjection,
 } = require('./spm/generate-spm-xcodeproj');
 const {scaffoldAll} = require('./spm/scaffold-package-swift');
@@ -192,7 +196,7 @@ function parseArgs(argv /*: Array<string> */) /*: SetupArgs */ {
     .option('config-command', {
       type: 'string',
       describe:
-        '[advanced] JSON array of the argv used to generate autolinking.json, overriding the default @react-native-community/cli config command. Also settable via RCT_SPM_AUTOLINKING_CONFIG_COMMAND. Example: \'["npx","expo-modules-autolinking","react-native-config","--json","--platform","ios"]\'',
+        '[advanced] JSON array of the argv used to generate autolinking.json, overriding the default @react-native-community/cli config command. Also settable via RCT_SPM_AUTOLINKING_CONFIG_COMMAND. Either way `add`/`update` remembers the value in .spm-injected.json, so later runs and Xcode builds reuse it. Example: \'["npx","expo-modules-autolinking","react-native-config","--json","--platform","ios"]\'',
     })
     .usage(
       'Usage: $0 [action] [options]\n\nSets up Swift Package Manager support in a React Native app.',
@@ -844,6 +848,7 @@ async function setupXcodeproj(
     // (injectSpmIntoExistingXcodeproj preserves it — see
     // generate-spm-xcodeproj.js).
     artifactsVersionOverride: args.version ?? null,
+    configCommand: resolveConfigCommandToPin(args),
   });
   if (result.status !== 'injected') {
     logError(`SPM injection failed: ${result.reason}`);
@@ -903,6 +908,45 @@ function logNextSteps(
   log('To remove SPM later: `npx react-native spm deinit`');
 }
 
+// The autolinking config command for this run: an explicit `--config-command`
+// first, then the value a previous `add`/`update` pinned into the injection
+// marker. undefined means "no explicit command", which is what makes
+// generateAutolinkingConfig fall back to RCT_SPM_AUTOLINKING_CONFIG_COMMAND and
+// then to the built-in default — so the pin has to be WITHHELD while the env
+// var is set, or a stale pin would outrank a developer's env override.
+function resolveExplicitConfigCommand(
+  args /*: SetupArgs */,
+  appRoot /*: string */,
+) /*: Array<string> | void */ {
+  if (args.configCommand != null) {
+    return args.configCommand;
+  }
+  if (readEnvConfigCommand() != null) {
+    return undefined;
+  }
+  const pinned = readPinnedConfigCommand(appRoot);
+  if (pinned == null) {
+    return undefined;
+  }
+  log(
+    `Autolinking config command (pinned in ${SPM_INJECTED_MARKER}): ` +
+      pinned.join(' '),
+  );
+  return pinned;
+}
+
+// The command to record in the injection marker. The env var is resolved here
+// too, because the Xcode build phase inherits neither the flag nor the shell
+// that set it — an env-only override that went unpinned would leave the build
+// re-deriving autolinking.json with the default command. null pins nothing and
+// preserves any earlier pin. An invalid env value throws, as the flag does,
+// though `add` has already failed closed on it by this point.
+function resolveConfigCommandToPin(
+  args /*: SetupArgs */,
+) /*: ?Array<string> */ {
+  return args.configCommand ?? resolveEnvConfigCommand();
+}
+
 // Generate autolinking.json, failing closed on a config-command error.
 //
 // generateAutolinkingConfig throws ONLY when the config command itself fails —
@@ -937,7 +981,9 @@ function generateAutolinkingConfigOrFailClosed(
         'RCT_SPM_AUTOLINKING_CONFIG_COMMAND (or pass --config-command) to a ' +
         'JSON argv array whose command prints the React Native CLI config, ' +
         'e.g. \'["npx","expo-modules-autolinking","react-native-config",' +
-        '"--json","--platform","ios"]\'.',
+        '"--json","--platform","ios"]\'. An earlier `add`/`update` may also ' +
+        `have pinned a command in ${SPM_INJECTED_MARKER}; re-run with ` +
+        '--config-command to replace a stale one.',
     );
     process.exitCode = 2;
     return null;
@@ -1035,7 +1081,7 @@ async function main(argv /*:: ?: Array<string> */) /*: Promise<void> */ {
     log('Generating autolinking.json (CLI config)...');
     autolinkingConfigResult = generateAutolinkingConfigOrFailClosed({
       projectRoot,
-      configCommand: args.configCommand ?? undefined,
+      configCommand: resolveExplicitConfigCommand(args, appRoot),
     });
     if (autolinkingConfigResult == null) {
       // Fail closed: the config command errored and the helper already set
@@ -1214,6 +1260,8 @@ module.exports = {
   generateAutolinkingConfigOrFailClosed,
   parseArgs,
   resolveAction,
+  resolveConfigCommandToPin,
+  resolveExplicitConfigCommand,
   shouldAutoDeintegrate,
   ensureBothArtifactFlavors,
 };

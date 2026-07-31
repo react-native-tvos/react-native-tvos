@@ -17,6 +17,8 @@ const {
   generateAutolinkingConfigOrFailClosed,
   parseArgs,
   resolveAction,
+  resolveConfigCommandToPin,
+  resolveExplicitConfigCommand,
   shouldAutoDeintegrate,
 } = require('../../setup-apple-spm');
 const {REQUIRED_ARTIFACTS} = require('../download-spm-artifacts');
@@ -28,12 +30,17 @@ const path = require('node:path');
 
 // Create an in-place-injected xcodeproj fixture: a directory carrying the
 // `.spm-injected.json` marker (what injectSpmIntoExistingXcodeproj writes).
-function mkInjectedXcodeproj(appRoot, name) {
+function mkInjectedXcodeproj(appRoot, name, markerFields = {}) {
   const dir = path.join(appRoot, name);
   fs.mkdirSync(dir, {recursive: true});
   fs.writeFileSync(
     path.join(dir, SPM_INJECTED_MARKER),
-    JSON.stringify({rootUuid: 'X', target: 'MyApp', injectedUuids: []}),
+    JSON.stringify({
+      rootUuid: 'X',
+      target: 'MyApp',
+      injectedUuids: [],
+      ...markerFields,
+    }),
   );
   return dir;
 }
@@ -154,6 +161,172 @@ describe('generateAutolinkingConfigOrFailClosed', () => {
     expect(warnings).toMatch(/RCT_SPM_AUTOLINKING_CONFIG_COMMAND/);
     // ...and preserves the underlying cause.
     expect(warnings).toMatch(/exited with status 1/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveExplicitConfigCommand — the autolinking config command every action
+// (add/update/sync/scaffold) runs with: `--config-command` →
+// RCT_SPM_AUTOLINKING_CONFIG_COMMAND → the value pinned in `.spm-injected.json`
+// → the built-in default. undefined means "let generateAutolinkingConfig pick
+// the env var or the default".
+// ---------------------------------------------------------------------------
+
+describe('resolveExplicitConfigCommand', () => {
+  const ENV = 'RCT_SPM_AUTOLINKING_CONFIG_COMMAND';
+  const PINNED = ['npx', 'expo-modules-autolinking', 'react-native-config'];
+  let tempDir;
+  let prevEnv;
+  let logSpy;
+
+  beforeEach(() => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-config-command-'));
+    prevEnv = process.env[ENV];
+    delete process.env[ENV];
+    logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    fs.rmSync(tempDir, {recursive: true, force: true});
+    if (prevEnv === undefined) {
+      delete process.env[ENV];
+    } else {
+      process.env[ENV] = prevEnv;
+    }
+    jest.restoreAllMocks();
+  });
+
+  function pin(configCommand) {
+    mkInjectedXcodeproj(tempDir, 'MyApp.xcodeproj', {configCommand});
+  }
+
+  it('prefers an explicit --config-command over the env var and the pin', () => {
+    process.env[ENV] = '["from-env","config"]';
+    pin(PINNED);
+    expect(
+      resolveExplicitConfigCommand(
+        {configCommand: ['flag', 'config']},
+        tempDir,
+      ),
+    ).toEqual(['flag', 'config']);
+  });
+
+  it('lets the env var win over the pin (a stale pin must not shadow it)', () => {
+    process.env[ENV] = '["from-env","config"]';
+    pin(PINNED);
+    expect(resolveExplicitConfigCommand({configCommand: null}, tempDir)).toBe(
+      undefined,
+    );
+  });
+
+  it('uses the pin when neither the flag nor the env var is set', () => {
+    pin(PINNED);
+    expect(
+      resolveExplicitConfigCommand({configCommand: null}, tempDir),
+    ).toEqual(PINNED);
+    // Names the source, so a stale pin is diagnosable from the build log.
+    expect(logSpy.mock.calls.map(c => c.join(' ')).join('\n')).toMatch(
+      /\.spm-injected\.json/,
+    );
+  });
+
+  it('ignores a blank env var and falls through to the pin', () => {
+    process.env[ENV] = '   ';
+    pin(PINNED);
+    expect(
+      resolveExplicitConfigCommand({configCommand: null}, tempDir),
+    ).toEqual(PINNED);
+  });
+
+  it('falls back to the default (undefined) with no flag, env var or pin', () => {
+    mkInjectedXcodeproj(tempDir, 'MyApp.xcodeproj');
+    expect(resolveExplicitConfigCommand({configCommand: null}, tempDir)).toBe(
+      undefined,
+    );
+  });
+
+  it('falls back to the default when the pinned value is malformed', () => {
+    pin('npx expo-modules-autolinking');
+    expect(resolveExplicitConfigCommand({configCommand: null}, tempDir)).toBe(
+      undefined,
+    );
+  });
+
+  it('falls back to the default when no project is injected yet', () => {
+    expect(resolveExplicitConfigCommand({configCommand: null}, tempDir)).toBe(
+      undefined,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// resolveConfigCommandToPin — what `add`/`update` records in the injection
+// marker: the explicit `--config-command`, else the env override, since the
+// Xcode build phase inherits neither. null pins nothing (and preserves any
+// earlier pin).
+// ---------------------------------------------------------------------------
+
+describe('resolveConfigCommandToPin', () => {
+  const ENV = 'RCT_SPM_AUTOLINKING_CONFIG_COMMAND';
+  const FROM_ENV = ['npx', 'expo-modules-autolinking', 'react-native-config'];
+  let tempDir;
+  let prevEnv;
+
+  beforeEach(() => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-config-command-pin-'));
+    prevEnv = process.env[ENV];
+    delete process.env[ENV];
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    fs.rmSync(tempDir, {recursive: true, force: true});
+    if (prevEnv === undefined) {
+      delete process.env[ENV];
+    } else {
+      process.env[ENV] = prevEnv;
+    }
+    jest.restoreAllMocks();
+  });
+
+  it('pins the env-derived command when only the env var is set', () => {
+    process.env[ENV] = JSON.stringify(FROM_ENV);
+    expect(resolveConfigCommandToPin({configCommand: null})).toEqual(FROM_ENV);
+  });
+
+  it('pins the explicit --config-command over the env var', () => {
+    process.env[ENV] = JSON.stringify(FROM_ENV);
+    expect(
+      resolveConfigCommandToPin({configCommand: ['flag', 'config']}),
+    ).toEqual(['flag', 'config']);
+  });
+
+  it('pins nothing when the env var is blank', () => {
+    process.env[ENV] = '  \t ';
+    expect(resolveConfigCommandToPin({configCommand: null})).toBeNull();
+  });
+
+  it('pins nothing when neither the flag nor the env var is set', () => {
+    expect(resolveConfigCommandToPin({configCommand: null})).toBeNull();
+  });
+
+  it('fails loud rather than pinning garbage from an invalid env var', () => {
+    process.env[ENV] = 'npx expo-modules-autolinking';
+    expect(() => resolveConfigCommandToPin({configCommand: null})).toThrow(
+      /RCT_SPM_AUTOLINKING_CONFIG_COMMAND/,
+    );
+  });
+
+  it('is resolved back by a later run with neither flag nor env var', () => {
+    process.env[ENV] = JSON.stringify(FROM_ENV);
+    mkInjectedXcodeproj(tempDir, 'MyApp.xcodeproj', {
+      configCommand: resolveConfigCommandToPin({configCommand: null}),
+    });
+    delete process.env[ENV];
+
+    expect(
+      resolveExplicitConfigCommand({configCommand: null}, tempDir),
+    ).toEqual(FROM_ENV);
   });
 });
 

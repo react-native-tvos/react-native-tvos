@@ -122,17 +122,29 @@ function resolveDefaultConfigCommand(
   return FALLBACK_CONFIG_COMMAND;
 }
 
+const ENV_CONFIG_COMMAND = 'RCT_SPM_AUTOLINKING_CONFIG_COMMAND';
+
+// The raw env override, or null when unset or blank. Exported so callers that
+// only need to know whether the override is in play (setup-apple-spm.js) share
+// this blankness rule instead of re-deriving it.
+function readEnvConfigCommand() /*: ?string */ {
+  const raw = process.env[ENV_CONFIG_COMMAND];
+  return typeof raw === 'string' && raw.trim().length > 0 ? raw : null;
+}
+
+// The env override, parsed and validated, or null when unset or blank. Throws
+// on a set-but-invalid value — never silently degrades to the default.
+function resolveEnvConfigCommand() /*: ?Array<string> */ {
+  const raw = readEnvConfigCommand();
+  return raw == null ? null : parseConfigCommandJson(raw, ENV_CONFIG_COMMAND);
+}
+
 // Env-var / default resolution for the autolinking config command. An explicit
 // `configCommand` (e.g. from `--config-command`) is handled upstream by
 // generateAutolinkingConfig's destructuring default, so it never reaches here —
 // this only decides between the env-var override and the built-in default.
 function resolveConfigCommand(projectRoot /*: string */) /*: Array<string> */ {
-  const raw = process.env.RCT_SPM_AUTOLINKING_CONFIG_COMMAND;
-  if (typeof raw === 'string' && raw.trim().length > 0) {
-    return parseConfigCommandJson(raw, 'RCT_SPM_AUTOLINKING_CONFIG_COMMAND');
-  }
-
-  return resolveDefaultConfigCommand(projectRoot);
+  return resolveEnvConfigCommand() ?? resolveDefaultConfigCommand(projectRoot);
 }
 
 function defaultCliRunner(
@@ -202,6 +214,8 @@ function generateAutolinkingConfig(
 module.exports = {
   generateAutolinkingConfig,
   parseConfigCommandJson,
+  readEnvConfigCommand,
   resolveConfigCommand,
   resolveDefaultConfigCommand,
+  resolveEnvConfigCommand,
 };
