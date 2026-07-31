@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/renderer/components/image/ImageProps.h>
 #include <react/renderer/components/image/conversions.h>
 #include <react/renderer/core/propsConversions.h>
 #include <react/renderer/debug/debugStringConvertibleUtils.h>
+#include <react/renderer/graphics/Color.h>
 
 namespace facebook::react {
 
@@ -199,8 +201,24 @@ folly::dynamic ImageProps::getDiffProps(const Props* prevProps) const {
     result["capInsets"] = convertEdgeInsets(capInsets);
   }
 
-  if (tintColor != oldProps->tintColor) {
-    result["tintColor"] = *tintColor;
+  if (ReactNativeFeatureFlags::enableImageTransparentTintColor()) {
+    // New: emit any defined tint (including transparent); emit null to clear on
+    // unset.
+    if (tintColor != oldProps->tintColor) {
+      if (tintColor.has_value()) {
+        result["tintColor"] = *tintColor.value();
+      } else {
+        result["tintColor"] = folly::dynamic(nullptr);
+      }
+    }
+  } else {
+    // pre-`std::optional` behavior
+    SharedColor tintColorValue = tintColor.value_or(SharedColor{});
+    SharedColor prevTintColorValue =
+        oldProps->tintColor.value_or(SharedColor{});
+    if (tintColorValue != prevTintColorValue) {
+      result["tintColor"] = *tintColorValue;
+    }
   }
 
   if (internal_analyticTag != oldProps->internal_analyticTag) {

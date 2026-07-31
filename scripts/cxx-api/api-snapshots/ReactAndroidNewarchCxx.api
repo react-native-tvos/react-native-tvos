@@ -2576,7 +2576,7 @@ class facebook::react::ImageProps : public facebook::react::HostPlatformViewProp
   public facebook::react::ImageSource loadingIndicatorSource;
   public facebook::react::ImageSources sources;
   public facebook::react::SharedColor overlayColor;
-  public facebook::react::SharedColor tintColor;
+  public std::optional<facebook::react::SharedColor> tintColor;
   public std::string resizeMethod;
   public virtual facebook::react::ComponentName getDiffPropsImplementationTarget() const override;
   public virtual folly::dynamic getDiffProps(const facebook::react::Props* prevProps) const override;
@@ -2598,7 +2598,7 @@ class facebook::react::ImageRequest {
 
 class facebook::react::ImageRequestParams {
   public ImageRequestParams() = default;
-  public ImageRequestParams(facebook::react::Float blurRadius, facebook::react::ImageSource defaultSource, facebook::react::ImageResizeMode resizeMode, std::string resizeMethod, facebook::react::Float resizeMultiplier, bool shouldNotifyLoadEvents, facebook::react::SharedColor overlayColor, facebook::react::SharedColor tintColor, facebook::react::Float fadeDuration, bool progressiveRenderingEnabled, facebook::react::ImageSource loadingIndicatorSource, std::string analyticTag, facebook::react::Size size);
+  public ImageRequestParams(facebook::react::Float blurRadius, facebook::react::ImageSource defaultSource, facebook::react::ImageResizeMode resizeMode, std::string resizeMethod, facebook::react::Float resizeMultiplier, bool shouldNotifyLoadEvents, facebook::react::SharedColor overlayColor, std::optional<facebook::react::SharedColor> tintColor, facebook::react::Float fadeDuration, bool progressiveRenderingEnabled, facebook::react::ImageSource loadingIndicatorSource, std::string analyticTag, facebook::react::Size size);
   public bool operator==(const facebook::react::ImageRequestParams& rhs) const = default;
   public bool progressiveRenderingEnabled;
   public bool shouldNotifyLoadEvents;
@@ -2609,8 +2609,8 @@ class facebook::react::ImageRequestParams {
   public facebook::react::ImageSource defaultSource;
   public facebook::react::ImageSource loadingIndicatorSource;
   public facebook::react::SharedColor overlayColor;
-  public facebook::react::SharedColor tintColor;
   public facebook::react::Size size;
+  public std::optional<facebook::react::SharedColor> tintColor;
   public std::string analyticTag;
   public std::string resizeMethod;
 }
