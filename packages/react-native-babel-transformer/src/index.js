@@ -16,6 +16,7 @@
 
 /*::
 import type {BabelCoreOptions, Plugins, TransformResult} from '@babel/core';
+import type {File as BabelNodeFile} from '@babel/types';
 import type {
   BabelTransformer,
   MetroBabelFileMetadata,

@@ -9,6 +9,11 @@
  */
 
 import type {PluginObj} from '@babel/core';
+import type {
+  Identifier as BabelNodeIdentifier,
+  Node as BabelNode,
+  TSQualifiedName as BabelNodeTSQualifiedName,
+} from '@babel/types';
 
 const generate = require('@babel/generator').default;
 const {parse} = require('@babel/parser');
