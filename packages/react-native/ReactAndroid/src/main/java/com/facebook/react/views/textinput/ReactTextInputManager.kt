@@ -105,7 +105,7 @@ public open class ReactTextInputManager public constructor() :
   override fun createShadowNodeInstance(): LayoutShadowNode = LayoutShadowNode()
 
   public fun createShadowNodeInstance(
-      reactTextViewManagerCallback: ReactTextViewManagerCallback?
+      reactTextViewManagerCallback: ReactTextViewManagerCallback?,
   ): LayoutShadowNode = LayoutShadowNode()
 
   override fun getShadowNodeClass(): Class<out LayoutShadowNode> = LayoutShadowNode::class.java
@@ -121,19 +121,19 @@ public open class ReactTextInputManager public constructor() :
                         mapOf(
                             "bubbled" to "onSubmitEditing",
                             "captured" to "onSubmitEditingCapture",
-                        )
+                        ),
                 ),
             "topEndEditing" to
                 mapOf(
                     "phasedRegistrationNames" to
-                        mapOf("bubbled" to "onEndEditing", "captured" to "onEndEditingCapture")
+                        mapOf("bubbled" to "onEndEditing", "captured" to "onEndEditingCapture"),
                 ),
             "topKeyPress" to
                 mapOf(
                     "phasedRegistrationNames" to
-                        mapOf("bubbled" to "onKeyPress", "captured" to "onKeyPressCapture")
+                        mapOf("bubbled" to "onKeyPress", "captured" to "onKeyPressCapture"),
                 ),
-        )
+        ),
     )
     return eventTypeConstants
   }
@@ -142,7 +142,7 @@ public open class ReactTextInputManager public constructor() :
     val baseEventTypeConstants = super.getExportedCustomDirectEventTypeConstants()
     val eventTypeConstants = baseEventTypeConstants ?: mutableMapOf()
     eventTypeConstants.putAll(
-        mapOf(getJSEventName(ScrollEventType.SCROLL) to mapOf("registrationName" to "onScroll"))
+        mapOf(getJSEventName(ScrollEventType.SCROLL) to mapOf("registrationName" to "onScroll")),
     )
     return eventTypeConstants
   }
@@ -508,7 +508,7 @@ public open class ReactTextInputManager public constructor() :
             TAG,
             IllegalStateException(
                 "Could not get default text color from View Context: " +
-                    (if (c != null) c.javaClass.canonicalName else "null")
+                    (if (c != null) c.javaClass.canonicalName else "null"),
             ),
         )
       }
@@ -913,7 +913,7 @@ public open class ReactTextInputManager public constructor() :
       } else {
         eventDispatcher?.dispatchEvent(BlurEvent(surfaceId, editText.id))
         eventDispatcher?.dispatchEvent(
-            ReactTextInputEndEditingEvent(surfaceId, editText.id, editText.text.toString())
+            ReactTextInputEndEditingEvent(surfaceId, editText.id, editText.text.toString()),
         )
       }
     }
@@ -939,7 +939,7 @@ public open class ReactTextInputManager public constructor() :
                   reactContext.surfaceId,
                   editText.id,
                   editText.text.toString(),
-              )
+              ),
           )
         }
 
@@ -967,16 +967,15 @@ public open class ReactTextInputManager public constructor() :
     }
   }
 
-  override fun getExportedViewConstants(): Map<String, Any> =
-      mapOf(
-          "AutoCapitalizationType" to
-              mapOf(
-                  "none" to 0,
-                  "characters" to InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS,
-                  "words" to InputType.TYPE_TEXT_FLAG_CAP_WORDS,
-                  "sentences" to InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
-              )
-      )
+  override fun getExportedViewConstants(): Map<String, Any> = mapOf(
+      "AutoCapitalizationType" to
+          mapOf(
+              "none" to 0,
+              "characters" to InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS,
+              "words" to InputType.TYPE_TEXT_FLAG_CAP_WORDS,
+              "sentences" to InputType.TYPE_TEXT_FLAG_CAP_SENTENCES,
+          ),
+  )
 
   override fun setPadding(view: ReactEditText, left: Int, top: Int, right: Int, bottom: Int) {
     view.setPadding(left, top, right, bottom)
@@ -1034,7 +1033,7 @@ public open class ReactTextInputManager public constructor() :
 
     val textBreakStrategy =
         TextAttributeProps.getTextBreakStrategy(
-            paragraphAttributes.getString(TextLayoutManager.PA_KEY_TEXT_BREAK_STRATEGY.toInt())
+            paragraphAttributes.getString(TextLayoutManager.PA_KEY_TEXT_BREAK_STRATEGY.toInt()),
         )
     val currentJustificationMode =
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

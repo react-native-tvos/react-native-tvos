@@ -54,7 +54,7 @@ import java.util.HashMap
 public open class ReactTextViewManager
 @JvmOverloads
 public constructor(
-    protected var reactTextViewManagerCallback: ReactTextViewManagerCallback? = null
+    protected var reactTextViewManagerCallback: ReactTextViewManagerCallback? = null,
 ) :
     BaseViewManager<ReactTextView, LayoutShadowNode>(),
     IViewManagerWithChildren,
@@ -118,7 +118,7 @@ public constructor(
   override fun createShadowNodeInstance(): LayoutShadowNode = LayoutShadowNode()
 
   public fun createShadowNodeInstance(
-      reactTextViewManagerCallback: ReactTextViewManagerCallback?
+      reactTextViewManagerCallback: ReactTextViewManagerCallback?,
   ): LayoutShadowNode = LayoutShadowNode()
 
   override fun getShadowNodeClass(): Class<LayoutShadowNode> = LayoutShadowNode::class.java
@@ -177,7 +177,7 @@ public constructor(
 
     val textBreakStrategy =
         TextAttributeProps.getTextBreakStrategy(
-            paragraphAttributes.getString(TextLayoutManager.PA_KEY_TEXT_BREAK_STRATEGY)
+            paragraphAttributes.getString(TextLayoutManager.PA_KEY_TEXT_BREAK_STRATEGY),
         )
     val currentJustificationMode =
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) 0 else view.justificationMode

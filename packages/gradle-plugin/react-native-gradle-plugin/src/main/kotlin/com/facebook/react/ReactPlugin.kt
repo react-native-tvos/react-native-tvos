@@ -69,11 +69,11 @@ class ReactPlugin : Plugin<Project> {
               .toBoolean()
       if (value) {
         project.logger.warn(
-            "WARNING: The 'hermesV1Enabled' property is no longer needed. Hermes V1 is now always enabled. You can safely remove this property from your gradle.properties."
+            "WARNING: The 'hermesV1Enabled' property is no longer needed. Hermes V1 is now always enabled. You can safely remove this property from your gradle.properties.",
         )
       } else {
         project.logger.warn(
-            "WARNING: Opting out of Hermes V1 is no longer supported. The 'hermesV1Enabled=false' property will be ignored. Hermes V1 is now always enabled. Please remove this property from your gradle.properties."
+            "WARNING: Opting out of Hermes V1 is no longer supported. The 'hermesV1Enabled=false' property will be ignored. Hermes V1 is now always enabled. Please remove this property from your gradle.properties.",
         )
       }
     }
@@ -161,7 +161,7 @@ class ReactPlugin : Plugin<Project> {
       ********************************************************************************
 
       """
-              .trimIndent()
+              .trimIndent(),
       )
       exitProcess(1)
     }
@@ -304,7 +304,7 @@ class ReactPlugin : Plugin<Project> {
                 // We want to exclude the build directory, to avoid picking them up for execution
                 // avoidance.
                 tree.exclude("**/build/**/*")
-              }
+              },
           )
           val shouldRunTask = onlyIf(packageJson)
           task.onlyIf { shouldRunTask }
@@ -413,7 +413,7 @@ class ReactPlugin : Plugin<Project> {
     project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java).apply {
       onVariants(selector().all()) { variant ->
         variant.sources.java?.addStaticSourceDirectory(
-            generatedAutolinkingJavaDir.get().asFile.absolutePath
+            generatedAutolinkingJavaDir.get().asFile.absolutePath,
         )
       }
     }
@@ -466,7 +466,7 @@ class ReactPlugin : Plugin<Project> {
   }
 
   internal fun getPureCxxCodegenDependencies(
-      autolinkingFile: File
+      autolinkingFile: File,
   ): List<ModelAutolinkingDependenciesJson> {
     val model = JsonUtils.fromAutolinkingConfigJson(autolinkingFile)
     return model?.dependencies?.values?.filter { dependency ->

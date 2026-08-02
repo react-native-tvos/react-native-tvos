@@ -145,7 +145,7 @@ public class ReactImageView(
                       imageSource?.source,
                       loaded,
                       total,
-                  )
+                  ),
               )
             }
 
@@ -154,7 +154,7 @@ public class ReactImageView(
                 return
               }
               eventDispatcher.dispatchEvent(
-                  createLoadStartEvent(UIManagerHelper.getSurfaceId(this@ReactImageView), getId())
+                  createLoadStartEvent(UIManagerHelper.getSurfaceId(this@ReactImageView), getId()),
               )
             }
 
@@ -171,10 +171,10 @@ public class ReactImageView(
                         imageSource?.source,
                         imageInfo.width,
                         imageInfo.height,
-                    )
+                    ),
                 )
                 eventDispatcher.dispatchEvent(
-                    createLoadEndEvent(UIManagerHelper.getSurfaceId(this@ReactImageView), getId())
+                    createLoadEndEvent(UIManagerHelper.getSurfaceId(this@ReactImageView), getId()),
                 )
               }
             }
@@ -188,7 +188,7 @@ public class ReactImageView(
                       UIManagerHelper.getSurfaceId(this@ReactImageView),
                       getId(),
                       throwable,
-                  )
+                  ),
               )
             }
           }
@@ -377,7 +377,7 @@ public class ReactImageView(
         if (downloadListener != null) {
           val eventDispatcher = UIManagerHelper.getEventDispatcher(context as ReactContext)
           eventDispatcher?.dispatchEvent(
-              createErrorEvent(UIManagerHelper.getSurfaceId(this), id, e)
+              createErrorEvent(UIManagerHelper.getSurfaceId(this), id, e),
           )
         }
       }
@@ -641,7 +641,7 @@ public class ReactImageView(
     private fun buildHierarchy(context: Context) =
         GenericDraweeHierarchyBuilder(context.resources)
             .setRoundingParams(
-                RoundingParams.fromCornersRadius(0f).apply { setPaintFilterBitmap(true) }
+                RoundingParams.fromCornersRadius(0f).apply { setPaintFilterBitmap(true) },
             )
             .build()
   }

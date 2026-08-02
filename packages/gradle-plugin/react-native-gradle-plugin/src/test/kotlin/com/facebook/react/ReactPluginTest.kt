@@ -27,9 +27,8 @@ class ReactPluginTest {
     val withoutCodegenConfig = createPackageWithoutCodegenConfig("without-codegen-config")
     val missingNonPureCxxPackage = File(tempFolder.root, "missing-non-pure-cxx-package")
 
-    val autolinkingFile =
-        createAutolinkingFile(
-            """
+    val autolinkingFile = createAutolinkingFile(
+        """
             {
               "reactNativeVersion": "1000.0.0",
               "dependencies": {
@@ -106,8 +105,8 @@ class ReactPluginTest {
               }
             }
             """
-                .trimIndent()
-        )
+            .trimIndent(),
+    )
 
     val result = ReactPlugin().getPureCxxCodegenDependencies(autolinkingFile)
 

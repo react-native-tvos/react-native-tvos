@@ -26,11 +26,11 @@ fun getListReactAndroidProperty(name: String) = reactAndroidProperties.getProper
 
 apiValidation {
   ignoredPackages.addAll(
-      getListReactAndroidProperty("binaryCompatibilityValidator.ignoredPackages")
+      getListReactAndroidProperty("binaryCompatibilityValidator.ignoredPackages"),
   )
   ignoredClasses.addAll(getListReactAndroidProperty("binaryCompatibilityValidator.ignoredClasses"))
   nonPublicMarkers.addAll(
-      getListReactAndroidProperty("binaryCompatibilityValidator.nonPublicMarkers")
+      getListReactAndroidProperty("binaryCompatibilityValidator.nonPublicMarkers"),
   )
   validationDisabled =
       reactAndroidProperties
@@ -86,12 +86,12 @@ tasks.register("clean", Delete::class.java) {
   delete(rootProject.file("./packages/react-native/sdks/download/"))
   delete(rootProject.file("./packages/react-native/sdks/hermes/"))
   delete(
-      rootProject.file("./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/arm64-v8a/")
+      rootProject.file("./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/arm64-v8a/"),
   )
   delete(
       rootProject.file(
-          "./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/armeabi-v7a/"
-      )
+          "./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/armeabi-v7a/",
+      ),
   )
   delete(rootProject.file("./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/x86/"))
   delete(rootProject.file("./packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/x86_64/"))
@@ -137,7 +137,7 @@ if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolea
 
   if (hermesCompilerVersion == "0.0.0") {
     throw RuntimeException(
-        "Trying to use Hermes Nightly but hermes-compiler version is not specified"
+        "Trying to use Hermes Nightly but hermes-compiler version is not specified",
     )
   }
 
@@ -156,7 +156,7 @@ if (project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolea
       That's fine for local development, but you should not commit this change.
       ********************************************************************************
       """
-          .trimIndent()
+          .trimIndent(),
   )
 }
 

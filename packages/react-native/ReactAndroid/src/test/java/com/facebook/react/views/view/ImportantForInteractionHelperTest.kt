@@ -43,7 +43,7 @@ class ImportantForInteractionHelperTest {
     ReactNativeFeatureFlags.override(
         object : ReactNativeFeatureFlagsDefaults() {
           override fun syncAndroidClipBoundsWithOverflow(): Boolean = true
-        }
+        },
     )
     context = Robolectric.buildActivity(Activity::class.java).create().get()
   }

@@ -43,7 +43,7 @@ import org.robolectric.shadow.api.Shadow
             ShadowNativeLoader::class,
             ShadowPerformanceTracer::class,
             ShadowFabricUIManagerBinding::class,
-        ]
+        ],
 )
 class FabricUIManagerPullModelTest {
 

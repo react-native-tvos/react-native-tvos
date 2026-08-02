@@ -104,7 +104,7 @@ val downloadHermes by
       src(
           providers.provider {
             "https://github.com/facebook/hermes/tarball/${hermesVersionProvider.get()}"
-          }
+          },
       )
       onlyIfModified(true)
       overwrite(true)
@@ -140,7 +140,7 @@ val installCMake by
     tasks.registering(CustomExecTask::class) {
       onlyIfProvidedPathDoesNotExists.set(cmakePath)
       commandLine(
-          windowsAwareCommandLine(getSDKManagerPath(), "--install", "cmake;${cmakeVersion}")
+          windowsAwareCommandLine(getSDKManagerPath(), "--install", "cmake;${cmakeVersion}"),
       )
     }
 
@@ -412,7 +412,7 @@ android {
           listOf(
               "$hermesDir/lib/Platform/Intl/java",
               "$hermesDir/lib/Platform/Unicode/java",
-          )
+          ),
       )
     }
   }

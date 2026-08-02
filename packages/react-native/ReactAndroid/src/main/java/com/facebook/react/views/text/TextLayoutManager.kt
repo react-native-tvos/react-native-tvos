@@ -152,7 +152,7 @@ internal object TextLayoutManager {
     }
 
     return TextAttributeProps.getLayoutDirection(
-        textAttributes.getString(TextAttributeProps.TA_KEY_LAYOUT_DIRECTION.toInt())
+        textAttributes.getString(TextAttributeProps.TA_KEY_LAYOUT_DIRECTION.toInt()),
     ) == LayoutDirection.RTL
   }
 
@@ -259,7 +259,7 @@ internal object TextLayoutManager {
           TextAttributeProps.fromMapBuffer(fragment.getMapBuffer(FR_KEY_TEXT_ATTRIBUTES))
 
       sb.append(
-          TextTransform.apply(fragment.getString(FR_KEY_STRING), textAttributes.textTransform)
+          TextTransform.apply(fragment.getString(FR_KEY_STRING), textAttributes.textTransform),
       )
 
       val end = sb.length
@@ -273,7 +273,7 @@ internal object TextLayoutManager {
                 sb.length - 1,
                 sb.length,
                 TextInlineViewPlaceholderSpan(reactTag, width.toInt(), height.toInt()),
-            )
+            ),
         )
       } else if (end >= start) {
         val roleIsLink =
@@ -306,7 +306,7 @@ internal object TextLayoutManager {
         }
         if (!textAttributes.letterSpacing.isNaN()) {
           ops.add(
-              SetSpanOperation(start, end, CustomLetterSpacingSpan(textAttributes.letterSpacing))
+              SetSpanOperation(start, end, CustomLetterSpacingSpan(textAttributes.letterSpacing)),
           )
         }
         ops.add(SetSpanOperation(start, end, ReactAbsoluteSizeSpan(textAttributes.fontSize)))
@@ -327,7 +327,7 @@ internal object TextLayoutManager {
                       assets,
                       fontWeightAdjustment,
                   ),
-              )
+              ),
           )
         }
         if (textAttributes.isUnderlineTextDecorationSet) {
@@ -339,7 +339,7 @@ internal object TextLayoutManager {
                       textAttributes.textDecorationColor,
                       textAttributes.textDecorationStyle,
                   ),
-              )
+              ),
           )
         }
         if (textAttributes.isLineThroughTextDecorationSet) {
@@ -351,7 +351,7 @@ internal object TextLayoutManager {
                       textAttributes.textDecorationColor,
                       textAttributes.textDecorationStyle,
                   ),
-              )
+              ),
           )
         }
         if (
@@ -370,7 +370,7 @@ internal object TextLayoutManager {
                       textAttributes.textShadowRadius,
                       textAttributes.textShadowColor,
                   ),
-              )
+              ),
           )
         }
         if (!textAttributes.lineHeight.isNaN()) {
@@ -467,7 +467,7 @@ internal object TextLayoutManager {
                   } else {
                     Double.NaN
                   },
-          )
+          ),
       )
     }
 
@@ -894,7 +894,7 @@ internal object TextLayoutManager {
               assets,
           )
       paint.setTypeface(
-          ReactTypefaceUtils.applyFontWeightAdjustment(typeface, fontWeightAdjustment)
+          ReactTypefaceUtils.applyFontWeightAdjustment(typeface, fontWeightAdjustment),
       )
 
       if (
@@ -999,7 +999,7 @@ internal object TextLayoutManager {
 
     val textBreakStrategy =
         TextAttributeProps.getTextBreakStrategy(
-            paragraphAttributes.getString(PA_KEY_TEXT_BREAK_STRATEGY)
+            paragraphAttributes.getString(PA_KEY_TEXT_BREAK_STRATEGY),
         )
     val includeFontPadding =
         if (paragraphAttributes.contains(PA_KEY_INCLUDE_FONT_PADDING))
@@ -1007,7 +1007,7 @@ internal object TextLayoutManager {
         else DEFAULT_INCLUDE_FONT_PADDING
     val hyphenationFrequency =
         TextAttributeProps.getHyphenationFrequency(
-            paragraphAttributes.getString(PA_KEY_HYPHENATION_FREQUENCY)
+            paragraphAttributes.getString(PA_KEY_HYPHENATION_FREQUENCY),
         )
     val adjustFontSizeToFit =
         if (paragraphAttributes.contains(PA_KEY_ADJUST_FONT_SIZE_TO_FIT))
@@ -1020,7 +1020,7 @@ internal object TextLayoutManager {
     val ellipsizeMode =
         if (paragraphAttributes.contains(PA_KEY_ELLIPSIZE_MODE))
             TextAttributeProps.getEllipsizeMode(
-                paragraphAttributes.getString(PA_KEY_ELLIPSIZE_MODE)
+                paragraphAttributes.getString(PA_KEY_ELLIPSIZE_MODE),
             )
         else null
 

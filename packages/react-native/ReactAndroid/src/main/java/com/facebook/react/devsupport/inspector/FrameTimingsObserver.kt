@@ -153,7 +153,7 @@ internal class FrameTimingsObserver(
   ) {
     CoroutineScope(Dispatchers.Default).launch {
       onFrameTimingSequence(
-          FrameTimingSequence(frameId, threadId, beginTimestamp, endTimestamp, screenshot)
+          FrameTimingSequence(frameId, threadId, beginTimestamp, endTimestamp, screenshot),
       )
     }
   }

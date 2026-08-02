@@ -53,7 +53,7 @@ public constructor(
       replaceWith =
           ReplaceWith(
               expression =
-                  "ReactImageManager(draweeControllerBuilder, globalImageLoadListener, callerContextFactory)"
+                  "ReactImageManager(draweeControllerBuilder, globalImageLoadListener, callerContextFactory)",
           ),
   )
   public constructor(
@@ -73,7 +73,7 @@ public constructor(
       replaceWith =
           ReplaceWith(
               expression =
-                  "ReactImageManager(draweeControllerBuilder, globalImageLoadListener, callerContextFactory)"
+                  "ReactImageManager(draweeControllerBuilder, globalImageLoadListener, callerContextFactory)",
           ),
   )
   public constructor(
@@ -127,7 +127,7 @@ public constructor(
           callerContextFactory.getOrCreateCallerContext(
               (view.context as ThemedReactContext).moduleName,
               analyticTag,
-          )
+          ),
       )
     }
   }

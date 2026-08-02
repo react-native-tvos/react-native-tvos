@@ -74,12 +74,12 @@ internal class RNTesterApplication : Application(), ReactApplication {
                                   ),
                           )
                         }
-                  }
+                  },
               )
               add(
                   object : ReactPackage, ViewManagerOnDemandReactPackage {
                     override fun getViewManagerNames(
-                        reactContext: ReactApplicationContext
+                        reactContext: ReactApplicationContext,
                     ) = listOf(
                         "RNTMyNativeView",
                         "RNTMyLegacyNativeView",
@@ -87,7 +87,7 @@ internal class RNTesterApplication : Application(), ReactApplication {
                     )
 
                     override fun createViewManagers(
-                        reactContext: ReactApplicationContext
+                        reactContext: ReactApplicationContext,
                     ): List<ViewManager<*, *>> = listOf(
                         MyNativeViewManager(),
                         MyLegacyViewManager(reactContext),
@@ -104,7 +104,7 @@ internal class RNTesterApplication : Application(), ReactApplication {
                           "RNTReportFullyDrawnView" -> ReportFullyDrawnViewManager()
                           else -> null
                         }
-                  }
+                  },
               )
             }
 

@@ -68,7 +68,7 @@ val reactNativeDependenciesHeadersDebugArtifact: PublishArtifact =
 
 val reactNativeDependenciesHeadersReleaseArtifactFile: RegularFile =
     layout.projectDirectory.file(
-        "artifacts/ReactNativeDependenciesHeadersRelease.xcframework.tar.gz"
+        "artifacts/ReactNativeDependenciesHeadersRelease.xcframework.tar.gz",
     )
 val reactNativeDependenciesHeadersReleaseArtifact: PublishArtifact =
     artifacts.add("externalArtifacts", reactNativeDependenciesHeadersReleaseArtifactFile) {

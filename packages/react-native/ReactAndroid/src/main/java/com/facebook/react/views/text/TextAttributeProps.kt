@@ -464,7 +464,7 @@ public class TextAttributeProps private constructor() {
                       props =
                           if (effectMap.contains(TE_KEY_PROPS)) effectMap.getString(TE_KEY_PROPS)
                           else null,
-                  )
+                  ),
               )
             }
             result.textEffects = list
@@ -507,7 +507,7 @@ public class TextAttributeProps private constructor() {
       result.textDecorationStyle =
           TextDecorationStyle.fromString(getStringProp(props, "textDecorationStyle"))
       result.setTextShadowOffset(
-          if (props.hasKey(PROP_SHADOW_OFFSET)) props.getMap(PROP_SHADOW_OFFSET) else null
+          if (props.hasKey(PROP_SHADOW_OFFSET)) props.getMap(PROP_SHADOW_OFFSET) else null,
       )
       result.textShadowRadius = getFloatProp(props, PROP_SHADOW_RADIUS, 1f)
       result.textShadowColor = getIntProp(props, PROP_SHADOW_COLOR, DEFAULT_TEXT_SHADOW_COLOR)

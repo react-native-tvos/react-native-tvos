@@ -203,7 +203,7 @@ public open class ReactFragment : Fragment(), PermissionAwareActivity {
     protected const val ARG_FABRIC_ENABLED: String = "arg_fabric_enabled"
 
     @Deprecated(
-        "We will remove this and use a different solution for handling Fragment lifecycle events."
+        "We will remove this and use a different solution for handling Fragment lifecycle events.",
     )
     protected const val ARG_DISABLE_HOST_LIFECYCLE_EVENTS: String =
         "arg_disable_host_lifecycle_events"

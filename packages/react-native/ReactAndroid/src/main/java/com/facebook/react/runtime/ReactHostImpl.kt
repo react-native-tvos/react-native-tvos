@@ -517,11 +517,13 @@ public class ReactHostImpl(
       onDestroyFinished: (instanceDestroyedSuccessfully: Boolean) -> Unit,
   ): TaskInterface<Void> {
     val destroyTask = destroy(reason, ex) as Task<Void>
-    return destroyTask.continueWith({ task: Task<Void> ->
-      val instanceDestroyedSuccessfully = task.isCompleted() && !task.isFaulted()
-      onDestroyFinished(instanceDestroyedSuccessfully)
-      null
-    })
+    return destroyTask.continueWith(
+        { task: Task<Void> ->
+          val instanceDestroyedSuccessfully = task.isCompleted() && !task.isFaulted()
+          onDestroyFinished(instanceDestroyedSuccessfully)
+          null
+        },
+    )
   }
 
   /**
@@ -606,7 +608,7 @@ public class ReactHostImpl(
       ReactSoftExceptionLogger.logSoftExceptionVerbose(
           TAG,
           ReactNoCrashSoftException(
-              "getNativeModule(UIManagerModule.class) cannot be called when the bridge is disabled"
+              "getNativeModule(UIManagerModule.class) cannot be called when the bridge is disabled",
           ),
       )
     }
@@ -1133,7 +1135,7 @@ public class ReactHostImpl(
       if (devSupportManager.bundleFilePath != null) {
         return try {
           Task.forResult(
-              JSBundleLoader.createFileLoader(checkNotNull(devSupportManager.bundleFilePath))
+              JSBundleLoader.createFileLoader(checkNotNull(devSupportManager.bundleFilePath)),
           )
         } catch (e: Exception) {
           Task.forError(e)
@@ -1198,7 +1200,7 @@ public class ReactHostImpl(
     val asyncDevSupportManager = devSupportManager as DevSupportManagerBase
     val bundleURL =
         asyncDevSupportManager.devServerHelper.getDevServerBundleURL(
-            checkNotNull(asyncDevSupportManager.jsAppBundleName)
+            checkNotNull(asyncDevSupportManager.jsAppBundleName),
         )
 
     asyncDevSupportManager.reloadJSFromServer(
@@ -1564,23 +1566,25 @@ public class ReactHostImpl(
             },
             bgExecutor,
         )
-        .continueWith<Void>({ task: Task<ReactInstance> ->
-          if (task.isFaulted()) {
-            val fault = checkNotNull(task.getError())
-            raiseSoftException(
-                method,
-                ("React destruction failed. ReactInstance task faulted. Fault reason: ${fault.message}. Destroy reason: $reason"),
-                task.getError(),
-            )
-          }
-          if (task.isCancelled()) {
-            raiseSoftException(
-                method,
-                "React destruction failed. ReactInstance task cancelled. Destroy reason: $reason",
-            )
-          }
-          null
-        })
+        .continueWith<Void>(
+            { task: Task<ReactInstance> ->
+              if (task.isFaulted()) {
+                val fault = checkNotNull(task.getError())
+                raiseSoftException(
+                    method,
+                    ("React destruction failed. ReactInstance task faulted. Fault reason: ${fault.message}. Destroy reason: $reason"),
+                    task.getError(),
+                )
+              }
+              if (task.isCancelled()) {
+                raiseSoftException(
+                    method,
+                    "React destruction failed. ReactInstance task cancelled. Destroy reason: $reason",
+                )
+              }
+              null
+            },
+        )
         .also { destroyTask = it }
   }
 
@@ -1617,7 +1621,7 @@ public class ReactHostImpl(
               frameTimingsObserver = null
             }
           }
-        }
+        },
     )
 
     return inspectorTarget

@@ -436,7 +436,7 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
   }
 
   internal open fun setMaintainVisibleContentPosition(
-      config: MaintainVisibleScrollPositionHelper.Config?
+      config: MaintainVisibleScrollPositionHelper.Config?,
   ) {
     if (config != null && maintainVisibleContentPositionHelper == null) {
       val helper = MaintainVisibleScrollPositionHelper(this, true)

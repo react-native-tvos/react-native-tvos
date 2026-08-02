@@ -160,7 +160,7 @@ public object ReactScrollViewHelper {
               contentView.height,
               scrollView.width,
               scrollView.height,
-          )
+          ),
       )
       if (scrollEventType == ScrollEventType.SCROLL) {
         scrollView.lastScrollDispatchTime = now
@@ -495,7 +495,7 @@ public object ReactScrollViewHelper {
               }
 
               override fun onAnimationRepeat(animator: Animator) = Unit
-            }
+            },
         )
   }
 
@@ -519,7 +519,7 @@ public object ReactScrollViewHelper {
               }
 
               override fun onAnimationRepeat(animator: Animator) = Unit
-            }
+            },
         )
   }
 
