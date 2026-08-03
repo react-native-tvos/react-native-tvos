@@ -12,8 +12,10 @@ import android.graphics.PorterDuff
 import com.facebook.common.logging.FLog
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.controller.AbstractDraweeControllerBuilder
+import com.facebook.react.bridge.Dynamic
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableType
 import com.facebook.react.common.ReactConstants
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.BackgroundStyleApplicator
@@ -133,15 +135,43 @@ public constructor(
   }
 
   @ReactProp(name = "defaultSource")
+  public fun setDefaultSource(view: ReactImageView, source: Dynamic) {
+    view.setDefaultSource(imageSourceUri(source))
+  }
+
+  @Deprecated(
+      "Retained only for binary/source compatibility; the defaultSource prop is now delivered " +
+          "through the Dynamic overload."
+  )
   public fun setDefaultSource(view: ReactImageView, source: String?) {
     view.setDefaultSource(source)
   }
 
   // In JS this is Image.props.loadingIndicatorSource.uri
   @ReactProp(name = "loadingIndicatorSrc")
+  public fun setLoadingIndicatorSource(view: ReactImageView, source: Dynamic) {
+    view.setLoadingIndicatorSource(imageSourceUri(source))
+  }
+
+  @Deprecated(
+      "Retained only for binary/source compatibility; the loadingIndicatorSrc prop is now " +
+          "delivered through the Dynamic overload."
+  )
   public fun setLoadingIndicatorSource(view: ReactImageView, source: String?) {
     view.setLoadingIndicatorSource(source)
   }
+
+  /**
+   * The legacy raw-props path delivers these props as a plain uri string, but the Props 2.0 diffing
+   * path (`ImageProps::getDiffProps`) serializes the full ImageSource object. Accept both formats
+   * so either pipeline (and either side of a JS/native version skew) keeps working.
+   */
+  private fun imageSourceUri(source: Dynamic): String? =
+      when (source.type) {
+        ReadableType.String -> source.asString()
+        ReadableType.Map -> source.asMap()?.getString("uri")
+        else -> null
+      }
 
   @ReactProp(name = "borderColor", customType = "Color")
   public fun setBorderColor(view: ReactImageView, borderColor: Int?) {
