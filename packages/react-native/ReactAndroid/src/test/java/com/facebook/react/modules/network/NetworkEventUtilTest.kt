@@ -34,7 +34,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 @Config(
-    shadows = [ShadowArguments::class, ShadowSoLoader::class, ShadowInspectorNetworkReporter::class]
+    shadows =
+        [ShadowArguments::class, ShadowSoLoader::class, ShadowInspectorNetworkReporter::class],
 )
 @RunWith(RobolectricTestRunner::class)
 class NetworkEventUtilTest {

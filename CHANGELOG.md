@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.87.0-rc.3
+
+### Breaking
+
+#### iOS specific
+
+- Ship a version-stamped ReactNativeVersion.h in the prebuilt iOS core artifacts instead of the 1000.0.0 dev sentinel ([95df50034b](https://github.com/react/react-native/commit/95df50034ba5ce11f4b70bbb6bf692e3691297dc) by [@chrfalch](https://github.com/chrfalch))
+
+### Fixed
+
+- **Strict TypeScript API**: Optional property types are now widened to explicitly include `| undefined` for `exactOptionalPropertyTypes` compatibility ([0fc76bb527](https://github.com/react/react-native/commit/0fc76bb5278098649672e0407a3de580b8706fa4) by [@zeyap](https://github.com/zeyap))
+- Fix `parentNode`/`parentElement` returning the document instead of the containing element for `<Modal>` and other nested root host views, which severed capture/bubble event propagation to ancestors rendered above them ([e410ff5471](https://github.com/react/react-native/commit/e410ff547179f5c7ad198744f7be88117ccdef0c) by [@rubennorte](https://github.com/rubennorte))
+
+#### iOS specific
+
+- Fix Swift C++-interop build failure (implicit copy constructor of TraceRecordingState/HostTracingProfile) for libraries using cxx interop with prebuilt React Native core ([38611186f5](https://github.com/react/react-native/commit/38611186f5867bd578a269872986a5753c8b41fe) by [@chrfalch](https://github.com/chrfalch))
+
+
 ## v0.87.0-rc.2
 
 ### Breaking
@@ -375,8 +393,23 @@
 
 #### Failed to parse
 
+## v0.86.2
 
+### Fixed
 
+- **Layout:** Fixed `display: contents` nodes having `hasNewLayout` set incorrectly ([36f69eff0d](https://github.com/react/react-native/commit/36f69eff0d11510f4f16075d9cfbbe474a0683be) by [@j-piasecki](https://github.com/j-piasecki))
+
+#### Android
+
+- **Runtime:** Use explicit `ReactInstanceManager.mHasStartedDestroyingLock` instead of using `ReactInstanceManager.mHasStartedDestroying` ([cdfba520fa](https://github.com/react/react-native/commit/cdfba520fa56a6b3dbb133d9c8060e4e698bc8a0) by [@jingjing2222](https://github.com/jingjing2222)) 
+- **Runtime:** Do not synchronize on `java.lang.Boolean`. ([@821045a24f](https://github.com/react/react-native/commit/821045a24f07f798351c72d23a01720a2123049d) by [Yqwed](https://github.com/yqwed))
+### Changed
+
+- **Hermes:** Bump Hermes V1 to 250829098.0.16 ([95538111bf](https://github.com/react/react-native/commit/95538111bf24b5d5269724714e415b38b6395d1a) by [@gabrieldonadel](https://github.com/gabrieldonadel))
+
+## v0.86.1
+
+- This release got burned because of an issue with Maven
 
 ## v0.86.0
 

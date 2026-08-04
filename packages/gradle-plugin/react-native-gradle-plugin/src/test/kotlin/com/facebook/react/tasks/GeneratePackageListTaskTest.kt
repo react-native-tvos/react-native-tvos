@@ -79,7 +79,7 @@ class GeneratePackageListTaskTest {
                   // @react-native/another-package
                   new com.facebook.react.AnotherPackage()
             """
-                .trimIndent()
+                .trimIndent(),
         )
   }
 
@@ -139,10 +139,10 @@ class GeneratePackageListTaskTest {
                                 name = "a-dependency",
                                 platforms =
                                     ModelAutolinkingDependenciesPlatformJson(android = null),
-                            )
+                            ),
                     ),
                 project = null,
-            )
+            ),
         )
     assertThat(result)
         .isEqualTo(emptyMap<String, ModelAutolinkingDependenciesPlatformAndroidJson>())
@@ -170,10 +170,10 @@ class GeneratePackageListTaskTest {
                                 name = "a-dependency",
                                 platforms =
                                     ModelAutolinkingDependenciesPlatformJson(android = android),
-                            )
+                            ),
                     ),
                 project = null,
-            )
+            ),
         )
     assertThat(result.entries.size).isEqualTo(1)
     assertThat(result["a-dependency"]).isEqualTo(android)
@@ -202,10 +202,10 @@ class GeneratePackageListTaskTest {
                                 name = "a-pure-cxx-dependency",
                                 platforms =
                                     ModelAutolinkingDependenciesPlatformJson(android = android),
-                            )
+                            ),
                     ),
                 project = null,
-            )
+            ),
         )
     assertThat(result)
         .isEqualTo(emptyMap<String, ModelAutolinkingDependenciesPlatformAndroidJson>())
@@ -281,7 +281,7 @@ class GeneratePackageListTaskTest {
               }
             }
             """
-                .trimIndent()
+                .trimIndent(),
         )
   }
 
@@ -360,7 +360,7 @@ class GeneratePackageListTaskTest {
               }
             }
             """
-                .trimIndent()
+                .trimIndent(),
         )
   }
 

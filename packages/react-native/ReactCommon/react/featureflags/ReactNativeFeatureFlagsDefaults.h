@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dfe0d8294d15864ffdbd6fe5f70bed8f>>
+ * @generated SignedSource<<9d32ebc2e451c208a531f224f99c752b>>
  */
 
 /**
@@ -143,6 +143,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableImageTransparentTintColor() override {
+    return false;
+  }
+
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     return false;
   }
@@ -172,6 +176,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableModuleArgumentNSNullConversionIOS() override {
+    return false;
+  }
+
+  bool enableMountingCoordinatorPullModelAndroid() override {
     return false;
   }
 

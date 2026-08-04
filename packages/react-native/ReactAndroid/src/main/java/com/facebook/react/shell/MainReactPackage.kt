@@ -97,7 +97,7 @@ import com.facebook.react.views.virtual.view.ReactVirtualViewManager
             ToastModule::class,
             VibrationModule::class,
             WebSocketModule::class,
-        ]
+        ],
 )
 @OptIn(UnstableReactNativeAPI::class)
 public class MainReactPackage
@@ -138,7 +138,7 @@ constructor(private val config: MainPackageConfig? = null) :
 
   @Suppress("DEPRECATION")
   override fun createViewManagers(
-      reactContext: ReactApplicationContext
+      reactContext: ReactApplicationContext,
   ): List<ViewManager<*, *>> = listOf(
       ReactDrawerLayoutManager(),
       ReactHorizontalScrollViewManager(),
@@ -224,7 +224,7 @@ constructor(private val config: MainPackageConfig? = null) :
     try {
       val reactModuleInfoProviderClass =
           ClassFinder.findClass(
-              "com.facebook.react.shell.MainReactPackage$\$ReactModuleInfoProvider"
+              "com.facebook.react.shell.MainReactPackage$\$ReactModuleInfoProvider",
           )
       @Suppress("DEPRECATION")
       return reactModuleInfoProviderClass?.newInstance() as? ReactModuleInfoProvider

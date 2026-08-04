@@ -14,9 +14,12 @@ const {
   exists,
   extractXCFramework,
   findFirst,
+  firstExistingUrl,
   formatBytes,
   formatSpeed,
-  hermesReleaseUrl,
+  hermesReleaseUrls,
+  mavenRepositoryUrls,
+  reactNativeMavenMirrorEnabled,
   resolveCacheSlotVersion,
   resolveHermesArtifact,
   resolveLatestV1Version,
@@ -24,14 +27,41 @@ const {
   resolveRNCoreArtifact,
   resolveRNDepsArtifact,
   resolveSnapshotUrl,
-  rnCoreReleaseUrl,
-  rnDepsReleaseUrl,
+  rnCoreReleaseUrls,
+  rnDepsReleaseUrls,
   validateArtifactsCache,
 } = require('../download-spm-artifacts');
 const {execSync} = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+
+// Repository-selection env vars are read at call time; clear them per test so
+// results don't depend on the host machine, and restore afterwards.
+const REPO_ENV_KEYS = [
+  'ENTERPRISE_REPOSITORY',
+  'RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED',
+];
+let savedRepoEnv = {};
+beforeEach(() => {
+  savedRepoEnv = {};
+  for (const key of REPO_ENV_KEYS) {
+    savedRepoEnv[key] = process.env[key];
+    delete process.env[key];
+  }
+});
+afterEach(() => {
+  for (const key of REPO_ENV_KEYS) {
+    if (savedRepoEnv[key] !== undefined) {
+      process.env[key] = savedRepoEnv[key];
+    } else {
+      delete process.env[key];
+    }
+  }
+});
+
+const MIRROR = 'https://repo.reactnative.dev/maven2';
+const CENTRAL = 'https://repo1.maven.org/maven2';
 
 // Shared fetch router used by the URL-resolution tests below. Each key is a
 // URL substring; the matched value describes the response. Anything unmatched
@@ -193,49 +223,138 @@ describe('resolveHermesArtifact', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Maven URL builders — pure string composition.
+// Repository selection — RN Maven mirror first, Maven Central as fallback;
+// ENTERPRISE_REPOSITORY replaces both.
+// ---------------------------------------------------------------------------
+
+describe('mavenRepositoryUrls', () => {
+  it('prefers the RN Maven mirror and keeps Maven Central as fallback by default', () => {
+    expect(reactNativeMavenMirrorEnabled()).toBe(true);
+    expect(mavenRepositoryUrls()).toEqual([MIRROR, CENTRAL]);
+  });
+
+  it('stays enabled when RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED=true', () => {
+    process.env.RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED = 'true';
+    expect(reactNativeMavenMirrorEnabled()).toBe(true);
+    expect(mavenRepositoryUrls()).toEqual([MIRROR, CENTRAL]);
+  });
+
+  it.each(['false', 'FALSE', '0'])(
+    'drops the mirror when RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED=%s',
+    value => {
+      process.env.RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED = value;
+      expect(reactNativeMavenMirrorEnabled()).toBe(false);
+      expect(mavenRepositoryUrls()).toEqual([CENTRAL]);
+    },
+  );
+
+  it('ENTERPRISE_REPOSITORY replaces mirror AND Central, stripping trailing slashes', () => {
+    process.env.ENTERPRISE_REPOSITORY = 'https://maven.internal.example//';
+    expect(mavenRepositoryUrls()).toEqual(['https://maven.internal.example']);
+  });
+
+  it.each(['', ' ', '\t\n'])(
+    'ignores a blank ENTERPRISE_REPOSITORY (%j) and keeps the defaults',
+    value => {
+      process.env.ENTERPRISE_REPOSITORY = value;
+      expect(mavenRepositoryUrls()).toEqual([MIRROR, CENTRAL]);
+    },
+  );
+
+  it('trims surrounding whitespace from ENTERPRISE_REPOSITORY', () => {
+    process.env.ENTERPRISE_REPOSITORY = '  https://maven.internal.example/  ';
+    expect(mavenRepositoryUrls()).toEqual(['https://maven.internal.example']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Maven URL builders — one candidate per repository, mirror first.
 // ---------------------------------------------------------------------------
 
 describe('release URL builders', () => {
-  it('rnCoreReleaseUrl points at the reactnative-core classifier on Maven Central', () => {
-    const url = rnCoreReleaseUrl('0.85.0', 'debug');
-    expect(url).toBe(
-      'https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.85.0/' +
-        'react-native-artifacts-0.85.0-reactnative-core-debug.tar.gz',
+  it('rnCoreReleaseUrls builds a candidate per repository for the reactnative-core classifier', () => {
+    const suffix =
+      '/com/facebook/react/react-native-artifacts/0.85.0/' +
+      'react-native-artifacts-0.85.0-reactnative-core-debug.tar.gz';
+    expect(rnCoreReleaseUrls('0.85.0', 'debug')).toEqual([
+      MIRROR + suffix,
+      CENTRAL + suffix,
+    ]);
+  });
+
+  it('rnDepsReleaseUrls points at the reactnative-dependencies classifier', () => {
+    const urls = rnDepsReleaseUrls('0.85.0', 'release');
+    expect(urls).toHaveLength(2);
+    for (const url of urls) {
+      expect(url).toContain('react-native-artifacts/0.85.0/');
+      expect(url).toContain('reactnative-dependencies-release.tar.gz');
+    }
+  });
+
+  it('hermesReleaseUrls points at the hermes-ios coordinate', () => {
+    const suffix =
+      '/com/facebook/hermes/hermes-ios/0.13.0/' +
+      'hermes-ios-0.13.0-hermes-ios-debug.tar.gz';
+    expect(hermesReleaseUrls('0.13.0', 'debug')).toEqual([
+      MIRROR + suffix,
+      CENTRAL + suffix,
+    ]);
+  });
+
+  it('honors ENTERPRISE_REPOSITORY as the only release base URL', () => {
+    process.env.ENTERPRISE_REPOSITORY = 'https://maven.internal.example';
+    const urls = rnCoreReleaseUrls('0.85.0', 'debug');
+    expect(urls).toHaveLength(1);
+    expect(urls[0]).toContain(
+      'https://maven.internal.example/com/facebook/react/',
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// firstExistingUrl — ordered candidate probing.
+// ---------------------------------------------------------------------------
+
+describe('firstExistingUrl', () => {
+  let origFetch;
+  beforeEach(() => {
+    origFetch = globalThis.fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = origFetch;
+  });
+
+  it('returns the first candidate when it exists, without probing the rest', async () => {
+    globalThis.fetch = jest.fn(async () => ({status: 200}));
+    const url = await firstExistingUrl(['https://a/x', 'https://b/x']);
+    expect(url).toBe('https://a/x');
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls through to the next candidate on a miss', async () => {
+    globalThis.fetch = jest.fn(async u =>
+      String(u).startsWith('https://b/') ? {status: 200} : {status: 404},
+    );
+    expect(await firstExistingUrl(['https://a/x', 'https://b/x'])).toBe(
+      'https://b/x',
     );
   });
 
-  it('rnDepsReleaseUrl points at the reactnative-dependencies classifier', () => {
-    const url = rnDepsReleaseUrl('0.85.0', 'release');
-    expect(url).toContain('react-native-artifacts/0.85.0/');
-    expect(url).toContain('reactnative-dependencies-release.tar.gz');
-  });
-
-  it('hermesReleaseUrl points at the hermes-ios coordinate', () => {
-    const url = hermesReleaseUrl('0.13.0', 'debug');
-    expect(url).toBe(
-      'https://repo1.maven.org/maven2/com/facebook/hermes/hermes-ios/0.13.0/' +
-        'hermes-ios-0.13.0-hermes-ios-debug.tar.gz',
-    );
-  });
-
-  it('honors ENTERPRISE_REPOSITORY for the release base URL', () => {
-    jest.isolateModules(() => {
-      const prev = process.env.ENTERPRISE_REPOSITORY;
-      process.env.ENTERPRISE_REPOSITORY = 'https://maven.internal.example';
-      try {
-        const mod = require('../download-spm-artifacts');
-        expect(mod.rnCoreReleaseUrl('0.85.0', 'debug')).toContain(
-          'https://maven.internal.example/com/facebook/react/',
-        );
-      } finally {
-        if (prev !== undefined) {
-          process.env.ENTERPRISE_REPOSITORY = prev;
-        } else {
-          delete process.env.ENTERPRISE_REPOSITORY;
-        }
+  it('falls through to the next candidate when the probe errors (outage)', async () => {
+    globalThis.fetch = jest.fn(async u => {
+      if (String(u).startsWith('https://a/')) {
+        throw new Error('mirror down');
       }
+      return {status: 200};
     });
+    expect(await firstExistingUrl(['https://a/x', 'https://b/x'])).toBe(
+      'https://b/x',
+    );
+  });
+
+  it('returns null when no candidate exists', async () => {
+    globalThis.fetch = jest.fn(async () => ({status: 404}));
+    expect(await firstExistingUrl(['https://a/x', 'https://b/x'])).toBeNull();
   });
 });
 
@@ -425,14 +544,59 @@ describe('resolveRNCoreArtifact', () => {
     fs.rmSync(tempDir, {recursive: true, force: true});
   });
 
-  it('uses the stable release URL when it exists', async () => {
+  it('prefers the RN Maven mirror release when it exists', async () => {
     globalThis.fetch = routerFetch({
       'reactnative-core-debug.tar.gz': {status: 200},
     });
     const result = await resolveRNCoreArtifact('0.85.0', 'debug', null);
     expect(result.version).toBe('0.85.0');
+    expect(result.url).toContain('repo.reactnative.dev');
+    expect(result.url).toContain('reactnative-core-debug.tar.gz');
+    // Maven Central is never probed when the mirror has the artifact.
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to Maven Central when the mirror is missing the artifact', async () => {
+    globalThis.fetch = routerFetch({
+      // Only Central serves the artifact; the mirror probe hits the 404
+      // default.
+      'repo1.maven.org': {status: 200},
+    });
+    const result = await resolveRNCoreArtifact('0.85.0', 'debug', null);
+    expect(result.version).toBe('0.85.0');
     expect(result.url).toContain('repo1.maven.org');
     expect(result.url).toContain('reactnative-core-debug.tar.gz');
+  });
+
+  it('falls back to Maven Central when the mirror errors (outage)', async () => {
+    globalThis.fetch = jest.fn(async url => {
+      if (String(url).includes('repo.reactnative.dev')) {
+        throw new Error('mirror unreachable');
+      }
+      return {status: 200};
+    });
+    const result = await resolveRNCoreArtifact('0.85.0', 'debug', null);
+    expect(result.url).toContain('repo1.maven.org');
+  });
+
+  it('goes straight to Maven Central when the mirror is disabled', async () => {
+    process.env.RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED = 'false';
+    globalThis.fetch = routerFetch({
+      'reactnative-core-debug.tar.gz': {status: 200},
+    });
+    const result = await resolveRNCoreArtifact('0.85.0', 'debug', null);
+    expect(result.url).toContain('repo1.maven.org');
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('only consults ENTERPRISE_REPOSITORY when it is set', async () => {
+    process.env.ENTERPRISE_REPOSITORY = 'https://maven.internal.example';
+    globalThis.fetch = routerFetch({
+      'reactnative-core-debug.tar.gz': {status: 200},
+    });
+    const result = await resolveRNCoreArtifact('0.85.0', 'debug', null);
+    expect(result.url).toContain('maven.internal.example');
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
   });
 
   it('falls back to the snapshot URL when the release is missing', async () => {

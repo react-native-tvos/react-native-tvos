@@ -58,6 +58,23 @@ using namespace facebook::react;
 
 const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 
+#if !TARGET_OS_TV
+// iOS Full Keyboard Access only focuses a view when it is an accessibility
+// element that also exposes an interactive trait. Views that surface their
+// interactivity through a grouping accessibility element (rather than the
+// underlying control) are otherwise skipped by the focus engine, leaving
+// keyboard-only users unable to reach them.
+static BOOL RCTViewIsInteractiveAccessibilityElement(UIView *view)
+{
+  if (!view.isAccessibilityElement) {
+    return NO;
+  }
+  UIAccessibilityTraits interactiveTraits = UIAccessibilityTraitButton | UIAccessibilityTraitLink |
+      UIAccessibilityTraitSearchField | UIAccessibilityTraitKeyboardKey | UIAccessibilityTraitAdjustable;
+  return (view.accessibilityTraits & interactiveTraits) != 0;
+}
+#endif
+
 @implementation RCTViewComponentView {
   UIColor *_backgroundColor;
   CALayer *_backgroundColorLayer;
@@ -487,10 +504,14 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (BOOL)canBecomeFocused
 {
+#if !TARGET_OS_TV
+  return RCTViewIsInteractiveAccessibilityElement(self) || _props->isTVSelectable;
+#else
   if ([self isTVFocusGuide]) {
     return NO;
   }
   return _props->isTVSelectable;
+#endif
 }
 
 // In tvOS, to support directional focus APIs, we add a UIFocusGuide for each

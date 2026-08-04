@@ -67,7 +67,7 @@ object ReactTestHelper {
             Task.Companion.IMMEDIATE_EXECUTOR,
             false /* allowPackagerServerAccess */,
             false /* useDevSupport */,
-        )
+        ),
     )
     return BridgelessReactContext(application, reactHost)
   }

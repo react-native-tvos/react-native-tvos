@@ -313,7 +313,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
               ViewProps.BORDER_END_START_RADIUS,
               ViewProps.BORDER_START_END_RADIUS,
               ViewProps.BORDER_START_START_RADIUS,
-          ]
+          ],
   )
   public open fun setBorderRadius(view: ReactViewGroup, index: Int, rawBorderRadius: Dynamic) {
     val borderRadius = LengthPercentage.setFromDynamic(rawBorderRadius)
@@ -450,7 +450,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       view.setOnClickListener {
         val eventDispatcher = UIManagerHelper.getEventDispatcher(view.context as ReactContext)
         eventDispatcher?.dispatchEvent(
-            ViewGroupClickEvent(UIManagerHelper.getSurfaceId(view.context), view.id)
+            ViewGroupClickEvent(UIManagerHelper.getSurfaceId(view.context), view.id),
         )
       }
 
@@ -539,7 +539,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   private fun handleSetPressed(root: ReactViewGroup, args: ReadableArray?) {
     if (args == null || args.size() != 1) {
       throw JSApplicationIllegalArgumentException(
-          "Illegal number of arguments for 'setPressed' command"
+          "Illegal number of arguments for 'setPressed' command",
       )
     }
     root.isPressed = args.getBoolean(0)
@@ -548,7 +548,7 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   private fun handleHotspotUpdate(root: ReactViewGroup, args: ReadableArray?) {
     if (args == null || args.size() != 2) {
       throw JSApplicationIllegalArgumentException(
-          "Illegal number of arguments for 'updateHotspot' command"
+          "Illegal number of arguments for 'updateHotspot' command",
       )
     }
 

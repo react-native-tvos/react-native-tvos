@@ -670,6 +670,21 @@ void UIManager::shadowTreeDidPromoteReactRevision(
   }
 }
 
+void UIManager::shadowTreeDidCommit(
+    const ShadowTree& shadowTree,
+    const RootShadowNode::Shared& rootShadowNode,
+    const std::vector<const LayoutableShadowNode*>& affectedLayoutableNodes)
+    const noexcept {
+  TraceSection s("UIManager::shadowTreeDidCommit");
+
+  std::shared_lock lock(commitHookMutex_);
+
+  for (auto* commitHook : commitHooks_) {
+    commitHook->shadowTreeDidCommit(
+        shadowTree, rootShadowNode, affectedLayoutableNodes);
+  }
+}
+
 void UIManager::reportMount(SurfaceId surfaceId) const {
   TraceSection s("UIManager::reportMount");
 

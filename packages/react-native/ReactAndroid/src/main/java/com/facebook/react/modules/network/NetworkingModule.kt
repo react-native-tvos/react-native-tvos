@@ -131,7 +131,7 @@ public class NetworkingModule(
 
   /** @param context the ReactContext of the application */
   public constructor(
-      context: ReactApplicationContext
+      context: ReactApplicationContext,
   ) : this(context, null, OkHttpClientProvider.createClient(context.applicationContext), null)
 
   /**
@@ -166,7 +166,7 @@ public class NetworkingModule(
 
   @Deprecated(
       """To be removed in a future release. See
-        https://github.com/facebook/react-native/pull/37798#pullrequestreview-1518338914"""
+        https://github.com/facebook/react-native/pull/37798#pullrequestreview-1518338914""",
   )
   public interface CustomClientBuilder : com.facebook.react.modules.network.CustomClientBuilder
 
@@ -782,7 +782,7 @@ public class NetworkingModule(
                   )
                 }
               }
-            }
+            },
         )
   }
 
@@ -1064,7 +1064,7 @@ public class NetworkingModule(
 
     @JvmStatic
     public fun setCustomClientBuilder(
-        ccb: com.facebook.react.modules.network.CustomClientBuilder?
+        ccb: com.facebook.react.modules.network.CustomClientBuilder?,
     ) {
       customClientBuilder = ccb
     }

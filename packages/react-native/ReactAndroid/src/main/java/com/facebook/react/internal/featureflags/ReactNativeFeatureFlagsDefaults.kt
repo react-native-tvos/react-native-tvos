@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a388dac2279d18399977e112354817d9>>
+ * @generated SignedSource<<fff496fd29f32d546e63c40fc2a3c9da>>
  */
 
 /**
@@ -81,6 +81,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableImagePrefetchingAndroid(): Boolean = false
 
+  override fun enableImageTransparentTintColor(): Boolean = false
+
   override fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = false
 
   override fun enableImperativeFocus(): Boolean = false
@@ -96,6 +98,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableLayoutAnimationsOnIOS(): Boolean = true
 
   override fun enableModuleArgumentNSNullConversionIOS(): Boolean = false
+
+  override fun enableMountingCoordinatorPullModelAndroid(): Boolean = false
 
   override fun enableMutationObserverByDefault(): Boolean = false
 

@@ -6,15 +6,43 @@
 require 'shellwords'
 require 'digest'
 require 'uri'
+require 'net/http'
 
 require_relative "./helpers.rb"
 require_relative "./jsengine.rb"
 
 # Utilities class for React Native Cocoapods
 class ReactNativePodsUtils
+    MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
+    REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
+
     # URI::File.build validates path components as ASCII, so escape the filesystem path first.
     def self.local_file_uri(path)
         URI::File.build(path: URI::DEFAULT_PARSER.escape(path)).to_s
+    end
+
+    def self.maven_repository_urls()
+        ## You can use the `ENTERPRISE_REPOSITORY` variable to customise the base url from which artifacts will be downloaded.
+        ## The mirror's structure must be the same of the Maven repo the react-native core team publishes on Maven Central.
+        if ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != ""
+            return [ENV['ENTERPRISE_REPOSITORY'].sub(/\/+$/, "")]
+        end
+        if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
+            return [ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'].sub(/\/+$/, "")]
+        end
+
+        # Keep the React Native Maven mirror before Maven Central so cached artifacts are tried first
+        # and Maven Central remains the fallback.
+        return react_native_maven_mirror_enabled? ?
+            [REACT_NATIVE_MAVEN_MIRROR_REPOSITORY, MAVEN_CENTRAL_REPOSITORY] :
+            [MAVEN_CENTRAL_REPOSITORY]
+    end
+
+    def self.react_native_maven_mirror_enabled?()
+        value = ENV['RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED']
+        return true if value == nil || value == ""
+
+        value.downcase != "false" && value != "0"
     end
 
     def self.warn_if_not_on_arm64
@@ -787,6 +815,47 @@ class ReactNativePodsUtils
         if header_mappings_dir != nil && ReactNativeCoreUtils.build_rncore_from_source()
             spec.header_mappings_dir = header_mappings_dir
         end
+    end
+
+    # ============================ #
+    # Network request memoization  #
+    # ============================ #
+    # CocoaPods evaluates the prebuilt podspecs several times during a single
+    # `pod install`, and every evaluation re-resolves the artifact URLs from
+    # scratch: existence probes against the mirror/Maven Central and nightly
+    # metadata lookups. The answers should not change within one install, so
+    # each request is issued at most once per process and then served from
+    # these in-memory caches.
+    @@artifact_exists_cache = {}
+    @@get_response_cache = {}
+
+    # Memoized existence probe (HTTP HEAD) for a prebuilt artifact URL.
+    # Only conclusive answers are cached. If curl never got an HTTP status
+    # (DNS failure, no route, ...) the probe is left uncached so that a
+    # transient hiccup doesn't permanently mark the artifact as missing.
+    def self.artifact_exists?(tarball_url)
+        unless @@artifact_exists_cache.key?(tarball_url)
+            # -L is used to follow redirects, useful for the nightlies
+            # The url is wrapped in quotes to avoid escaping & and ?.
+            http_code = `curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"`
+            return false if !$?.success? || http_code == "000"
+            @@artifact_exists_cache[tarball_url] = (http_code == "200")
+        end
+        return @@artifact_exists_cache[tarball_url]
+    end
+
+    # Memoized HTTP GET for small metadata lookups (Maven snapshot metadata).
+    # Returns the Net::HTTPResponse. Only successful responses are cached:
+    # raised network errors propagate uncached, and non-2xx responses (a
+    # transient 5xx, a 404) are returned without being stored, so a later
+    # call within the same process can retry.
+    def self.memoized_get_response(url)
+        unless @@get_response_cache.key?(url)
+            response = Net::HTTP.get_response(URI(url))
+            return response unless response.is_a?(Net::HTTPSuccess)
+            @@get_response_cache[url] = response
+        end
+        return @@get_response_cache[url]
     end
 
     # ==================== #

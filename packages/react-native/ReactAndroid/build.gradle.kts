@@ -290,7 +290,7 @@ val preparePrefab by
                   // hermes_executor
                   Pair("../ReactCommon/hermes/inspector-modern/", "hermes/inspector-modern/"),
               ),
-          )
+          ),
       )
       outputDir.set(prefabHeadersDir)
     }
@@ -305,7 +305,7 @@ val downloadBoost by
     tasks.registering(Download::class) {
       dependsOn(createNativeDepsDirectories)
       src(
-          "https://archives.boost.io/release/${BOOST_VERSION.replace("_", ".")}/source/boost_${BOOST_VERSION}.tar.gz"
+          "https://archives.boost.io/release/${BOOST_VERSION.replace("_", ".")}/source/boost_${BOOST_VERSION}.tar.gz",
       )
       onlyIfModified(true)
       overwrite(false)
@@ -329,7 +329,7 @@ val downloadDoubleConversion by
     tasks.registering(Download::class) {
       dependsOn(createNativeDepsDirectories)
       src(
-          "https://github.com/google/double-conversion/archive/v${DOUBLE_CONVERSION_VERSION}.tar.gz"
+          "https://github.com/google/double-conversion/archive/v${DOUBLE_CONVERSION_VERSION}.tar.gz",
       )
       onlyIfModified(true)
       overwrite(false)
@@ -467,7 +467,7 @@ val buildCodegenCLI by
           fileTree(codegenDir) {
             include("lib/**/*.js")
             include("lib/**/*.js.flow")
-          }
+          },
       )
       rootProjectName.set(rootProject.name)
     }
@@ -622,7 +622,7 @@ android {
   tasks.getByName("generateCodegenSchemaFromJavaScript").dependsOn(buildCodegenCLI)
   prepareKotlinBuildScriptModel.dependsOn("preBuild")
   prepareKotlinBuildScriptModel.dependsOn(
-      ":packages:react-native:ReactAndroid:hermes-engine:preBuild"
+      ":packages:react-native:ReactAndroid:hermes-engine:preBuild",
   )
 
   sourceSets {
@@ -637,7 +637,7 @@ android {
                 "src/main/res/views/modal",
                 "src/main/res/views/uimanager",
                 "src/main/res/views/view",
-            )
+            ),
         )
       }
     }

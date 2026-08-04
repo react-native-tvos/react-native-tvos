@@ -226,16 +226,21 @@ class ReactNativeDependenciesUtils
     end
 
     def self.release_tarball_url(version, build_type)
-        ## You can use the `ENTERPRISE_REPOSITORY` ariable to customise the base url from which artifacts will be downloaded.
-        ## The mirror's structure must be the same of the Maven repo the react-native core team publishes on Maven Central.
-        maven_repo_url =
-            ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != "" ?
-            ENV['ENTERPRISE_REPOSITORY'] :
-            "https://repo1.maven.org/maven2"
+        candidates = release_tarball_urls(version, build_type)
+        return candidates.find { |url| artifact_exists(url) } || candidates.first
+    end
+
+    def self.release_tarball_urls(version, build_type)
         group = "com/facebook/react"
+
         # Sample url from Maven:
         # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.79.0-rc.0/react-native-artifacts-0.79.0-rc.0-reactnative-dependencies-debug.tar.gz
-        return "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-dependencies-#{build_type.to_s}.tar.gz"
+
+        # Sample url from mirror server:
+        # https://repo.reactnative.dev/maven2/com/facebook/react/react-native-artifacts/0.79.0-rc.0/react-native-artifacts-0.79.0-rc.0-reactnative-dependencies-debug.tar.gz
+        return ReactNativePodsUtils.maven_repository_urls().map { |maven_repo_url|
+            "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-dependencies-#{build_type.to_s}.tar.gz"
+        }
     end
 
     def self.read_nightly_tarball_xml(xml_url)
@@ -373,7 +378,7 @@ class ReactNativeDependenciesUtils
     end
 
     def self.release_artifact_exists(version)
-        return artifact_exists(release_tarball_url(version, :debug))
+        return release_tarball_urls(version, :debug).any? { |url| artifact_exists(url) }
     end
 
     def self.nightly_artifact_exists(version)
@@ -384,14 +389,16 @@ class ReactNativeDependenciesUtils
         return File.join(Pod::Config.instance.project_pods_root, "ReactNativeDependencies-artifacts")
     end
 
-    # This function checks that ReactNativeDependencies artifact exists on the maven repo
+    # This function checks that ReactNativeDependencies artifact exists on the maven repo.
+    # The probe is memoized, so repeated podspec evaluations in one `pod install`
+    # don't re-request the same URL.
     def self.artifact_exists(tarball_url)
         # -L is used to follow redirects, useful for the nightlies
         # I also needed to wrap the url in quotes to avoid escaping & and ?.
         if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
             return true
         end
-        return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
+        return ReactNativePodsUtils.artifact_exists?(tarball_url)
     end
 
     def self.rndeps_log(message, level = :info)

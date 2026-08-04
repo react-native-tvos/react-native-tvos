@@ -256,7 +256,7 @@ public object ViewProps {
           PADDING_BOTTOM,
           PADDING_START,
           PADDING_END,
-      )
+      ),
   )
 
   @JvmStatic

@@ -404,7 +404,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
    */
   override fun onTextContextMenuItem(id: Int): Boolean =
       super.onTextContextMenuItem(
-          if (id == android.R.id.paste) android.R.id.pasteAsPlainText else id
+          if (id == android.R.id.paste) android.R.id.pasteAsPlainText else id,
       )
 
   internal fun clearFocusAndMaybeRefocus() {

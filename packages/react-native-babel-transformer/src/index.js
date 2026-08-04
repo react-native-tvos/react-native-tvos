@@ -16,6 +16,7 @@
 
 /*::
 import type {BabelCoreOptions, Plugins, TransformResult} from '@babel/core';
+import type {File as BabelNodeFile} from '@babel/types';
 import type {
   BabelTransformer,
   MetroBabelFileMetadata,
@@ -212,7 +213,7 @@ const transform /*: BabelTransformer['transform'] */ = ({
     !options.hermesParser
       ? parseSync(src, babelConfig)
       : // $FlowFixMe[incompatible-exact]
-        require('hermes-parser').parse(src, {
+        require('flow-parser').parse(src, {
           babel: true,
           reactRuntimeTarget: '19',
           sourceType: babelConfig.sourceType,

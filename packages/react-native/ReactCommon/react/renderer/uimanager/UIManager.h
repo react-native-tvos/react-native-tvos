@@ -146,6 +146,11 @@ class UIManager final : public ShadowTreeDelegate {
 
   void shadowTreeDidPromoteReactRevision(const ShadowTree &shadowTree) const override;
 
+  void shadowTreeDidCommit(
+      const ShadowTree &shadowTree,
+      const RootShadowNode::Shared &rootShadowNode,
+      const std::vector<const LayoutableShadowNode *> &affectedLayoutableNodes) const noexcept override;
+
   std::shared_ptr<ShadowNode> createNode(
       Tag tag,
       const std::string &componentName,

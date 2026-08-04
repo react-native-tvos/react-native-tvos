@@ -362,7 +362,7 @@ public class TurboModuleManager(
     @Suppress("unused")
     @DoNotStrip
     private fun getMethodDescriptorsFromModule(
-        module: NativeModule
+        module: NativeModule,
     ): List<TurboModuleInteropUtils.MethodDescriptor> =
         TurboModuleInteropUtils.getMethodDescriptorsFromModule(module)
   }

@@ -75,7 +75,7 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
       val accessibilityStateExpanded = host.getTag(R.id.accessibility_state_expanded) as Boolean
       info.addAction(
           if (accessibilityStateExpanded) AccessibilityNodeInfoCompat.ACTION_COLLAPSE
-          else AccessibilityNodeInfoCompat.ACTION_EXPAND
+          else AccessibilityNodeInfoCompat.ACTION_EXPAND,
       )
     }
     val accessibilityRole = AccessibilityRole.fromViewTag(host)
@@ -254,7 +254,7 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
         val uiManager = getUIManager(reactContext, UIManagerType.FABRIC)
         if (uiManager != null) {
           uiManager.eventDispatcher.dispatchEvent(
-              AccessibilityActionEvent(eventData, surfaceId, reactTag)
+              AccessibilityActionEvent(eventData, surfaceId, reactTag),
           )
         }
       } else {

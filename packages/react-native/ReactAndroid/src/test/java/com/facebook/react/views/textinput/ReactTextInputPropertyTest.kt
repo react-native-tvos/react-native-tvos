@@ -439,16 +439,16 @@ class ReactTextInputPropertyTest {
 
     manager.updateProperties(view, buildStyles("textAlign", "start"))
     assertThat(
-            view.gravity and
-                (Gravity.HORIZONTAL_GRAVITY_MASK or Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK)
-        )
+        view.gravity and
+            (Gravity.HORIZONTAL_GRAVITY_MASK or Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK),
+    )
         .isEqualTo(Gravity.START)
 
     manager.updateProperties(view, buildStyles("textAlign", "end"))
     assertThat(
-            view.gravity and
-                (Gravity.HORIZONTAL_GRAVITY_MASK or Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK)
-        )
+        view.gravity and
+            (Gravity.HORIZONTAL_GRAVITY_MASK or Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK),
+    )
         .isEqualTo(Gravity.END)
 
     manager.updateProperties(view, buildStyles("textAlign", null))
@@ -515,7 +515,7 @@ class ReactTextInputPropertyTest {
             view.gravity and Gravity.HORIZONTAL_GRAVITY_MASK,
             Layout.BREAK_STRATEGY_HIGH_QUALITY,
             0,
-        )
+        ),
     )
 
     assertThat(checkNotNull(view.text).getSpans(0, view.length(), MarkerSpan::class.java)).isEmpty()

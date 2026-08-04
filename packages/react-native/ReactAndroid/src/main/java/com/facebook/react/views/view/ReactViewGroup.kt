@@ -289,7 +289,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
   }
 
   @Deprecated(
-      "setTranslucentBackgroundDrawable is deprecated since React Native 0.76.0 and will be removed in a future version"
+      "setTranslucentBackgroundDrawable is deprecated since React Native 0.76.0 and will be removed in a future version",
   )
   public fun setTranslucentBackgroundDrawable(background: Drawable?) {
     setFeedbackUnderlay(this, background)
@@ -513,7 +513,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       }
       if (i - clippedSoFar > childCount) {
         throw IllegalStateException(
-            "Invalid clipping state. i=$i clippedSoFar=$clippedSoFar count=$childCount allChildrenCount=$allChildrenCount recycleCount=$recycleCount  excludedViews=${excludedViewsSet?.size ?: 0}"
+            "Invalid clipping state. i=$i clippedSoFar=$clippedSoFar count=$childCount allChildrenCount=$allChildrenCount recycleCount=$recycleCount  excludedViews=${excludedViewsSet?.size ?: 0}",
         )
       }
     }
@@ -872,12 +872,12 @@ public open class ReactViewGroup public constructor(context: Context?) :
                 logSoftException(
                     ReactSoftExceptionLogger.Categories.CLIPPING_PROHIBITED_VIEW,
                     ReactNoCrashSoftException(
-                        "Child view has been added to Parent view in which it is clipped and not visible. This is not legal for this particular child view. Child: [${child.id}] $child Parent: [$id] ${toString()}"
+                        "Child view has been added to Parent view in which it is clipped and not visible. This is not legal for this particular child view. Child: [${child.id}] $child Parent: [$id] ${toString()}",
                     ),
                 )
               }
             }
-          }
+          },
       )
     }
   }
@@ -929,7 +929,7 @@ public open class ReactViewGroup public constructor(context: Context?) :
       logSoftException(
           ReactSoftExceptionLogger.Categories.RVG_IS_VIEW_CLIPPED,
           ReactNoCrashSoftException(
-              "View missing clipping tag: index=$index parentNull=${parent == null} parentThis=${parent === this} transitioning=$transitioning"
+              "View missing clipping tag: index=$index parentNull=${parent == null} parentThis=${parent === this} transitioning=$transitioning",
           ),
       )
     }
