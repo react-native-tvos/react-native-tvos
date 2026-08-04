@@ -248,7 +248,7 @@ class ReactNativeDependenciesUtils
         artifact_name = "reactnative-dependencies-#{build_type.to_s}.tar.gz"
         xml_url = "https://central.sonatype.com/repository/maven-snapshots/com/facebook/react/#{artifact_coordinate}/#{version}-SNAPSHOT/maven-metadata.xml"
 
-        response = Net::HTTP.get_response(URI(xml_url))
+        response = ReactNativePodsUtils.memoized_get_response(xml_url)
         if response.is_a?(Net::HTTPSuccess)
           xml = REXML::Document.new(response.body)
           timestamp = xml.elements['metadata/versioning/snapshot/timestamp'].text
@@ -378,11 +378,11 @@ class ReactNativeDependenciesUtils
         return File.join(Pod::Config.instance.project_pods_root, "ReactNativeDependencies-artifacts")
     end
 
-    # This function checks that ReactNativeDependencies artifact exists on the maven repo
+    # This function checks that ReactNativeDependencies artifact exists on the maven repo.
+    # The probe is memoized, so repeated podspec evaluations in one `pod install`
+    # don't re-request the same URL.
     def self.artifact_exists(tarball_url)
-        # -L is used to follow redirects, useful for the nightlies
-        # I also needed to wrap the url in quotes to avoid escaping & and ?.
-        return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
+        return ReactNativePodsUtils.artifact_exists?(tarball_url)
     end
 
     def self.rndeps_log(message, level = :info)

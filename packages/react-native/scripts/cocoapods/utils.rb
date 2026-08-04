@@ -6,6 +6,7 @@
 require 'shellwords'
 require 'digest'
 require 'uri'
+require 'net/http'
 
 require_relative "./helpers.rb"
 require_relative "./jsengine.rb"
@@ -755,6 +756,47 @@ class ReactNativePodsUtils
         if header_mappings_dir != nil && ReactNativeCoreUtils.build_rncore_from_source()
             spec.header_mappings_dir = header_mappings_dir
         end
+    end
+
+    # ============================ #
+    # Network request memoization  #
+    # ============================ #
+    # CocoaPods evaluates the prebuilt podspecs several times during a single
+    # `pod install`, and every evaluation re-resolves the artifact URLs from
+    # scratch: existence probes against the mirror/Maven Central and nightly
+    # metadata lookups. The answers should not change within one install, so
+    # each request is issued at most once per process and then served from
+    # these in-memory caches.
+    @@artifact_exists_cache = {}
+    @@get_response_cache = {}
+
+    # Memoized existence probe (HTTP HEAD) for a prebuilt artifact URL.
+    # Only conclusive answers are cached. If curl never got an HTTP status
+    # (DNS failure, no route, ...) the probe is left uncached so that a
+    # transient hiccup doesn't permanently mark the artifact as missing.
+    def self.artifact_exists?(tarball_url)
+        unless @@artifact_exists_cache.key?(tarball_url)
+            # -L is used to follow redirects, useful for the nightlies
+            # The url is wrapped in quotes to avoid escaping & and ?.
+            http_code = `curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"`
+            return false if !$?.success? || http_code == "000"
+            @@artifact_exists_cache[tarball_url] = (http_code == "200")
+        end
+        return @@artifact_exists_cache[tarball_url]
+    end
+
+    # Memoized HTTP GET for small metadata lookups (Maven snapshot metadata).
+    # Returns the Net::HTTPResponse. Only successful responses are cached:
+    # raised network errors propagate uncached, and non-2xx responses (a
+    # transient 5xx, a 404) are returned without being stored, so a later
+    # call within the same process can retry.
+    def self.memoized_get_response(url)
+        unless @@get_response_cache.key?(url)
+            response = Net::HTTP.get_response(URI(url))
+            return response unless response.is_a?(Net::HTTPSuccess)
+            @@get_response_cache[url] = response
+        end
+        return @@get_response_cache[url]
     end
 
     # ==================== #

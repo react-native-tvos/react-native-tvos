@@ -10,6 +10,14 @@ ENV_BUILD_FROM_SOURCE = "RCT_BUILD_HERMES_FROM_SOURCE"
 MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
 REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
 
+# Memoized results of requests to the Maven repositories (mirror or central).
+# hermes-engine.podspec is evaluated several times during a single
+# `pod install`, and every evaluation re-resolves the artifact source from
+# scratch; without memoization that re-issues identical artifact existence
+# probes. The answers should not change within one install, so each request
+# is issued at most once per process.
+HERMES_ARTIFACT_EXISTS_CACHE = {}
+
 module HermesEngineSourceType
     LOCAL_PREBUILT_TARBALL = :local_prebuilt_tarball
     DOWNLOAD_PREBUILD_RELEASE_TARBALL = :download_prebuild_release_tarball
@@ -339,14 +347,23 @@ end
 
 # This function checks that Hermes artifact exists.
 # As of now it should check it on the Maven repo.
+# The probe is memoized, so repeated podspec evaluations in one `pod install`
+# don't re-request the same URL. Only conclusive answers are cached: if curl
+# never got an HTTP status (DNS failure, no route, ...) the probe is left
+# uncached so a transient hiccup doesn't permanently mark the artifact as
+# missing.
 #
 # Parameters
-# - version: the version of React Native
-# - build_type: debug or release
+# - tarball_url: the URL of the Hermes artifact to probe
 def hermes_artifact_exists(tarball_url)
-    # -L is used to follow redirects, useful for the nightlies
-    # I also needed to wrap the url in quotes to avoid escaping & and ?.
-    return (`curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"` == "200")
+    unless HERMES_ARTIFACT_EXISTS_CACHE.key?(tarball_url)
+        # -L is used to follow redirects, useful for the nightlies
+        # I also needed to wrap the url in quotes to avoid escaping & and ?.
+        http_code = `curl -o /dev/null --silent -Iw '%{http_code}' -L "#{tarball_url}"`
+        return false if !$?.success? || http_code == "000"
+        HERMES_ARTIFACT_EXISTS_CACHE[tarball_url] = (http_code == "200")
+    end
+    return HERMES_ARTIFACT_EXISTS_CACHE[tarball_url]
 end
 
 def hermes_log(message, level = :warning)
