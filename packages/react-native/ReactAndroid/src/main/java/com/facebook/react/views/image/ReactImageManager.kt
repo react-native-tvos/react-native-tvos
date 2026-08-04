@@ -201,9 +201,20 @@ public constructor(
               ViewProps.BORDER_BOTTOM_RIGHT_RADIUS,
               ViewProps.BORDER_BOTTOM_LEFT_RADIUS,
           ],
-      defaultFloat = Float.NaN,
+  )
+  public fun setBorderRadius(view: ReactImageView, index: Int, rawBorderRadius: Dynamic) {
+    val borderRadius = LengthPercentage.setFromDynamic(rawBorderRadius)
+    BackgroundStyleApplicator.setBorderRadius(view, BorderRadiusProp.values()[index], borderRadius)
+  }
+
+  @Deprecated(
+      "Don't use setBorderRadius(view, index, Float) as it was deprecated in React Native 0.88.0.",
   )
   public fun setBorderRadius(view: ReactImageView, index: Int, borderRadius: Float) {
+    // Keep a direct body rather than routing a Float through DynamicFromObject:
+    // DynamicFromObject(Float).asDouble() throws (boxed Float cannot cast to
+    // Double), and setFromDynamic would not map NaN back to null the way the
+    // original Float path did.
     val radius =
         if (borderRadius.isNaN()) null
         else LengthPercentage(borderRadius, LengthPercentageType.POINT)
