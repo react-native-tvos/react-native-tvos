@@ -27,6 +27,7 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.turbomodule.core.interfaces.BindingsInstallerHolder
 import com.facebook.react.turbomodule.core.interfaces.TurboModuleWithJSIBindings
+import java.nio.ByteBuffer
 import java.util.UUID
 
 @DoNotStrip
@@ -152,6 +153,30 @@ public class SampleTurboModule(private val context: ReactApplicationContext) :
     map.putMap("z", zMap)
     log("getValue", mapOf("1-numberArg" to x, "2-stringArg" to y, "3-mapArg" to z), map)
     return map
+  }
+
+  @DoNotStrip
+  @Suppress("unused")
+  override fun getArrayBuffer(buffer: ByteBuffer?): ByteBuffer? {
+    log("getArrayBuffer", buffer, buffer)
+    return buffer
+  }
+
+  @DoNotStrip
+  @Suppress("unused")
+  override fun createNativeBuffer(size: Double): ByteBuffer {
+    require(size.isFinite() && size >= 0.0 && size <= Int.MAX_VALUE.toDouble()) {
+      "createNativeBuffer: size must be a finite value in [0, ${Int.MAX_VALUE}], got $size"
+    }
+    val buffer = ByteBuffer.allocateDirect(size.toInt())
+    log("createNativeBuffer", size, buffer)
+    return buffer
+  }
+
+  @DoNotStrip
+  @Suppress("unused")
+  override fun processAsyncBuffer(payload: ByteBuffer?, promise: Promise) {
+    promise.resolve((payload?.capacity() ?: 0).toDouble())
   }
 
   @DoNotStrip

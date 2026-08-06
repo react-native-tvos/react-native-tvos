@@ -5,10 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <cstring>
+#include <limits>
 #include <memory>
 #include <string>
 
 #include <cxxreact/TraceSection.h>
+#include <fbjni/ByteBuffer.h>
 #include <fbjni/fbjni.h>
 #include <glog/logging.h>
 #include <jsi/jsi.h>
@@ -20,6 +23,7 @@
 #include <react/bridging/Bridging.h>
 #include <react/debug/react_native_assert.h>
 #include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/jni/JByteBufferMutableBuffer.h>
 #include <react/jni/JDynamicNative.h>
 #include <react/jni/NativeMap.h>
 #include <react/jni/ReadableNativeMap.h>
@@ -322,7 +326,7 @@ JNIArgs convertJSIArgsToJNIArgs(
     return obj;
   };
 
-  for (unsigned int argIndex = 0; argIndex < count; argIndex += 1) {
+  for (int argIndex = 0; argIndex < static_cast<int>(count); argIndex += 1) {
     const std::string& type = methodArgTypes.at(argIndex);
 
     const jsi::Value* arg = &args[argIndex];
@@ -434,6 +438,37 @@ JNIArgs convertJSIArgsToJNIArgs(
       auto dynamicFromValue = jsi::dynamicFromValue(rt, *arg);
       auto jParams = JDynamicNative::newObjectCxxArgs(dynamicFromValue);
       jarg->l = makeGlobalIfNecessary(jParams.release());
+    } else if (type == "Ljava/nio/ByteBuffer;") {
+      if (!(arg->isObject() && arg->getObject(rt).isArrayBuffer(rt))) {
+        throw JavaTurboModuleArgumentConversionException(
+            "ArrayBuffer", argIndex, methodName, arg, &rt);
+      }
+
+      auto arrayBuffer = arg->getObject(rt).getArrayBuffer(rt);
+      if (arrayBuffer.detached(rt)) {
+        throw jsi::JSError(
+            rt,
+            "JavaTurboModule::convertJSIArgsToJNIArgs: ArrayBuffer is detached.");
+      }
+
+      auto size = arrayBuffer.size(rt);
+      if (size > static_cast<size_t>(std::numeric_limits<jint>::max())) {
+        throw jsi::JSError(
+            rt,
+            "JavaTurboModule::convertJSIArgsToJNIArgs: ArrayBuffer exceeds maximum size.");
+      }
+      auto data = arrayBuffer.data(rt);
+      // ArrayBuffer arguments are always copied into a Java-owned direct
+      // ByteBuffer, so Java fully owns the bytes. Borrowing the JS bytes is
+      // never safe — even on a synchronous call the module may retain the
+      // buffer or hand it to an async method, and JS may garbage-collect the
+      // source ArrayBuffer, leaving Java with a dangling view.
+      auto buffer = jni::JByteBuffer::allocateDirect(static_cast<jint>(size));
+      if (size > 0) {
+        // @lint-ignore CLANGSECURITY facebook-security-vulnerable-memcpy
+        std::memcpy(buffer->getDirectBytes(), data, size);
+      }
+      jarg->l = makeGlobalIfNecessary(buffer.release());
     } else {
       throw JavaTurboModuleInvalidArgumentTypeException(
           type, argIndex, methodName);
@@ -962,6 +997,38 @@ jsi::Value JavaTurboModule::invokeJavaMethod(
           });
       TMPL::asyncMethodCallEnd(moduleName, methodName);
       return jsPromise;
+    }
+    case ArrayBufferKind: {
+      auto returnObject =
+          (jobject)env->CallObjectMethodA(instance, methodID, jargs.data());
+      checkJNIErrorForMethodCall();
+
+      TMPL::syncMethodCallExecutionEnd(moduleName, methodName);
+      TMPL::syncMethodCallReturnConversionStart(moduleName, methodName);
+
+      jsi::Value returnValue = jsi::Value::null();
+      if (returnObject != nullptr) {
+        auto jByteBuffer = jni::adopt_local(
+            static_cast<jni::JByteBuffer::javaobject>(returnObject));
+
+        if (!jByteBuffer->isDirect()) {
+          throw jsi::JSError(
+              runtime,
+              "Only direct ByteBuffers (ByteBuffer.allocateDirect) can be returned from a TurboModule.");
+        }
+        // Zero-copy: JByteBufferMutableBuffer takes a global reference that
+        // pins the ByteBuffer's memory for the lifetime of the JS ArrayBuffer,
+        // and its destructor attaches the current thread before releasing that
+        // ref, so JS GC finalization on any thread is safe.
+        auto nativeBuffer =
+            std::make_shared<JByteBufferMutableBuffer>(jByteBuffer);
+        returnValue = {
+            runtime, jsi::ArrayBuffer{runtime, std::move(nativeBuffer)}};
+      }
+
+      TMPL::syncMethodCallReturnConversionEnd(moduleName, methodName);
+      TMPL::syncMethodCallEnd(moduleName, methodName);
+      return returnValue;
     }
     default:
       throw std::runtime_error(

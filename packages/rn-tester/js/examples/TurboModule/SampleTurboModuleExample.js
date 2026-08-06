@@ -46,6 +46,9 @@ type Examples =
   | 'getString'
   | 'getUnion'
   | 'getValue'
+  | 'getArrayBuffer'
+  | 'createNativeBuffer'
+  | 'processAsyncBuffer'
   | 'promise'
   | 'rejectPromise'
   | 'voidFunc'
@@ -108,6 +111,17 @@ class SampleTurboModuleExample extends React.Component<{}, State> {
     getRootTag: () => NativeSampleTurboModule.getRootTag(this.context),
     getValue: () =>
       NativeSampleTurboModule.getValue(5, 'test', {a: 1, b: 'foo'}),
+    getArrayBuffer: () => {
+      const input = new Uint8Array([1, 2, 3, 4]);
+      const result = NativeSampleTurboModule.getArrayBuffer(input.buffer);
+      return Array.from(new Uint8Array(result));
+    },
+    createNativeBuffer: () =>
+      NativeSampleTurboModule.createNativeBuffer(8).byteLength,
+    processAsyncBuffer: () =>
+      NativeSampleTurboModule.processAsyncBuffer(
+        new Uint8Array([1, 2, 3]).buffer,
+      ).then(length => this._setResult('processAsyncBuffer', length)),
   };
 
   // $FlowFixMe[missing-local-annot]

@@ -145,6 +145,26 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getValue : (double)x y : (NS
   };
 }
 
+// Arguments arrive as an immutable NSData, but an ArrayBuffer return must be
+// NSMutableData: it is handed to JS as a jsi::MutableBuffer, whose data() is
+// non-const. Echoing the argument back therefore needs a mutable copy.
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSMutableData *, getArrayBuffer : (NSData *)buffer)
+{
+  return [buffer mutableCopy];
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSMutableData *, createNativeBuffer : (double)size)
+{
+  return [NSMutableData dataWithLength:(NSUInteger)size];
+}
+
+RCT_EXPORT_METHOD(
+    processAsyncBuffer : (NSData *)payload resolve : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)
+        reject)
+{
+  resolve(@(payload.length));
+}
+
 RCT_EXPORT_METHOD(getValueWithCallback : (RCTResponseSenderBlock)callback)
 {
   if (callback == nullptr) {

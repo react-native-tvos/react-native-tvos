@@ -2796,6 +2796,17 @@ class facebook::react::JBindingsInstaller : public jni::HybridClass<facebook::re
   public ~JBindingsInstaller();
 }
 
+class facebook::react::JByteBufferMutableBuffer : public facebook::jsi::MutableBuffer {
+  public JByteBufferMutableBuffer(const facebook::react::JByteBufferMutableBuffer&) = delete;
+  public JByteBufferMutableBuffer(facebook::react::JByteBufferMutableBuffer&&) = delete;
+  public JByteBufferMutableBuffer(jni::alias_ref<jni::JByteBuffer> byteBuffer);
+  public facebook::react::JByteBufferMutableBuffer& operator=(const facebook::react::JByteBufferMutableBuffer&) = delete;
+  public facebook::react::JByteBufferMutableBuffer& operator=(facebook::react::JByteBufferMutableBuffer&&) = delete;
+  public virtual size_t size() const override;
+  public virtual uint8_t* data() override;
+  public ~JByteBufferMutableBuffer() override;
+}
+
 class facebook::react::JCxxCallbackImpl : public jni::HybridClass<facebook::react::JCxxCallbackImpl, facebook::react::JCallback> {
   public static constexpr auto kJavaDescriptor;
   public static void registerNatives();
