@@ -54,7 +54,6 @@ NSSet<NSString *> *getCoreModuleClasses(void)
       @"RCTActivityIndicatorViewManager",
       @"RCTDebuggingOverlayManager",
       @"RCTModalHostViewManager",
-      @"RCTModalManager",
       @"RCTRefreshControlManager",
       @"RCTSafeAreaViewManager",
       @"RCTScrollContentViewManager",

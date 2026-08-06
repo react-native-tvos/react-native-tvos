@@ -3633,10 +3633,6 @@ class facebook::react::NativeMicrotasks : public facebook::react::NativeMicrotas
   public void queueMicrotask(facebook::jsi::Runtime& runtime, facebook::jsi::Function callback);
 }
 
-class facebook::react::NativeModalManagerSpecJSI : public facebook::react::JavaTurboModule {
-  public NativeModalManagerSpecJSI(const facebook::react::JavaTurboModule::InitParams& params);
-}
-
 class facebook::react::NativeModulePerfLogger {
   public virtual void asyncMethodCallArgConversionEnd(const char* moduleName, const char* methodName) = 0;
   public virtual void asyncMethodCallArgConversionStart(const char* moduleName, const char* methodName) = 0;
@@ -8718,12 +8714,6 @@ class facebook::react::NativeLogBoxCxxSpec : public facebook::react::TurboModule
 template <typename T>
 class facebook::react::NativeMicrotasksCxxSpec : public facebook::react::TurboModule {
   protected NativeMicrotasksCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
-  public static constexpr std::string_view kModuleName;
-}
-
-template <typename T>
-class facebook::react::NativeModalManagerCxxSpec : public facebook::react::TurboModule {
-  protected NativeModalManagerCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public static constexpr std::string_view kModuleName;
 }
 

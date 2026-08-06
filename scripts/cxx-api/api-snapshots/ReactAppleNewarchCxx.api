@@ -490,11 +490,6 @@ interface NativeLogBoxSpecBase : public NSObject {
   public virtual void setEventEmitterCallback:(EventEmitterCallbackWrapper* eventEmitterCallbackWrapper);
 }
 
-interface NativeModalManagerSpecBase : public NSObject {
-  protected facebook::react::EventEmitterCallback _eventEmitterCallback;
-  public virtual void setEventEmitterCallback:(EventEmitterCallbackWrapper* eventEmitterCallbackWrapper);
-}
-
 interface NativeNetworkingIOSSpecBase : public NSObject {
   protected facebook::react::EventEmitterCallback _eventEmitterCallback;
   public virtual void setEventEmitterCallback:(EventEmitterCallbackWrapper* eventEmitterCallbackWrapper);
@@ -2436,11 +2431,6 @@ protocol NativeLinkingManagerSpec : public NSObjectRCTBridgeModule, public RCTTu
 protocol NativeLogBoxSpec : public NSObjectRCTBridgeModule, public RCTTurboModule {
   public virtual void hide();
   public virtual void show();
-}
-
-protocol NativeModalManagerSpec : public NSObjectRCTBridgeModule, public RCTTurboModule {
-  public virtual void addListener:(NSString* eventName);
-  public virtual void removeListeners:(double count);
 }
 
 protocol NativeNetworkingIOSSpec : public NSObjectRCTBridgeModule, public RCTTurboModule {
@@ -5846,10 +5836,6 @@ class facebook::react::NativeMethodCallInvoker {
 class facebook::react::NativeMicrotasks : public facebook::react::NativeMicrotasksCxxSpec<facebook::react::NativeMicrotasks> {
   public NativeMicrotasks(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public void queueMicrotask(facebook::jsi::Runtime& runtime, facebook::jsi::Function callback);
-}
-
-class facebook::react::NativeModalManagerSpecJSI : public facebook::react::ObjCTurboModule {
-  public NativeModalManagerSpecJSI(const facebook::react::ObjCTurboModule::InitParams& params);
 }
 
 class facebook::react::NativeModulePerfLogger {
@@ -10715,12 +10701,6 @@ class facebook::react::NativeLogBoxCxxSpec : public facebook::react::TurboModule
 template <typename T>
 class facebook::react::NativeMicrotasksCxxSpec : public facebook::react::TurboModule {
   protected NativeMicrotasksCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
-  public static constexpr std::string_view kModuleName;
-}
-
-template <typename T>
-class facebook::react::NativeModalManagerCxxSpec : public facebook::react::TurboModule {
-  protected NativeModalManagerCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public static constexpr std::string_view kModuleName;
 }
 
