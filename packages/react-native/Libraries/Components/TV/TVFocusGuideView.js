@@ -8,6 +8,7 @@
  * @format
  */
 
+import type {BlurEvent, FocusEvent} from '../../Types/CoreEventTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
 
@@ -16,6 +17,7 @@ import useMergeRefs from '../../Utilities/useMergeRefs';
 import View from '../View/View';
 import {Commands} from '../View/ViewNativeComponent';
 import tagForComponentOrHandle from './tagForComponentOrHandle';
+import useFocusEnterLeave from './useFocusEnterLeave';
 
 const StyleSheet = require('../../StyleSheet/StyleSheet').default;
 const React = require('react');
@@ -51,6 +53,20 @@ type TVFocusGuideViewProps = $ReadOnly<{
    * When set to false, this view and all its subviews will be NOT focusable.
    */
   focusable?: boolean | void,
+
+  /**
+   * Fires once when focus enters this focus guide's subtree from outside.
+   * Unlike `onFocus`, which bubbles and fires for every descendant, this does
+   * not fire again when focus moves between descendants. Boundary-crossing
+   * only, same idea as `onMouseEnter` vs `onMouseOver`.
+   */
+  onFocusEnter?: ?(event: FocusEvent) => void,
+
+  /**
+   * Fires once when focus leaves this focus guide's subtree entirely. Does
+   * not fire when focus moves between descendants. Pairs with `onFocusEnter`.
+   */
+  onFocusLeave?: ?(event: BlurEvent) => void,
 }>;
 
 export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
@@ -63,6 +79,10 @@ function TVFocusGuideView({
   destinations: destinationsProp,
   autoFocus,
   focusable,
+  onFocusEnter,
+  onFocusLeave,
+  onFocusCapture,
+  onBlurCapture,
   ref,
   ...props
 }: TVFocusGuideViewProps): React.Node {
@@ -103,6 +123,16 @@ function TVFocusGuideView({
 
   const mergedRef = useMergeRefs(setLocalRef, ref);
 
+  // Collapse the bubbled per-descendant focus/blur into a single enter when
+  // focus crosses into the guide's subtree and a single leave when it exits.
+  const {handleFocusCapture, handleBlurCapture} = useFocusEnterLeave(
+    onFocusEnter,
+    onFocusLeave,
+    onFocusCapture,
+    onBlurCapture,
+  );
+  const trackFocusEnterLeave = onFocusEnter != null || onFocusLeave != null;
+
   React.useEffect(() => {
     if (focusable === false) {
       setDestinations([]);
@@ -131,6 +161,8 @@ function TVFocusGuideView({
       isTVSelectable={tvOSSelectable}
       // Android TV only prop
       tvFocusable={focusable}
+      onFocusCapture={trackFocusEnterLeave ? handleFocusCapture : onFocusCapture}
+      onBlurCapture={trackFocusEnterLeave ? handleBlurCapture : onBlurCapture}
     />
   );
 }
