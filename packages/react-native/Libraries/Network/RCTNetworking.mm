@@ -829,7 +829,7 @@ RCT_EXPORT_MODULE()
 {
   dispatch_async(_methodQueue, ^{
     [self->_tasksByRequestID[[NSNumber numberWithDouble:requestID]] cancel];
-    [self->_tasksByRequestID removeObjectForKey:[NSNumber numberWithDouble:requestID]];
+    [self->_tasksByRequestID removeObjectForKey:@(requestID)];
   });
 }
 
