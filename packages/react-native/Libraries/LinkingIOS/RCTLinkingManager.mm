@@ -9,6 +9,7 @@
 
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
 #import <React/RCTBridge.h>
+#import <React/RCTConvert.h>
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
 
@@ -87,34 +88,36 @@ RCT_EXPORT_MODULE()
   [self sendEventWithName:@"url" body:notification.userInfo];
 }
 
-RCT_EXPORT_METHOD(
-    openURL : (NSURL *)URL resolve : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
+- (void)openURL:(NSString *)urlString resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
+  NSURL *URL = [RCTConvert NSURL:urlString];
   [RCTSharedApplication() openURL:URL
-      options:@{}
-      completionHandler:^(BOOL success) {
-        if (success) {
-          resolve(@YES);
-        } else {
+                          options:@{}
+                completionHandler:^(BOOL success) {
+                  if (success) {
+                    resolve(@YES);
+                  } else {
 #if TARGET_OS_SIMULATOR
-          // Simulator-specific code
-          if ([URL.absoluteString hasPrefix:@"tel:"]) {
-            RCTLogWarn(@"Unable to open the Phone app in the simulator for telephone URLs. URL:  %@", URL);
-            resolve(@NO);
-          } else {
-            reject(RCTErrorUnspecified, [NSString stringWithFormat:@"Unable to open URL: %@", URL], nil);
-          }
+                    // Simulator-specific code
+                    if ([URL.absoluteString hasPrefix:@"tel:"]) {
+                      RCTLogWarn(@"Unable to open the Phone app in the simulator for telephone URLs. URL:  %@", URL);
+                      resolve(@NO);
+                    } else {
+                      reject(RCTErrorUnspecified, [NSString stringWithFormat:@"Unable to open URL: %@", URL], nil);
+                    }
 #else
           // Device-specific code
           reject(RCTErrorUnspecified, [NSString stringWithFormat:@"Unable to open URL: %@", URL], nil);
 #endif
-        }
-      }];
+                  }
+                }];
 }
 
-RCT_EXPORT_METHOD(
-    canOpenURL : (NSURL *)URL resolve : (RCTPromiseResolveBlock)resolve reject : (__unused RCTPromiseRejectBlock)reject)
+- (void)canOpenURL:(NSString *)urlString
+           resolve:(RCTPromiseResolveBlock)resolve
+            reject:(__unused RCTPromiseRejectBlock)reject
 {
+  NSURL *URL = [RCTConvert NSURL:urlString];
   if (RCTRunningInAppExtension()) {
     // Technically Today widgets can open urls, but supporting that would require
     // a reference to the NSExtensionContext
@@ -148,7 +151,7 @@ RCT_EXPORT_METHOD(
   }
 }
 
-RCT_EXPORT_METHOD(getInitialURL : (RCTPromiseResolveBlock)resolve reject : (__unused RCTPromiseRejectBlock)reject)
+- (void)getInitialURL:(RCTPromiseResolveBlock)resolve reject:(__unused RCTPromiseRejectBlock)reject
 {
   NSURL *initialURL = nil;
   if (self.bridge.launchOptions[UIApplicationLaunchOptionsURLKey] != nullptr) {
@@ -163,18 +166,18 @@ RCT_EXPORT_METHOD(getInitialURL : (RCTPromiseResolveBlock)resolve reject : (__un
   resolve(RCTNullIfNil(initialURL.absoluteString));
 }
 
-RCT_EXPORT_METHOD(openSettings : (RCTPromiseResolveBlock)resolve reject : (__unused RCTPromiseRejectBlock)reject)
+- (void)openSettings:(RCTPromiseResolveBlock)resolve reject:(__unused RCTPromiseRejectBlock)reject
 {
   NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
   [RCTSharedApplication() openURL:url
-      options:@{}
-      completionHandler:^(BOOL success) {
-        if (success) {
-          resolve(nil);
-        } else {
-          reject(RCTErrorUnspecified, @"Unable to open app settings", nil);
-        }
-      }];
+                          options:@{}
+                completionHandler:^(BOOL success) {
+                  if (success) {
+                    resolve(nil);
+                  } else {
+                    reject(RCTErrorUnspecified, @"Unable to open app settings", nil);
+                  }
+                }];
 }
 
 RCT_EXPORT_METHOD(
