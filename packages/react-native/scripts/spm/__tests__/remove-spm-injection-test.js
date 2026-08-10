@@ -285,8 +285,8 @@ describe('generated-sources reconciliation on update', () => {
 
 // ---------------------------------------------------------------------------
 // artifactsVersionOverride — the marker field persisting an explicit
-// `spm add/update --version <ver>` pin (see setup-apple-spm.js /
-// sync-spm-autolinking.js). SETS on an explicit override; PRESERVES a
+// `spm add/update --version <ver>` pin (see setup-apple-spm.js's
+// determineVersion). SETS on an explicit override; PRESERVES a
 // previously-recorded value when the caller omits one; deinit drops it along
 // with the rest of the marker.
 // ---------------------------------------------------------------------------
@@ -367,9 +367,9 @@ describe('artifactsVersionOverride marker field', () => {
 });
 
 // ---------------------------------------------------------------------------
-// readArtifactsVersionOverride — pure fs read, used by the build-time sync
-// (sync-spm-autolinking.js) to prefer a pinned version over the one derived
-// from node_modules/react-native/package.json.
+// readArtifactsVersionOverride — pure fs read, used by setup-apple-spm.js's
+// determineVersion to prefer a pinned version over the one derived from
+// node_modules/react-native/package.json.
 // ---------------------------------------------------------------------------
 describe('readArtifactsVersionOverride', () => {
   it('returns null when no xcodeproj has been injected yet', () => {
