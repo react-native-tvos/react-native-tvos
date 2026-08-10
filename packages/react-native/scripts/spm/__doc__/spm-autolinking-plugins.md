@@ -97,6 +97,19 @@ module.exports = function plugin(context) {
       '/…/node_modules/expo/Package.swift',
       '/…/node_modules/expo/expo-module.config.json',
     ],
+    scriptPhases: [
+      // Build-time shell phases on the app target — SwiftPM's missing
+      // `script_phase`:
+      {
+        id: 'expo-constants.generate-app-config',
+        name: 'Generate Expo App Config',
+        script: '"$NODE_BINARY" .../createExpoConfig.js',
+        position: 'beforeCompile', // default: 'end'
+        inputPaths: ['$(SRCROOT)/../app.config.js'],
+        outputPaths: ['$(DERIVED_FILE_DIR)/EXConstants.bundle/app.config'],
+        alwaysOutOfDate: true,
+      },
+    ],
   };
 };
 ```
@@ -133,6 +146,89 @@ Unlike `flavoredFrameworks`, watch paths are best-effort: a non-array is ignored
 warning. Absolute-only, because the generated phase tests these paths with no cwd
 context. The kept paths are folded into `<outputDir>/.spm-sync-watch-paths`
 alongside RN's own, then deduped and sorted.
+
+#### `scriptPhases` — build-time shell phases on the app target
+
+SwiftPM has no equivalent of CocoaPods' `script_phase`, so a framework that must
+run a script during the app's build — `expo-constants` writing
+`EXConstants.bundle/app.config` is the first consumer — declares it here. Each
+entry is recorded to `<outputDir>/.spm-plugin-script-phases.json`, which
+`spm add` / `spm update` reads to emit one `PBXShellScriptBuildPhase` per entry
+on the injected app target:
+
+| Key | Meaning |
+|---|---|
+| `id` | **Stable key** — the ledger entry and the deterministic UUID seed. Charset `/^[@A-Za-z0-9_./-]+$/`, so a scoped npm name like `@expo/log-box` is a valid id; a `:` is not, because the id is hashed into the UUID seed as `plugin:<id>` and the separator must stay unambiguous. Renaming it is a *remove + add*, not a rename. |
+| `name` | The phase's display name in Xcode. Any non-empty single-line string — see **Hostile names** below. |
+| `script` | The shell body. |
+| `position` | `'beforeCompile'` or `'end'`. Optional, default `'end'` — see **Placement** below. |
+| `inputPaths` / `outputPaths` | Optional Xcode input/output file lists, which is what lets Xcode skip an up-to-date phase. |
+| `alwaysOutOfDate` | Optional; when `true` the phase runs on every build regardless of its file lists. |
+
+**Placement.** `'end'` appends at the true end of the target's `buildPhases` —
+after the app's own JS-bundle phase. `'beforeCompile'` lands directly after the
+"Sync SPM Autolinking" phase, which stays first because it regenerates the
+content everything else reads, and always **before Sources**: React Native never
+re-seats its own sync phase, so if you have dragged that below Sources your
+`beforeCompile` phases are seated ahead of Sources instead of following it.
+Phases sharing a position keep their declared order.
+
+**Position is enforced on every sync.** `add`/`update` compares where the plugin
+phases actually sit in `buildPhases` against the declared placement and, **only
+when the two differ**, lifts their membership lines and re-seats them in
+declared order. So changing `position` — or swapping two phases that share one —
+takes effect on the next `spm add`/`update`, with no remove + re-add. When they
+agree nothing is rewritten, which is what keeps an unchanged declaration
+re-syncing to a byte-identical project. The consequence worth knowing: a phase
+you **drag somewhere else in Xcode is moved back** to its declared position on
+the next sync, because the plugin's declaration is the source of truth. Only the
+`id` behaves differently — it is a key, not a label, so renaming it is a remove
++ add.
+
+Phases are injected by `spm add` / `spm update` **only**. The build-time `sync`
+rewrites the sidecar but never touches the `.xcodeproj`, so a newly declared
+phase appears on the next `add`/`update`, not on the next build. Each phase's
+UUID is derived from its `id` and recorded in the `.spm-injected.json` marker's
+`scriptPhases` map, so a re-run refreshes the phase's `name`, `script`, path
+lists, `alwaysOutOfDate` and placement in place, `update` removes phases that
+left the sidecar, and `deinit` reverts all of them.
+
+Validation is **fatal**, like `flavoredFrameworks` and unlike `watchPaths`: a
+non-array `scriptPhases`, a malformed entry, or a duplicate `id` (within one
+plugin or across plugins) aborts the run. A silently dropped phase would produce
+a green build whose generated content was never written — a runtime failure with
+no build-time signal — and two phases sharing an `id` would collapse onto one
+ledger key. `__proto__`, `constructor`, and `prototype` are rejected as ids even
+though the charset admits them: as keys of that ledger they never become own
+properties, so the phase would look recorded, disappear when the marker is
+serialized, and be unremovable by `deinit`.
+
+**Hostile names.** A `name` reaches the project file twice. In the `name` field —
+what Xcode displays — it lands verbatim, escaped as an OpenStep string, so any
+single-line string is expressible. Beside the phase's UUID, on the object's
+definition line and on its `buildPhases` member line, it also becomes a
+`/* … */` comment; those comments are cosmetic (Xcode regenerates them from the
+`name` field) but the text around them is scanned by delimiter, so the name is
+**normalized** there: `{}(),;="*/`, tabs and whitespace runs collapse to single
+spaces (`spm-pbxproj.js`'s `commentSafe`), falling back to the phase `id` —
+normalized the same way — and then to no comment at all if nothing survives
+either. Without that, a `{` in a comment would make the injector read
+the next object's body as this one's, and a `,` would make `deinit` delete the
+wrong line — corruption with no error. Only a line break is therefore rejected
+outright; a name is a display name, and no Xcode phase name spans lines.
+
+The injector's read of the sidecar is deliberately lenient — the file does not
+exist yet on a first `spm add`, and a stale or hand-edited copy must not break
+injection. An absent file yields no phases silently, an unparseable one warns,
+and a single entry failing the same checks (bad or reserved `id`, empty or
+multi-line `name`, missing `script`, unknown `position`, duplicate `id`) is
+**skipped, never coerced** — the sidecar is the only gate on a hand edit, so it
+enforces exactly the rules the plugin contract does.
+
+**Gating is the script's job.** The phase runs for every configuration and
+platform the target builds; if it should be a no-op for some of them (Release
+only, simulator only, …), the script must check `$CONFIGURATION` / `$PLATFORM_NAME`
+and exit early.
 
 ### Context (input)
 
@@ -188,6 +284,7 @@ wiring, it stays correct across repackaging.
 | `productDependencies` | The `AutolinkedAggregate` target's `dependencies:` (`.product(name:package:)`). |
 | `generatedSources` | Recorded for the codegen step to register (e.g. a module-registry `.swift`). |
 | `flavoredFrameworks` | Mandatory Debug/Release dynamic XCFramework pairs normalized outside SwiftPM. Malformed or incomplete entries are fatal. |
+| `scriptPhases` | Recorded for `spm add` / `update` to emit one `PBXShellScriptBuildPhase` per entry on the app target. Malformed entries and duplicate `id`s are fatal. |
 
 The plugin returns **data** — it never writes into React Native's generated
 tree. RN owns the merge, so a re-sync reproduces the same `Package.swift`
@@ -237,6 +334,20 @@ message identifying the framework. A framework silently dropping its modules
   A target without a Sources phase logs loudly and skips the wiring (injection
   otherwise succeeds). v1 targets only the injected app target and assumes
   `.swift` in practice (`.m`/`.mm` are mapped as future-proofing).
+- **Implemented & tested:** `scriptPhases`, contract through injection.
+  `invokePlugins` validates every entry fatally (`id` charset plus the reserved
+  `__proto__`/`constructor`/`prototype` names, a single-line `name`, a required
+  `script`, the `position` enum, optional path lists and `alwaysOutOfDate`, plus
+  duplicate `id`s), and the merge always
+  rewrites `.spm-plugin-script-phases.json` — `[]` when no plugin declares any,
+  so removing a plugin clears stale entries. The `spm add`/`update` xcodeproj
+  injector reads that sidecar and emits one `PBXShellScriptBuildPhase` per entry
+  on the app target at the requested position, recording the id→UUID map in the
+  `.spm-injected.json` marker so a re-run refreshes each phase's content in
+  place, re-seats it when its declared position or order changed, `update`
+  removes phases that left the sidecar, and `deinit` reverts
+  them. Like `flavoredFrameworks`, the
+  build-time `sync` only rewrites the sidecar; it never mutates the project.
 - **Co-design with Expo (not final):** codegen **provider ordering** — codegen
   must consume the same discovered module set the plugin contributes — is
   intentionally left for the first real plugin to drive to a stable shape.

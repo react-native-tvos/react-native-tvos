@@ -28,13 +28,55 @@ function generateUUID(seed /*: string */) /*: string */ {
 }
 
 /**
- * Escapes a string for OpenStep plist format if needed.
+ * Escapes a string for OpenStep plist format if needed. A literal CR or tab in
+ * a quoted value is legal but Xcode rewrites it to its escape on the next save,
+ * planting a spurious diff in the user's repo — so escape those too (a plugin
+ * `script` with CRLF line endings is how one gets in).
  */
 function quoteIfNeeded(s /*: string */) /*: string */ {
   if (/^[a-zA-Z0-9._/]+$/.test(s)) {
     return s;
   }
-  return `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}"`;
+  return `"${s
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t')}"`;
+}
+
+/**
+ * Normalize an UNTRUSTED label (a plugin's script-phase name, say) for use
+ * inside a pbxproj `/* … *​/` comment. Such a comment is purely cosmetic — Xcode
+ * regenerates it from the object's own fields — while the text AROUND it is
+ * scanned by delimiter, so every character that could be read as structure (or
+ * split the line) becomes a space, and runs of whitespace collapse:
+ * `findObjectByUuid` takes the first `{` after a UUID as that object's body,
+ * `removeArrayMembersByUuid` identifies a member line by its trailing comma, and
+ * `scanToClose` treats a `"` as opening a string. Stable (same input ⇒ same
+ * output), so re-syncing stays byte-identical. Returns '' when nothing survives;
+ * callers supply the fallback label.
+ *
+ * Comments RN writes to Xcode's OWN convention (`XCLocalSwiftPackageReference
+ * "build/xcframeworks"`, `<file> in Sources`) are NOT run through this: they are
+ * fixed strings, and normalizing them would rewrite bytes Xcode itself produces —
+ * a spurious diff in the user's repo on their next save.
+ */
+function commentSafe(s /*: string */) /*: string */ {
+  return s
+    .replace(/[{}(),;="*/\s]/g, ' ')
+    .replace(/ +/g, ' ')
+    .trim();
+}
+
+/**
+ * Format the ` /* … *​/` suffix pbxproj writes after a UUID, omitted entirely for
+ * an empty label (an uncommented UUID is well-formed — Xcode writes those itself
+ * for unnamed groups). Labels that did not originate in this repo must already
+ * have been through `commentSafe`.
+ */
+function uuidComment(comment /*: ?string */) /*: string */ {
+  return comment != null && comment !== '' ? ` /* ${comment} */` : '';
 }
 
 /**
@@ -47,11 +89,7 @@ function quoteIfNeeded(s /*: string */) /*: string */ {
 function serializeEntry(
   entry /*: {readonly uuid: string, readonly comment?: ?string, readonly fields: {readonly [string]: string}, ...} */,
 ) /*: string */ {
-  const comment =
-    entry.comment != null && entry.comment !== ''
-      ? ` /* ${entry.comment} */`
-      : '';
-  let out = `\t\t${entry.uuid}${comment} = {`;
+  let out = `\t\t${entry.uuid}${uuidComment(entry.comment)} = {`;
   const fieldKeys = Object.keys(entry.fields);
   if (
     fieldKeys.length <= 3 &&
@@ -343,8 +381,7 @@ function addArrayMembers(
   const memberIndent = fieldIndent + '\t';
   const line = (
     m /*: {readonly uuid: string, readonly comment?: ?string, ...} */,
-  ) =>
-    `${memberIndent}${m.uuid}${m.comment != null && m.comment !== '' ? ` /* ${m.comment} */` : ''},\n`;
+  ) => `${memberIndent}${m.uuid}${uuidComment(m.comment)},\n`;
 
   const field = findField(text, obj, key);
   if (field != null) {
@@ -495,7 +532,8 @@ function removeObjectByUuid(
  * `uuids` from every `( … )` list in the file (packageReferences,
  * packageProductDependencies, a Frameworks phase's `files`, buildPhases, …).
  * Only matches member lines (trailing comma), never the object-definition line
- * (which ends in `= {`), so it composes safely with removeObjectByUuid.
+ * (which ends in `= {`), so it composes safely with removeObjectByUuid — which
+ * holds because no comment can contain a comma (see commentSafe).
  */
 function removeArrayMembersByUuid(
   text /*: string */,
@@ -628,6 +666,8 @@ module.exports = {
   namespacedUUID,
   serializeEntry,
   quoteIfNeeded,
+  commentSafe,
+  uuidComment,
   // Surgical-edit toolkit (in-place injection):
   scanString,
   scanToClose,

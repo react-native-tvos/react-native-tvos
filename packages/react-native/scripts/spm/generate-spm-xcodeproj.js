@@ -26,6 +26,7 @@ const {parseConfigCommandJson} = require('./generate-spm-autolinking-config');
 const {
   addArrayMembers,
   addArrayStringValues,
+  commentSafe,
   ensureScalarField,
   findApplicationTargets,
   findField,
@@ -42,13 +43,20 @@ const {
   removeObjectByUuid,
   serializeEntry,
   setScalarField,
+  uuidComment,
 } = require('./spm-pbxproj');
-const {makeLogger, remotePackageConfig} = require('./spm-utils');
+const {
+  isValidScriptPhaseId,
+  isValidScriptPhaseName,
+  makeLogger,
+  remotePackageConfig,
+} = require('./spm-utils');
 const fs = require('node:fs');
 const path = require('node:path');
 
 /*:: import type {
   FlavoredFrameworkManifestEntry,
+  PluginScriptPhase,
   XcframeworkSlice,
 } from './spm-types'; */
 
@@ -71,6 +79,17 @@ const SPM_GENERATED_SOURCES_MANIFEST = path.join(
   'generated',
   'autolinking',
   '.spm-plugin-generated-sources.json',
+);
+
+// Manifest of plugin-contributed build-time shell phases for the app target —
+// SwiftPM has no `script_phase`, so a framework that must generate content into
+// the app bundle (expo-constants' `EXConstants.bundle/app.config`) declares one
+// through the plugin contract.
+const SPM_SCRIPT_PHASES_MANIFEST = path.join(
+  'build',
+  'generated',
+  'autolinking',
+  '.spm-plugin-script-phases.json',
 );
 
 // The single navigator group all injected generated sources are parented under
@@ -138,6 +157,9 @@ type BuildSettingChange = {
   // CocoaPods is deintegrated. Deinit restores the original.
   replacedScalars?: {[string]: string},
 };
+// An array field injection CREATED (rather than appended to a pre-existing
+// one), so deinit removes the whole field and lands byte-identical.
+type CreatedArrayField = {container: 'project' | 'target', key: string};
 // A plugin-contributed source, normalized for pbxproj emission. `path` is
 // SRCROOT-relative when under the app root, else absolute; `sourceTree` is the
 // matching pbxproj token ('SOURCE_ROOT' or '"<absolute>"').
@@ -265,30 +287,42 @@ function spmGraphToEntries(
   return {localRefs, remoteRef, productDeps, buildFiles};
 }
 
-// Sync SPM Autolinking: timestamp check + conditional node re-run. Shared by
-// the build phase (safety net) and the scheme pre-action (the one that
-// actually fires before SPM resolution, so a single build picks up
-// dep-graph changes from `npm install`).
-// Build a PBXShellScriptBuildPhase entry (the "Sync SPM Autolinking" phase).
+/**
+ * Build a PBXShellScriptBuildPhase entry. `inputPaths`/`outputPaths` accept
+ * either a plain path array or an already-serialized pbxproj list.
+ * `alwaysOutOfDate` emits Xcode's own `alwaysOutOfDate = 1;` (unquoted, right
+ * after `isa`, so a project Xcode rewrites stays diff-free) and is omitted
+ * entirely when false. `comment` overrides the cosmetic `/* … *​/` label, which
+ * otherwise derives from `name`.
+ */
 function shellScriptPhase(
   phaseUUID /*: string */,
   name /*: string */,
   script /*: string */,
-  options /*: {inputPaths?: string, outputPaths?: string} */ = {},
+  options /*: {inputPaths?: ?(string | ReadonlyArray<string>), outputPaths?: ?(string | ReadonlyArray<string>), alwaysOutOfDate?: ?boolean, comment?: string} */ = {},
 ) /*: {uuid: string, comment: string, fields: {[string]: string}} */ {
   const empty = '(\n\t\t\t)';
+  const pathList = (
+    value /*: ?(string | ReadonlyArray<string>) */,
+  ) /*: string */ => {
+    if (value == null) {
+      return empty;
+    }
+    return typeof value === 'string' ? value : pbxPathList(value);
+  };
   return {
     uuid: phaseUUID,
-    comment: name,
+    comment: options.comment ?? name,
     fields: {
       isa: 'PBXShellScriptBuildPhase',
+      ...(options.alwaysOutOfDate === true ? {alwaysOutOfDate: '1'} : {}),
       buildActionMask: '2147483647',
       files: empty,
       inputFileListPaths: empty,
-      inputPaths: options.inputPaths ?? empty,
+      inputPaths: pathList(options.inputPaths),
       name: quoteIfNeeded(name),
       outputFileListPaths: empty,
-      outputPaths: options.outputPaths ?? empty,
+      outputPaths: pathList(options.outputPaths),
       runOnlyForDeploymentPostprocessing: '0',
       shellPath: '/bin/sh',
       shellScript: quoteIfNeeded(script),
@@ -468,11 +502,126 @@ ${copies}
 `;
 }
 
+/**
+ * The app target's `buildPhases` members, in the order the file lists them.
+ * Line-leading UUIDs only: a member's trailing comment carries a plugin-supplied
+ * phase name, and one that happens to look like a UUID would otherwise read as an
+ * extra member — leaving the actual order permanently at odds with the declared
+ * one, and offering a non-member as a re-seating anchor.
+ */
+function buildPhaseOrder(
+  text /*: string */,
+  target /*: {bodyOpen: number, bodyClose: number, ...} */,
+) /*: Array<string> */ {
+  const field = findField(text, target, 'buildPhases');
+  if (field == null) {
+    return [];
+  }
+  return [...field.value.matchAll(/^[\t ]*([0-9A-Fa-f]{24})\b/gm)].map(
+    m => m[1],
+  );
+}
+
+/**
+ * Rewrite the trailing comment Xcode keeps beside a UUID — on the object's own
+ * definition line and on every array-member line referencing it. Xcode
+ * normalizes those comments on its next write, so leaving a stale one behind
+ * (after a plugin renames a phase) plants a spurious diff in the user's repo.
+ * No-op when the comment already reads `comment`.
+ */
+function setUuidComment(
+  text /*: string */,
+  uuid /*: string */,
+  comment /*: string */,
+) /*: string */ {
+  return text.replace(
+    new RegExp(`(\\n[\\t ]*${uuid})(?: /\\* [^\\n]*? \\*/)?( = \\{|,)`, 'g'),
+    (_match, head, tail) => `${head}${uuidComment(comment)}${tail}`,
+  );
+}
+
+/*:: type SeatedPhase = {uuid: string, comment: string, position: 'beforeCompile' | 'end'}; */
+
+/**
+ * Seat the plugin phases in the order the manifest declares: `beforeCompile`
+ * ones directly after the Sync SPM Autolinking phase (which stays first — it
+ * regenerates the content everything else reads) and always before Sources,
+ * `end` ones at the true end of `buildPhases`, after the app's own JS-bundle
+ * phase. The other members keep their relative order.
+ *
+ * `beforeCompile` is anchored on Sources, not merely on the sync phase: RN never
+ * re-seats its own sync phase, so a user who drags it below Sources would
+ * otherwise have every `beforeCompile` phase seated after compilation — the one
+ * thing the position promises not to do. Without a Sources phase the sync phase
+ * is the anchor.
+ *
+ * Rewrites the membership lines ONLY when the actual order differs from that,
+ * which is what keeps an unchanged sync byte-identical — `addBuildPhaseAfter`
+ * and `addArrayMembers` both short-circuit on a UUID that is already a member,
+ * so re-placing has to be driven from here. A phase a user dragged elsewhere in
+ * Xcode is therefore moved back: the declared position wins.
+ */
+function seatScriptPhases(
+  input /*: string */,
+  targetUuid /*: string */,
+  syncPhaseUuid /*: string */,
+  phases /*: ReadonlyArray<SeatedPhase> */,
+  sourcesPhaseUuid /*: ?string */,
+) /*: string */ {
+  const pluginUuids = new Set(phases.map(p => p.uuid));
+  const actual = buildPhaseOrder(
+    input,
+    findApplicationTargetByUuid(input, targetUuid),
+  );
+  const others = actual.filter(uuid => !pluginUuids.has(uuid));
+  const beforeCompile = phases.filter(p => p.position === 'beforeCompile');
+  const atEnd = phases.filter(p => p.position !== 'beforeCompile');
+  const sourcesAt =
+    sourcesPhaseUuid != null ? others.indexOf(sourcesPhaseUuid) : -1;
+  const afterSyncAt = others.indexOf(syncPhaseUuid) + 1;
+  // 0 — no sync phase member, or Sources ahead of it — makes the beforeCompile
+  // phases lead the array, matching addArrayMembers' prepend fallback below.
+  const insertAt =
+    sourcesAt >= 0 ? Math.min(afterSyncAt, sourcesAt) : afterSyncAt;
+  const desired = [
+    ...others.slice(0, insertAt),
+    ...beforeCompile.map(p => p.uuid),
+    ...others.slice(insertAt),
+    ...atEnd.map(p => p.uuid),
+  ];
+  if (
+    desired.length === actual.length &&
+    desired.every((uuid, i) => uuid === actual[i])
+  ) {
+    return input;
+  }
+  // File-wide removal is safe for a shell-phase UUID: it appears on its own
+  // definition line (which ends `= {`, never matched) and on `buildPhases`
+  // member lines. The uncovered case is a user who copied the same phase object
+  // into a SECOND target's buildPhases — it is stripped there too.
+  let text = removeArrayMembersByUuid(input, [...pluginUuids]);
+  const target = () => findApplicationTargetByUuid(text, targetUuid);
+  let anchor = insertAt > 0 ? others[insertAt - 1] : null;
+  for (const member of beforeCompile) {
+    text =
+      anchor == null
+        ? addArrayMembers(text, target(), 'buildPhases', [member], {
+            prepend: true,
+          })
+        : addBuildPhaseAfter(text, target(), anchor, member);
+    anchor = member.uuid;
+  }
+  for (const member of atEnd) {
+    text = addArrayMembers(text, target(), 'buildPhases', [member]);
+  }
+  return text;
+}
+
 function addBuildPhaseAfter(
   text /*: string */,
   target /*: {bodyOpen: number, bodyClose: number, ...} */,
   afterUuid /*: string */,
-  member /*: {uuid: string, comment: string} */,
+  member /*: {uuid: string, comment: string, ...} */,
 ) /*: string */ {
   const field = findField(text, target, 'buildPhases');
   if (field == null || field.value.includes(member.uuid)) {
@@ -487,7 +636,7 @@ function addBuildPhaseAfter(
   const absoluteStart = field.valueStart + after.index;
   const lineEnd = text.indexOf('\n', absoluteStart + after[0].length);
   const indent = after[2];
-  const line = `\n${indent}${member.uuid} /* ${member.comment} */,`;
+  const line = `\n${indent}${member.uuid}${uuidComment(member.comment)},`;
   return text.slice(0, lineEnd) + line + text.slice(lineEnd);
 }
 
@@ -722,6 +871,18 @@ function escapeXmlAttribute(s /*: string */) /*: string */ {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
+}
+
+// The inverse of escapeXmlAttribute. `&amp;` is expanded LAST so an entity that
+// was itself escaped (`&lt;` → `&amp;lt;`) round-trips back to its own text
+// rather than to `<`.
+function unescapeXmlAttribute(s /*: string */) /*: string */ {
+  return s
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&');
 }
 
 function generateXcscheme(
@@ -1078,7 +1239,8 @@ function injectSpmIntoPbxproj(
   hermesCliPath /*: ?string */ = null,
   generatedSources /*: ReadonlyArray<GeneratedSource> */ = [],
   flavoredFrameworks /*: ReadonlyArray<FlavoredFrameworkManifestEntry> */ = [],
-) /*: {text: string, injectedUuids: Array<string>, createdArrayFields: Array<{container: 'project' | 'target', key: string}>, buildSettingChanges: Array<BuildSettingChange>, generatedSourceUuids: {[string]: Array<string>}} */ {
+  scriptPhases /*: ReadonlyArray<PluginScriptPhase> */ = [],
+) /*: {text: string, injectedUuids: Array<string>, createdArrayFields: Array<CreatedArrayField>, buildSettingChanges: Array<BuildSettingChange>, generatedSourceUuids: {[string]: Array<string>}, scriptPhaseUuids: {[string]: string}} */ {
   let text = input;
   const mkUuid = (section /*: string */, id /*: string */) =>
     namespacedUUID(plan.rootUuid, section, id);
@@ -1111,10 +1273,7 @@ function injectSpmIntoPbxproj(
   insertObjects('XCSwiftPackageProductDependency', entries.productDeps);
   insertObjects('PBXBuildFile', entries.buildFiles);
 
-  // Track array fields we CREATE (vs. append to a pre-existing one) so deinit
-  // can remove the whole field and land byte-identical to the original.
-  const createdArrayFields /*: Array<{container: 'project' | 'target', key: string}> */ =
-    [];
+  const createdArrayFields /*: Array<CreatedArrayField> */ = [];
 
   // 2. packageReferences on the PBXProject.
   const pkgRefMembers = [
@@ -1305,9 +1464,14 @@ function injectSpmIntoPbxproj(
         const fileRefUuid = mkUuid('PBXFileReference', `gensrc:${src.path}`);
         const buildFileUuid = mkUuid('PBXBuildFile', `gensrc:${src.path}`);
         generatedSourceUuids[src.path] = [fileRefUuid, buildFileUuid];
+        // The name/path VALUES stay verbatim (escaped) — only the cosmetic
+        // comments are normalized, falling back to the normalized path (the
+        // ledger key) and then to no comment at all, which is well-formed.
+        const label = commentSafe(src.name) || commentSafe(src.path);
+        const inSources = label === '' ? '' : `${label} in Sources`;
         fileRefs.push({
           uuid: fileRefUuid,
-          comment: src.name,
+          comment: label,
           fields: {
             isa: 'PBXFileReference',
             lastKnownFileType: src.fileType,
@@ -1318,17 +1482,14 @@ function injectSpmIntoPbxproj(
         });
         buildFiles.push({
           uuid: buildFileUuid,
-          comment: `${src.name} in Sources`,
+          comment: inSources,
           fields: {
             isa: 'PBXBuildFile',
-            fileRef: `${fileRefUuid} /* ${src.name} */`,
+            fileRef: `${fileRefUuid}${uuidComment(label)}`,
           },
         });
-        sourcesMembers.push({
-          uuid: buildFileUuid,
-          comment: `${src.name} in Sources`,
-        });
-        groupChildren.push({uuid: fileRefUuid, comment: src.name});
+        sourcesMembers.push({uuid: buildFileUuid, comment: inSources});
+        groupChildren.push({uuid: fileRefUuid, comment: label});
       }
       insertObjects('PBXFileReference', fileRefs);
       insertObjects('PBXBuildFile', buildFiles);
@@ -1388,12 +1549,87 @@ function injectSpmIntoPbxproj(
     }
   }
 
+  // 9. Plugin-declared build phases (SwiftPM has no `script_phase`). Each
+  //    phase's UUID is keyed on its plugin id, so re-runs refresh in place and
+  //    `deinit` reverses it.
+  const scriptPhaseUuids /*: {[string]: string} */ = {};
+  if (scriptPhases.length > 0) {
+    const seated /*: Array<SeatedPhase> */ = [];
+    for (const scriptPhase of scriptPhases) {
+      const uuid = mkUuid(
+        'PBXShellScriptBuildPhase',
+        `plugin:${scriptPhase.id}`,
+      );
+      scriptPhaseUuids[scriptPhase.id] = uuid;
+      // The full name goes into the `name` field (escaped) — that is what Xcode
+      // displays. The cosmetic comments get it normalized, falling back to the
+      // normalized id and then to no comment at all, which is well-formed. The
+      // fallback is sanitized rather than trusted to the id charset, so widening
+      // that charset can never reach a comment.
+      const comment =
+        commentSafe(scriptPhase.name) || commentSafe(scriptPhase.id);
+      const entry = shellScriptPhase(
+        uuid,
+        scriptPhase.name,
+        scriptPhase.script,
+        {
+          inputPaths: scriptPhase.inputPaths,
+          outputPaths: scriptPhase.outputPaths,
+          alwaysOutOfDate: scriptPhase.alwaysOutOfDate,
+          comment,
+        },
+      );
+      if (!text.includes(uuid)) {
+        text = insertObjectsIntoSection(
+          text,
+          'PBXShellScriptBuildPhase',
+          serializeEntry(entry),
+        );
+      } else {
+        // Rewrite the fields we own unconditionally — byte-identical when the
+        // plugin's declaration hasn't changed, so no content hashing is needed.
+        // Each write shifts offsets, hence the re-lookup per field.
+        for (const key of [
+          'name',
+          'shellScript',
+          'inputPaths',
+          'outputPaths',
+        ]) {
+          const current = findObjectByUuid(text, uuid);
+          if (current != null) {
+            text = setScalarField(text, current, key, entry.fields[key]);
+          }
+        }
+        // Flipping alwaysOutOfDate back off means REMOVING the field —
+        // setScalarField would only ever write a value.
+        const current = findObjectByUuid(text, uuid);
+        if (current != null) {
+          text =
+            scriptPhase.alwaysOutOfDate === true
+              ? setScalarField(text, current, 'alwaysOutOfDate', '1')
+              : removeField(text, current, 'alwaysOutOfDate');
+        }
+      }
+      injectedUuids.push(uuid);
+      text = setUuidComment(text, uuid, comment);
+      seated.push({uuid, comment, position: scriptPhase.position});
+    }
+    text = seatScriptPhases(
+      text,
+      plan.targetUuid,
+      syncPhaseUuid,
+      seated,
+      sourcesPhaseUuid,
+    );
+  }
+
   return {
     text,
     injectedUuids,
     createdArrayFields,
     buildSettingChanges,
     generatedSourceUuids,
+    scriptPhaseUuids,
   };
 }
 
@@ -1838,6 +2074,86 @@ function readGeneratedSourcesManifest(
   return out;
 }
 
+const nonEmptyStrings = (value /*: unknown */) /*: ?Array<string> */ =>
+  Array.isArray(value)
+    ? value.filter(p => typeof p === 'string' && p.length > 0)
+    : null;
+
+/**
+ * Read the plugin script-phases manifest at
+ * `<appRoot>/build/generated/autolinking/.spm-plugin-script-phases.json`.
+ * Absent, unparseable, or malformed → `[]`. Lenient by design even though the
+ * plugin contract validates these entries fatally at invoke time: the sidecar
+ * legitimately does not exist yet on a first `spm add`, and a stale or
+ * hand-edited file must not break injection. This reader is the ONLY gate on
+ * such a file, so it applies the same id/name rules (from spm-utils) that
+ * invokePlugins enforces fatally.
+ */
+function readScriptPhasesManifest(
+  appRoot /*: string */,
+) /*: Array<PluginScriptPhase> */ {
+  const manifestPath = path.join(appRoot, SPM_SCRIPT_PHASES_MANIFEST);
+  let raw /*: string */ = '';
+  try {
+    raw = fs.readFileSync(manifestPath, 'utf8');
+  } catch {
+    return [];
+  }
+  let entries /*: unknown */ = null;
+  try {
+    entries = JSON.parse(raw);
+  } catch {
+    log(
+      `warning: could not parse ${SPM_SCRIPT_PHASES_MANIFEST}; ` +
+        'skipping script phases.',
+    );
+    return [];
+  }
+  if (!Array.isArray(entries)) {
+    return [];
+  }
+  const out /*: Array<PluginScriptPhase> */ = [];
+  for (const entry of entries) {
+    if (
+      entry == null ||
+      typeof entry !== 'object' ||
+      !isValidScriptPhaseId(entry.id) ||
+      !isValidScriptPhaseName(entry.name) ||
+      typeof entry.script !== 'string' ||
+      entry.script.length === 0 ||
+      // An unknown position is a malformed entry, not something to coerce: it
+      // would silently run somewhere the plugin didn't ask for.
+      (entry.position != null &&
+        entry.position !== 'beforeCompile' &&
+        entry.position !== 'end') ||
+      // Dedupe by id — the id seeds the phase's UUID, so a duplicate would
+      // insert two objects with identical UUIDs.
+      out.some(phase => phase.id === entry.id)
+    ) {
+      continue;
+    }
+    const phase /*: PluginScriptPhase */ = {
+      id: entry.id,
+      name: entry.name,
+      script: entry.script,
+      position: entry.position ?? 'end',
+    };
+    const inputPaths = nonEmptyStrings(entry.inputPaths);
+    const outputPaths = nonEmptyStrings(entry.outputPaths);
+    if (inputPaths != null) {
+      phase.inputPaths = inputPaths;
+    }
+    if (outputPaths != null) {
+      phase.outputPaths = outputPaths;
+    }
+    if (typeof entry.alwaysOutOfDate === 'boolean') {
+      phase.alwaysOutOfDate = entry.alwaysOutOfDate;
+    }
+    out.push(phase);
+  }
+  return out;
+}
+
 /**
  * Read the `.spm-injected.json` marker of a previously-injected project, or
  * null when absent/unreadable. Used to reconcile generated sources on `update`
@@ -1845,7 +2161,7 @@ function readGeneratedSourcesManifest(
  */
 function readMarker(
   xcodeprojPath /*: string */,
-) /*: ?{generatedSources?: {[string]: Array<string>}, artifactsVersionOverride?: ?string, configCommand?: ?Array<string>, buildSettingChanges?: Array<BuildSettingChange>, ...} */ {
+) /*: ?{generatedSources?: {[string]: Array<string>}, scriptPhases?: {[string]: string}, artifactsVersionOverride?: ?string, configCommand?: ?Array<string>, buildSettingChanges?: Array<BuildSettingChange>, createdArrayFields?: Array<CreatedArrayField>, scheme?: {file?: ?string, created?: ?boolean}, ...} */ {
   const markerPath = path.join(xcodeprojPath, SPM_INJECTED_MARKER);
   try {
     // $FlowFixMe[incompatible-return] JSON.parse returns any
@@ -1928,6 +2244,39 @@ function readPinnedConfigCommand(appRoot /*: string */) /*: ?Array<string> */ {
 }
 
 /**
+ * Union the array fields RN has created across syncs, deduped by container+key.
+ *
+ * THE CANONICAL STATEMENT of why anything RN created is recorded stickily (the
+ * marker's `scheme.created` carries it forward for the same reason): a re-sync
+ * re-injects from a baseline with only the BUILD SETTINGS reversed, so it finds
+ * whatever the first run created already there and reports creating nothing. Once
+ * RN has created something, that fact has to be carried forward, or the new
+ * marker forgets it and `deinit` leaves an empty `packageReferences` /
+ * `packageProductDependencies` behind and the generated scheme on disk.
+ *
+ * The record licenses removal; it does not order it. `deinit` still checks that
+ * what it is about to remove is RN's (see its step 1 and isGeneratedScheme), so
+ * carrying forward a field the user has since taken over — or deleted by hand —
+ * is safe.
+ */
+function mergeCreatedArrayFields(
+  previous /*: ReadonlyArray<CreatedArrayField> */,
+  current /*: ReadonlyArray<CreatedArrayField> */,
+) /*: Array<CreatedArrayField> */ {
+  const merged = [...previous];
+  for (const field of current) {
+    if (
+      !merged.some(
+        seen => seen.container === field.container && seen.key === field.key,
+      )
+    ) {
+      merged.push(field);
+    }
+  }
+  return merged;
+}
+
+/**
  * Add SPM packages to a user's EXISTING xcodeproj in place. Returns
  * {status: 'injected', target} on success, or {status: 'refused', reason}
  * when the project can't be safely edited (caller surfaces it; fail-loud).
@@ -1952,6 +2301,7 @@ function injectSpmIntoExistingXcodeproj(
   const remote = remotePackageConfig(appRoot);
   const hermesCliPath = resolveHermesCliPathSetting(reactNativeRoot);
   const generatedSources = readGeneratedSourcesManifest(appRoot);
+  const scriptPhases = readScriptPhasesManifest(appRoot);
   const flavoredFrameworks = readFlavoredFrameworksManifest(appRoot).frameworks;
 
   const prevMarker = readMarker(xcodeprojPath);
@@ -1981,6 +2331,15 @@ function injectSpmIntoExistingXcodeproj(
       namespacedUUID(plan.rootUuid, 'PBXGroup', SPM_GENERATED_SOURCES_GROUP_ID),
     );
   }
+  // Same reconciliation for script phases, keyed on the plugin-supplied id.
+  const prevScriptPhases /*: {[string]: string} */ =
+    prevMarker?.scriptPhases ?? {};
+  const currentPhaseIds = new Set(scriptPhases.map(p => p.id));
+  for (const id of Object.keys(prevScriptPhases)) {
+    if (!currentPhaseIds.has(id)) {
+      staleUuids.push(prevScriptPhases[id]);
+    }
+  }
   // Re-apply generated settings from a clean recorded baseline. This removes
   // linker entries for plugin frameworks that disappeared and keeps the new
   // marker a complete inverse after an idempotent update.
@@ -2001,6 +2360,7 @@ function injectSpmIntoExistingXcodeproj(
     createdArrayFields,
     buildSettingChanges,
     generatedSourceUuids,
+    scriptPhaseUuids,
   } = injectSpmIntoPbxproj(
     base,
     {
@@ -2015,6 +2375,7 @@ function injectSpmIntoExistingXcodeproj(
     hermesCliPath,
     generatedSources,
     flavoredFrameworks,
+    scriptPhases,
   );
 
   const changed = writeIfChanged(pbxprojPath, text);
@@ -2070,16 +2431,26 @@ function injectSpmIntoExistingXcodeproj(
         target: plan.target.name,
         targetUuid: plan.target.uuid,
         injectedUuids: Array.from(new Set(injectedUuids)).sort(),
-        createdArrayFields,
+        createdArrayFields: mergeCreatedArrayFields(
+          prevMarker?.createdArrayFields ?? [],
+          createdArrayFields,
+        ),
         buildSettingChanges,
         // Normalized path → [fileRefUuid, buildFileUuid]. Read back on the next
         // `update` to reconcile away entries that left the manifest.
         generatedSources: generatedSourceUuids,
+        // Plugin phase id → its PBXShellScriptBuildPhase UUID, reconciled the
+        // same way.
+        scriptPhases: scriptPhaseUuids,
         artifactsVersionOverride,
         configCommand,
         scheme: {
           file: schemeResult.file,
-          created: schemeResult.status === 'created',
+          // Sticky — see mergeCreatedArrayFields for why a later sync cannot
+          // observe this for itself.
+          created:
+            schemeResult.status === 'created' ||
+            prevMarker?.scheme?.created === true,
         },
       },
       null,
@@ -2089,6 +2460,52 @@ function injectSpmIntoExistingXcodeproj(
 
   ensureStubPackages(appRoot);
   return {status: 'injected', target: plan.target.name};
+}
+
+/** The sync pre-action's script, unescaped, or null when the scheme has none. */
+function schemePreActionScript(xml /*: string */) /*: ?string */ {
+  const titleIdx = xml.indexOf('title = "Sync SPM Autolinking"');
+  if (titleIdx < 0) {
+    return null;
+  }
+  const marker = 'scriptText = "';
+  const start = xml.indexOf(marker, titleIdx);
+  if (start < 0) {
+    return null;
+  }
+  const valueStart = start + marker.length;
+  // escapeXmlAttribute maps a literal `"` to `&quot;`, so the next `"` is always
+  // the closing delimiter.
+  const valueEnd = xml.indexOf('"', valueStart);
+  return valueEnd < 0
+    ? null
+    : unescapeXmlAttribute(xml.slice(valueStart, valueEnd));
+}
+
+/**
+ * Whether `xml` is still, byte for byte, the scheme RN generates for this target
+ * — everything but the pre-action's script, which RN rewrites in place on every
+ * sync and which varies with the app's react-native path, so it cannot be part of
+ * an ownership test.
+ *
+ * `deinit` deletes a scheme the marker says RN created only while this holds. A
+ * user may replace a generated scheme with one of their own under the same name
+ * (same target, so `injectOrCreateScheme` finds and updates it, and the created
+ * record stays), and destroying that is unrecoverable where leaving a scheme
+ * behind is not — so the harmless way of being wrong wins: a generated scheme the
+ * user has since edited leaks, minus its pre-action.
+ */
+function isGeneratedScheme(
+  xml /*: string */,
+  appName /*: string */,
+  targetUuid /*: string */,
+  projName /*: string */,
+) /*: boolean */ {
+  const script = schemePreActionScript(xml);
+  return (
+    script != null &&
+    xml === generateXcscheme(appName, targetUuid, projName, script)
+  );
 }
 
 /**
@@ -2197,7 +2614,15 @@ function removeSpmInjection(
       f.container === 'project'
         ? findProjectObject(text)
         : findObjectByUuid(text, marker.targetUuid);
-    if (obj != null) {
+    if (obj == null) {
+      continue;
+    }
+    // The record says the field did not exist before RN created it, which is
+    // necessary but not sufficient: anything still in it after our own members
+    // are gone is the user's (their own SPM package, added to the same field),
+    // and dropping the field would orphan it.
+    const field = findField(text, obj, f.key);
+    if (field != null && /^\(\s*\)$/.test(field.value)) {
       text = removeField(text, obj, f.key);
     }
   }
@@ -2217,7 +2642,8 @@ function removeSpmInjection(
   writeIfChanged(pbxprojPath, text);
   log(`Removed SPM injection from ${path.relative(appRoot, pbxprojPath)}`);
 
-  // 3. Scheme: delete it if injection created it, else strip the pre-action.
+  // 3. Scheme: delete it if injection created it AND still owns its contents,
+  //    else strip the pre-action and leave the file (see isGeneratedScheme).
   const scheme = marker.scheme;
   if (scheme != null && scheme.file != null) {
     const schemePath = path.join(
@@ -2226,11 +2652,21 @@ function removeSpmInjection(
       'xcschemes',
       scheme.file,
     );
-    if (scheme.created === true) {
-      fs.rmSync(schemePath, {force: true});
-    } else if (fs.existsSync(schemePath)) {
+    if (fs.existsSync(schemePath)) {
       const xml = fs.readFileSync(schemePath, 'utf8');
-      writeIfChanged(schemePath, removePreActionFromScheme(xml));
+      const ours =
+        scheme.created === true &&
+        isGeneratedScheme(
+          xml,
+          marker.target,
+          marker.targetUuid,
+          path.basename(xcodeprojPath, '.xcodeproj'),
+        );
+      if (ours) {
+        fs.rmSync(schemePath, {force: true});
+      } else {
+        writeIfChanged(schemePath, removePreActionFromScheme(xml));
+      }
     }
   }
 
@@ -2249,6 +2685,7 @@ module.exports = {
   ensureStubPackages,
   buildSpmDependencyGraph,
   spmGraphToEntries,
+  buildPhaseOrder,
   planInjection,
   injectSpmIntoPbxproj,
   injectSpmIntoExistingXcodeproj,
@@ -2260,5 +2697,6 @@ module.exports = {
   findInjectedXcodeproj,
   readArtifactsVersionOverride,
   readPinnedConfigCommand,
+  readScriptPhasesManifest,
   SPM_INJECTED_MARKER,
 };

@@ -219,6 +219,21 @@ export type PluginProductDep = {name: string, package: string};
 // in the codegen package so it compiles.
 export type PluginGeneratedSource = {path: string};
 
+// A build-time shell phase for the app target — SwiftPM's missing analog of
+// CocoaPods' `script_phase`. `id` is the stable ledger key and deterministic
+// UUID seed (charset /^[@A-Za-z0-9_./-]+$/, so a scoped npm name works; `:` is
+// excluded because the seed is `plugin:<id>`); `position` is normalized to 'end'
+// by invokePlugins so consumers never re-derive the default.
+export type PluginScriptPhase = {
+  id: string,
+  name: string,
+  script: string,
+  position: 'beforeCompile' | 'end',
+  inputPaths?: Array<string>,
+  outputPaths?: Array<string>,
+  alwaysOutOfDate?: boolean,
+};
+
 // A plugin-declared dynamic XCFramework pair. RN validates both paths, stages
 // immutable app-local slots, and links/embeds the selected framework outside
 // SwiftPM.
@@ -302,6 +317,10 @@ export type PluginResult = {
   // for staleness, e.g. the plugin dep's own `Package.swift` and per-module
   // manifests. Folded into `.spm-sync-watch-paths` by main().
   watchPaths: Array<string>,
+  // Build-time shell phases for the app target, recorded to
+  // `.spm-plugin-script-phases.json` by main() and injected by `spm add`/
+  // `update`.
+  scriptPhases: Array<PluginScriptPhase>,
 };
 
 export type SpmAutolinkingPlugin = (context: PluginContext) => ?{
@@ -310,6 +329,11 @@ export type SpmAutolinkingPlugin = (context: PluginContext) => ?{
   generatedSources?: Array<PluginGeneratedSource>,
   flavoredFrameworks?: Array<PluginFlavoredFramework>,
   watchPaths?: Array<string>,
+  // `position` may be omitted here; invokePlugins normalizes it to 'end'.
+  scriptPhases?: Array<{
+    ...PluginScriptPhase,
+    position?: 'beforeCompile' | 'end',
+  }>,
 };
 
 export type DiscoveredPlugin = {
