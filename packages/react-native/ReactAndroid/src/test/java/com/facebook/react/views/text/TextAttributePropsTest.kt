@@ -36,7 +36,7 @@ class TextAttributePropsTest {
   fun readableMapSetsFontVariationSettings() {
     val textAttributes =
         TextAttributeProps.fromReadableMap(
-            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "'wght' 550"))
+            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "'wght' 550")),
         )
 
     assertThat(textAttributes.fontVariationSettings).isEqualTo("'wght' 550")
@@ -46,7 +46,7 @@ class TextAttributePropsTest {
   fun readableMapSetsDoubleQuotedFontVariationSettings() {
     val textAttributes =
         TextAttributeProps.fromReadableMap(
-            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "\"wght\" 450"))
+            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "\"wght\" 450")),
         )
 
     assertThat(textAttributes.fontVariationSettings).isEqualTo("\"wght\" 450")
@@ -56,7 +56,7 @@ class TextAttributePropsTest {
   fun readableMapIgnoresInvalidFontVariationSettings() {
     val textAttributes =
         TextAttributeProps.fromReadableMap(
-            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "invalid"))
+            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "invalid")),
         )
 
     assertThat(textAttributes.fontVariationSettings).isNull()
@@ -66,7 +66,7 @@ class TextAttributePropsTest {
   fun readableMapTreatsNormalFontVariationSettingsAsExplicitReset() {
     val textAttributes =
         TextAttributeProps.fromReadableMap(
-            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "NoRmAl"))
+            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "NoRmAl")),
         )
 
     assertThat(textAttributes.fontVariationSettings).isEmpty()

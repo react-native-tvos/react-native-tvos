@@ -583,7 +583,7 @@ class ReactTextInputPropertyTest {
             view.gravity and Gravity.HORIZONTAL_GRAVITY_MASK,
             Layout.BREAK_STRATEGY_HIGH_QUALITY,
             0,
-        )
+        ),
     )
 
     val remainingSpans =

@@ -80,7 +80,7 @@ class TextLayoutManagerFontWeightAdjustmentTest {
     val paint = TextPaint(TextPaint.ANTI_ALIAS_FLAG)
     val textAttributes =
         TextAttributeProps.fromReadableMap(
-            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "invalid"))
+            ReactStylesDiffMap(JavaOnlyMap.of("fontVariationSettings", "invalid")),
         )
 
     TextLayoutManager.updateTextPaint(
