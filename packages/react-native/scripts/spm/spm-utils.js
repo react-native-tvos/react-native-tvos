@@ -624,6 +624,47 @@ function runCodegenAndInstallTemplate(
   }
 }
 
+// ---------------------------------------------------------------------------
+// Autolinking-plugin script phases — the shared validation rules. Two gates
+// apply them with different POLICIES (invokePlugins throws, the injector's
+// sidecar reader skips the entry), so only the rules live here. See
+// __doc__/spm-autolinking-plugins.md for the reasoning.
+// ---------------------------------------------------------------------------
+
+// `@` and `/` are admitted so a package can use its own scoped npm name
+// (`@expo/log-box`). `:` is not: the id is hashed into the UUID seed as
+// `plugin:<id>`, and keeping the separator out of the id keeps that seed
+// unambiguous.
+const SCRIPT_PHASE_ID_PATTERN = /^[@A-Za-z0-9_./-]+$/;
+
+// `ledger.__proto__ = uuid` sets the prototype instead of an own property, so a
+// phase with one of these ids would look recorded, vanish through
+// JSON.stringify, and never be removable by `deinit`.
+const RESERVED_SCRIPT_PHASE_IDS = new Set([
+  '__proto__',
+  'constructor',
+  'prototype',
+]);
+
+function isValidScriptPhaseId(value /*: unknown */) /*: boolean */ {
+  return (
+    typeof value === 'string' &&
+    SCRIPT_PHASE_ID_PATTERN.test(value) &&
+    !RESERVED_SCRIPT_PHASE_IDS.has(value)
+  );
+}
+
+/**
+ * The name reaches the project file twice: verbatim in the escaped `name` field
+ * Xcode displays, and normalized (spm-pbxproj's commentSafe) in the cosmetic
+ * `/* … *​/` comments. Both are safe for any single-line string, so the only
+ * thing left to refuse is a line break — which no Xcode phase display name can
+ * carry anyway.
+ */
+function isValidScriptPhaseName(value /*: unknown */) /*: boolean */ {
+  return typeof value === 'string' && value.length > 0 && !/[\r\n]/.test(value);
+}
+
 module.exports = {
   makeLogger,
   displayPath,
@@ -641,5 +682,7 @@ module.exports = {
   RemoteVersionError,
   installSpmCodegenTemplate,
   runCodegenAndInstallTemplate,
+  isValidScriptPhaseId,
+  isValidScriptPhaseName,
   SCAFFOLDER_MARKER,
 };

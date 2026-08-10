@@ -13,6 +13,7 @@
 const {
   addArrayMembers,
   addArrayStringValues,
+  commentSafe,
   ensureScalarField,
   findApplicationTargets,
   findField,
@@ -71,8 +72,42 @@ describe('quoteIfNeeded', () => {
     ['a\\b', '"a\\\\b"'],
     ['a"b', '"a\\"b"'],
     ['<group>', '"<group>"'],
+    ['a\nb', '"a\\nb"'],
+    // A literal CR or tab inside a quoted value is legal, but Xcode rewrites it
+    // to its escape on the next save — a spurious diff in the user's repo. A
+    // plugin `script` with CRLF line endings is the way one gets in.
+    ['a\r\nb', '"a\\r\\nb"'],
+    ['a\tb', '"a\\tb"'],
   ])('quoteIfNeeded(%j) => %j', (input, expected) => {
     expect(quoteIfNeeded(input)).toBe(expected);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// commentSafe — a pbxproj `/* … */` comment is cosmetic (Xcode regenerates it
+// from the object's fields), so nothing a scanner could read as structure is
+// allowed to reach one.
+// ---------------------------------------------------------------------------
+
+describe('commentSafe', () => {
+  it.each([
+    ['Sync SPM Autolinking', 'Sync SPM Autolinking'],
+    ['Générer la config 📦', 'Générer la config 📦'],
+    ['Bad */ = { x', 'Bad x'],
+    ['A , B', 'A B'],
+    ['He said "hi', 'He said hi'],
+    ['A\tB', 'A B'],
+    ['a\r\nb', 'a b'],
+    ['Copy A/B', 'Copy A B'],
+    ['*/*', ''],
+    ['  padded  ', 'padded'],
+  ])('commentSafe(%j) => %j', (input, expected) => {
+    expect(commentSafe(input)).toBe(expected);
+  });
+
+  it('is stable under repetition (so a re-sync stays byte-identical)', () => {
+    const once = commentSafe('Bad */ = {  x,  y');
+    expect(commentSafe(once)).toBe(once);
   });
 });
 
@@ -375,6 +410,15 @@ describe('surgical removal (deinit inverse)', () => {
     expect(added).not.toBe(PLAIN_PBXPROJ);
     const [target2] = findApplicationTargets(added);
     expect(removeField(added, target2, 'SPM_TEST_FLAG')).toBe(PLAIN_PBXPROJ);
+  });
+
+  // What makes it safe for the marker to carry a created-field record forward
+  // across syncs: a field the user has since deleted by hand costs nothing.
+  it('removeField is a no-op when the field is absent', () => {
+    const [target] = findApplicationTargets(PLAIN_PBXPROJ);
+    expect(removeField(PLAIN_PBXPROJ, target, 'SPM_TEST_FLAG')).toBe(
+      PLAIN_PBXPROJ,
+    );
   });
 
   it('removeArrayStringValues removes only the named values', () => {

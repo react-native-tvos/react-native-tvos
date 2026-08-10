@@ -19,6 +19,7 @@
   PluginFlavoredFramework,
   PluginPackageDep,
   PluginProductDep,
+  PluginScriptPhase,
   ReactDescriptor,
   RawAutolinkingJson,
   SpmModuleConfig,
@@ -1686,6 +1687,7 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
   let pluginGeneratedSources /*: Array<{path: string}> */ = [];
   let pluginFlavoredFrameworks /*: Array<PluginFlavoredFramework> */ = [];
   let pluginWatchPaths /*: Array<string> */ = [];
+  let pluginScriptPhases /*: Array<PluginScriptPhase> */ = [];
   if (discoveredPlugins.length > 0) {
     // React-GeneratedCode is the per-app codegen package (referenced as
     // `../ios` from outputDir). It may be absent (no codegen this run), so the
@@ -1714,15 +1716,17 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
     pluginGeneratedSources = result.generatedSources;
     pluginFlavoredFrameworks = result.flavoredFrameworks;
     pluginWatchPaths = result.watchPaths;
+    pluginScriptPhases = result.scriptPhases;
     log(
       `SPM plugins contributed ${pluginPackageDeps.length} package(s), ` +
         `${pluginProductDeps.length} product(s), ` +
         `${pluginGeneratedSources.length} generated source(s), ` +
-        `${pluginFlavoredFrameworks.length} flavored framework(s)`,
+        `${pluginFlavoredFrameworks.length} flavored framework(s), ` +
+        `${pluginScriptPhases.length} script phase(s)`,
     );
   }
 
-  // Plugin sidecars. Both are ALWAYS written — even `[]` — so removing a
+  // Plugin sidecars. All are ALWAYS written — even `[]` — so removing a
   // plugin (or dropping its declaration) clears stale entries. Machine-local
   // absolute paths; gitignored + regenerated every sync.
   fs.mkdirSync(outputDir, {recursive: true});
@@ -1739,6 +1743,11 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
   fs.writeFileSync(
     path.join(outputDir, '.spm-plugin-flavored-frameworks.json'),
     JSON.stringify(pluginFlavoredFrameworks, null, 2) + '\n',
+    'utf8',
+  );
+  fs.writeFileSync(
+    path.join(outputDir, '.spm-plugin-script-phases.json'),
+    JSON.stringify(pluginScriptPhases, null, 2) + '\n',
     'utf8',
   );
 

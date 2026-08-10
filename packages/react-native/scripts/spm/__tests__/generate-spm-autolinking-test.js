@@ -1292,6 +1292,125 @@ describe('main() — flavoredFrameworks sidecar', () => {
 });
 
 // ---------------------------------------------------------------------------
+// main() — plugin scriptPhases sidecar
+//
+// `.spm-plugin-script-phases.json` records the phases a plugin wants injected
+// into the app target (SwiftPM has no `script_phase`). Like the other sidecars
+// it is ALWAYS rewritten — `[]` when no plugin declares any — so removing a
+// plugin clears stale entries.
+// ---------------------------------------------------------------------------
+
+describe('main() — scriptPhases sidecar', () => {
+  let created = [];
+  let spies = [];
+
+  beforeEach(() => {
+    for (const m of ['log', 'warn', 'error']) {
+      spies.push(jest.spyOn(console, m).mockImplementation(() => {}));
+    }
+  });
+  afterEach(() => {
+    for (const s of spies) s.mockRestore();
+    spies = [];
+    for (const d of created) fs.rmSync(d, {recursive: true, force: true});
+    created = [];
+  });
+
+  const sidecarPath = appRoot =>
+    path.join(
+      appRoot,
+      'build',
+      'generated',
+      'autolinking',
+      '.spm-plugin-script-phases.json',
+    );
+
+  // An app whose only autolinked dep is `expo`; when `pluginReturn` is given,
+  // expo declares a plugin returning that literal.
+  function scaffold(pluginReturn) {
+    const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-scriptphase-'));
+    created.push(appRoot);
+    const rnRoot = path.join(appRoot, 'rn');
+    fs.mkdirSync(rnRoot, {recursive: true});
+    fs.writeFileSync(
+      path.join(appRoot, 'package.json'),
+      JSON.stringify({name: 'app'}),
+    );
+    const autolinkDir = path.join(appRoot, 'build', 'generated', 'autolinking');
+    fs.mkdirSync(autolinkDir, {recursive: true});
+    const expoDir = path.join(appRoot, 'node_modules', 'expo');
+    if (pluginReturn != null) {
+      fs.mkdirSync(path.join(expoDir, 'ios'), {recursive: true});
+      fs.writeFileSync(path.join(expoDir, 'ios', 'Expo.mm'), '// native\n');
+      fs.writeFileSync(
+        path.join(expoDir, 'react-native.config.js'),
+        "module.exports = { spm: { autolinkingPlugin: './spm-plugin.js' } };\n",
+      );
+      fs.writeFileSync(
+        path.join(expoDir, 'spm-plugin.js'),
+        `module.exports = function () { return ${pluginReturn}; };\n`,
+      );
+    }
+    fs.writeFileSync(
+      path.join(autolinkDir, 'autolinking.json'),
+      JSON.stringify({
+        dependencies:
+          pluginReturn != null
+            ? {expo: {root: expoDir, platforms: {ios: {}}}}
+            : {},
+      }),
+    );
+    return {appRoot, rnRoot};
+  }
+
+  it('records plugin-declared script phases, normalized', () => {
+    const {appRoot, rnRoot} = scaffold(`{
+      scriptPhases: [{
+        id: 'expo-constants.generate-app-config',
+        name: 'Generate Expo App Config',
+        script: 'node ./write-app-config.js',
+        position: 'beforeCompile',
+        outputPaths: ['$(DERIVED_FILE_DIR)/app.config'],
+      }, {
+        id: 'expo-constants.stamp',
+        name: 'Stamp',
+        script: 'echo stamped',
+      }],
+    }`);
+
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+
+    expect(JSON.parse(fs.readFileSync(sidecarPath(appRoot), 'utf8'))).toEqual([
+      {
+        id: 'expo-constants.generate-app-config',
+        name: 'Generate Expo App Config',
+        script: 'node ./write-app-config.js',
+        position: 'beforeCompile',
+        outputPaths: ['$(DERIVED_FILE_DIR)/app.config'],
+      },
+      {
+        id: 'expo-constants.stamp',
+        name: 'Stamp',
+        script: 'echo stamped',
+        position: 'end',
+      },
+    ]);
+  });
+
+  it('writes [] when no plugin declares any (clears stale entries)', () => {
+    const {appRoot, rnRoot} = scaffold(null);
+    fs.writeFileSync(
+      sidecarPath(appRoot),
+      JSON.stringify([{id: 'stale', name: 'Stale', script: 'echo'}]),
+    );
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+    expect(JSON.parse(fs.readFileSync(sidecarPath(appRoot), 'utf8'))).toEqual(
+      [],
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
 // main() — .spm-sync-watch-paths emission (mixed dirs + files)
 //
 // The watch file drives the Xcode auto-sync stale check. It must carry, mixed
