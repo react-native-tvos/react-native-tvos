@@ -567,6 +567,15 @@ function parseRadialGradientCSSString(
       // If a single size is explicitly set and the shape is an ellipse, return null and do not apply any gradient. Same as web.
       return null;
     }
+
+    if (
+      shape === 'circle' &&
+      typeof size === 'object' &&
+      (typeof size.x === 'string' || typeof size.y === 'string')
+    ) {
+      // A circle radius must be a <length>. Percentages are only valid for ellipses, so return null and do not apply any gradient. Same as web.
+      return null;
+    }
   }
 
   const colorStops = parseColorStopsCSSString(remainingParts);

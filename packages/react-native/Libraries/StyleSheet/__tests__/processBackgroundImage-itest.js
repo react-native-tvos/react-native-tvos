@@ -986,6 +986,23 @@ describe('processBackgroundImage', () => {
     expect(result[0].shape).toEqual('ellipse');
   });
 
+  it('should reject a circle with a percentage radius', () => {
+    const input = 'radial-gradient(circle 50%, red, blue)';
+    expect(processBackgroundImage(input)).toEqual([]);
+  });
+
+  it('should reject an inferred circle with a percentage radius', () => {
+    const input = 'radial-gradient(50%, red, blue)';
+    expect(processBackgroundImage(input)).toEqual([]);
+  });
+
+  it('should allow percentage sizes for ellipses', () => {
+    const input = 'radial-gradient(50% 20%, red, blue)';
+    const result = processBackgroundImage(input);
+    expect(result[0].shape).toEqual('ellipse');
+    expect(result[0].size).toEqual({x: '50%', y: '20%'});
+  });
+
   it('should handle radial gradient with explicit shape with size', () => {
     const input = 'radial-gradient(circle 100px at center, red, blue 80%)';
     const result = processBackgroundImage(input);
