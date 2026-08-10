@@ -999,6 +999,22 @@ describe('processBackgroundImage', () => {
     expect(result[0].type).toEqual('radial-gradient');
   });
 
+  it('should handle radial gradient with explicit size and position', () => {
+    const input = 'radial-gradient(circle 100px at 25% 75%, red, blue)';
+    const result = processBackgroundImage(input);
+    expect(result[0].shape).toEqual('circle');
+    expect(result[0].size).toEqual({x: 100, y: 100});
+    expect(result[0].position).toEqual({left: '25%', top: '75%'});
+  });
+
+  it('should handle radial gradient with two explicit sizes and position', () => {
+    const input = 'radial-gradient(50px 100px at left bottom, red, blue)';
+    const result = processBackgroundImage(input);
+    expect(result[0].shape).toEqual('ellipse');
+    expect(result[0].size).toEqual({x: 50, y: 100});
+    expect(result[0].position).toEqual({left: '0%', top: '100%'});
+  });
+
   // 1. position syntax: [ left | center | right | top | bottom | <length-percentage> ]
   it('should handle radial gradient position length syntax', () => {
     const input = 'radial-gradient(circle at 20px, red, blue)';

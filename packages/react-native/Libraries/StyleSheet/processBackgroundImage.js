@@ -348,6 +348,11 @@ function parseRadialGradientCSSString(
         size = {x: sizeX, y: sizeY};
       } else {
         hasExplicitSingleSize = true;
+        // The token after the size is not a second size value (e.g. 'at' or a
+        // shape keyword). Put it back so the loop can process it, otherwise
+        // the position would be silently dropped and its values re-parsed as
+        // a new size.
+        firstPartTokens.unshift(token);
       }
     } else if (tokenTrimmed === 'at') {
       let top: string | number;
