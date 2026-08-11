@@ -316,6 +316,20 @@ class Game2048 extends React.Component {
   </ScrollView>
   ```
 
+  - _ScrollView animation timing (Android TV)_: The `scrollAnimationDuration` and `scrollAnimationEasing` props tune the animated scroll that runs when focus moves to another item. Both are Android TV only; on tvOS the focus engine owns this animation. When either prop is unset, the platform defaults are used, so behavior is unchanged.
+
+  | Prop (ScrollView) | Value | Description |
+  |---|---|---|
+  | scrollAnimationDuration | number? | Duration of the scroll animation in milliseconds. Unset or `<= 0` uses the platform default (~250ms). Android TV only. |
+  | scrollAnimationEasing | `'linear' \| 'ease' \| 'ease-in' \| 'ease-out' \| 'ease-in-out' \| [number, number, number, number]`? | Easing curve, as a CSS easing keyword or cubic-bezier control points `[x1, y1, x2, y2]`. Unset uses the platform default `AccelerateDecelerateInterpolator`. Android TV only. |
+
+  ```jsx
+  <ScrollView horizontal scrollAnimationDuration={500} scrollAnimationEasing="ease-out">
+    <Pressable style={{width: 300}}><Text>Item 1</Text></Pressable>
+    <Pressable style={{width: 300}}><Text>Item 2</Text></Pressable>
+  </ScrollView>
+  ```
+
   - _Interaction with existing ScrollView props_: The TV scroll props build on top of existing React Native ScrollView behavior. Here is how they interact:
 
     - `snapToAlignment="item"` does not require `snapToInterval` to be set. It works as a standalone snapping mode where each child's `scrollSnapAlign` or `scrollSnapOffset` determines the snap position. If `snapToInterval` is also set, the interval is applied as an additional constraint after the item offset is computed.
@@ -325,6 +339,7 @@ class Game2048 extends React.Component {
     - `scrollAnimationEnabled={false}` disables all scroll animations, including programmatic `scrollTo({animated: true})` calls. When disabled, all scrolling is instant.
     - `decelerationRate` has no effect when `scrollAnimationEnabled={false}`, since there is no animation to decelerate.
     - `scrollAnimationEnabled` and `snapToAlignment="item"` work well together. Snapping still occurs, but instantly instead of animated.
+    - `scrollAnimationDuration` and `scrollAnimationEasing` have no effect when `scrollAnimationEnabled={false}`, since there is no animation left to time.
 
   - _VirtualizedList_: We extend `VirtualizedList` to make virtualization work well with focus management in mind. All of the improvements that we made are automatically available to all the VirtualizedList based components such as `FlatList`.
     - Defaults: VirtualizeList contents are automatically wrapped with a `TVFocusGuideView` with `trapFocus*` properties enabled depending on the orientation of the list. This default makes sure that focus doesn't leave the list accidentally due to a virtualization issue etc. until reaching the beginning or the end of the list.

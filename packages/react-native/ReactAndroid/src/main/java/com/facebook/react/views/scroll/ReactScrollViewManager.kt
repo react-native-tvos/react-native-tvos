@@ -41,6 +41,7 @@ import com.facebook.react.views.scroll.ReactScrollViewCommandHelper.Companion.re
 import com.facebook.react.views.scroll.ReactScrollViewCommandHelper.ScrollCommandHandler
 import com.facebook.react.views.scroll.ReactScrollViewCommandHelper.ScrollToCommandData
 import com.facebook.react.views.scroll.ReactScrollViewCommandHelper.ScrollToEndCommandData
+import com.facebook.react.views.scroll.ReactScrollViewHelper.createScrollAnimationInterpolator
 import com.facebook.react.views.scroll.ReactScrollViewHelper.parseOverScrollMode
 import com.facebook.react.views.scroll.ReactScrollViewHelper.parseSnapToAlignment
 import com.facebook.react.views.scroll.ScrollEventType.Companion.getJSEventName
@@ -156,6 +157,18 @@ constructor(private val fpsListener: FpsListener? = null) :
   @ReactProp(name = "scrollAnimationEnabled", defaultBoolean = true)
   public fun setScrollAnimationEnabled(view: ReactScrollView, value: Boolean) {
     view.scrollAnimationEnabled = value
+  }
+
+  @ReactProp(name = "scrollAnimationDuration")
+  public fun setScrollAnimationDuration(view: ReactScrollView, value: Float) {
+    // Exposed as a float because of the JavaScript interface, see `snapToInterval`.
+    view.scrollAnimationDuration = value.toInt()
+  }
+
+  @ReactProp(name = "scrollAnimationEasing")
+  public fun setScrollAnimationEasing(view: ReactScrollView, value: ReadableArray?) {
+    // Resolved here rather than per frame: the curve only changes when the prop does.
+    view.scrollAnimationInterpolator = createScrollAnimationInterpolator(value)
   }
 
   @ReactProp(name = ReactClippingViewGroupHelper.PROP_REMOVE_CLIPPED_SUBVIEWS)

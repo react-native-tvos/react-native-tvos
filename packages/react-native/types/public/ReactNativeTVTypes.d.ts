@@ -19,6 +19,32 @@ declare module 'react-native' {
      * @platform tv
      */
     scrollAnimationEnabled?: boolean | undefined;
+
+    /**
+     * Duration in milliseconds of the animated scroll that runs when focus moves to
+     * another item. When unset or <= 0, the platform default (~250ms) is used.
+     * On tvOS the focus engine owns this animation and the prop has no effect.
+     *
+     * @platform android
+     */
+    scrollAnimationDuration?: number | undefined;
+
+    /**
+     * Easing curve of that animation, either a CSS easing keyword or explicit
+     * cubic-bezier control points `[x1, y1, x2, y2]`. When unset, the platform
+     * default curve (`AccelerateDecelerateInterpolator`) is used.
+     * On tvOS the focus engine owns this animation and the prop has no effect.
+     *
+     * @platform android
+     */
+    scrollAnimationEasing?:
+      | 'linear'
+      | 'ease'
+      | 'ease-in'
+      | 'ease-out'
+      | 'ease-in-out'
+      | [number, number, number, number]
+      | undefined;
   }
 
   interface ViewProps {

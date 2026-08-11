@@ -71,6 +71,9 @@ export type ScrollViewNativeProps = Readonly<{
   sendMomentumEvents?: ?boolean,
   showsHorizontalScrollIndicator?: ?boolean,
   scrollAnimationEnabled?: ?boolean,
+  scrollAnimationDuration?: ?number,
+  // Keyword easings are resolved to cubic-bezier control points in ScrollView.js.
+  scrollAnimationEasing?: ?ReadonlyArray<number>,
   showsScrollIndex?: ?boolean,
   showsVerticalScrollIndicator?: ?boolean,
   snapToAlignment?: ?('start' | 'center' | 'end' | 'item'),
