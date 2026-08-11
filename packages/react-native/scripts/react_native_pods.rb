@@ -118,6 +118,10 @@ def use_react_native! (
   # Make `REMOVE_LEGACY_ARCH` enabled by default. This will build React Native
   # excluding the legacy arch unless the user turns this flag off explicitly.
   ENV['RCT_REMOVE_LEGACY_ARCH'] = ENV['RCT_REMOVE_LEGACY_ARCH'] == '0' ? '0' : '1'
+  # Removing the legacy TurboModule and component interop layers is opt-in while those
+  # layers are still supported. Both will default to 1 in a future React Native release.
+  ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] == '1' ? '1' : '0'
+  ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] == '1' ? '1' : '0'
 
   ReactNativePodsUtils.check_minimum_required_xcode()
 
@@ -603,6 +607,11 @@ def react_native_post_install(
   else
     ReactNativePodsUtils.remove_compiler_flag_from_project(installer, "-DRCT_REMOVE_LEGACY_ARCH=1")
   end
+
+  ReactNativePodsUtils.set_legacy_interop_removal_flags(
+    installer,
+    build_rncore_from_source: ReactNativeCoreUtils.build_rncore_from_source()
+  )
 
   ReactNativePodsUtils.set_ccache_compiler_and_linker_build_settings(installer, react_native_path, ccache_enabled)
   ReactNativePodsUtils.updateOSDeploymentTarget(installer)

@@ -35,6 +35,8 @@ class UtilsTests < Test::Unit::TestCase
         XcodebuildMock.reset()
         ENV['RCT_NEW_ARCH_ENABLED'] = '0'
         ENV['USE_FRAMEWORKS'] = nil
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = nil
+        ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = nil
         system_reset_commands
         $RN_PLATFORMS = nil
     end
@@ -466,6 +468,113 @@ class UtilsTests < Test::Unit::TestCase
         end
 
         assert_equal(1, user_project_mock.save_invocation_count)
+    end
+
+    # ============================================ #
+    # Test - Set legacy interop removal flags      #
+    # ============================================ #
+
+    def legacy_interop_installer_mock(user_project_mock)
+        return InstallerMock.new(
+            PodsProjectMock.new([], {"hermes-engine" => {}}),
+            [AggregatedProjectMock.new(user_project_mock)]
+        )
+    end
+
+    def assert_legacy_interop_flags(user_project_mock, module_interop:, component_interop:)
+        user_project_mock.build_configurations.each do |config|
+            ["OTHER_CFLAGS", "OTHER_CPLUSPLUSFLAGS"].each do |key|
+                setting = config.build_settings[key]
+                assert_equal(module_interop, setting.include?("-DRCT_REMOVE_LEGACY_MODULE_INTEROP=1"))
+                assert_equal(component_interop, setting.include?("-DRCT_REMOVE_LEGACY_COMPONENT_INTEROP=1"))
+            end
+        end
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenFlagsAreUnset_doesNotAddFlags
+        # Arrange
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+
+        # Act
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Assert
+        assert_legacy_interop_flags(user_project_mock, module_interop: false, component_interop: false)
+        assert_equal([], Pod::UI.collected_warns)
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenModuleInteropIsEnabled_addsOnlyThatFlag
+        # Arrange
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = '1'
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+
+        # Act
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Assert
+        assert_legacy_interop_flags(user_project_mock, module_interop: true, component_interop: false)
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenComponentInteropIsEnabled_addsOnlyThatFlag
+        # Arrange
+        ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = '1'
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+
+        # Act
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Assert
+        assert_legacy_interop_flags(user_project_mock, module_interop: false, component_interop: true)
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenBothAreEnabled_addsBothFlags
+        # Arrange
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = '1'
+        ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = '1'
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+
+        # Act
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Assert
+        assert_legacy_interop_flags(user_project_mock, module_interop: true, component_interop: true)
+        assert_equal([], Pod::UI.collected_warns)
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenDisabled_removesPreviouslyAddedFlags
+        # Arrange
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = '1'
+        ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = '1'
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Act
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = '0'
+        ENV['RCT_REMOVE_LEGACY_COMPONENT_INTEROP'] = '0'
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: true)
+
+        # Assert
+        assert_legacy_interop_flags(user_project_mock, module_interop: false, component_interop: false)
+    end
+
+    def test_setLegacyInteropRemovalFlags_whenEnabledWithPrebuiltRNCore_warns
+        # Arrange
+        ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = '1'
+        user_project_mock = prepare_empty_user_project_mock()
+        installer = legacy_interop_installer_mock(user_project_mock)
+
+        # Act
+        ReactNativePodsUtils.set_legacy_interop_removal_flags(installer, build_rncore_from_source: false)
+
+        # Assert
+        assert_equal(1, Pod::UI.collected_warns.length)
+        assert(Pod::UI.collected_warns.first.include?("RCT_REMOVE_LEGACY_MODULE_INTEROP=1"))
+        assert(Pod::UI.collected_warns.first.include?("RCT_USE_PREBUILT_RNCORE=0"))
     end
 
     # ==================================== #

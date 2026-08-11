@@ -16,6 +16,13 @@ class ReactNativePodsUtils
     MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
     REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
 
+    # Opt-in removal of the legacy TurboModule and component interop layers. Both are
+    # off by default and will become the default in a future React Native release.
+    LEGACY_INTEROP_REMOVAL_FLAGS = [
+        'RCT_REMOVE_LEGACY_MODULE_INTEROP',
+        'RCT_REMOVE_LEGACY_COMPONENT_INTEROP',
+    ]
+
     # URI::File.build validates path components as ASCII, so escape the filesystem path first.
     def self.local_file_uri(path)
         URI::File.build(path: URI::DEFAULT_PARSER.escape(path)).to_s
@@ -503,6 +510,23 @@ class ReactNativePodsUtils
                 self.remove_flag_in_config(config, flag, configuration: configuration)
             end
             project.save()
+        end
+    end
+
+    # The macros gate declarations in public headers (RCTBridge.h, RCTBridgeModule.h), so
+    # they are applied to the whole project rather than to React Native's pods alone.
+    def self.set_legacy_interop_removal_flags(installer, build_rncore_from_source:)
+        LEGACY_INTEROP_REMOVAL_FLAGS.each do |flag|
+            if ENV[flag] == '1'
+                self.add_compiler_flag_to_project(installer, "-D#{flag}=1")
+                unless build_rncore_from_source
+                    Pod::UI.warn("#{flag}=1 only prunes your app's headers while using the prebuilt " \
+                        "React.xcframework. Set RCT_USE_PREBUILT_RNCORE=0 to also compile React Native " \
+                        "without the legacy interop layer.")
+                end
+            else
+                self.remove_compiler_flag_from_project(installer, "-D#{flag}=1")
+            end
         end
     end
 
