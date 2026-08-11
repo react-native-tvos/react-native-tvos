@@ -45,6 +45,7 @@ import Keyboard from '../Keyboard/Keyboard';
 import TextInputState from '../TextInput/TextInputState';
 import View from '../View/View';
 import processDecelerationRate from './processDecelerationRate';
+import processScrollAnimationEasing from './processScrollAnimationEasing';
 import Commands from './ScrollViewCommands';
 import ScrollViewContext, {HORIZONTAL, VERTICAL} from './ScrollViewContext';
 import ScrollViewStickyHeader from './ScrollViewStickyHeader';
@@ -202,7 +203,7 @@ export type ScrollAnimationEasing =
   | 'ease-in'
   | 'ease-out'
   | 'ease-in-out'
-  | ReadonlyArray<number>;
+  | [number, number, number, number];
 export type ScrollResponderType = ScrollViewImperativeMethods;
 
 export interface ScrollViewInstance
@@ -836,33 +837,6 @@ type ScrollViewState = {
 };
 
 const IS_ANIMATING_TOUCH_START_THRESHOLD_MS = 16;
-
-// The native side only understands cubic-bezier control points, so the CSS easing keywords are
-// resolved here to the control points those keywords are defined as.
-const SCROLL_ANIMATION_EASING_KEYWORDS: Readonly<{
-  linear: ReadonlyArray<number>,
-  ease: ReadonlyArray<number>,
-  'ease-in': ReadonlyArray<number>,
-  'ease-out': ReadonlyArray<number>,
-  'ease-in-out': ReadonlyArray<number>,
-}> = {
-  linear: [0, 0, 1, 1],
-  ease: [0.25, 0.1, 0.25, 1],
-  'ease-in': [0.42, 0, 1, 1],
-  'ease-out': [0, 0, 0.58, 1],
-  'ease-in-out': [0.42, 0, 0.58, 1],
-};
-
-function resolveScrollAnimationEasing(
-  easing: ?ScrollAnimationEasing,
-): ?ReadonlyArray<number> {
-  if (easing == null) {
-    return undefined;
-  }
-  return typeof easing === 'string'
-    ? SCROLL_ANIMATION_EASING_KEYWORDS[easing]
-    : easing;
-}
 
 export type ScrollViewComponentStatics = Readonly<{
   Context: typeof ScrollViewContext,
@@ -1965,9 +1939,6 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
       snapToEnd: this.props.snapToEnd !== false,
       // default to true
       showsScrollIndex: this.props.showsScrollIndex !== false,
-      scrollAnimationEasing: resolveScrollAnimationEasing(
-        this.props.scrollAnimationEasing,
-      ),
       // pagingEnabled is overridden by snapToInterval / snapToOffsets
       pagingEnabled: Platform.select({
         // on iOS, pagingEnabled must be set to false to have snapToInterval / snapToOffsets work
@@ -1986,6 +1957,13 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
     const {decelerationRate} = this.props;
     if (decelerationRate != null) {
       props.decelerationRate = processDecelerationRate(decelerationRate);
+    }
+
+    const {scrollAnimationEasing} = this.props;
+    if (scrollAnimationEasing != null) {
+      props.scrollAnimationEasing = processScrollAnimationEasing(
+        scrollAnimationEasing,
+      );
     }
 
     const refreshControl = this.props.refreshControl;
