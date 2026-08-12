@@ -430,7 +430,7 @@ internal constructor(
       ReactSoftExceptionLogger.logSoftException(
           TAG,
           ReactNoCrashSoftException(
-              "Unable to remove a view from a non-ViewGroup ${parentView.javaClass.simpleName} when removing [$tag] from parent [$parentTag]"
+              "Unable to remove a view from a non-ViewGroup ${parentView.javaClass.simpleName} when removing [$tag] from parent [$parentTag]",
           ),
       )
       return
