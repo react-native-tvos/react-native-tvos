@@ -614,6 +614,8 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     }
     wasMultiline = isMultiline
 
+    updatePlaceholderEllipsize()
+
     // We override the KeyListener so that all keys on the soft input keyboard as well as hardware
     // keyboards work. Some KeyListeners like DigitsKeyListener will display the keyboard but not
     // accept all input from it
@@ -629,6 +631,16 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
       this.placeholder = placeholder
       hint = placeholder
     }
+    updatePlaceholderEllipsize()
+  }
+
+  private fun updatePlaceholderEllipsize() {
+    ellipsize =
+        if (!isMultiline) {
+          TextUtils.TruncateAt.END
+        } else {
+          null
+        }
   }
 
   public fun setFontFamily(fontFamily: String?) {

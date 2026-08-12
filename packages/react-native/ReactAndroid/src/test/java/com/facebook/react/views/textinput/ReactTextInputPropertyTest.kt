@@ -19,6 +19,7 @@ import android.text.InputType
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
@@ -198,9 +199,25 @@ class ReactTextInputPropertyTest {
 
     manager.updateProperties(view, buildStyles("placeholder", "sometext"))
     assertThat(view.hint).isEqualTo("sometext")
+    assertThat(view.ellipsize).isEqualTo(TextUtils.TruncateAt.END)
 
     manager.updateProperties(view, buildStyles("placeholder", null))
     assertThat(view.hint).isNull()
+    assertThat(view.ellipsize).isEqualTo(TextUtils.TruncateAt.END)
+  }
+
+  @Test
+  fun testPlaceholderEllipsizeRespectsMultiline() {
+    manager.updateProperties(view, buildStyles("placeholder", "a very long placeholder string"))
+    assertThat(view.ellipsize).isEqualTo(TextUtils.TruncateAt.END)
+
+    manager.updateProperties(view, buildStyles("multiline", true))
+    view.commitStagedInputType()
+    assertThat(view.ellipsize).isNull()
+
+    manager.updateProperties(view, buildStyles("multiline", false))
+    view.commitStagedInputType()
+    assertThat(view.ellipsize).isEqualTo(TextUtils.TruncateAt.END)
   }
 
   @Test
