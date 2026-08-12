@@ -417,7 +417,10 @@ static NSMutableAttributedString *RCTNSAttributedStringFragmentFromFragment(
 
     return [[NSMutableAttributedString attributedStringWithAttachment:attachment] mutableCopy];
   } else {
-    NSString *string = [NSString stringWithUTF8String:fragment.string.c_str()];
+    NSString *decoded = [[NSString alloc] initWithBytes:fragment.string.data()
+                                                 length:fragment.string.size()
+                                               encoding:NSUTF8StringEncoding];
+    NSString *string = decoded != nil ? decoded : @"";
 
     if (fragment.textAttributes.textTransform.has_value()) {
       auto textTransform = fragment.textAttributes.textTransform.value();

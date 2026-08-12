@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 
+#import <React/RCTConversions.h>
 #import <react/renderer/textlayoutmanager/RCTAttributedTextUtils.h>
 #import <react/renderer/textlayoutmanager/RCTFontUtils.h>
 
 #include <react/renderer/attributedstring/conversions.h>
 #include <react/renderer/core/RawValue.h>
 
+#include <array>
 #include <utility>
 
 using namespace facebook::react;
@@ -382,6 +384,58 @@ static NSDictionary<NSNumber *, NSNumber *> *FontVariationsFromSettings(std::opt
       attributedString1, attributedString2, insensitiveAttributes, textAttributes));
   XCTAssertFalse(RCTIsAttributedStringEffectivelySame(
       attributedString2, attributedString1, insensitiveAttributes, textAttributes));
+}
+
+// A std::string may legitimately contain an embedded NUL. The C-string APIs
+// these converters used to call stop at it, silently truncating user text.
+
+- (void)testNSStringFromStringPreservesEmbeddedNull
+{
+  std::string withNull("Hello\0World", 11);
+  XCTAssertEqual(withNull.size(), 11u);
+
+  NSString *converted = RCTNSStringFromString(withNull);
+
+  XCTAssertEqual(converted.length, 11u);
+  XCTAssertTrue([converted hasPrefix:@"Hello"]);
+  XCTAssertTrue([converted hasSuffix:@"World"]);
+}
+
+- (void)testStringFromNSStringPreservesEmbeddedNull
+{
+  std::array<unichar, 3> chars{'a', 0, 'b'};
+  NSString *withNull = [NSString stringWithCharacters:chars.data() length:chars.size()];
+  XCTAssertEqual(withNull.length, 3u);
+
+  std::string converted = RCTStringFromNSString(withNull);
+
+  XCTAssertEqual(converted.size(), 3u);
+  XCTAssertEqual(converted[0], 'a');
+  XCTAssertEqual(converted[1], '\0');
+  XCTAssertEqual(converted[2], 'b');
+}
+
+- (void)testStringConversionRoundTripsEmbeddedNull
+{
+  std::string original("A\0B\0C", 5);
+
+  std::string roundTripped = RCTStringFromNSString(RCTNSStringFromString(original));
+
+  XCTAssertEqual(roundTripped.size(), original.size());
+  XCTAssertTrue(roundTripped == original);
+}
+
+- (void)testAttributedStringFromFragmentPreservesEmbeddedNull
+{
+  AttributedString attributedString;
+  AttributedString::Fragment fragment;
+  fragment.string = std::string("Hello\0World", 11);
+  attributedString.appendFragment(std::move(fragment));
+
+  NSAttributedString *result = RCTNSAttributedStringFromAttributedString(attributedString);
+
+  XCTAssertEqual(result.string.length, 11u);
+  XCTAssertTrue([result.string hasSuffix:@"World"]);
 }
 
 @end
