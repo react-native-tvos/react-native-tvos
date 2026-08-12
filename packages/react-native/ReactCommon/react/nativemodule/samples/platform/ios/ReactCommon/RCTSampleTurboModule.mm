@@ -87,7 +87,7 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - Spec Methods
 
-RCT_EXPORT_METHOD(voidFunc)
+- (void)voidFunc
 {
   // Nothing to do
   [self emitOnPress];
@@ -96,47 +96,47 @@ RCT_EXPORT_METHOD(voidFunc)
   [self emitOnSubmit:@[ @{@"a" : @1, @"b" : @"two"}, @{@"a" : @3, @"b" : @"four"} ]];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSNumber *, getBool : (BOOL)arg)
+- (NSNumber *)getBool:(BOOL)arg
 {
   return @(arg);
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSNumber *, getEnum : (double)arg)
+- (NSNumber *)getEnum:(double)arg
 {
   return @(arg);
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSNumber *, getNumber : (double)arg)
+- (NSNumber *)getNumber:(double)arg
 {
   return @(arg);
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSString *, getString : (NSString *)arg)
+- (NSString *)getString:(NSString *)arg
 {
   return arg;
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSArray<id<NSObject>> *, getArray : (NSArray *)arg)
+- (NSArray<id<NSObject>> *)getArray:(NSArray *)arg
 {
   return arg;
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getObject : (NSDictionary *)arg)
+- (NSDictionary *)getObject:(NSDictionary *)arg
 {
   return arg;
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getUnsafeObject : (NSDictionary *)arg)
+- (NSDictionary *)getUnsafeObject:(NSDictionary *)arg
 {
   return arg;
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSNumber *, getRootTag : (double)arg)
+- (NSNumber *)getRootTag:(double)arg
 {
   return @(arg);
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getValue : (double)x y : (NSString *)y z : (NSDictionary *)z)
+- (NSDictionary *)getValue:(double)x y:(NSString *)y z:(NSDictionary *)z
 {
   return @{
     @"x" : @(x),
@@ -148,24 +148,24 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getValue : (double)x y : (NS
 // Arguments arrive as an immutable NSData, but an ArrayBuffer return must be
 // NSMutableData: it is handed to JS as a jsi::MutableBuffer, whose data() is
 // non-const. Echoing the argument back therefore needs a mutable copy.
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSMutableData *, getArrayBuffer : (NSData *)buffer)
+- (NSMutableData *)getArrayBuffer:(NSData *)buffer
 {
   return [buffer mutableCopy];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSMutableData *, createNativeBuffer : (double)size)
+- (NSMutableData *)createNativeBuffer:(double)size
 {
   return [NSMutableData dataWithLength:(NSUInteger)size];
 }
 
-RCT_EXPORT_METHOD(
-    processAsyncBuffer : (NSData *)payload resolve : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)
-        reject)
+- (void)processAsyncBuffer:(NSData *)payload
+                   resolve:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject
 {
   resolve(@(payload.length));
 }
 
-RCT_EXPORT_METHOD(getValueWithCallback : (RCTResponseSenderBlock)callback)
+- (void)getValueWithCallback:(RCTResponseSenderBlock)callback
 {
   if (callback == nullptr) {
     return;
@@ -173,8 +173,7 @@ RCT_EXPORT_METHOD(getValueWithCallback : (RCTResponseSenderBlock)callback)
   callback(@[ @"value from callback!" ]);
 }
 
-RCT_EXPORT_METHOD(
-    getValueWithPromise : (BOOL)error resolve : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
+- (void)getValueWithPromise:(BOOL)error resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
   if ((resolve == nullptr) || (reject == nullptr)) {
     return;
@@ -190,7 +189,7 @@ RCT_EXPORT_METHOD(
   }
 }
 
-RCT_EXPORT_METHOD(voidFuncThrows)
+- (void)voidFuncThrows
 {
   NSException *myException = [NSException exceptionWithName:@"Exception"
                                                      reason:@"Intentional exception from ObjC voidFuncThrows"
@@ -198,7 +197,7 @@ RCT_EXPORT_METHOD(voidFuncThrows)
   @throw myException;
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getObjectThrows : (NSDictionary *)arg)
+- (NSDictionary *)getObjectThrows:(NSDictionary *)arg
 {
   NSException *myException = [NSException exceptionWithName:@"Exception"
                                                      reason:@"Intentional exception from ObjC getObjectThrows"
@@ -206,7 +205,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getObjectThrows : (NSDiction
   @throw myException;
 }
 
-RCT_EXPORT_METHOD(promiseThrows : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
+- (void)promiseThrows:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
   NSException *myException = [NSException exceptionWithName:@"Exception"
                                                      reason:@"Intentional exception from ObjC promiseThrows"
@@ -214,18 +213,18 @@ RCT_EXPORT_METHOD(promiseThrows : (RCTPromiseResolveBlock)resolve reject : (RCTP
   @throw myException;
 }
 
-RCT_EXPORT_METHOD(voidFuncAssert)
+- (void)voidFuncAssert
 {
   RCTAssert(false, @"Intentional assert from ObjC voidFuncAssert");
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSDictionary *, getObjectAssert : (NSDictionary *)arg)
+- (NSDictionary *)getObjectAssert:(NSDictionary *)arg
 {
   RCTAssert(false, @"Intentional assert from ObjC getObjectAssert");
   return arg;
 }
 
-RCT_EXPORT_METHOD(promiseAssert : (RCTPromiseResolveBlock)resolve reject : (RCTPromiseRejectBlock)reject)
+- (void)promiseAssert:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
   RCTAssert(false, @"Intentional assert from ObjC promiseAssert");
 }
