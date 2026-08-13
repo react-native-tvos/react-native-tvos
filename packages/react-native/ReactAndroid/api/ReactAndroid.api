@@ -3630,6 +3630,7 @@ public final class com/facebook/react/uimanager/ReactAccessibilityDelegate$Acces
 	public static final field SUMMARY Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
 	public static final field SWITCH Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
 	public static final field TAB Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
+	public static final field TABBAR Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
 	public static final field TABLIST Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
 	public static final field TEXT Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
 	public static final field TIMER Lcom/facebook/react/uimanager/ReactAccessibilityDelegate$AccessibilityRole;
