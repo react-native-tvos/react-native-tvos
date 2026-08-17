@@ -30,10 +30,12 @@ function transformToCode(
     filename = path.join(PROJECT_ROOT, 'App.js'),
     platform = 'ios',
     experimentalImportSupport = false,
+    inlinePlatform = true,
   }: {
     filename?: string,
     platform?: ?string,
     experimentalImportSupport?: boolean,
+    inlinePlatform?: boolean,
   } = {},
 ): string {
   const {transform} = require('../index.js');
@@ -48,6 +50,7 @@ function transformToCode(
       experimentalImportSupport,
       globalPrefix: '__metro__',
       hot: false,
+      inlinePlatform,
       minify: false,
       platform,
       publicPath: 'test',
@@ -150,6 +153,19 @@ describe.each([false, true])(
       );
 
       expect(code).toMatch(/\.OS\b/);
+    });
+
+    test('does not inline without the inlinePlatform opt-in', () => {
+      // Metro sets this per build; consumers that only need platform-correct
+      // resolution (Jest) pass a platform without it and must keep `Platform`
+      // observable so it can be mocked.
+      const code = transformToCode(
+        "import {Platform} from 'react-native';\nconst os = Platform.OS;",
+        {inlinePlatform: false, experimentalImportSupport},
+      );
+
+      expect(code).toMatch(/\.OS\b/);
+      expect(code).not.toContain('"ios"');
     });
   },
 );

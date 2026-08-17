@@ -48,14 +48,16 @@ function getTransformProfile(caller) {
   return caller?.unstable_transformProfile ?? 'hermes-stable';
 }
 
-// The target platform for `Platform.OS` / `Platform.select` inlining. Metro
-// passes this in transform options; when the preset is consumed directly as a
-// Babel preset (no `options.platform`), fall back to the Babel caller so any
-// Metro-driven consumer (bare Metro, Expo, @fb-tools/transformer) works without
-// extra wiring. Reading it via `babel.caller` also makes Babel re-evaluate the
-// preset when the platform changes between transform calls.
+// The target platform, currently only used for platform inlining.
 function getPlatform(caller) {
   return caller?.platform ?? null;
+}
+
+// Boolean, whether to inline `Platform`. Separate from `platform` (string)
+// because a platform already reaches the preset and may be used for other
+// purposes.
+function getInlinePlatform(caller) {
+  return caller?.inlinePlatform ?? false;
 }
 
 // use `this.foo = bar` instead of `this.defineProperty('foo', ...)`
@@ -68,6 +70,9 @@ const getPreset = (src, options, babel) => {
   const dev = options?.dev ?? babel?.env('development') ?? false;
 
   const platform = options?.platform ?? babel?.caller(getPlatform);
+
+  const inlinePlatform =
+    options?.inlinePlatform ?? babel?.caller(getInlinePlatform) ?? false;
 
   // Hermes V1 uses more optimised transform profiles. There is currently no
   // difference between stable and canary, but canary may in future be used to
@@ -121,7 +126,9 @@ const getPreset = (src, options, babel) => {
   // `disableImportExportTransform` is set), while the source-level import that
   // proves provenance is still intact. It is a no-op when `platform` is null or
   // the empty string.
-  extraPlugins.push([require('../inline-platform-plugin'), {platform}]);
+  if (inlinePlatform) {
+    extraPlugins.push([require('../inline-platform-plugin'), {platform}]);
+  }
 
   if (!options.useTransformReactJSXExperimental) {
     extraPlugins.push([
