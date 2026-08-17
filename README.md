@@ -316,7 +316,7 @@ class Game2048 extends React.Component {
   </ScrollView>
   ```
 
-  - _ScrollView animation timing (Android TV)_: The `scrollAnimationDuration` and `scrollAnimationEasing` props tune the animated scroll that runs when focus moves to another item. Both are Android TV only; on tvOS the focus engine owns this animation. When either prop is unset, the platform defaults are used, so behavior is unchanged.
+  - _ScrollView animation timing (Android TV)_: The `scrollAnimationDuration` and `scrollAnimationEasing` props tune the animated scroll that runs when focus moves to another item. They apply to the snap scroll (`snapToAlignment="item"` with per-item `scrollSnapAlign`/`scrollSnapOffset` markers) and to animated `scrollTo` commands; other focus scrolls are instant. Both are Android TV only; on tvOS the focus engine owns this animation. When either prop is unset, the platform defaults are used, so behavior is unchanged.
 
   | Prop (ScrollView) | Value | Description |
   |---|---|---|

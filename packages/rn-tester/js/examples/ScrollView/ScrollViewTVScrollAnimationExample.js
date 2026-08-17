@@ -105,9 +105,10 @@ const TimingRow = ({
       horizontal
       scrollAnimationDuration={scrollAnimationDuration}
       scrollAnimationEasing={scrollAnimationEasing}
-      showsHorizontalScrollIndicator={false}>
+      showsHorizontalScrollIndicator={false}
+      snapToAlignment="item">
       {Array.from({length: 15}, (_, i) => (
-        <View key={i} style={{marginRight: px(20)}}>
+        <View key={i} scrollSnapAlign="start" style={{marginRight: px(20)}}>
           <Card
             label={`Item ${i + 1}`}
             width={280}

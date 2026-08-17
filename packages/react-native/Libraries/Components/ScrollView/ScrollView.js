@@ -788,7 +788,9 @@ type ScrollViewBaseProps = Readonly<{
   /**
    * (Android TV only)
    * Duration in milliseconds of the animated scroll that runs when focus moves to
-   * another item. When unset or <= 0, the platform default (~250ms) is used.
+   * another item. Applies to the snap scroll (`snapToAlignment="item"` with
+   * per-item `scrollSnapAlign`/`scrollSnapOffset` markers) and to animated
+   * `scrollTo` commands; other focus scrolls are instant. When unset or <= 0, the platform default (~250ms) is used.
    * On tvOS the focus engine owns this animation and the prop has no effect.
    */
   scrollAnimationDuration?: ?number,
