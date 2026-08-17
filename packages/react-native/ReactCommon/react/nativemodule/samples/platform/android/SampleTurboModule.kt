@@ -15,6 +15,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.facebook.proguard.annotations.DoNotStrip
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ArrayBuffer
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -27,7 +28,6 @@ import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.turbomodule.core.interfaces.BindingsInstallerHolder
 import com.facebook.react.turbomodule.core.interfaces.TurboModuleWithJSIBindings
-import java.nio.ByteBuffer
 import java.util.UUID
 
 @DoNotStrip
@@ -155,28 +155,35 @@ public class SampleTurboModule(private val context: ReactApplicationContext) :
     return map
   }
 
+  // Mutating the argument updates the JS ArrayBuffer in place.
   @DoNotStrip
   @Suppress("unused")
-  override fun getArrayBuffer(buffer: ByteBuffer?): ByteBuffer? {
+  override fun getArrayBuffer(buffer: ArrayBuffer?): ArrayBuffer? {
+    if (buffer != null) {
+      val bytes = buffer.bytes
+      for (i in 0 until bytes.capacity()) {
+        bytes.put(i, (bytes.get(i) * 2).toByte())
+      }
+    }
     log("getArrayBuffer", buffer, buffer)
     return buffer
   }
 
   @DoNotStrip
   @Suppress("unused")
-  override fun createNativeBuffer(size: Double): ByteBuffer {
+  override fun createNativeBuffer(size: Double): ArrayBuffer {
     require(size.isFinite() && size >= 0.0 && size <= Int.MAX_VALUE.toDouble()) {
       "createNativeBuffer: size must be a finite value in [0, ${Int.MAX_VALUE}], got $size"
     }
-    val buffer = ByteBuffer.allocateDirect(size.toInt())
+    val buffer = ArrayBuffer(size.toInt())
     log("createNativeBuffer", size, buffer)
     return buffer
   }
 
   @DoNotStrip
   @Suppress("unused")
-  override fun processAsyncBuffer(payload: ByteBuffer?, promise: Promise) {
-    promise.resolve((payload?.capacity() ?: 0).toDouble())
+  override fun processAsyncBuffer(payload: ArrayBuffer?, promise: Promise) {
+    promise.resolve((payload?.size ?: 0).toDouble())
   }
 
   @DoNotStrip

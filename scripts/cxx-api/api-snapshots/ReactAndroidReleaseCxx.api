@@ -2789,6 +2789,16 @@ class facebook::react::IntersectionObserverState {
   public static facebook::react::IntersectionObserverState NotIntersecting();
 }
 
+class facebook::react::JArrayBuffer : public jni::HybridClass<facebook::react::JArrayBuffer> {
+  public JArrayBuffer(std::shared_ptr<facebook::jsi::MutableBuffer> buffer, bool owningBytes) noexcept;
+  public static constexpr auto kJavaDescriptor;
+  public static jni::local_ref<javaobject> createOwned(const void* bytes, size_t size);
+  public static jni::local_ref<javaobject> createOwning(std::shared_ptr<facebook::jsi::MutableBuffer> buffer);
+  public static jni::local_ref<javaobject> createUnowned(void* bytes, size_t size);
+  public static std::shared_ptr<facebook::jsi::MutableBuffer> toJSBuffer(jni::alias_ref<javaobject> arrayBuffer);
+  public static void registerNatives();
+}
+
 class facebook::react::JBindingsInstaller : public jni::HybridClass<facebook::react::JBindingsInstaller>, public facebook::react::BindingsInstaller {
   public static constexpr auto kJavaDescriptor;
   public ~JBindingsInstaller();

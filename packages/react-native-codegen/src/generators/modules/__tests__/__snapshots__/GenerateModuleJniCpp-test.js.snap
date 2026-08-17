@@ -53,17 +53,17 @@ namespace facebook::react {
 
 static facebook::jsi::Value __hostFunction_NativeSampleTurboModuleSpecJSI_getArrayBuffer(facebook::jsi::Runtime& rt, TurboModule &turboModule, const facebook::jsi::Value* args, size_t count) {
   static jmethodID cachedMethodId = nullptr;
-  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, ArrayBufferKind, \\"getArrayBuffer\\", \\"()Ljava/nio/ByteBuffer;\\", args, count, cachedMethodId);
+  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, ArrayBufferKind, \\"getArrayBuffer\\", \\"()Lcom/facebook/react/bridge/ArrayBuffer;\\", args, count, cachedMethodId);
 }
 
 static facebook::jsi::Value __hostFunction_NativeSampleTurboModuleSpecJSI_voidArrayBuffer(facebook::jsi::Runtime& rt, TurboModule &turboModule, const facebook::jsi::Value* args, size_t count) {
   static jmethodID cachedMethodId = nullptr;
-  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, VoidKind, \\"voidArrayBuffer\\", \\"(Ljava/nio/ByteBuffer;)V\\", args, count, cachedMethodId);
+  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, VoidKind, \\"voidArrayBuffer\\", \\"(Lcom/facebook/react/bridge/ArrayBuffer;)V\\", args, count, cachedMethodId);
 }
 
 static facebook::jsi::Value __hostFunction_NativeSampleTurboModuleSpecJSI_voidNullableArrayBuffer(facebook::jsi::Runtime& rt, TurboModule &turboModule, const facebook::jsi::Value* args, size_t count) {
   static jmethodID cachedMethodId = nullptr;
-  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, VoidKind, \\"voidNullableArrayBuffer\\", \\"(Ljava/nio/ByteBuffer;)V\\", args, count, cachedMethodId);
+  return static_cast<JavaTurboModule &>(turboModule).invokeJavaMethod(rt, VoidKind, \\"voidNullableArrayBuffer\\", \\"(Lcom/facebook/react/bridge/ArrayBuffer;)V\\", args, count, cachedMethodId);
 }
 
 NativeSampleTurboModuleSpecJSI::NativeSampleTurboModuleSpecJSI(const JavaTurboModule::InitParams &params)

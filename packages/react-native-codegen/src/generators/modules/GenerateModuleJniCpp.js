@@ -311,7 +311,7 @@ function translateParamTypeToJniType(
     case 'FunctionTypeAnnotation':
       return 'Lcom/facebook/react/bridge/Callback;';
     case 'ArrayBufferTypeAnnotation':
-      return 'Ljava/nio/ByteBuffer;';
+      return 'Lcom/facebook/react/bridge/ArrayBuffer;';
     default:
       realTypeAnnotation.type as 'MixedTypeAnnotation';
       throw new Error(
@@ -397,7 +397,7 @@ function translateReturnTypeToJniType(
     case 'ArrayTypeAnnotation':
       return 'Lcom/facebook/react/bridge/WritableArray;';
     case 'ArrayBufferTypeAnnotation':
-      return 'Ljava/nio/ByteBuffer;';
+      return 'Lcom/facebook/react/bridge/ArrayBuffer;';
     default:
       realTypeAnnotation.type as 'MixedTypeAnnotation';
       throw new Error(

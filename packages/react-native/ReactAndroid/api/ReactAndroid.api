@@ -537,6 +537,28 @@ public final class com/facebook/react/bridge/Arguments {
 	public static final fun toList (Lcom/facebook/react/bridge/ReadableArray;)Ljava/util/ArrayList;
 }
 
+public final class com/facebook/react/bridge/ArrayBuffer : com/facebook/jni/HybridClassBase {
+	public static final field Companion Lcom/facebook/react/bridge/ArrayBuffer$Companion;
+	public fun <init> (I)V
+	public synthetic fun <init> (Ljava/nio/ByteBuffer;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun arrayBufferWithCopiedBytes (Lcom/facebook/react/bridge/ArrayBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+	public static final fun arrayBufferWithCopiedBytes (Ljava/nio/ByteBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+	public static final fun arrayBufferWithCopiedBytes ([B)Lcom/facebook/react/bridge/ArrayBuffer;
+	public static final fun arrayBufferWithLength (I)Lcom/facebook/react/bridge/ArrayBuffer;
+	public static final fun arrayBufferWithOwnedBytes (Ljava/nio/ByteBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+	public final fun getBytes ()Ljava/nio/ByteBuffer;
+	public final fun getSize ()I
+	public final fun isOwningBytes ()Z
+}
+
+public final class com/facebook/react/bridge/ArrayBuffer$Companion {
+	public final fun arrayBufferWithCopiedBytes (Lcom/facebook/react/bridge/ArrayBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+	public final fun arrayBufferWithCopiedBytes (Ljava/nio/ByteBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+	public final fun arrayBufferWithCopiedBytes ([B)Lcom/facebook/react/bridge/ArrayBuffer;
+	public final fun arrayBufferWithLength (I)Lcom/facebook/react/bridge/ArrayBuffer;
+	public final fun arrayBufferWithOwnedBytes (Ljava/nio/ByteBuffer;)Lcom/facebook/react/bridge/ArrayBuffer;
+}
+
 public final class com/facebook/react/bridge/AssertionException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;)V
 }

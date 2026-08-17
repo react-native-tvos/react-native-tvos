@@ -23,7 +23,7 @@
 #include <react/bridging/Bridging.h>
 #include <react/debug/react_native_assert.h>
 #include <react/featureflags/ReactNativeFeatureFlags.h>
-#include <react/jni/JByteBufferMutableBuffer.h>
+#include <react/jni/JArrayBuffer.h>
 #include <react/jni/JDynamicNative.h>
 #include <react/jni/NativeMap.h>
 #include <react/jni/ReadableNativeMap.h>
@@ -315,6 +315,8 @@ JNIArgs convertJSIArgsToJNIArgs(
   auto& jargs = jniArgs.args;
   auto& globalRefs = jniArgs.globalRefs;
 
+  auto isSyncInvocation = valueKind != VoidKind && valueKind != PromiseKind;
+
   auto makeGlobalIfNecessary = [&](jobject obj) {
     if (valueKind == VoidKind || valueKind == PromiseKind) {
       jobject globalObj = env->NewGlobalRef(obj);
@@ -440,7 +442,7 @@ JNIArgs convertJSIArgsToJNIArgs(
       auto dynamicFromValue = jsi::dynamicFromValue(rt, *arg);
       auto jParams = JDynamicNative::newObjectCxxArgs(dynamicFromValue);
       jarg->l = makeGlobalIfNecessary(jParams.release());
-    } else if (type == "Ljava/nio/ByteBuffer;") {
+    } else if (type == "Lcom/facebook/react/bridge/ArrayBuffer;") {
       if (!(arg->isObject() && arg->getObject(rt).isArrayBuffer(rt))) {
         throw JavaTurboModuleArgumentConversionException(
             "ArrayBuffer", argIndex, methodName, arg, &rt);
@@ -459,18 +461,24 @@ JNIArgs convertJSIArgsToJNIArgs(
             rt,
             "JavaTurboModule::convertJSIArgsToJNIArgs: ArrayBuffer exceeds maximum size.");
       }
-      auto data = arrayBuffer.data(rt);
-      // ArrayBuffer arguments are always copied into a Java-owned direct
-      // ByteBuffer, so Java fully owns the bytes. Borrowing the JS bytes is
-      // never safe — even on a synchronous call the module may retain the
-      // buffer or hand it to an async method, and JS may garbage-collect the
-      // source ArrayBuffer, leaving Java with a dangling view.
-      auto buffer = jni::JByteBuffer::allocateDirect(static_cast<jint>(size));
-      if (size > 0) {
-        // @lint-ignore CLANGSECURITY facebook-security-vulnerable-memcpy
-        std::memcpy(buffer->getDirectBytes(), data, size);
-      }
-      jarg->l = makeGlobalIfNecessary(buffer.release());
+
+      auto jArrayBuffer = [&]() {
+        // Backed by a native buffer: alias it and retain its owner, so the
+        // bytes stay valid for as long as the module holds the ArrayBuffer.
+        if (auto mutableBuffer = arrayBuffer.tryGetMutableBuffer(rt)) {
+          return JArrayBuffer::createOwning(std::move(mutableBuffer));
+        }
+
+        // JS heap bytes on a synchronous call: lend them for the duration of
+        // the call.
+        if (isSyncInvocation) {
+          return JArrayBuffer::createUnowned(arrayBuffer.data(rt), size);
+        }
+
+        // JS heap bytes that outlive the call: copy.
+        return JArrayBuffer::createOwned(arrayBuffer.data(rt), size);
+      }();
+      jarg->l = makeGlobalIfNecessary(jArrayBuffer.release());
     } else {
       throw JavaTurboModuleInvalidArgumentTypeException(
           type, argIndex, methodName);
@@ -1013,22 +1021,11 @@ jsi::Value JavaTurboModule::invokeJavaMethod(
 
       jsi::Value returnValue = jsi::Value::null();
       if (returnObject != nullptr) {
-        auto jByteBuffer = jni::adopt_local(
-            static_cast<jni::JByteBuffer::javaobject>(returnObject));
-
-        if (!jByteBuffer->isDirect()) {
-          throw jsi::JSError(
-              runtime,
-              "Only direct ByteBuffers (ByteBuffer.allocateDirect) can be returned from a TurboModule.");
-        }
-        // Zero-copy: JByteBufferMutableBuffer takes a global reference that
-        // pins the ByteBuffer's memory for the lifetime of the JS ArrayBuffer,
-        // and its destructor attaches the current thread before releasing that
-        // ref, so JS GC finalization on any thread is safe.
-        auto nativeBuffer =
-            std::make_shared<JByteBufferMutableBuffer>(jByteBuffer);
+        auto jArrayBuffer = jni::adopt_local(
+            static_cast<JArrayBuffer::javaobject>(returnObject));
         returnValue = {
-            runtime, jsi::ArrayBuffer{runtime, std::move(nativeBuffer)}};
+            runtime,
+            jsi::ArrayBuffer{runtime, JArrayBuffer::toJSBuffer(jArrayBuffer)}};
       }
 
       TMPL::syncMethodCallReturnConversionEnd(moduleName, methodName);

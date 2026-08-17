@@ -58,11 +58,11 @@ Map {
 package com.facebook.fbreact.specs;
 
 import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.react.bridge.ArrayBuffer;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.turbomodule.core.interfaces.TurboModule;
-import java.nio.ByteBuffer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -80,15 +80,15 @@ public abstract class NativeSampleTurboModuleSpec extends ReactContextBaseJavaMo
 
   @ReactMethod(isBlockingSynchronousMethod = true)
   @DoNotStrip
-  public abstract ByteBuffer getArrayBuffer();
+  public abstract ArrayBuffer getArrayBuffer();
 
   @ReactMethod
   @DoNotStrip
-  public abstract void voidArrayBuffer(ByteBuffer arg);
+  public abstract void voidArrayBuffer(ArrayBuffer arg);
 
   @ReactMethod
   @DoNotStrip
-  public abstract void voidNullableArrayBuffer(@Nullable ByteBuffer arg);
+  public abstract void voidNullableArrayBuffer(@Nullable ArrayBuffer arg);
 }
 ",
 }
