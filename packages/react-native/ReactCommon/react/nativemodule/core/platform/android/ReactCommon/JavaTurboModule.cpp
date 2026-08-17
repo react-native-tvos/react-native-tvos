@@ -1054,12 +1054,20 @@ void JavaTurboModule::configureEventEmitterCallback() {
     FACEBOOK_JNI_THROW_PENDING_EXCEPTION();
   }
 
-  auto callback = JCxxCallbackImpl::newObjectCxxArgs([&](folly::dynamic args) {
-    auto eventName = args.at(0).asString();
-    auto& eventEmitter = static_cast<AsyncEventEmitter<folly::dynamic>&>(
-        *eventEmitterMap_[eventName].get());
-    eventEmitter.emit(args.size() > 1 ? std::move(args).at(1) : nullptr);
-  });
+  // The Java module owns the callback and can outlive this object, so the
+  // lambda captures its own copy of the map rather than referencing
+  // eventEmitterMap_. Callers register every emitter before reaching here;
+  // emitters added afterwards are not visible to this callback.
+  auto callback = JCxxCallbackImpl::newObjectCxxArgs(
+      [eventEmitterMap = eventEmitterMap_](folly::dynamic args) {
+        auto eventName = args.at(0).asString();
+        auto it = eventEmitterMap.find(eventName);
+        if (it == eventEmitterMap.end() || !it->second) {
+          return;
+        }
+        static_cast<AsyncEventEmitter<folly::dynamic>&>(*it->second)
+            .emit(args.size() > 1 ? std::move(args).at(1) : nullptr);
+      });
 
   jvalue args[1];
   args[0].l = callback.release();

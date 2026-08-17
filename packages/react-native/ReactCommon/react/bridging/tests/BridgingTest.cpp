@@ -543,6 +543,59 @@ TEST_F(BridgingTest, eventEmitterTest) {
   }
 }
 
+TEST_F(BridgingTest, eventEmitterMapLookupTest) {
+  // Mirrors the lookup the codegen'd setEventEmitterCallback lambda performs:
+  // an unknown event name must not insert an entry, and a null emitter must not
+  // be dereferenced.
+  std::unordered_map<std::string, std::shared_ptr<IAsyncEventEmitter>>
+      eventEmitterMap;
+  eventEmitterMap["onEvent"] = std::make_shared<AsyncEventEmitter<EventType>>();
+  eventEmitterMap["onNullEvent"] = nullptr;
+
+  // Subscribe to the valid emitter so the emit("onEvent") case can be verified
+  // by an observable side effect, not merely EXPECT_NO_THROW.
+  EventSubscriptionsWithLastEvent eventSubscriptionsWithListener;
+  addEventSubscription<EventType>(
+      rt,
+      static_cast<AsyncEventEmitter<EventType>&>(*eventEmitterMap["onEvent"]),
+      eventSubscriptionsWithListener,
+      invoker);
+
+  auto emit = [&eventEmitterMap](const std::string& name) {
+    auto it = eventEmitterMap.find(name);
+    if (it == eventEmitterMap.end() || !it->second) {
+      return;
+    }
+    static_cast<AsyncEventEmitter<EventType>&>(*it->second)
+        .emit({"one", "two", "three"});
+  };
+
+  EXPECT_NO_THROW(emit("onUnknownEvent"));
+  EXPECT_NO_THROW(emit("onNullEvent"));
+  EXPECT_NO_THROW(emit("onEvent"));
+
+  // The valid emit must actually reach the subscribed listener.
+  flushQueue();
+  ASSERT_EQ(1, eventSubscriptionsWithListener.size());
+  const auto& lastEvent = eventSubscriptionsWithListener[0].second;
+  ASSERT_EQ(3, lastEvent->size());
+  EXPECT_EQ("one", lastEvent->at(0));
+  EXPECT_EQ("two", lastEvent->at(1));
+  EXPECT_EQ("three", lastEvent->at(2));
+
+  // The miss must not have grown the map, which operator[] would have done.
+  EXPECT_EQ(2, eventEmitterMap.size());
+  EXPECT_FALSE(eventEmitterMap.contains("onUnknownEvent"));
+
+  // Clean up the subscription so the LongLivedObjectCollection leak check in
+  // TearDown passes.
+  for (const auto& [eventSubscription, _] : eventSubscriptionsWithListener) {
+    eventSubscription.getPropertyAsFunction(rt, "remove")
+        .callWithThis(rt, eventSubscription);
+  }
+  flushQueue();
+}
+
 TEST_F(BridgingTest, optionalTest) {
   EXPECT_EQ(
       1, bridging::fromJs<std::optional<int>>(rt, jsi::Value(1), invoker));

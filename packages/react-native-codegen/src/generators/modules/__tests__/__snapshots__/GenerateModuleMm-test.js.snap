@@ -326,27 +326,45 @@ Map {
 @implementation NativeSampleTurboModuleSpecBase
 - (void)emitOnEvent1
 {
-  _eventEmitterCallback(\\"onEvent1\\", nil);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent1\\", nil);
+  }
 }
 - (void)emitOnEvent2:(NSString *_Nonnull)value
 {
-  _eventEmitterCallback(\\"onEvent2\\", value);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent2\\", value);
+  }
 }
 - (void)emitOnEvent3:(NSNumber *_Nonnull)value
 {
-  _eventEmitterCallback(\\"onEvent3\\", value);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent3\\", value);
+  }
 }
 - (void)emitOnEvent4:(BOOL)value
 {
-  _eventEmitterCallback(\\"onEvent4\\", [NSNumber numberWithBool:value]);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent4\\", [NSNumber numberWithBool:value]);
+  }
 }
 - (void)emitOnEvent5:(NSDictionary *)value
 {
-  _eventEmitterCallback(\\"onEvent5\\", value);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent5\\", value);
+  }
 }
 - (void)emitOnEvent6:(NSArray<id<NSObject>> *)value
 {
-  _eventEmitterCallback(\\"onEvent6\\", value);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"onEvent6\\", value);
+  }
 }
 
 - (void)setEventEmitterCallback:(EventEmitterCallbackWrapper *)eventEmitterCallbackWrapper
@@ -373,8 +391,11 @@ namespace facebook::react {
         eventEmitterMap_[\\"onEvent4\\"] = std::make_shared<AsyncEventEmitter<id>>();
         eventEmitterMap_[\\"onEvent5\\"] = std::make_shared<AsyncEventEmitter<id>>();
         eventEmitterMap_[\\"onEvent6\\"] = std::make_shared<AsyncEventEmitter<id>>();
-        setEventEmitterCallback([&](const std::string &name, id value) {
-          static_cast<AsyncEventEmitter<id> &>(*eventEmitterMap_[name]).emit(value);
+        setEventEmitterCallback([eventEmitterMap = eventEmitterMap_](const std::string &name, id value) {
+          auto it = eventEmitterMap.find(name);
+          if (it != eventEmitterMap.end() && it->second) {
+            static_cast<AsyncEventEmitter<id> &>(*it->second).emit(value);
+          }
         });
   }
 } // namespace facebook::react
@@ -734,7 +755,10 @@ Map {
 @implementation NativeSampleTurboModuleSpecBase
 - (void)emitLiteralEvent:(NSString *_Nonnull)value
 {
-  _eventEmitterCallback(\\"literalEvent\\", value);
+  auto eventEmitterCallback = _eventEmitterCallback;
+  if (eventEmitterCallback) {
+    eventEmitterCallback(\\"literalEvent\\", value);
+  }
 }
 
 - (void)setEventEmitterCallback:(EventEmitterCallbackWrapper *)eventEmitterCallbackWrapper
@@ -756,8 +780,11 @@ namespace facebook::react {
         methodMap_[\\"getStringLiteral\\"] = MethodMetadata {1, __hostFunction_NativeSampleTurboModuleSpecJSI_getStringLiteral};
         
         eventEmitterMap_[\\"literalEvent\\"] = std::make_shared<AsyncEventEmitter<id>>();
-        setEventEmitterCallback([&](const std::string &name, id value) {
-          static_cast<AsyncEventEmitter<id> &>(*eventEmitterMap_[name]).emit(value);
+        setEventEmitterCallback([eventEmitterMap = eventEmitterMap_](const std::string &name, id value) {
+          auto it = eventEmitterMap.find(name);
+          if (it != eventEmitterMap.end() && it->second) {
+            static_cast<AsyncEventEmitter<id> &>(*it->second).emit(value);
+          }
         });
   }
 } // namespace facebook::react

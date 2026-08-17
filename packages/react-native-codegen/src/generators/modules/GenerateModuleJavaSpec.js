@@ -82,16 +82,25 @@ function EventEmitterTemplate(
   eventEmitter: NativeModuleEventEmitterShape,
   imports: Set<string>,
 ): string {
+  imports.add('com.facebook.react.bridge.CxxCallbackImpl');
+  // mEventEmitterCallback is set from JNI by configureEventEmitterCallback(),
+  // which the generated SpecJSI constructor calls when JS first looks the module
+  // up. Emitting before that would hit a null field, so the emitted code no-ops
+  // instead. The local is for readability: reference reads are already atomic,
+  // and the field is never reset to null.
   return `  protected final void emit${toPascalCase(eventEmitter.name)}(${
     eventEmitter.typeAnnotation.typeAnnotation.type !== 'VoidTypeAnnotation'
       ? `${translateEventEmitterTypeToJavaType(eventEmitter, imports)} value`
       : ''
   }) {
-    mEventEmitterCallback.invoke("${eventEmitter.name}"${
-      eventEmitter.typeAnnotation.typeAnnotation.type !== 'VoidTypeAnnotation'
-        ? ', value'
-        : ''
-    });
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke("${eventEmitter.name}"${
+        eventEmitter.typeAnnotation.typeAnnotation.type !== 'VoidTypeAnnotation'
+          ? ', value'
+          : ''
+      });
+    }
   }`;
 }
 

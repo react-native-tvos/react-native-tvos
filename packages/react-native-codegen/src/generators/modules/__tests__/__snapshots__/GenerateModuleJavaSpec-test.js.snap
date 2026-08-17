@@ -229,6 +229,7 @@ Map {
 package com.facebook.fbreact.specs;
 
 import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.react.bridge.CxxCallbackImpl;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -250,27 +251,45 @@ public abstract class NativeSampleTurboModuleSpec extends ReactContextBaseJavaMo
   }
 
   protected final void emitOnEvent1() {
-    mEventEmitterCallback.invoke(\\"onEvent1\\");
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent1\\");
+    }
   }
 
   protected final void emitOnEvent2(String value) {
-    mEventEmitterCallback.invoke(\\"onEvent2\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent2\\", value);
+    }
   }
 
   protected final void emitOnEvent3(double value) {
-    mEventEmitterCallback.invoke(\\"onEvent3\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent3\\", value);
+    }
   }
 
   protected final void emitOnEvent4(boolean value) {
-    mEventEmitterCallback.invoke(\\"onEvent4\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent4\\", value);
+    }
   }
 
   protected final void emitOnEvent5(ReadableMap value) {
-    mEventEmitterCallback.invoke(\\"onEvent5\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent5\\", value);
+    }
   }
 
   protected final void emitOnEvent6(ReadableArray value) {
-    mEventEmitterCallback.invoke(\\"onEvent6\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"onEvent6\\", value);
+    }
   }
 
   @ReactMethod
@@ -583,6 +602,7 @@ Map {
 package com.facebook.fbreact.specs;
 
 import com.facebook.proguard.annotations.DoNotStrip;
+import com.facebook.react.bridge.CxxCallbackImpl;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -602,7 +622,10 @@ public abstract class NativeSampleTurboModuleSpec extends ReactContextBaseJavaMo
   }
 
   protected final void emitLiteralEvent(String value) {
-    mEventEmitterCallback.invoke(\\"literalEvent\\", value);
+    CxxCallbackImpl eventEmitterCallback = mEventEmitterCallback;
+    if (eventEmitterCallback != null) {
+      eventEmitterCallback.invoke(\\"literalEvent\\", value);
+    }
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
