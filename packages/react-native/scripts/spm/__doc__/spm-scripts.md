@@ -222,7 +222,7 @@ left alone.
 | Path | Commit? | Why |
 |------|---------|-----|
 | `MyApp.xcodeproj/` | Yes | Your project, with SwiftPM injected in place. Holds your signing, capabilities, Build Phases — `add` only adds SwiftPM refs/settings, additively. |
-| `MyApp.xcodeproj/.spm-injected.json` | Yes | Marker recording every edit `add` made, so `deinit` can surgically reverse it and re-runs stay idempotent. Also pins settings later runs and Xcode builds must reuse: the `--version` pin (`artifactsVersionOverride`) that keeps later runs on the same artifact slots, and the [autolinking config command](#the-autolinking-config-command-is-remembered). |
+| `MyApp.xcodeproj/.spm-injected.json` | Yes | Marker recording every edit `add` made — plus the pre-injection value of any build setting it rewrote — so `deinit` can surgically reverse it and re-runs stay idempotent. Also pins settings later runs and Xcode builds must reuse: the `--version` pin (`artifactsVersionOverride`) that keeps later runs on the same artifact slots, and the [autolinking config command](#the-autolinking-config-command-is-remembered). |
 | `build/generated/` | No | Codegen/autolinking output; regenerated |
 | `build/xcframeworks/` | No | Symlinks to the machine-local artifact cache |
 | `Package.resolved` | No | SwiftPM resolution file; machine-specific |
@@ -234,7 +234,22 @@ stays untouched, and a re-run is a no-op. The injected refs point at three
 stable sub-package paths under `build/`; adding or removing community deps
 changes the sub-package contents (gitignored) and never re-injects. `deinit`
 removes exactly what was injected (using the marker), leaving the project
-byte-identical to its pre-`add` state.
+byte-identical to its pre-`add` state — with one exception, described next.
+
+**Build settings that already exist** are edited in place. The four array
+settings `add` merges into — `HEADER_SEARCH_PATHS`, `OTHER_LDFLAGS`,
+`FRAMEWORK_SEARCH_PATHS`, `LD_RUNPATH_SEARCH_PATHS` — keep the shape they were
+written in: Xcode's multi-line form as well as the compact one-line form hand
+edits and other generators (XcodeGen, Tuist) emit. One that exists as a plain
+*scalar* is promoted to a `( … )` array — the shape an Xcode-authored target can
+carry, e.g. a
+`LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";` written
+as a scalar rather than a list. `add` records the pre-injection value in the
+marker and
+`deinit` restores it by rewriting the whole field — once folded together, the
+injected members and your own are indistinguishable — so **members you add to
+a promoted array by hand afterwards are lost**. That applies to `update` too,
+which reverts to the recorded baseline before re-injecting.
 
 Because everything under `build/` is gitignored, a clean checkout has no
 resolvable Swift packages until they are regenerated — see the next section.
