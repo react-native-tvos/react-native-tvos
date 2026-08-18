@@ -893,9 +893,12 @@ export type ____ViewStyle_InternalBase = Readonly<{
   mixBlendMode?: ____BlendMode_Internal,
   backgroundImage?: ReadonlyArray<BackgroundImageValue> | string,
   experimental_backgroundImage?: ReadonlyArray<BackgroundImageValue> | string,
+  backgroundSize?: ReadonlyArray<BackgroundSizeValue> | string,
   experimental_backgroundSize?: ReadonlyArray<BackgroundSizeValue> | string,
+  backgroundPosition?: ReadonlyArray<BackgroundPositionValue> | string,
   experimental_backgroundPosition?:
     ReadonlyArray<BackgroundPositionValue> | string,
+  backgroundRepeat?: ReadonlyArray<BackgroundRepeatValue> | string,
   experimental_backgroundRepeat?: ReadonlyArray<BackgroundRepeatValue> | string,
   isolation?: 'auto' | 'isolate',
 }>;

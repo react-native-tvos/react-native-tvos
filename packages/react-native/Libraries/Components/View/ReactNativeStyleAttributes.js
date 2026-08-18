@@ -205,16 +205,22 @@ const ReactNativeStyleAttributes: {[string]: AnyAttributeType, ...} = {
   /**
    * BackgroundSize
    */
+  backgroundSize: backgroundSizeAttribute,
+  /** @deprecated Use `backgroundSize` instead. */
   experimental_backgroundSize: backgroundSizeAttribute,
 
   /**
    * BackgroundPosition
    */
+  backgroundPosition: backgroundPositionAttribute,
+  /** @deprecated Use `backgroundPosition` instead. */
   experimental_backgroundPosition: backgroundPositionAttribute,
 
   /**
    * BackgroundRepeat
    */
+  backgroundRepeat: backgroundRepeatAttribute,
+  /** @deprecated Use `backgroundRepeat` instead. */
   experimental_backgroundRepeat: backgroundRepeatAttribute,
 
   /**
