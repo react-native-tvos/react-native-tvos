@@ -42,6 +42,19 @@ const PLAIN_PBXPROJ = fs.readFileSync(
   'utf8',
 );
 
+// The app target's Debug buildSettings dict, as a body range.
+function targetDebugDict(text) {
+  const cfg = findObjectByUuid(text, 'AA0000000000000000000901');
+  const bs = findField(text, cfg, 'buildSettings');
+  return {uuid: 'x', bodyOpen: bs.valueStart, bodyClose: bs.tokenEnd - 1};
+}
+
+// Delimiter balance, checked with the module's own quote-aware scanner: the
+// outermost `{` must close on the file's last `}`.
+function isBalanced(text) {
+  return scanToClose(text, text.indexOf('{')) === text.lastIndexOf('}');
+}
+
 // ---------------------------------------------------------------------------
 // generateUUID
 // ---------------------------------------------------------------------------
@@ -196,12 +209,6 @@ describe('addArrayMembers', () => {
 });
 
 describe('addArrayStringValues', () => {
-  function targetDebugDict(text) {
-    const cfg = findObjectByUuid(text, 'AA0000000000000000000901');
-    const bs = findField(text, cfg, 'buildSettings');
-    return {uuid: 'x', bodyOpen: bs.valueStart, bodyClose: bs.tokenEnd - 1};
-  }
-
   it('creates an array seeded with $(inherited)', () => {
     const out = addArrayStringValues(
       PLAIN_PBXPROJ,
@@ -228,6 +235,50 @@ describe('addArrayStringValues', () => {
     expect(out).toMatch(/OTHER_LDFLAGS = \(/);
     expect(out).toContain('"-lz"');
     expect(out).toContain('"-ObjC"');
+  });
+
+  // Xcode writes the seed quoted, but the unquoted form is just as valid and
+  // appears in hand-edited projects. Both are the same value to the build
+  // system, so neither may be re-emitted alongside the seed.
+  it.each(['"$(inherited)"', '$(inherited)'])(
+    'promotes a bare %s scalar without emitting the seed twice',
+    priorValue => {
+      const scalar = PLAIN_PBXPROJ.replace(
+        'PRODUCT_NAME = "$(TARGET_NAME)";',
+        `OTHER_LDFLAGS = ${priorValue}; PRODUCT_NAME = "$(TARGET_NAME)";`,
+      );
+      const out = addArrayStringValues(
+        scalar,
+        targetDebugDict(scalar),
+        'OTHER_LDFLAGS',
+        ['"-ObjC"'],
+      );
+      const members = /OTHER_LDFLAGS = \(\n([\s\S]*?)\t+\);/
+        .exec(out)[1]
+        .split('\n')
+        .map(line => line.trim().replace(/,$/, ''))
+        .filter(member => member.length > 0);
+      // The scalar's value IS the seed the array is created with.
+      expect(members).toEqual(['"$(inherited)"', '"-ObjC"']);
+    },
+  );
+
+  it('promotes an empty scalar without emitting a bare `,` member', () => {
+    const scalar = PLAIN_PBXPROJ.replace(
+      'PRODUCT_NAME = "$(TARGET_NAME)";',
+      'OTHER_LDFLAGS =   ; PRODUCT_NAME = "$(TARGET_NAME)";',
+    );
+    const out = addArrayStringValues(
+      scalar,
+      targetDebugDict(scalar),
+      'OTHER_LDFLAGS',
+      ['"-ObjC"'],
+    );
+    const block = /OTHER_LDFLAGS = \(\n([\s\S]*?)\t+\);/.exec(out)[1];
+    // Asserted on the raw block: a member list filtered for emptiness (as the
+    // test above does) would hide the malformed element this guards against.
+    expect(block.split('\n').filter(line => /^\s*,$/.test(line))).toEqual([]);
+    expect(block).toContain('"-ObjC"');
   });
 
   it('dedups by EXACT token, not substring (adds "-ObjC" even when "-ObjCFoo" is present)', () => {
@@ -258,6 +309,102 @@ describe('addArrayStringValues', () => {
       ['"-ObjC"'],
     );
     expect((out.match(/"-ObjC"/g) || []).length).toBe(1);
+  });
+});
+
+// Xcode writes array build settings multi-line, but hand-edited projects and
+// other generators (XcodeGen, Tuist) emit compact one-line ones. Members must
+// land INSIDE the array whatever its shape, and `deinit` must be able to take
+// them back out again — hence the byte-identical add→remove round trip.
+describe('array build settings of every written shape', () => {
+  const NEW = '"/new"';
+
+  // Seed `OTHER_LDFLAGS = <value>;` into the app target's Debug config.
+  function withValue(value) {
+    return PLAIN_PBXPROJ.replace(
+      '\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";',
+      `\t\t\t\tOTHER_LDFLAGS = ${value};\n\t\t\t\tPRODUCT_NAME = "$(TARGET_NAME)";`,
+    );
+  }
+
+  function add(text, values) {
+    return addArrayStringValues(
+      text,
+      targetDebugDict(text),
+      'OTHER_LDFLAGS',
+      values,
+    );
+  }
+
+  function remove(text, values) {
+    return removeArrayStringValues(
+      text,
+      targetDebugDict(text),
+      'OTHER_LDFLAGS',
+      values,
+    );
+  }
+
+  describe.each([
+    ['an empty array', '()'],
+    ['a lone member with no trailing comma', '("/a")'],
+    ['a trailing comma and space', '("/a", )'],
+    ['no space after the comma', '("/a","/b")'],
+    ['a space after the comma', '("/a", "/b")'],
+    ['a member whose quotes hold a comma and parens', '("$(FOO(x)),weird")'],
+    ['the multi-line shape Xcode writes', '(\n\t\t\t\t\t"/a",\n\t\t\t\t)'],
+  ])('%s', (_label, shape) => {
+    const input = withValue(shape);
+
+    it('adds the value inside the array, leaving the file balanced', () => {
+      const out = add(input, [NEW]);
+      const field = findField(out, targetDebugDict(out), 'OTHER_LDFLAGS');
+      expect(field.value.trimStart().startsWith('(')).toBe(true);
+      expect(field.value).toContain(NEW);
+      // Nothing was spliced ahead of the field — i.e. outside the array.
+      expect(out.slice(0, field.matchStart)).toBe(
+        input.slice(0, field.matchStart),
+      );
+      expect(isBalanced(out)).toBe(true);
+    });
+
+    it.each([[[NEW]], [[NEW, '"/new2"']]])(
+      'remove undoes add of %j byte-for-byte',
+      values => {
+        const added = add(input, values);
+        expect(added).not.toBe(input);
+        expect(remove(added, values)).toBe(input);
+      },
+    );
+  });
+
+  it.each([
+    ['a value that is not there', '("/a", )', '"/zzz"'],
+    ['a member stripped of its quotes', '("$(inherited)", )', '$(inherited)'],
+  ])('removes nothing when asked for %s', (_label, shape, value) => {
+    const input = withValue(shape);
+    expect(remove(input, [value])).toBe(input);
+  });
+
+  it('is a no-op when a one-line array already holds the value', () => {
+    const input = withValue(`(${NEW})`);
+    expect(add(input, [NEW])).toBe(input);
+  });
+
+  it('dedupes a member whose quotes hold a comma', () => {
+    const weird = '"$(FOO(x)),weird"';
+    const input = withValue(`(${weird}, )`);
+    expect(add(input, [weird])).toBe(input);
+  });
+
+  it('splices a multi-line array on its own line, before the closing `)`', () => {
+    const input = withValue('(\n\t\t\t\t\t"/a",\n\t\t\t\t)');
+    expect(add(input, [NEW])).toBe(
+      input.replace(
+        '\t\t\t\t\t"/a",\n',
+        `\t\t\t\t\t"/a",\n\t\t\t\t\t${NEW},\n`,
+      ),
+    );
   });
 });
 

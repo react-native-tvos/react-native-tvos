@@ -39,12 +39,41 @@ afterEach(() => {
 // Build a throwaway app dir: <tmp>/MyApp.xcodeproj/project.pbxproj seeded with
 // the plain (SPM-only) fixture, and a node_modules/react-native sibling so the
 // relative reactNativePath resolves.
-function scaffoldApp() {
+// Pre-existing values for an injected array setting (HEADER_SEARCH_PATHS),
+// seeded into both app-target configs. The plain fixture has none, so it only
+// ever exercises the create-from-absent path; deinit must restore each of
+// these forms — a plain scalar is ordinary, valid pbxproj.
+const PRE_EXISTING_HEADER_SEARCH_PATHS = {
+  'a bare $(inherited) scalar': '"$(inherited)"',
+  'a scalar with real content': '"$(inherited) $(SRCROOT)/vendor/include"',
+  'an array': '(\n\t\t\t\t"$(inherited)",\n\t\t\t)',
+  // What hand edits and other generators (XcodeGen, Tuist) write.
+  'a one-line array': '("$(inherited)", )',
+};
+
+// Seed a whole `KEY = value;` field (comments and stray whitespace included)
+// into both app-target configs.
+function withSetting(field /*: string */) {
+  return PLAIN.replaceAll(
+    'PRODUCT_BUNDLE_IDENTIFIER = com.example.MyApp;',
+    `${field}\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER = com.example.MyApp;`,
+  );
+}
+
+function withHeaderSearchPaths(value /*: string */) {
+  return withSetting(`HEADER_SEARCH_PATHS = ${value};`);
+}
+
+function scaffoldApp(pbxproj /*: string */ = PLAIN) {
   const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-deinit-'));
   scaffoldedAppRoots.push(appRoot);
   const xcodeprojPath = path.join(appRoot, 'MyApp.xcodeproj');
   fs.mkdirSync(xcodeprojPath, {recursive: true});
-  fs.writeFileSync(path.join(xcodeprojPath, 'project.pbxproj'), PLAIN, 'utf8');
+  fs.writeFileSync(
+    path.join(xcodeprojPath, 'project.pbxproj'),
+    pbxproj,
+    'utf8',
+  );
   const rnRoot = path.join(appRoot, 'node_modules', 'react-native');
   fs.mkdirSync(rnRoot, {recursive: true});
   const artifactRoot = path.join(appRoot, 'build', 'xcframeworks');
@@ -1177,5 +1206,174 @@ describe('readPinnedConfigCommand', () => {
     marker.configCommand = JSON.parse(pinned);
     fs.writeFileSync(markerPath, JSON.stringify(marker), 'utf8');
     expect(readPinnedConfigCommand(appRoot)).toBeNull();
+  });
+});
+
+describe.each(Object.entries(PRE_EXISTING_HEADER_SEARCH_PATHS))(
+  'removeSpmInjection with HEADER_SEARCH_PATHS already set to %s',
+  (_label, value) => {
+    it('restores the pre-existing value byte-for-byte', () => {
+      const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(
+        withHeaderSearchPaths(value),
+      );
+      const before = pbxprojOf(xcodeprojPath);
+
+      injectSpmIntoExistingXcodeproj({
+        appRoot,
+        reactNativeRoot: rnRoot,
+        xcodeprojPath,
+      });
+      expect(pbxprojOf(xcodeprojPath)).not.toBe(before);
+
+      expect(removeSpmInjection({appRoot, xcodeprojPath}).status).toBe(
+        'removed',
+      );
+      expect(pbxprojOf(xcodeprojPath)).toBe(before);
+    });
+
+    it('re-syncing is byte-for-byte identical', () => {
+      const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(
+        withHeaderSearchPaths(value),
+      );
+      injectSpmIntoExistingXcodeproj({
+        appRoot,
+        reactNativeRoot: rnRoot,
+        xcodeprojPath,
+      });
+      const first = pbxprojOf(xcodeprojPath);
+      injectSpmIntoExistingXcodeproj({
+        appRoot,
+        reactNativeRoot: rnRoot,
+        xcodeprojPath,
+      });
+      expect(pbxprojOf(xcodeprojPath)).toBe(first);
+    });
+  },
+);
+
+// findField's token for a BARE scalar ends AT the `;`, so it includes any
+// whitespace before it. Deinit must put those bytes back exactly, not a
+// tidied-up version of them.
+describe.each([
+  'HEADER_SEARCH_PATHS = $(inherited)   ; /* note */',
+  'HEADER_SEARCH_PATHS =   ;',
+])('removeSpmInjection with the untrimmed scalar `%s`', field => {
+  it('restores it byte-for-byte', () => {
+    const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(withSetting(field));
+    const before = pbxprojOf(xcodeprojPath);
+
+    injectSpmIntoExistingXcodeproj({
+      appRoot,
+      reactNativeRoot: rnRoot,
+      xcodeprojPath,
+    });
+    expect(pbxprojOf(xcodeprojPath)).not.toBe(before);
+
+    expect(removeSpmInjection({appRoot, xcodeprojPath}).status).toBe('removed');
+    expect(pbxprojOf(xcodeprojPath)).toBe(before);
+  });
+});
+
+describe('a scalar array setting injection has nothing to add to', () => {
+  const SCALAR = 'FRAMEWORK_SEARCH_PATHS = "$(inherited)";';
+  const EDITED = 'FRAMEWORK_SEARCH_PATHS = "$(inherited) $(SRCROOT)/Vendor";';
+
+  // The fixture's flavored-frameworks manifest is empty, so
+  // FRAMEWORK_SEARCH_PATHS is injected with no values at all.
+  it('is left untouched, unrecorded, and survives a later user edit', () => {
+    const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(withSetting(SCALAR));
+
+    injectSpmIntoExistingXcodeproj({
+      appRoot,
+      reactNativeRoot: rnRoot,
+      xcodeprojPath,
+    });
+
+    const injected = pbxprojOf(xcodeprojPath);
+    expect(injected).toContain(SCALAR);
+    expect(injected).not.toMatch(/FRAMEWORK_SEARCH_PATHS = \(/);
+    for (const change of readMarker(xcodeprojPath).buildSettingChanges) {
+      expect(change.promotedArrayScalars ?? {}).not.toHaveProperty(
+        'FRAMEWORK_SEARCH_PATHS',
+      );
+    }
+
+    fs.writeFileSync(
+      path.join(xcodeprojPath, 'project.pbxproj'),
+      injected.replaceAll(SCALAR, EDITED),
+      'utf8',
+    );
+    removeSpmInjection({appRoot, xcodeprojPath});
+
+    const after = pbxprojOf(xcodeprojPath);
+    expect(after).toContain(EDITED);
+    expect(after).not.toContain(SCALAR);
+  });
+});
+
+describe('a promoted array setting the user deleted after add', () => {
+  const SCALAR = '"$(inherited) $(SRCROOT)/vendor/include"';
+
+  it('is not resurrected by deinit', () => {
+    const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(
+      withHeaderSearchPaths(SCALAR),
+    );
+    const before = pbxprojOf(xcodeprojPath);
+
+    injectSpmIntoExistingXcodeproj({
+      appRoot,
+      reactNativeRoot: rnRoot,
+      xcodeprojPath,
+    });
+
+    const deleted = pbxprojOf(xcodeprojPath).replace(
+      /\n\t+HEADER_SEARCH_PATHS = \(\n[\s\S]*?\n\t+\);/g,
+      '',
+    );
+    expect(deleted).not.toContain('HEADER_SEARCH_PATHS');
+    fs.writeFileSync(
+      path.join(xcodeprojPath, 'project.pbxproj'),
+      deleted,
+      'utf8',
+    );
+
+    removeSpmInjection({appRoot, xcodeprojPath});
+
+    // Everything else is back to its pre-injection bytes; only the setting the
+    // user deleted stays gone.
+    expect(pbxprojOf(xcodeprojPath)).toBe(
+      before.replaceAll(`\n\t\t\t\tHEADER_SEARCH_PATHS = ${SCALAR};`, ''),
+    );
+  });
+});
+
+// `deinit` removes appendedArrayValues before it restores promotedArrayScalars,
+// so recording a key under both happens to come out right today: the scalar
+// restore rewrites the whole value last. That makes the exclusivity below
+// invisible to a round-trip test, which is why it is asserted on the marker
+// directly — reversing those two loops would otherwise silently start removing
+// array members from an already-restored scalar.
+describe('a promoted scalar is recorded once, not twice', () => {
+  it('records promotedArrayScalars and not appendedArrayValues for the key', () => {
+    const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp(
+      withHeaderSearchPaths('"$(inherited) $(SRCROOT)/vendor/include"'),
+    );
+
+    injectSpmIntoExistingXcodeproj({
+      appRoot,
+      reactNativeRoot: rnRoot,
+      xcodeprojPath,
+    });
+
+    const changes = readMarker(xcodeprojPath).buildSettingChanges;
+    expect(changes.length).toBeGreaterThan(0);
+    for (const change of changes) {
+      expect(Object.keys(change.promotedArrayScalars ?? {})).toContain(
+        'HEADER_SEARCH_PATHS',
+      );
+      expect(Object.keys(change.appendedArrayValues ?? {})).not.toContain(
+        'HEADER_SEARCH_PATHS',
+      );
+    }
   });
 });
