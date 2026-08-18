@@ -40,8 +40,31 @@ class JArrayBuffer : public jni::HybridClass<JArrayBuffer> {
 
   // Convert a module return value for rt.createArrayBuffer. Owning buffers pass
   // through; borrowed ones are copied because createArrayBuffer needs its own
-  // backing store.
-  static std::shared_ptr<jsi::MutableBuffer> toJSBuffer(jni::alias_ref<javaobject> arrayBuffer);
+  // backing store. Raises a jsi::JSError if the buffer has no native peer or
+  // its borrow has been revoked.
+  static std::shared_ptr<jsi::MutableBuffer> toJSBuffer(jsi::Runtime &runtime, jni::alias_ref<javaobject> arrayBuffer);
+
+  // Revokes access to borrowed bytes. Called when the call frame that lent the
+  // bytes unwinds, so a module that retained a non-owning ArrayBuffer gets an
+  // exception instead of reading memory the JS heap has moved or freed. Owning
+  // buffers are unaffected.
+  void invalidate() noexcept;
+
+  // The bytes this buffer was created over. Throws if a borrow has since been
+  // revoked by invalidate().
+  const std::shared_ptr<jsi::MutableBuffer> &mutableBuffer() const;
+
+  // Whether the bytes are still reachable, i.e. this is an owning buffer or a
+  // borrow that invalidate() has not revoked.
+  bool hasBytes() const noexcept
+  {
+    return buffer_ != nullptr;
+  }
+
+  bool isOwningBytes() const noexcept
+  {
+    return owningBytes_;
+  }
 
   JArrayBuffer(std::shared_ptr<jsi::MutableBuffer> buffer, bool owningBytes) noexcept
       : buffer_(std::move(buffer)), owningBytes_(owningBytes)
@@ -53,6 +76,8 @@ class JArrayBuffer : public jni::HybridClass<JArrayBuffer> {
 
   static void
   initHybrid(jni::alias_ref<jhybridobject> jobj, jni::alias_ref<jni::JByteBuffer> buffer, jboolean owningBytes);
+
+  jboolean isBytesValid();
 
   static jni::local_ref<javaobject>
   create(jni::local_ref<jni::JByteBuffer> byteBuffer, std::shared_ptr<jsi::MutableBuffer> buffer, bool owningBytes);

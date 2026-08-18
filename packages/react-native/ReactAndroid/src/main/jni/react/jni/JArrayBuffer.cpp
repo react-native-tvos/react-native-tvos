@@ -9,8 +9,11 @@
 
 #include <cstring>
 #include <span>
+#include <stdexcept>
 #include <utility>
 #include <vector>
+
+#include <react/bridging/ArrayBuffer.h>
 
 #include "JByteBufferMutableBuffer.h"
 
@@ -18,29 +21,17 @@ namespace facebook::react {
 
 namespace {
 
-// Holds a copy of bytes borrowed from a JS ArrayBuffer.
-class OwnedBytesBuffer final : public jsi::MutableBuffer {
- public:
-  explicit OwnedBytesBuffer(std::vector<uint8_t> bytes) noexcept
-      : bytes_(std::move(bytes)) {}
-
-  size_t size() const override {
-    return bytes_.size();
-  }
-
-  uint8_t* data() override {
-    return bytes_.data();
-  }
-
- private:
-  std::vector<uint8_t> bytes_;
-};
+const char* const kRevokedBorrowMessage =
+    "com.facebook.react.bridge.ArrayBuffer: the bytes of a non-owning ArrayBuffer "
+    "were accessed after the method that received it returned. Copy them with "
+    "ArrayBuffer.arrayBufferWithCopiedBytes() to use them later.";
 
 } // namespace
 
 void JArrayBuffer::registerNatives() {
   registerHybrid({
       makeNativeMethod("initHybrid", JArrayBuffer::initHybrid),
+      makeNativeMethod("isBytesValid", JArrayBuffer::isBytesValid),
   });
 }
 
@@ -52,6 +43,23 @@ void JArrayBuffer::initHybrid(
       jobj,
       std::make_shared<JByteBufferMutableBuffer>(buffer),
       owningBytes != JNI_FALSE);
+}
+
+jboolean JArrayBuffer::isBytesValid() {
+  return hasBytes() ? JNI_TRUE : JNI_FALSE;
+}
+
+void JArrayBuffer::invalidate() noexcept {
+  if (!owningBytes_) {
+    buffer_.reset();
+  }
+}
+
+const std::shared_ptr<jsi::MutableBuffer>& JArrayBuffer::mutableBuffer() const {
+  if (!hasBytes()) {
+    throw std::runtime_error(kRevokedBorrowMessage);
+  }
+  return buffer_;
 }
 
 jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::create(
@@ -66,12 +74,6 @@ jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::create(
 
 jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::createOwning(
     std::shared_ptr<jsi::MutableBuffer> buffer) {
-  // NewDirectByteBuffer rejects a null address, which is what an empty
-  // jsi::ArrayBuffer reports, so empty buffers get an allocation of their own.
-  if (buffer->size() == 0) {
-    return create(jni::JByteBuffer::allocateDirect(0), std::move(buffer), true);
-  }
-
   auto byteBuffer = jni::JByteBuffer::wrapBytes(buffer->data(), buffer->size());
   return create(std::move(byteBuffer), std::move(buffer), true);
 }
@@ -79,11 +81,8 @@ jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::createOwning(
 jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::createUnowned(
     void* bytes,
     size_t size) {
-  // NewDirectByteBuffer rejects a null address, which is what an empty
-  // jsi::ArrayBuffer reports, so empty buffers get an allocation of their own.
-  auto byteBuffer = size == 0
-      ? jni::JByteBuffer::allocateDirect(0)
-      : jni::JByteBuffer::wrapBytes(static_cast<uint8_t*>(bytes), size);
+  auto byteBuffer =
+      jni::JByteBuffer::wrapBytes(static_cast<uint8_t*>(bytes), size);
   auto buffer = std::make_shared<JByteBufferMutableBuffer>(byteBuffer);
   return create(std::move(byteBuffer), std::move(buffer), false);
 }
@@ -102,16 +101,28 @@ jni::local_ref<JArrayBuffer::javaobject> JArrayBuffer::createOwned(
 }
 
 std::shared_ptr<jsi::MutableBuffer> JArrayBuffer::toJSBuffer(
+    jsi::Runtime& runtime,
     jni::alias_ref<javaobject> arrayBuffer) {
   auto* self = arrayBuffer->cthis();
+  // create() runs the Kotlin constructor before setNativePointer, so a Java
+  // ArrayBuffer without a C++ peer is reachable if either step throws.
+  if (self == nullptr) {
+    throw jsi::JSError(
+        runtime, "com.facebook.react.bridge.ArrayBuffer has no native peer.");
+  }
+  if (!self->hasBytes()) {
+    throw jsi::JSError(runtime, kRevokedBorrowMessage);
+  }
+
+  const auto& buffer = self->mutableBuffer();
   if (self->owningBytes_) {
-    return self->buffer_;
+    return buffer;
   }
 
   // Borrowed bytes still belong to the inbound JS ArrayBuffer; copy them before
   // handing a new buffer back to JS.
-  auto bytes = std::span<uint8_t>(self->buffer_->data(), self->buffer_->size());
-  return std::make_shared<OwnedBytesBuffer>(
+  auto bytes = std::span<uint8_t>(buffer->data(), buffer->size());
+  return std::make_shared<detail::OwnedBytesBuffer>(
       std::vector<uint8_t>(bytes.begin(), bytes.end()));
 }
 

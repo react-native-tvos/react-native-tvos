@@ -45,6 +45,12 @@ class JByteBufferMutableBuffer final : public jsi::MutableBuffer {
   }
   uint8_t *data() override
   {
+    // GetDirectBufferAddress may report null for a zero-capacity direct buffer,
+    // which getDirectBytes turns into an exception. An empty buffer has no bytes
+    // to address, so report that directly instead.
+    if (byteBuffer_->getDirectSize() == 0) {
+      return nullptr;
+    }
     return byteBuffer_->getDirectBytes();
   }
 

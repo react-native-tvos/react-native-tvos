@@ -1646,6 +1646,7 @@ class facebook::react::AsyncArrayBuffer {
   public static facebook::react::AsyncArrayBuffer copy(facebook::jsi::Runtime& rt, const facebook::jsi::ArrayBuffer& buffer);
   public static facebook::react::AsyncArrayBuffer wrap(std::shared_ptr<facebook::jsi::MutableBuffer> buffer) noexcept;
   public static facebook::react::AsyncArrayBuffer wrap(std::vector<uint8_t> bytes);
+  public static void throwIfDetached(facebook::jsi::Runtime& rt, const facebook::jsi::ArrayBuffer& buffer, const char* callerName);
   public std::shared_ptr<facebook::jsi::MutableBuffer> getMutableBuffer() const noexcept;
   public uint8_t* data() noexcept;
   public ~AsyncArrayBuffer() = default;
@@ -2752,12 +2753,16 @@ class facebook::react::IntersectionObserverState {
 
 class facebook::react::JArrayBuffer : public jni::HybridClass<facebook::react::JArrayBuffer> {
   public JArrayBuffer(std::shared_ptr<facebook::jsi::MutableBuffer> buffer, bool owningBytes) noexcept;
+  public bool hasBytes() const noexcept;
+  public bool isOwningBytes() const noexcept;
+  public const std::shared_ptr<facebook::jsi::MutableBuffer>& mutableBuffer() const;
   public static constexpr auto kJavaDescriptor;
   public static jni::local_ref<javaobject> createOwned(const void* bytes, size_t size);
   public static jni::local_ref<javaobject> createOwning(std::shared_ptr<facebook::jsi::MutableBuffer> buffer);
   public static jni::local_ref<javaobject> createUnowned(void* bytes, size_t size);
-  public static std::shared_ptr<facebook::jsi::MutableBuffer> toJSBuffer(jni::alias_ref<javaobject> arrayBuffer);
+  public static std::shared_ptr<facebook::jsi::MutableBuffer> toJSBuffer(facebook::jsi::Runtime& runtime, jni::alias_ref<javaobject> arrayBuffer);
   public static void registerNatives();
+  public void invalidate() noexcept;
 }
 
 class facebook::react::JBindingsInstaller : public jni::HybridClass<facebook::react::JBindingsInstaller>, public facebook::react::BindingsInstaller {

@@ -63,6 +63,12 @@ JavaTurboModule::~JavaTurboModule() {
 
 namespace {
 
+// A method whose result is delivered synchronously, so JS-heap bytes passed as
+// arguments stay valid for the duration of the call.
+bool isSyncMethod(TurboModuleMethodValueKind valueKind) {
+  return valueKind != VoidKind && valueKind != PromiseKind;
+}
+
 struct JNIArgs {
   JNIArgs(size_t count) : args(count) {}
   JNIArgs(const JNIArgs&) = delete;
@@ -73,8 +79,19 @@ struct JNIArgs {
 
   std::vector<jvalue> args;
   std::vector<jobject> globalRefs;
+  // ArrayBuffers aliasing JS-heap bytes lent for this call only. Local refs are
+  // enough because bytes are only lent on the synchronous path, where this
+  // JNIArgs is destroyed in the same native frame that created the refs.
+  std::vector<jni::local_ref<JArrayBuffer::javaobject>> borrowedBuffers;
 
   ~JNIArgs() {
+    // Revoke the borrows before the call frame that lent the bytes unwinds, so
+    // a module that retained one cannot read freed or relocated memory. Runs on
+    // the throw path too.
+    for (auto& borrowedBuffer : borrowedBuffers) {
+      borrowedBuffer->cthis()->invalidate();
+    }
+
     JNIEnv* env = jni::Environment::current();
     for (auto globalRef : globalRefs) {
       env->DeleteGlobalRef(globalRef);
@@ -315,10 +332,10 @@ JNIArgs convertJSIArgsToJNIArgs(
   auto& jargs = jniArgs.args;
   auto& globalRefs = jniArgs.globalRefs;
 
-  auto isSyncInvocation = valueKind != VoidKind && valueKind != PromiseKind;
+  auto isSyncInvocation = isSyncMethod(valueKind);
 
   auto makeGlobalIfNecessary = [&](jobject obj) {
-    if (valueKind == VoidKind || valueKind == PromiseKind) {
+    if (!isSyncInvocation) {
       jobject globalObj = env->NewGlobalRef(obj);
       globalRefs.push_back(globalObj);
       env->DeleteLocalRef(obj);
@@ -449,11 +466,8 @@ JNIArgs convertJSIArgsToJNIArgs(
       }
 
       auto arrayBuffer = arg->getObject(rt).getArrayBuffer(rt);
-      if (arrayBuffer.detached(rt)) {
-        throw jsi::JSError(
-            rt,
-            "JavaTurboModule::convertJSIArgsToJNIArgs: ArrayBuffer is detached.");
-      }
+      AsyncArrayBuffer::throwIfDetached(
+          rt, arrayBuffer, "JavaTurboModule::convertJSIArgsToJNIArgs");
 
       auto size = arrayBuffer.size(rt);
       if (size > static_cast<size_t>(std::numeric_limits<jint>::max())) {
@@ -462,22 +476,40 @@ JNIArgs convertJSIArgsToJNIArgs(
             "JavaTurboModule::convertJSIArgsToJNIArgs: ArrayBuffer exceeds maximum size.");
       }
 
+      // Runtimes without a native buffer for this ArrayBuffer return nullptr,
+      // but the Static Hermes tracing runtime throws instead, and argument
+      // conversion runs outside any std::exception handler. Treat a failed
+      // probe as "no native buffer" so a traced session copies the bytes rather
+      // than aborting the process.
+      std::shared_ptr<jsi::MutableBuffer> mutableBuffer;
+      try {
+        mutableBuffer = arrayBuffer.tryGetMutableBuffer(rt);
+      } catch (const std::exception&) {
+        mutableBuffer = nullptr;
+      }
+
+      bool borrowsJSBytes = false;
       auto jArrayBuffer = [&]() {
         // Backed by a native buffer: alias it and retain its owner, so the
         // bytes stay valid for as long as the module holds the ArrayBuffer.
-        if (auto mutableBuffer = arrayBuffer.tryGetMutableBuffer(rt)) {
+        if (mutableBuffer) {
           return JArrayBuffer::createOwning(std::move(mutableBuffer));
         }
 
         // JS heap bytes on a synchronous call: lend them for the duration of
         // the call.
         if (isSyncInvocation) {
+          borrowsJSBytes = true;
           return JArrayBuffer::createUnowned(arrayBuffer.data(rt), size);
         }
 
         // JS heap bytes that outlive the call: copy.
         return JArrayBuffer::createOwned(arrayBuffer.data(rt), size);
       }();
+
+      if (borrowsJSBytes) {
+        jniArgs.borrowedBuffers.push_back(jni::make_local(jArrayBuffer));
+      }
       jarg->l = makeGlobalIfNecessary(jArrayBuffer.release());
     } else {
       throw JavaTurboModuleInvalidArgumentTypeException(
@@ -567,7 +599,7 @@ jsi::Value JavaTurboModule::invokeJavaMethod(
   const char* methodName = methodNameStr.c_str();
   const char* moduleName = name_.c_str();
 
-  bool isMethodSync = valueKind != VoidKind && valueKind != PromiseKind;
+  bool isMethodSync = isSyncMethod(valueKind);
 
   if (isMethodSync) {
     TMPL::syncMethodCallStart(moduleName, methodName);
@@ -1021,11 +1053,20 @@ jsi::Value JavaTurboModule::invokeJavaMethod(
 
       jsi::Value returnValue = jsi::Value::null();
       if (returnObject != nullptr) {
-        auto jArrayBuffer = jni::adopt_local(
-            static_cast<JArrayBuffer::javaobject>(returnObject));
+        auto returnRef = jni::adopt_local(returnObject);
+        if (!returnRef->isInstanceOf(JArrayBuffer::javaClassStatic())) {
+          throw jsi::JSError(
+              runtime,
+              "JavaTurboModule::invokeJavaMethod: expected " + methodNameStr +
+                  " to return a com.facebook.react.bridge.ArrayBuffer.");
+        }
+
+        auto jArrayBuffer =
+            jni::static_ref_cast<JArrayBuffer::javaobject>(returnRef);
         returnValue = {
             runtime,
-            jsi::ArrayBuffer{runtime, JArrayBuffer::toJSBuffer(jArrayBuffer)}};
+            jsi::ArrayBuffer{
+                runtime, JArrayBuffer::toJSBuffer(runtime, jArrayBuffer)}};
       }
 
       TMPL::syncMethodCallReturnConversionEnd(moduleName, methodName);

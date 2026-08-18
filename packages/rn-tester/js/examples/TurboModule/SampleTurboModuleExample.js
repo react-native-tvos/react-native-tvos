@@ -114,7 +114,15 @@ class SampleTurboModuleExample extends React.Component<{}, State> {
     getArrayBuffer: () => {
       const input = new Uint8Array([1, 2, 3, 4]);
       const result = NativeSampleTurboModule.getArrayBuffer(input.buffer);
-      return Array.from(new Uint8Array(result));
+      // The native module mutates the bytes in place and returns the same buffer,
+      // but a returned ArrayBuffer is always a new JS object. Whether it aliases
+      // the input bytes depends on whether the platform lent them to native or
+      // copied them.
+      return {
+        bytes: Array.from(new Uint8Array(result)),
+        isSameObject: result === input.buffer,
+        aliasesInput: Array.from(input).toString() === [2, 4, 6, 8].toString(),
+      };
     },
     createNativeBuffer: () =>
       NativeSampleTurboModule.createNativeBuffer(8).byteLength,
