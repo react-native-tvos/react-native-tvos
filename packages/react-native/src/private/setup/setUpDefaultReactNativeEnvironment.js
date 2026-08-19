@@ -53,4 +53,10 @@ export default function setUpDefaultReactNativeEnvironment(
   ) {
     require('./setUpMutationObserver').default();
   }
+
+  if (
+    require('../../../src/private/featureflags/ReactNativeFeatureFlags').enableResizeObserverByDefault()
+  ) {
+    require('./setUpResizeObserver').default();
+  }
 }

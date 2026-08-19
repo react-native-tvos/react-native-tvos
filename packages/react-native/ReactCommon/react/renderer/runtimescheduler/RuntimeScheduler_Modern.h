@@ -151,6 +151,8 @@ class RuntimeScheduler_Modern final : public RuntimeSchedulerBase {
   void setIntersectionObserverDelegate(
       RuntimeSchedulerIntersectionObserverDelegate *intersectionObserverDelegate) override;
 
+  void setResizeObserverDelegate(RuntimeSchedulerResizeObserverDelegate *resizeObserverDelegate) override;
+
  private:
   /// Monotonic counter handing out IDs for IEventLoopControl task queue
   /// sources.
@@ -191,7 +193,7 @@ class RuntimeScheduler_Modern final : public RuntimeSchedulerBase {
 
   void executeTask(jsi::Runtime &runtime, Task &task, bool didUserCallbackTimeout);
 
-  void updateRendering(HighResTimeStamp taskEndTime);
+  void updateRendering(jsi::Runtime &runtime, HighResTimeStamp taskEndTime);
 
   void handleTaskError(jsi::Runtime &runtime, jsi::JSError &error);
 
@@ -225,6 +227,7 @@ class RuntimeScheduler_Modern final : public RuntimeSchedulerBase {
 
   PerformanceEntryReporter *performanceEntryReporter_{nullptr};
   RuntimeSchedulerIntersectionObserverDelegate *intersectionObserverDelegate_{nullptr};
+  RuntimeSchedulerResizeObserverDelegate *resizeObserverDelegate_{nullptr};
 
   RuntimeSchedulerTaskErrorHandler onTaskError_;
 };

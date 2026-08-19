@@ -54,6 +54,7 @@ Pod::Spec.new do |s|
   s.dependency "React-idlecallbacksnativemodule"
   s.dependency "React-intersectionobservernativemodule"
   s.dependency "React-mutationobservernativemodule"
+  s.dependency "React-resizeobservernativemodule"
   s.dependency "React-viewtransitionnativemodule"
   s.dependency "React-webperformancenativemodule"
   s.dependency "React-Fabric/animated"

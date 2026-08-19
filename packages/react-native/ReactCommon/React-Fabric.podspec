@@ -207,6 +207,12 @@ Pod::Spec.new do |s|
       sss.exclude_files        = "react/renderer/observers/mutation/tests"
       sss.header_dir           = "react/renderer/observers/mutation"
     end
+
+    ss.subspec "resize" do |sss|
+      sss.source_files         = podspec_sources("react/renderer/observers/resize/**/*.{m,mm,cpp,h}", "react/renderer/observers/resize/**/*.h")
+      sss.exclude_files        = "react/renderer/observers/resize/tests"
+      sss.header_dir           = "react/renderer/observers/resize"
+    end
   end
 
   s.subspec "telemetry" do |ss|

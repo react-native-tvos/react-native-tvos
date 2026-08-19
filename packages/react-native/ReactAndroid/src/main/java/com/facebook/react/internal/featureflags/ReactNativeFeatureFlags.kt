@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e46c13b3f084d06567a69b3a0a09d536>>
+ * @generated SignedSource<<d5bab65a116d6f6d3415c5c8a2f08db9>>
  */
 
 /**
@@ -281,6 +281,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enablePropsUpdateReconciliationAndroid(): Boolean = accessor.enablePropsUpdateReconciliationAndroid()
+
+  /**
+   * Enables the ResizeObserver Web API in React Native.
+   */
+  @JvmStatic
+  public fun enableResizeObserverByDefault(): Boolean = accessor.enableResizeObserverByDefault()
 
   /**
    * When enabled, RuntimeScheduler_Modern clears pending tasks and rendering updates before handling an error.

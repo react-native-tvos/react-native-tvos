@@ -232,6 +232,11 @@ void RuntimeScheduler_Modern::setIntersectionObserverDelegate(
   intersectionObserverDelegate_ = intersectionObserverDelegate;
 }
 
+void RuntimeScheduler_Modern::setResizeObserverDelegate(
+    RuntimeSchedulerResizeObserverDelegate* resizeObserverDelegate) {
+  resizeObserverDelegate_ = resizeObserverDelegate;
+}
+
 #pragma mark - Private
 
 void RuntimeScheduler_Modern::scheduleTask(std::shared_ptr<Task> task) {
@@ -336,7 +341,7 @@ void RuntimeScheduler_Modern::runEventLoopTick(
   reportLongTasks(task, taskStartTime, taskEndTime);
 
   // "Update the rendering" step.
-  updateRendering(taskEndTime);
+  updateRendering(runtime, taskEndTime);
 
   currentTask_ = nullptr;
 }
@@ -346,7 +351,9 @@ void RuntimeScheduler_Modern::runEventLoopTick(
  * event loop. See
  * https://html.spec.whatwg.org/multipage/webappapis.html#update-the-rendering.
  */
-void RuntimeScheduler_Modern::updateRendering(HighResTimeStamp taskEndTime) {
+void RuntimeScheduler_Modern::updateRendering(
+    jsi::Runtime& runtime,
+    HighResTimeStamp taskEndTime) {
   TraceSection s("RuntimeScheduler::updateRendering");
 
   // This is the integration of the Event Timing API in the Event Loop.
@@ -355,6 +362,25 @@ void RuntimeScheduler_Modern::updateRendering(HighResTimeStamp taskEndTime) {
   if (eventTimingDelegate != nullptr) {
     eventTimingDelegate->dispatchPendingEventTimingEntries(
         taskEndTime, surfaceIdsWithPendingRenderingUpdates_);
+  }
+
+  // This is the integration of the Resize Observer API in the Event Loop. See
+  // https://w3c.github.io/csswg-drafts/resize-observer/#broadcast-resize-notifications-h
+  // The delegate runs the spec's depth-bounded gather/broadcast loop
+  // internally; this call site stays a single invocation per tick.
+  if (resizeObserverDelegate_ != nullptr) {
+    // This delivers the observations to JS synchronously, so it is outside the
+    // error boundary of `executeTask`. Handle errors the same way here, so a
+    // throwing observer callback can't abort the remaining steps below.
+    try {
+      resizeObserverDelegate_->runResizeObservations(runtime);
+    } catch (jsi::JSError& error) {
+      handleTaskError(runtime, error);
+    } catch (std::exception& ex) {
+      jsi::JSError error(
+          runtime, std::string("Non-JS exception: ") + ex.what());
+      handleTaskError(runtime, error);
+    }
   }
 
   // This is the integration of the Intersection Observer API in the Event Loop.
@@ -399,7 +425,7 @@ void RuntimeScheduler_Modern::executeTask(
   } catch (jsi::JSError& error) {
     handleTaskError(runtime, error);
   } catch (std::exception& ex) {
-    jsi::JSError error(runtime, std::string("Non-js exception: ") + ex.what());
+    jsi::JSError error(runtime, std::string("Non-JS exception: ") + ex.what());
     handleTaskError(runtime, error);
   }
 }
@@ -439,7 +465,7 @@ void RuntimeScheduler_Modern::performMicrotaskCheckpoint(
       handleTaskError(runtime, error);
     } catch (std::exception& ex) {
       jsi::JSError error(
-          runtime, std::string("Non-js exception: ") + ex.what());
+          runtime, std::string("Non-JS exception: ") + ex.what());
       handleTaskError(runtime, error);
     }
     retries++;

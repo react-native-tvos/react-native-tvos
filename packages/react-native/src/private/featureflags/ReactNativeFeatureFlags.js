@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<61f9b401feac95e40506403aec82a4f9>>
+ * @generated SignedSource<<bafad194115f60dcf22f64015fe64856>>
  * @flow strict
  * @noformat
  */
@@ -90,6 +90,7 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableNativeCSSParsing: Getter<boolean>,
   enablePreparedTextLayout: Getter<boolean>,
   enablePropsUpdateReconciliationAndroid: Getter<boolean>,
+  enableResizeObserverByDefault: Getter<boolean>,
   enableRuntimeSchedulerQueueClearingOnError: Getter<boolean>,
   enableSchedulerDelegateInvalidation: Getter<boolean>,
   enableSwiftUIBasedFilters: Getter<boolean>,
@@ -373,6 +374,10 @@ export const enablePreparedTextLayout: Getter<boolean> = createNativeFlagGetter(
  * When enabled, Android will receive prop updates based on the differences between the last rendered shadow node and the last committed shadow node.
  */
 export const enablePropsUpdateReconciliationAndroid: Getter<boolean> = createNativeFlagGetter('enablePropsUpdateReconciliationAndroid', false);
+/**
+ * Enables the ResizeObserver Web API in React Native.
+ */
+export const enableResizeObserverByDefault: Getter<boolean> = createNativeFlagGetter('enableResizeObserverByDefault', false);
 /**
  * When enabled, RuntimeScheduler_Modern clears pending tasks and rendering updates before handling an error.
  */

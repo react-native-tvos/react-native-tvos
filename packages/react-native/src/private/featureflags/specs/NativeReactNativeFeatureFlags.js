@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a6707e8d4f0379cb8a1232aa0d0880ae>>
+ * @generated SignedSource<<9b62a9e25b6088e25d9c39be7650a1d2>>
  * @flow strict
  * @noformat
  */
@@ -67,6 +67,7 @@ export interface Spec extends TurboModule {
   readonly enableNativeCSSParsing?: () => boolean;
   readonly enablePreparedTextLayout?: () => boolean;
   readonly enablePropsUpdateReconciliationAndroid?: () => boolean;
+  readonly enableResizeObserverByDefault?: () => boolean;
   readonly enableRuntimeSchedulerQueueClearingOnError?: () => boolean;
   readonly enableSchedulerDelegateInvalidation?: () => boolean;
   readonly enableSwiftUIBasedFilters?: () => boolean;

@@ -496,6 +496,15 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enableResizeObserverByDefault: {
+      defaultValue: false,
+      metadata: {
+        description: 'Enables the ResizeObserver Web API in React Native.',
+        expectedReleaseValue: true,
+        purpose: 'release',
+      },
+      ossReleaseStage: 'none',
+    },
     enableRuntimeSchedulerQueueClearingOnError: {
       defaultValue: false,
       metadata: {
