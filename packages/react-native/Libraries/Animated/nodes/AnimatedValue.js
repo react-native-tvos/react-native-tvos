@@ -124,6 +124,9 @@ export default class AnimatedValue extends AnimatedWithChildren {
       });
     }
     this.stopAnimation();
+    if (ReactNativeFeatureFlags.animatedKeepListenersOnDetach()) {
+      this._updateSubscription?.remove();
+    }
     super.__detach();
   }
 

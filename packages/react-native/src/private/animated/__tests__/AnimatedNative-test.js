@@ -286,6 +286,68 @@ describe('Native Animated', () => {
       });
       expect(listener).toHaveBeenCalledTimes(4);
     });
+
+    it('should stop listening to native updates on unmount, but keep listeners', async () => {
+      const {Animated, NativeAnimatedHelper} = importModules();
+
+      const value1 = new Animated.Value(0, {useNativeDriver: true});
+      const listener = jest.fn();
+      value1.addListener(listener);
+
+      const tag = value1.__getNativeTag();
+      expect(
+        NativeAnimatedModule.startListeningToAnimatedNodeValue,
+      ).toHaveBeenCalledWith(tag);
+
+      const root = await create(<Animated.View style={{opacity: value1}} />);
+      await unmount(root);
+      jest.runAllTicks();
+
+      expect(
+        NativeAnimatedModule.stopListeningToAnimatedNodeValue,
+      ).toHaveBeenCalledWith(tag);
+      expect(NativeAnimatedModule.dropAnimatedNode).toHaveBeenCalledWith(tag);
+      NativeAnimatedHelper.nativeEventEmitter.emit('onAnimatedValueUpdate', {
+        value: 42,
+        tag,
+      });
+      expect(listener).not.toHaveBeenCalled();
+      expect(value1.hasListeners()).toBe(true);
+    });
+
+    it('should resume delivering native updates when remounted', async () => {
+      const {Animated, NativeAnimatedHelper} = importModules();
+
+      const value1 = new Animated.Value(0, {useNativeDriver: true});
+      const listener = jest.fn();
+      value1.addListener(listener);
+
+      const initialTag = value1.__getNativeTag();
+      const root = await create(<Animated.View style={{opacity: value1}} />);
+      await unmount(root);
+      jest.runAllTicks();
+
+      await create(<Animated.View style={{opacity: value1}} />);
+      jest.runAllTicks();
+
+      // The node is recreated with a new tag, which the retained listener must
+      // be resubscribed to.
+      const tag = value1.__getNativeTag();
+      expect(tag).not.toBe(initialTag);
+      expect(
+        NativeAnimatedModule.startListeningToAnimatedNodeValue,
+      ).toHaveBeenCalledWith(tag);
+      expect(
+        NativeAnimatedModule.startListeningToAnimatedNodeValue,
+      ).toHaveBeenCalledTimes(2);
+
+      NativeAnimatedHelper.nativeEventEmitter.emit('onAnimatedValueUpdate', {
+        value: 42,
+        tag,
+      });
+      expect(listener).toBeCalledWith({value: 42});
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('Animated Events', () => {
