@@ -247,6 +247,8 @@ jobs:
     needs: test_e2e_android_templateapp
     if: ${{ always() && needs.test_e2e_android_templateapp.outputs.status == 'failure' }}
     uses: ./.github/workflows/e2e-android-templateapp.yml
+    with:
+      retry-attempt: 1
     secrets: inherit
 
   test_e2e_android_templateapp_retry_2:
@@ -255,6 +257,7 @@ jobs:
     uses: ./.github/workflows/e2e-android-templateapp.yml
     with:
       fail-on-error: true
+      retry-attempt: 2
     secrets: inherit
 
   build_fantom_runner:
@@ -336,6 +339,8 @@ jobs:
     needs: test_e2e_android_rntester
     if: ${{ always() && needs.test_e2e_android_rntester.outputs.status == 'failure' }}
     uses: ./.github/workflows/e2e-android-rntester.yml
+    with:
+      retry-attempt: 1
     secrets: inherit
 
   test_e2e_android_rntester_retry_2:
@@ -344,6 +349,7 @@ jobs:
     uses: ./.github/workflows/e2e-android-rntester.yml
     with:
       fail-on-error: true
+      retry-attempt: 2
     secrets: inherit
 
   build_npm_package:

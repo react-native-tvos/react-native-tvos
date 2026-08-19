@@ -36,9 +36,8 @@ tags:
           direction: DOWN
           speed: 40
           timeout: 20000
-      # External URL; accept loaded or error.
       - scrollUntilVisible:
-          element: 'P3: (loaded|error)'
+          element: 'P3: loaded'
           direction: DOWN
           speed: 40
           timeout: 20000
