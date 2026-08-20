@@ -3609,6 +3609,7 @@ struct facebook::react::TextInputEventEmitter::KeyPressMetrics {
 
 struct facebook::react::TextInputEventEmitter::Metrics {
   public Float zoomScale;
+  public bool responderIgnoreScroll;
   public facebook::react::AttributedString::Range selectionRange;
   public facebook::react::EdgeInsets contentInset;
   public facebook::react::Point contentOffset;
@@ -6092,6 +6093,7 @@ struct facebook::react::ScrollEvent : public facebook::react::EventPayload {
   public Float timestamp;
   public Float zoomScale;
   public ScrollEvent() = default;
+  public bool responderIgnoreScroll;
   public facebook::react::EdgeInsets contentInset;
   public facebook::react::Point contentOffset;
   public facebook::react::Size containerSize;
