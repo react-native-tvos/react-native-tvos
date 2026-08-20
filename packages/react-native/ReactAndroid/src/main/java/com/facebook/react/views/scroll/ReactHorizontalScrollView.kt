@@ -761,7 +761,9 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
       val currentFocused = findFocus()
       val nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction)
       if (nextFocused != null && nextFocused !== currentFocused && nextFocused !== this) {
-        nextFocused.requestFocus(direction)
+        if (nextFocused.requestFocus(direction)) {
+          ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
+        }
         handled = true
       }
     } else if (pagingEnabled) {
@@ -772,16 +774,20 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
         val nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction)
         val rootChild = getContentView()
         if (nextFocused != null && isDescendantOf(rootChild, nextFocused)) {
-          if (snapToAlignment == SNAP_ALIGNMENT_ITEM) {
-            // When snapToAlignment is "item", don't use smoothScrollToNextPage (which scrolls
-            // by full page width and ignores snapToItemPadding). Just request focus —
-            // requestChildFocus → tryScrollSnapToChild handles scrolling with correct padding.
-            nextFocused.requestFocus()
-          } else {
-            if (!isScrolledInView(nextFocused) && !isMostlyScrolledInView(nextFocused)) {
-              smoothScrollToNextPage(direction)
-            }
-            nextFocused.requestFocus()
+          val focusMoved =
+              if (snapToAlignment == SNAP_ALIGNMENT_ITEM) {
+                // When snapToAlignment is "item", don't use smoothScrollToNextPage (which scrolls
+                // by full page width and ignores snapToItemPadding). Just request focus —
+                // requestChildFocus → tryScrollSnapToChild handles scrolling with correct padding.
+                nextFocused.requestFocus()
+              } else {
+                if (!isScrolledInView(nextFocused) && !isMostlyScrolledInView(nextFocused)) {
+                  smoothScrollToNextPage(direction)
+                }
+                nextFocused.requestFocus()
+              }
+          if (focusMoved) {
+            ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
           }
           handled = true
         } else {
@@ -794,7 +800,12 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
 
       pagedArrowScrolling = false
     } else {
+      val focusedBeforeScroll = findFocus()
       handled = super.arrowScroll(direction)
+      // super.arrowScroll() can scroll without moving focus, so only click when focus moved.
+      if (handled && findFocus() !== focusedBeforeScroll) {
+        ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
+      }
     }
 
     return handled
