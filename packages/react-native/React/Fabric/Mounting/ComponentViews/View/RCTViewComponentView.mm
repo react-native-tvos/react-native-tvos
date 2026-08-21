@@ -492,6 +492,34 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   return _props->isTVSelectable;
 }
 
+// Directional focus destinations are looked up in the containing root view when
+// `updateProps` runs. A destination set while this view is not attached yet --
+// e.g. a nextFocus* value delivered together with the view's creation -- resolves
+// to nil there, and `updateProps` never retries because the prop value does not
+// change. Re-resolve pending destinations lazily: `enableDirectionalFocusGuides`
+// only does work while the view is focused, at which point the hierarchy is
+// guaranteed to be attached.
+- (void)resolvePendingNextFocusTargets
+{
+  UIView *rootView = [self containingRootView];
+
+  if (rootView == nil) {
+    return;
+  }
+  if (_nextFocusUp == nil && _props->nextFocusUp.has_value()) {
+    _nextFocusUp = [rootView viewWithTag:_props->nextFocusUp.value()];
+  }
+  if (_nextFocusDown == nil && _props->nextFocusDown.has_value()) {
+    _nextFocusDown = [rootView viewWithTag:_props->nextFocusDown.value()];
+  }
+  if (_nextFocusLeft == nil && _props->nextFocusLeft.has_value()) {
+    _nextFocusLeft = [rootView viewWithTag:_props->nextFocusLeft.value()];
+  }
+  if (_nextFocusRight == nil && _props->nextFocusRight.has_value()) {
+    _nextFocusRight = [rootView viewWithTag:_props->nextFocusRight.value()];
+  }
+}
+
 // In tvOS, to support directional focus APIs, we add a UIFocusGuide for each
 // side of the view where a nextFocus has been set. Set layout constraints to
 // make the guide 1 px thick, and set the destination to the nextFocus object.
@@ -503,6 +531,8 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (!self.isFocused) {
     return;
   }
+
+  [self resolvePendingNextFocusTargets];
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
