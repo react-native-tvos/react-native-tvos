@@ -34,6 +34,7 @@ Pod::Spec.new do |s|
 
   resolve_use_frameworks(s, header_mappings_dir: "../../", module_name: "React_RuntimeHermes")
 
+  s.dependency "React-cxxstableapi"
   s.dependency "React-jsitracing"
   s.dependency "React-jsi"
   s.dependency "React-utils"
