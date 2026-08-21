@@ -45,6 +45,7 @@ import Keyboard from '../Keyboard/Keyboard';
 import TextInputState from '../TextInput/TextInputState';
 import View from '../View/View';
 import processDecelerationRate from './processDecelerationRate';
+import processScrollAnimationEasing from './processScrollAnimationEasing';
 import Commands from './ScrollViewCommands';
 import ScrollViewContext, {HORIZONTAL, VERTICAL} from './ScrollViewContext';
 import ScrollViewStickyHeader from './ScrollViewStickyHeader';
@@ -196,6 +197,13 @@ export interface ScrollViewImperativeMethods {
 }
 
 export type DecelerationRateType = 'fast' | 'normal' | number;
+export type ScrollAnimationEasing =
+  | 'linear'
+  | 'ease'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | [number, number, number, number];
 export type ScrollResponderType = ScrollViewImperativeMethods;
 
 export interface ScrollViewInstance
@@ -779,6 +787,23 @@ type ScrollViewBaseProps = Readonly<{
    * when focus changes. Defaults to true.
    */
   scrollAnimationEnabled?: ?boolean,
+  /**
+   * (Android TV only)
+   * Duration in milliseconds of the animated scroll that runs when focus moves to
+   * another item. Applies to the snap scroll (`snapToAlignment="item"` with
+   * per-item `scrollSnapAlign`/`scrollSnapOffset` markers) and to animated
+   * `scrollTo` commands; other focus scrolls are instant. When unset or <= 0, the platform default (~250ms) is used.
+   * On tvOS the focus engine owns this animation and the prop has no effect.
+   */
+  scrollAnimationDuration?: ?number,
+  /**
+   * (Android TV only)
+   * Easing curve of that animation, either a CSS easing keyword or explicit
+   * cubic-bezier control points `[x1, y1, x2, y2]`. When unset, the platform
+   * default curve (`AccelerateDecelerateInterpolator`) is used.
+   * On tvOS the focus engine owns this animation and the prop has no effect.
+   */
+  scrollAnimationEasing?: ?ScrollAnimationEasing,
   /**
    * A RefreshControl component, used to provide pull-to-refresh
    * functionality for the ScrollView. Only works for vertical ScrollViews
@@ -1936,6 +1961,13 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
     const {decelerationRate} = this.props;
     if (decelerationRate != null) {
       props.decelerationRate = processDecelerationRate(decelerationRate);
+    }
+
+    const {scrollAnimationEasing} = this.props;
+    if (scrollAnimationEasing != null) {
+      props.scrollAnimationEasing = processScrollAnimationEasing(
+        scrollAnimationEasing,
+      );
     }
 
     const refreshControl = this.props.refreshControl;

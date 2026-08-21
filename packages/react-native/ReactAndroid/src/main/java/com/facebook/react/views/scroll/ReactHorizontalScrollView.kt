@@ -8,6 +8,7 @@
 package com.facebook.react.views.scroll
 
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -197,6 +198,10 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
   private var scrollsChildToFocus = true
   internal var snapToItemPadding: Int = 0
   internal var scrollAnimationEnabled: Boolean = true
+  /** Values <= 0 keep the platform default duration. */
+  internal var scrollAnimationDuration: Int = 0
+  /** `null` keeps the platform default curve. */
+  internal var scrollAnimationInterpolator: TimeInterpolator? = null
   private var blockScrollDelta: Boolean = false
 
   // Interface property overrides
@@ -295,6 +300,8 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     scrollsChildToFocus = true
     snapToItemPadding = 0
     scrollAnimationEnabled = true
+    scrollAnimationDuration = 0
+    scrollAnimationInterpolator = null
     blockScrollDelta = false
   }
 
@@ -1701,8 +1708,13 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     // not animated at all.
     defaultFlingAnimator.cancel()
 
-    // Update the fling animator with new values
-    val duration = ReactScrollViewHelper.getDefaultScrollAnimationDuration(context)
+    // Update the fling animator with new values. The animator is reused, so the interpolator must
+    // be re-applied on every call to undo whatever a previous `scrollAnimationEasing` left on it.
+    val duration =
+        if (scrollAnimationDuration > 0) scrollAnimationDuration
+        else ReactScrollViewHelper.getDefaultScrollAnimationDuration(context)
+    defaultFlingAnimator.interpolator =
+        scrollAnimationInterpolator ?: ReactScrollViewHelper.getDefaultScrollAnimationInterpolator()
     defaultFlingAnimator.setDuration(duration.toLong()).setIntValues(start, end)
 
     // Start the animator

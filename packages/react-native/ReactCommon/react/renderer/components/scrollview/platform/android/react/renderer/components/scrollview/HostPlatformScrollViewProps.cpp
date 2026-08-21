@@ -55,6 +55,18 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
           rawProps,
           "snapToItemPadding",
           sourceProps.snapToItemPadding,
+          {})),
+      scrollAnimationDuration(convertRawProp(
+          context,
+          rawProps,
+          "scrollAnimationDuration",
+          sourceProps.scrollAnimationDuration,
+          {})),
+      scrollAnimationEasing(convertRawProp(
+          context,
+          rawProps,
+          "scrollAnimationEasing",
+          sourceProps.scrollAnimationEasing,
           {})) {}
 
 void HostPlatformScrollViewProps::setProp(
@@ -76,6 +88,8 @@ void HostPlatformScrollViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(overScrollMode);
     RAW_SET_PROP_SWITCH_CASE_BASIC(endFillColor);
     RAW_SET_PROP_SWITCH_CASE_BASIC(snapToItemPadding);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollAnimationDuration);
+    RAW_SET_PROP_SWITCH_CASE_BASIC(scrollAnimationEasing);
   }
 }
 
@@ -392,6 +406,18 @@ folly::dynamic HostPlatformScrollViewProps::getDiffProps(
 
   if (snapToItemPadding != oldProps->snapToItemPadding) {
     result["snapToItemPadding"] = snapToItemPadding;
+  }
+
+  if (scrollAnimationDuration != oldProps->scrollAnimationDuration) {
+    result["scrollAnimationDuration"] = scrollAnimationDuration;
+  }
+
+  if (scrollAnimationEasing != oldProps->scrollAnimationEasing) {
+    auto scrollAnimationEasingArray = folly::dynamic::array();
+    for (const auto& controlPoint : scrollAnimationEasing) {
+      scrollAnimationEasingArray.push_back(controlPoint);
+    }
+    result["scrollAnimationEasing"] = scrollAnimationEasingArray;
   }
 
   return result;
