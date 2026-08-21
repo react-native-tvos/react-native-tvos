@@ -65,6 +65,11 @@ const {
 } = require('./expand-spm-dependencies');
 const {readPodspec} = require('./read-podspec');
 const {
+  AUTOLINKED_PACKAGE_NAME,
+  REACT_CODEGEN_PACKAGE_NAME,
+  REACT_CODEGEN_PRODUCTS,
+  REACT_NATIVE_PACKAGE_NAME,
+  REACT_NATIVE_PRODUCTS,
   RemoteVersionError,
   findProjectRoot,
   makeLogger,
@@ -90,7 +95,7 @@ const {log, warn} = makeLogger('generate-spm-autolinking');
 let remoteCfg /*: ?{url: string, version: string, identity: string} */ = null;
 
 function reactNativePackageLabel() /*: string */ {
-  return remoteCfg != null ? remoteCfg.identity : 'ReactNative';
+  return remoteCfg != null ? remoteCfg.identity : REACT_NATIVE_PACKAGE_NAME;
 }
 function reactNativePackageDecl(localDecl /*: string */) /*: string */ {
   return remoteCfg != null
@@ -105,10 +110,11 @@ function reactNativePackageDecl(localDecl /*: string */) /*: string */ {
 function reactProducts() /*: Array<{name: string, package: string}> */ {
   const rn = reactNativePackageLabel();
   return [
-    {name: 'ReactHeaders', package: rn},
-    {name: 'ReactNativeHeaders', package: rn},
-    {name: 'ReactNativeDependenciesHeaders', package: rn},
-    {name: 'ReactAppHeaders', package: 'React-GeneratedCode'},
+    ...REACT_NATIVE_PRODUCTS.map(name => ({name, package: rn})),
+    ...REACT_CODEGEN_PRODUCTS.map(name => ({
+      name,
+      package: REACT_CODEGEN_PACKAGE_NAME,
+    })),
   ];
 }
 function reactProductDeps() /*: string */ {
@@ -147,7 +153,7 @@ function reactDescriptor(
     };
   } else if (absXcframeworks != null) {
     packageRef = {
-      name: 'ReactNative',
+      name: REACT_NATIVE_PACKAGE_NAME,
       path: toPosix(absXcframeworks),
       relPath:
         xcframeworksRelPath != null ? toPosix(xcframeworksRelPath) : undefined,
@@ -156,7 +162,7 @@ function reactDescriptor(
     return null;
   }
   const products = reactProducts().filter(
-    p => p.package !== 'React-GeneratedCode' || codegenPackageExists,
+    p => p.package !== REACT_CODEGEN_PACKAGE_NAME || codegenPackageExists,
   );
   return {packageRef, products};
 }
@@ -900,12 +906,14 @@ function generateAutolinkedPackageSwift(
   ) {
     packageDeps.push(
       reactNativePackageDecl(
-        `.package(name: "ReactNative", path: "${xcframeworksRelPath}")`,
+        `.package(name: "${REACT_NATIVE_PACKAGE_NAME}", path: "${xcframeworksRelPath}")`,
       ),
     );
     // Per-app generated headers come from the ReactAppHeaders product in
     // the codegen package (sibling of the autolinking dir).
-    packageDeps.push(`.package(name: "React-GeneratedCode", path: "../ios")`);
+    packageDeps.push(
+      `.package(name: "${REACT_CODEGEN_PACKAGE_NAME}", path: "../ios")`,
+    );
   }
 
   // AutolinkedAggregate's target dependencies: .product(...) for npm sub-package
@@ -1008,10 +1016,10 @@ import PackageDescription
 import Foundation
 
 ${guardBlock}let package = Package(
-    name: "Autolinked",
+    name: "${AUTOLINKED_PACKAGE_NAME}",
     platforms: [.iOS(.v15)],
     products: [
-        .library(name: "Autolinked", targets: ["AutolinkedAggregate"]),
+        .library(name: "${AUTOLINKED_PACKAGE_NAME}", targets: ["AutolinkedAggregate"]),
     ],
 ${packageDepsBlock}    targets: [
         .target(
@@ -1075,13 +1083,13 @@ function generateSynthPackageSwift(spec /*: SynthPackageSpec */) /*: string */ {
       spec.codegenPackagePath ?? '../../../ios';
     packageDeps.push(
       reactNativePackageDecl(
-        `.package(name: "ReactNative", path: "${reactNativePackagePath}")`,
+        `.package(name: "${REACT_NATIVE_PACKAGE_NAME}", path: "${reactNativePackagePath}")`,
       ),
     );
     // Per-app generated headers come from the ReactAppHeaders product in
     // the codegen package.
     packageDeps.push(
-      `.package(name: "React-GeneratedCode", path: "${codegenPackagePath}")`,
+      `.package(name: "${REACT_CODEGEN_PACKAGE_NAME}", path: "${codegenPackagePath}")`,
     );
   }
   for (const dep of spmDependencies) {

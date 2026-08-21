@@ -46,6 +46,11 @@ const {
   uuidComment,
 } = require('./spm-pbxproj');
 const {
+  AUTOLINKED_PACKAGE_NAME,
+  REACT_CODEGEN_APP_PRODUCTS,
+  REACT_CODEGEN_PACKAGE_NAME,
+  REACT_NATIVE_PACKAGE_NAME,
+  REACT_NATIVE_PRODUCTS,
   isValidScriptPhaseId,
   isValidScriptPhaseName,
   makeLogger,
@@ -111,36 +116,21 @@ const GENERATED_SOURCE_FILE_TYPES /*: {[string]: string} */ = {
 // resolve the product dependencies — SPM doesn't expose transitive products.
 const SPM_PRODUCT_PACKAGES /*: Array<{product: string, packagePath: string, packageName: string}> */ =
   [
-    {
-      product: 'ReactHeaders',
+    ...REACT_NATIVE_PRODUCTS.map(product => ({
+      product,
       packagePath: 'build/xcframeworks',
-      packageName: 'ReactNative',
-    },
+      packageName: REACT_NATIVE_PACKAGE_NAME,
+    })),
     {
-      product: 'ReactNativeHeaders',
-      packagePath: 'build/xcframeworks',
-      packageName: 'ReactNative',
-    },
-    {
-      product: 'ReactNativeDependenciesHeaders',
-      packagePath: 'build/xcframeworks',
-      packageName: 'ReactNative',
-    },
-    {
-      product: 'Autolinked',
+      product: AUTOLINKED_PACKAGE_NAME,
       packagePath: 'build/generated/autolinking',
-      packageName: 'Autolinked',
+      packageName: AUTOLINKED_PACKAGE_NAME,
     },
-    {
-      product: 'ReactCodegen',
+    ...REACT_CODEGEN_APP_PRODUCTS.map(product => ({
+      product,
       packagePath: 'build/generated/ios',
-      packageName: 'React-GeneratedCode',
-    },
-    {
-      product: 'ReactAppDependencyProvider',
-      packagePath: 'build/generated/ios',
-      packageName: 'React-GeneratedCode',
-    },
+      packageName: REACT_CODEGEN_PACKAGE_NAME,
+    })),
   ];
 
 /*::

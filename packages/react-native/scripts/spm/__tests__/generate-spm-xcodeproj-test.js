@@ -61,6 +61,55 @@ const FRAMEWORK = {
   ],
 };
 
+// The pbxproj product references must follow the shared name constants: a
+// product added there has to reach the app target, or the app links against a
+// package product Xcode never references.
+describe('SPM product references derive from the shared name constants', () => {
+  // jest.doMock registers in the module registry beyond the isolateModules
+  // scope, so the mocked constants must be dropped before the next test.
+  afterEach(() => {
+    jest.dontMock('../spm-utils');
+    jest.resetModules();
+  });
+
+  it('includes a newly reserved React Native product', () => {
+    jest.isolateModules(() => {
+      jest.doMock('../spm-utils', () => {
+        const actual = jest.requireActual('../spm-utils');
+        return {
+          ...actual,
+          REACT_NATIVE_PRODUCTS: Object.freeze([
+            ...actual.REACT_NATIVE_PRODUCTS,
+            'ReactBrandNewHeaders',
+          ]),
+        };
+      });
+      const {buildSpmDependencyGraph} = require('../generate-spm-xcodeproj');
+      const graph = buildSpmDependencyGraph(
+        (section, id) => `${section}:${id}`,
+      );
+      expect(graph.products.map(p => p.product)).toContain(
+        'ReactBrandNewHeaders',
+      );
+    });
+  });
+
+  it('references every React Native, aggregator and codegen product exactly once', () => {
+    const {
+      AUTOLINKED_PACKAGE_NAME,
+      REACT_CODEGEN_APP_PRODUCTS,
+      REACT_NATIVE_PRODUCTS,
+    } = require('../spm-utils');
+    const {buildSpmDependencyGraph} = require('../generate-spm-xcodeproj');
+    const graph = buildSpmDependencyGraph((section, id) => `${section}:${id}`);
+    expect(graph.products.map(p => p.product)).toEqual([
+      ...REACT_NATIVE_PRODUCTS,
+      AUTOLINKED_PACKAGE_NAME,
+      ...REACT_CODEGEN_APP_PRODUCTS,
+    ]);
+  });
+});
+
 describe('scheme pre-action', () => {
   it('contains the sync script and target-scoped build environment', () => {
     const result = generateXcscheme(

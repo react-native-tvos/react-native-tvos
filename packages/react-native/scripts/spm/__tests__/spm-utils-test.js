@@ -11,6 +11,16 @@
 'use strict';
 
 const {
+  AUTOLINKED_PACKAGE_NAME,
+  REACT_CODEGEN_APP_PRODUCTS,
+  REACT_CODEGEN_PACKAGE_NAME,
+  REACT_CODEGEN_PRODUCTS,
+  REACT_HEADERS_TARGET_DIR,
+  REACT_NATIVE_HEADERS_PRODUCT,
+  REACT_NATIVE_PACKAGE_NAME,
+  REACT_NATIVE_PRODUCTS,
+  REACT_NATIVE_UMBRELLA_PRODUCT,
+  REACT_NATIVE_XCFRAMEWORK_PRODUCTS,
   RemoteVersionError,
   buildPerAppHeaderTree,
   defaultCacheDir,
@@ -43,6 +53,59 @@ describe('toSwiftName', () => {
     ['my_great_app', 'MyGreatApp'],
   ])('toSwiftName(%j) => %j', (input, expected) => {
     expect(toSwiftName(input)).toBe(expected);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Name constants — the single list every generated manifest derives its
+// package and product names from
+// ---------------------------------------------------------------------------
+
+describe('name constants', () => {
+  it('names the React Native package and the per-app codegen package', () => {
+    expect(REACT_NATIVE_PACKAGE_NAME).toBe('ReactNative');
+    expect(REACT_CODEGEN_PACKAGE_NAME).toBe('React-GeneratedCode');
+  });
+
+  it('pins each product list to its literal names', () => {
+    expect(REACT_NATIVE_PRODUCTS).toEqual([
+      'ReactHeaders',
+      'ReactNativeHeaders',
+      'ReactNativeDependenciesHeaders',
+    ]);
+    expect(REACT_CODEGEN_PRODUCTS).toEqual(['ReactAppHeaders']);
+    expect(REACT_CODEGEN_APP_PRODUCTS).toEqual([
+      'ReactCodegen',
+      'ReactAppDependencyProvider',
+    ]);
+  });
+
+  it('tags each React Native product by kind, so no consumer has to infer it from position', () => {
+    expect(REACT_NATIVE_UMBRELLA_PRODUCT).toBe('ReactHeaders');
+    expect(REACT_NATIVE_HEADERS_PRODUCT).toBe('ReactNativeHeaders');
+    expect(REACT_NATIVE_XCFRAMEWORK_PRODUCTS).toEqual([
+      'ReactNativeHeaders',
+      'ReactNativeDependenciesHeaders',
+    ]);
+  });
+
+  it('names the autolinking aggregator package (which shares its name with its product)', () => {
+    expect(AUTOLINKED_PACKAGE_NAME).toBe('Autolinked');
+  });
+
+  it('names the invariant React headers target directory', () => {
+    expect(REACT_HEADERS_TARGET_DIR).toBe('ReactHeadersTarget');
+  });
+
+  it('freezes the lists so no caller can mutate the shared source of truth', () => {
+    for (const list of [
+      REACT_NATIVE_PRODUCTS,
+      REACT_CODEGEN_PRODUCTS,
+      REACT_CODEGEN_APP_PRODUCTS,
+    ]) {
+      expect(Array.isArray(list)).toBe(true);
+      expect(Object.isFrozen(list)).toBe(true);
+    }
   });
 });
 

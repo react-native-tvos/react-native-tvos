@@ -43,6 +43,10 @@ const {
 const {expandSpmSourceGlobs} = require('./generate-spm-autolinking');
 const {readPodspec} = require('./read-podspec');
 const {
+  REACT_CODEGEN_PACKAGE_NAME,
+  REACT_CODEGEN_PRODUCTS,
+  REACT_NATIVE_PACKAGE_NAME,
+  REACT_NATIVE_PRODUCTS,
   SCAFFOLDER_MARKER,
   makeLogger,
   remotePackageConfig,
@@ -652,7 +656,8 @@ function emitScaffoldedPackageSwift(
     // the app by definition, so it stays a path reference — relative,
     // computed at scaffold time.
     const remote = ctx.remote;
-    const rnLabel = remote != null ? remote.identity : 'ReactNative';
+    const rnLabel =
+      remote != null ? remote.identity : REACT_NATIVE_PACKAGE_NAME;
     const codegenDir = ctx.codegenPackageDir;
     if (codegenDir == null) {
       throw new Error(
@@ -670,21 +675,21 @@ function emitScaffoldedPackageSwift(
           'emitScaffoldedPackageSwift: localXcfwPackageDir is required when no remote package is configured.',
         );
       }
-      packageDeps.push(`.package(name: "ReactNative", path: "${xcfwDir}")`);
+      packageDeps.push(
+        `.package(name: "${REACT_NATIVE_PACKAGE_NAME}", path: "${xcfwDir}")`,
+      );
     }
     packageDeps.push(
-      `.package(name: "React-GeneratedCode", path: "${codegenDir}")`,
+      `.package(name: "${REACT_CODEGEN_PACKAGE_NAME}", path: "${codegenDir}")`,
     );
-    targetDeps.push(`.product(name: "ReactHeaders", package: "${rnLabel}")`);
-    targetDeps.push(
-      `.product(name: "ReactNativeHeaders", package: "${rnLabel}")`,
-    );
-    targetDeps.push(
-      `.product(name: "ReactNativeDependenciesHeaders", package: "${rnLabel}")`,
-    );
-    targetDeps.push(
-      '.product(name: "ReactAppHeaders", package: "React-GeneratedCode")',
-    );
+    for (const product of REACT_NATIVE_PRODUCTS) {
+      targetDeps.push(`.product(name: "${product}", package: "${rnLabel}")`);
+    }
+    for (const product of REACT_CODEGEN_PRODUCTS) {
+      targetDeps.push(
+        `.product(name: "${product}", package: "${REACT_CODEGEN_PACKAGE_NAME}")`,
+      );
+    }
   }
   for (const siblingName of spec.siblingNames) {
     const swiftSibling = toSwiftName(siblingName);
