@@ -8,6 +8,7 @@
 package com.facebook.react.views.scroll
 
 import android.animation.Animator
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Point
@@ -15,12 +16,15 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.PathInterpolator
 import android.widget.OverScroller
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat.FocusDirection
 import androidx.core.view.ViewCompat.FocusRealDirection
 import com.facebook.common.logging.FLog
 import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.common.ReactConstants
@@ -66,6 +70,11 @@ public object ReactScrollViewHelper {
   // https://android.googlesource.com/platform/frameworks/base/+/ae5bcf23b5f0875e455790d6af387184dbd009c1/core/java/android/widget/OverScroller.java#44
   private var SMOOTH_SCROLL_DURATION = 250
   private var smoothScrollDurationInitialized = false
+
+  // The curve `ValueAnimator` applies when no interpolator is set, kept here so the reused fling
+  // animator can be reset to it once a custom `scrollAnimationEasing` is cleared.
+  private val defaultScrollAnimationInterpolator: TimeInterpolator =
+      AccelerateDecelerateInterpolator()
 
   /** Shared by [ReactScrollView] and [ReactHorizontalScrollView]. */
   @JvmStatic
@@ -235,6 +244,35 @@ public object ReactScrollViewHelper {
       } catch (e: Throwable) {}
     }
     return SMOOTH_SCROLL_DURATION
+  }
+
+  /** Curve used by the fling animator when `scrollAnimationEasing` is not set. */
+  @JvmStatic
+  public fun getDefaultScrollAnimationInterpolator(): TimeInterpolator =
+      defaultScrollAnimationInterpolator
+
+  /**
+   * Builds the `scrollAnimationEasing` curve from the CSS cubic-bezier control points `[x1, y1, x2,
+   * y2]` sent by JS. Returns `null` when the value is missing or does not describe a usable curve,
+   * so callers fall back to [getDefaultScrollAnimationInterpolator].
+   */
+  @JvmStatic
+  public fun createScrollAnimationInterpolator(controlPoints: ReadableArray?): TimeInterpolator? {
+    if (controlPoints == null || controlPoints.size() != 4) {
+      return null
+    }
+    return try {
+      PathInterpolator(
+          controlPoints.getDouble(0).toFloat(),
+          controlPoints.getDouble(1).toFloat(),
+          controlPoints.getDouble(2).toFloat(),
+          controlPoints.getDouble(3).toFloat(),
+      )
+    } catch (e: IllegalArgumentException) {
+      // PathInterpolator rejects curves that leave 0..1 on x or loop back on themselves.
+      FLog.w(ReactConstants.TAG, e, "Invalid scrollAnimationEasing control points")
+      null
+    }
   }
 
   /**

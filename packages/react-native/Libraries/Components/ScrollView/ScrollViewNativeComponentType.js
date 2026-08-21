@@ -71,6 +71,17 @@ export type ScrollViewNativeProps = Readonly<{
   sendMomentumEvents?: ?boolean,
   showsHorizontalScrollIndicator?: ?boolean,
   scrollAnimationEnabled?: ?boolean,
+  scrollAnimationDuration?: ?number,
+  // Accepts the unresolved prop value; ScrollView passes it through
+  // processScrollAnimationEasing, so native only sees control points.
+  scrollAnimationEasing?: ?(
+    | 'linear'
+    | 'ease'
+    | 'ease-in'
+    | 'ease-out'
+    | 'ease-in-out'
+    | [number, number, number, number]
+  ),
   showsScrollIndex?: ?boolean,
   showsVerticalScrollIndicator?: ?boolean,
   snapToAlignment?: ?('start' | 'center' | 'end' | 'item'),

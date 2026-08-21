@@ -35,6 +35,9 @@ class HostPlatformScrollViewProps : public BaseScrollViewProps {
 
   Float snapToItemPadding{0};
 
+  Float scrollAnimationDuration{0};
+  std::vector<Float> scrollAnimationEasing{};
+
 #pragma mark - DebugStringConvertible
 
 #if RN_DEBUG_STRING_CONVERTIBLE

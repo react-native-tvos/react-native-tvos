@@ -740,6 +740,32 @@ export interface ScrollViewProps
   scrollAnimationEnabled?: boolean | undefined;
 
   /**
+   * (Android TV only)
+   * Duration in milliseconds of the animated scroll that runs when focus moves to
+   * another item. Applies to the snap scroll (`snapToAlignment="item"` with
+   * per-item `scrollSnapAlign`/`scrollSnapOffset` markers) and to animated
+   * `scrollTo` commands; other focus scrolls are instant. When unset or <= 0, the platform default (~250ms) is used.
+   * On tvOS the focus engine owns this animation and the prop has no effect.
+   */
+  scrollAnimationDuration?: number | undefined;
+
+  /**
+   * (Android TV only)
+   * Easing curve of that animation, either a CSS easing keyword or explicit
+   * cubic-bezier control points `[x1, y1, x2, y2]`. When unset, the platform
+   * default curve (`AccelerateDecelerateInterpolator`) is used.
+   * On tvOS the focus engine owns this animation and the prop has no effect.
+   */
+  scrollAnimationEasing?:
+    | 'linear'
+    | 'ease'
+    | 'ease-in'
+    | 'ease-out'
+    | 'ease-in-out'
+    | [number, number, number, number]
+    | undefined;
+
+  /**
    * When true, shows a horizontal scroll indicator.
    */
   showsHorizontalScrollIndicator?: boolean | undefined;
