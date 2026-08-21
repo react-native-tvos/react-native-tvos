@@ -16,6 +16,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsForTests
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.uimanager.annotations.ReactPropGroup
+import com.facebook.yoga.YogaUnit
+import com.facebook.yoga.YogaValue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,6 +44,8 @@ class ReactPropAnnotationSetterTest {
     fun onBoxedFloatSetterCalled(value: Float?)
 
     fun onBoxedIntSetterCalled(value: Int?)
+
+    fun onDimensionSetterCalled(value: YogaValue?)
 
     fun onArraySetterCalled(value: ReadableArray?)
 
@@ -133,6 +137,11 @@ class ReactPropAnnotationSetterTest {
     @ReactProp(name = "boxedFloatProp")
     fun setBoxedFloatProp(v: View?, value: Float?) {
       viewManagerUpdatesReceiver.onBoxedFloatSetterCalled(value)
+    }
+
+    @ReactProp(name = "dimensionProp")
+    fun setDimensionProp(v: View?, value: YogaValue?) {
+      viewManagerUpdatesReceiver.onDimensionSetterCalled(value)
     }
 
     @ReactProp(name = "arrayProp")
@@ -335,6 +344,27 @@ class ReactPropAnnotationSetterTest {
     Mockito.verify(updatesReceiverMock).onBoxedFloatSetterCalled(null)
     Mockito.verifyNoMoreInteractions(updatesReceiverMock)
     Mockito.reset(updatesReceiverMock)
+  }
+
+  @Test
+  fun testDimensionSetter() {
+    viewManager.updateProperties(targetView, buildStyles("dimensionProp", 10.5))
+    Mockito.verify(updatesReceiverMock).onDimensionSetterCalled(YogaValue(10.5f, YogaUnit.POINT))
+    Mockito.verifyNoMoreInteractions(updatesReceiverMock)
+    Mockito.reset(updatesReceiverMock)
+    viewManager.updateProperties(targetView, buildStyles("dimensionProp", "100%"))
+    Mockito.verify(updatesReceiverMock).onDimensionSetterCalled(YogaValue(100f, YogaUnit.PERCENT))
+    Mockito.verifyNoMoreInteractions(updatesReceiverMock)
+    Mockito.reset(updatesReceiverMock)
+    viewManager.updateProperties(targetView, buildStyles("dimensionProp", null))
+    Mockito.verify(updatesReceiverMock).onDimensionSetterCalled(null)
+    Mockito.verifyNoMoreInteractions(updatesReceiverMock)
+    Mockito.reset(updatesReceiverMock)
+  }
+
+  @Test(expected = JSApplicationIllegalArgumentException::class)
+  fun testFailToUpdateDimensionPropWithArray() {
+    viewManager.updateProperties(targetView, buildStyles("dimensionProp", JavaOnlyArray()))
   }
 
   @Test
