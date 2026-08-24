@@ -318,6 +318,29 @@
 
 - **Dependencies**: Fix security vulnerabilities in `xmldom/xmldom`, `fast-xml-parser`, `yaml`, `fast-uri`, and `addressable` transitive dependencies ([284035b21d](https://github.com/react/react-native/commit/284035b21d94a0b2096b3aa3f39470747d191a57) by [@cortinico](https://github.com/cortinico))
 
+## v0.86.3
+
+### Changed
+
+- **Hermes:** Bump hermes-v1 to 250829098.0.17 ([3fd71f07c3](https://github.com/react/react-native/commit/3fd71f07c389c9310630b418c270b742fbb4e948) by [@cipolleschi](https://github.com/cipolleschi))
+
+### Fixed
+
+- **EventEmitter:** Fix use-after-free data race in EventEmitter.cpp ([fdb26edfe7](https://github.com/react/react-native/commit/fdb26edfe79041380147b0dde0ccd6552d29d31b))
+- **Modal:** Fix `parentNode`/`parentElement` returning the document instead of the containing element for `<Modal>` and other nested root host views, which severed capture/bubble event propagation to ancestors rendered above them ([6e3f0e8f9f](https://github.com/react/react-native/commit/6e3f0e8f9fbb947fc05d7f91a625705d599a3144) by [rubennorte](https://github.com/rubennorte))
+
+#### iOS
+
+- **Cocoapods:** Make Podfile.lock SPEC CHECKSUMS deterministic across machines by sorting Dir.glob results in Yoga.podspec and using a dynamically computed Pods-relative path in hermes-engine.podspec ([6e3f0e8f9f](https://github.com/react/react-native/commit/6e3f0e8f9fbb947fc05d7f91a625705d599a3144) by [IsaacIsrael](https://github.com/IsaacIsrael))
+
+#### Android specific
+
+- **Runtime:** Fix ConcurrentModificationException when getInitialURL re-enters during onHostResume ([20d04aefa1](https://github.com/react/react-native/commit/20d04aefa17acbbbf89ff055adf798827bd7787b) by [@nickcernera](https://github.com/nickcernera))
+
+#### iOS specific
+
+- **Font:** Custom fonts with an explicit fontWeight no longer render at the heaviest weight on the New Architecture ([918fb15bfe](https://github.com/react/react-native/commit/918fb15bfe5ff434d036c91be957de62cf8f8449) by [@jensdev](https://github.com/jensdev))
+
 ## v0.86.2
 
 ### Fixed
