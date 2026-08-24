@@ -766,6 +766,7 @@ const NATIVE_MODULE_WITH_EVENT_EMITTERS = `
  */
 
 import type {TurboModule} from 'react-native/Libraries/TurboModule/RCTExport';
+import type {Double, Float, Int32} from 'react-native/Libraries/Types/CodegenTypes';
 import * as TurboModuleRegistry from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export type ObjectStruct = {
@@ -784,6 +785,9 @@ export interface Spec extends TurboModule {
   readonly onEvent5: EventEmitter<ObjectStruct>;
   readonly onEvent6: EventEmitter<ObjectStruct[]>;
   readonly onEvent7: EventEmitter<MappedObject>;
+  readonly onEvent8: EventEmitter<Double>;
+  readonly onEvent9: EventEmitter<Float>;
+  readonly onEvent10: EventEmitter<Int32>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('SampleTurboModule');
