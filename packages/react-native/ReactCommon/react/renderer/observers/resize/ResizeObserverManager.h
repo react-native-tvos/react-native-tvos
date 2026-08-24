@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/PrivateGuard.h>
+
 #include <jsi/jsi.h>
 #include <react/renderer/core/ShadowNodeFamily.h>
 #include <react/renderer/mounting/ShadowTree.h>

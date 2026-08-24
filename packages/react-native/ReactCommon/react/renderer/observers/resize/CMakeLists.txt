@@ -16,6 +16,7 @@ target_include_directories(react_renderer_observers_resize PUBLIC ${REACT_COMMON
 target_link_libraries(react_renderer_observers_resize
       react_cxxreact
       react_bridging
+      react_cxxstableapi
       react_renderer_core
       react_renderer_graphics
       react_renderer_mounting
