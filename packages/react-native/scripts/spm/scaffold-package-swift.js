@@ -239,14 +239,18 @@ function translatePodspecToSpmTarget(
   // `s.dependency "RNWorklets"` — a pod-style name the `react-native-*`
   // heuristic can't recognize — to the right sibling package. Empty by default.
   podToNpm /*: Map<string, string> */ = new Map(),
+  // npm name → resolved Swift name for every autolinked dep, so a sibling
+  // reference honors that sibling's `spm.name` instead of re-deriving it.
+  swiftNameByNpm /*: Map<string, string> */ = new Map(),
 ) /*: SpmScaffoldSpec */ {
   const warnings = [...model.warnings];
 
-  // Swift target name: ALWAYS toSwiftName(npm-name). The autolinker
-  // registers each autolinked dep under that name in its aggregator (and in
-  // any sibling spm.dependencies refs), so the scaffolded Package.swift's
-  // product/library name must match — otherwise SPM resolution fails with
-  // a name mismatch on `.product(name: "X", package: "X")`.
+  // Swift target name: whatever the autolinker resolved for this dep — its
+  // `spm.name` override when set, else toSwiftName(npm-name). The autolinker
+  // registers the dep under that name in its aggregator (and in any sibling
+  // spm.dependencies refs), so the scaffolded Package.swift's product/library
+  // name must match it exactly — otherwise SPM resolution fails with a name
+  // mismatch on `.product(name: "X", package: "X")`.
   //
   // The podspec's `header_dir` is captured separately: when it changes the
   // include surface (e.g. `<reanimated/...>` instead of `<ReactNativeReanimated/...>`),
@@ -255,10 +259,8 @@ function translatePodspecToSpmTarget(
   // `<react/renderer/components/safeareacontext/...>` resolve through
   // `-I common/cpp/`). Module-style includes that NEED the target name to
   // match (e.g. reanimated's `<reanimated/X.h>` via SwiftPM's auto-generated
-  // module map) require an explicit `spm.name` override in
-  // react-native.config.js — handled by the existing autolinker flow, not
-  // here.
-  const swiftName = toSwiftName(dep.name);
+  // module map) are what `spm.name` is for.
+  const swiftName = dep.swiftName ?? toSwiftName(dep.name);
 
   // Header search paths — substitute Xcode build-setting tokens against the
   // dep root. Anything we can't substitute is dropped + warned (avoids
@@ -516,6 +518,14 @@ function translatePodspecToSpmTarget(
     );
   }
 
+  const siblingSwiftNames /*: {[npmName: string]: string} */ = {};
+  for (const npmName of siblingNames) {
+    const resolved = swiftNameByNpm.get(npmName);
+    if (resolved != null) {
+      siblingSwiftNames[npmName] = resolved;
+    }
+  }
+
   return {
     swiftName,
     sources: expandedSources,
@@ -524,6 +534,7 @@ function translatePodspecToSpmTarget(
     needsObjCPrefix,
     coreReactNative,
     siblingNames,
+    siblingSwiftNames,
     extraFrameworks: model.frameworks,
     weakFrameworks: model.weakFrameworks,
     compilerFlags: model.compilerFlags,
@@ -692,7 +703,8 @@ function emitScaffoldedPackageSwift(
     }
   }
   for (const siblingName of spec.siblingNames) {
-    const swiftSibling = toSwiftName(siblingName);
+    const swiftSibling =
+      spec.siblingSwiftNames?.[siblingName] ?? toSwiftName(siblingName);
     // The autolinker references each self-managed (scaffolded) dep through a
     // `libs/<SwiftName>` symlink, and SPM resolves a manifest's relative
     // package paths against that symlink location — so a sibling lives at
@@ -792,6 +804,9 @@ type ScaffoldContext = {
   // podspec-name → npm-name index over all autolinked deps, so pod-style
   // `s.dependency` names (e.g. "RNWorklets") wire to the right sibling.
   podToNpm?: Map<string, string>,
+  // npm-name → resolved Swift name over all autolinked deps, so sibling
+  // references honor each sibling's `spm.name`.
+  swiftNameByNpm?: Map<string, string>,
 };
 */
 
@@ -950,6 +965,7 @@ function scaffoldPackageSwiftForDep(
     model,
     dep,
     ctx.podToNpm ?? new Map(),
+    ctx.swiftNameByNpm ?? new Map(),
   );
 
   // Mixed-language fail-closed: SPM can't compile Swift + C-family in one
@@ -1172,6 +1188,13 @@ function scaffoldAll(
     }
   }
 
+  const swiftNameByNpm /*: Map<string, string> */ = new Map();
+  for (const dep of allDeps) {
+    if (dep.swiftName != null) {
+      swiftNameByNpm.set(dep.name, dep.swiftName);
+    }
+  }
+
   const ctx /*: ScaffoldContext */ = {
     appRoot,
     projectRoot,
@@ -1180,6 +1203,7 @@ function scaffoldAll(
     dryRun: opts.dryRun === true,
     cacheSlotLabel: opts.cacheSlotLabel ?? null,
     podToNpm,
+    swiftNameByNpm,
   };
   const skipSet /*: Set<string> */ = new Set(opts.skipDeps ?? []);
 

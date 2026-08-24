@@ -140,6 +140,37 @@ describe('translatePodspecToSpmTarget', () => {
     expect(spec.coreReactNative).toBe(true);
   });
 
+  it('uses the resolved swiftName (spm.name override) so the manifest matches what the autolinker registers', () => {
+    const model = podspec({name: 'react-native-worklets'});
+    const spec = translatePodspecToSpmTarget(
+      model,
+      autolinkedDep({name: 'react-native-worklets', swiftName: 'worklets'}),
+    );
+    expect(spec.swiftName).toBe('worklets');
+  });
+
+  it('falls back to toSwiftName when the dep carries no resolved name', () => {
+    const spec = translatePodspecToSpmTarget(
+      podspec(),
+      autolinkedDep({name: 'react-native-foo'}),
+    );
+    expect(spec.swiftName).toBe('ReactNativeFoo');
+  });
+
+  it('resolves each sibling through the same overrides, not through toSwiftName', () => {
+    const model = podspec({dependencies: ['RNWorklets']});
+    const spec = translatePodspecToSpmTarget(
+      model,
+      autolinkedDep({name: 'react-native-reanimated', swiftName: 'reanimated'}),
+      new Map([['RNWorklets', 'react-native-worklets']]),
+      new Map([['react-native-worklets', 'worklets']]),
+    );
+    expect(spec.siblingNames).toEqual(['react-native-worklets']);
+    expect(spec.siblingSwiftNames).toEqual({
+      'react-native-worklets': 'worklets',
+    });
+  });
+
   it('does not self-wire when a pod dependency maps back to the dep itself', () => {
     const model = podspec({dependencies: ['RNReanimated']});
     const spec = translatePodspecToSpmTarget(
@@ -604,6 +635,18 @@ describe('emitScaffoldedPackageSwift', () => {
     );
   });
 
+  it('emits the sibling override name for both the package and the product', () => {
+    const out = emitScaffoldedPackageSwift(
+      baseSpec({
+        siblingNames: ['react-native-worklets'],
+        siblingSwiftNames: {'react-native-worklets': 'worklets'},
+      }),
+    );
+    expect(out).toContain('.package(name: "worklets", path: "../worklets")');
+    expect(out).toContain('.product(name: "worklets", package: "worklets")');
+    expect(out).not.toContain('ReactNativeWorklets');
+  });
+
   it('-includes the ObjC prefix header in c/cxx settings when needsObjCPrefix is set', () => {
     const withPrefix = emitScaffoldedPackageSwift(
       baseSpec({needsObjCPrefix: true}),
@@ -744,6 +787,21 @@ end
       ...overrides,
     };
   }
+
+  it('names the scaffolded package with the spm.name override the autolinker resolved', () => {
+    makePodspec();
+    const result = scaffoldPackageSwiftForDep(
+      makeDep({swiftName: 'foo'}),
+      makeCtx(),
+    );
+    expect(result.status).toBe('written');
+    const content = fs.readFileSync(
+      path.join(depRoot, 'Package.swift'),
+      'utf8',
+    );
+    expect(content).toContain('name: "foo"');
+    expect(content).not.toContain('ReactNativeFoo');
+  });
 
   it('writes Package.swift into the dep root on the happy path', () => {
     makePodspec();
