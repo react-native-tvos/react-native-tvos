@@ -10,9 +10,11 @@
 
 'use strict';
 
-const {toSwiftName} = require('./spm-utils');
+const {makeLogger, toSwiftName} = require('./spm-utils');
 const fs = require('node:fs');
 const path = require('node:path');
+
+const {warn} = makeLogger('expand-spm-dependencies');
 
 /**
  * expand-spm-dependencies.js — Resolves transitive native deps declared via
@@ -188,8 +190,34 @@ function defaultReadConfig(root /*: string */) /*: ?RnConfig */ {
   }
   try {
     // $FlowFixMe[unsupported-syntax]
-    return require(configPath);
-  } catch {
+    const mod = require(configPath);
+    // Read both export styles, because the community CLI's two loaders
+    // disagree with each other: its sync path (`loadConfig`) requires the
+    // module and sees named exports at top level, its async path
+    // (`loadConfigAsync`) takes the default export only. Merging covers both,
+    // with named exports winning — the shape the sync path already resolves.
+    // Every sibling key of the default export is preserved
+    // (`dependency.platforms.ios` is read from this result too).
+    // A function-style config (`module.exports = () => ({...})`) and other
+    // non-objects pass through untouched — there is no default export to
+    // unwrap, and nulling them would hide a config that used to be read.
+    if (mod == null || typeof mod !== 'object') {
+      return mod;
+    }
+    const dflt = mod.default;
+    if (dflt == null || typeof dflt !== 'object') {
+      return mod;
+    }
+    const {default: _unused, ...named} = mod;
+    return {...dflt, ...named};
+  } catch (e) {
+    // A config can fail to load for reasons unrelated to SPM (it may import a
+    // devDependency absent in a consumer install), so this stays a warning —
+    // but a silent null turns a dropped `spm` block into a link error much
+    // later.
+    warn(
+      `Failed to load ${configPath}: ${e.message}. Any 'spm' settings in it are ignored.`,
+    );
     return null;
   }
 }
