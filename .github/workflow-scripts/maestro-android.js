@@ -29,6 +29,22 @@ const MAESTRO_LOG_DIRECTORY = '/tmp/MaestroLogs';
 const DIAGNOSTIC_COMMAND_TIMEOUT = 15000;
 const STATE_VERSION = 1;
 
+function logAndroidAbiConfiguration() {
+  const properties = [
+    'ro.product.cpu.abi',
+    'ro.product.cpu.abilist',
+    'ro.dalvik.vm.native.bridge',
+  ];
+
+  console.info('Android ABI configuration:');
+  for (const property of properties) {
+    const value = childProcess
+      .execFileSync('adb', ['shell', 'getprop', property], {encoding: 'utf8'})
+      .trim();
+    console.info(`- ${property}: ${value || '<empty>'}`);
+  }
+}
+
 function collectFlows(flowPath) {
   if (!fs.existsSync(flowPath) || !fs.lstatSync(flowPath).isDirectory()) {
     return [flowPath];
@@ -278,6 +294,8 @@ async function main(args = process.argv.slice(2)) {
   console.info(`WORKING_DIRECTORY: ${workingDirectory}`);
   console.info(`TEST_STATE_PATH: ${statePath}`);
   console.info('==============================\n');
+
+  logAndroidAbiConfiguration();
 
   console.info('Install app');
   childProcess.execSync(`adb install ${appPath}`, {stdio: 'ignore'});

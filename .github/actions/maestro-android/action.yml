@@ -26,6 +26,14 @@ inputs:
     required: false
     default: x86
     description: The architecture of the emulator to run
+  emulator-api-level:
+    required: false
+    default: '24'
+    description: The Android API level of the emulator to run
+  emulator-target:
+    required: false
+    default: default
+    description: The Android system image target to use
   test-state-path:
     required: false
     default: /tmp/maestro-android-state/results.json
@@ -60,7 +68,8 @@ runs:
       id: run-tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 24
+        api-level: ${{ inputs.emulator-api-level }}
+        target: ${{ inputs.emulator-target }}
         arch: ${{ inputs.emulator-arch }}
         ram-size: '8192M'
         heap-size: '4096M'

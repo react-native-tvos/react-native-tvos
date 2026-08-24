@@ -52,8 +52,10 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.release-type }}" == "dry-run" ]]; then
-          # dry-run: we only build ARM64 to save time/resources. For release/nightlies the default is to build all archs.
-          export ORG_GRADLE_PROJECT_reactNativeArchitectures="arm64-v8a,x86" # x86 is required for E2E testing
+          # dry-run: we only build ARM64 to save time/resources. Android E2E
+          # runs this APK on an x86_64 API 35 image using NDK translation.
+          # For release/nightlies the default is to build all architectures.
+          export ORG_GRADLE_PROJECT_reactNativeArchitectures="arm64-v8a"
           export HERMES_PREBUILT_FLAG="ORG_GRADLE_PROJECT_react.internal.useHermesNightly=true"
           TASKS="publishAllToMavenTempLocal build"
         elif [[ "${{ inputs.release-type }}" == "nightly" ]]; then
