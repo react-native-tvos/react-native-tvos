@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include "FrameTimingSequence.h"
 #include "InstanceTracingProfile.h"
 #include "RuntimeSamplingProfile.h"

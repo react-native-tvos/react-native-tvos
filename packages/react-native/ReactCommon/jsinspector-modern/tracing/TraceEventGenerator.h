@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include "TraceEvent.h"
 
 #include <jsinspector-modern/tracing/FrameTimingSequence.h>
