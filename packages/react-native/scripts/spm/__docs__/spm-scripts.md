@@ -376,6 +376,22 @@ library's target can import it.
 This is a **library-author** surface, like the podspec dependency it replaces —
 apps don't normally set it.
 
+### Config module format
+
+`react-native.config.js` may be CommonJS or ESM, and both named and default
+exports are read. A key defined twice — as a named export and on the default
+export — resolves to the named one. Avoid that shape anyway: the Community CLI
+has two loaders that disagree about it, a sync one that sees named exports and
+an async one that takes only the default export. For maximum compatibility,
+prefer the one-line CommonJS form:
+
+```js
+module.exports = {dependency: {platforms: {ios: {}}}, spm: {name: 'worklets'}};
+```
+
+If the config fails to load, a warning names the file and the reason — the `spm`
+settings in it are ignored rather than silently applied.
+
 ## Self-managed community packages
 
 A community library that ships its own `Package.swift` is referenced directly by

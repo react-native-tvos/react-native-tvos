@@ -34,10 +34,14 @@
  */
 
 const {
+  defaultReadConfig,
   expandSpmDependencies,
   resolveSwiftName,
 } = require('../expand-spm-dependencies');
 const {toSwiftName} = require('../spm-utils');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 
 function makeReadConfig(configs /*: {[string]: ?Object} */) {
   return (root /*: string */) =>
@@ -389,5 +393,114 @@ describe('expandSpmDependencies', () => {
     expect(resolveSwiftName('a', {spm: {name: 'react_native_foo'}})).toBe(
       'react_native_foo',
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// defaultReadConfig
+//
+// The community CLI's own loaders disagree — sync reads named exports, async
+// reads the default one — so a config that sets only `export default` must not
+// be invisible here. Fixtures are transpiled by babel, so they present the
+// `__esModule`/`default` interop shape; a Node namespace object from
+// `require(ESM)` has no `__esModule` but exposes `.default` alongside
+// enumerable named keys the same way, which is what the merge reads.
+// ---------------------------------------------------------------------------
+
+describe('defaultReadConfig', () => {
+  let tmpRoot;
+
+  beforeAll(() => {
+    tmpRoot = fs.mkdtempSync(
+      path.join(fs.realpathSync(os.tmpdir()), 'spm-read-config-'),
+    );
+  });
+
+  afterAll(() => {
+    fs.rmSync(tmpRoot, {recursive: true, force: true});
+  });
+
+  function writeConfig(name, source) {
+    const root = path.join(tmpRoot, name);
+    fs.mkdirSync(root, {recursive: true});
+    fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({name}));
+    fs.writeFileSync(path.join(root, 'react-native.config.js'), source);
+    return root;
+  }
+
+  it('returns null when the library ships no config', () => {
+    const root = path.join(tmpRoot, 'no-config');
+    fs.mkdirSync(root, {recursive: true});
+    expect(defaultReadConfig(root)).toBeNull();
+  });
+
+  it('reads a CommonJS config', () => {
+    const root = writeConfig('cjs', "module.exports = {spm: {name: 'Cjs'}};\n");
+    expect(defaultReadConfig(root).spm.name).toBe('Cjs');
+  });
+
+  it('unwraps an ESM config that only has a default export', () => {
+    const root = writeConfig(
+      'esm-default',
+      "export default {spm: {name: 'EsmDefault'}};\n",
+    );
+    expect(defaultReadConfig(root).spm.name).toBe('EsmDefault');
+  });
+
+  it('reads an ESM config that only has named exports', () => {
+    const root = writeConfig(
+      'esm-named',
+      "export const spm = {name: 'EsmNamed'};\n",
+    );
+    expect(defaultReadConfig(root).spm.name).toBe('EsmNamed');
+  });
+
+  it('prefers the named export when a config ships both (the PowerSync shape)', () => {
+    const root = writeConfig(
+      'esm-both',
+      "export const spm = {name: 'Named'};\n" +
+        "export default {spm: {name: 'Default'}, dependency: {platforms: {ios: {}}}};\n",
+    );
+    const config = defaultReadConfig(root);
+    expect(config.spm.name).toBe('Named');
+    // Only the merge satisfies this: `dependency` exists on the default export
+    // alone, so reading the module raw would miss it.
+    expect(config.dependency.platforms.ios).toEqual({});
+  });
+
+  it('keeps sibling keys of the default export (dependency.platforms.ios)', () => {
+    const root = writeConfig(
+      'esm-siblings',
+      "export default {dependency: {platforms: {ios: {}}}, spm: {name: 'Siblings'}};\n",
+    );
+    const config = defaultReadConfig(root);
+    expect(config.dependency.platforms.ios).toEqual({});
+    expect(config.spm.name).toBe('Siblings');
+  });
+
+  it('passes a function-style config through unchanged (module.exports = () => ({...}))', () => {
+    const root = writeConfig(
+      'fn-style',
+      "module.exports = () => ({spm: {name: 'FnStyle'}});\n",
+    );
+    const config = defaultReadConfig(root);
+    expect(typeof config).toBe('function');
+    expect(config().spm.name).toBe('FnStyle');
+  });
+
+  it('warns with the config path and the reason when the config fails to load, and returns null', () => {
+    const root = writeConfig(
+      'broken',
+      "require('a-dev-dependency-that-is-not-installed');\n",
+    );
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      expect(defaultReadConfig(root)).toBeNull();
+      const message = warnSpy.mock.calls.map(call => call.join(' ')).join('\n');
+      expect(message).toContain(path.join(root, 'react-native.config.js'));
+      expect(message).toContain('a-dev-dependency-that-is-not-installed');
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 });
