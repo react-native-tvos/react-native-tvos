@@ -1154,6 +1154,63 @@ describe('main() — autolinking plugin host exemption', () => {
       main(['--app-root', appRoot, '--react-native-root', rnRoot]),
     ).toThrow(MissingManifestError);
   });
+
+  // Adds a dep that declares the plugin host in its own `spm.dependencies`.
+  // `selfManaged` gives it a Package.swift of its own — which is what decides
+  // whether React Native emits its package references or the dep does.
+  function addDependentOfExpo(appRoot, name, {selfManaged = false} = {}) {
+    const depDir = path.join(appRoot, 'node_modules', name);
+    fs.mkdirSync(path.join(depDir, 'ios'), {recursive: true});
+    fs.writeFileSync(path.join(depDir, 'ios', 'Dep.mm'), '// native source\n');
+    if (selfManaged) {
+      fs.writeFileSync(
+        path.join(depDir, 'Package.swift'),
+        '// swift-tools-version: 6.0\n',
+      );
+    }
+    fs.writeFileSync(
+      path.join(depDir, 'react-native.config.js'),
+      'module.exports = {dependency: {platforms: {ios: {}}}, ' +
+        "spm: {dependencies: ['expo']}};\n",
+    );
+    const jsonPath = path.join(
+      appRoot,
+      'build/generated/autolinking/autolinking.json',
+    );
+    const json = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    json.dependencies[name] = {root: depDir, platforms: {ios: {}}};
+    fs.writeFileSync(jsonPath, JSON.stringify(json));
+  }
+
+  it('fails when a dep whose manifest RN generates declares the plugin host in its spm.dependencies', () => {
+    const {appRoot, rnRoot} = buildFixture({withPlugin: true});
+    addDependentOfExpo(appRoot, 'react-native-y');
+    const run = () =>
+      main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+    // Both packages, so the reader knows which config to edit and why.
+    expect(run).toThrow(/'react-native-y'/);
+    expect(run).toThrow(/'expo'/);
+    expect(run).toThrow(/autolinking plugin/);
+    expect(run).toThrow(/spm\.dependencies/);
+  });
+
+  it('leaves a self-managed dependent alone — its own Package.swift declares its package references, so RN emits none', () => {
+    const {appRoot, rnRoot} = buildFixture({withPlugin: true});
+    addDependentOfExpo(appRoot, 'react-native-y', {selfManaged: true});
+    expect(() =>
+      main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+    ).not.toThrow();
+  });
+
+  it('leaves the same pair alone when the host ships no plugin — a plain spm.dependency is not a plugin host', () => {
+    const {appRoot, rnRoot} = buildFixture({withPlugin: false});
+    addDependentOfExpo(appRoot, 'react-native-y');
+    // Both deps ship no manifest, so the missing-manifest error is the expected
+    // one — the plugin-host diagnosis must not fire for a plain dependency.
+    expect(() =>
+      main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+    ).toThrow(MissingManifestError);
+  });
 });
 
 // ---------------------------------------------------------------------------
