@@ -168,7 +168,6 @@ export type SpmModuleConfig = {
   name: string,
   path: string,
   exclude?: Array<string>,
-  publicHeadersPath?: ?string,
   // Optional CocoaPods-style glob allowlist (analog of s.source_files).
   // When set, replaces auto source discovery for the module — only files
   // matching one of these patterns are passed to SPM via `sources:`.

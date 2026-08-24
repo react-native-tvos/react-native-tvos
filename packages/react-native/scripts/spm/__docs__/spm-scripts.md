@@ -342,7 +342,6 @@ module.exports = {
         name: 'MyNativeModule',
         path: 'ios/MyNativeModule', // relative to app root
         exclude: ['*.podspec'], // optional
-        publicHeadersPath: '.', // optional
       },
     ],
   },
