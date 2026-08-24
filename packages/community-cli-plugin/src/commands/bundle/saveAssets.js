@@ -74,12 +74,7 @@ async function saveAssets(
     cleanAssetCatalog(catalogDir);
     for (const asset of assets) {
       if (isCatalogAsset(asset)) {
-        const imageSet = getImageSet(
-          catalogDir,
-          asset,
-          filterPlatformAssetScales(platform, asset.scales),
-        );
-        writeImageSet(imageSet);
+        writeImageSet(getImageSet(catalogDir, asset));
       } else {
         addAssetToCopy(asset);
       }
