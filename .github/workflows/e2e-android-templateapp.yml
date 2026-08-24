@@ -74,7 +74,10 @@ jobs:
           # Build
           cd android
           CAPITALIZED_FLAVOR=$(echo "${{ matrix.flavor }}" | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}')
-          ./gradlew assemble$CAPITALIZED_FLAVOR --no-daemon -PreactNativeArchitectures=arm64-v8a
+          ./gradlew --no-daemon \
+            --init-script "$GITHUB_WORKSPACE/.github/workflow-scripts/legacy-jni-packaging.gradle" \
+            assemble$CAPITALIZED_FLAVOR \
+            -PreactNativeArchitectures=arm64-v8a
 
       - name: Download previous per-flow test state
         if: ${{ inputs.retry-attempt > 0 }}
