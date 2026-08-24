@@ -1295,8 +1295,39 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
       discoveredPlugins.map(p => p.depName),
     );
 
+    // Skipped means no sibling package is created for the host either, so a
+    // dep declaring it in `spm.dependencies` gets a package reference to a
+    // path this run never writes — SPM then reports only the missing path.
+    // Only manifests React Native emits can carry that reference: a dep
+    // shipping its own Package.swift declares its package references itself,
+    // and the classification loop below would treat it as self-managed.
+    const pluginHostDependents /*: Map<string, Array<string>> */ = new Map();
+    for (const dep of allDeps) {
+      const declaredHosts = (dep.spmDependencies ?? []).filter(name =>
+        pluginHostDeps.has(name),
+      );
+      if (declaredHosts.length === 0) {
+        continue;
+      }
+      const sourceDir = dep.platforms.ios.sourceDir ?? dep.root;
+      if (sourceDir == null || findSelfManagedPackageDir(sourceDir) != null) {
+        continue;
+      }
+      for (const host of declaredHosts) {
+        const dependents = pluginHostDependents.get(host) ?? [];
+        dependents.push(dep.name);
+        pluginHostDependents.set(host, dependents);
+      }
+    }
+
     for (const dep of allDeps) {
       if (pluginHostDeps.has(dep.name)) {
+        const dependents = pluginHostDependents.get(dep.name);
+        if (dependents != null) {
+          throw new Error(
+            `react-native autolinking: '${dep.name}' ships an SPM autolinking plugin, which owns its native contribution — so React Native does not build it as a sibling target for anything to depend on. It is declared in 'spm.dependencies' by ${dependents.map(name => `'${name}'`).join(', ')}. Remove it there; nothing is lost. Its plugin links its products into the app and resolves its own ecosystem's dependencies, so a library that builds against it does not declare it here.`,
+          );
+        }
         log(
           `Skipping ${dep.name} target generation — provided by its SPM autolinking plugin`,
         );
