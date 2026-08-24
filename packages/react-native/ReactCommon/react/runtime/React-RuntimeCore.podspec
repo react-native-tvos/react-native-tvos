@@ -52,6 +52,7 @@ Pod::Spec.new do |s|
   add_rncore_dependency(s)
 
   s.dependency "React-jsinspector"
+  s.dependency "React-cxxstableapi"
   add_dependency(s, "React-jsitooling", :framework_name => "JSITooling")
 
   mark_as_react_native_build(s)
