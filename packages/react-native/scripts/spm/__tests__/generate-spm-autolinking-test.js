@@ -10,9 +10,11 @@
 
 'use strict';
 
+const {SpmNameCollisionError} = require('../expand-spm-dependencies');
 const {
   AUTOGEN_MARKER,
   MissingManifestError,
+  autolinkingDepToSpmTarget,
   collectSpmSources,
   expandSpmSourceGlobs,
   findSelfManagedPackageDir,
@@ -1082,7 +1084,7 @@ describe('main() — autolinking plugin host exemption', () => {
   // Builds a minimal app fixture whose ONLY autolinked iOS dep is `expo`, which
   // ships NO Package.swift. When `withPlugin` is set, expo declares an
   // autolinking plugin in its own react-native.config.js (transitive opt-in).
-  function buildFixture({withPlugin}) {
+  function buildFixture({withPlugin, depName = 'expo'}) {
     const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-plugin-host-'));
     created.push(appRoot);
     // rnRoot only needs to exist (main() existence-checks it, then passes it
@@ -1095,7 +1097,7 @@ describe('main() — autolinking plugin host exemption', () => {
       JSON.stringify({name: 'app'}),
     );
     // The plugin-host dep: native sources present, but NO Package.swift.
-    const expoDir = path.join(appRoot, 'node_modules', 'expo');
+    const expoDir = path.join(appRoot, 'node_modules', ...depName.split('/'));
     fs.mkdirSync(path.join(expoDir, 'ios'), {recursive: true});
     fs.writeFileSync(
       path.join(expoDir, 'ios', 'Expo.mm'),
@@ -1121,7 +1123,9 @@ describe('main() — autolinking plugin host exemption', () => {
     fs.writeFileSync(
       path.join(autolinkDir, 'autolinking.json'),
       JSON.stringify({
-        dependencies: {expo: {root: expoDir, platforms: {ios: {}}}},
+        dependencies: {
+          [depName]: {root: expoDir, platforms: {ios: {}}},
+        },
       }),
     );
     return {appRoot, rnRoot};
@@ -1211,6 +1215,24 @@ describe('main() — autolinking plugin host exemption', () => {
       main(['--app-root', appRoot, '--react-native-root', rnRoot]),
     ).toThrow(MissingManifestError);
   });
+  // `spm scaffold` has no plugin knowledge, so exempting the autolinker alone
+  // left the two commands disagreeing about the same dep.
+  it.each([[true], [false]])(
+    'rejects a dep deriving a reserved name whether or not it ships a plugin (withPlugin=%s)',
+    withPlugin => {
+      // 'react-headers' derives the reserved 'ReactHeaders', with no scope.
+      const {appRoot, rnRoot} = buildFixture({
+        withPlugin,
+        depName: 'react-headers',
+      });
+      expect(() =>
+        main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+      ).toThrow(SpmNameCollisionError);
+      expect(() =>
+        main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+      ).toThrow(/'react-headers'.*React Native reserves/s);
+    },
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -1587,5 +1609,221 @@ describe('main() — .spm-sync-watch-paths emission', () => {
     // Deduped and sorted (stable, deterministic output).
     expect(new Set(lines).size).toBe(lines.length);
     expect([...lines].sort()).toEqual(lines);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// main() — scope disambiguation: the borrowed name reaching a real manifest.
+// ---------------------------------------------------------------------------
+
+describe('main() — scope disambiguation', () => {
+  let created = [];
+  let spies = [];
+  let logSpy;
+
+  beforeEach(() => {
+    logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    spies.push(logSpy);
+    for (const m of ['warn', 'error']) {
+      spies.push(jest.spyOn(console, m).mockImplementation(() => {}));
+    }
+  });
+
+  afterEach(() => {
+    for (const s of spies) s.mockRestore();
+    spies = [];
+    for (const d of created) fs.rmSync(d, {recursive: true, force: true});
+    created = [];
+  });
+
+  // Each dep ships a Package.swift, so it reaches the aggregator as self-managed.
+  function buildFixture(...depNames) {
+    const appRoot = fs.realpathSync(
+      fs.mkdtempSync(path.join(os.tmpdir(), 'spm-scope-disambig-')),
+    );
+    created.push(appRoot);
+    const rnRoot = path.join(appRoot, 'rn');
+    fs.mkdirSync(rnRoot, {recursive: true});
+    fs.writeFileSync(
+      path.join(appRoot, 'package.json'),
+      JSON.stringify({name: 'app'}),
+    );
+    const dependencies = {};
+    for (const depName of depNames) {
+      const depDir = path.join(appRoot, 'node_modules', ...depName.split('/'));
+      fs.mkdirSync(path.join(depDir, 'ios'), {recursive: true});
+      fs.writeFileSync(
+        path.join(depDir, 'Package.swift'),
+        '// swift-tools-version:6.0\n// hand-authored\n',
+      );
+      fs.writeFileSync(path.join(depDir, 'ios', 'Lib.h'), '// header\n');
+      fs.writeFileSync(path.join(depDir, 'ios', 'Lib.mm'), '// src\n');
+      dependencies[depName] = {root: depDir, platforms: {ios: {}}};
+    }
+    const autolinkDir = path.join(appRoot, 'build', 'generated', 'autolinking');
+    fs.mkdirSync(autolinkDir, {recursive: true});
+    fs.writeFileSync(
+      path.join(autolinkDir, 'autolinking.json'),
+      JSON.stringify({dependencies}),
+    );
+    return {appRoot, rnRoot};
+  }
+
+  it('emits the disambiguated name as the package ref, the product ref and the header slice', () => {
+    const {appRoot, rnRoot} = buildFixture('@powersync/react-native');
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+
+    const outDir = path.join(appRoot, 'build/generated/autolinking');
+    const pkg = fs.readFileSync(path.join(outDir, 'Package.swift'), 'utf8');
+    expect(pkg).toContain(
+      '.package(name: "PowersyncReactNative", path: "libs/PowersyncReactNative")',
+    );
+    expect(pkg).toContain(
+      '.product(name: "PowersyncReactNative", package: "PowersyncReactNative")',
+    );
+    // Nothing is referenced under the name the derivation would have taken.
+    expect(pkg).not.toContain('"ReactNative", path: "libs/');
+    expect(pkg).not.toContain('package: "ReactNative"');
+
+    // So `#import <PowersyncReactNative/Lib.h>` resolves for consumers.
+    expect(
+      fs.existsSync(
+        path.join(outDir, 'headers/PowersyncReactNative/ios/Lib.h'),
+      ),
+    ).toBe(true);
+    expect(fs.existsSync(path.join(outDir, 'libs/PowersyncReactNative'))).toBe(
+      true,
+    );
+    expect(fs.existsSync(path.join(outDir, 'headers/ReactNative'))).toBe(false);
+  });
+
+  it('tells the developer which name it took and why', () => {
+    const {appRoot, rnRoot} = buildFixture('@powersync/react-native');
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+
+    const line = logSpy.mock.calls
+      .map(call => call.join(' '))
+      .find(l => l.includes('PowersyncReactNative'));
+    expect(line).toBeDefined();
+    expect(line).toContain('@powersync/react-native');
+    expect(line).toContain("'ReactNative'");
+  });
+
+  it('still rejects an unscoped dep deriving a reserved name — it has no scope to borrow', () => {
+    const {appRoot, rnRoot} = buildFixture('react-headers');
+    expect(() =>
+      main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+    ).toThrow(SpmNameCollisionError);
+  });
+
+  it('emits both names of a dep-vs-dep collision as package refs, product refs and header slices', () => {
+    const {appRoot, rnRoot} = buildFixture('@a/foo', '@b/foo');
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+
+    const outDir = path.join(appRoot, 'build/generated/autolinking');
+    const pkg = fs.readFileSync(path.join(outDir, 'Package.swift'), 'utf8');
+    for (const name of ['AFoo', 'BFoo']) {
+      expect(pkg).toContain(`.package(name: "${name}", path: "libs/${name}")`);
+      expect(pkg).toContain(`.product(name: "${name}", package: "${name}")`);
+      expect(
+        fs.existsSync(path.join(outDir, `headers/${name}/ios/Lib.h`)),
+      ).toBe(true);
+    }
+    expect(pkg).not.toContain('"Foo", path: "libs/');
+    expect(pkg).not.toContain('package: "Foo"');
+    expect(fs.existsSync(path.join(outDir, 'headers/Foo'))).toBe(false);
+  });
+
+  it('still rejects a collision the scopes cannot resolve', () => {
+    // 'a-foo' already derives 'AFoo', the name '@a/foo' borrows.
+    const {appRoot, rnRoot} = buildFixture('@a/foo', '@b/foo', 'a-foo');
+    expect(() =>
+      main(['--app-root', appRoot, '--react-native-root', rnRoot]),
+    ).toThrow(SpmNameCollisionError);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// autolinkingDepToSpmTarget — resolved names only, never re-derived ones.
+// ---------------------------------------------------------------------------
+
+describe('autolinkingDepToSpmTarget', () => {
+  const dep = (extra = {}) => ({
+    name: '@powersync/react-native',
+    root: '/dep',
+    platforms: {ios: {sourceDir: '/dep/ios'}},
+    ...extra,
+  });
+
+  it('carries a resolved sibling name into the emitted sibling refs', () => {
+    const target = autolinkingDepToSpmTarget(
+      'react-native-consumer',
+      {
+        name: 'react-native-consumer',
+        root: '/consumer',
+        platforms: {ios: {sourceDir: '/consumer/ios'}},
+        swiftName: 'ReactNativeConsumer',
+        spmDependencies: ['@powersync/react-native'],
+      },
+      '/out',
+      new Map([['@powersync/react-native', 'PowersyncReactNative']]),
+    );
+    const manifest = generateSynthPackageSwift({
+      swiftName: target.name,
+      spmDependencies: (target.spmTargetDependencies ?? []).map(swiftName => ({
+        swiftName,
+      })),
+      hasReactDep: false,
+      targetPath: '.',
+    });
+    expect(manifest).toContain(
+      '.package(name: "PowersyncReactNative", path: "../PowersyncReactNative")',
+    );
+    expect(manifest).toContain(
+      '.product(name: "PowersyncReactNative", package: "PowersyncReactNative")',
+    );
+    expect(manifest).not.toContain('ReactNative", package: "ReactNative"');
+  });
+
+  it('fails loudly instead of re-deriving a dep with no resolved name', () => {
+    expect(() =>
+      autolinkingDepToSpmTarget(
+        '@powersync/react-native',
+        dep(),
+        '/out',
+        new Map(),
+      ),
+    ).toThrow(/expandSpmDependencies/);
+  });
+
+  it('fails loudly instead of re-deriving an unmapped spm.dependency', () => {
+    expect(() =>
+      autolinkingDepToSpmTarget(
+        'react-native-consumer',
+        {
+          name: 'react-native-consumer',
+          root: '/consumer',
+          platforms: {ios: {sourceDir: '/consumer/ios'}},
+          swiftName: 'ReactNativeConsumer',
+          spmDependencies: ['@powersync/react-native'],
+        },
+        '/out',
+        new Map(),
+      ),
+    ).toThrow(/@powersync\/react-native/);
+    expect(() =>
+      autolinkingDepToSpmTarget(
+        'react-native-consumer',
+        {
+          name: 'react-native-consumer',
+          root: '/consumer',
+          platforms: {ios: {sourceDir: '/consumer/ios'}},
+          swiftName: 'ReactNativeConsumer',
+          spmDependencies: ['@powersync/react-native'],
+        },
+        '/out',
+        new Map(),
+      ),
+    ).toThrow(/expandSpmDependencies/);
   });
 });
