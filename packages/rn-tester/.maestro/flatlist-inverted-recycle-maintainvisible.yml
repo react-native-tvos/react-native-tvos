@@ -3,6 +3,8 @@
 # With windowSize=3, only ~3 pages of items are rendered
 # In inverted mode, items display in reverse order but MVCP delta behavior is the same
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

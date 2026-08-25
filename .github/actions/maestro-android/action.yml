@@ -38,6 +38,10 @@ inputs:
     required: false
     default: /tmp/maestro-android-state/results.json
     description: The path used to persist per-flow test results between retries
+  exclude-tags:
+    required: false
+    default: ''
+    description: Comma-separated flow tags to exclude from the test run
 
 runs:
   using: composite
@@ -77,7 +81,7 @@ runs:
         cores: '4'
         disable-animations: false
         avd-name: e2e_emulator
-        script: node .github/workflow-scripts/maestro-android.js ${{ inputs.app-path }} ${{ inputs.app-id }} ${{ inputs.maestro-flow }} ${{ inputs.flavor }} ${{ inputs.working-directory }} ${{ inputs.test-state-path }}
+        script: node .github/workflow-scripts/maestro-android.js ${{ inputs.app-path }} ${{ inputs.app-id }} ${{ inputs.maestro-flow }} ${{ inputs.flavor }} ${{ inputs.working-directory }} ${{ inputs.test-state-path }} "${{ inputs.exclude-tags }}"
     - name: Normalize APP_ID
       id: normalize-app-id
       shell: bash

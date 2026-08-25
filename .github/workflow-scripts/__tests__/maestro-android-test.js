@@ -14,6 +14,7 @@ const path = require('path');
 const {
   collectFlows,
   executeFlowSuite,
+  filterFlowsByTags,
   loadState,
 } = require('../maestro-android');
 
@@ -43,6 +44,26 @@ describe('Maestro Android runner', () => {
       path.join(nestedDirectory, 'first.yml'),
       path.join(temporaryDirectory, 'second.yaml'),
     ]);
+  });
+
+  it('excludes flows with matching tags', () => {
+    const releaseOnlyFlow = path.join(
+      temporaryDirectory,
+      'android-release-only.yml',
+    );
+    const regularFlow = path.join(temporaryDirectory, 'regular.yml');
+    fs.writeFileSync(
+      releaseOnlyFlow,
+      'appId: x\ntags:\n  - android-release-only\n---\n- launchApp\n',
+    );
+    fs.writeFileSync(regularFlow, 'appId: x\n---\n- launchApp\n');
+
+    expect(
+      filterFlowsByTags(
+        [releaseOnlyFlow, regularFlow],
+        ['android-release-only'],
+      ),
+    ).toEqual([regularFlow]);
   });
 
   it('runs every flow and retries only flows that have not passed', () => {

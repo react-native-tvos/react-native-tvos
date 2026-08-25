@@ -3,8 +3,8 @@ tags:
   - android-only
 ---
 # Android-only: alpha transparency + sRGB vs Display-P3 wide-gamut. Color
-# fidelity needs a screenshot, so we assert load status only. Flaky on the iOS
-# E2E job, so guarded to Android; iOS skips this flow (empty=pass).
+# fidelity is covered by a screenshot captured from the ARM64 APK on the API 35
+# sRGB emulator. The flow is guarded because it is flaky on the iOS E2E job.
 - runFlow:
     when:
       platform: Android

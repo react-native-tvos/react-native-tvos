@@ -2,6 +2,8 @@
 # Items are 40px tall + 4px margin = 44px each
 # With windowSize=3, only ~3 pages of items are rendered
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

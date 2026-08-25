@@ -1,6 +1,8 @@
 # Test variable-height items with first prepend
 # Single prepend with variable height: delta should be 28-112px
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

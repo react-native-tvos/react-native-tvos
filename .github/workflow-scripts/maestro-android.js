@@ -13,7 +13,7 @@ const path = require('path');
 
 const usage = `
 === Usage ===
-node maestro-android.js <path to app> <app_id> <maestro_flow> <flavor> <working_directory> [test_state_path]
+node maestro-android.js <path to app> <app_id> <maestro_flow> <flavor> <working_directory> [test_state_path] [exclude_tags]
 
 @param {string} appPath - Path to the app APK
 @param {string} appId - App ID that needs to be launched
@@ -21,6 +21,7 @@ node maestro-android.js <path to app> <app_id> <maestro_flow> <flavor> <working_
 @param {string} flavor - Flavor of the app to be launched. Can be 'release' or 'debug'
 @param {string} workingDirectory - Working directory from where to run Metro
 @param {string} testStatePath - File used to persist per-flow results between CI retries
+@param {string} excludeTags - Comma-separated flow tags to exclude
 ==============
 `;
 
@@ -61,6 +62,39 @@ function collectFlows(flowPath) {
     // Skip non-flow files (e.g. screenshot baselines under screenshots/).
   }
   return flows;
+}
+
+function getFlowTags(flow) {
+  const contents = fs.readFileSync(flow, 'utf8');
+  const tags = [];
+  const tagBlockPattern = /^tags:\s*\r?\n((?:^[ \t]+-[ \t]*[^\r\n]+\r?\n?)*)/gm;
+
+  for (const match of contents.matchAll(tagBlockPattern)) {
+    for (const line of match[1].split(/\r?\n/)) {
+      const tag = line.match(/^[ \t]+-[ \t]*(.+?)\s*$/)?.[1];
+      if (tag != null) {
+        tags.push(tag);
+      }
+    }
+  }
+
+  return tags;
+}
+
+function filterFlowsByTags(flows, excludeTags) {
+  if (excludeTags.length === 0) {
+    return flows;
+  }
+
+  return flows.filter(flow => {
+    const tags = getFlowTags(flow);
+    const excludedTag = tags.find(tag => excludeTags.includes(tag));
+    if (excludedTag != null) {
+      console.info(`Skipping flow tagged ${excludedTag}: ${flow}`);
+      return false;
+    }
+    return true;
+  });
 }
 
 function getFlowKey(flow) {
@@ -274,7 +308,7 @@ function executeFlowSuite({
 }
 
 async function main(args = process.argv.slice(2)) {
-  if (args.length < 5 || args.length > 6) {
+  if (args.length < 5 || args.length > 7) {
     throw new Error(`Invalid number of arguments.\n${usage}`);
   }
 
@@ -284,6 +318,10 @@ async function main(args = process.argv.slice(2)) {
   const isDebug = args[3] === 'debug';
   const workingDirectory = args[4];
   const statePath = args[5] ?? DEFAULT_STATE_PATH;
+  const excludeTags = (args[6] ?? '')
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(Boolean);
 
   console.info('\n==============================');
   console.info('Running tests for Android with the following parameters:');
@@ -293,6 +331,7 @@ async function main(args = process.argv.slice(2)) {
   console.info(`IS_DEBUG: ${isDebug}`);
   console.info(`WORKING_DIRECTORY: ${workingDirectory}`);
   console.info(`TEST_STATE_PATH: ${statePath}`);
+  console.info(`EXCLUDE_TAGS: ${excludeTags.join(',') || '<none>'}`);
   console.info('==============================\n');
 
   logAndroidAbiConfiguration();
@@ -338,7 +377,7 @@ async function main(args = process.argv.slice(2)) {
 
   let error = null;
   try {
-    const flows = collectFlows(maestroFlow);
+    const flows = filterFlowsByTags(collectFlows(maestroFlow), excludeTags);
     const state = loadState(statePath);
     console.info(`Start testing ${flows.length} flow(s)`);
     executeFlowSuite({flows, appId, state, statePath});
@@ -378,6 +417,7 @@ if (require.main === module) {
 module.exports = {
   collectFlows,
   executeFlowSuite,
+  filterFlowsByTags,
   formatResults,
   loadState,
 };

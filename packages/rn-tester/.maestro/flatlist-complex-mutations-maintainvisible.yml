@@ -1,6 +1,8 @@
 # Test FlatList maintainVisibleContentPosition — complex concurrent mutations
 # Tests prepend + append + delete in sequence
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 - setOrientation: portrait

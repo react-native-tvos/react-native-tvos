@@ -7,6 +7,8 @@
 # - After prepend: record offset
 # - Delta should equal height of prepended items (~44px per item with margin)
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait
@@ -87,6 +89,8 @@ appId: ${APP_ID}
 ---
 # Test that user scroll is not interrupted during prepend
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 - assertVisible: 'Components'
