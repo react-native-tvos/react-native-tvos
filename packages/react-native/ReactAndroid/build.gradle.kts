@@ -127,6 +127,7 @@ val preparePrefab by
                       ),
                       // react_renderer_bridging
                       Pair("../ReactCommon/react/renderer/bridging/", "react/renderer/bridging/"),
+                      Pair("../ReactCommon/react/renderer/bridging/React/", "React/"),
                       // react_renderer_componentregistry
                       Pair(
                           "../ReactCommon/react/renderer/componentregistry/",

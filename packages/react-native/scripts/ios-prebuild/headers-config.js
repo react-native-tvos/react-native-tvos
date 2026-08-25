@@ -70,8 +70,17 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
       {
         name: 'bridging',
         headerPatterns: ['react/renderer/bridging/**/*.h'],
-        excludePatterns: ['react/renderer/bridging/tests'],
+        excludePatterns: [
+          'react/renderer/bridging/tests',
+          'react/renderer/bridging/React',
+        ],
         headerDir: 'react/renderer/bridging',
+      },
+
+      {
+        name: 'bridgingUmbrella',
+        headerPatterns: ['react/renderer/bridging/React/*.h'],
+        headerDir: 'React',
       },
 
       {
