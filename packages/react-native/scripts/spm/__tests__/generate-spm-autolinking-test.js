@@ -1236,6 +1236,137 @@ describe('main() — autolinking plugin host exemption', () => {
 });
 
 // ---------------------------------------------------------------------------
+// main() — spm.modules name validation
+//
+// App-local module names land in the manifest exactly as written, so they need
+// the checks an autolinked dep's Swift name gets: a valid identifier, not one
+// of React Native's reserved names, and unique across modules and deps.
+// ---------------------------------------------------------------------------
+
+describe('main() — spm.modules names', () => {
+  let created = [];
+  let spies = [];
+
+  beforeEach(() => {
+    for (const m of ['log', 'warn', 'error']) {
+      spies.push(jest.spyOn(console, m).mockImplementation(() => {}));
+    }
+  });
+
+  afterEach(() => {
+    for (const s of spies) s.mockRestore();
+    spies = [];
+    for (const d of created) fs.rmSync(d, {recursive: true, force: true});
+    created = [];
+  });
+
+  // App fixture whose react-native.config.js declares `spm.modules`, plus an
+  // optional autolinked dep (for the module-vs-dep collision case).
+  function buildApp({modules, dep}) {
+    const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-modules-'));
+    created.push(appRoot);
+    const rnRoot = path.join(appRoot, 'rn');
+    fs.mkdirSync(rnRoot, {recursive: true});
+    fs.writeFileSync(
+      path.join(appRoot, 'package.json'),
+      JSON.stringify({name: 'app'}),
+    );
+    for (const mod of modules) {
+      const modDir = path.join(appRoot, mod.path);
+      fs.mkdirSync(modDir, {recursive: true});
+      fs.writeFileSync(path.join(modDir, 'Module.mm'), '// native source\n');
+    }
+    fs.writeFileSync(
+      path.join(appRoot, 'react-native.config.js'),
+      `module.exports = ${JSON.stringify({spm: {modules}})};\n`,
+    );
+    const dependencies = {};
+    if (dep != null) {
+      const depDir = path.join(appRoot, 'node_modules', dep.name);
+      fs.mkdirSync(path.join(depDir, 'ios'), {recursive: true});
+      fs.writeFileSync(
+        path.join(depDir, 'ios', 'Dep.mm'),
+        '// native source\n',
+      );
+      fs.writeFileSync(
+        path.join(depDir, 'Package.swift'),
+        '// swift-tools-version: 6.0\n',
+      );
+      dependencies[dep.name] = {root: depDir, platforms: {ios: {}}};
+    }
+    const autolinkDir = path.join(appRoot, 'build', 'generated', 'autolinking');
+    fs.mkdirSync(autolinkDir, {recursive: true});
+    fs.writeFileSync(
+      path.join(autolinkDir, 'autolinking.json'),
+      JSON.stringify({dependencies}),
+    );
+    return {appRoot, rnRoot};
+  }
+
+  const run = ({appRoot, rnRoot}) =>
+    main(['--app-root', appRoot, '--react-native-root', rnRoot]);
+
+  it('accepts a normal module name', () => {
+    const app = buildApp({
+      modules: [{name: 'MyNativeModule', path: 'ios/MyNativeModule'}],
+    });
+    expect(() => run(app)).not.toThrow();
+  });
+
+  it('rejects a module named after a reserved React Native name', () => {
+    const app = buildApp({
+      modules: [{name: 'ReactNative', path: 'ios/MyNativeModule'}],
+    });
+    expect(() => run(app)).toThrow(SpmNameCollisionError);
+    expect(() => run(app)).toThrow(
+      /the 'spm.modules' entry 'ReactNative' resolves to 'ReactNative', which React Native reserves/,
+    );
+    expect(() => run(app)).toThrow(/'spm\.modules'\.$/);
+  });
+
+  it('rejects a reserved product name in any casing', () => {
+    const app = buildApp({
+      modules: [{name: 'reactheaders', path: 'ios/MyNativeModule'}],
+    });
+    expect(() => run(app)).toThrow(SpmNameCollisionError);
+    expect(() => run(app)).toThrow(
+      /the 'spm\.modules' entry 'reactheaders' resolves to 'reactheaders', which differs from React Native's reserved 'ReactHeaders' only in case/,
+    );
+  });
+
+  it('rejects a module name that is not a valid Swift identifier', () => {
+    const app = buildApp({
+      modules: [{name: 'My Module', path: 'ios/MyNativeModule'}],
+    });
+    expect(() => run(app)).toThrow(/invalid 'spm.modules' name "My Module"/);
+  });
+
+  it('rejects two modules resolving to the same name', () => {
+    const app = buildApp({
+      modules: [
+        {name: 'Shared', path: 'ios/one'},
+        {name: 'shared', path: 'ios/two'},
+      ],
+    });
+    expect(() => run(app)).toThrow(SpmNameCollisionError);
+    expect(() => run(app)).toThrow(
+      /the 'spm.modules' entry 'shared' differs from the existing target 'Shared' only in case/,
+    );
+  });
+
+  it('rejects a module colliding with an autolinked dep', () => {
+    const app = buildApp({
+      modules: [{name: 'ReactNativeFoo', path: 'ios/MyNativeModule'}],
+      dep: {name: 'react-native-foo'},
+    });
+    expect(() => run(app)).toThrow(SpmNameCollisionError);
+    expect(() => run(app)).toThrow(
+      /the 'spm.modules' entry 'ReactNativeFoo' is already the name of another autolinked target/,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
 // main() — plugin flavoredFrameworks sidecar
 //
 // Both plugin sidecars (.spm-plugin-flavored-frameworks.json, consumed by
