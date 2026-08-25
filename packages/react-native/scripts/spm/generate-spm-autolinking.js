@@ -59,9 +59,12 @@
 
 const {discoverPlugins, invokePlugins} = require('./autolinking-plugins');
 const {
+  SpmNameCollisionError,
+  assertSwiftNameNotReserved,
   defaultReadConfig,
   defaultResolveDep,
   expandSpmDependencies,
+  isValidSwiftName,
 } = require('./expand-spm-dependencies');
 const {readPodspec} = require('./read-podspec');
 const {
@@ -261,6 +264,41 @@ function readSpmModulesFromConfig(
   } catch (e) {
     // Config might use Ruby interop or other patterns – skip
     return [];
+  }
+}
+
+/**
+ * Validates one app-local `spm.modules` name against the same rules a library's
+ * `spm.name` gets: a usable Swift identifier, not a name React Native reserves,
+ * and not one already taken by another module or an autolinked dep.
+ * `taken` maps lower-cased name → the name as written.
+ */
+function assertSpmModuleName(
+  name /*: unknown */,
+  taken /*: Map<string, string> */,
+) /*: void */ {
+  const remedy =
+    "Rename it in this app's react-native.config.js 'spm.modules'.";
+  if (typeof name !== 'string' || !isValidSwiftName(name)) {
+    throw new Error(
+      `react-native autolinking: invalid 'spm.modules' name ${JSON.stringify(name) ?? 'undefined'}: must start with a letter or underscore and contain only letters, digits, underscores, or hyphens.`,
+    );
+  }
+  const moduleName = name;
+  assertSwiftNameNotReserved(moduleName, {
+    label: `the 'spm.modules' entry '${moduleName}'`,
+    remedy,
+    extraReservedNames: reservedNamesForRun(),
+  });
+  const clash = taken.get(moduleName.toLowerCase());
+  if (clash != null) {
+    throw new SpmNameCollisionError(
+      `react-native autolinking: SPM Swift name collision: the 'spm.modules' entry '${moduleName}' ` +
+        (clash === moduleName
+          ? `is already the name of another autolinked target.`
+          : `differs from the existing target '${clash}' only in case, which collides on case-insensitive filesystems.`) +
+        ` ${remedy}`,
+    );
   }
 }
 
@@ -1377,7 +1415,15 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
   // the globs now relative to its dir and attach the file list to the target
   // so the emission loop below renders `sources: [...]` literally.
   const configModules = readSpmModulesFromConfig(appRoot);
+  // Module names land in the manifest exactly as written, so they get the same
+  // checks a dep's Swift name gets. Seeded with the dep target names already
+  // emitted so a module can't shadow an autolinked library either.
+  const takenSwiftNames /*: Map<string, string> */ = new Map(
+    entries.map(entry => [entry.target.name.toLowerCase(), entry.target.name]),
+  );
   for (const mod of configModules) {
+    assertSpmModuleName(mod.name, takenSwiftNames);
+    takenSwiftNames.set(mod.name.toLowerCase(), mod.name);
     const absPath = path.resolve(appRoot, mod.path);
     const relPath = path.relative(outputDir, absPath);
     const userSources =
@@ -1460,8 +1506,9 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
   // longer silently synthesize one for them (that duplicated the scaffolder and
   // hid the gap from the developer and the library author) — collect them and
   // fail with an actionable message after the classification pass. spmModules
-  // (app-local, podspec-less, explicitly declared in react-native.config.js)
-  // keep their synth wrappers: there is nothing to scaffold for them.
+  // (app-local, explicitly declared in react-native.config.js) keep their synth
+  // wrappers: an app-local dir has no npm identity, so there is no package for
+  // the aggregator to reference until one is written for it.
   const missingManifests /*: Array<{name: string, npmName: string, hasPodspec: boolean, mixed?: boolean}> */ =
     [];
 
@@ -1513,11 +1560,14 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
       }
       continue;
     }
-    // spmModule: synth wrapper is the legitimate mechanism (no podspec exists
-    // to scaffold from, and the app developer declared it explicitly). But a
-    // mixed-language module can't be wrapped either — SPM can't compile Swift +
-    // C-family sources in one target, and a synth wrapper would fail with a
-    // cryptic SPM resolve error. Surface the same friendly diagnostic the
+    // spmModule: the synth wrapper is the mechanism, not a fallback — an
+    // app-local dir has no npm identity, so the wrapper is the only package the
+    // aggregator can reference. No podspec is read on this route by design:
+    // app-local native code isn't required to carry one. (A hand-written
+    // Package.swift still wins — the self-managed check above claims it first.)
+    // But a mixed-language module can't be wrapped either — SPM can't compile
+    // Swift + C-family sources in one target, and a synth wrapper would fail
+    // with a cryptic SPM resolve error. Surface the same friendly diagnostic the
     // community-dep path uses instead of letting SPM emit the cryptic one.
     if (hasMixedLanguageSources(absSource)) {
       throw new Error(

@@ -73,6 +73,7 @@ class SpmNameCollisionError extends Error {
 
 // The charset `spm.name` must satisfy — permissive on purpose, since it has to
 // admit header-dir style (lowercase with hyphens) as well as Swift identifiers.
+// Shared with the app's own `spm.modules` names.
 function isValidSwiftName(name /*: unknown */) /*: boolean */ {
   return typeof name === 'string' && /^[A-Za-z_][A-Za-z0-9_-]*$/.test(name);
 }
