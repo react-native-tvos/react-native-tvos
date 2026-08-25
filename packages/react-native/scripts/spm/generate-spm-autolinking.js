@@ -74,7 +74,6 @@ const {
   findProjectRoot,
   makeLogger,
   remotePackageConfig,
-  toSwiftName,
 } = require('./spm-utils');
 const fs = require('fs');
 const path = require('path');
@@ -96,6 +95,11 @@ let remoteCfg /*: ?{url: string, version: string, identity: string} */ = null;
 
 function reactNativePackageLabel() /*: string */ {
   return remoteCfg != null ? remoteCfg.identity : REACT_NATIVE_PACKAGE_NAME;
+}
+// In remote mode the RN package is labelled with the remote identity, so that
+// name is reserved for this run too.
+function reservedNamesForRun() /*: ?Array<string> */ {
+  return remoteCfg != null ? [remoteCfg.identity] : undefined;
 }
 function reactNativePackageDecl(localDecl /*: string */) /*: string */ {
   return remoteCfg != null
@@ -736,9 +740,9 @@ function expandSpmSourceGlobs(
  * Returns null if the dependency doesn't have iOS support.
  *
  * `swiftNameByNpm` maps each autolinked dep's npm name to its resolved Swift
- * name (populated by expandSpmDependencies, possibly overridden via the dep's
- * `spm.name` config). Optional for backwards compatibility with callers that
- * don't have the map; falls back to `toSwiftName(name)` per entry.
+ * name (populated by expandSpmDependencies, honoring the dep's `spm.name`
+ * config and scope disambiguation). Every name this function emits comes from
+ * there — see requireSwiftName.
  */
 /**
  * Read the dep's podspec (if any) and extract its declared
@@ -795,11 +799,27 @@ function extractPodspecHeaderSearchPaths(
   return out;
 }
 
+/**
+ * The Swift name expandSpmDependencies resolved for `npmName`, or a hard error:
+ * re-deriving one here would emit a reference nothing in the graph matches.
+ */
+function requireSwiftName(
+  npmName /*: string */,
+  resolved /*: ?string */,
+) /*: string */ {
+  if (resolved == null) {
+    throw new Error(
+      `react-native autolinking: no resolved Swift name for '${npmName}'. expandSpmDependencies must resolve every autolinked dep's name before SPM targets are generated.`,
+    );
+  }
+  return resolved;
+}
+
 function autolinkingDepToSpmTarget(
   depName /*: string */,
   dep /*: AutolinkedDep */,
   outputDir /*: string */,
-  swiftNameByNpm /*: ?Map<string, string> */,
+  swiftNameByNpm /*: Map<string, string> */,
 ) /*: SpmTarget | null */ {
   const iosPlatform = dep.platforms.ios;
   const sourceDir = iosPlatform.sourceDir ?? dep.root;
@@ -812,10 +832,7 @@ function autolinkingDepToSpmTarget(
   // same convention the spmModule branch in main() follows.
   const relSourcePath = path.relative(outputDir, sourceDir);
 
-  // Prefer the resolved Swift name (which honors `spm.name` overrides set in
-  // the dep's react-native.config.js). Fall back to toSwiftName(depName) when
-  // the caller didn't run expandSpmDependencies.
-  const targetName = dep.swiftName ?? toSwiftName(depName);
+  const targetName = requireSwiftName(depName, dep.swiftName);
 
   // No exclude inference — main()'s emission loop emits `sources:` (an
   // explicit allowlist). User-supplied excludes still work.
@@ -825,13 +842,11 @@ function autolinkingDepToSpmTarget(
   const resources = privacyManifest != null ? [privacyManifest] : undefined;
 
   // Map declared spm.dependencies (npm names) to Swift target names so the
-  // synth's .product(...) deps list reaches the consuming target. Each
-  // transitive npm name's Swift name comes from the map (honoring overrides);
-  // toSwiftName fallback handles entries the map doesn't know about.
+  // synth's .product(...) deps list reaches the consuming target.
   const spmDeps /*: Array<string> */ = dep.spmDependencies ?? [];
   const spmTargetDependencies =
     spmDeps.length > 0
-      ? spmDeps.map(n => swiftNameByNpm?.get(n) ?? toSwiftName(n))
+      ? spmDeps.map(n => requireSwiftName(n, swiftNameByNpm.get(n)))
       : undefined;
 
   const headerSearchPaths = extractPodspecHeaderSearchPaths(sourceDir);
@@ -1259,11 +1274,13 @@ function main(argv /*:: ?: Array<string> */) /*: void */ {
     const allDeps = expandSpmDependencies(directDeps, {
       readConfig: defaultReadConfig,
       resolveDep: defaultResolveDep,
+      extraReservedNames: reservedNamesForRun(),
+      log,
     });
 
-    // Map every autolinked npm name to its resolved Swift name (post-override)
-    // so transitive references inside autolinkingDepToSpmTarget find the right
-    // target identifier — not just the auto-derived toSwiftName.
+    // Map every autolinked npm name to its resolved Swift name so transitive
+    // references inside autolinkingDepToSpmTarget find the right target
+    // identifier.
     const swiftNameByNpm /*: Map<string, string> */ = new Map();
     for (const dep of allDeps) {
       if (dep.swiftName != null) {
@@ -1922,6 +1939,7 @@ if (require.main === module) {
 
 module.exports = {
   main,
+  autolinkingDepToSpmTarget,
   generateAutolinkedPackageSwift,
   generateSynthPackageSwift,
   reactDescriptor,

@@ -34,11 +34,17 @@
  */
 
 const {
+  SpmNameCollisionError,
   defaultReadConfig,
   expandSpmDependencies,
+  isValidSwiftName,
   resolveSwiftName,
 } = require('../expand-spm-dependencies');
-const {toSwiftName} = require('../spm-utils');
+const {
+  REACT_HEADERS_TARGET_DIR,
+  RESERVED_SWIFT_NAMES,
+  toSwiftName,
+} = require('../spm-utils');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -47,6 +53,9 @@ function makeReadConfig(configs /*: {[string]: ?Object} */) {
   return (root /*: string */) =>
     Object.prototype.hasOwnProperty.call(configs, root) ? configs[root] : null;
 }
+
+// The reserved map its caller builds; these cases only exercise `spm.name`.
+const NONE = new Map();
 
 function makeResolveDep(resolutions /*: {[string]: ?string} */) {
   return (name /*: string */) =>
@@ -330,6 +339,22 @@ describe('expandSpmDependencies', () => {
     ).toThrow(/ReactNativeWorklets/);
   });
 
+  it('throws SpmNameCollisionError on a dep-vs-dep collision too', () => {
+    const direct = [
+      {name: 'react-native-worklets', root: '/w', platforms: {ios: {}}},
+      {name: 'other-package', root: '/o', platforms: {ios: {}}},
+    ];
+    expect(() =>
+      expandSpmDependencies(direct, {
+        readConfig: makeReadConfig({
+          '/w': {},
+          '/o': {spm: {name: 'ReactNativeWorklets'}},
+        }),
+        resolveDep: makeResolveDep({}),
+      }),
+    ).toThrow(SpmNameCollisionError);
+  });
+
   it('throws on a CASE-INSENSITIVE swiftName collision (worklets vs Worklets)', () => {
     // Distinct as exact strings, but collide as directories on the default
     // case-insensitive macOS filesystem.
@@ -369,34 +394,462 @@ describe('expandSpmDependencies', () => {
   });
 
   it('rejects spm.name with disallowed characters (spaces, slashes, dots)', () => {
-    expect(() => resolveSwiftName('a', {spm: {name: 'foo bar'}})).toThrow(
-      /invalid 'spm.name'/,
-    );
-    expect(() => resolveSwiftName('a', {spm: {name: 'foo/bar'}})).toThrow(
-      /invalid 'spm.name'/,
-    );
-    expect(() => resolveSwiftName('a', {spm: {name: 'foo.bar'}})).toThrow(
-      /invalid 'spm.name'/,
-    );
+    const resolve = name => () => resolveSwiftName('a', {spm: {name}}, NONE);
+    expect(resolve('foo bar')).toThrow(/invalid 'spm.name'/);
+    expect(resolve('foo/bar')).toThrow(/invalid 'spm.name'/);
+    expect(resolve('foo.bar')).toThrow(/invalid 'spm.name'/);
   });
 
   it('accepts lowercase-with-hyphen and CamelCase spm.name values', () => {
-    expect(resolveSwiftName('a', {spm: {name: 'reanimated'}})).toBe(
-      'reanimated',
-    );
-    expect(resolveSwiftName('a', {spm: {name: 'hermes-engine'}})).toBe(
-      'hermes-engine',
-    );
-    expect(resolveSwiftName('a', {spm: {name: 'RNWorklets'}})).toBe(
-      'RNWorklets',
-    );
-    expect(resolveSwiftName('a', {spm: {name: 'react_native_foo'}})).toBe(
-      'react_native_foo',
-    );
+    const resolve = name => resolveSwiftName('a', {spm: {name}}, NONE);
+    expect(resolve('reanimated')).toBe('reanimated');
+    expect(resolve('hermes-engine')).toBe('hermes-engine');
+    expect(resolve('RNWorklets')).toBe('RNWorklets');
+    expect(resolve('react_native_foo')).toBe('react_native_foo');
   });
 });
 
 // ---------------------------------------------------------------------------
+// Scope disambiguation: a derived name that lands on one React Native reserves.
+// ---------------------------------------------------------------------------
+
+describe('expandSpmDependencies (scope disambiguation)', () => {
+  function expand(direct, configs, options) {
+    return expandSpmDependencies(direct, {
+      readConfig: makeReadConfig(configs),
+      resolveDep: makeResolveDep({}),
+      ...options,
+    });
+  }
+
+  it('prepends the scope when the derived name is reserved', () => {
+    const [dep] = expand(
+      [{name: '@powersync/react-native', root: '/ps', platforms: {ios: {}}}],
+      {'/ps': {}},
+    );
+    expect(dep.swiftName).toBe('PowersyncReactNative');
+  });
+
+  it('logs one line naming the package, the reserved name and the name it got', () => {
+    const log = jest.fn();
+    expand(
+      [{name: '@powersync/react-native', root: '/ps', platforms: {ios: {}}}],
+      {'/ps': {}},
+      {log},
+    );
+    expect(log).toHaveBeenCalledTimes(1);
+    const [line] = log.mock.calls[0];
+    expect(line).toContain('@powersync/react-native');
+    expect(line).toContain("'ReactNative'");
+    expect(line).toContain("'PowersyncReactNative'");
+  });
+
+  it('says nothing when no disambiguation happens', () => {
+    const log = jest.fn();
+    const [dep] = expand(
+      [{name: '@powersync/common', root: '/c', platforms: {ios: {}}}],
+      {'/c': {}},
+      {log},
+    );
+    expect(dep.swiftName).toBe('Common');
+    expect(log).not.toHaveBeenCalled();
+  });
+
+  it('title-cases a hyphenated scope', () => {
+    const [dep] = expand(
+      [{name: '@my-org/react-native', root: '/o', platforms: {ios: {}}}],
+      {'/o': {}},
+    );
+    expect(dep.swiftName).toBe('MyOrgReactNative');
+  });
+
+  it('disambiguates a name that matches a reserved one only in case', () => {
+    // toSwiftName('@scope/reactcodegen') === 'Reactcodegen' — distinct from
+    // 'ReactCodegen' as a string, the same directory on a case-insensitive
+    // filesystem.
+    const [dep] = expand(
+      [{name: '@scope/reactcodegen', root: '/s', platforms: {ios: {}}}],
+      {'/s': {}},
+    );
+    expect(dep.swiftName).toBe('ScopeReactcodegen');
+  });
+
+  it('disambiguates a transitive dep too', () => {
+    const result = expandSpmDependencies(
+      [{name: 'top', root: '/top', platforms: {ios: {}}}],
+      {
+        readConfig: makeReadConfig({
+          '/top': {spm: {dependencies: ['@scope/react-native']}},
+          '/s': {dependency: {platforms: {ios: {}}}},
+        }),
+        resolveDep: makeResolveDep({'@scope/react-native': '/s'}),
+      },
+    );
+    expect(result.map(d => d.swiftName)).toEqual(['Top', 'ScopeReactNative']);
+  });
+
+  it('disambiguates against a caller-supplied reserved name (remote identity)', () => {
+    const [dep] = expand(
+      [{name: '@acme/my-fork', root: '/f', platforms: {ios: {}}}],
+      {'/f': {}},
+      {extraReservedNames: ['MyFork']},
+    );
+    expect(dep.swiftName).toBe('AcmeMyFork');
+  });
+
+  it("leaves an explicit 'spm.name' alone on a package that would have collided", () => {
+    const log = jest.fn();
+    const [dep] = expand(
+      [{name: '@powersync/react-native', root: '/ps', platforms: {ios: {}}}],
+      {'/ps': {spm: {name: 'PowerSync'}}},
+      {log},
+    );
+    expect(dep.swiftName).toBe('PowerSync');
+    expect(log).not.toHaveBeenCalled();
+  });
+
+  it('throws when the disambiguated name is reserved as well', () => {
+    const run = () =>
+      expand(
+        [{name: '@powersync/react-native', root: '/ps', platforms: {ios: {}}}],
+        {'/ps': {}},
+        {extraReservedNames: ['PowersyncReactNative']},
+      );
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(/React Native reserves/);
+  });
+
+  it('gives two scoped packages that would take the same reserved name distinct names', () => {
+    const result = expand(
+      [
+        {name: '@a/react-native', root: '/a', platforms: {ios: {}}},
+        {name: '@b/react-native', root: '/b', platforms: {ios: {}}},
+      ],
+      {'/a': {}, '/b': {}},
+    );
+    expect(result.map(d => d.swiftName)).toEqual([
+      'AReactNative',
+      'BReactNative',
+    ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scope disambiguation across deps: two libraries deriving one name.
+// ---------------------------------------------------------------------------
+
+describe('expandSpmDependencies (scope disambiguation across deps)', () => {
+  function expand(direct, configs, options) {
+    return expandSpmDependencies(direct, {
+      readConfig: makeReadConfig(configs),
+      resolveDep: makeResolveDep({}),
+      ...options,
+    });
+  }
+
+  const scoped = (name, root) => ({name, root, platforms: {ios: {}}});
+
+  it('pulls two scoped deps apart with their scopes', () => {
+    const result = expand([scoped('@a/foo', '/a'), scoped('@b/foo', '/b')], {
+      '/a': {},
+      '/b': {},
+    });
+    expect(result.map(d => d.swiftName)).toEqual(['AFoo', 'BFoo']);
+  });
+
+  it('logs one line per rewritten dep, naming the shared name and the new one', () => {
+    const log = jest.fn();
+    expand(
+      [scoped('@a/foo', '/a'), scoped('@b/foo', '/b')],
+      {
+        '/a': {},
+        '/b': {},
+      },
+      {log},
+    );
+    expect(log).toHaveBeenCalledTimes(2);
+    const lines = log.mock.calls.map(([line]) => line);
+    expect(lines[0]).toContain('@a/foo');
+    expect(lines[0]).toContain("'Foo'");
+    expect(lines[0]).toContain("'AFoo'");
+    expect(lines[1]).toContain('@b/foo');
+    expect(lines[1]).toContain("'BFoo'");
+  });
+
+  it('leaves an unscoped member alone — it has no scope to borrow', () => {
+    const result = expand([scoped('@a/foo', '/a'), scoped('foo', '/f')], {
+      '/a': {},
+      '/f': {},
+    });
+    expect(result.map(d => d.swiftName)).toEqual(['AFoo', 'Foo']);
+  });
+
+  it("leaves a member's explicit 'spm.name' alone and moves the others around it", () => {
+    const log = jest.fn();
+    const result = expand(
+      [scoped('@a/foo', '/a'), scoped('@b/foo', '/b')],
+      {'/a': {spm: {name: 'Foo'}}, '/b': {}},
+      {log},
+    );
+    expect(result.map(d => d.swiftName)).toEqual(['Foo', 'BFoo']);
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log.mock.calls[0][0]).toContain('@b/foo');
+  });
+
+  it('groups case-insensitively, so a lowercase override still moves the others', () => {
+    const result = expand([scoped('@a/foo', '/a'), scoped('@b/foo', '/b')], {
+      '/a': {spm: {name: 'foo'}},
+      '/b': {},
+    });
+    expect(result.map(d => d.swiftName)).toEqual(['foo', 'BFoo']);
+  });
+
+  it('rewrites every scoped member of a three-way collision', () => {
+    const result = expand(
+      [scoped('@a/foo', '/a'), scoped('@b/foo', '/b'), scoped('@c/foo', '/c')],
+      {'/a': {}, '/b': {}, '/c': {}},
+    );
+    expect(result.map(d => d.swiftName)).toEqual(['AFoo', 'BFoo', 'CFoo']);
+  });
+
+  it('rewrites the scoped members of a three-way collision and keeps the unscoped one', () => {
+    const result = expand(
+      [scoped('@a/foo', '/a'), scoped('@b/foo', '/b'), scoped('foo', '/f')],
+      {'/a': {}, '/b': {}, '/f': {}},
+    );
+    expect(result.map(d => d.swiftName)).toEqual(['AFoo', 'BFoo', 'Foo']);
+  });
+
+  it('throws when a borrowed scope lands on a third package instead of producing two of the same name', () => {
+    // 'a-foo' already derives 'AFoo', the name '@a/foo' borrows.
+    const run = () =>
+      expand(
+        [
+          scoped('@a/foo', '/a'),
+          scoped('@b/foo', '/b'),
+          scoped('a-foo', '/af'),
+        ],
+        {'/a': {}, '/b': {}, '/af': {}},
+      );
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(/both resolve to 'AFoo'/);
+  });
+
+  it('throws when a borrowed scope lands on a name React Native reserves', () => {
+    // Both derive 'Native'; the borrow takes '@react/native' to 'ReactNative'.
+    const run = () =>
+      expand([scoped('@react/native', '/r'), scoped('@other/native', '/o')], {
+        '/r': {},
+        '/o': {},
+      });
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(/React Native reserves/);
+  });
+
+  it('still throws for two unscoped deps deriving the same name', () => {
+    const run = () =>
+      expand(
+        [scoped('react-native-foo', '/a'), scoped('react_native_foo', '/b')],
+        {'/a': {}, '/b': {}},
+      );
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(
+      /'react-native-foo' \('ReactNativeFoo'\) and 'react_native_foo' \('ReactNativeFoo'\) both resolve to 'ReactNativeFoo'\./,
+    );
+    expect(run).toThrow(/Set a distinct 'spm\.name'/);
+  });
+
+  it('changes nothing, and says nothing, for a set with no collisions', () => {
+    const log = jest.fn();
+    const result = expand(
+      [scoped('@a/foo', '/a'), scoped('@b/bar', '/b'), scoped('baz', '/c')],
+      {'/a': {}, '/b': {}, '/c': {}},
+      {log},
+    );
+    expect(result.map(d => d.swiftName)).toEqual(['Foo', 'Bar', 'Baz']);
+    expect(log).not.toHaveBeenCalled();
+  });
+
+  it('borrows a second time when an already-borrowed name collides, and the incumbent keeps its name', () => {
+    // Both land on 'AReactNative': one by borrowing, one by derivation.
+    const result = expand(
+      [scoped('@a/react-native', '/a'), scoped('a-react-native', '/b')],
+      {'/a': {}, '/b': {}},
+    );
+    expect(result.map(d => d.swiftName)).toEqual([
+      'AAReactNative',
+      'AReactNative',
+    ]);
+  });
+
+  it('disambiguates a transitive dep against a direct one', () => {
+    const result = expandSpmDependencies([scoped('@a/foo', '/a')], {
+      readConfig: makeReadConfig({
+        '/a': {spm: {dependencies: ['@b/foo']}},
+        '/b': {dependency: {platforms: {ios: {}}}},
+      }),
+      resolveDep: makeResolveDep({'@b/foo': '/b'}),
+    });
+    expect(result.map(d => d.swiftName)).toEqual(['AFoo', 'BFoo']);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Reserved React Native names — the backstop for what a scope cannot resolve.
+// ---------------------------------------------------------------------------
+
+describe('expandSpmDependencies (reserved React Native names)', () => {
+  function expand(direct, configs, options) {
+    return expandSpmDependencies(direct, {
+      readConfig: makeReadConfig(configs),
+      resolveDep: makeResolveDep({}),
+      ...options,
+    });
+  }
+
+  it('throws when an unscoped dep auto-derives a reserved product name', () => {
+    const run = () =>
+      expand([{name: 'react-headers', root: '/rh', platforms: {ios: {}}}], {
+        '/rh': {},
+      });
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(
+      /'react-headers' resolves to 'ReactHeaders', which React Native reserves/,
+    );
+    expect(run).toThrow(
+      /Set a different 'spm\.name' in react-headers's react-native\.config\.js\./,
+    );
+  });
+
+  it('throws when an explicit spm.name override lands on a reserved name', () => {
+    expect(() =>
+      expand([{name: 'some-lib', root: '/s', platforms: {ios: {}}}], {
+        '/s': {spm: {name: 'ReactAppHeaders'}},
+      }),
+    ).toThrow(
+      /'some-lib' resolves to 'ReactAppHeaders', which React Native reserves/,
+    );
+  });
+
+  it('throws when a transitive dep lands on a reserved name', () => {
+    expect(() =>
+      expandSpmDependencies(
+        [{name: 'top', root: '/top', platforms: {ios: {}}}],
+        {
+          readConfig: makeReadConfig({
+            '/top': {spm: {dependencies: ['react-native-headers']}},
+            '/rnh': {dependency: {platforms: {ios: {}}}},
+          }),
+          resolveDep: makeResolveDep({'react-native-headers': '/rnh'}),
+        },
+      ),
+    ).toThrow(
+      /'react-native-headers' resolves to 'ReactNativeHeaders', which React Native reserves/,
+    );
+  });
+
+  it('reserves the caller-supplied extraReservedNames (remote package identity)', () => {
+    const direct = [{name: 'my-fork', root: '/f', platforms: {ios: {}}}];
+    expect(() =>
+      expand(direct, {'/f': {}}, {extraReservedNames: ['MyFork']}),
+    ).toThrow(/'my-fork' resolves to 'MyFork', which React Native reserves/);
+  });
+
+  it('accepts that same name when no extraReservedNames are supplied', () => {
+    const [dep] = expand(
+      [{name: 'my-fork', root: '/f', platforms: {ios: {}}}],
+      {
+        '/f': {},
+      },
+    );
+    expect(dep.swiftName).toBe('MyFork');
+  });
+
+  it('leaves a non-colliding dep untouched', () => {
+    const [dep] = expand(
+      [{name: 'react-native-worklets', root: '/w', platforms: {ios: {}}}],
+      {'/w': {spm: {name: 'worklets'}}},
+      {extraReservedNames: ['SomeRemoteIdentity']},
+    );
+    expect(dep.swiftName).toBe('worklets');
+  });
+
+  it('reports the reserved-name diagnosis in preference to the dep-vs-dep one', () => {
+    // Both unscoped deps derive 'ReactNative', so neither can borrow a scope.
+    expect(() =>
+      expand(
+        [
+          {name: 'react-native', root: '/a', platforms: {ios: {}}},
+          {name: 'react_native', root: '/b', platforms: {ios: {}}},
+        ],
+        {'/a': {}, '/b': {}},
+      ),
+    ).toThrow(/React Native reserves/);
+  });
+
+  it('rejects every name in RESERVED_SWIFT_NAMES', () => {
+    expect(RESERVED_SWIFT_NAMES.length).toBeGreaterThan(0);
+    for (const reserved of RESERVED_SWIFT_NAMES) {
+      expect(() =>
+        expand([{name: 'some-lib', root: '/s', platforms: {ios: {}}}], {
+          '/s': {spm: {name: reserved}},
+        }),
+      ).toThrow(/React Native reserves/);
+    }
+  });
+
+  it('rejects the autolinking aggregator package name', () => {
+    expect(() =>
+      expand([{name: 'autolinked', root: '/a', platforms: {ios: {}}}], {
+        '/a': {},
+      }),
+    ).toThrow(
+      /'autolinked' resolves to 'Autolinked', which React Native reserves/,
+    );
+  });
+
+  it('accepts the React headers TARGET dir name — it is not a package or product, so nothing collides', () => {
+    const [dep] = expand(
+      [{name: 'some-lib', root: '/s', platforms: {ios: {}}}],
+      {
+        '/s': {spm: {name: REACT_HEADERS_TARGET_DIR}},
+      },
+    );
+    expect(dep.swiftName).toBe(REACT_HEADERS_TARGET_DIR);
+  });
+
+  it('reports a case-only match against a reserved name, naming both spellings', () => {
+    const run = () =>
+      expand([{name: 'some-lib', root: '/s', platforms: {ios: {}}}], {
+        '/s': {spm: {name: 'reactnative'}},
+      });
+    expect(run).toThrow(SpmNameCollisionError);
+    expect(run).toThrow(
+      /'some-lib' resolves to 'reactnative', which differs from React Native's reserved 'ReactNative' only in case/,
+    );
+    expect(run).toThrow(/spm\.name/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// isValidSwiftName — the charset rule `spm.name` enforces.
+// ---------------------------------------------------------------------------
+
+describe('isValidSwiftName', () => {
+  it.each(['worklets', 'ReactNativeFoo', 'hermes-engine', 'react_native_foo'])(
+    'accepts %j',
+    name => {
+      expect(isValidSwiftName(name)).toBe(true);
+    },
+  );
+
+  it.each(['', 'foo bar', 'foo/bar', 'foo.bar', '9lives', 42, null])(
+    'rejects %j',
+    name => {
+      expect(isValidSwiftName(name)).toBe(false);
+    },
+  );
+});
 // defaultReadConfig
 //
 // The community CLI's own loaders disagree — sync reads named exports, async

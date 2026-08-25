@@ -36,6 +36,7 @@ import type {
  */
 
 const {
+  SpmNameCollisionError,
   defaultReadConfig,
   defaultResolveDep,
   expandSpmDependencies,
@@ -807,6 +808,7 @@ type ScaffoldContext = {
   // npm-name → resolved Swift name over all autolinked deps, so sibling
   // references honor each sibling's `spm.name`.
   swiftNameByNpm?: Map<string, string>,
+  remote: ?{url: string, version: string, identity: string},
 };
 */
 
@@ -1020,7 +1022,7 @@ function scaffoldPackageSwiftForDep(
       .join('/');
   const content = emitScaffoldedPackageSwift(spec, {
     cacheSlotLabel: ctx.cacheSlotLabel,
-    remote: remotePackageConfig(ctx.appRoot),
+    remote: ctx.remote,
     codegenPackageDir: relFromManifest('build', 'generated', 'ios'),
     localXcfwPackageDir: relFromManifest('build', 'xcframeworks'),
   });
@@ -1147,13 +1149,22 @@ function scaffoldAll(
     directDeps.push({name, root, platforms: {ios: iosPlatform}});
   }
 
+  // Outside the try: a malformed remote config (RemoteVersionError) is a
+  // misconfiguration to surface, not an expansion failure to degrade past.
+  const remote = remotePackageConfig(appRoot);
+
   let allDeps /*: Array<AutolinkedDep> */ = [];
   try {
     allDeps = expandSpmDependencies(directDeps, {
       readConfig: defaultReadConfig,
       resolveDep: defaultResolveDep,
+      extraReservedNames: remote != null ? [remote.identity] : undefined,
+      log,
     });
   } catch (e) {
+    if (e instanceof SpmNameCollisionError) {
+      throw e;
+    }
     // A transitive-resolution failure shouldn't abort the whole scaffold pass;
     // fall back to the direct deps so at least those get manifests.
     log(`Transitive spm.dependencies expansion failed: ${e.message}`);
@@ -1204,6 +1215,7 @@ function scaffoldAll(
     cacheSlotLabel: opts.cacheSlotLabel ?? null,
     podToNpm,
     swiftNameByNpm,
+    remote,
   };
   const skipSet /*: Set<string> */ = new Set(opts.skipDeps ?? []);
 

@@ -14,12 +14,13 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// The package and product names React Native's own generated manifests use,
-// in one place so the emitters in this directory cannot drift apart from each
-// other.
+// The package and product names React Native's own generated manifests use. A
+// dependency whose Swift name lands on one of them surfaces as a duplicate-name
+// error from inside SPM's resolution, far from the react-native.config.js that
+// caused it, so the autolinker rejects the collision up front instead.
 //
-// Adding a React Native SPM product also touches, depending on what the
-// product is:
+// These cover the emitters in this directory and the collision guard. Adding a
+// React Native SPM product also touches, depending on what the product is:
 //   - scripts/codegen/templates/Package.swift.spm-template — if the per-app
 //     codegen package must depend on it (a static Swift file, patched by
 //     string replacement, not generated from these constants)
@@ -62,6 +63,17 @@ const REACT_CODEGEN_APP_PRODUCTS /*: ReadonlyArray<string> */ = Object.freeze([
   'ReactAppDependencyProvider',
 ]);
 const REACT_HEADERS_TARGET_DIR /*: string */ = 'ReactHeadersTarget';
+// Target names only have to be unique within their own package, so
+// REACT_HEADERS_TARGET_DIR is deliberately absent: a dependency named after it
+// collides with nothing.
+const RESERVED_SWIFT_NAMES /*: ReadonlyArray<string> */ = Object.freeze([
+  REACT_NATIVE_PACKAGE_NAME,
+  REACT_CODEGEN_PACKAGE_NAME,
+  AUTOLINKED_PACKAGE_NAME,
+  ...REACT_NATIVE_PRODUCTS,
+  ...REACT_CODEGEN_PRODUCTS,
+  ...REACT_CODEGEN_APP_PRODUCTS,
+]);
 
 /**
  * Creates a logger trio {log, warn, die} that prefixes messages with [name].
@@ -725,6 +737,7 @@ module.exports = {
   REACT_CODEGEN_PRODUCTS,
   REACT_CODEGEN_APP_PRODUCTS,
   REACT_HEADERS_TARGET_DIR,
+  RESERVED_SWIFT_NAMES,
   makeLogger,
   displayPath,
   sharedCacheDir,
