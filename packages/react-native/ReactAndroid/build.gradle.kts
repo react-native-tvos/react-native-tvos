@@ -286,6 +286,7 @@ val preparePrefab by
                       ),
                       // react_timing
                       Pair("../ReactCommon/react/timing/", "react/timing/"),
+                      Pair("../ReactCommon/react/timing/React/", "React/"),
                       // yoga
                       Pair("../ReactCommon/yoga/", ""),
                       Pair("src/main/jni/first-party/yogajni/jni", ""),

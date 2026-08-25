@@ -577,6 +577,23 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
     ],
   },
   'React.podspec': {disabled: true},
+  'ReactCommon/react/timing/React-timing.podspec': {
+    name: 'React-timing',
+    headerPatterns: [],
+    headerDir: '',
+    subSpecs: [
+      {
+        name: 'timing',
+        headerPatterns: ['*.h'],
+        headerDir: 'react/timing',
+      },
+      {
+        name: 'timingUmbrella',
+        headerPatterns: ['React/*.h'],
+        headerDir: 'React',
+      },
+    ],
+  },
   'Libraries/PushNotificationIOS/React-RCTPushNotification.podspec': {
     disabled: true,
   },
