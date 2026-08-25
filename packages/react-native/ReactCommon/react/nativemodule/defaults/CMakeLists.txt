@@ -15,6 +15,7 @@ target_include_directories(react_nativemodule_defaults PUBLIC ${REACT_COMMON_DIR
 
 target_link_libraries(react_nativemodule_defaults
         react_codegen_rncore
+        react_cxxstableapi
         react_nativemodule_core
         react_nativemodule_dom
         react_nativemodule_devtoolsruntimesettings
