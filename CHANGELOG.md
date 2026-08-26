@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.87.1
+
+### Added
+
+#### iOS specific
+
+- **SwiftPM:** Added hard fail and clear error message when an autolinking plugin host is referenced as a dependency ([90a539c92d](https://github.com/react/react-native/commit/90a539c92db5f6dc094fc3d23abbc5c6d9eec763) by [@chrfalch](https://github.com/chrfalch))
+
+### Changed
+
+- **Hermes:** Bump hermes-v1 to 250829098.0.17 ([861e2d0bde](https://github.com/react/react-native/commit/861e2d0bdeefdb4695e3fa1edf95d9d6009e18b9) by [@cipolleschi](https://github.com/cipolleschi))
+
+### Fixed
+
+- **Animated**: `Animated.Value.addListener()` types its callback payload as `{value: number}` rather than `any` ([3eab03df4c](https://github.com/react/react-native/commit/3eab03df4c06087b984d393dbe807c478eee8378) by [@huntie](https://github.com/huntie))
+- **Animated**: `Animated.event()` is typed as an event handler rather than `any` ([3eb330a365](https://github.com/react/react-native/commit/3eb330a36558be3345f60699a1e2bf4852e1a410) by [@huntie](https://github.com/huntie))
+
+#### iOS specific
+
+- **Cocoapods:** Keep the quotes on header search paths containing spaces in `add_rn_third_party_dependencies` ([71c6bfbfdc](https://github.com/react/react-native/commit/71c6bfbfdc0b502ccabb8a83fbc5f17c3890a321) by [@Kudo](https://github.com/Kudo))
+- **SwiftPM:** Reject colliding or invalid spm.modules names instead of silently dropping a module from the build ([39cd1dfc4c](https://github.com/react/react-native/commit/39cd1dfc4cf851e846483282726d7801f1957ee0) by [@chrfalch](https://github.com/chrfalch))
+- **SwiftPM:** Resolve Swift manifest naming collisions ([962aeec5e5](https://github.com/react/react-native/commit/962aeec5e58a52ad35dc812d4bbf502c75dab0b8) by [@chrfalch](https://github.com/chrfalch))
+- **SwiftPM:** Fixed not reading spm.name from react-native.config.js when scaffolding the Swift manifest ([482acee824](https://github.com/react/react-native/commit/482acee824d2ff32e12c2a98f9c34110e05f3fe8) by [@chrfalch](https://github.com/chrfalch))
+- **SwiftPM:** Removed unused field spm.modules.publicHeaderFiles from react-native.config.js's spm section ([5168f5f831](https://github.com/react/react-native/commit/5168f5f83102a98b1a3f8dac4ce2173d7f8fca90) by Christian Falch)
+- **SwiftPM:** SwiftPM pipeline now reads react-native.config.js with default exports correctly ([ed76640ba6](https://github.com/react/react-native/commit/ed76640ba60b528f048def85a0f8a5907de417ce) by [@chrfalch](https://github.com/chrfalch))
+- **SwiftPM:** Created constants for internal SwiftPM packages so that we can create guards to avoid collisions ([d36aa4961d](https://github.com/react/react-native/commit/d36aa4961d7ff73736da0b9f9ff6c43707069b46) by [@chrfalch](https://github.com/chrfalch))
+- **SwiftPM:** Set SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG when injecting SPM ([4433cdbe62](https://github.com/react/react-native/commit/4433cdbe62c193da974ad49e42e6cb6b2d2d84cc) by [@radoslawrolka](https://github.com/radoslawrolka))
+- **SwiftPM:** Recover React-Core-prebuilt configuration swaps that were interrupted before the marker was updated ([a772a7ca16](https://github.com/react/react-native/commit/a772a7ca16eb3cafb77b7fb8f75f21f85ed696b1) by [@adityasingh2400](https://github.com/adityasingh2400))
+- **SwiftPM:** Fix Hermes runtime/compiler version mismatch causing "Wrong bytecode version" crashes in SwiftPM Release builds ([ead93778a1](https://github.com/react/react-native/commit/ead93778a1a06bc1b09ac2ac61bee5224837bf4c) by [@nduaarte](https://github.com/nduaarte))
+
 ## v0.87.0
 
 ### Breaking
