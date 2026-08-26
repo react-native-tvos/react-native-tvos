@@ -45,6 +45,7 @@ Pod::Spec.new do |s|
   add_dependency(s, "React-jsinspectortracing", :framework_name => 'jsinspector_moderntracing')
   s.dependency "React-performancetimeline"
   s.dependency "React-timing"
+  s.dependency "React-cxxstableapi"
 
   add_rn_third_party_dependencies(s)
   add_rncore_dependency(s)

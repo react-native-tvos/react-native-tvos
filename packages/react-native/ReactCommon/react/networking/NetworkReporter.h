@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/PrivateGuard.h>
+
 #include "NetworkTypes.h"
 
 #include <react/timing/primitives.h>
