@@ -43,6 +43,9 @@ export default function useFocusEnterLeave(
     pendingLeave: null,
   });
 
+  const activeHandlers =
+    onFocusEnter !== undefined || onFocusLeave !== undefined;
+
   const handleFocusCapture = React.useCallback(
     (event: FocusEvent) => {
       const state = stateRef.current;
@@ -81,7 +84,11 @@ export default function useFocusEnterLeave(
 
   // Reset on unmount so a remounted instance starts clean and no deferred
   // leave fires after we're gone.
+  // If no active handlers, return without doing anything
   React.useEffect(() => {
+    if (!activeHandlers) {
+      return;
+    }
     const state = stateRef.current;
     return () => {
       if (state.pendingLeave != null) {
@@ -90,7 +97,7 @@ export default function useFocusEnterLeave(
       }
       state.entered = false;
     };
-  }, []);
+  }, [activeHandlers]);
 
   // Nothing to track: hand back the caller's own capture handlers untouched.
   // (Kept after the hooks above so the hook count stays stable per render.)
