@@ -25,7 +25,13 @@ const Row = ({label}: {label: string}): React.Node => (
   </Pressable>
 );
 
-const Group = ({title}: {title: string}): React.Node => {
+const Group = ({
+  title,
+  enterLeaveEnabled,
+}: {
+  title: string,
+  enterLeaveEnabled: boolean,
+}): React.Node => {
   // Bubbled onFocus/onBlur: fire for every descendant, on every d-pad move.
   const [bubbledFocus, setBubbledFocus] = useState(0);
   const [bubbledBlur, setBubbledBlur] = useState(0);
@@ -40,20 +46,31 @@ const Group = ({title}: {title: string}): React.Node => {
       style={[styles.group, entered && styles.groupEntered]}
       onFocus={() => setBubbledFocus(c => c + 1)}
       onBlur={() => setBubbledBlur(c => c + 1)}
-      onFocusEnter={() => {
-        setEntered(true);
-        setEnters(c => c + 1);
-      }}
-      onFocusLeave={() => {
-        setEntered(false);
-        setLeaves(c => c + 1);
-      }}>
+      onFocusEnter={
+        enterLeaveEnabled
+          ? () => {
+              setEntered(true);
+              setEnters(c => c + 1);
+            }
+          : undefined
+      }
+      onFocusLeave={
+        enterLeaveEnabled
+          ? () => {
+              setEntered(false);
+              setLeaves(c => c + 1);
+            }
+          : undefined
+      }>
       <RNTesterText style={styles.groupTitle}>
-        {title} — entered: {entered ? 'true' : 'false'}
+        {title} — entered:{' '}
+        {!enterLeaveEnabled ? 'undefined' : entered ? 'true' : 'false'}
       </RNTesterText>
-      <RNTesterText style={styles.stat}>
-        enter/leave: enter {enters} / leave {leaves}
-      </RNTesterText>
+      {enterLeaveEnabled ? (
+        <RNTesterText style={styles.stat}>
+          enter/leave: enter {enters} / leave {leaves}
+        </RNTesterText>
+      ) : null}
       <RNTesterText style={styles.stat}>
         bubbled: onFocus {bubbledFocus} / onBlur {bubbledBlur}
       </RNTesterText>
@@ -73,8 +90,9 @@ const FocusEnterLeaveExample = (): React.Node => (
       counters climb on every move, while onFocusEnter fires once. Move to the
       other group to see onFocusLeave fire once on the way out.
     </RNTesterText>
-    <Group title="Group A" />
-    <Group title="Group B" />
+    <Group title="Group A" enterLeaveEnabled />
+    <Group title="Group B" enterLeaveEnabled />
+    <Group title="Group C (no handlers)" />
   </View>
 );
 
@@ -126,16 +144,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default {
-  title: 'Focus Enter / Leave (onFocusEnter / onFocusLeave)',
-  description:
-    'onFocusEnter/onFocusLeave fire once when focus crosses a subtree boundary, unlike the bubbled onFocus/onBlur.',
-  examples: [
-    {
-      title: 'Focus Enter / Leave',
-      render: function (): React.Node {
-        return <FocusEnterLeaveExample />;
-      },
+exports.framework = 'React';
+exports.title = 'Focus Enter / Leave (onFocusEnter / onFocusLeave)';
+// exports.displayName = 'TVFocus Enter / Leave';
+exports.description =
+  'onFocusEnter/onFocusLeave fire once when focus crosses a subtree boundary, unlike the bubbled onFocus/onBlur.';
+exports.examples = [
+  {
+    title: 'Focus Enter / Leave',
+    render: function (): React.Node {
+      return <FocusEnterLeaveExample />;
     },
-  ] as Array<RNTesterModuleExample>,
-};
+  },
+] as Array<RNTesterModuleExample>;
