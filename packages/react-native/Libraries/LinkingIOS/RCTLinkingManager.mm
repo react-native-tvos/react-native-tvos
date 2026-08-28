@@ -233,13 +233,6 @@ RCT_EXPORT_MODULE()
                 }];
 }
 
-RCT_EXPORT_METHOD(
-    sendIntent : (NSString *)action extras : (NSArray *_Nullable)extras resolve : (RCTPromiseResolveBlock)
-        resolve reject : (RCTPromiseRejectBlock)reject)
-{
-  RCTLogError(@"Not implemented: %@", NSStringFromSelector(_cmd));
-}
-
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
