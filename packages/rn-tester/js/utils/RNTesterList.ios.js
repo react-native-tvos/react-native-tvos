@@ -208,6 +208,12 @@ const APIs: Array<RNTesterModuleInfo> = (
       supportsTVOS: true,
     },
     {
+      key: 'TVFocusEnterLeaveExample',
+      category: 'TV',
+      module: require('../examples/FocusEventsExample/FocusEnterLeaveExample'),
+      supportsTVOS: true,
+    },
+    {
       key: 'AccessibilityExample',
       module: require('../examples/Accessibility/AccessibilityExample'),
     },
