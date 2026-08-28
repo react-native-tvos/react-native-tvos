@@ -971,9 +971,15 @@ public class FabricUIManager
     if (shouldSchedule) {
       Assertions.assertNotNull(mountItem, "MountItem is null");
       if (synchronous) {
-        // Pull model: we are already on the UI thread, inside the dispatcher's loop executing
-        // a PullTransactionMountItem. We don't schedule the item, we execute it directly.
-        mountItem.execute(mMountingManager);
+        if (mMountingManager.isWaitingForViewAttach(mountItem.getSurfaceId())) {
+          // Regular mount items are still being deferred into the surface's attach queue.
+          // Executing this batch inline would run it ahead of the preallocations queued there.
+          mMountItemDispatcher.addMountItem(mountItem);
+        } else {
+          // Pull model: we are already on the UI thread, inside the dispatcher's loop executing
+          // a PullTransactionMountItem. We don't schedule the item, we execute it directly.
+          mountItem.execute(mMountingManager);
+        }
       } else {
         mMountItemDispatcher.addMountItem(mountItem);
         if (UiThreadUtil.isOnUiThread()) {
