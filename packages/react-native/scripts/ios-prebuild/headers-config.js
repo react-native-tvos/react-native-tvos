@@ -526,6 +526,23 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
       },
     ],
   },
+  'ReactCommon/react/debug/React-debug.podspec': {
+    name: 'React-debug',
+    headerPatterns: ['*.h'],
+    headerDir: 'react/debug',
+    subSpecs: [
+      {
+        name: 'DebugUmbrella',
+        headerPatterns: ['React/*.h'],
+        headerDir: 'React',
+      },
+      {
+        name: 'redbox',
+        headerPatterns: ['redbox/*.h'],
+        headerDir: 'react/debug/redbox',
+      },
+    ],
+  },
   'React-Core.podspec': {
     name: 'React-Core',
     headerPatterns: [],
