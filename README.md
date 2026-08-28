@@ -255,6 +255,8 @@ class Game2048 extends React.Component {
   | autoFocus | boolean? | If true, `TVFocusGuide` will automatically manage focus for you. It will redirect the focus to the first focusable child on the first visit. It also remembers the last focused child and redirects the focus to it on the subsequent visits. `destinations` prop takes precedence over this prop when used together. |
   | focusable | boolean? | When set to false, this view and all its subviews will be NOT focusable. |
   | trapFocus* (Up, Down, Left, Right) | Prevents focus escaping from the container for the given directions. |
+  | onFocusEnter | function? | Fires once when focus enters the FocusGuideView's subtree from outside. Unlike `onFocus`, it does not fire again when focus moves between descendants. |
+  | onFocusLeave | function? | Fires once when focus leaves the FocusGuideView's subtree entirely. Does not fire when focus moves between descendants. |
   
   More information on the focus handling improvements above can be found in [this article](https://medium.com/xite-engineering/revolutionizing-focus-management-in-tv-applications-with-react-native-10ba69bd90).
   
