@@ -43,6 +43,7 @@ Pod::Spec.new do |s|
   add_dependency(s, "React-runtimeexecutor", :additional_framework_paths => ["platform/ios"])
   s.dependency "React-callinvoker"
   s.dependency "React-cxxreact"
+  s.dependency "React-cxxstableapi"
   s.dependency "React-rendererdebug"
   s.dependency "React-utils"
   s.dependency "React-featureflags"

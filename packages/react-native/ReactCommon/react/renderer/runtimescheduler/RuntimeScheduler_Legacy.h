@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #ifndef RCT_REMOVE_LEGACY_ARCH
 
 #include <ReactCommon/RuntimeExecutor.h>

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <ReactCommon/RuntimeExecutor.h>
 #include <jsi/hermes-interfaces.h>
 #include <react/performance/timeline/PerformanceEntryReporter.h>
