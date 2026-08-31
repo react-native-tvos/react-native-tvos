@@ -519,12 +519,21 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
       val currentFocused = findFocus()
       val nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction)
       if (nextFocused != null && nextFocused !== currentFocused && nextFocused !== this) {
-        nextFocused.requestFocus(direction)
+        if (nextFocused.requestFocus(direction)) {
+          ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
+        }
         return true
       }
       return false
     }
-    return super.arrowScroll(direction)
+
+    val focusedBeforeScroll = findFocus()
+    val handled = super.arrowScroll(direction)
+    // super.arrowScroll() can scroll without moving focus, so only click when focus moved.
+    if (handled && findFocus() !== focusedBeforeScroll) {
+      ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
+    }
+    return handled
   }
 
   /**
