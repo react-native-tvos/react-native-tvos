@@ -266,13 +266,15 @@ internal object TextLayoutManager {
       val reactTag =
           if (fragment.contains(FR_KEY_REACT_TAG)) fragment.getInt(FR_KEY_REACT_TAG) else View.NO_ID
       if (fragment.contains(FR_KEY_IS_ATTACHMENT) && fragment.getBoolean(FR_KEY_IS_ATTACHMENT)) {
-        val width = PixelUtil.toPixelFromSP(fragment.getDouble(FR_KEY_WIDTH))
-        val height = PixelUtil.toPixelFromSP(fragment.getDouble(FR_KEY_HEIGHT))
         ops.add(
             SetSpanOperation(
                 sb.length - 1,
                 sb.length,
-                TextInlineViewPlaceholderSpan(reactTag, width.toInt(), height.toInt()),
+                TextInlineViewPlaceholderSpan(
+                    reactTag,
+                    inlineViewSizeToPixels(fragment.getDouble(FR_KEY_WIDTH)),
+                    inlineViewSizeToPixels(fragment.getDouble(FR_KEY_HEIGHT)),
+                ),
             ),
         )
       } else if (end >= start) {
@@ -313,6 +315,7 @@ internal object TextLayoutManager {
         if (
             textAttributes.fontStyle != ReactConstants.UNSET ||
                 textAttributes.fontWeight != ReactConstants.UNSET ||
+                textAttributes.fontVariationSettings != null ||
                 textAttributes.fontFamily != null
         ) {
           ops.add(
@@ -323,6 +326,7 @@ internal object TextLayoutManager {
                       textAttributes.fontStyle,
                       textAttributes.fontWeight,
                       textAttributes.fontFeatureSettings,
+                      textAttributes.fontVariationSettings,
                       textAttributes.fontFamily,
                       assets,
                       fontWeightAdjustment,
@@ -488,8 +492,8 @@ internal object TextLayoutManager {
         spannable.setSpan(
             TextInlineViewPlaceholderSpan(
                 fragment.reactTag,
-                PixelUtil.toPixelFromSP(fragment.width).toInt(),
-                PixelUtil.toPixelFromSP(fragment.height).toInt(),
+                inlineViewSizeToPixels(fragment.width),
+                inlineViewSizeToPixels(fragment.height),
             ),
             start,
             end,
@@ -547,6 +551,7 @@ internal object TextLayoutManager {
         if (
             fragment.props.fontStyle != ReactConstants.UNSET ||
                 fragment.props.fontWeight != ReactConstants.UNSET ||
+                fragment.props.fontVariationSettings != null ||
                 fragment.props.fontFamily != null
         ) {
           spannable.setSpan(
@@ -554,6 +559,7 @@ internal object TextLayoutManager {
                   fragment.props.fontStyle,
                   fragment.props.fontWeight,
                   fragment.props.fontFeatureSettings,
+                  fragment.props.fontVariationSettings,
                   fragment.props.fontFamily,
                   assets,
                   fontWeightAdjustment,
@@ -653,6 +659,10 @@ internal object TextLayoutManager {
 
     return spannable
   }
+
+  @VisibleForTesting
+  internal fun inlineViewSizeToPixels(size: Double): Int =
+      ceil(PixelUtil.toPixelFromDIP(size).toDouble()).toInt()
 
   @OptIn(UnstableReactNativeAPI::class)
   fun getOrCreateSpannableForText(
@@ -883,6 +893,7 @@ internal object TextLayoutManager {
     if (
         baseTextAttributes.fontStyle != ReactConstants.UNSET ||
             baseTextAttributes.fontWeight != ReactConstants.UNSET ||
+            baseTextAttributes.fontVariationSettings != null ||
             baseTextAttributes.fontFamily != null
     ) {
       val typeface =
@@ -912,6 +923,8 @@ internal object TextLayoutManager {
         paint.setTypeface(typeface)
       }
     }
+
+    ReactTypefaceUtils.applyFontVariationSettings(paint, baseTextAttributes.fontVariationSettings)
   }
 
   /**

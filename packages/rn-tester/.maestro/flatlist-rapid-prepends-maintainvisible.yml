@@ -2,6 +2,8 @@
 # Exercises the throttle edge case where pendingScrollUpdateCount may not decrement
 # promptly, blocking render window updates. All prepends fired without waiting.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

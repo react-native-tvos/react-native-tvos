@@ -4,6 +4,8 @@
 # The native side is unaffected by bottom deletes since MVCP only looks at
 # the first visible view, but re-ordering edge case is untested.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

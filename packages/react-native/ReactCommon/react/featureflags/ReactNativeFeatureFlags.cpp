@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8fd664cb106945e5c6e436a0cf36120d>>
+ * @generated SignedSource<<9c1052fdfafd3f0ef6bcdaa740cf25ec>>
  */
 
 /**
@@ -72,10 +72,6 @@ bool ReactNativeFeatureFlags::enableAccessibilityOrder() {
 
 bool ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid() {
   return getAccessor().enableAccumulatedUpdatesInRawPropsAndroid();
-}
-
-bool ReactNativeFeatureFlags::enableAndroidFontWeightAdjustment() {
-  return getAccessor().enableAndroidFontWeightAdjustment();
 }
 
 bool ReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations() {
@@ -198,12 +194,8 @@ bool ReactNativeFeatureFlags::enablePropsUpdateReconciliationAndroid() {
   return getAccessor().enablePropsUpdateReconciliationAndroid();
 }
 
-bool ReactNativeFeatureFlags::enableRuntimeSchedulerQueueClearingOnError() {
-  return getAccessor().enableRuntimeSchedulerQueueClearingOnError();
-}
-
-bool ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation() {
-  return getAccessor().enableSchedulerDelegateInvalidation();
+bool ReactNativeFeatureFlags::enableResizeObserverByDefault() {
+  return getAccessor().enableResizeObserverByDefault();
 }
 
 bool ReactNativeFeatureFlags::enableSwiftUIBasedFilters() {

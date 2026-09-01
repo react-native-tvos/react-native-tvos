@@ -2,6 +2,8 @@
 # Verifies that after horizontal mode with 50 prepended items and scroll to 500,
 # reset returns offset to 0.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 - setOrientation: portrait

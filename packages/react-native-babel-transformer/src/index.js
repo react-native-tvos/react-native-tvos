@@ -197,6 +197,8 @@ const transform /*: BabelTransformer['transform'] */ = ({
       name: 'metro',
       bundler: 'metro',
       platform: options.platform,
+      // $FlowFixMe[prop-missing] Remove suppression after next Metro release
+      inlinePlatform: options.inlinePlatform,
       unstable_transformProfile: options.unstable_transformProfile,
     },
     ast: true,

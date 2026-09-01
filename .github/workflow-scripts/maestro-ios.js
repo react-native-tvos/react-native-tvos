@@ -25,10 +25,26 @@ node maestro-android.js <path to app> <app_id> <maestro_flow> <flavor> <working_
 
 const MAX_ATTEMPTS = 5;
 
-function launchSimulator(simulatorName) {
-  console.log(`Launching simulator ${simulatorName}`);
+function findAvailableSimulator() {
+  const output = childProcess.execSync(
+    'xcrun simctl list devices available -j',
+  );
+  const devices = Object.values(JSON.parse(String(output)).devices)
+    .flat()
+    .reverse();
+  const simulator = devices.find(device => /^iPhone .* Pro$/.test(device.name));
+
+  if (simulator == null) {
+    throw new Error('Unable to find an available iPhone Pro simulator');
+  }
+
+  return simulator;
+}
+
+function launchSimulator(simulator) {
+  console.log(`Launching simulator ${simulator.name} (${simulator.udid})`);
   try {
-    childProcess.execSync(`xcrun simctl boot "${simulatorName}"`);
+    childProcess.execSync(`xcrun simctl boot "${simulator.udid}"`);
   } catch (error) {
     if (
       !error.message.includes('Unable to boot device in current state: Booted')
@@ -41,14 +57,6 @@ function launchSimulator(simulatorName) {
 function installAppOnSimulator(appPath) {
   console.log(`Installing app at path ${appPath}`);
   childProcess.execSync(`xcrun simctl install booted "${appPath}"`);
-}
-
-function extractSimulatorUDID() {
-  console.log('Retrieving device UDID');
-  const command = `xcrun simctl list devices booted -j | jq -r '[.devices[]] | add | first | .udid'`;
-  const udid = String(childProcess.execSync(command)).trim();
-  console.log(`UDID is ${udid}`);
-  return udid;
 }
 
 function bringSimulatorInForeground() {
@@ -166,13 +174,12 @@ async function main(args = process.argv.slice(2)) {
   console.info(`WORKING_DIRECTORY: ${workingDirectory}`);
   console.info('==============================\n');
 
-  const simulatorName = 'iPhone 16 Pro';
-  launchSimulator(simulatorName);
+  const simulator = findAvailableSimulator();
+  launchSimulator(simulator);
   installAppOnSimulator(appPath);
-  const udid = extractSimulatorUDID();
   bringSimulatorInForeground();
-  await launchAppOnSimulator(appId, udid, isDebug);
-  executeFlows(appId, udid, maestroFlow, jsengine);
+  await launchAppOnSimulator(appId, simulator.udid, isDebug);
+  executeFlows(appId, simulator.udid, maestroFlow, jsengine);
   console.log('Test finished');
 }
 
@@ -182,4 +189,5 @@ if (require.main === module) {
 
 module.exports = {
   executeFlows,
+  findAvailableSimulator,
 };

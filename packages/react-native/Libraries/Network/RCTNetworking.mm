@@ -783,9 +783,8 @@ RCT_EXPORT_MODULE()
 
 #pragma mark - JS API
 
-RCT_EXPORT_METHOD(
-    sendRequest : (JS::NativeNetworkingIOS::SpecSendRequestQuery &)query callback : (RCTResponseSenderBlock)
-        responseSender)
+- (void)sendRequest:(JS::NativeNetworkingIOS::SpecSendRequestQuery &)query
+           callback:(RCTResponseSenderBlock)responseSender
 {
   NSString *method = query.method();
   NSString *url = query.url();
@@ -826,15 +825,15 @@ RCT_EXPORT_METHOD(
   });
 }
 
-RCT_EXPORT_METHOD(abortRequest : (double)requestID)
+- (void)abortRequest:(double)requestID
 {
   dispatch_async(_methodQueue, ^{
     [self->_tasksByRequestID[[NSNumber numberWithDouble:requestID]] cancel];
-    [self->_tasksByRequestID removeObjectForKey:[NSNumber numberWithDouble:requestID]];
+    [self->_tasksByRequestID removeObjectForKey:@(requestID)];
   });
 }
 
-RCT_EXPORT_METHOD(clearCookies : (RCTResponseSenderBlock)responseSender)
+- (void)clearCookies:(RCTResponseSenderBlock)responseSender
 {
   dispatch_async(_methodQueue, ^{
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];

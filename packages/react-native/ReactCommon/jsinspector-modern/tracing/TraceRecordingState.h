@@ -7,11 +7,12 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include "InstanceTracingProfile.h"
 #include "RuntimeSamplingProfile.h"
 #include "TracingMode.h"
 
-#include <oscompat/OSCompat.h>
 #include <react/timing/primitives.h>
 
 #include <vector>

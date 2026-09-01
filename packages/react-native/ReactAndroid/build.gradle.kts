@@ -129,6 +129,7 @@ val preparePrefab by
                       ),
                       // react_renderer_bridging
                       Pair("../ReactCommon/react/renderer/bridging/", "react/renderer/bridging/"),
+                      Pair("../ReactCommon/react/renderer/bridging/React/", "React/"),
                       // react_renderer_componentregistry
                       Pair(
                           "../ReactCommon/react/renderer/componentregistry/",
@@ -145,6 +146,7 @@ val preparePrefab by
                       Pair("../ReactCommon/react/renderer/css/", "react/renderer/css/"),
                       // react_debug
                       Pair("../ReactCommon/react/debug/", "react/debug/"),
+                      Pair("../ReactCommon/react/debug/React/", "React/"),
                       // react_renderer_debug
                       Pair("../ReactCommon/react/renderer/debug/", "react/renderer/debug/"),
                       // react_renderer_graphics
@@ -162,6 +164,7 @@ val preparePrefab by
                       Pair("../ReactCommon/react/renderer/scheduler/", "react/renderer/scheduler/"),
                       // react_renderer_uimanager
                       Pair("../ReactCommon/react/renderer/uimanager/", "react/renderer/uimanager/"),
+                      Pair("../ReactCommon/react/renderer/uimanager/React/", "React/"),
                       // react_utils
                       Pair("../ReactCommon/react/utils/", "react/utils/"),
                       // rrc_image
@@ -169,16 +172,28 @@ val preparePrefab by
                           "../ReactCommon/react/renderer/components/image/",
                           "react/renderer/components/image/",
                       ),
+                      Pair(
+                          "../ReactCommon/react/renderer/components/image/React/",
+                          "React/",
+                      ),
                       // rrc_view
                       Pair(
                           "../ReactCommon/react/renderer/components/view/",
                           "react/renderer/components/view/",
+                      ),
+                      Pair(
+                          "../ReactCommon/react/renderer/components/view/React/",
+                          "React/",
                       ),
                       Pair("../ReactCommon/react/renderer/components/view/platform/android/", ""),
                       // rrc_root
                       Pair(
                           "../ReactCommon/react/renderer/components/root/",
                           "react/renderer/components/root/",
+                      ),
+                      Pair(
+                          "../ReactCommon/react/renderer/components/root/React/",
+                          "React/",
                       ),
                       // runtimeexecutor
                       Pair("../ReactCommon/runtimeexecutor/", ""),
@@ -193,6 +208,11 @@ val preparePrefab by
                           "../ReactCommon/react/renderer/components/text/",
                           "react/renderer/components/text/",
                       ),
+                      Pair(
+                          "../ReactCommon/react/renderer/components/text/React/",
+                          "React/",
+                      ),
+                      Pair("../ReactCommon/react/renderer/components/text/platform/android/", ""),
                       Pair(
                           "../ReactCommon/react/renderer/attributedstring",
                           "react/renderer/attributedstring",
@@ -216,6 +236,7 @@ val preparePrefab by
                       Pair(File(buildDir, "third-party-ndk/folly/").absolutePath, ""),
                       Pair(File(buildDir, "third-party-ndk/glog/exported/").absolutePath, ""),
                       Pair("../ReactCommon/callinvoker/", ""),
+                      Pair("../ReactCommon/callinvoker/React/", "React/"),
                       Pair("../ReactCommon/cxxreact/", "cxxreact/"),
                       // Exported because the public cxxreact/ErrorUtils.h includes it
                       Pair("../ReactCommon/jserrorhandler/", "jserrorhandler/"),
@@ -237,6 +258,7 @@ val preparePrefab by
                           "react/renderer/leakchecker/",
                       ),
                       Pair("../ReactCommon/react/renderer/mapbuffer/", "react/renderer/mapbuffer/"),
+                      Pair("../ReactCommon/react/renderer/mapbuffer/React/", "React/"),
                       Pair("../ReactCommon/react/renderer/mounting/", "react/renderer/mounting/"),
                       Pair(
                           "../ReactCommon/react/renderer/runtimescheduler/",
@@ -246,6 +268,7 @@ val preparePrefab by
                       Pair("../ReactCommon/react/renderer/telemetry/", "react/renderer/telemetry/"),
                       Pair("../ReactCommon/react/renderer/uimanager/", "react/renderer/uimanager/"),
                       Pair("../ReactCommon/react/debug/", "react/debug/"),
+                      Pair("../ReactCommon/react/debug/React/", "React/"),
                       Pair("../ReactCommon/react/cxxstableapi/", "react/cxxstableapi/"),
                       Pair("../ReactCommon/react/utils/", "react/utils/"),
                       Pair("src/main/jni/react/jni", "react/jni/"),
@@ -268,6 +291,7 @@ val preparePrefab by
                       ),
                       // react_timing
                       Pair("../ReactCommon/react/timing/", "react/timing/"),
+                      Pair("../ReactCommon/react/timing/React/", "React/"),
                       // yoga
                       Pair("../ReactCommon/yoga/", ""),
                       Pair("src/main/jni/first-party/yogajni/jni", ""),

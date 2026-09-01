@@ -12,6 +12,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import <ranges>
+#import <string_view>
+#import <unordered_set>
 
 #import <RCTSwiftUIWrapper/RCTSwiftUIContainerViewWrapper.h>
 #import <React/RCTAssert.h>
@@ -64,14 +66,61 @@ const CGFloat BACKGROUND_COLOR_ZPOSITION = -1024.0f;
 // interactivity through a grouping accessibility element (rather than the
 // underlying control) are otherwise skipped by the focus engine, leaving
 // keyboard-only users unable to reach them.
-static BOOL RCTViewIsInteractiveAccessibilityElement(UIView *view)
+//
+// The trait mask alone is not sufficient, because it is a lossy projection of
+// the role: `checkbox`, `radio`, `combobox`, `menuitem`, `spinbutton`, `tab`
+// and friends deliberately carry no interactive trait, since VoiceOver conveys
+// them through `accessibilityValue` instead. The role is therefore consulted
+// as well, otherwise those controls stay unreachable by keyboard.
+static BOOL RCTViewIsInteractiveAccessibilityElement(UIView *view, const ViewProps &props)
 {
   if (!view.isAccessibilityElement) {
     return NO;
   }
+
   UIAccessibilityTraits interactiveTraits = UIAccessibilityTraitButton | UIAccessibilityTraitLink |
       UIAccessibilityTraitSearchField | UIAccessibilityTraitKeyboardKey | UIAccessibilityTraitAdjustable;
-  return (view.accessibilityTraits & interactiveTraits) != 0;
+  if ((view.accessibilityTraits & interactiveTraits) != 0) {
+    return YES;
+  }
+
+  // `role` wins over the legacy `accessibilityRole` when both are set, matching
+  // how the traits themselves are resolved.
+  if (props.role != Role::None) {
+    static const std::unordered_set<Role> interactiveRoles{
+        Role::Button,
+        Role::Checkbox,
+        Role::Combobox,
+        Role::Link,
+        Role::Menuitem,
+        Role::Option,
+        Role::Radio,
+        Role::Searchbox,
+        Role::Slider,
+        Role::Spinbutton,
+        Role::Switch,
+        Role::Tab,
+        Role::Treeitem};
+    return interactiveRoles.contains(props.role);
+  }
+
+  static const std::unordered_set<std::string_view> interactiveAccessibilityRoles{
+      "adjustable",
+      "button",
+      "checkbox",
+      "combobox",
+      "dropdownlist",
+      "imagebutton",
+      "keyboardkey",
+      "link",
+      "menuitem",
+      "radio",
+      "search",
+      "spinbutton",
+      "switch",
+      "tab",
+      "togglebutton"};
+  return interactiveAccessibilityRoles.contains(props.accessibilityRole);
 }
 #endif
 
@@ -777,15 +826,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
         childComponentView,
         @(index),
         @([childComponentView.superview tag]));
+#ifndef NS_BLOCK_ASSERTIONS
+    NSArray<UIView *> *containerSubviews = self.currentContainerView.subviews;
+    BOOL isIndexInBounds = index >= 0 && (NSUInteger)index < containerSubviews.count;
     RCTAssert(
-        (self.currentContainerView.subviews.count > index) &&
-            [self.currentContainerView.subviews objectAtIndex:index] == childComponentView,
+        isIndexInBounds && [containerSubviews objectAtIndex:index] == childComponentView,
         @"Attempt to unmount a view which has a different index. (parent: %@, child: %@, index: %@, actual index: %@, tag at index: %@)",
         self,
         childComponentView,
         @(index),
-        @([self.currentContainerView.subviews indexOfObject:childComponentView]),
-        @([[self.currentContainerView.subviews objectAtIndex:index] tag]));
+        @([containerSubviews indexOfObject:childComponentView]),
+        isIndexInBounds ? @([[containerSubviews objectAtIndex:index] tag]) : @"out of bounds");
+#endif
   }
 
   [childComponentView removeFromSuperview];
@@ -1061,18 +1113,6 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (oldViewProps.accessibilityTraits != newViewProps.accessibilityTraits) {
     self.accessibilityElement.accessibilityTraits =
         RCTUIAccessibilityTraitsFromAccessibilityTraits(newViewProps.accessibilityTraits);
-  }
-
-  // `accessibilityState`
-  if (oldViewProps.accessibilityState != newViewProps.accessibilityState) {
-    self.accessibilityTraits &= ~(UIAccessibilityTraitNotEnabled | UIAccessibilityTraitSelected);
-    const auto accessibilityState = newViewProps.accessibilityState.value_or(AccessibilityState{});
-    if (accessibilityState.selected) {
-      self.accessibilityTraits |= UIAccessibilityTraitSelected;
-    }
-    if (accessibilityState.disabled) {
-      self.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
-    }
   }
 
   // `accessibilityIgnoresInvertColors`
@@ -1838,7 +1878,10 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
     _outlineLayer.frame = CGRectInset(
         layer.bounds, -_props->outlineOffset - _props->outlineWidth, -_props->outlineOffset - _props->outlineWidth);
 
-    if (areBorderRadiiCircular(borderMetrics.borderRadii) && borderMetrics.borderRadii.topLeft.horizontal == 0) {
+    // Core Animation can only draw solid contours, so dotted and dashed outlines
+    // have to be drawn with Core Graphics, the same way non-solid borders are.
+    if (_props->outlineStyle == OutlineStyle::Solid && areBorderRadiiCircular(borderMetrics.borderRadii) &&
+        borderMetrics.borderRadii.topLeft.horizontal == 0) {
       UIColor *outlineColor = RCTUIColorFromSharedColor(_props->outlineColor);
       _outlineLayer.borderWidth = _props->outlineWidth;
       _outlineLayer.borderColor = outlineColor.CGColor;
@@ -2465,9 +2508,15 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 #endif
 }
 
+- (UIView *)viewToFocus
+{
+  return self;
+}
+
 - (void)focus
 {
-  [self becomeFirstResponder];
+  UIView *viewToFocus = [self viewToFocus];
+  [viewToFocus becomeFirstResponder];
 
 #if TARGET_OS_TV
   RCTSurfaceHostingProxyRootView *rootView = [self containingRootView];
@@ -2475,7 +2524,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
     return;
   }
 
-  rootView.reactPreferredFocusedView = self;
+  rootView.reactPreferredFocusedView = viewToFocus;
   [rootView setNeedsFocusUpdate];
   [rootView updateFocusIfNeeded];
 #endif

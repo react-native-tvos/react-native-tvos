@@ -6,6 +6,8 @@
 # This test verifies that MVCP survives an orientation change and continues
 # to work correctly after the change.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

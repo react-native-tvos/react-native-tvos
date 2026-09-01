@@ -258,10 +258,18 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 
   if (newTextInputProps.traits.keyboardType != oldTextInputProps.traits.keyboardType) {
     _backedTextInputView.keyboardType = RCTUIKeyboardTypeFromKeyboardType(newTextInputProps.traits.keyboardType);
+    // Without the call to reloadInputViews, the keyboard will not change until the textInput field (the first
+    // responder) loses and regains focus.
+    if (_backedTextInputView.isFirstResponder) {
+      [_backedTextInputView reloadInputViews];
+    }
   }
 
   if (newTextInputProps.traits.returnKeyType != oldTextInputProps.traits.returnKeyType) {
     _backedTextInputView.returnKeyType = RCTUIReturnKeyTypeFromReturnKeyType(newTextInputProps.traits.returnKeyType);
+    if (_backedTextInputView.isFirstResponder) {
+      [_backedTextInputView reloadInputViews];
+    }
   }
 
   if (newTextInputProps.traits.textContentType != oldTextInputProps.traits.textContentType) {
@@ -531,7 +539,9 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
   if (_eventEmitter) {
-    static_cast<const TextInputEventEmitter &>(*_eventEmitter).onScroll([self _textInputMetrics]);
+    auto metrics = [self _textInputMetrics];
+    metrics.responderIgnoreScroll = !(scrollView.isDragging || scrollView.isDecelerating);
+    static_cast<const TextInputEventEmitter &>(*_eventEmitter).onScroll(metrics);
   }
 }
 
@@ -542,9 +552,20 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
   RCTTextInputHandleCommand(self, commandName, args);
 }
 
+#if TARGET_OS_TV
+- (UIView *)viewToFocus
+{
+  return _backedTextInputView;
+}
+#endif
+
 - (void)focus
 {
+#if TARGET_OS_TV
+  [super focus];
+#else
   [_backedTextInputView becomeFirstResponder];
+#endif
 
   const auto &props = static_cast<const TextInputProps &>(*_props);
 

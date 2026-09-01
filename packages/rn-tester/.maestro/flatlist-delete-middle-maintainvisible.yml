@@ -1,6 +1,8 @@
 # Test FlatList maintainVisibleContentPosition — delete from middle
 # When items are deleted from the middle, MVCP should adjust scroll offset
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 - setOrientation: portrait

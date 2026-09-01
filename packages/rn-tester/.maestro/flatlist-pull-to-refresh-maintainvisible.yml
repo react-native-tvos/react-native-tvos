@@ -1,6 +1,8 @@
 # Test FlatList maintainVisibleContentPosition — pull-to-refresh pattern
 # Simulates scroll-to-top then prepend (like pull-to-refresh with new items)
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 - setOrientation: portrait

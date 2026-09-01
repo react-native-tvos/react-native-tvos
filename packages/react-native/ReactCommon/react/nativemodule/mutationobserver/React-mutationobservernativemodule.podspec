@@ -61,7 +61,9 @@ Pod::Spec.new do |s|
   s.dependency "React-Fabric/bridging"
   s.dependency "React-Fabric/observers/mutation"
   s.dependency "React-featureflags"
+  s.dependency "React-cxxstableapi"
   add_dependency(s, "React-RCTFBReactNativeSpec")
   add_dependency(s, "React-runtimeexecutor", :additional_framework_paths => ["platform/ios"])
 
+  mark_as_react_native_build(s)
 end

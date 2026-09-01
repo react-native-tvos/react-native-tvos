@@ -31,8 +31,7 @@ Scheduler::Scheduler(
     const SchedulerToolbox& schedulerToolbox,
     UIManagerAnimationDelegate* animationDelegate,
     SchedulerDelegate* delegate)
-    : delegateInvalidated_(std::make_shared<std::atomic<bool>>(false)),
-      runtimeExecutor_(schedulerToolbox.runtimeExecutor),
+    : runtimeExecutor_(schedulerToolbox.runtimeExecutor),
       contextContainer_(schedulerToolbox.contextContainer) {
   // Creating a container for future `EventDispatcher` instance.
   eventDispatcher_ = std::make_shared<std::optional<const EventDispatcher>>();
@@ -58,16 +57,6 @@ Scheduler::Scheduler(
 
   auto uiManager =
       std::make_shared<UIManager>(runtimeExecutor_, contextContainer_);
-
-  if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
-    auto animationBackend = std::make_shared<AnimationBackend>(
-        schedulerToolbox.animationChoreographer, uiManager);
-
-    schedulerToolbox.animationChoreographer->setAnimationBackend(
-        animationBackend);
-
-    uiManager->unstable_setAnimationBackend(animationBackend);
-  }
 
   auto eventOwnerBox = std::make_shared<EventBeat::OwnerBox>();
   eventOwnerBox->owner = eventDispatcher_;
@@ -131,6 +120,19 @@ Scheduler::Scheduler(
   uiManager->setDelegate(this);
   uiManager->setComponentDescriptorRegistry(componentDescriptorRegistry_);
 
+  // Must come after `setDelegate`: the backend's constructor registers a
+  // surface-start callback, and `UIManager` silently drops those while it has
+  // no delegate.
+  if (ReactNativeFeatureFlags::useSharedAnimatedBackend()) {
+    auto animationBackend = std::make_shared<AnimationBackend>(
+        schedulerToolbox.animationChoreographer, uiManager);
+
+    schedulerToolbox.animationChoreographer->setAnimationBackend(
+        animationBackend);
+
+    uiManager->unstable_setAnimationBackend(animationBackend);
+  }
+
   auto bindingsExecutor =
       schedulerToolbox.bridgelessBindingsExecutor.has_value()
       ? schedulerToolbox.bridgelessBindingsExecutor.value()
@@ -178,15 +180,6 @@ Scheduler::Scheduler(
 Scheduler::~Scheduler() {
   LOG(WARNING) << "Scheduler::~Scheduler() was called (address: " << this
                << ").";
-
-  // Invalidate any lambdas already queued via scheduleRenderingUpdate that
-  // captured a raw delegate_ pointer; without this they'd dereference a
-  // dangling SchedulerDelegate after Scheduler teardown. (No replacement
-  // token is allocated here — Scheduler is going away.)
-  // Gated to allow controlled rollout / rollback.
-  if (ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation()) {
-    *delegateInvalidated_ = true;
-  }
 
   auto weakRuntimeScheduler =
       contextContainer_->find<std::weak_ptr<RuntimeScheduler>>(
@@ -277,21 +270,6 @@ Scheduler::findComponentDescriptorByHandle_DO_NOT_USE_THIS_IS_BROKEN(
 #pragma mark - Delegate
 
 void Scheduler::setDelegate(SchedulerDelegate* delegate) {
-  // Gated to allow controlled rollout / rollback.
-  if (ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation() &&
-      delegate_ != delegate) {
-    // Mark the *current* token invalid: any rendering-update lambda already
-    // queued holds a shared_ptr to this atomic and will observe `true` on
-    // its next read, so it no-ops instead of calling into the previous
-    // delegate (which the caller is about to drop).
-    *delegateInvalidated_ = true;
-    // Then install a *fresh* token (a new atomic) so lambdas captured
-    // against the new delegate use their own non-invalidated flag.
-    // Reusing the previous atomic and flipping it back to `false` would
-    // re-arm the in-flight lambdas — exactly the use-after-free we're
-    // trying to prevent — because they share the same shared_ptr.
-    delegateInvalidated_ = std::make_shared<std::atomic<bool>>(false);
-  }
   delegate_ = delegate;
 }
 
@@ -323,21 +301,10 @@ void Scheduler::uiManagerDidFinishTransaction(
     if (!mountSynchronously) {
       auto surfaceId = mountingCoordinator->getSurfaceId();
 
-      // Capture the gating flag at queue time: the lambda's decision to
-      // honor the invalidation guard is fixed when we enqueue, not when it
-      // later runs. Avoids per-invocation feature-flag reads and keeps the
-      // contract for an in-flight lambda stable across flag flips.
-      auto guardEnabled =
-          ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation();
       runtimeScheduler_->scheduleRenderingUpdate(
           surfaceId,
           [delegate = delegate_,
-           invalidated = delegateInvalidated_,
-           guardEnabled,
            mountingCoordinator = std::move(mountingCoordinator)]() {
-            if (guardEnabled && *invalidated) {
-              return;
-            }
             delegate->schedulerShouldRenderTransactions(mountingCoordinator);
           });
     } else {
@@ -360,20 +327,12 @@ void Scheduler::uiManagerDidDispatchCommand(
       "Scheduler::uiManagerDispatchCommand", "commandName", commandName);
   if (delegate_ != nullptr) {
     auto shadowView = ShadowView(*shadowNode);
-    // See comment in uiManagerDidFinishTransaction above for gating shape.
-    auto guardEnabled =
-        ReactNativeFeatureFlags::enableSchedulerDelegateInvalidation();
     runtimeScheduler_->scheduleRenderingUpdate(
         shadowNode->getSurfaceId(),
         [delegate = delegate_,
-         invalidated = delegateInvalidated_,
-         guardEnabled,
          shadowView = std::move(shadowView),
          commandName,
          args]() {
-          if (guardEnabled && *invalidated) {
-            return;
-          }
           delegate->schedulerDidDispatchCommand(shadowView, commandName, args);
         });
   }

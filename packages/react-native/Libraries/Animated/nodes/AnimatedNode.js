@@ -11,9 +11,10 @@
 import type {PlatformConfig} from '../AnimatedPlatformConfig';
 
 import NativeAnimatedHelper from '../../../src/private/animated/NativeAnimatedHelper';
+import * as ReactNativeFeatureFlags from '../../../src/private/featureflags/ReactNativeFeatureFlags';
 import invariant from 'invariant';
 
-type ValueListenerCallback = (state: {value: number, ...}) => unknown;
+export type ValueListenerCallback = (state: {value: number}) => unknown;
 
 export type AnimatedNodeConfig = Readonly<{
   debugID?: string,
@@ -49,7 +50,9 @@ export default class AnimatedNode {
 
   __attach(): void {}
   __detach(): void {
-    this.removeAllListeners();
+    if (!ReactNativeFeatureFlags.animatedKeepListenersOnDetach()) {
+      this.removeAllListeners();
+    }
     if (this.__isNative && this.__nativeTag != null) {
       NativeAnimatedHelper.API.dropAnimatedNode(this.__nativeTag);
       this.__nativeTag = undefined;

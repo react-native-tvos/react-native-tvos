@@ -10,12 +10,14 @@ package com.facebook.react.views.text
 import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Configuration
+import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.fonts.FontVariationAxis
 import android.os.Build
+import com.facebook.common.logging.FLog
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.common.ReactConstants
 import com.facebook.react.common.assets.ReactFontManager
-import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags
 import kotlin.math.max
 import kotlin.math.min
 
@@ -122,10 +124,7 @@ public object ReactTypefaceUtils {
 
   @JvmStatic
   public fun getFontWeightAdjustment(context: Context): Int =
-      if (
-          Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-              ReactNativeFeatureFlags.enableAndroidFontWeightAdjustment()
-      ) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         context.resources.configuration.fontWeightAdjustment
       } else {
         0
@@ -150,5 +149,45 @@ public object ReactTypefaceUtils {
     val italic = baseTypeface.style and Typeface.ITALIC != 0
 
     return Typeface.create(baseTypeface, adjustedWeight, italic)
+  }
+
+  internal fun parseFontVariationSettings(fontVariationSettings: String?): String? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      return null
+    }
+
+    if (fontVariationSettings.isNullOrEmpty()) {
+      return fontVariationSettings
+    }
+
+    if (fontVariationSettings.trim().equals("normal", ignoreCase = true)) {
+      return ""
+    }
+
+    return try {
+      FontVariationAxis.fromFontVariationSettings(fontVariationSettings)
+      fontVariationSettings
+    } catch (exception: IllegalArgumentException) {
+      FLog.w(ReactConstants.TAG, "Invalid fontVariationSettings: $fontVariationSettings")
+      null
+    }
+  }
+
+  internal fun applyFontVariationSettings(paint: Paint, fontVariationSettings: String?) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+      return
+    }
+
+    try {
+      paint.setFontVariationSettings(fontVariationSettings)
+    } catch (exception: IllegalArgumentException) {
+      // Paint instances are reused, so explicitly clear axes from a previous layout.
+      paint.setFontVariationSettings(null)
+      FLog.w(
+          ReactConstants.TAG,
+          "Invalid fontVariationSettings: $fontVariationSettings",
+          exception,
+      )
+    }
   }
 }

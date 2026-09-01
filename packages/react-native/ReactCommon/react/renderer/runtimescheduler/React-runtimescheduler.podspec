@@ -43,6 +43,7 @@ Pod::Spec.new do |s|
   add_dependency(s, "React-runtimeexecutor", :additional_framework_paths => ["platform/ios"])
   s.dependency "React-callinvoker"
   s.dependency "React-cxxreact"
+  s.dependency "React-cxxstableapi"
   s.dependency "React-rendererdebug"
   s.dependency "React-utils"
   s.dependency "React-featureflags"
@@ -57,4 +58,6 @@ Pod::Spec.new do |s|
   depend_on_js_engine(s)
   add_rn_third_party_dependencies(s)
   add_rncore_dependency(s)
+
+  mark_as_react_native_build(s)
 end

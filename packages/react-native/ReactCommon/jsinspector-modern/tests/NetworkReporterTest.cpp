@@ -10,6 +10,7 @@
 
 #include <folly/executors/QueuedImmediateExecutor.h>
 #include <jsinspector-modern/InspectorFlags.h>
+#include <oscompat/OSCompat.h>
 #include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/networking/NetworkReporter.h>
 

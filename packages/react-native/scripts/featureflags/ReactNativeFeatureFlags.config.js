@@ -180,17 +180,6 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableAndroidFontWeightAdjustment: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2026-06-29',
-        description:
-          'When enabled, Android Text measurement and rendering respects the system Bold text accessibility setting via `Configuration.fontWeightAdjustment`.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
     enableAndroidTextMeasurementOptimizations: {
       defaultValue: false,
       metadata: {
@@ -507,27 +496,14 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
-    enableRuntimeSchedulerQueueClearingOnError: {
+    enableResizeObserverByDefault: {
       defaultValue: false,
       metadata: {
-        dateAdded: '2026-05-19',
-        description:
-          'When enabled, RuntimeScheduler_Modern clears pending tasks and rendering updates before handling an error.',
+        description: 'Enables the ResizeObserver Web API in React Native.',
         expectedReleaseValue: true,
-        purpose: 'experimentation',
+        purpose: 'release',
       },
-      ossReleaseStage: 'experimental',
-    },
-    enableSchedulerDelegateInvalidation: {
-      defaultValue: false,
-      metadata: {
-        dateAdded: '2026-05-04',
-        description:
-          'Gates a defensive guard around Scheduler::uiManagerDidDispatchCommand and uiManagerDidFinishTransaction that prevents queued rendering-update lambdas from dereferencing the SchedulerDelegate after it has been destroyed (use-after-free).',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'experimental',
+      ossReleaseStage: 'none',
     },
     enableSwiftUIBasedFilters: {
       defaultValue: false,
@@ -679,7 +655,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'experimental',
+      ossReleaseStage: 'canary',
     },
     fuseboxScreenshotCaptureEnabled: {
       defaultValue: true,
@@ -998,6 +974,17 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2026-06-10',
         description:
           'When enabled, forces `useNativeDriver` to `true` for all Animated animations and events, overriding the config (including an explicit `false`). Has no effect unless the shared animated backend is enabled, which is required to support native driver for all props.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
+    animatedKeepListenersOnDetach: {
+      defaultValue: true,
+      metadata: {
+        dateAdded: '2026-08-14',
+        description:
+          'When enabled, detaching an animated node from the graph retains listeners registered with `addListener` instead of removing them, so an `Animated.Value` that outlives the components using it still notifies them once it is attached again.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },

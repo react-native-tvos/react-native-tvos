@@ -156,9 +156,6 @@ RCT_EXPORT_MODULE()
   };
   RCTDevSettingsUserDefaultsDataSource *dataSource =
       [[RCTDevSettingsUserDefaultsDataSource alloc] initWithDefaultValues:defaultValues];
-#if RCT_DEV
-  _packagerConnection = [RCTPackagerConnection new];
-#endif
   _isShakeGestureEnabled = true;
   return [self initWithDataSource:dataSource];
 }
@@ -176,6 +173,9 @@ RCT_EXPORT_MODULE()
 - (instancetype)initWithDataSource:(id<RCTDevSettingsDataSource>)dataSource
 {
   if (self = [super init]) {
+#if RCT_DEV
+    _packagerConnection = [RCTPackagerConnection new];
+#endif
     _dataSource = dataSource;
 
     [[NSNotificationCenter defaultCenter] addObserver:self

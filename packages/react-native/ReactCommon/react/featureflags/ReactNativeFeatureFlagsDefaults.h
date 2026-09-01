@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<9d32ebc2e451c208a531f224f99c752b>>
+ * @generated SignedSource<<62795aac7abe2618321e73ff6e9e7e83>>
  */
 
 /**
@@ -73,10 +73,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool enableAccumulatedUpdatesInRawPropsAndroid() override {
     return false;
-  }
-
-  bool enableAndroidFontWeightAdjustment() override {
-    return true;
   }
 
   bool enableAndroidTextMeasurementOptimizations() override {
@@ -199,11 +195,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
-  bool enableRuntimeSchedulerQueueClearingOnError() override {
-    return false;
-  }
-
-  bool enableSchedulerDelegateInvalidation() override {
+  bool enableResizeObserverByDefault() override {
     return false;
   }
 

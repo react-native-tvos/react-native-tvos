@@ -52,6 +52,11 @@ export type BabelSourceLocation = Readonly<{
 }>;
 
 declare module '@babel/parser' {
+  import type {
+    Expression as BabelNodeExpression,
+    File as BabelNodeFile,
+  } from '@babel/types';
+
   // See https://github.com/babel/babel/blob/master/packages/babel-parser/typings/babel-parser.d.ts
   declare export type ParserPlugin =
     | 'asyncGenerators'
@@ -260,6 +265,14 @@ declare module '@babel/core' {
   import typeof Template from '@babel/template';
   import typeof Traverse from '@babel/traverse';
   import typeof * as Types from '@babel/types';
+  import type {
+    ArrayExpression as BabelNodeArrayExpression,
+    File as BabelNodeFile,
+    Identifier as BabelNodeIdentifier,
+    Node as BabelNode,
+    Program as BabelNodeProgram,
+    SourceLocation as BabelNodeSourceLocation,
+  } from '@babel/types';
 
   declare export var version: string;
   declare export var tokTypes: TokTypes;
@@ -441,13 +454,13 @@ declare module '@babel/core' {
   };
 
   declare export class ConfigItem {
-    +value: PluginObj<unknown> | (() => PluginObj<unknown>);
-    +options: EntryOptions;
-    +dirname: string;
-    +name: string | void;
-    +file: {
-      +request: string,
-      +resolved: string,
+    readonly value: PluginObj<unknown> | (() => PluginObj<unknown>);
+    readonly options: EntryOptions;
+    readonly dirname: string;
+    readonly name: string | void;
+    readonly file: {
+      readonly request: string,
+      readonly resolved: string,
     } | void;
 
     constructor(descriptor: UnloadedDescriptor): ConfigItem;
@@ -1097,12 +1110,12 @@ declare module '@babel/core' {
   declare type ValidatedOptions = BabelCoreOptions;
 
   declare class PartialConfig {
-    +options: Readonly<ValidatedOptions>;
-    +babelrc: string | void;
-    +babelignore: string | void;
-    +config: string | void;
-    +files: ReadonlySet<string>;
-    +fileHandling: 'ignored' | 'transpile' | 'unsupported';
+    readonly options: Readonly<ValidatedOptions>;
+    readonly babelrc: string | void;
+    readonly babelignore: string | void;
+    readonly config: string | void;
+    readonly files: ReadonlySet<string>;
+    readonly fileHandling: 'ignored' | 'transpile' | 'unsupported';
 
     constructor(options: ValidatedOptions): PartialConfig;
 
@@ -1124,6 +1137,8 @@ declare module '@babel/core' {
 }
 
 declare module '@babel/generator' {
+  import type {Node as BabelNode} from '@babel/types';
+
   declare export type BabelSourceMapSegment = _BabelSourceMapSegment;
 
   declare export type GeneratorResult = {
@@ -1292,8 +1307,7 @@ declare module '@babel/template' {
     syntacticPlaceholders?: ?boolean,
   };
 
-  declare export type PublicReplacements =
-    {[string]: ?BabelNode} | Array<?BabelNode>;
+  declare export type PublicReplacements = {[string]: ?Node} | Array<?Node>;
 
   declare export type TemplateBuilder<T> = {
     // Build a new builder, merging the given options with the previous ones.

@@ -17,7 +17,7 @@ import type {
   InterpolationConfigType,
 } from './AnimatedInterpolation';
 import type AnimatedNode from './AnimatedNode';
-import type {AnimatedNodeConfig} from './AnimatedNode';
+import type {AnimatedNodeConfig, ValueListenerCallback} from './AnimatedNode';
 import type AnimatedTracking from './AnimatedTracking';
 
 import NativeAnimatedHelper from '../../../src/private/animated/NativeAnimatedHelper';
@@ -124,6 +124,9 @@ export default class AnimatedValue extends AnimatedWithChildren {
       });
     }
     this.stopAnimation();
+    if (ReactNativeFeatureFlags.animatedKeepListenersOnDetach()) {
+      this._updateSubscription?.remove();
+    }
     super.__detach();
   }
 
@@ -138,7 +141,7 @@ export default class AnimatedValue extends AnimatedWithChildren {
     }
   }
 
-  addListener(callback: (value: any) => unknown): string {
+  addListener(callback: ValueListenerCallback): string {
     const id = super.addListener(callback);
     this._listenerCount++;
     if (this.__isNative) {

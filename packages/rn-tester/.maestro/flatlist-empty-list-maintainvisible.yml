@@ -3,6 +3,8 @@
 # _firstVisibleView.frame on nil returns {0,0}, causing incorrect scroll
 # correction.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

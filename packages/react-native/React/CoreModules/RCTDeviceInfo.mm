@@ -130,6 +130,12 @@ RCT_EXPORT_MODULE()
                                                name:RCTBridgeWillInvalidateModulesNotification
                                              object:nil];
 
+  [self invalidateCachedConstants];
+}
+
+- (void)invalidateCachedConstants
+{
+  RCTAssertMainQueue();
   _constants = @{
     @"Dimensions" : [self _exportedDimensions],
     // Note:
@@ -190,24 +196,27 @@ static BOOL RCTIsIPhoneNotched()
 static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 {
   RCTAssertMainQueue();
-  UIScreen *mainScreen = UIScreen.mainScreen;
-  CGSize screenSize = mainScreen.bounds.size;
-  UIView *mainWindow = RCTKeyWindow();
+  UIWindow *mainWindow = RCTKeyWindow();
+  UIScreen *screen = mainWindow.screen;
+  if (screen == nil) {
+    screen = UIScreen.screens.firstObject;
+  }
+  CGSize screenSize = screen.bounds.size;
 
   // We fallback to screen size if a key window is not found.
-  CGSize windowSize = mainWindow ? mainWindow.bounds.size : screenSize;
+  CGSize windowSize = mainWindow != nil ? mainWindow.bounds.size : screenSize;
 
   NSDictionary<NSString *, NSNumber *> *dimsWindow = @{
     @"width" : @(windowSize.width),
     @"height" : @(windowSize.height),
-    @"scale" : @(mainScreen.scale),
+    @"scale" : @(screen.scale),
     @"fontScale" : @(fontScale)
   };
 
   NSDictionary<NSString *, NSNumber *> *dimsScreen = @{
     @"width" : @(screenSize.width),
     @"height" : @(screenSize.height),
-    @"scale" : @(mainScreen.scale),
+    @"scale" : @(screen.scale),
     @"fontScale" : @(fontScale)
   };
   return @{@"window" : dimsWindow, @"screen" : dimsScreen};
@@ -228,7 +237,7 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
   RCTAssert(_moduleRegistry, @"Failed to get exported dimensions: RCTModuleRegistry is nil");
   RCTAccessibilityManager *accessibilityManager =
       (RCTAccessibilityManager *)[_moduleRegistry moduleForName:"AccessibilityManager"];
-  // TOOD(T225745315): For some reason, accessibilityManager is nil in some cases.
+  // TODO(T225745315): For some reason, accessibilityManager is nil in some cases.
   // We default the fontScale to 1.0 in this case. This should be okay: if we assume
   // that accessibilityManager will eventually become available, js will eventually
   // be updated with the correct fontScale.
@@ -248,14 +257,16 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 
 - (void)didReceiveNewContentSizeMultiplier
 {
-  __weak __typeof(self) weakSelf = self;
+  [self invalidateCachedConstants];
+  NSDictionary *nextInterfaceDimensions = _constants[@"Dimensions"];
+
   RCTModuleRegistry *moduleRegistry = _moduleRegistry;
   RCTExecuteOnMainQueue(^{
   // Report the event across the bridge.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [[moduleRegistry moduleForName:"EventDispatcher"] sendDeviceEventWithName:@"didUpdateDimensions"
-                                                                         body:[weakSelf _exportedDimensions]];
+                                                                         body:nextInterfaceDimensions];
 #pragma clang diagnostic pop
   });
 }
@@ -264,6 +275,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 
 - (void)interfaceOrientationDidChange
 {
+  [self invalidateCachedConstants];
+
 #if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
   UIWindow *window = RCTKeyWindow();
   UIInterfaceOrientation nextOrientation = window.windowScene.interfaceOrientation;
@@ -285,8 +298,9 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
   if ((isOrientationChanging || isResizingOrChangingToFullscreen) && RCTIsAppActive()) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    NSDictionary *nextInterfaceDimensions = _constants[@"Dimensions"];
     [[_moduleRegistry moduleForName:"EventDispatcher"] sendDeviceEventWithName:@"didUpdateDimensions"
-                                                                          body:[self _exportedDimensions]];
+                                                                          body:nextInterfaceDimensions];
     // We only want to track the current _currentInterfaceOrientation and _isFullscreen only
     // when it happens and only when it is published.
     _currentInterfaceOrientation = nextOrientation;
@@ -306,7 +320,8 @@ static NSDictionary *RCTExportedDimensions(CGFloat fontScale)
 
 - (void)_interfaceFrameDidChange
 {
-  NSDictionary *nextInterfaceDimensions = [self _exportedDimensions];
+  [self invalidateCachedConstants];
+  NSDictionary *nextInterfaceDimensions = _constants[@"Dimensions"];
 
   // update and publish the even only when the app is in active state
   if (!([nextInterfaceDimensions isEqual:_currentInterfaceDimensions]) && RCTIsAppActive()) {

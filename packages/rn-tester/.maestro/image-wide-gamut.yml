@@ -1,10 +1,13 @@
 appId: ${APP_ID} # iOS: com.meta.RNTester.localDevelopment | Android: com.facebook.react.uiapp
 tags:
   - android-only
+  # The screenshot baseline is captured on the local CI emulator and is
+  # intentionally not portable across Maestro Cloud device profiles.
+  - local-screenshot-baseline
 ---
 # Android-only: alpha transparency + sRGB vs Display-P3 wide-gamut. Color
-# fidelity needs a screenshot, so we assert load status only. Flaky on the iOS
-# E2E job, so guarded to Android; iOS skips this flow (empty=pass).
+# fidelity is covered by a screenshot captured from the ARM64 APK on the API 35
+# sRGB emulator. The flow is guarded because it is flaky on the iOS E2E job.
 - runFlow:
     when:
       platform: Android
@@ -36,9 +39,8 @@ tags:
           direction: DOWN
           speed: 40
           timeout: 20000
-      # External URL; accept loaded or error.
       - scrollUntilVisible:
-          element: 'P3: (loaded|error)'
+          element: 'P3: loaded'
           direction: DOWN
           speed: 40
           timeout: 20000

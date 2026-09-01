@@ -32,12 +32,12 @@
   "main": "./index.js",
   "exports": {
     ".": {
-      "react-native-legacy-deep-imports": "./types/index.d.ts",
+      "react-native-legacy-deep-imports": "./types_DEPRECATED/index.d.ts",
       "types": "./types_generated/index.d.ts",
       "default": "./index.js"
     },
     "./Libraries/*": {
-      "react-native-legacy-deep-imports": "./Libraries/*.d.ts",
+      "react-native-legacy-deep-imports": "./types_DEPRECATED/Libraries/*.d.ts",
       "types": null,
       "default": "./Libraries/*.js"
     },
@@ -133,7 +133,7 @@
     "src",
     "!src/private/testing",
     "third-party-podspecs",
-    "types",
+    "types_DEPRECATED",
     "types_generated",
     "!**/__docs__/**",
     "!**/__fixtures__/**",
@@ -164,8 +164,7 @@
     "@react-native/virtualized-lists": "0.87.0-main",
     "anser": "^1.4.9",
     "ansi-regex": "^5.0.0",
-    "babel-plugin-syntax-hermes-parser": "0.37.0",
-    "flow-parser": "0.325.0",
+    "flow-parser": "0.327.0",
     "base64-js": "^1.5.1",
     "flow-enums-runtime": "^0.0.6",
     "hermes-compiler": "0.0.0",

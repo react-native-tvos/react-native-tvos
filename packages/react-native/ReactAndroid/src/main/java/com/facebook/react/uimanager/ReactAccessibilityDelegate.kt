@@ -462,6 +462,7 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
     SPINBUTTON,
     SWITCH,
     TAB,
+    TABBAR,
     TABLIST,
     TIMER,
     LIST,
@@ -516,6 +517,7 @@ public open class ReactAccessibilityDelegate( // The View this delegate is attac
           RADIOGROUP,
           SCROLLBAR,
           TAB,
+          TABBAR,
           TABLIST,
           TIMER,
           TOOLBAR -> "android.view.View"

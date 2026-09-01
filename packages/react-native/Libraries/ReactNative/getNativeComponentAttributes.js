@@ -26,6 +26,8 @@ const processBackgroundSize =
 const processColor = require('../StyleSheet/processColor').default;
 const processColorArray = require('../StyleSheet/processColorArray').default;
 const processFilter = require('../StyleSheet/processFilter').default;
+const processFontVariationSettings =
+  require('../StyleSheet/processFontVariationSettings').default;
 const insetsDiffer = require('../Utilities/differ/insetsDiffer').default;
 const matricesDiffer = require('../Utilities/differ/matricesDiffer').default;
 const pointsDiffer = require('../Utilities/differ/pointsDiffer').default;
@@ -74,7 +76,7 @@ function getNativeComponentAttributes(uiViewClassName: string): any {
   for (const key in nativeProps) {
     const typeName = nativeProps[key];
     const diff = getDifferForType(typeName);
-    const process = getProcessorForType(typeName);
+    const process = getProcessorForAttribute(key, typeName);
 
     // If diff or process == null, omit the corresponding property from the Attribute
     // Why:
@@ -183,7 +185,14 @@ function getDifferForType(
   return null;
 }
 
-function getProcessorForType(typeName: string): ?(nextProp: any) => any {
+function getProcessorForAttribute(
+  attributeName: string,
+  typeName: string,
+): ?(nextProp: any) => any {
+  if (attributeName === 'fontVariationSettings') {
+    return processFontVariationSettings;
+  }
+
   switch (typeName) {
     // iOS Types
     case 'CGColor':

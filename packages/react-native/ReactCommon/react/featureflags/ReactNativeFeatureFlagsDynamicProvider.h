@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a629be7af38470ec0cff8391dad1ee1e>>
+ * @generated SignedSource<<9c0b6df9433a5696f5eacf47713b9040>>
  */
 
 /**
@@ -151,15 +151,6 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableAccumulatedUpdatesInRawPropsAndroid();
-  }
-
-  bool enableAndroidFontWeightAdjustment() override {
-    auto value = values_["enableAndroidFontWeightAdjustment"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::enableAndroidFontWeightAdjustment();
   }
 
   bool enableAndroidTextMeasurementOptimizations() override {
@@ -432,22 +423,13 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     return ReactNativeFeatureFlagsDefaults::enablePropsUpdateReconciliationAndroid();
   }
 
-  bool enableRuntimeSchedulerQueueClearingOnError() override {
-    auto value = values_["enableRuntimeSchedulerQueueClearingOnError"];
+  bool enableResizeObserverByDefault() override {
+    auto value = values_["enableResizeObserverByDefault"];
     if (!value.isNull()) {
       return value.getBool();
     }
 
-    return ReactNativeFeatureFlagsDefaults::enableRuntimeSchedulerQueueClearingOnError();
-  }
-
-  bool enableSchedulerDelegateInvalidation() override {
-    auto value = values_["enableSchedulerDelegateInvalidation"];
-    if (!value.isNull()) {
-      return value.getBool();
-    }
-
-    return ReactNativeFeatureFlagsDefaults::enableSchedulerDelegateInvalidation();
+    return ReactNativeFeatureFlagsDefaults::enableResizeObserverByDefault();
   }
 
   bool enableSwiftUIBasedFilters() override {

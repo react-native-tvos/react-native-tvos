@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fff496fd29f32d546e63c40fc2a3c9da>>
+ * @generated SignedSource<<98e5bd41621c4a6910163a2b33c1f1b4>>
  */
 
 /**
@@ -46,8 +46,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableAccessibilityOrder(): Boolean = false
 
   override fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = false
-
-  override fun enableAndroidFontWeightAdjustment(): Boolean = true
 
   override fun enableAndroidTextMeasurementOptimizations(): Boolean = false
 
@@ -109,9 +107,7 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enablePropsUpdateReconciliationAndroid(): Boolean = false
 
-  override fun enableRuntimeSchedulerQueueClearingOnError(): Boolean = false
-
-  override fun enableSchedulerDelegateInvalidation(): Boolean = false
+  override fun enableResizeObserverByDefault(): Boolean = false
 
   override fun enableSwiftUIBasedFilters(): Boolean = false
 

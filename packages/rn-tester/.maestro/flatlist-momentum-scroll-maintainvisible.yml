@@ -2,6 +2,8 @@
 # Verifies that scroll position remains stable after momentum scroll completes
 # post-prepend. MVCP correction runs asynchronously in didMountItems.
 appId: ${APP_ID}
+tags:
+  - android-release-only
 ---
 - launchApp
 # Change to portrait

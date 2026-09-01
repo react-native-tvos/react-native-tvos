@@ -16,6 +16,13 @@ class ReactNativePodsUtils
     MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
     REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
 
+    # Opt-in removal of the legacy TurboModule and component interop layers. Both are
+    # off by default and will become the default in a future React Native release.
+    LEGACY_INTEROP_REMOVAL_FLAGS = [
+        'RCT_REMOVE_LEGACY_MODULE_INTEROP',
+        'RCT_REMOVE_LEGACY_COMPONENT_INTEROP',
+    ]
+
     # URI::File.build validates path components as ASCII, so escape the filesystem path first.
     def self.local_file_uri(path)
         URI::File.build(path: URI::DEFAULT_PARSER.escape(path)).to_s
@@ -98,6 +105,29 @@ class ReactNativePodsUtils
         self.add_build_settings_to_pod(installer, "GCC_PREPROCESSOR_DEFINITIONS", "REACT_NATIVE_DEBUGGER_ENABLED_DEVONLY=1", "React-jsinspectornetwork", :debug)
         self.add_build_settings_to_pod(installer, "GCC_PREPROCESSOR_DEFINITIONS", "REACT_NATIVE_DEBUGGER_ENABLED_DEVONLY=1", "React-RCTNetwork", :debug)
         self.add_build_settings_to_pod(installer, "GCC_PREPROCESSOR_DEFINITIONS", "REACT_NATIVE_DEBUGGER_ENABLED_DEVONLY=1", "React-networking", :debug)
+    end
+
+    # The react/cxxstableapi guards turn a direct include of a fine-grained React Native
+    # header into an error for consumers that opt into RN_STRICT_API. React Native's own
+    # sources are exempt via RN_BUILDING, so every first-party pod defines it. Third-party
+    # pods must never get it, or they would silently opt out of the guards.
+    #
+    # This merges into pod_target_xcconfig as it stands when called, so call it after the
+    # spec has set its own xcconfig — in practice, last in the spec block.
+    def self.add_rn_building_definition(spec)
+        current_config = spec.to_hash["pod_target_xcconfig"] || {}
+        definitions = current_config["GCC_PREPROCESSOR_DEFINITIONS"] || "$(inherited)"
+
+        if definitions.is_a?(Array)
+            definitions = definitions.join(" ")
+        end
+
+        definitions = "$(inherited)" if definitions.strip.empty?
+
+        return if definitions.include?("RN_BUILDING=1")
+
+        current_config["GCC_PREPROCESSOR_DEFINITIONS"] = "#{definitions.strip()} RN_BUILDING=1".strip()
+        spec.pod_target_xcconfig = current_config
     end
 
     def self.turn_off_resource_bundle_react_core(installer)
@@ -370,6 +400,7 @@ class ReactNativePodsUtils
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-graphics", "React_graphics", ["react/renderer/graphics/platform/ios"]))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-featureflags", "React_featureflags", []))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-renderercss", "React_renderercss", []))
+                    .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-cxxstableapi", "React_cxxstableapi", []))
                     .each{ |search_path|
                         header_search_paths = self.add_search_path_if_not_included(header_search_paths, search_path)
                     }
@@ -515,6 +546,23 @@ class ReactNativePodsUtils
                 self.remove_flag_in_config(config, flag, configuration: configuration)
             end
             project.save()
+        end
+    end
+
+    # The macros gate declarations in public headers (RCTBridge.h, RCTBridgeModule.h), so
+    # they are applied to the whole project rather than to React Native's pods alone.
+    def self.set_legacy_interop_removal_flags(installer, build_rncore_from_source:)
+        LEGACY_INTEROP_REMOVAL_FLAGS.each do |flag|
+            if ENV[flag] == '1'
+                self.add_compiler_flag_to_project(installer, "-D#{flag}=1")
+                unless build_rncore_from_source
+                    Pod::UI.warn("#{flag}=1 only prunes your app's headers while using the prebuilt " \
+                        "React.xcframework. Set RCT_USE_PREBUILT_RNCORE=0 to also compile React Native " \
+                        "without the legacy interop layer.")
+                end
+            else
+                self.remove_compiler_flag_from_project(installer, "-D#{flag}=1")
+            end
         end
     end
 

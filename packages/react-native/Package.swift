@@ -11,6 +11,13 @@ import PackageDescription
 
 let BUILD_FROM_SOURCE = false
 
+// Removing the legacy TurboModule and component interop layers is opt-in while those
+// layers are still supported. Both will default to on in a future React Native release.
+let REMOVE_LEGACY_MODULE_INTEROP =
+  ProcessInfo.processInfo.environment["RCT_REMOVE_LEGACY_MODULE_INTEROP"] == "1"
+let REMOVE_LEGACY_COMPONENT_INTEROP =
+  ProcessInfo.processInfo.environment["RCT_REMOVE_LEGACY_COMPONENT_INTEROP"] == "1"
+
 /**
  This is the `Package.swift` file that allows to build React Native core using Swift PM.
  To build React Native, you need to follow these steps:
@@ -352,6 +359,13 @@ let reactMutationObserverNativeModule = RNTarget(
   dependencies: [.reactNativeDependencies, .reactCxxReact, .reactFabric, .reactTurboModuleBridging, .reactTurboModuleCore, .yoga]
 )
 
+/// React-resizeobservernativemodule.podspec
+let reactResizeObserverNativeModule = RNTarget(
+  name: .reactResizeObserverNativeModule,
+  path: "ReactCommon/react/nativemodule/resizeobserver",
+  dependencies: [.reactNativeDependencies, .reactCxxReact, .reactFabric, .reactTurboModuleBridging, .reactTurboModuleCore, .reactGraphics, .reactGraphicsApple, .reactRuntimeScheduler, .yoga]
+)
+
 /// React-viewtransitionnativemodule.podspec
 let reactViewTransitionNativeModule = RNTarget(
   name: .reactViewTransitionNativeModule,
@@ -473,10 +487,11 @@ let reactFabric = RNTarget(
     "components/unimplementedview",
     "components/virtualview",
     "components/root/tests",
+    "observers/resize/tests",
     "scheduler/tests",
   ],
   dependencies: [.reactNativeDependencies, .reactJsiExecutor, .rctTypesafety, .reactTurboModuleCore, .jsi, .logger, .reactDebug, .reactFeatureFlags, .reactUtils, .reactRuntimeScheduler, .reactCxxReact, .reactRendererDebug, .reactGraphics, .yoga, .reactJsInspectorTracing],
-  sources: ["animated", "animationbackend", "animations", "attributedstring", "core", "componentregistry", "componentregistry/native", "components/root", "components/view", "components/view/platform/cxx", "components/scrollview", "components/scrollview/platform/cxx", "components/scrollview/platform/ios", "components/legacyviewmanagerinterop", "components/legacyviewmanagerinterop/platform/ios", "dom", "scheduler", "mounting", "observers/events", "observers/intersection", "observers/mutation", "telemetry", "consistency", "leakchecker", "uimanager", "uimanager/consistency", "viewtransition"]
+  sources: ["animated", "animationbackend", "animations", "attributedstring", "core", "componentregistry", "componentregistry/native", "components/root", "components/view", "components/view/platform/cxx", "components/scrollview", "components/scrollview/platform/cxx", "components/scrollview/platform/ios", "components/legacyviewmanagerinterop", "components/legacyviewmanagerinterop/platform/ios", "dom", "scheduler", "mounting", "observers/events", "observers/intersection", "observers/mutation", "observers/resize", "telemetry", "consistency", "leakchecker", "uimanager", "uimanager/consistency", "viewtransition"]
 )
 
 let reactFabricInputAccessory = RNTarget(
@@ -720,6 +735,7 @@ let targets = [
   reactWebPerformanceNativeModule,
   reactIntersectionObserverNativeModule,
   reactMutationObserverNativeModule,
+  reactResizeObserverNativeModule,
   reactViewTransitionNativeModule,
   reactFeatureflagsNativemodule,
   reactNativeModuleDom,
@@ -912,6 +928,7 @@ extension String {
   static let reactWebPerformanceNativeModule = "React-webperformancenativemodule"
   static let reactIntersectionObserverNativeModule = "React-intersectionobservernativemodule"
   static let reactMutationObserverNativeModule = "React-mutationobservernativemodule"
+  static let reactResizeObserverNativeModule = "React-resizeobservernativemodule"
   static let reactViewTransitionNativeModule = "React-viewtransitionnativemodule"
   static let reactFeatureflagsNativemodule = "React-featureflagsnativemodule"
   static let reactNativeModuleDom = "React-domnativemodule"
@@ -948,6 +965,14 @@ extension Target {
         CXXSetting.headerSearchPath(relativeSearchPath(numOfSlash + 1, ".build/headers/React")),
       ]
 
+    let legacyInteropDefines: [CXXSetting] =
+      (REMOVE_LEGACY_MODULE_INTEROP ? [.define("RCT_REMOVE_LEGACY_MODULE_INTEROP", to: "1")] : [])
+      + (REMOVE_LEGACY_COMPONENT_INTEROP ? [.define("RCT_REMOVE_LEGACY_COMPONENT_INTEROP", to: "1")] : [])
+
+    // Every target built through this factory is React Native's own, so RN_BUILDING
+    // keeps the react/cxxstableapi guards inert for internal sources. cxxSettings are
+    // per-target and are not inherited by packages that depend on React, so this does
+    // not exempt consumers from the guards.
     let cxxSettings =
       [
         .unsafeFlags(["-std=c++20"]),
@@ -956,7 +981,8 @@ extension Target {
         .define("USE_HERMES", to: "1"),
         .define("RCT_REMOVE_LEGACY_ARCH", to: "1"),
         .define("HERMES_V1_ENABLED", to: "1"),
-      ] + defines + cxxCommonHeaderPaths
+        .define("RN_BUILDING", to: "1"),
+      ] + legacyInteropDefines + defines + cxxCommonHeaderPaths
 
     return .target(
       name: name,

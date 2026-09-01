@@ -141,7 +141,7 @@ public constructor(
 
   @Deprecated(
       "Retained only for binary/source compatibility; the defaultSource prop is now delivered " +
-          "through the Dynamic overload."
+          "through the Dynamic overload.",
   )
   public fun setDefaultSource(view: ReactImageView, source: String?) {
     view.setDefaultSource(source)
@@ -155,7 +155,7 @@ public constructor(
 
   @Deprecated(
       "Retained only for binary/source compatibility; the loadingIndicatorSrc prop is now " +
-          "delivered through the Dynamic overload."
+          "delivered through the Dynamic overload.",
   )
   public fun setLoadingIndicatorSource(view: ReactImageView, source: String?) {
     view.setLoadingIndicatorSource(source)

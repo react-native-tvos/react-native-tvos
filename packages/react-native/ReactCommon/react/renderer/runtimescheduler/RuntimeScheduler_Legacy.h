@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #ifndef RCT_REMOVE_LEGACY_ARCH
 
 #include <ReactCommon/RuntimeExecutor.h>
@@ -132,6 +134,8 @@ class RuntimeScheduler_Legacy final : public RuntimeSchedulerBase {
 
   void setIntersectionObserverDelegate(
       RuntimeSchedulerIntersectionObserverDelegate *intersectionObserverDelegate) override;
+
+  void setResizeObserverDelegate(RuntimeSchedulerResizeObserverDelegate *resizeObserverDelegate) override;
 
  private:
   std::priority_queue<std::shared_ptr<Task>, std::vector<std::shared_ptr<Task>>, TaskPriorityComparer> taskQueue_;

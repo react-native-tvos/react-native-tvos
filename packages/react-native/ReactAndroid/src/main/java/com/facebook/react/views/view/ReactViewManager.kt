@@ -238,6 +238,18 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     }
   }
 
+  @Deprecated(
+      "Use setBackgroundSize instead.",
+      ReplaceWith("setBackgroundSize(view, backgroundSize)"),
+  )
+  @ReactProp(name = ViewProps.EXPERIMENTAL_BACKGROUND_SIZE, customType = "BackgroundSize")
+  public open fun setExperimentalBackgroundSize(
+      view: ReactViewGroup,
+      backgroundSize: ReadableArray?,
+  ) {
+    setBackgroundSize(view, backgroundSize)
+  }
+
   @ReactProp(name = ViewProps.BACKGROUND_POSITION, customType = "BackgroundPosition")
   public open fun setBackgroundPosition(view: ReactViewGroup, backgroundPosition: ReadableArray?) {
     if (backgroundPosition != null && backgroundPosition.size() > 0) {
@@ -255,6 +267,18 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     }
   }
 
+  @Deprecated(
+      "Use setBackgroundPosition instead.",
+      ReplaceWith("setBackgroundPosition(view, backgroundPosition)"),
+  )
+  @ReactProp(name = ViewProps.EXPERIMENTAL_BACKGROUND_POSITION, customType = "BackgroundPosition")
+  public open fun setExperimentalBackgroundPosition(
+      view: ReactViewGroup,
+      backgroundPosition: ReadableArray?,
+  ) {
+    setBackgroundPosition(view, backgroundPosition)
+  }
+
   @ReactProp(name = ViewProps.BACKGROUND_REPEAT, customType = "BackgroundRepeat")
   public open fun setBackgroundRepeat(view: ReactViewGroup, backgroundRepeat: ReadableArray?) {
     if (backgroundRepeat != null && backgroundRepeat.size() > 0) {
@@ -270,6 +294,18 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     } else {
       BackgroundStyleApplicator.setBackgroundRepeat(view, null)
     }
+  }
+
+  @Deprecated(
+      "Use setBackgroundRepeat instead.",
+      ReplaceWith("setBackgroundRepeat(view, backgroundRepeat)"),
+  )
+  @ReactProp(name = ViewProps.EXPERIMENTAL_BACKGROUND_REPEAT, customType = "BackgroundRepeat")
+  public open fun setExperimentalBackgroundRepeat(
+      view: ReactViewGroup,
+      backgroundRepeat: ReadableArray?,
+  ) {
+    setBackgroundRepeat(view, backgroundRepeat)
   }
 
   @ReactProp(name = "nextFocusDown", defaultInt = View.NO_ID)

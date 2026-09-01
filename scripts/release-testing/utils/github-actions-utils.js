@@ -203,9 +203,7 @@ function downloadArtifact(
   exec(command, {stdio: 'inherit'});
 }
 
-async function artifactURLForRNTesterAPK(
-  emulatorArch /*: string */,
-) /*: Promise<string> */ {
+async function artifactURLForRNTesterAPK() /*: Promise<string> */ {
   return getArtifactURL('rntester-debug');
 }
 

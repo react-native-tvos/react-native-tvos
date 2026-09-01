@@ -20,7 +20,7 @@ jest.mock('fs', () => ({
 const childProcess = require('child_process');
 const fs = require('fs');
 
-const {executeFlows} = require('../maestro-ios');
+const {executeFlows, findAvailableSimulator} = require('../maestro-ios');
 
 describe('Maestro iOS runner', () => {
   beforeEach(() => {
@@ -58,5 +58,24 @@ describe('Maestro iOS runner', () => {
     for (const call of childProcess.execSync.mock.calls) {
       expect(call[0]).toContain('test "flow.yml"');
     }
+  });
+
+  it('selects an iPhone Pro simulator from the latest runtime', () => {
+    childProcess.execSync.mockReturnValue(
+      JSON.stringify({
+        devices: {
+          'iOS 18.5': [{name: 'iPhone 16 Pro', udid: 'old-pro'}],
+          'iOS 26.5': [
+            {name: 'iPhone 17 Pro Max', udid: 'new-pro-max'},
+            {name: 'iPhone 17 Pro', udid: 'new-pro'},
+          ],
+        },
+      }),
+    );
+
+    expect(findAvailableSimulator()).toEqual({
+      name: 'iPhone 17 Pro',
+      udid: 'new-pro',
+    });
   });
 });

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2fc347cdb33327437d29e5fd91e24011>>
+ * @generated SignedSource<<ffaf7abad8f9b217cc16e28ee9270b40>>
  */
 
 /**
@@ -101,12 +101,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = accessor.enableAccumulatedUpdatesInRawPropsAndroid()
-
-  /**
-   * When enabled, Android Text measurement and rendering respects the system Bold text accessibility setting via `Configuration.fontWeightAdjustment`.
-   */
-  @JvmStatic
-  public fun enableAndroidFontWeightAdjustment(): Boolean = accessor.enableAndroidFontWeightAdjustment()
 
   /**
    * Enables various optimizations throughout the path of measuring text on Android.
@@ -289,16 +283,10 @@ public object ReactNativeFeatureFlags {
   public fun enablePropsUpdateReconciliationAndroid(): Boolean = accessor.enablePropsUpdateReconciliationAndroid()
 
   /**
-   * When enabled, RuntimeScheduler_Modern clears pending tasks and rendering updates before handling an error.
+   * Enables the ResizeObserver Web API in React Native.
    */
   @JvmStatic
-  public fun enableRuntimeSchedulerQueueClearingOnError(): Boolean = accessor.enableRuntimeSchedulerQueueClearingOnError()
-
-  /**
-   * Gates a defensive guard around Scheduler::uiManagerDidDispatchCommand and uiManagerDidFinishTransaction that prevents queued rendering-update lambdas from dereferencing the SchedulerDelegate after it has been destroyed (use-after-free).
-   */
-  @JvmStatic
-  public fun enableSchedulerDelegateInvalidation(): Boolean = accessor.enableSchedulerDelegateInvalidation()
+  public fun enableResizeObserverByDefault(): Boolean = accessor.enableResizeObserverByDefault()
 
   /**
    * When enabled, it will use SwiftUI for filter effects like blur on iOS.

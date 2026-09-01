@@ -523,6 +523,7 @@ static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_SI
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_SIZE_MULTIPLIER;
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_STYLE;
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_VARIANT;
+static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_VARIATION_SETTINGS;
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FONT_WEIGHT;
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_FOREGROUND_COLOR;
 static constexpr facebook::react::MapBuffer::Key facebook::react::TA_KEY_IS_HIGHLIGHTED;
@@ -565,6 +566,7 @@ using facebook::react::CSSVariantWithTypes = typename facebook::react::detail::m
 template <typename... TArgs>
 using facebook::react::EventListenerT = std::function<bool(TArgs...)>;
 typedef std::function<void(double)> facebook::react::ValueListenerCallback;
+typedef std::tuple<facebook::react::Float, facebook::react::Float, facebook::react::Float, facebook::react::Float> facebook::react::RectAsTuple;
 using facebook::react::ActivePointerRegistry = std::unordered_map<facebook::react::PointerIdentifier, facebook::react::ActivePointer>;
 using facebook::react::ActivityIndicatorViewComponentDescriptor = facebook::react::ConcreteComponentDescriptor<facebook::react::ActivityIndicatorViewShadowNode>;
 using facebook::react::ActivityIndicatorViewShadowNode = facebook::react::ConcreteViewShadowNode<facebook::react::ActivityIndicatorViewComponentName, facebook::react::ActivityIndicatorViewProps, facebook::react::ActivityIndicatorViewEventEmitter, facebook::react::ActivityIndicatorViewState>;
@@ -661,6 +663,9 @@ using facebook::react::NativePerformancePerformanceObserverCallback = facebook::
 using facebook::react::NativePerformancePerformanceObserverObserveOptions = facebook::react::NativePerformancePerformanceObserverInit<std::optional<std::vector<int>>, std::optional<int>, std::optional<bool>, std::optional<facebook::react::HighResDuration>>;
 using facebook::react::NativeReloadAndProfileConfig = facebook::react::NativeReactDevToolsRuntimeSettingsModuleReloadAndProfileConfig<bool, bool>;
 using facebook::react::NativeRequestIdleCallbackOptions = facebook::react::NativeIdleCallbacksRequestIdleCallbackOptions<std::optional<facebook::react::HighResDuration>>;
+using facebook::react::NativeResizeObserverEntry = facebook::react::NativeResizeObserverNativeResizeObserverEntry<facebook::react::ResizeObserverObserverId, facebook::jsi::Value, facebook::react::RectAsTuple, facebook::react::SizeAsTuple, facebook::react::SizeAsTuple, facebook::react::SizeAsTuple>;
+using facebook::react::NativeResizeObserverNotifyCallback = facebook::react::SyncCallback<void(bool)>;
+using facebook::react::NativeResizeObserverObserveOptions = facebook::react::NativeResizeObserverNativeResizeObserverObserveOptions<facebook::react::ResizeObserverObserverId, std::shared_ptr<const facebook::react::ShadowNode>, std::optional<std::string>>;
 using facebook::react::OnMutations = std::function<void(std::vector<facebook::react::MutationRecord>&)>;
 using facebook::react::ParagraphProps = facebook::react::HostPlatformParagraphProps;
 using facebook::react::PerformanceEntry = std::variant<facebook::react::PerformanceMark, facebook::react::PerformanceMeasure, facebook::react::PerformanceEventTiming, facebook::react::PerformanceLongTaskTiming, facebook::react::PerformanceResourceTiming>;
@@ -678,7 +683,7 @@ using facebook::react::RawPropsPropNameHash = uint32_t;
 using facebook::react::RawPropsPropNameLength = uint16_t;
 using facebook::react::RawPropsValueIndex = uint16_t;
 using facebook::react::RawTextComponentDescriptor = facebook::react::ConcreteComponentDescriptor<facebook::react::RawTextShadowNode>;
-using facebook::react::RectAsTuple = std::tuple<facebook::react::Float, facebook::react::Float, facebook::react::Float, facebook::react::Float>;
+using facebook::react::ResizeObserverObserverId = int32_t;
 using facebook::react::RootComponentDescriptor = facebook::react::ConcreteComponentDescriptor<facebook::react::RootShadowNode>;
 using facebook::react::RuntimeExecutor = std::function<void(std::function<void(facebook::jsi::Runtime& runtime)>&& callback)>;
 using facebook::react::RuntimeSchedulerRenderingUpdate = std::function<void()>;
@@ -700,6 +705,7 @@ using facebook::react::SharedTextAttributes = std::shared_ptr<const facebook::re
 using facebook::react::SharedTouchEventEmitter = std::shared_ptr<const facebook::react::TouchEventEmitter>;
 using facebook::react::SharedViewEventEmitter = std::shared_ptr<const facebook::react::ViewEventEmitter>;
 using facebook::react::SharedViewProps = std::shared_ptr<const facebook::react::ViewProps>;
+using facebook::react::SizeAsTuple = std::tuple<facebook::react::Float, facebook::react::Float>;
 using facebook::react::SnapshotMap = std::unordered_map<facebook::react::Tag, std::unique_ptr<facebook::react::PropsSnapshot>>;
 using facebook::react::StatePipe = std::function<void(const facebook::react::StateUpdate& stateUpdate)>;
 using facebook::react::SurfaceId = int32_t;
@@ -1645,6 +1651,7 @@ class facebook::react::AsyncArrayBuffer {
   public static facebook::react::AsyncArrayBuffer copy(facebook::jsi::Runtime& rt, const facebook::jsi::ArrayBuffer& buffer);
   public static facebook::react::AsyncArrayBuffer wrap(std::shared_ptr<facebook::jsi::MutableBuffer> buffer) noexcept;
   public static facebook::react::AsyncArrayBuffer wrap(std::vector<uint8_t> bytes);
+  public static void throwIfDetached(facebook::jsi::Runtime& rt, const facebook::jsi::ArrayBuffer& buffer, const char* callerName);
   public std::shared_ptr<facebook::jsi::MutableBuffer> getMutableBuffer() const noexcept;
   public uint8_t* data() noexcept;
   public ~AsyncArrayBuffer() = default;
@@ -2439,10 +2446,10 @@ class facebook::react::HighResDuration {
   public constexpr int64_t toNanoseconds() const;
   public constexpr operator std::chrono::steady_clock::duration() const;
   public static constexpr facebook::react::HighResDuration fromChrono(std::chrono::steady_clock::duration chronoDuration);
-  public static constexpr facebook::react::HighResDuration fromDOMHighResTimeStamp(double units);
   public static constexpr facebook::react::HighResDuration fromMilliseconds(int64_t units);
   public static constexpr facebook::react::HighResDuration fromNanoseconds(int64_t units);
   public static constexpr facebook::react::HighResDuration zero();
+  public static facebook::react::HighResDuration fromDOMHighResTimeStamp(double units);
 }
 
 class facebook::react::HighResTimeStamp {
@@ -2458,10 +2465,10 @@ class facebook::react::HighResTimeStamp {
   public constexpr facebook::react::HighResTimeStamp& operator-=(const facebook::react::HighResDuration& rhs);
   public constexpr std::chrono::steady_clock::time_point toChronoSteadyClockTimePoint() const;
   public static constexpr facebook::react::HighResTimeStamp fromChronoSteadyClockTimePoint(std::chrono::steady_clock::time_point chronoTimePoint);
-  public static constexpr facebook::react::HighResTimeStamp fromDOMHighResTimeStamp(double units);
   public static constexpr facebook::react::HighResTimeStamp max() noexcept;
   public static constexpr facebook::react::HighResTimeStamp min() noexcept;
   public static facebook::react::HighResDuration unsafeOriginFromUnixTimeStamp() noexcept;
+  public static facebook::react::HighResTimeStamp fromDOMHighResTimeStamp(double units);
   public static facebook::react::HighResTimeStamp now() noexcept;
 }
 
@@ -2749,9 +2756,34 @@ class facebook::react::IntersectionObserverState {
   public static facebook::react::IntersectionObserverState NotIntersecting();
 }
 
+class facebook::react::JArrayBuffer : public jni::HybridClass<facebook::react::JArrayBuffer> {
+  public JArrayBuffer(std::shared_ptr<facebook::jsi::MutableBuffer> buffer, bool owningBytes) noexcept;
+  public bool hasBytes() const noexcept;
+  public bool isOwningBytes() const noexcept;
+  public const std::shared_ptr<facebook::jsi::MutableBuffer>& mutableBuffer() const;
+  public static constexpr auto kJavaDescriptor;
+  public static jni::local_ref<javaobject> createOwned(const void* bytes, size_t size);
+  public static jni::local_ref<javaobject> createOwning(std::shared_ptr<facebook::jsi::MutableBuffer> buffer);
+  public static jni::local_ref<javaobject> createUnowned(void* bytes, size_t size);
+  public static std::shared_ptr<facebook::jsi::MutableBuffer> toJSBuffer(facebook::jsi::Runtime& runtime, jni::alias_ref<javaobject> arrayBuffer);
+  public static void registerNatives();
+  public void invalidate() noexcept;
+}
+
 class facebook::react::JBindingsInstaller : public jni::HybridClass<facebook::react::JBindingsInstaller>, public facebook::react::BindingsInstaller {
   public static constexpr auto kJavaDescriptor;
   public ~JBindingsInstaller();
+}
+
+class facebook::react::JByteBufferMutableBuffer : public facebook::jsi::MutableBuffer {
+  public JByteBufferMutableBuffer(const facebook::react::JByteBufferMutableBuffer&) = delete;
+  public JByteBufferMutableBuffer(facebook::react::JByteBufferMutableBuffer&&) = delete;
+  public JByteBufferMutableBuffer(jni::alias_ref<jni::JByteBuffer> byteBuffer);
+  public facebook::react::JByteBufferMutableBuffer& operator=(const facebook::react::JByteBufferMutableBuffer&) = delete;
+  public facebook::react::JByteBufferMutableBuffer& operator=(facebook::react::JByteBufferMutableBuffer&&) = delete;
+  public virtual size_t size() const override;
+  public virtual uint8_t* data() override;
+  public ~JByteBufferMutableBuffer() override;
 }
 
 class facebook::react::JCxxCallbackImpl : public jni::HybridClass<facebook::react::JCxxCallbackImpl, facebook::react::JCallback> {
@@ -3633,10 +3665,6 @@ class facebook::react::NativeMicrotasks : public facebook::react::NativeMicrotas
   public void queueMicrotask(facebook::jsi::Runtime& runtime, facebook::jsi::Function callback);
 }
 
-class facebook::react::NativeModalManagerSpecJSI : public facebook::react::JavaTurboModule {
-  public NativeModalManagerSpecJSI(const facebook::react::JavaTurboModule::InitParams& params);
-}
-
 class facebook::react::NativeModulePerfLogger {
   public virtual void asyncMethodCallArgConversionEnd(const char* moduleName, const char* methodName) = 0;
   public virtual void asyncMethodCallArgConversionStart(const char* moduleName, const char* methodName) = 0;
@@ -3735,6 +3763,15 @@ class facebook::react::NativeReactDevToolsSettingsManagerSpecJSI : public facebo
 
 class facebook::react::NativeRedBoxSpecJSI : public facebook::react::JavaTurboModule {
   public NativeRedBoxSpecJSI(const facebook::react::JavaTurboModule::InitParams& params);
+}
+
+class facebook::react::NativeResizeObserver : public facebook::react::NativeResizeObserverCxxSpec<facebook::react::NativeResizeObserver> {
+  public NativeResizeObserver(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
+  public facebook::jsi::Object observe(facebook::jsi::Runtime& runtime, const facebook::react::NativeResizeObserverObserveOptions& options);
+  public std::vector<facebook::react::NativeResizeObserverEntry> takeRecords(facebook::jsi::Runtime& runtime);
+  public void connect(facebook::jsi::Runtime& runtime, facebook::react::NativeResizeObserverNotifyCallback notifyResizeObserversFunction);
+  public void disconnect(facebook::jsi::Runtime& runtime);
+  public void unobserve(facebook::jsi::Runtime& runtime, facebook::react::ResizeObserverObserverId resizeObserverId, facebook::jsi::Object targetToken);
 }
 
 class facebook::react::NativeSampleTurboModuleSpecJSI : public facebook::react::JavaTurboModule {
@@ -4157,6 +4194,31 @@ class facebook::react::ReadableNativeArray : public jni::HybridClass<facebook::r
   protected ReadableNativeArray(Dyn&& array);
 }
 
+class facebook::react::ResizeObserver {
+  public ResizeObserver(facebook::react::ResizeObserverObserverId resizeObserverId, facebook::react::ShadowNodeFamily::Shared targetShadowNodeFamily, facebook::react::ResizeObserverBoxOptions boxOptions, uint64_t observationSequence);
+  public bool hasDeliveredDetachedState() const;
+  public bool needsInitialDeliveryCheck() const;
+  public facebook::react::ResizeObservationResult computeActiveObservation(const facebook::react::RootShadowNode& rootShadowNode) const;
+  public facebook::react::ResizeObserverObserverId getResizeObserverId() const;
+  public facebook::react::ShadowNodeFamily::Shared getTargetShadowNodeFamily() const;
+  public uint64_t getObservationSequence() const;
+  public void markAsReported(const facebook::react::ResizeObservationResult& result);
+  public void updateDetachedState(bool detached);
+}
+
+class facebook::react::ResizeObserverManager : public facebook::react::UIManagerCommitHook, public facebook::react::RuntimeSchedulerResizeObserverDelegate {
+  public ResizeObserverManager();
+  public std::vector<facebook::react::ResizeObserverEntry> takeRecords();
+  public virtual void commitHookWasRegistered(const facebook::react::UIManager& uiManager) noexcept override;
+  public virtual void commitHookWasUnregistered(const facebook::react::UIManager& uiManager) noexcept override;
+  public virtual void runResizeObservations(facebook::jsi::Runtime& runtime) override;
+  public virtual void shadowTreeDidCommit(const facebook::react::ShadowTree& shadowTree, const facebook::react::RootShadowNode::Shared& rootShadowNode, const std::vector<const facebook::react::LayoutableShadowNode*>& affectedLayoutableNodes) noexcept override;
+  public void connect(facebook::react::RuntimeScheduler& runtimeScheduler, facebook::react::UIManager& uiManager, std::function<void(facebook::jsi::Runtime&, bool)> notifyResizeObserversFunction);
+  public void disconnect(facebook::react::RuntimeScheduler& runtimeScheduler, facebook::react::UIManager& uiManager);
+  public void observe(facebook::react::ResizeObserverObserverId resizeObserverId, const facebook::react::ShadowNodeFamily::Shared& shadowNodeFamily, facebook::react::ResizeObserverBoxOptions boxOptions);
+  public void unobserve(facebook::react::ResizeObserverObserverId resizeObserverId, const facebook::react::ShadowNodeFamily::Shared& shadowNodeFamily);
+}
+
 class facebook::react::RootProps : public facebook::react::HostPlatformViewProps {
   public RootProps() = default;
   public RootProps(const facebook::react::PropsParserContext& context, const facebook::react::RootProps& sourceProps, const facebook::react::LayoutConstraints& layoutConstraints, const facebook::react::LayoutContext& layoutContext);
@@ -4236,6 +4298,7 @@ class facebook::react::RuntimeScheduler : public facebook::react::RuntimeSchedul
   public virtual void setEventTimingDelegate(facebook::react::RuntimeSchedulerEventTimingDelegate* eventTimingDelegate) override;
   public virtual void setIntersectionObserverDelegate(facebook::react::RuntimeSchedulerIntersectionObserverDelegate* intersectionObserverDelegate) override;
   public virtual void setPerformanceEntryReporter(facebook::react::PerformanceEntryReporter* reporter) override;
+  public virtual void setResizeObserverDelegate(facebook::react::RuntimeSchedulerResizeObserverDelegate* resizeObserverDelegate) override;
   public virtual void setShadowTreeRevisionConsistencyManager(facebook::react::ShadowTreeRevisionConsistencyManager* shadowTreeRevisionConsistencyManager) override;
   public virtual void unregisterTaskQueueSource(uint64_t sourceId) override;
 }
@@ -4257,6 +4320,7 @@ class facebook::react::RuntimeSchedulerBase : public facebook::hermes::IEventLoo
   public virtual void setEventTimingDelegate(facebook::react::RuntimeSchedulerEventTimingDelegate* eventTimingDelegate) = 0;
   public virtual void setIntersectionObserverDelegate(facebook::react::RuntimeSchedulerIntersectionObserverDelegate* intersectionObserverDelegate) = 0;
   public virtual void setPerformanceEntryReporter(facebook::react::PerformanceEntryReporter* reporter) = 0;
+  public virtual void setResizeObserverDelegate(facebook::react::RuntimeSchedulerResizeObserverDelegate* resizeObserverDelegate) = 0;
   public virtual void setShadowTreeRevisionConsistencyManager(facebook::react::ShadowTreeRevisionConsistencyManager* provider) = 0;
   public virtual ~RuntimeSchedulerBase() = default;
 }
@@ -4286,6 +4350,11 @@ class facebook::react::RuntimeSchedulerIntersectionObserverDelegate {
   public virtual ~RuntimeSchedulerIntersectionObserverDelegate() = default;
 }
 
+class facebook::react::RuntimeSchedulerResizeObserverDelegate {
+  public virtual void runResizeObservations(facebook::jsi::Runtime& runtime) = 0;
+  public virtual ~RuntimeSchedulerResizeObserverDelegate() = default;
+}
+
 class facebook::react::RuntimeScheduler_Modern : public facebook::react::RuntimeSchedulerBase {
   public RuntimeScheduler_Modern(const facebook::react::RuntimeScheduler_Modern&) = delete;
   public RuntimeScheduler_Modern(facebook::react::RuntimeExecutor runtimeExecutor, std::function<facebook::react::HighResTimeStamp()> now, facebook::react::RuntimeSchedulerTaskErrorHandler onTaskError);
@@ -4309,6 +4378,7 @@ class facebook::react::RuntimeScheduler_Modern : public facebook::react::Runtime
   public virtual void setEventTimingDelegate(facebook::react::RuntimeSchedulerEventTimingDelegate* eventTimingDelegate) override;
   public virtual void setIntersectionObserverDelegate(facebook::react::RuntimeSchedulerIntersectionObserverDelegate* intersectionObserverDelegate) override;
   public virtual void setPerformanceEntryReporter(facebook::react::PerformanceEntryReporter* performanceEntryReporter) override;
+  public virtual void setResizeObserverDelegate(facebook::react::RuntimeSchedulerResizeObserverDelegate* resizeObserverDelegate) override;
   public virtual void setShadowTreeRevisionConsistencyManager(facebook::react::ShadowTreeRevisionConsistencyManager* shadowTreeRevisionConsistencyManager) override;
   public virtual void unregisterTaskQueueSource(uint64_t sourceId) override;
 }
@@ -4822,6 +4892,7 @@ class facebook::react::TextAttributes : public facebook::react::DebugStringConve
   public std::optional<facebook::react::TextDecorationStyle> textDecorationStyle;
   public std::optional<facebook::react::TextTransform> textTransform;
   public std::optional<facebook::react::WritingDirection> baseWritingDirection;
+  public std::optional<std::string> fontVariationSettings;
   public std::string fontFamily;
   public std::vector<facebook::react::TextEffectInfo> textEffects;
   public void apply(facebook::react::TextAttributes textAttributes);
@@ -4857,6 +4928,7 @@ struct facebook::react::TextInputEventEmitter::KeyPressMetrics {
 }
 
 struct facebook::react::TextInputEventEmitter::Metrics {
+  public bool responderIgnoreScroll;
   public facebook::react::AttributedString::Range selectionRange;
   public facebook::react::EdgeInsets contentInset;
   public facebook::react::Float zoomScale;
@@ -5099,10 +5171,10 @@ class facebook::react::UIManager : public facebook::react::ShadowTreeDelegate {
   public void setDelegate(facebook::react::UIManagerDelegate* delegate);
   public void setIsJSResponder(const std::shared_ptr<const facebook::react::ShadowNode>& shadowNode, bool isJSResponder, bool blockNativeResponder) const;
   public void setNativeAnimatedDelegate(std::weak_ptr<facebook::react::UIManagerNativeAnimatedDelegate> delegate);
-  public void setSurfaceProps(facebook::react::SurfaceId surfaceId, const std::string& moduleName, const folly::dynamic& props, facebook::react::DisplayMode displayMode) const noexcept;
+  public void setSurfaceProps(facebook::react::SurfaceId surfaceId, std::string moduleName, folly::dynamic props, facebook::react::DisplayMode displayMode) const noexcept;
   public void setViewTransitionDelegate(facebook::react::UIManagerViewTransitionDelegate* delegate);
   public void startEmptySurface(facebook::react::ShadowTree::Unique&& shadowTree) const noexcept;
-  public void startSurface(facebook::react::ShadowTree::Unique&& shadowTree, const std::string& moduleName, const folly::dynamic& props, facebook::react::DisplayMode displayMode) const noexcept;
+  public void startSurface(facebook::react::ShadowTree::Unique&& shadowTree, std::string moduleName, folly::dynamic props, facebook::react::DisplayMode displayMode) const noexcept;
   public void stopSurfaceForAnimationDelegate(facebook::react::SurfaceId surfaceId) const;
   public void synchronouslyUpdateViewOnUIThread(facebook::react::Tag tag, const folly::dynamic& props);
   public void unregisterCommitHook(facebook::react::UIManagerCommitHook& commitHook);
@@ -6238,6 +6310,12 @@ enum facebook::react::ReactEventPriority {
   Idle,
 }
 
+enum facebook::react::ResizeObserverBoxOptions {
+  BorderBox,
+  ContentBox,
+  DevicePixelContentBox,
+}
+
 enum facebook::react::Role : uint8_t {
   Alert,
   Alertdialog,
@@ -7157,6 +7235,7 @@ struct facebook::react::JExecutor : public facebook::jni::JavaClass<facebook::re
 }
 
 struct facebook::react::JFrameTimingSequence : public facebook::jni::JavaClass<facebook::react::JFrameTimingSequence> {
+  public facebook::react::HighResDuration getVsyncInterval() const;
   public facebook::react::HighResTimeStamp getBeginTimestamp() const;
   public facebook::react::HighResTimeStamp getEndTimestamp() const;
   public static constexpr auto kJavaDescriptor;
@@ -7597,6 +7676,22 @@ struct facebook::react::RequestInfo {
   public std::string url;
 }
 
+struct facebook::react::ResizeObservationResult {
+  public bool detached;
+  public facebook::react::Size observedSize;
+  public size_t targetDepth;
+  public std::optional<facebook::react::ResizeObserverEntry> entry;
+}
+
+struct facebook::react::ResizeObserverEntry {
+  public facebook::react::Rect contentRect;
+  public facebook::react::ResizeObserverObserverId resizeObserverId;
+  public facebook::react::ShadowNodeFamily::Shared shadowNodeFamily;
+  public facebook::react::Size borderBoxSize;
+  public facebook::react::Size contentBoxSize;
+  public facebook::react::Size devicePixelContentBoxSize;
+}
+
 struct facebook::react::ResourceTimingData {
   public facebook::react::HighResTimeStamp fetchStart;
   public facebook::react::HighResTimeStamp requestStart;
@@ -7637,6 +7732,7 @@ struct facebook::react::ScrollEndDragEvent : public facebook::react::ScrollEvent
 
 struct facebook::react::ScrollEvent : public facebook::react::EventPayload {
   public ScrollEvent() = default;
+  public bool responderIgnoreScroll;
   public facebook::react::EdgeInsets contentInset;
   public facebook::react::Float timestamp;
   public facebook::react::Float zoomScale;
@@ -8226,6 +8322,17 @@ struct facebook::react::NativeIntersectionObserverNativeIntersectionObserverObse
   public bool operator==(const facebook::react::NativeIntersectionObserverNativeIntersectionObserverObserveOptions& other) const;
 }
 
+template <typename P0, typename P1, typename P2, typename P3, typename P4, typename P5>
+struct facebook::react::NativeResizeObserverNativeResizeObserverEntry {
+  public P0 resizeObserverId;
+  public P1 targetInstanceHandle;
+  public P2 contentRect;
+  public P3 borderBoxSize;
+  public P4 contentBoxSize;
+  public P5 devicePixelContentBoxSize;
+  public bool operator==(const facebook::react::NativeResizeObserverNativeResizeObserverEntry& other) const;
+}
+
 template <typename P0, typename P1, typename P2, typename P3, typename P4>
 struct facebook::react::NativeDeviceInfoDisplayMetricsAndroid {
   public P0 width;
@@ -8339,6 +8446,14 @@ struct facebook::react::NativeMutationObserverNativeMutationObserverObserveOptio
   public P1 targetShadowNode;
   public P2 subtree;
   public bool operator==(const facebook::react::NativeMutationObserverNativeMutationObserverObserveOptions& other) const;
+}
+
+template <typename P0, typename P1, typename P2>
+struct facebook::react::NativeResizeObserverNativeResizeObserverObserveOptions {
+  public P0 resizeObserverId;
+  public P1 targetShadowNode;
+  public P2 box;
+  public bool operator==(const facebook::react::NativeResizeObserverNativeResizeObserverObserveOptions& other) const;
 }
 
 template <typename P0, typename P1, typename P2>
@@ -8722,12 +8837,6 @@ class facebook::react::NativeMicrotasksCxxSpec : public facebook::react::TurboMo
 }
 
 template <typename T>
-class facebook::react::NativeModalManagerCxxSpec : public facebook::react::TurboModule {
-  protected NativeModalManagerCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
-  public static constexpr std::string_view kModuleName;
-}
-
-template <typename T>
 class facebook::react::NativeMutationObserverCxxSpec : public facebook::react::TurboModule {
   protected NativeMutationObserverCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public static constexpr std::string_view kModuleName;
@@ -8772,6 +8881,12 @@ class facebook::react::NativeReactDevToolsSettingsManagerCxxSpec : public facebo
 template <typename T>
 class facebook::react::NativeRedBoxCxxSpec : public facebook::react::TurboModule {
   protected NativeRedBoxCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
+  public static constexpr std::string_view kModuleName;
+}
+
+template <typename T>
+class facebook::react::NativeResizeObserverCxxSpec : public facebook::react::TurboModule {
+  protected NativeResizeObserverCxxSpec(std::shared_ptr<facebook::react::CallInvoker> jsInvoker);
   public static constexpr std::string_view kModuleName;
 }
 
@@ -9107,6 +9222,20 @@ struct facebook::react::NativeReactDevToolsRuntimeSettingsModulePartialReloadAnd
 
 template <typename T>
 struct facebook::react::NativeReactDevToolsRuntimeSettingsModuleReloadAndProfileConfigBridging {
+  public static T fromJs(facebook::jsi::Runtime& rt, const facebook::jsi::Object& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
+  public static T types;
+  public static facebook::jsi::Object toJs(facebook::jsi::Runtime& rt, const T& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
+}
+
+template <typename T>
+struct facebook::react::NativeResizeObserverNativeResizeObserverEntryBridging {
+  public static T fromJs(facebook::jsi::Runtime& rt, const facebook::jsi::Object& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
+  public static T types;
+  public static facebook::jsi::Object toJs(facebook::jsi::Runtime& rt, const T& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
+}
+
+template <typename T>
+struct facebook::react::NativeResizeObserverNativeResizeObserverObserveOptionsBridging {
   public static T fromJs(facebook::jsi::Runtime& rt, const facebook::jsi::Object& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
   public static T types;
   public static facebook::jsi::Object toJs(facebook::jsi::Runtime& rt, const T& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker);
@@ -10888,6 +11017,8 @@ class facebook::react::jsinspector_modern::tracing::TargetTracingAgent {
 }
 
 class facebook::react::jsinspector_modern::tracing::TraceEventGenerator {
+  public static facebook::react::jsinspector_modern::tracing::TraceEvent createIdleBeginFrameEvent(facebook::react::jsinspector_modern::tracing::FrameSequenceId sequenceId, int layerTreeId, facebook::react::HighResTimeStamp timestamp, facebook::react::jsinspector_modern::tracing::ProcessId processId, facebook::react::jsinspector_modern::tracing::ThreadId threadId);
+  public static facebook::react::jsinspector_modern::tracing::TraceEvent createNeedsBeginFrameChangedEvent(int layerTreeId, facebook::react::HighResTimeStamp timestamp, facebook::react::jsinspector_modern::tracing::ProcessId processId, facebook::react::jsinspector_modern::tracing::ThreadId threadId);
   public static facebook::react::jsinspector_modern::tracing::TraceEvent createScreenshotEvent(facebook::react::jsinspector_modern::tracing::FrameSequenceId frameSequenceId, int sourceId, std::vector<uint8_t>&& snapshot, facebook::react::HighResTimeStamp expectedDisplayTime, facebook::react::jsinspector_modern::tracing::ProcessId processId, facebook::react::jsinspector_modern::tracing::ThreadId threadId);
   public static facebook::react::jsinspector_modern::tracing::TraceEvent createSetLayerTreeIdEvent(std::string frame, int layerTreeId, facebook::react::jsinspector_modern::tracing::ProcessId processId, facebook::react::jsinspector_modern::tracing::ThreadId threadId, facebook::react::HighResTimeStamp timestamp);
   public static std::pair<facebook::react::jsinspector_modern::tracing::TraceEvent, facebook::react::jsinspector_modern::tracing::TraceEvent> createFrameTimingsEvents(facebook::react::jsinspector_modern::tracing::FrameSequenceId sequenceId, int layerTreeId, facebook::react::HighResTimeStamp beginTimestamp, facebook::react::HighResTimeStamp endTimestamp, facebook::react::jsinspector_modern::tracing::ProcessId processId, facebook::react::jsinspector_modern::tracing::ThreadId threadId);
@@ -10948,7 +11079,8 @@ struct facebook::react::jsinspector_modern::tracing::EventLoopReporter {
 
 struct facebook::react::jsinspector_modern::tracing::FrameTimingSequence {
   public FrameTimingSequence() = delete;
-  public FrameTimingSequence(facebook::react::jsinspector_modern::tracing::FrameSequenceId id, facebook::react::jsinspector_modern::tracing::ThreadId threadId, facebook::react::HighResTimeStamp beginTimestamp, facebook::react::HighResTimeStamp endTimestamp, std::optional<std::vector<uint8_t>> screenshot = std::nullopt);
+  public FrameTimingSequence(facebook::react::jsinspector_modern::tracing::FrameSequenceId id, facebook::react::jsinspector_modern::tracing::ThreadId threadId, facebook::react::HighResTimeStamp beginTimestamp, facebook::react::HighResTimeStamp endTimestamp, std::optional<std::vector<uint8_t>> screenshot = std::nullopt, facebook::react::HighResDuration vsyncInterval = facebook::react::HighResDuration::zero());
+  public facebook::react::HighResDuration vsyncInterval;
   public facebook::react::HighResTimeStamp beginTimestamp;
   public facebook::react::HighResTimeStamp endTimestamp;
   public facebook::react::jsinspector_modern::tracing::FrameSequenceId id;

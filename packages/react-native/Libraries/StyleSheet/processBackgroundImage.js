@@ -348,6 +348,11 @@ function parseRadialGradientCSSString(
         size = {x: sizeX, y: sizeY};
       } else {
         hasExplicitSingleSize = true;
+        // The token after the size is not a second size value (e.g. 'at' or a
+        // shape keyword). Put it back so the loop can process it, otherwise
+        // the position would be silently dropped and its values re-parsed as
+        // a new size.
+        firstPartTokens.unshift(token);
       }
     } else if (tokenTrimmed === 'at') {
       let top: string | number;
@@ -560,6 +565,15 @@ function parseRadialGradientCSSString(
 
     if (hasExplicitSingleSize && hasExplicitShape && shape === 'ellipse') {
       // If a single size is explicitly set and the shape is an ellipse, return null and do not apply any gradient. Same as web.
+      return null;
+    }
+
+    if (
+      shape === 'circle' &&
+      typeof size === 'object' &&
+      (typeof size.x === 'string' || typeof size.y === 'string')
+    ) {
+      // A circle radius must be a <length>. Percentages are only valid for ellipses, so return null and do not apply any gradient. Same as web.
       return null;
     }
   }
