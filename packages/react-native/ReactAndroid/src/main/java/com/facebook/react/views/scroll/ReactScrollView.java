@@ -567,12 +567,21 @@ public class ReactScrollView extends ScrollView
       View currentFocused = findFocus();
       View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
       if (nextFocused != null && nextFocused != currentFocused && nextFocused != this) {
-        nextFocused.requestFocus(direction);
+        if (nextFocused.requestFocus(direction)) {
+          ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction);
+        }
         return true;
       }
       return false;
     }
-    return super.arrowScroll(direction);
+
+    View focusedBeforeScroll = findFocus();
+    boolean handled = super.arrowScroll(direction);
+    // super.arrowScroll() can scroll without moving focus, so only click when focus moved.
+    if (handled && findFocus() != focusedBeforeScroll) {
+      ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction);
+    }
+    return handled;
   }
 
   /**
