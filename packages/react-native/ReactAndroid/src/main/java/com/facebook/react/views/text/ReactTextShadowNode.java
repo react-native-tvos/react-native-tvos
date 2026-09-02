@@ -226,7 +226,7 @@ public class ReactTextShadowNode extends ReactBaseTextShadowNode {
       int hintWidth = (int) Math.ceil(desiredWidth);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         StaticLayout.Builder builder =
-          StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, (int) width)
+          StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, hintWidth)
             .setAlignment(alignment)
             .setLineSpacing(0.f, 1.f)
             .setIncludePad(mIncludeFontPadding)
