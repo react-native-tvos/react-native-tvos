@@ -15,6 +15,7 @@ import static com.facebook.react.views.scroll.ReactScrollViewHelper.SNAP_ALIGNME
 import static com.facebook.react.views.scroll.ReactScrollViewHelper.findNextFocusableView;
 
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -139,6 +140,10 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
   private int mFadingEdgeLengthEnd = 0;
   private int mSnapToItemPadding;
   private boolean mScrollAnimationEnabled = true;
+  // Values <= 0 keep the platform default duration.
+  private int mScrollAnimationDuration;
+  // null keeps the platform default curve.
+  private @Nullable TimeInterpolator mScrollAnimationInterpolator;
   private boolean mBlockScrollDelta = false;
 
   public ReactHorizontalScrollView(Context context) {
@@ -203,6 +208,8 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     mMaintainVisibleContentPositionHelper = null;
     mFadingEdgeLengthStart = 0;
     mFadingEdgeLengthEnd = 0;
+    mScrollAnimationDuration = 0;
+    mScrollAnimationInterpolator = null;
   }
 
   /* package */ void recycleView() {
@@ -408,6 +415,15 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
 
   public void setScrollAnimationEnabled(boolean scrollAnimationEnabled) {
     mScrollAnimationEnabled = scrollAnimationEnabled;
+  }
+
+  public void setScrollAnimationDuration(int scrollAnimationDuration) {
+    mScrollAnimationDuration = scrollAnimationDuration;
+  }
+
+  public void setScrollAnimationInterpolator(
+      @Nullable TimeInterpolator scrollAnimationInterpolator) {
+    mScrollAnimationInterpolator = scrollAnimationInterpolator;
   }
 
   @Override
@@ -1846,8 +1862,16 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
     // not animated at all.
     DEFAULT_FLING_ANIMATOR.cancel();
 
-    // Update the fling animator with new values
-    int duration = ReactScrollViewHelper.getDefaultScrollAnimationDuration(getContext());
+    // Update the fling animator with new values. The animator is reused, so the interpolator must
+    // be re-applied on every call to undo whatever a previous `scrollAnimationEasing` left on it.
+    int duration =
+        mScrollAnimationDuration > 0
+            ? mScrollAnimationDuration
+            : ReactScrollViewHelper.getDefaultScrollAnimationDuration(getContext());
+    DEFAULT_FLING_ANIMATOR.setInterpolator(
+        mScrollAnimationInterpolator != null
+            ? mScrollAnimationInterpolator
+            : ReactScrollViewHelper.getDefaultScrollAnimationInterpolator());
     DEFAULT_FLING_ANIMATOR.setDuration(duration).setIntValues(start, end);
 
     // Start the animator

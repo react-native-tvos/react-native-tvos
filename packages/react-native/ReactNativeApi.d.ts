@@ -4338,6 +4338,13 @@ declare type ScheduleLocalNotificationDetails =
   PresentLocalNotificationDetails & {
     repeatInterval?: "day" | "hour" | "minute" | "month" | "week" | "year"
   }
+declare type ScrollAnimationEasing =
+  | "ease-in-out"
+  | "ease-in"
+  | "ease-out"
+  | "ease"
+  | "linear"
+  | [number, number, number, number]
 declare type ScrollEvent = NativeSyntheticEvent<NativeScrollEvent>
 declare type ScrollResponderType = ScrollViewImperativeMethods
 declare type ScrollToLocationParamsType = {
@@ -4376,6 +4383,8 @@ declare type ScrollViewBaseProps = {
   readonly pagingEnabled?: boolean
   readonly refreshControl?: React.JSX.Element
   readonly removeClippedSubviews?: boolean
+  readonly scrollAnimationDuration?: number
+  readonly scrollAnimationEasing?: ScrollAnimationEasing
   readonly scrollAnimationEnabled?: boolean
   readonly scrollEnabled?: boolean
   readonly scrollEventThrottle?: number
