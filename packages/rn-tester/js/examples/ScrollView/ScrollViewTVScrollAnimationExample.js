@@ -82,6 +82,86 @@ const SectionHeader = ({title}: {title: string}) => (
   </View>
 );
 
+const TimingRow = ({
+  title,
+  colorOffset,
+  scrollAnimationDuration,
+  scrollAnimationEasing,
+}: {
+  title: string,
+  colorOffset: number,
+  scrollAnimationDuration?: number,
+  scrollAnimationEasing?:
+    | 'linear'
+    | 'ease'
+    | 'ease-in'
+    | 'ease-out'
+    | 'ease-in-out'
+    | [number, number, number, number],
+}) => (
+  <View>
+    <SectionHeader title={title} />
+    <ScrollView
+      horizontal
+      scrollAnimationDuration={scrollAnimationDuration}
+      scrollAnimationEasing={scrollAnimationEasing}
+      showsHorizontalScrollIndicator={false}
+      snapToAlignment="item">
+      {Array.from({length: 15}, (_, i) => (
+        <View key={i} scrollSnapAlign="start" style={{marginRight: px(20)}}>
+          <Card
+            label={`Item ${i + 1}`}
+            width={280}
+            height={160}
+            colorIndex={i + colorOffset}
+          />
+        </View>
+      ))}
+    </ScrollView>
+  </View>
+);
+
+const ScrollViewTVScrollAnimationTimingExample = (): any => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#1a1a2e',
+        paddingTop: px(60),
+        paddingHorizontal: px(40),
+      }}>
+      <Text
+        style={{
+          fontSize: px(42),
+          fontWeight: '700',
+          color: '#ffffff',
+          marginBottom: px(32),
+        }}>
+        scrollAnimationDuration / scrollAnimationEasing Demo
+      </Text>
+
+      <View style={{gap: px(40)}}>
+        <TimingRow
+          title="Default — no props (~250ms, accelerate/decelerate)"
+          colorOffset={0}
+        />
+        <TimingRow
+          title="500ms — scrollAnimationEasing: 'ease-out'"
+          colorOffset={3}
+          scrollAnimationDuration={500}
+          scrollAnimationEasing="ease-out"
+        />
+        <TimingRow
+          title="500ms — scrollAnimationEasing: [0.26, 0.86, 0.44, 0.985]"
+          colorOffset={6}
+          scrollAnimationDuration={500}
+          scrollAnimationEasing={[0.26, 0.86, 0.44, 0.985]}
+        />
+      </View>
+    </View>
+  );
+};
+
 const ScrollViewTVScrollAnimationExample = (): any => {
   return (
     <View
@@ -146,14 +226,23 @@ const ScrollViewTVScrollAnimationExample = (): any => {
 
 exports.title = 'ScrollViewTVScrollAnimationExample';
 exports.category = 'TV';
-exports.description =
-  'Demonstrates scrollAnimationEnabled prop on TV platforms';
+exports.description = 'Demonstrates the scroll animation props on TV platforms';
 
 exports.examples = [
   {
     title: 'scrollAnimationEnabled example for TV',
     render(): React.MixedElement {
       return <ScrollViewTVScrollAnimationExample />;
+    },
+  },
+  {
+    title: 'scrollAnimationDuration / scrollAnimationEasing example for TV',
+    description:
+      'Android TV only. D-pad through each row and compare how the scroll ' +
+      'animation feels: the platform default, a slower ease-out, and a ' +
+      'custom cubic-bezier.',
+    render(): React.MixedElement {
+      return <ScrollViewTVScrollAnimationTimingExample />;
     },
   },
 ] as Array<RNTesterModuleExample>;

@@ -88,6 +88,8 @@ export const __INTERNAL_VIEW_CONFIG: PartialViewConfig =
           },
           snapToItemPadding: true,
           scrollAnimationEnabled: true,
+          scrollAnimationDuration: true,
+          scrollAnimationEasing: true,
           pointerEvents: true,
           isInvertedVirtualizedList: true,
         },
