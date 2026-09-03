@@ -852,7 +852,9 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
       View currentFocused = findFocus();
       View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
       if (nextFocused != null && nextFocused != currentFocused && nextFocused != this) {
-        nextFocused.requestFocus(direction);
+        if (nextFocused.requestFocus(direction)) {
+          ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction);
+        }
         handled = true;
       }
     } else if (mPagingEnabled) {
@@ -863,16 +865,20 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
         View nextFocused = FocusFinder.getInstance().findNextFocus(this, currentFocused, direction);
         View rootChild = getContentView();
         if (rootChild != null && nextFocused != null && isDescendantOf(nextFocused, rootChild)) {
+          boolean focusMoved;
           if (mSnapToAlignment == SNAP_ALIGNMENT_ITEM) {
             // When snapToAlignment is "item", don't use smoothScrollToNextPage (which scrolls
             // by full page width and ignores snapToItemPadding). Instead just request focus —
             // requestChildFocus → tryScrollSnapToChild handles scrolling with correct padding.
-            nextFocused.requestFocus();
+            focusMoved = nextFocused.requestFocus();
           } else {
             if (!isScrolledInView(nextFocused) && !isMostlyScrolledInView(nextFocused)) {
               smoothScrollToNextPage(direction);
             }
-            nextFocused.requestFocus();
+            focusMoved = nextFocused.requestFocus();
+          }
+          if (focusMoved) {
+            ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction);
           }
           handled = true;
         } else {
@@ -885,7 +891,12 @@ public class ReactHorizontalScrollView extends HorizontalScrollView
 
       mPagedArrowScrolling = false;
     } else {
+      View focusedBeforeScroll = findFocus();
       handled = super.arrowScroll(direction);
+      // super.arrowScroll() can scroll without moving focus, so only click when focus moved.
+      if (handled && findFocus() != focusedBeforeScroll) {
+        ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction);
+      }
     }
 
     return handled;

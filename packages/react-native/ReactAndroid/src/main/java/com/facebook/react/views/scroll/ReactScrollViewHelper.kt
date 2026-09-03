@@ -12,6 +12,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
+import android.view.SoundEffectConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.OverScroller
@@ -568,6 +569,29 @@ public object ReactScrollViewHelper {
     host.updateClippingRect(ancestorIdList)
 
     return host.findViewById(nextFocusableViewId)
+  }
+
+  /**
+   * Plays the system focus navigation sound for a D-pad move the scroll view handled itself.
+   *
+   * ViewRootImpl only sonifies focus moves it performs, so any key event a scroll view consumes
+   * (which it does as soon as its content is scrollable) navigates silently. Call this after a
+   * successful requestFocus to keep the click consistent. It is a no-op when the user has system
+   * sounds off.
+   */
+  @JvmStatic
+  public fun playFocusNavigationSoundEffect(view: View, @FocusDirection direction: Int) {
+    val soundConstant =
+        when (direction) {
+          View.FOCUS_UP,
+          View.FOCUS_BACKWARD -> SoundEffectConstants.NAVIGATION_UP
+          View.FOCUS_DOWN,
+          View.FOCUS_FORWARD -> SoundEffectConstants.NAVIGATION_DOWN
+          View.FOCUS_LEFT -> SoundEffectConstants.NAVIGATION_LEFT
+          View.FOCUS_RIGHT -> SoundEffectConstants.NAVIGATION_RIGHT
+          else -> return
+        }
+    view.playSoundEffect(soundConstant)
   }
 
   /**
