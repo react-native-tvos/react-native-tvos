@@ -12,9 +12,7 @@ build:
         name: Run Typescript generation
         working_directory: ../..
         command: |
-          if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            yarn build-types
-          fi
+          yarn build-types
     - run:
         name: Set up build-specific environment
         working_directory: ../..
