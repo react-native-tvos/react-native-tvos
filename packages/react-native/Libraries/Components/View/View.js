@@ -175,7 +175,13 @@ component View(ref?: React.RefSetter<ViewInstance>, ...props: ViewProps) {
       resolvedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
       delete resolvedProps.focusable;
     } else {
-      resolvedProps.focusable = focusable ?? false;
+      // `tvFocusable` and `focusable` both set the native isFocusable flag, and
+      // props are applied in ReadableNativeMap order, which is not stable. Sending
+      // `focusable: false` next to `tvFocusable: true` (what TVFocusGuideView
+      // does) lets whichever setter runs last win, so a guide can end up
+      // non-focusable and FocusFinder then ignores it as a nextFocus* target.
+      // Fall back to `tvFocusable` so both setters always agree.
+      resolvedProps.focusable = focusable ?? resolvedProps.tvFocusable ?? false;
       delete resolvedProps.isTVSelectable;
     }
 
