@@ -39,6 +39,7 @@ import com.facebook.react.uimanager.events.FocusEvent;
 import com.facebook.react.uimanager.events.PointerEventHelper;
 import com.facebook.react.uimanager.style.OutlineStyle;
 import com.facebook.react.uimanager.util.ReactFindViewUtil;
+import com.facebook.react.views.common.UiModeUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -382,7 +383,11 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
     }
     view.setTag(R.id.accessibility_state, accessibilityState);
     if (accessibilityState.hasKey("disabled")) {
-      view.setEnabled(!accessibilityState.getBoolean("disabled"));
+      boolean disabled = accessibilityState.getBoolean("disabled");
+      // TV: setEnabled(false) removes the view from D-pad focus search.
+      if (!disabled || !UiModeUtils.isTVDevice(view.getContext()) || !view.isFocusable()) {
+        view.setEnabled(!disabled);
+      }
     }
 
     // For states which don't have corresponding methods in

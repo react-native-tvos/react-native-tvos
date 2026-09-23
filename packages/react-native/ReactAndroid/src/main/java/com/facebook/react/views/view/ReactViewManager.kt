@@ -33,6 +33,7 @@ import com.facebook.react.uimanager.PointerEvents
 import com.facebook.react.uimanager.ReactAxOrderHelper
 import com.facebook.react.uimanager.Spacing
 import com.facebook.react.uimanager.ThemedReactContext
+import com.facebook.react.views.common.UiModeUtils
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.ViewProps
 import com.facebook.react.uimanager.annotations.ReactProp
@@ -505,6 +506,10 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
     // ** while the device is in touch mode.  **
     if (hasTouchScreen(view.context)) {
       view.isFocusableInTouchMode = focusable
+    }
+    // TV: a disabled view must stay enabled to remain in D-pad focus search.
+    if (focusable && UiModeUtils.isTVDevice(view.context)) {
+      view.isEnabled = true
     }
   }
 

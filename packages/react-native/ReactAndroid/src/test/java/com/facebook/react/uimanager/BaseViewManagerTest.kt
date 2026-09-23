@@ -10,12 +10,15 @@
 package com.facebook.react.uimanager
 
 import android.view.View.OnFocusChangeListener
+import android.app.UiModeManager
+import android.content.res.Configuration
 import com.facebook.react.R
 import com.facebook.react.bridge.BridgeReactContext
 import com.facebook.react.bridge.DynamicFromObject
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsForTests
+import com.facebook.react.views.common.UiModeUtils
 import com.facebook.react.views.view.ReactViewGroup
 import com.facebook.react.views.view.ReactViewManager
 import com.facebook.testutils.shadows.ShadowArguments
@@ -29,10 +32,12 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowUIModeManager
 
-@Config(shadows = [ShadowArguments::class])
 @RunWith(RobolectricTestRunner::class)
+@Config(shadows = [ShadowArguments::class, ShadowUIModeManager::class])
 class BaseViewManagerTest {
   private lateinit var viewManager: BaseViewManager<ReactViewGroup, *>
   private lateinit var view: ReactViewGroup
@@ -69,6 +74,70 @@ class BaseViewManagerTest {
     viewManager.setViewState(view, accessibilityState)
     Assertions.assertThat(view.getTag(R.id.accessibility_state)).isEqualTo(accessibilityState)
     Assertions.assertThat(view.isSelected).isEqualTo(true)
+  }
+
+  private fun setTvMode(television: Boolean) {
+    val uiModeManager =
+        RuntimeEnvironment.getApplication().getSystemService(UiModeManager::class.java)!!
+    shadowOf(uiModeManager)
+        .setCurrentModeType(
+            if (television) Configuration.UI_MODE_TYPE_TELEVISION
+            else Configuration.UI_MODE_TYPE_NORMAL)
+    val field = UiModeUtils::class.java.getDeclaredField("isTVDeviceCached")
+    field.isAccessible = true
+    field.set(UiModeUtils::class.java.getDeclaredField("INSTANCE").get(null), null)
+  }
+
+  @Test
+  fun testAccessibilityStateDisabledDisablesNonFocusableView() {
+    setTvMode(television = false)
+    val accessibilityState = JavaOnlyMap()
+    accessibilityState.putBoolean("disabled", true)
+    viewManager.setViewState(view, accessibilityState)
+    Assertions.assertThat(view.getTag(R.id.accessibility_state)).isEqualTo(accessibilityState)
+    Assertions.assertThat(view.isEnabled).isFalse()
+  }
+
+  @Test
+  fun testAccessibilityStateDisabledDisablesFocusableViewOutsideTv() {
+    setTvMode(television = false)
+    val accessibilityState = JavaOnlyMap()
+    accessibilityState.putBoolean("disabled", true)
+    view.isFocusable = true
+    viewManager.setViewState(view, accessibilityState)
+    Assertions.assertThat(view.isEnabled).isFalse()
+  }
+
+  @Test
+  fun testAccessibilityStateDisabledKeepsFocusableViewEnabledOnTv() {
+    setTvMode(television = true)
+    val accessibilityState = JavaOnlyMap()
+    accessibilityState.putBoolean("disabled", true)
+    view.isFocusable = true
+    viewManager.setViewState(view, accessibilityState)
+    Assertions.assertThat(view.getTag(R.id.accessibility_state)).isEqualTo(accessibilityState)
+    Assertions.assertThat(view.isEnabled).isTrue()
+  }
+
+  @Test
+  fun testFocusableReEnablesDisabledViewOnTv() {
+    setTvMode(television = true)
+    val accessibilityState = JavaOnlyMap()
+    accessibilityState.putBoolean("disabled", true)
+    viewManager.setViewState(view, accessibilityState)
+    Assertions.assertThat(view.isEnabled).isFalse()
+    (viewManager as ReactViewManager).setFocusable(view, true)
+    Assertions.assertThat(view.isEnabled).isTrue()
+  }
+
+  @Test
+  fun testFocusableDoesNotEnableDisabledViewOutsideTv() {
+    setTvMode(television = false)
+    val accessibilityState = JavaOnlyMap()
+    accessibilityState.putBoolean("disabled", true)
+    viewManager.setViewState(view, accessibilityState)
+    (viewManager as ReactViewManager).setFocusable(view, true)
+    Assertions.assertThat(view.isEnabled).isFalse()
   }
 
   @Test
