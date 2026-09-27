@@ -50,7 +50,4 @@ type RCTActivityIndicatorViewNativeProps = Readonly<{
 
 export default codegenNativeComponent<RCTActivityIndicatorViewNativeProps>(
   'ActivityIndicatorView',
-  {
-    paperComponentName: 'RCTActivityIndicatorView',
-  },
 ) as HostComponent<RCTActivityIndicatorViewNativeProps>;

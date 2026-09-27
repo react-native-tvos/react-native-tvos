@@ -13,11 +13,7 @@ import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import type {TimerMock} from '@react-native/fantom';
 
 import DOMException from '../../../errors/DOMException';
-import {AbortController} from '../AbortController';
-import {AbortSignal_public as AbortSignal} from '../AbortSignal';
 import * as Fantom from '@react-native/fantom';
-import Event from 'react-native/src/private/webapis/dom/events/Event';
-import EventTarget from 'react-native/src/private/webapis/dom/events/EventTarget';
 
 let listenerCallOrder = 0;
 
@@ -81,6 +77,8 @@ describe('AbortController', () => {
 
   it('should be stringified as [object AbortController]', () => {
     // $FlowExpectedError[method-unbinding]
+    /* $FlowFixMe[invalid-this-arg] Error exposed after fixing this typing
+     * unsoundness in flow */
     expect(Object.prototype.toString.call(controller)).toBe(
       '[object AbortController]',
     );
@@ -171,6 +169,8 @@ describe('AbortController', () => {
 
     it('should be stringified as [object AbortSignal]', () => {
       // $FlowExpectedError[method-unbinding]
+      /* $FlowFixMe[invalid-this-arg] Error exposed after fixing this typing
+       * unsoundness in flow */
       expect(Object.prototype.toString.call(signal)).toBe(
         '[object AbortSignal]',
       );
@@ -267,6 +267,8 @@ describe('AbortController', () => {
     it("should throw a TypeError if 'this' is not an AbortController object", () => {
       expect(() => {
         // $FlowExpectedError[method-unbinding]
+        /* $FlowFixMe[invalid-this-arg] Error exposed after fixing this typing
+         * unsoundness in flow */
         controller.abort.call({});
       }).toThrow(
         "Expected 'this' to be an 'AbortController' object, but got object",

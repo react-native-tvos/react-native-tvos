@@ -1444,7 +1444,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
   // Clean up box shadow layers to prevent cross-component contamination
   if (_boxShadowLayers != nullptr) {
-    for (CALayer *boxShadowLayer = nullptr in _boxShadowLayers) {
+    for (CALayer *boxShadowLayer in _boxShadowLayers) {
       [boxShadowLayer removeFromSuperlayer];
     }
     [_boxShadowLayers removeAllObjects];
@@ -1504,7 +1504,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     return nil;
   }
 
-  for (UIView *subview = nullptr in [currentContainerView.subviews reverseObjectEnumerator]) {
+  for (UIView *subview in [currentContainerView.subviews reverseObjectEnumerator]) {
     UIView *hitView = [subview hitTest:[subview convertPoint:point fromView:currentContainerView] withEvent:event];
     if (hitView) {
       return hitView;
@@ -1662,7 +1662,7 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
     if (_swiftUIWrapper == nullptr) {
       _swiftUIWrapper = [RCTSwiftUIContainerViewWrapper new];
       UIView *swiftUIContentView = [[UIView alloc] init];
-      for (UIView *subview = nullptr in self.subviews) {
+      for (UIView *subview in self.subviews) {
         [swiftUIContentView addSubview:subview];
       }
       swiftUIContentView.clipsToBounds = self.clipsToBounds;
@@ -1680,7 +1680,7 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
   } else {
     if (_swiftUIWrapper != nullptr) {
       UIView *swiftUIContentView = _swiftUIWrapper.contentView;
-      for (UIView *subview = nullptr in swiftUIContentView.subviews) {
+      for (UIView *subview in swiftUIContentView.subviews) {
         [self addSubview:subview];
       }
       self.clipsToBounds = swiftUIContentView.clipsToBounds;
@@ -1706,7 +1706,7 @@ static RCTBorderStyle RCTBorderStyleFromOutlineStyle(OutlineStyle outlineStyle)
   if (_useCustomContainerView) {
     if (!_containerView) {
       _containerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
-      for (UIView *subview = nullptr in effectiveContentView.subviews) {
+      for (UIView *subview in effectiveContentView.subviews) {
         [_containerView addSubview:subview];
       }
       _containerView.clipsToBounds = effectiveContentView.clipsToBounds;
@@ -2424,7 +2424,13 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 
 - (BOOL)styleNeedsSwiftUIContainer
 {
-  if (!_props->filter.empty()) {
+  if (_props->filter.empty()) {
+    return NO;
+  }
+
+  // A filter must not affect layout, but UIHostingController insets its content by the safe area.
+  // To disable the insets we use `safeAreaRegions` which is only available in iOS 16.4 and tvOS 16.4.
+  if (@available(iOS 16.4, tvOS 16.4, *)) {
     for (const auto &primitive : _props->filter) {
       if (primitive.type == FilterType::Blur || primitive.type == FilterType::Grayscale ||
           primitive.type == FilterType::DropShadow || primitive.type == FilterType::Saturate ||
@@ -2433,6 +2439,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
       }
     }
   }
+
   return NO;
 }
 
@@ -2476,10 +2483,10 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   if (_filterLayer != nullptr) {
     [destinationView.layer addSublayer:_filterLayer];
   }
-  for (CALayer *layer = nullptr in _backgroundImageLayers) {
+  for (CALayer *layer in _backgroundImageLayers) {
     [destinationView.layer addSublayer:layer];
   }
-  for (CALayer *layer = nullptr in _boxShadowLayers) {
+  for (CALayer *layer in _boxShadowLayers) {
     [destinationView.layer addSublayer:layer];
   }
 }
@@ -2516,7 +2523,6 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
 - (void)focus
 {
   UIView *viewToFocus = [self viewToFocus];
-  [viewToFocus becomeFirstResponder];
 
 #if TARGET_OS_TV
   RCTSurfaceHostingProxyRootView *rootView = [self containingRootView];
@@ -2527,6 +2533,8 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   rootView.reactPreferredFocusedView = viewToFocus;
   [rootView setNeedsFocusUpdate];
   [rootView updateFocusIfNeeded];
+#else
+  [viewToFocus becomeFirstResponder];
 #endif
 }
 

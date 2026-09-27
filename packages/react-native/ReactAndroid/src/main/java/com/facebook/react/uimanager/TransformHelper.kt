@@ -26,7 +26,7 @@ public object TransformHelper {
       }
 
   internal fun convertToRadians(transformMap: ReadableMap, key: String): Double {
-    var value: Double
+    val value: Double
     var inRadians = true
     if (transformMap.getType(key) == ReadableType.String) {
       var stringValue = transformMap.getString(key)!!
@@ -83,11 +83,12 @@ public object TransformHelper {
 
     val helperMatrix = helperMatrix.get()!!
     MatrixMathHelper.resetIdentityMatrix(result)
-    val offsets = getTranslateForTransformOrigin(
-        viewWidth,
-        viewHeight,
-        transformOrigin,
-    )
+    val offsets =
+        getTranslateForTransformOrigin(
+            viewWidth,
+            viewHeight,
+            transformOrigin,
+        )
 
     if (offsets != null) {
       MatrixMathHelper.resetIdentityMatrix(helperMatrix)

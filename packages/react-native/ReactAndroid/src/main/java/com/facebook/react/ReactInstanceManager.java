@@ -175,7 +175,10 @@ public class ReactInstanceManager {
   private final @Nullable JSExceptionHandler mJSExceptionHandler;
   private final @Nullable UIManagerProvider mUIManagerProvider;
   private final @Nullable ReactPackageTurboModuleManagerDelegate.Builder mTMMDelegateBuilder;
+
+  @SuppressWarnings("rawtypes")
   private List<ViewManager> mViewManagers;
+
   private boolean mUseFallbackBundle = true;
   private volatile boolean mInstanceManagerInvalidated = false;
 
@@ -777,7 +780,7 @@ public class ReactInstanceManager {
       mCurrentActivity = null;
     }
 
-    ResourceDrawableIdHelper.getInstance().clear();
+    ResourceDrawableIdHelper.clear();
 
     mHasStartedDestroying = false;
     synchronized (mHasStartedDestroyingLock) {
@@ -940,6 +943,7 @@ public class ReactInstanceManager {
   }
 
   /** Uses configured {@link ReactPackage} instances to create all view managers. */
+  @SuppressWarnings("rawtypes")
   public List<ViewManager> getOrCreateViewManagers(
       ReactApplicationContext catalystApplicationContext) {
     ReactMarker.logMarker(CREATE_VIEW_MANAGERS_START);
@@ -964,6 +968,7 @@ public class ReactInstanceManager {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   public @Nullable ViewManager createViewManager(String viewManagerName) {
     ReactApplicationContext context;
     synchronized (mReactContextLock) {

@@ -204,13 +204,14 @@ internal class PointerEvent private constructor() : Event<PointerEvent>() {
         "button",
         getButtonChange(pointerType, eventState.lastButtonState, buttonState),
     )
-    pointerEvent.putInt("buttons", getButtons(_eventName, pointerType, buttonState))
+    val buttons = getButtons(_eventName, pointerType, buttonState)
+    pointerEvent.putInt("buttons", buttons)
 
     val pressure =
         if (isClickEvent) {
           0.0 // click events need pressure=0
         } else {
-          getPressure(pointerEvent.getInt("buttons"), _eventName)
+          getPressure(buttons, _eventName)
         }
 
     pointerEvent.putDouble("pressure", pressure)

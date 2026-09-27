@@ -41,7 +41,7 @@ public class TurboModuleManager(
   private val legacyModuleProvider: ModuleProvider
 
   // Prevents the creation of new TurboModules once cleanup as been initiated.
-  private val moduleCleanupLock = Object()
+  private val moduleCleanupLock = Any()
 
   @GuardedBy("moduleCleanupLock") private var moduleCleanupStarted = false
 
@@ -50,11 +50,12 @@ public class TurboModuleManager(
 
   @Suppress("NoHungarianNotation")
   @DoNotStrip
-  private val mHybridData: HybridData = initHybrid(
-      jsCallInvokerHolder as CallInvokerHolderImpl,
-      nativeMethodCallInvokerHolder as NativeMethodCallInvokerHolderImpl,
-      delegate,
-  )
+  private val mHybridData: HybridData =
+      initHybrid(
+          jsCallInvokerHolder as CallInvokerHolderImpl,
+          nativeMethodCallInvokerHolder as NativeMethodCallInvokerHolderImpl,
+          delegate,
+      )
 
   init {
 
@@ -234,7 +235,7 @@ public class TurboModuleManager(
       TurboModulePerfLogger.moduleCreateSetUpEnd(moduleName, moduleHolder.moduleId)
       synchronized(moduleHolder) {
         moduleHolder.endCreatingModule()
-        (moduleHolder as Object).notifyAll()
+        @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN") (moduleHolder as Object).notifyAll()
       }
 
       return nativeModule
@@ -245,7 +246,7 @@ public class TurboModuleManager(
       while (moduleHolder.isCreatingModule) {
         try {
           // Wait until TurboModule is created and initialized
-          (moduleHolder as Object).wait()
+          @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN") (moduleHolder as Object).wait()
         } catch (e: InterruptedException) {
           wasInterrupted = true
         }

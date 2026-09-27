@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <folly/dynamic.h>
 #include <react/renderer/components/view/BaseViewProps.h>
 #include <react/renderer/core/ReactPrimitives.h>

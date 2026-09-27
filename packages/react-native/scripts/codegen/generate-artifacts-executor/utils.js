@@ -126,16 +126,33 @@ function readReactNativeConfig(
     projectRoot,
     baseOutputPath,
   );
-  const rnConfigFilePath = path.resolve(projectRoot, 'react-native.config.js');
   if (autolinkingOutput) {
     return autolinkingOutput;
-  } else if (fs.existsSync(rnConfigFilePath)) {
-    // $FlowFixMe[unsupported-syntax]
-    return require(rnConfigFilePath);
-  } else {
-    codegenLog(`Could not find React Native config at: ${rnConfigFilePath}`);
-    return {};
   }
+  const rnConfigFilePaths = [
+    'react-native.config.js',
+    'react-native.config.cjs',
+  ]
+    .map(fileName => path.resolve(projectRoot, fileName))
+    .filter(candidatePath => fs.existsSync(candidatePath));
+  for (const rnConfigFilePath of rnConfigFilePaths) {
+    try {
+      // $FlowFixMe[unsupported-syntax]
+      return require(rnConfigFilePath);
+    } catch (error) {
+      // In a `"type": "module"` package, requiring the `.js` config throws;
+      // keep going so a sibling `.cjs` config is still picked up.
+      codegenLog(
+        `Could not load React Native config at: ${rnConfigFilePath}\n${error.message}`,
+      );
+    }
+  }
+  codegenLog(
+    rnConfigFilePaths.length > 0
+      ? `Could not load any React Native config in: ${projectRoot}`
+      : `Could not find React Native config in: ${projectRoot}`,
+  );
+  return {};
 }
 
 /**

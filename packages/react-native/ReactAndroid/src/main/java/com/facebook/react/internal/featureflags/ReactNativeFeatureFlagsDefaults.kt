@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<98e5bd41621c4a6910163a2b33c1f1b4>>
+ * @generated SignedSource<<e6dd37a212febbe7bf27c9348d32b466>>
  */
 
 /**
@@ -47,9 +47,13 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableAccumulatedUpdatesInRawPropsAndroid(): Boolean = false
 
+  override fun enableAndroidAutoOffscreenCompositingForElevation(): Boolean = false
+
   override fun enableAndroidTextMeasurementOptimizations(): Boolean = false
 
   override fun enableBridgelessArchitecture(): Boolean = true
+
+  override fun enableBufferedCallInvoker(): Boolean = true
 
   override fun enableCppPropsIteratorSetter(): Boolean = false
 
@@ -64,6 +68,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableExclusivePropsUpdateAndroid(): Boolean = false
 
   override fun enableFabricCommitBranching(): Boolean = false
+
+  override fun enableFabricCommitBranchingMergeOnMainThread(): Boolean = false
 
   override fun enableFabricLogs(): Boolean = false
 
@@ -82,6 +88,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableImageTransparentTintColor(): Boolean = false
 
   override fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean = false
+
+  override fun enableImperativeEvents(): Boolean = false
 
   override fun enableImperativeFocus(): Boolean = false
 
@@ -124,8 +132,6 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableViewRecyclingForView(): Boolean = true
 
   override fun enableVirtualViewContainerStateExperimental(): Boolean = false
-
-  override fun fixDifferentiatorParentTagForUnflattenCase(): Boolean = true
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 

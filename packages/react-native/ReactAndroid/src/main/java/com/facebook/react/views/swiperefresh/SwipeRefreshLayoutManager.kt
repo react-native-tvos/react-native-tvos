@@ -69,7 +69,7 @@ internal open class SwipeRefreshLayoutManager :
   }
 
   // TODO(T46143833): Remove this method once the 'size' prop has been migrated to String in JS.
-  fun setSize(view: ReactSwipeRefreshLayout, value: Int): Unit {
+  fun setSize(view: ReactSwipeRefreshLayout, value: Int) {
     view.setSize(value)
   }
 
@@ -87,7 +87,7 @@ internal open class SwipeRefreshLayoutManager :
   // 0 and 1 are deprecated and will be removed in a future release.
   // See T46143833
   @ReactProp(name = "size")
-  fun setSize(view: ReactSwipeRefreshLayout, size: Dynamic): Unit {
+  fun setSize(view: ReactSwipeRefreshLayout, size: Dynamic) {
     when {
       size.isNull -> view.setSize(SwipeRefreshLayout.DEFAULT)
       size.type == ReadableType.Number -> view.setSize(size.asInt())
@@ -117,13 +117,14 @@ internal open class SwipeRefreshLayoutManager :
     }
   }
 
-  override fun getExportedViewConstants(): MutableMap<String, Any> = mutableMapOf(
-      "SIZE" to
-          mutableMapOf(
-              "DEFAULT" to SwipeRefreshLayout.DEFAULT,
-              "LARGE" to SwipeRefreshLayout.LARGE,
-          ),
-  )
+  override fun getExportedViewConstants(): MutableMap<String, Any> =
+      mutableMapOf(
+          "SIZE" to
+              mutableMapOf(
+                  "DEFAULT" to SwipeRefreshLayout.DEFAULT,
+                  "LARGE" to SwipeRefreshLayout.LARGE,
+              ),
+      )
 
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
     val baseEventTypeConstants = super.getExportedCustomDirectEventTypeConstants()

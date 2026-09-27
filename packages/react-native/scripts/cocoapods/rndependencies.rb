@@ -259,6 +259,8 @@ class ReactNativeDependenciesUtils
     end
 
     def self.nightly_tarball_url(version, build_type)
+        return "" if !ReactNativePodsUtils.maven_artifact_version_published?(version)
+
         artifact_coordinate = "react-native-artifacts"
         artifact_name = "reactnative-dependencies-#{build_type.to_s}.tar.gz"
         xml_url = "https://central.sonatype.com/repository/maven-snapshots/com/facebook/react/#{artifact_coordinate}/#{version}-SNAPSHOT/maven-metadata.xml"
@@ -388,6 +390,8 @@ class ReactNativeDependenciesUtils
     end
 
     def self.nightly_artifact_exists(version)
+        return false if !ReactNativePodsUtils.maven_artifact_version_published?(version)
+
         return artifact_exists(nightly_tarball_url(version, :debug).gsub("\\", ""))
     end
 

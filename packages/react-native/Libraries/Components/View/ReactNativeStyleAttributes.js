@@ -265,6 +265,7 @@ const ReactNativeStyleAttributes: {[string]: AnyAttributeType, ...} = {
    * Text
    */
   color: colorAttribute,
+  experimental_textWidthMode: true,
   fontFamily: true,
   fontSize: true,
   fontStyle: true,

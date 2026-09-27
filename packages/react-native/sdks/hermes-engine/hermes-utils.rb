@@ -10,6 +10,7 @@ HERMES_GITHUB_URL = "https://github.com/facebook/hermes.git"
 ENV_BUILD_FROM_SOURCE = "RCT_BUILD_HERMES_FROM_SOURCE"
 MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
 REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
+UNPUBLISHED_HERMES_VERSION = "1000.0.0"
 
 # Memoized results of requests to the Maven repositories (mirror or central).
 # hermes-engine.podspec is evaluated several times during a single
@@ -370,6 +371,9 @@ def hermes_artifact_exists(tarball_url)
     if tarball_url.start_with?("file:") == true
       return true
     end
+    unpublished_version = Regexp.escape(UNPUBLISHED_HERMES_VERSION)
+    return false if tarball_url.match?(%r{/#{unpublished_version}(?:-SNAPSHOT)?/})
+
     unless HERMES_ARTIFACT_EXISTS_CACHE.key?(tarball_url)
         # -L is used to follow redirects, useful for the nightlies
         # I also needed to wrap the url in quotes to avoid escaping & and ?.

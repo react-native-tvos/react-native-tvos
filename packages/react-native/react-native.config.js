@@ -17,13 +17,12 @@ import type {Command} from '@react-native-community/cli-types';
 // IMPORTANT: This is a routing file only. Do NOT add new command
 // definitions or implementations here.
 //
-// New CLI commands belong in @react-native/community-cli-plugin, and
-// may (temporarily) be imported and registered here.
+// CLI commands belong in @react-native/community-cli-plugin, which registers
+// them via its own react-native.config.js.
 //
 // Future state: The Community Template should directly depend on and inject:
 // - @react-native-community/cli-platform-android
 // - @react-native-community/cli-platform-ios
-// - @react-native/community-cli-plugin
 
 const verbose = Boolean(process.env.DEBUG?.includes('react-native'));
 
@@ -71,15 +70,6 @@ try {
 }
 
 const commands /*: Array<Command> */ = [];
-
-const {
-  bundleCommand,
-  codegenCommand,
-  spmCommand,
-  startCommand,
-} = require('@react-native/community-cli-plugin');
-
-commands.push(bundleCommand, startCommand, spmCommand, codegenCommand);
 
 const config = {
   commands,

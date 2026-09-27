@@ -29,15 +29,25 @@
 //                        defining RN_STRICT_API.
 //
 //   RN_UMBRELLA_CONTEXT  Internal marker (implementation detail; consumers never
-//                        set it). A module umbrella defines it around its own
-//                        `#include`s to signal the blessed inclusion path:
-//                            #define RN_UMBRELLA_CONTEXT
+//                        set it). A module umbrella brackets its own `#include`s
+//                        with it to signal the blessed inclusion path:
+//                            #pragma push_macro("RN_UMBRELLA_CONTEXT")
+//                            #undef RN_UMBRELLA_CONTEXT
+//                            #define RN_UMBRELLA_CONTEXT 1
 //                            #include <react/.../PublicHeaderA.h>
 //                            #include <react/.../PublicHeaderB.h>
 //                            #undef RN_UMBRELLA_CONTEXT
-//                        The `#undef` matters: it keeps the marker scoped to the
-//                        umbrella's includes so later *direct* includes in the
-//                        same translation unit are still caught.
+//                            #pragma pop_macro("RN_UMBRELLA_CONTEXT")
+//                        Saving and restoring, rather than a bare
+//                        `#define`/`#undef` pair, is what makes the scope both
+//                        end at the umbrella -- later *direct* includes in the
+//                        same translation unit are still caught -- and nest: an
+//                        umbrella reached from inside another umbrella's
+//                        context leaves the outer one armed. A bare `#undef`
+//                        would disarm it, and every public header the outer
+//                        umbrella included afterwards would hard-error.
+//                        `scripts/add-cxxstableapi-guard.js --tier=public`
+//                        emits this block; do not hand-write or "simplify" it.
 //
 //   RN_BUILDING          Defined by React Native's own build targets so internal
 //                        sources may keep including the fine-grained headers

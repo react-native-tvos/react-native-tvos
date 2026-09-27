@@ -356,9 +356,10 @@ internal object ViewManagersPropertyCache {
     // This is to include all the setters from parent classes. Once calculated the result will be
     // stored in CLASS_PROPS_CACHE so that we only scan for @ReactProp annotations once per class.
     @Suppress("UNCHECKED_CAST")
-    val props: MutableMap<String, PropSetter> = HashMap(
-        getNativePropSettersForViewManagerClass(cls.superclass as Class<out ViewManager<*, *>>),
-    )
+    val props: MutableMap<String, PropSetter> =
+        HashMap(
+            getNativePropSettersForViewManagerClass(cls.superclass as Class<out ViewManager<*, *>>),
+        )
     extractPropSettersFromViewManagerClassDefinition(cls, props)
     CLASS_PROPS_CACHE[cls] = props
     return props
@@ -413,9 +414,9 @@ internal object ViewManagersPropertyCache {
         Double::class.javaPrimitiveType ->
             DoublePropSetter(annotation, method, annotation.defaultDouble)
         String::class.java -> StringPropSetter(annotation, method)
-        java.lang.Boolean::class.java -> BoxedBooleanPropSetter(annotation, method)
-        java.lang.Float::class.java -> BoxedFloatPropSetter(annotation, method)
-        java.lang.Integer::class.java ->
+        Boolean::class.javaObjectType -> BoxedBooleanPropSetter(annotation, method)
+        Float::class.javaObjectType -> BoxedFloatPropSetter(annotation, method)
+        Int::class.javaObjectType ->
             if ("Color" == annotation.customType) {
               BoxedColorPropSetter(annotation, method)
             } else {
@@ -459,7 +460,7 @@ internal object ViewManagersPropertyCache {
           for (i in names.indices) {
             props[names[i]] = DoublePropSetter(annotation, method, i, annotation.defaultDouble)
           }
-      java.lang.Integer::class.java ->
+      Int::class.javaObjectType ->
           for (i in names.indices) {
             props[names[i]] =
                 if ("Color" == annotation.customType) {

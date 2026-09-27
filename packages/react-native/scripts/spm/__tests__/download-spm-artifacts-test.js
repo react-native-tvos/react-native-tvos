@@ -18,6 +18,7 @@ const {
   formatBytes,
   formatSpeed,
   hermesReleaseUrls,
+  isMavenArtifactVersionPublished,
   mavenRepositoryUrls,
   reactNativeMavenMirrorEnabled,
   resolveCacheSlotVersion,
@@ -377,6 +378,27 @@ describe('mavenRepositoryUrls', () => {
 // ---------------------------------------------------------------------------
 
 describe('release URL builders', () => {
+  it('preserves Maven URLs for the unpublished main version', () => {
+    expect(isMavenArtifactVersionPublished('1000.0.0')).toBe(false);
+    expect(rnCoreReleaseUrls('1000.0.0', 'debug')).toHaveLength(2);
+    expect(rnDepsReleaseUrls('1000.0.0', 'debug')).toHaveLength(2);
+    expect(hermesReleaseUrls('1000.0.0', 'debug')).toHaveLength(2);
+  });
+
+  it('does not probe Maven for the unpublished main version', async () => {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = jest.fn();
+
+    try {
+      await expect(
+        exists(rnCoreReleaseUrls('1000.0.0', 'debug')[0]),
+      ).resolves.toBe(false);
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+
   it('rnCoreReleaseUrls builds a candidate per repository for the reactnative-core classifier', () => {
     const suffix =
       '/com/facebook/react/react-native-artifacts/0.85.0/' +
@@ -556,6 +578,20 @@ describe('resolveSnapshotUrl', () => {
     expect(url).toContain(
       'react-native-artifacts-0.85.0-20260101.123456-7-reactnative-core-debug.tar.gz',
     );
+  });
+
+  it('does not query snapshot metadata for the unpublished main version', async () => {
+    globalThis.fetch = jest.fn();
+
+    await expect(
+      resolveSnapshotUrl(
+        '1000.0.0',
+        'react',
+        'react-native-artifacts',
+        'reactnative-core-debug.tar.gz',
+      ),
+    ).rejects.toThrow(/artifacts are not published/);
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it('throws when the metadata request fails', async () => {

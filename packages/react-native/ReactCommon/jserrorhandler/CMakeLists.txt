@@ -21,6 +21,8 @@ target_link_libraries(jserrorhandler
         callinvoker
         folly_runtime
         ${mapbufferjni}
+        react_cxxstableapi
+        react_debug
         react_featureflags
 )
 target_compile_reactnative_options(jserrorhandler PRIVATE)

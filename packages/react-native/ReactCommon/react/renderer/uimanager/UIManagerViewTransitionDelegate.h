@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <react/renderer/core/ShadowNode.h>
 #include <react/renderer/graphics/Float.h>
@@ -52,7 +52,7 @@ class UIManagerViewTransitionDelegate {
     Float y{0};
     Float width{0};
     Float height{0};
-    Tag nativeTag{-1};
+    Tag nativeTag{kNoTag};
   };
 
   virtual std::optional<ViewTransitionInstance> getViewTransitionInstance(

@@ -150,10 +150,11 @@ public class ReactDrawerLayoutManager :
     return true
   }
 
-  public override fun getCommandsMap(): Map<String, Int> = mapOf(
-      COMMAND_OPEN_DRAWER to OPEN_DRAWER,
-      COMMAND_CLOSE_DRAWER to CLOSE_DRAWER,
-  )
+  public override fun getCommandsMap(): Map<String, Int> =
+      mapOf(
+          COMMAND_OPEN_DRAWER to OPEN_DRAWER,
+          COMMAND_CLOSE_DRAWER to CLOSE_DRAWER,
+      )
 
   @Deprecated(
       message =
@@ -164,20 +165,21 @@ public class ReactDrawerLayoutManager :
       view: ReactDrawerLayout,
       commandId: Int,
       args: ReadableArray?,
-  ): Unit {
+  ) {
     when (commandId) {
       OPEN_DRAWER -> view.openDrawer()
       CLOSE_DRAWER -> view.closeDrawer()
     }
   }
 
-  public override fun getExportedViewConstants(): Map<String, Any> = mapOf(
-      DRAWER_POSITION to
-          mapOf(
-              DRAWER_POSITION_LEFT to Gravity.START,
-              DRAWER_POSITION_RIGHT to Gravity.END,
-          ),
-  )
+  public override fun getExportedViewConstants(): Map<String, Any> =
+      mapOf(
+          DRAWER_POSITION to
+              mapOf(
+                  DRAWER_POSITION_LEFT to Gravity.START,
+                  DRAWER_POSITION_RIGHT to Gravity.END,
+              ),
+      )
 
   public override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any> {
     val eventTypeConstants = super.getExportedCustomDirectEventTypeConstants() ?: mutableMapOf()

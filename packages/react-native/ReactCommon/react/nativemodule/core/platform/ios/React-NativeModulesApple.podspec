@@ -40,7 +40,7 @@ Pod::Spec.new do |s|
     s.dependency "React-bridging"
     s.dependency "React-callinvoker"
     s.dependency "React-Core"
-    s.dependency "React-cxxreact"
+    add_dependency(s, "React-cxxreact")
     s.dependency "React-jsi"
     s.dependency "React-featureflags"
     add_dependency(s, "React-debug")

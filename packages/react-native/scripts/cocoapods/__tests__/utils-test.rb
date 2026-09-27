@@ -5,6 +5,7 @@
 
 require "test/unit"
 require_relative "../utils.rb"
+require_relative "../rncore.rb"
 require_relative "./test_utils/PodMock.rb"
 require_relative "./test_utils/InstallerMock.rb"
 require_relative "./test_utils/EnvironmentMock.rb"
@@ -33,6 +34,7 @@ class UtilsTests < Test::Unit::TestCase
         Environment.reset()
         Xcodeproj::Plist.reset()
         XcodebuildMock.reset()
+        ReactNativeCoreUtils.class_variable_set(:@@build_from_source, true)
         ENV['RCT_NEW_ARCH_ENABLED'] = '0'
         ENV['USE_FRAMEWORKS'] = nil
         ENV['RCT_REMOVE_LEGACY_MODULE_INTEROP'] = nil
@@ -741,7 +743,7 @@ class UtilsTests < Test::Unit::TestCase
         # Assert
         user_project_mock.build_configurations.each do |config|
             received_search_path = config.build_settings["HEADER_SEARCH_PATHS"]
-            expected_search_path = "$(inherited) ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core ${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx ${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/React-featureflags/React_featureflags.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-renderercss/React_renderercss.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-cxxstableapi/React_cxxstableapi.framework/Headers"
+            expected_search_path = "$(inherited) ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core ${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-runtimeexecutor/React_runtimeexecutor.framework/Headers/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx ${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-debug/React_debug.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-rendererdebug/React_rendererdebug.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-timing/React_timing.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-utils/React_utils.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios ${PODS_CONFIGURATION_BUILD_DIR}/React-featureflags/React_featureflags.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-renderercss/React_renderercss.framework/Headers ${PODS_CONFIGURATION_BUILD_DIR}/React-cxxstableapi/React_cxxstableapi.framework/Headers"
             assert_equal(expected_search_path, received_search_path)
         end
 
@@ -919,6 +921,26 @@ class UtilsTests < Test::Unit::TestCase
             "${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric-macOS/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
             "${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric-macOS/React_Fabric.framework/Headers/react/renderer/components/view/platform/ios",
         ], result)
+    end
+
+    def test_createHeaderSearchPathsForStableUmbrellas_whenBuildingFromSource_addsOwningFrameworks
+        result = ReactNativePodsUtils.create_header_search_paths_for_stable_umbrellas("PODS_CONFIGURATION_BUILD_DIR")
+
+        assert_equal([
+            "${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers",
+            "${PODS_CONFIGURATION_BUILD_DIR}/React-debug/React_debug.framework/Headers",
+            "${PODS_CONFIGURATION_BUILD_DIR}/React-rendererdebug/React_rendererdebug.framework/Headers",
+            "${PODS_CONFIGURATION_BUILD_DIR}/React-timing/React_timing.framework/Headers",
+            "${PODS_CONFIGURATION_BUILD_DIR}/React-utils/React_utils.framework/Headers",
+        ], result)
+    end
+
+    def test_createHeaderSearchPathsForStableUmbrellas_whenUsingPrebuiltCore_addsNothing
+        ReactNativeCoreUtils.class_variable_set(:@@build_from_source, false)
+
+        result = ReactNativePodsUtils.create_header_search_paths_for_stable_umbrellas("PODS_CONFIGURATION_BUILD_DIR")
+
+        assert_equal([], result)
     end
 
     # ================================= #

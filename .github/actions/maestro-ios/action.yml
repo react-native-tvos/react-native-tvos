@@ -18,6 +18,14 @@ inputs:
     required: false
     default: '.'
     description: The directory from which metro should be started
+  device-model:
+    required: false
+    default: ''
+    description: Maestro device model name, such as iPhone-17-Pro
+  device-os:
+    required: false
+    default: ''
+    description: Maestro device OS name, such as iOS-26-2
 
 runs:
   using: composite
@@ -63,10 +71,12 @@ runs:
           "${{ inputs.maestro-flow }}" \
           "Hermes" \
           "${{ inputs.flavor }}" \
-          "${{ inputs.working-directory }}"
+          "${{ inputs.working-directory }}" \
+          "${{ inputs.device-model }}" \
+          "${{ inputs.device-os }}"
     - name: Store video record
       if: always()
-      uses: actions/upload-artifact@v6
+      uses: ./.github/actions/upload-artifact
       with:
         name: e2e_ios_${{ inputs.app-id }}_report_${{ inputs.flavor }}_NewArch
         overwrite: true
@@ -79,7 +89,7 @@ runs:
           report.xml
     - name: Store Logs
       if: failure() && steps.run-tests.outcome == 'failure'
-      uses: actions/upload-artifact@v6
+      uses: ./.github/actions/upload-artifact
       with:
         name: maestro-logs-${{ inputs.app-id }}-${{ inputs.flavor }}-NewArch
         overwrite: true

@@ -43,15 +43,6 @@ typedef void (^RCTLoadSourceForBridgeBlock)(RCTBridge *bridge, RCTSourceLoadBloc
 #pragma mark - RCTRootViewFactory Configuration
 @interface RCTRootViewFactoryConfiguration : NSObject
 
-/// This property controls whether the App will use the Fabric renderer of the New Architecture or not.
-@property (nonatomic, assign, readonly) BOOL fabricEnabled;
-
-/// This property controls whether React Native's new initialization layer is enabled.
-@property (nonatomic, assign, readonly) BOOL bridgelessEnabled;
-
-/// This method controls whether the `turboModules` feature of the New Architecture is turned on or off
-@property (nonatomic, assign, readonly) BOOL turboModuleEnabled;
-
 /// Return the bundle URL for the main bundle.
 @property (nonatomic, nonnull) RCTBundleURLBlock bundleURLBlock;
 
@@ -64,16 +55,6 @@ typedef void (^RCTLoadSourceForBridgeBlock)(RCTBridge *bridge, RCTSourceLoadBloc
  * pointing to a path inside the app resources, e.g. `file://.../main.jsbundle`.
  *
  */
-- (instancetype)initWithBundleURLBlock:(RCTBundleURLBlock)bundleURLBlock
-                        newArchEnabled:(BOOL)newArchEnabled
-                    turboModuleEnabled:(BOOL)turboModuleEnabled
-                     bridgelessEnabled:(BOOL)bridgelessEnabled __deprecated;
-
-- (instancetype)initWithBundleURL:(NSURL *)bundleURL
-                   newArchEnabled:(BOOL)newArchEnabled
-               turboModuleEnabled:(BOOL)turboModuleEnabled
-                bridgelessEnabled:(BOOL)bridgelessEnabled __deprecated;
-
 - (instancetype)initWithBundleURLBlock:(RCTBundleURLBlock)bundleURLBlock
                         newArchEnabled:(BOOL)newArchEnabled NS_DESIGNATED_INITIALIZER;
 

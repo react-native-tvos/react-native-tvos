@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/UmbrellaGuard.h>
+
 #include "configurePlatformColorCacheInvalidationHook.h"
 
 #include <fbjni/fbjni.h>
@@ -38,7 +40,7 @@ inline size_t hashGetColourArguments(int32_t surfaceId, const std::vector<std::s
 inline SharedColor
 parsePlatformColor(const ContextContainer &contextContainer, int32_t surfaceId, const RawValue &value)
 {
-  Color color = 0;
+  Color color{};
   if (value.hasType<std::unordered_map<std::string, RawValue>>()) {
     // Mixed array + string values, so read as a map of RawValue (a map of
     // vector<string> would assert on the fallback string).

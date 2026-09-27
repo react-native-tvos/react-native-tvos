@@ -14,6 +14,7 @@ const {
   computeNightlyTarballURL,
   createLogger,
   getMavenRepositoryUrls,
+  isMavenArtifactVersionPublished,
 } = require('./utils');
 const {execSync} = require('node:child_process');
 const fs = require('node:fs');
@@ -236,6 +237,10 @@ async function findExistingTarballUrl(
   version /*: string */,
   buildType /*: BuildFlavor */,
 ) /*: Promise<?string> */ {
+  if (!isMavenArtifactVersionPublished(version)) {
+    return null;
+  }
+
   const candidates = getTarballUrls(version, buildType);
   for (const url of candidates) {
     if (await reactNativeDependenciesArtifactExists(url)) {
@@ -401,6 +406,11 @@ async function downloadReactNativeDependenciesTarball(
     const tmpFile = `${artifactsPath}/reactnative-dependencies.download`;
     try {
       fs.mkdirSync(artifactsPath, {recursive: true});
+      if (!isMavenArtifactVersionPublished(version)) {
+        throw new Error(
+          `Maven artifacts are not published for the development version ${version}`,
+        );
+      }
       dependencyLog(
         `Downloading ReactNativeDependencies tarball from ${tarballUrl}`,
       );

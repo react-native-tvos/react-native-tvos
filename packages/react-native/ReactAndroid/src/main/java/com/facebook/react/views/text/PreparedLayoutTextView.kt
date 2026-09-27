@@ -100,7 +100,7 @@ internal class PreparedLayoutTextView(context: Context) : ViewGroup(context), Re
     setWillNotDraw(false)
   }
 
-  fun recycleView(): Unit {
+  fun recycleView() {
     BackgroundStyleApplicator.reset(this)
     overflow = Overflow.VISIBLE
     clickableSpans = emptyList()
@@ -404,10 +404,9 @@ internal class PreparedLayoutTextView(context: Context) : ViewGroup(context), Re
 
   override fun shouldDelayChildPressedState(): Boolean = false
 
-  public override fun dispatchHoverEvent(event: MotionEvent): Boolean =
-      super.dispatchHoverEvent(event)
+  override fun dispatchHoverEvent(event: MotionEvent): Boolean = super.dispatchHoverEvent(event)
 
-  public override fun onFocusChanged(
+  override fun onFocusChanged(
       gainFocus: Boolean,
       direction: Int,
       previouslyFocusedRect: Rect?,

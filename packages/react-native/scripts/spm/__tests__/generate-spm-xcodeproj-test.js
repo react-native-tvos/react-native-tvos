@@ -151,6 +151,56 @@ describe('scheme pre-action', () => {
       updated,
     );
   });
+
+  // Xcode always runs a scheme pre-action's scriptText under the shell named
+  // by shellToInvoke (default /bin/sh), independent of a
+  // PBXShellScriptBuildPhase's own shellPath — the sync script needs bash
+  // (`set -o pipefail`), so pin it here too.
+  it('pins shellToInvoke to bash on a freshly generated scheme', () => {
+    const result = generateXcscheme('MyApp', 'TARGET_UUID', 'MyApp', 'SCRIPT');
+    expect(result).toContain('shellToInvoke = "/bin/bash"');
+  });
+
+  it('adds shellToInvoke to a scheme injected before this attribute existed', () => {
+    // Simulates a scheme written by an older RN version — no shellToInvoke.
+    const legacy = generateXcscheme(
+      'MyApp',
+      'TARGET_UUID',
+      'MyApp',
+      'SCRIPT',
+    ).replace('\n               shellToInvoke = "/bin/bash">', '>');
+    expect(legacy).not.toContain('shellToInvoke');
+    const updated = addPreActionToScheme(legacy, 'TARGET_UUID', 'SCRIPT');
+    expect(updated).toContain('shellToInvoke = "/bin/bash"');
+    expect(addPreActionToScheme(updated, 'TARGET_UUID', 'SCRIPT')).toBe(
+      updated,
+    );
+  });
+
+  it('refreshes shellToInvoke when it appears before scriptText', () => {
+    const reordered = generateXcscheme(
+      'MyApp',
+      'TARGET_UUID',
+      'MyApp',
+      'SCRIPT',
+    ).replace(
+      'scriptText = "SCRIPT"\n               shellToInvoke = "/bin/bash">',
+      'shellToInvoke = "/bin/bash"\n               scriptText = "SCRIPT">',
+    );
+    const updated = addPreActionToScheme(reordered, 'TARGET_UUID', 'SCRIPT');
+    expect(updated.match(/shellToInvoke/g)).toHaveLength(1);
+  });
+
+  it('refreshes shellToInvoke with no spaces around the equals sign', () => {
+    const unspaced = generateXcscheme(
+      'MyApp',
+      'TARGET_UUID',
+      'MyApp',
+      'SCRIPT',
+    ).replace('shellToInvoke = "/bin/bash"', 'shellToInvoke="/bin/bash"');
+    const updated = addPreActionToScheme(unspaced, 'TARGET_UUID', 'SCRIPT');
+    expect(updated.match(/shellToInvoke/g)).toHaveLength(1);
+  });
 });
 
 describe('sync scripts', () => {
@@ -182,6 +232,70 @@ describe('sync scripts', () => {
     expect(script).toContain(
       'WATCH_FILE="$SRCROOT/build/generated/autolinking/.spm-sync-watch-paths"',
     );
+  });
+
+  // Xcode writes per-user scheme state into <watched dir>/.swiftpm/ on every
+  // IDE build. Counting that as a change made every IDE build re-sync.
+  describe('the watched-directory staleness probe', () => {
+    // Runs the generated `find` in isolation, with $P/$STAMP bound as the
+    // build phase binds them.
+    function probe(watchedDir, stampFile) {
+      const findCommand = /\$\((find "\$P"[^()]*)\)/.exec(script)?.[1];
+      expect(findCommand).toBeDefined();
+      return execFileSync(
+        '/bin/bash',
+        [
+          '-c',
+          `set -euo pipefail\nP="$1"\nSTAMP="$2"\n${String(findCommand)}\n`,
+          'probe',
+          watchedDir,
+          stampFile,
+        ],
+        {encoding: 'utf8'},
+      );
+    }
+
+    let root;
+    let watchedDir;
+    let stampFile;
+    let schemeState;
+    let source;
+
+    beforeEach(() => {
+      root = fs.mkdtempSync(path.join(os.tmpdir(), 'spm-sync-stale-'));
+      watchedDir = path.join(root, 'node_modules', 'react-native-foo');
+      schemeState = path.join(
+        watchedDir,
+        '.swiftpm/xcode/xcuserdata/someone.xcuserdatad/xcschemes/xcschememanagement.plist',
+      );
+      source = path.join(watchedDir, 'Foo.swift');
+      fs.mkdirSync(path.dirname(schemeState), {recursive: true});
+      fs.writeFileSync(schemeState, '<plist/>\n');
+      fs.writeFileSync(source, '// src\n');
+      // The stamp is written after the tree, so nothing is newer until a test
+      // makes it so.
+      stampFile = path.join(root, '.spm-sync-stamp');
+      fs.writeFileSync(stampFile, '');
+    });
+
+    afterEach(() => {
+      fs.rmSync(root, {recursive: true, force: true});
+    });
+
+    const touch = file => {
+      const future = new Date(Date.now() + 10_000);
+      fs.utimesSync(file, future, future);
+    };
+
+    it('ignores Xcode-owned state under .swiftpm', () => {
+      touch(schemeState);
+      expect(probe(watchedDir, stampFile)).toBe('');
+    });
+
+    it('still reports a changed source file', () => {
+      touch(source);
+      expect(probe(watchedDir, stampFile).trim()).toBe(source);
+    });
   });
 
   it('is deterministic, shared with the pre-action, and valid POSIX shell', () => {

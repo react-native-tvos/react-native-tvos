@@ -102,6 +102,7 @@ internal class DeviceInfoModule(reactContext: ReactApplicationContext) :
         putDouble("densityDpi", displayMetrics.densityDpi.toDouble())
       }
 
+  @Suppress("REDUNDANT_VISIBILITY_MODIFIER")
   public override fun getTypedExportedConstants(): Map<String, Any> {
     val displayMetrics = getDisplayMetricsWritableMap()
 

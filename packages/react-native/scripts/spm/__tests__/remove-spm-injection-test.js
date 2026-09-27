@@ -86,6 +86,26 @@ function scaffoldApp(pbxproj /*: string */ = PLAIN) {
   return {appRoot, xcodeprojPath, rnRoot};
 }
 
+// The hoisted `hermes-compiler` layout a real installed app has: the package
+// sits in the app's node_modules, NOT next to react-native, and carries the
+// host hermesc binary. Returns its absolute path — the value the injector used
+// to bake into the project.
+function withHermesCompiler(appRoot /*: string */) {
+  const pkgRoot = path.join(appRoot, 'node_modules', 'hermes-compiler');
+  const binDir = path.join(pkgRoot, 'hermesc', 'osx-bin');
+  fs.mkdirSync(binDir, {recursive: true});
+  fs.writeFileSync(
+    path.join(pkgRoot, 'package.json'),
+    JSON.stringify({name: 'hermes-compiler', version: '1.0.0'}),
+    'utf8',
+  );
+  const hermesc = path.join(binDir, 'hermesc');
+  fs.writeFileSync(hermesc, '#!/bin/sh\n', 'utf8');
+  // os.tmpdir() is a symlink on macOS; require.resolve reports the real path,
+  // which is what the injector would have written.
+  return fs.realpathSync(hermesc);
+}
+
 function pbxprojOf(xcodeprojPath) {
   return fs.readFileSync(path.join(xcodeprojPath, 'project.pbxproj'), 'utf8');
 }
@@ -155,6 +175,42 @@ function schemePathOf(xcodeprojPath) {
     'MyApp.xcscheme',
   );
 }
+
+// An absolute hermesc path is machine-specific and the app commits its
+// project.pbxproj, so `spm add` must never write one. react-native-xcode.sh
+// resolves hermesc through react-native's own dependency graph at build time.
+describe('injectSpmIntoExistingXcodeproj — HERMES_CLI_PATH', () => {
+  it('writes no HERMES_CLI_PATH, in any configuration or the marker', () => {
+    const {appRoot, xcodeprojPath, rnRoot} = scaffoldApp();
+    const hermesc = withHermesCompiler(appRoot);
+    // Guard against a vacuous pass: hermesc must be resolvable from rnRoot,
+    // which is the only condition under which a path could be written at all.
+    expect(
+      require.resolve('hermes-compiler/package.json', {paths: [rnRoot]}),
+    ).toBe(
+      fs.realpathSync(
+        path.join(appRoot, 'node_modules', 'hermes-compiler', 'package.json'),
+      ),
+    );
+    expect(fs.existsSync(hermesc)).toBe(true);
+
+    expect(
+      injectSpmIntoExistingXcodeproj({
+        appRoot,
+        reactNativeRoot: rnRoot,
+        xcodeprojPath,
+      }).status,
+    ).toBe('injected');
+
+    expect(pbxprojOf(xcodeprojPath)).not.toContain('HERMES_CLI_PATH');
+    expect(pbxprojOf(xcodeprojPath)).not.toContain(hermesc);
+    expect(
+      readMarker(xcodeprojPath).buildSettingChanges.flatMap(
+        change => change.createdScalars ?? [],
+      ),
+    ).not.toContain('HERMES_CLI_PATH');
+  });
+});
 
 describe('removeSpmInjection — the surgical inverse of add', () => {
   it('round-trips: add then deinit restores the pbxproj byte-for-byte', () => {

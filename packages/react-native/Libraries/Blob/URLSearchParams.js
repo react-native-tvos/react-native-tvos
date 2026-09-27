@@ -4,9 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  * @format
  */
+
+// flowlint unsafe-getters-setters:off
 
 // Small subset from whatwg-url: https://github.com/jsdom/whatwg-url/tree/master/src
 // The reference code bloat comes from Unicode issues with URLs, so those won't work here.
@@ -76,12 +78,14 @@ export class URLSearchParams {
     this._searchParams.set(name, [value]);
   }
 
-  keys(): Iterator<string> {
+  keys(): IteratorObject<string> {
     return this._searchParams.keys();
   }
 
-  values(): Iterator<string> {
-    function* generateValues(params: Map<string, string[]>): Iterator<string> {
+  values(): IteratorObject<string> {
+    function* generateValues(
+      params: Map<string, string[]>,
+    ): IteratorObject<string> {
       for (const valueArray of params.values()) {
         for (const value of valueArray) {
           yield value;
@@ -94,7 +98,7 @@ export class URLSearchParams {
   entries(): Iterator<[string, string]> {
     function* generateEntries(
       params: Map<string, string[]>,
-    ): Iterator<[string, string]> {
+    ): IteratorObject<[string, string]> {
       for (const [key, values] of params) {
         for (const value of values) {
           yield [key, value];
@@ -122,7 +126,7 @@ export class URLSearchParams {
   }
 
   // $FlowFixMe[unsupported-syntax]
-  [Symbol.iterator](): Iterator<[string, string]> {
+  [Symbol.iterator](): IteratorObject<[string, string]> {
     const entries: [string, string][] = [];
 
     for (const [key, values] of this._searchParams) {

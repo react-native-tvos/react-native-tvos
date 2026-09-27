@@ -204,7 +204,7 @@ internal constructor(
 
   internal companion object {
     @JvmStatic
-    public fun createWithView(
+    fun createWithView(
         context: Context,
         moduleName: String,
         initialProps: Bundle?,

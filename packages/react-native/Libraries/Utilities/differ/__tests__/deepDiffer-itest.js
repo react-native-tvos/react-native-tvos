@@ -136,7 +136,7 @@ describe('deepDiffer', function () {
     expect(
       deepDiffer(
         () => {},
-        x => x,
+        (x: unknown) => x,
       ),
     ).toBe(false);
     const f = () => {};
@@ -146,7 +146,7 @@ describe('deepDiffer', function () {
     expect(
       deepDiffer(
         () => {},
-        x => x,
+        (x: unknown) => x,
         undefined,
         {unsafelyIgnoreFunctions: false},
       ),
@@ -160,7 +160,7 @@ describe('deepDiffer', function () {
     expect(
       deepDiffer(
         () => {},
-        x => x,
+        (x: unknown) => x,
         {unsafelyIgnoreFunctions: false},
       ),
     ).toBe(true);

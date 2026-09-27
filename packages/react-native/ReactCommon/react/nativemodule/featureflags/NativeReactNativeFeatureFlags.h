@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2c30d3942ab1183a99091db3566c020d>>
+ * @generated SignedSource<<e1975888fd74fc71b02f0c1e739ea13f>>
  */
 
 /**
@@ -62,9 +62,13 @@ class NativeReactNativeFeatureFlags
 
   bool enableAccumulatedUpdatesInRawPropsAndroid(jsi::Runtime& runtime);
 
+  bool enableAndroidAutoOffscreenCompositingForElevation(jsi::Runtime& runtime);
+
   bool enableAndroidTextMeasurementOptimizations(jsi::Runtime& runtime);
 
   bool enableBridgelessArchitecture(jsi::Runtime& runtime);
+
+  bool enableBufferedCallInvoker(jsi::Runtime& runtime);
 
   bool enableCppPropsIteratorSetter(jsi::Runtime& runtime);
 
@@ -79,6 +83,8 @@ class NativeReactNativeFeatureFlags
   bool enableExclusivePropsUpdateAndroid(jsi::Runtime& runtime);
 
   bool enableFabricCommitBranching(jsi::Runtime& runtime);
+
+  bool enableFabricCommitBranchingMergeOnMainThread(jsi::Runtime& runtime);
 
   bool enableFabricLogs(jsi::Runtime& runtime);
 
@@ -97,6 +103,8 @@ class NativeReactNativeFeatureFlags
   bool enableImageTransparentTintColor(jsi::Runtime& runtime);
 
   bool enableImmediateUpdateModeForContentOffsetChanges(jsi::Runtime& runtime);
+
+  bool enableImperativeEvents(jsi::Runtime& runtime);
 
   bool enableImperativeFocus(jsi::Runtime& runtime);
 
@@ -139,8 +147,6 @@ class NativeReactNativeFeatureFlags
   bool enableViewRecyclingForView(jsi::Runtime& runtime);
 
   bool enableVirtualViewContainerStateExperimental(jsi::Runtime& runtime);
-
-  bool fixDifferentiatorParentTagForUnflattenCase(jsi::Runtime& runtime);
 
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact(jsi::Runtime& runtime);
 

@@ -8,6 +8,7 @@
  * @format
  */
 
+// import Platform from '../Utilities/Platform';
 // import NativeVibration from './NativeVibration';
 
 const Platform = require('../Utilities/Platform').default;

@@ -23,6 +23,7 @@ class NewArchitectureTests < Test::Unit::TestCase
         Pod::UI.reset()
         FileMock.reset()
         ENV["RCT_NEW_ARCH_ENABLED"] = nil
+        ENV["USE_FRAMEWORKS"] = nil
         NewArchitectureHelper.reset()
     end
 
@@ -178,6 +179,16 @@ class NewArchitectureTests < Test::Unit::TestCase
             ],
             spec.dependencies
         )
+    end
+
+    def test_installModulesDependencies_whenUseFrameworks_addsReactBridgingSearchPath
+        spec = SpecMock.new
+        ENV["USE_FRAMEWORKS"] = "dynamic"
+
+        NewArchitectureHelper.install_modules_dependencies(spec, true, '2024.10.14.00')
+
+        header_search_paths = Array(spec.pod_target_xcconfig["HEADER_SEARCH_PATHS"]).join(" ")
+        assert(header_search_paths.include?("${PODS_CONFIGURATION_BUILD_DIR}/React-bridging/React_bridging.framework/Headers"))
     end
 
     def test_installModulesDependencies_whenNewArchDisabledAndSearchPathsAndCompilerFlagsArePresent_itInstallDependenciesAndPreserveOtherSettings

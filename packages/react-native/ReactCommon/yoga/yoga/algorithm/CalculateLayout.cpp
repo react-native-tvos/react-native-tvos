@@ -1267,6 +1267,7 @@ static float distributeFreeSpaceSecondPass(
 // whose min and max constraints are triggered, those flex item's clamped size
 // is removed from the remaingfreespace.
 static void distributeFreeSpaceFirstPass(
+    yoga::Node* const node,
     FlexLine& flexLine,
     const Direction direction,
     const FlexDirection mainAxis,
@@ -1279,6 +1280,25 @@ static void distributeFreeSpaceFirstPass(
   float baseMainSize = 0;
   float boundMainSize = 0;
   float deltaFreeSpace = 0;
+
+  // The first pass performs a single distribution of the free space over all
+  // of the line's flexible items, so every item's tentative size must be
+  // computed against the *original* totals. The totals are still reduced as
+  // items get frozen below (so the second pass can redistribute), but those
+  // reduced values must not feed back into the fair-share calculation for the
+  // remaining items: doing so inflates their tentative size and can freeze
+  // items that should still be able to grow/shrink (see
+  // https://github.com/react/yoga/issues/2006).
+  //
+  // Dividing by the running totals is the pre-fix behavior, preserved for
+  // existing layouts behind an errata bit that is set on new configs by
+  // default.
+  const bool useRunningTotals =
+      node->hasErrata(Errata::FlexFirstPassUsesRunningTotals);
+  const float originalTotalFlexGrowFactors =
+      flexLine.layout.totalFlexGrowFactors;
+  const float originalTotalFlexShrinkScaledFactors =
+      flexLine.layout.totalFlexShrinkScaledFactors;
 
   for (auto currentLineChild : flexLine.itemsInFlow) {
     float childFlexBasis = boundAxisWithinMinAndMax(
@@ -1299,7 +1319,8 @@ static void distributeFreeSpaceFirstPass(
           flexShrinkScaledFactor != 0) {
         baseMainSize = childFlexBasis +
             flexLine.layout.remainingFreeSpace /
-                flexLine.layout.totalFlexShrinkScaledFactors *
+                (useRunningTotals ? flexLine.layout.totalFlexShrinkScaledFactors
+                                  : originalTotalFlexShrinkScaledFactors) *
                 flexShrinkScaledFactor;
         boundMainSize = boundAxisWithAutoMin(
             currentLineChild,
@@ -1329,7 +1350,9 @@ static void distributeFreeSpaceFirstPass(
       if (yoga::isDefined(flexGrowFactor) && flexGrowFactor != 0) {
         baseMainSize = childFlexBasis +
             flexLine.layout.remainingFreeSpace /
-                flexLine.layout.totalFlexGrowFactors * flexGrowFactor;
+                (useRunningTotals ? flexLine.layout.totalFlexGrowFactors
+                                  : originalTotalFlexGrowFactors) *
+                flexGrowFactor;
         boundMainSize = boundAxis(
             currentLineChild,
             mainAxis,
@@ -1419,6 +1442,7 @@ static void resolveFlexibleLength(
 
   // First pass: detect the flex items whose min/max constraints trigger
   distributeFreeSpaceFirstPass(
+      node,
       flexLine,
       direction,
       mainAxis,

@@ -12,7 +12,7 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "react": "19.2.3",
+    "react": "19.3.0",
     "react-native": "*"
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
     "@react-native/babel-preset": "0.87.0-main",
+    "@react-native/community-cli-plugin": "0.87.0-main",
     "@react-native/core-cli-utils": "*",
     "@react-native/eslint-config": "0.87.0-main",
     "@react-native/jest-preset": "0.87.0-main",
@@ -30,7 +31,7 @@
     "eslint": "^8.19.0",
     "jest": "^29.7.0",
     "listr2": "^8.2.1",
-    "react-test-renderer": "19.2.3",
+    "react-test-renderer": "19.3.0",
     "rxjs": "^7.8.1"
   },
   "engines": {

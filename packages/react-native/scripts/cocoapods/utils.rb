@@ -15,6 +15,7 @@ require_relative "./jsengine.rb"
 class ReactNativePodsUtils
     MAVEN_CENTRAL_REPOSITORY = "https://repo1.maven.org/maven2"
     REACT_NATIVE_MAVEN_MIRROR_REPOSITORY = "https://repo.reactnative.dev/maven2"
+    UNPUBLISHED_MAVEN_VERSION = "1000.0.0"
 
     # Opt-in removal of the legacy TurboModule and component interop layers. Both are
     # off by default and will become the default in a future React Native release.
@@ -50,6 +51,11 @@ class ReactNativePodsUtils
         return true if value == nil || value == ""
 
         value.downcase != "false" && value != "0"
+    end
+
+    def self.maven_artifact_version_published?(version)
+        # 1000.0.0 identifies a source checkout on main and is never published to Maven.
+        return version != UNPUBLISHED_MAVEN_VERSION
     end
 
     def self.warn_if_not_on_arm64
@@ -357,6 +363,20 @@ class ReactNativePodsUtils
         return search_paths
     end
 
+    def self.create_header_search_paths_for_stable_umbrellas(base_folder)
+        return [] unless ReactNativeCoreUtils.build_rncore_from_source()
+
+        [
+            ["React-Fabric", "React_Fabric"],
+            ["React-debug", "React_debug"],
+            ["React-rendererdebug", "React_rendererdebug"],
+            ["React-timing", "React_timing"],
+            ["React-utils", "React_utils"],
+        ].flat_map { |pod_name, framework_name|
+            self.create_header_search_path_for_frameworks(base_folder, pod_name, framework_name, [])
+        }
+    end
+
     # Add a new dependency to an existing spec, configuring also the headers search paths
     def self.add_dependency(spec, dependency_name, base_folder_for_frameworks, framework_name, additional_paths: [], version: nil, subspec_dependency: nil)
         # Update Search Path
@@ -394,13 +414,25 @@ class ReactNativePodsUtils
                 ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon", "ReactCommon", ["react/nativemodule/core"])
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-runtimeexecutor", "React_runtimeexecutor", ["platform/ios"]))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "ReactCommon-Samples", "ReactCommon_Samples", ["platform/ios"]))
-                    .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", ["react/renderer/components/view/platform/cxx"], false))
+                    .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-Fabric", "React_Fabric", [
+                        "react/renderer/components/view/platform/cxx",
+                        "react/renderer/components/scrollview/platform/cxx",
+                        "react/renderer/components/scrollview/platform/ios",
+                    ], false))
+                    .concat(ReactNativePodsUtils.create_header_search_paths_for_stable_umbrellas("PODS_CONFIGURATION_BUILD_DIR"))
+                    .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-FabricComponents", "React_FabricComponents", [
+                        "react/renderer/textlayoutmanager/platform/ios",
+                        "react/renderer/components/text/platform/cxx",
+                        "react/renderer/components/textinput/platform/ios",
+                        "react/renderer/components/switch/iosswitch",
+                    ], false))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-NativeModulesApple", "React_NativeModulesApple", []))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-bridging", "React_bridging", []))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-graphics", "React_graphics", ["react/renderer/graphics/platform/ios"]))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-featureflags", "React_featureflags", []))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-renderercss", "React_renderercss", []))
                     .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-cxxstableapi", "React_cxxstableapi", []))
+                    .concat(ReactNativePodsUtils.create_header_search_path_for_frameworks("PODS_CONFIGURATION_BUILD_DIR", "React-debug", "React_debug", []))
                     .each{ |search_path|
                         header_search_paths = self.add_search_path_if_not_included(header_search_paths, search_path)
                     }
@@ -882,6 +914,9 @@ class ReactNativePodsUtils
     # (DNS failure, no route, ...) the probe is left uncached so that a
     # transient hiccup doesn't permanently mark the artifact as missing.
     def self.artifact_exists?(tarball_url)
+        unpublished_version = Regexp.escape(UNPUBLISHED_MAVEN_VERSION)
+        return false if tarball_url.match?(%r{/#{unpublished_version}(?:-SNAPSHOT)?/})
+
         unless @@artifact_exists_cache.key?(tarball_url)
             # -L is used to follow redirects, useful for the nightlies
             # The url is wrapped in quotes to avoid escaping & and ?.

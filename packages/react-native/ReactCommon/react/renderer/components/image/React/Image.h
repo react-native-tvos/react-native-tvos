@@ -8,18 +8,28 @@
 #pragma once
 
 // =============================================================================
-// Umbrella header for the `react/renderer/components/image` module - public entry point.
+// Umbrella header for the `react/renderer/components/image` module - public
+// entry point.
 //
 //   #include <React/Image.h>
 //
 // Re-exports the module's public interface headers. React Native's own code
-// should keep using the fine-grained `<react/renderer/components/image/...>` includes; only outside
-// consumers use this umbrella.
+// should keep using the fine-grained `<react/renderer/components/image/...>`
+// includes, except in headers it exports to consumers: those are preprocessed
+// in the consumer's translation unit, where the fine-grained include hits this
+// module's <react/cxxstableapi/UmbrellaGuard.h>. `RN_ALLOW_FRAMEWORKS` does not
+// suppress that guard, so a "for frameworks" header must reach this module
+// through the umbrella.
 // =============================================================================
 
 // Marks that the following headers are pulled in through the umbrella, so their
-// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them.
-#define RN_UMBRELLA_CONTEXT
+// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them. The marker
+// is saved and restored rather than defined and undefined: the scope ends at
+// this block, so later *direct* includes in the same TU are still caught, and
+// it nests inside an enclosing umbrella rather than disarming it.
+#pragma push_macro("RN_UMBRELLA_CONTEXT")
+#undef RN_UMBRELLA_CONTEXT
+#define RN_UMBRELLA_CONTEXT 1
 
 #include <react/renderer/components/image/ImageComponentDescriptor.h>
 #include <react/renderer/components/image/ImageEventEmitter.h>
@@ -29,3 +39,4 @@
 #include <react/renderer/components/image/conversions.h>
 
 #undef RN_UMBRELLA_CONTEXT
+#pragma pop_macro("RN_UMBRELLA_CONTEXT")

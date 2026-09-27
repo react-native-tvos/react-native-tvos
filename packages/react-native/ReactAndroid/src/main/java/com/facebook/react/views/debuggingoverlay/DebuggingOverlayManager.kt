@@ -30,7 +30,7 @@ internal class DebuggingOverlayManager :
 
   override fun getDelegate(): ViewManagerDelegate<DebuggingOverlay> = delegate
 
-  override fun highlightTraceUpdates(view: DebuggingOverlay, updates: ReadableArray): Unit {
+  override fun highlightTraceUpdates(view: DebuggingOverlay, updates: ReadableArray) {
     val formattedTraceUpdates = mutableListOf<TraceUpdate>()
 
     var successfullyParsedPayload = true
@@ -83,7 +83,7 @@ internal class DebuggingOverlayManager :
     }
   }
 
-  override fun highlightElements(view: DebuggingOverlay, elements: ReadableArray): Unit {
+  override fun highlightElements(view: DebuggingOverlay, elements: ReadableArray) {
     val elementsRectangles = mutableListOf<RectF>()
 
     var successfullyParsedPayload = true
@@ -120,7 +120,7 @@ internal class DebuggingOverlayManager :
     }
   }
 
-  override fun clearElementsHighlights(view: DebuggingOverlay): Unit {
+  override fun clearElementsHighlights(view: DebuggingOverlay) {
     view.clearElementsHighlights()
   }
 

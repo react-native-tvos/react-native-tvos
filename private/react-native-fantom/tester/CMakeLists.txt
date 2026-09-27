@@ -38,6 +38,10 @@ add_fantom_third_party_subdir(folly)
 add_fantom_third_party_subdir(gflags)
 add_fantom_third_party_subdir(nlohmann_json)
 
+# Marks everything added below as React Native's own build, to enable private
+# includes in Fantom.
+add_compile_definitions(RN_BUILDING)
+
 add_subdirectory(${FANTOM_CODEGEN_DIR} codegen)
 
 add_library(glog_init INTERFACE)

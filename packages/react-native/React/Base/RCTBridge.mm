@@ -83,7 +83,6 @@ NSSet<NSString *> *getCoreModuleClasses(void)
       @"RCTStatusBarManager",
       @"RCTTiming",
       @"RCTWebSocketModule",
-      @"RCTNativeAnimatedModule",
       @"RCTNativeAnimatedTurboModule",
       @"RCTBlobManager",
       @"RCTFileReaderModule",
@@ -177,7 +176,7 @@ NSString *RCTBridgeModuleNameForClass(Class cls)
       cls);
 #endif
 
-  NSString *name = [cls moduleName];
+  NSString *name = [cls respondsToSelector:@selector(moduleName)] ? [cls moduleName] : nil;
   if (name.length == 0) {
     name = NSStringFromClass(cls);
   }

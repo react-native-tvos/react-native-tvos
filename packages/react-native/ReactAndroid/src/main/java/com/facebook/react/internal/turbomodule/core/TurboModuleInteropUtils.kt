@@ -177,7 +177,7 @@ internal object TurboModuleInteropUtils {
 
     if (
         returnClass == Boolean::class.javaObjectType ||
-            returnClass == Integer::class.javaObjectType ||
+            returnClass == Int::class.javaObjectType ||
             returnClass == Double::class.javaObjectType ||
             returnClass == Float::class.javaObjectType ||
             returnClass == String::class.java ||

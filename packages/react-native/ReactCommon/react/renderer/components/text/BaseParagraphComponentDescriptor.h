@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
-#include <react/renderer/core/ConcreteComponentDescriptor.h>
+#include <React/RendererCore.h>
+#include <React/Utils.h>
 #include <react/renderer/textlayoutmanager/TextLayoutManager.h>
-#include <react/utils/ContextContainer.h>
 
 namespace facebook::react {
 

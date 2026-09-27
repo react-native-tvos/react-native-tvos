@@ -70,6 +70,7 @@ Pod::Spec.new do |s|
   s.dependency "RCTSwiftUIWrapper"
 
   add_dependency(s, "React-FabricImage")
+  add_dependency(s, "React-cxxreact")
   add_dependency(s, "React-Fabric", :additional_framework_paths => [
     "react/renderer/components/scrollview/platform/cxx",
     "react/renderer/components/scrollview/platform/ios",

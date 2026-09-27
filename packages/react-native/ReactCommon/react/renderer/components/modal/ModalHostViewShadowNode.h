@@ -7,12 +7,12 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
+#include <React/View.h>
 #include <react/renderer/components/FBReactNativeSpec/EventEmitters.h>
 #include <react/renderer/components/FBReactNativeSpec/Props.h>
 #include <react/renderer/components/modal/ModalHostViewState.h>
-#include <react/renderer/components/view/ConcreteViewShadowNode.h>
 
 namespace facebook::react {
 

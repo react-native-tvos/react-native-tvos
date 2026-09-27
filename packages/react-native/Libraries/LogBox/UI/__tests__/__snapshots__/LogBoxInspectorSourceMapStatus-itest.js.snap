@@ -2,7 +2,7 @@
 
 exports[`LogBoxInspectorSourceMapStatus should render for failed 1`] = `
 <rn-view
-  accessibilityState="{disabled:false,selected:false,checked:None,busy:false,expanded:null}"
+  accessibilityState="{disabled:false,selected:null,checked:None,busy:false,expanded:null}"
   accessible="true"
   alignItems="center"
   flexDirection="row"
@@ -29,6 +29,7 @@ exports[`LogBoxInspectorSourceMapStatus should render for failed 1`] = `
     foregroundColor="rgba(243, 83, 105, 1)"
     includeFontPadding="false"
     lineHeight="16"
+    maxFontSizeMultiplier="1.5"
     overflow="hidden"
   >
     Source Map
@@ -38,7 +39,7 @@ exports[`LogBoxInspectorSourceMapStatus should render for failed 1`] = `
 
 exports[`LogBoxInspectorSourceMapStatus should render for pending 1`] = `
 <rn-view
-  accessibilityState="{disabled:false,selected:false,checked:None,busy:false,expanded:null}"
+  accessibilityState="{disabled:false,selected:null,checked:None,busy:false,expanded:null}"
   accessible="true"
   alignItems="center"
   flexDirection="row"
@@ -66,6 +67,7 @@ exports[`LogBoxInspectorSourceMapStatus should render for pending 1`] = `
     foregroundColor="rgba(250, 186, 48, 1)"
     includeFontPadding="false"
     lineHeight="16"
+    maxFontSizeMultiplier="1.5"
     overflow="hidden"
   >
     Source Map

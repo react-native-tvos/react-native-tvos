@@ -119,7 +119,7 @@ internal constructor(
   private val tagToSynchronousMountProps = SparseArrayCompat<MutableMap<String, Any>>()
 
   @AnyThread
-  public fun attachRootView(rootView: View, themedReactContext: ThemedReactContext): Unit {
+  public fun attachRootView(rootView: View, themedReactContext: ThemedReactContext) {
     this.context = themedReactContext
 
     if (isStopped) {
@@ -201,7 +201,7 @@ internal constructor(
 
   @UiThread
   @ThreadConfined(ThreadConfined.UI)
-  internal fun scheduleMountItemOnViewAttach(item: MountItem): Unit {
+  internal fun scheduleMountItemOnViewAttach(item: MountItem) {
     onViewAttachMountItems.add(item)
   }
 
@@ -229,7 +229,7 @@ internal constructor(
    * garbage collection will take care of destroying it and all descendents.
    */
   @AnyThread
-  public fun stopSurface(): Unit {
+  public fun stopSurface() {
     FLog.e(TAG, "Stopping surface [$surfaceId]")
     if (isStopped) {
       return
@@ -294,7 +294,7 @@ internal constructor(
   }
 
   @UiThread
-  public fun addViewAt(parentTag: Int, tag: Int, index: Int): Unit {
+  public fun addViewAt(parentTag: Int, tag: Int, index: Int) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -396,7 +396,7 @@ internal constructor(
   }
 
   @UiThread
-  public fun removeViewAt(tag: Int, parentTag: Int, index: Int): Unit {
+  public fun removeViewAt(tag: Int, parentTag: Int, index: Int) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -537,7 +537,7 @@ internal constructor(
       stateWrapper: StateWrapper?,
       eventEmitterWrapper: EventEmitterWrapper?,
       isLayoutable: Boolean,
-  ): Unit {
+  ) {
     if (isStopped) {
       return
     }
@@ -582,7 +582,7 @@ internal constructor(
       stateWrapper: StateWrapper?,
       eventEmitterWrapper: EventEmitterWrapper?,
       isLayoutable: Boolean,
-  ): Unit {
+  ) {
     Systrace.beginSection(
         Systrace.TRACE_TAG_REACT,
         "SurfaceMountingManager::createViewUnsafe($componentName)",
@@ -616,7 +616,7 @@ internal constructor(
     }
   }
 
-  public fun storeSynchronousMountPropsOverride(reactTag: Int, props: ReadableMap): Unit {
+  public fun storeSynchronousMountPropsOverride(reactTag: Int, props: ReadableMap) {
     if (ReactNativeFeatureFlags.overrideBySynchronousMountPropsAtMountingAndroid()) {
       val propsMap = getAnimatedPropsMap(props)
       val synchronousMountProps = tagToSynchronousMountProps[reactTag] ?: mutableMapOf()
@@ -630,11 +630,11 @@ internal constructor(
     }
   }
 
-  public fun updatePropsSynchronously(reactTag: Int, props: ReadableMap): Unit {
+  public fun updatePropsSynchronously(reactTag: Int, props: ReadableMap) {
     updateProps(reactTag, props, true)
   }
 
-  public fun updateProps(reactTag: Int, props: ReadableMap): Unit {
+  public fun updateProps(reactTag: Int, props: ReadableMap) {
     updateProps(reactTag, props, false)
   }
 
@@ -690,7 +690,7 @@ internal constructor(
       surfaceId: Int,
       componentName: String,
       params: MapBuffer?,
-  ): Unit {
+  ) {
     if (isStopped) {
       return
     }
@@ -700,7 +700,7 @@ internal constructor(
   }
 
   @Deprecated("")
-  public fun receiveCommand(reactTag: Int, commandId: Int, commandArgs: ReadableArray?): Unit {
+  public fun receiveCommand(reactTag: Int, commandId: Int, commandArgs: ReadableArray?) {
     if (isStopped) {
       return
     }
@@ -729,7 +729,7 @@ internal constructor(
     @Suppress("DEPRECATION") viewManager.receiveCommand(view, commandId, commandArgs)
   }
 
-  public fun receiveCommand(reactTag: Int, commandId: String, commandArgs: ReadableArray?): Unit {
+  public fun receiveCommand(reactTag: Int, commandId: String, commandArgs: ReadableArray?) {
     if (isStopped) {
       return
     }
@@ -758,7 +758,7 @@ internal constructor(
     viewManager.receiveCommand(view, commandId, commandArgs)
   }
 
-  public fun sendAccessibilityEvent(reactTag: Int, eventType: Int): Unit {
+  public fun sendAccessibilityEvent(reactTag: Int, eventType: Int) {
     if (isStopped) {
       return
     }
@@ -788,7 +788,7 @@ internal constructor(
       height: Int,
       displayType: Int,
       layoutDirection: Int,
-  ): Unit {
+  ) {
     if (isStopped) {
       return
     }
@@ -867,7 +867,7 @@ internal constructor(
   }
 
   @UiThread
-  public fun updatePadding(reactTag: Int, left: Int, top: Int, right: Int, bottom: Int): Unit {
+  public fun updatePadding(reactTag: Int, left: Int, top: Int, right: Int, bottom: Int) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -901,7 +901,7 @@ internal constructor(
       overflowInsetTop: Int,
       overflowInsetRight: Int,
       overflowInsetBottom: Int,
-  ): Unit {
+  ) {
     if (isStopped) {
       return
     }
@@ -935,7 +935,7 @@ internal constructor(
   }
 
   @UiThread
-  public fun updateState(reactTag: Int, stateWrapper: StateWrapper?): Unit {
+  public fun updateState(reactTag: Int, stateWrapper: StateWrapper?) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -969,7 +969,7 @@ internal constructor(
 
   /** We update the event emitter from the main thread when the view is mounted. */
   @UiThread
-  internal fun updateEventEmitter(reactTag: Int, eventEmitter: EventEmitterWrapper): Unit {
+  internal fun updateEventEmitter(reactTag: Int, eventEmitter: EventEmitterWrapper) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -977,9 +977,8 @@ internal constructor(
 
     // TODO T62717437 - Use a flag to determine that these event emitters belong to virtual nodes
     // only.
-    val viewState: ViewState = registryLock.write {
-      tagToViewState.getOrPut(reactTag) { ViewState(reactTag) }
-    }
+    val viewState: ViewState =
+        registryLock.write { tagToViewState.getOrPut(reactTag) { ViewState(reactTag) } }
 
     val previousEventEmitterWrapper = viewState.eventEmitter
     synchronized(viewState) {
@@ -1001,7 +1000,7 @@ internal constructor(
       reactTag: Int,
       initialReactTag: Int,
       blockNativeResponder: Boolean,
-  ): Unit {
+  ) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -1062,7 +1061,7 @@ internal constructor(
   }
 
   @UiThread
-  public fun deleteView(reactTag: Int): Unit {
+  public fun deleteView(reactTag: Int) {
     UiThreadUtil.assertOnUiThread()
     if (isStopped) {
       return
@@ -1109,7 +1108,7 @@ internal constructor(
       props: ReadableMap,
       stateWrapper: StateWrapper?,
       isLayoutable: Boolean,
-  ): Unit {
+  ) {
     UiThreadUtil.assertOnUiThread()
 
     if (isStopped) {
@@ -1140,9 +1139,8 @@ internal constructor(
         )
   }
 
-  private fun getNullableViewState(reactTag: Int): ViewState? = registryLock.read {
-    tagToViewState[reactTag]
-  }
+  private fun getNullableViewState(reactTag: Int): ViewState? =
+      registryLock.read { tagToViewState[reactTag] }
 
   /** Applies a bitmap as the background of the view with the given tag, if it exists. */
   @UiThread
@@ -1151,7 +1149,7 @@ internal constructor(
     view.background = bitmap.toDrawable(view.resources)
   }
 
-  public fun printSurfaceState(): Unit {
+  public fun printSurfaceState() {
     FLog.e(TAG, "Views created for surface $surfaceId:")
     registryLock.read {
       tagToViewState.forEachValue { viewState ->
@@ -1219,11 +1217,11 @@ internal constructor(
     }
   }
 
-  public fun markActiveTouchForTag(reactTag: Int): Unit {
+  public fun markActiveTouchForTag(reactTag: Int) {
     viewsWithActiveTouches.add(reactTag)
   }
 
-  public fun sweepActiveTouchForTag(reactTag: Int): Unit {
+  public fun sweepActiveTouchForTag(reactTag: Int) {
     viewsWithActiveTouches.remove(reactTag)
     if (viewsToDeleteAfterTouchFinishes.contains(reactTag)) {
       viewsToDeleteAfterTouchFinishes.remove(reactTag)

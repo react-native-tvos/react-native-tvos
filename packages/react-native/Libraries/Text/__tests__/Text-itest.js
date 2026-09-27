@@ -13,18 +13,16 @@ import '@react-native/fantom/src/setUpDefaultReactNativeEnvironment';
 import type {HostInstance} from 'react-native';
 import type {AccessibilityProps} from 'react-native';
 
+import accessibilityPropsSuite, {
+  rolePropSuite,
+} from '../../../src/private/__tests__/utilities/accessibilityPropsSuite';
+import {testIDPropSuite} from '../../../src/private/__tests__/utilities/commonPropsSuite';
 import ensureInstance from '../../../src/private/__tests__/utilities/ensureInstance';
 import * as Fantom from '@react-native/fantom';
 import nullthrows from 'nullthrows';
 import * as React from 'react';
 import {createRef} from 'react';
 import {Text} from 'react-native';
-import accessibilityPropsSuite, {
-  rolePropSuite,
-} from 'react-native/src/private/__tests__/utilities/accessibilityPropsSuite';
-import {testIDPropSuite} from 'react-native/src/private/__tests__/utilities/commonPropsSuite';
-import ReadOnlyElement from 'react-native/src/private/webapis/dom/nodes/ReadOnlyElement';
-import ReadOnlyText from 'react-native/src/private/webapis/dom/nodes/ReadOnlyText';
 
 const TEST_TEXT = 'the text';
 
@@ -592,6 +590,32 @@ describe('<Text>', () => {
       });
     });
 
+    describe('accessibilityState', () => {
+      it('does not mutate the prop when disabled overrides it', () => {
+        const accessibilityState: AccessibilityProps['accessibilityState'] = {
+          disabled: false,
+        };
+        const root = Fantom.createRoot();
+
+        Fantom.runTask(() => {
+          root.render(
+            <Text disabled accessibilityState={accessibilityState}>
+              {TEST_TEXT}
+            </Text>,
+          );
+        });
+
+        expect(accessibilityState).toEqual({disabled: false});
+        expect(
+          root.getRenderedOutput({props: ['accessibilityState']}).toJSX(),
+        ).toEqual(
+          <rn-paragraph accessibilityState="{disabled:true,selected:null,checked:None,busy:false,expanded:null}">
+            {TEST_TEXT}
+          </rn-paragraph>,
+        );
+      });
+    });
+
     describe('aria-hidden', () => {
       it('is is passed as importantForAccessibility', () => {
         const root = Fantom.createRoot();
@@ -635,7 +659,7 @@ describe('<Text>', () => {
       const element = nullthrows(elementRef.current);
       expect(element.childNodes.length).toBe(1);
 
-      const textChild = ensureInstance(element.childNodes[0], ReadOnlyText);
+      const textChild = ensureInstance(element.childNodes[0], globalThis.Text);
       expect(textChild.textContent).toBe(TEST_TEXT);
     });
 
@@ -655,19 +679,16 @@ describe('<Text>', () => {
       const element = nullthrows(elementRef.current);
       expect(element.childNodes.length).toBe(2);
 
-      const firstChild = ensureInstance(element.childNodes[0], ReadOnlyText);
+      const firstChild = ensureInstance(element.childNodes[0], globalThis.Text);
       expect(firstChild.textContent).toBe('Some text ');
 
-      const secondChild = ensureInstance(
-        element.childNodes[1],
-        ReadOnlyElement,
-      );
+      const secondChild = ensureInstance(element.childNodes[1], Element);
       expect(secondChild.tagName).toBe('RN:Text');
       expect(secondChild.childNodes.length).toBe(1);
 
       const secondChildText = ensureInstance(
         secondChild.childNodes[0],
-        ReadOnlyText,
+        globalThis.Text,
       );
       expect(secondChildText.textContent).toBe('also in bold');
     });
@@ -797,7 +818,7 @@ describe('<Text>', () => {
       expect(root.getRenderedOutput({props: PRESS_PROPS}).toJSX())
         .toMatchInlineSnapshot(`
         <rn-paragraph
-          accessibilityState="{disabled:true,selected:false,checked:None,busy:false,expanded:null}"
+          accessibilityState="{disabled:true,selected:null,checked:None,busy:false,expanded:null}"
         >
           the text
         </rn-paragraph>

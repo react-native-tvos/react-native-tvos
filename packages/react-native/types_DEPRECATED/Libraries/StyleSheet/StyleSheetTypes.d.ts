@@ -567,6 +567,10 @@ export type FontVariationSettings = string | Readonly<Record<string, number>>;
 
 export interface TextStyle extends TextStyleIOS, TextStyleAndroid, ViewStyle {
   color?: ColorValue | undefined;
+  /**
+   * Controls how wrapped text contributes its width to layout.
+   */
+  experimental_textWidthMode?: 'auto' | 'longest-line' | undefined;
   fontFamily?: string | undefined;
   fontSize?: number | undefined;
   fontStyle?: 'normal' | 'italic' | undefined;

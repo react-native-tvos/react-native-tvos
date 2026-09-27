@@ -104,7 +104,7 @@ function updateSourceFiles(
     fs.writeFile(
       path.join(
         REPO_ROOT,
-        'packages/react-native/ReactCommon/cxxreact/ReactNativeVersion.h',
+        'packages/react-native/ReactCommon/react/utils/ReactNativeVersion.h',
       ),
       require('./templates/ReactNativeVersion.h-template')(templateData),
     ),

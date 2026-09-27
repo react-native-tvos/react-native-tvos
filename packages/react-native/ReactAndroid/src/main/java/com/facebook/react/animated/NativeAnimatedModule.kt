@@ -903,9 +903,9 @@ public class NativeAnimatedModule(reactContext: ReactApplicationContext) :
     addUnbatchedOperation(
         object : UIThreadOperation() {
           override fun execute(animatedNodesManager: NativeAnimatedNodesManager) {
-            val reactApplicationContext = reactApplicationContextIfActiveOrWarn
+            // Retained for warning side-effect
+            getReactApplicationContextIfActiveOrWarn()
 
-            var viewTag = -1
             var i = 0
             while (i < opBufferSize) {
               val command = BatchExecutionOpCodes.fromId(opsAndArgs.getInt(i++))
@@ -996,7 +996,7 @@ public class NativeAnimatedModule(reactContext: ReactApplicationContext) :
 
                 BatchExecutionOpCodes.OP_CODE_DISCONNECT_ANIMATED_NODE_FROM_VIEW -> {
                   val animatedNodeTag = opsAndArgs.getInt(i++)
-                  viewTag = opsAndArgs.getInt(i++)
+                  val viewTag = opsAndArgs.getInt(i++)
                   animatedNodesManager.disconnectAnimatedNodeFromView(animatedNodeTag, viewTag)
                 }
 
@@ -1014,7 +1014,7 @@ public class NativeAnimatedModule(reactContext: ReactApplicationContext) :
                     )
 
                 BatchExecutionOpCodes.OP_CODE_REMOVE_ANIMATED_EVENT_FROM_VIEW -> {
-                  viewTag = opsAndArgs.getInt(i++)
+                  val viewTag = opsAndArgs.getInt(i++)
                   animatedNodesManager.removeAnimatedEventFromView(
                       viewTag,
                       checkNotNull(opsAndArgs.getString(i++)),

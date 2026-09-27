@@ -65,7 +65,7 @@ import {
   View,
   findNodeHandle,
 } from 'react-native';
-import * as ReactNativeFeatureFlags from 'react-native/src/private/featureflags/ReactNativeFeatureFlags';
+import {ReactNativeFeatureFlags} from 'react-native/react-private-interface';
 
 export type {ListRenderItemInfo, ListRenderItem, Separators};
 
@@ -256,8 +256,7 @@ class VirtualizedList extends StateSafePureComponent<
       return;
     }
 
-    const {horizontal, rtl} = this._orientation();
-    if (horizontal && rtl && !this._listMetrics.hasContentLength()) {
+    if (this._isHorizontalRTL() && !this._listMetrics.hasContentLength()) {
       console.warn(
         'scrollToOffset may not be called in RTL before content is laid out',
       );
@@ -278,9 +277,7 @@ class VirtualizedList extends StateSafePureComponent<
       const cartOffset = this._listMetrics.cartesianOffset(
         offset + this._scrollMetrics.visibleLength,
       );
-      /* $FlowFixMe[constant-condition] Error discovered during Constant
-       * Condition roll out. See https://fburl.com/workplace/1v97vimq. */
-      return horizontal ? {x: cartOffset} : {y: cartOffset};
+      return {x: cartOffset};
     } else {
       return horizontal ? {x: offset} : {y: offset};
     }
@@ -436,13 +433,6 @@ class VirtualizedList extends StateSafePureComponent<
     invariant(
       windowSizeOrDefault(windowSize) > 0,
       'VirtualizedList: The windowSize prop must be present and set to a value greater than 0.',
-    );
-
-    invariant(
-      /* $FlowFixMe[constant-condition] Error discovered during Constant
-       * Condition roll out. See https://fburl.com/workplace/1v97vimq. */
-      getItemCount,
-      'VirtualizedList: The "getItemCount" prop must be provided',
     );
 
     const itemCount = getItemCount(data);
@@ -709,6 +699,7 @@ class VirtualizedList extends StateSafePureComponent<
     if (this._isNestedWithSameOrientation()) {
       this.context.unregisterAsNestedChild({ref: this});
     }
+    // $FlowFixMe[incompatible-type]
     clearTimeout(this._updateCellsToRenderTimeoutID);
     this._viewabilityTuples.forEach(tuple => {
       tuple.viewabilityHelper.dispose();
@@ -786,7 +777,7 @@ class VirtualizedList extends StateSafePureComponent<
   _pushCells(
     cells: Array<Object>,
     stickyHeaderIndices: Array<number>,
-    stickyIndicesFromProps: Set<number>,
+    stickyIndicesFromProps: ?Set<number>,
     first: number,
     last: number,
     inversionStyle: StyleProp<ViewStyle>,
@@ -814,7 +805,7 @@ class VirtualizedList extends StateSafePureComponent<
       const key = VirtualizedList._keyExtractor(item, ii, this.props);
 
       this._indicesToKeys.set(ii, key);
-      if (stickyIndicesFromProps.has(ii + stickyOffset)) {
+      if (stickyIndicesFromProps?.has(ii + stickyOffset)) {
         stickyHeaderIndices.push(cells.length);
       }
 
@@ -911,7 +902,7 @@ class VirtualizedList extends StateSafePureComponent<
   }
 
   _renderEmptyComponent(
-    element: ExactReactElement_DEPRECATED<any>,
+    element: React.MixedElement,
     inversionStyle: StyleProp<ViewStyle>,
   ): React.Node {
     // $FlowFixMe[prop-missing] React.Element internal inspection
@@ -945,12 +936,16 @@ class VirtualizedList extends StateSafePureComponent<
         : styles.verticallyInverted
       : null;
     const cells: Array<any | React.Node> = [];
-    const stickyIndicesFromProps = new Set(this.props.stickyHeaderIndices);
+    // Avoid allocating a Set on every render when no sticky headers are
+    // configured (the common case).
+    const stickyHeaderIndicesProp = this.props.stickyHeaderIndices;
+    const stickyIndicesFromProps =
+      stickyHeaderIndicesProp != null ? new Set(stickyHeaderIndicesProp) : null;
     const stickyHeaderIndices = [];
 
     // 1. Add cell for ListHeaderComponent
     if (ListHeaderComponent) {
-      if (stickyIndicesFromProps.has(0)) {
+      if (stickyIndicesFromProps?.has(0)) {
         stickyHeaderIndices.push(0);
       }
       const element = isValidElement(ListHeaderComponent) ? (
@@ -986,7 +981,7 @@ class VirtualizedList extends StateSafePureComponent<
     // 2a. Add a cell for ListEmptyComponent if applicable
     const itemCount = this.props.getItemCount(data);
     if (itemCount === 0 && ListEmptyComponent) {
-      const element: ExactReactElement_DEPRECATED<any> = (
+      const element: React.MixedElement = (
         isValidElement(ListEmptyComponent) ? (
           ListEmptyComponent
         ) : (
@@ -1181,7 +1176,7 @@ class VirtualizedList extends StateSafePureComponent<
               )(
                 // $FlowExpectedError[incompatible-type] scrollProps is a superset of ScrollViewProps
                 scrollProps,
-              ) as ExactReactElement_DEPRECATED<any>,
+              ) as React.JSX.Element,
               {
                 ref: this._captureScrollRef,
               },
@@ -1196,7 +1191,7 @@ class VirtualizedList extends StateSafePureComponent<
             )(
               // $FlowExpectedError[incompatible-type] scrollProps is a superset of ScrollViewProps
               scrollProps,
-            ) as ExactReactElement_DEPRECATED<any>,
+            ) as React.JSX.Element,
             {
               ref: this._captureScrollRef,
             },
@@ -1314,7 +1309,7 @@ class VirtualizedList extends StateSafePureComponent<
   _scrollRef: ?React.ElementRef<typeof ScrollView> = null;
   _sentStartForContentLength = 0;
   _sentEndForContentLength = 0;
-  _updateCellsToRenderTimeoutID: ?TimeoutID = null;
+  _updateCellsToRenderTimeoutID: ?ReturnType<typeof setTimeout> = null;
   _viewabilityTuples: Array<ViewabilityHelperCallbackTuple> = [];
 
   _captureScrollRef = (ref: ?React.ElementRef<typeof ScrollView>) => {
@@ -1591,7 +1586,11 @@ class VirtualizedList extends StateSafePureComponent<
   }
 
   _selectOffset({x, y}: Readonly<{x: number, y: number, ...}>): number {
-    return this._orientation().horizontal ? x : y;
+    return horizontalOrDefault(this.props.horizontal) ? x : y;
+  }
+
+  _isHorizontalRTL(): boolean {
+    return horizontalOrDefault(this.props.horizontal) && I18nManager.isRTL;
   }
 
   _orientation(): ListOrientation {
@@ -1844,8 +1843,7 @@ class VirtualizedList extends StateSafePureComponent<
 
   _offsetFromScrollEvent(e: ScrollEvent): number {
     const {contentOffset, contentSize, layoutMeasurement} = e.nativeEvent;
-    const {horizontal, rtl} = this._orientation();
-    if (horizontal && rtl) {
+    if (this._isHorizontalRTL()) {
       return (
         this._selectLength(contentSize) -
         (this._selectOffset(contentOffset) +

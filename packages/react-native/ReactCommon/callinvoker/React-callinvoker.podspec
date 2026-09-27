@@ -36,10 +36,10 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig    = { "HEADER_SEARCH_PATHS" => header_search_paths.join(' ') }
   s.header_dir             = "ReactCommon"
 
-  s.subspec "CallInvokerUmbrella" do |ss|
+  s.subspec "callinvokerUmbrella" do |ss|
     ss.source_files        = "React/*.h"
-    ss.header_dir          = "React"
-    ss.header_mappings_dir = "React"
+    ss.header_dir          = ""
+    ss.header_mappings_dir = "."
   end
 
   s.dependency "React-cxxstableapi"

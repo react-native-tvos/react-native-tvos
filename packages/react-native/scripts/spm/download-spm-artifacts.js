@@ -141,8 +141,21 @@ function parseArgs(argv /*: Array<string> */) /*: DownloadArgs */ {
 const MAVEN_CENTRAL_REPOSITORY = 'https://repo1.maven.org/maven2';
 const REACT_NATIVE_MAVEN_MIRROR_REPOSITORY =
   'https://repo.reactnative.dev/maven2';
+const UNPUBLISHED_MAVEN_VERSION = '1000.0.0';
 const MAVEN_SNAPSHOT =
   'https://central.sonatype.com/repository/maven-snapshots';
+
+function isMavenArtifactVersionPublished(version /*: string */) /*: boolean */ {
+  // 1000.0.0 identifies a source checkout on main and is never published to Maven.
+  return version !== UNPUBLISHED_MAVEN_VERSION;
+}
+
+function isMavenArtifactUrlPublished(url /*: string */) /*: boolean */ {
+  return (
+    !url.includes(`/${UNPUBLISHED_MAVEN_VERSION}/`) &&
+    !url.includes(`/${UNPUBLISHED_MAVEN_VERSION}-SNAPSHOT/`)
+  );
+}
 
 /**
  * The mirror is ON unless RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED is
@@ -219,6 +232,12 @@ async function resolveSnapshotUrl(
   coordinate /*: string */,
   artifactName /*: string */,
 ) /*: Promise<string> */ {
+  if (!isMavenArtifactVersionPublished(version)) {
+    throw new Error(
+      `Maven artifacts are not published for the development version ${version}`,
+    );
+  }
+
   const metadataUrl =
     `${MAVEN_SNAPSHOT}/com/facebook/${subGroup}/${coordinate}/` +
     `${version}-SNAPSHOT/maven-metadata.xml`;
@@ -353,6 +372,10 @@ async function resolveLatestV1Version() /*: Promise<string> */ {
 }
 
 async function exists(url /*: string */) /*: Promise<boolean> */ {
+  if (!isMavenArtifactUrlPublished(url)) {
+    return false;
+  }
+
   try {
     // $FlowFixMe[incompatible-call] global fetch not in Flow stubs
     const res = await fetch(url, {method: 'HEAD'});
@@ -454,10 +477,9 @@ async function resolveRNDepsArtifact(
 
 /**
  * Resolves the `hermes-compiler` npm package's version from THIS project's own
- * node_modules — the exact same lookup generate-spm-xcodeproj.js's
- * resolveHermesCliPathSetting() uses to find the hermesc binary that will
- * compile the JS bundle, and the same one react-native-xcode.sh falls back to
- * for SwiftPM builds. Returns null when the package isn't resolvable (e.g.
+ * node_modules — the same lookup react-native-xcode.sh falls back to for
+ * SwiftPM builds to find the hermesc binary that compiles the JS bundle.
+ * Returns null when the package isn't resolvable (e.g.
  * USE_HERMES=false apps that never installed it) so the caller can fall back
  * to the npm dist-tag lookup.
  */
@@ -499,8 +521,8 @@ function resolveLocalHermesCompilerVersion(
  *   HERMES_VERSION unset       → version pinned by the locally installed
  *                                hermes-compiler package (node_modules).
  *                                This is the SAME source
- *                                resolveHermesCliPathSetting() reads for
- *                                HERMES_CLI_PATH, so the downloaded VM and
+ *                                react-native-xcode.sh resolves hermesc
+ *                                from, so the downloaded VM and
  *                                the hermesc that compiles the JS bundle
  *                                always agree — a mismatched pair crashes at
  *                                launch with "Wrong bytecode version" (#57917).
@@ -1511,6 +1533,7 @@ module.exports = {
   validateArtifactsCache,
   // Exposed for unit tests (pure / fetch-stubbable helpers).
   mavenRepositoryUrls,
+  isMavenArtifactVersionPublished,
   reactNativeMavenMirrorEnabled,
   rnCoreReleaseUrls,
   rnDepsReleaseUrls,

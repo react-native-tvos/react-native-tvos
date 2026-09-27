@@ -17,7 +17,7 @@ else
 end
 
 Pod::Spec.new do |s|
-  source_files = ["*.{m,mm,cpp,h}", "platform/ios/**/*.{m,mm,cpp,h}"]
+  source_files = ["*.{m,mm,cpp,h}"]
   header_search_paths = [
     "\"$(PODS_TARGET_SRCROOT)/../../\"",
   ]
@@ -30,9 +30,9 @@ Pod::Spec.new do |s|
   s.author                 = "Meta Platforms, Inc. and its affiliates"
   s.platforms              = min_supported_versions
   s.source                 = source
-  s.source_files           = podspec_sources(source_files, ["*.h", "platform/ios/**/*.h"])
+  s.source_files           = podspec_sources(source_files, ["*.h"])
   s.header_dir             = "react/utils"
-  s.exclude_files          = "tests"
+  s.exclude_files          = ["tests", "React"]
 
   if ENV['USE_FRAMEWORKS']
     header_search_paths = header_search_paths + ["\"$(PODS_TARGET_SRCROOT)/platform/ios\""]
@@ -46,6 +46,7 @@ Pod::Spec.new do |s|
                                "DEFINES_MODULE" => "YES" }
 
   s.dependency "React-jsi", version
+  s.dependency "React-cxxstableapi"
 
   if use_hermes()
     s.dependency "hermes-engine"
@@ -54,6 +55,17 @@ Pod::Spec.new do |s|
   add_rncore_dependency(s)
 
   add_dependency(s, "React-debug")
+
+  s.subspec "platformios" do |ss|
+    ss.source_files        = podspec_sources("platform/ios/**/*.{m,mm,cpp,h}", "platform/ios/**/*.h")
+    ss.header_mappings_dir = "platform/ios"
+  end
+
+  s.subspec "utilsUmbrella" do |ss|
+    ss.source_files        = "React/*.h"
+    ss.header_dir          = ""
+    ss.header_mappings_dir = "."
+  end
 
   mark_as_react_native_build(s)
 end

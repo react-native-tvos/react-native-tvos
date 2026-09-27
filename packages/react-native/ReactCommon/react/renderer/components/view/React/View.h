@@ -15,17 +15,21 @@
 //
 // Re-exports the module's public interface headers. React Native's own code
 // should keep using the fine-grained `<react/renderer/components/view/...>`
-// includes; only outside consumers use this umbrella.
+// includes, except in headers it exports to consumers: those are preprocessed
+// in the consumer's translation unit, where the fine-grained include hits this
+// module's <react/cxxstableapi/UmbrellaGuard.h>. `RN_ALLOW_FRAMEWORKS` does not
+// suppress that guard, so a "for frameworks" header must reach this module
+// through the umbrella.
 // =============================================================================
 
 // Marks that the following headers are pulled in through the umbrella, so their
-// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them. Scoped to
-// this block so later *direct* includes in the same TU are still caught.
-#define RN_UMBRELLA_CONTEXT
-
-#if defined(__APPLE__)
-#include <TargetConditionals.h>
-#endif
+// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them. The marker
+// is saved and restored rather than defined and undefined: the scope ends at
+// this block, so later *direct* includes in the same TU are still caught, and
+// it nests inside an enclosing umbrella rather than disarming it.
+#pragma push_macro("RN_UMBRELLA_CONTEXT")
+#undef RN_UMBRELLA_CONTEXT
+#define RN_UMBRELLA_CONTEXT 1
 
 #include <react/renderer/components/view/AccessibilityPrimitives.h>
 #include <react/renderer/components/view/AccessibilityProps.h>
@@ -60,19 +64,5 @@
 #include <react/renderer/components/view/primitives.h>
 #include <react/renderer/components/view/propsConversions.h>
 
-#ifdef ANDROID
-#include <react/renderer/components/view/NativeDrawable.h>
-#endif
-
-#if defined(TARGET_OS_OSX) && TARGET_OS_OSX
-#include <react/renderer/components/view/HostPlatformViewEvents.h>
-#include <react/renderer/components/view/KeyEvent.h>
-#include <react/renderer/components/view/MouseEvent.h>
-#endif
-
-#ifdef USE_WINUI_FABRIC
-#include <react/renderer/components/view/KeyEvent.h>
-#include <react/renderer/components/view/WindowsViewEvents.h>
-#endif
-
 #undef RN_UMBRELLA_CONTEXT
+#pragma pop_macro("RN_UMBRELLA_CONTEXT")

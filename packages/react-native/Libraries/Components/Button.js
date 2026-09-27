@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  * @format
  */
 
@@ -27,8 +27,7 @@ import View from './View/View';
 import invariant from 'invariant';
 import * as React from 'react';
 
-/** @build-types emit-as-interface Uniwind compatibility */
-export type ButtonProps = Readonly<{
+type ButtonPropsCore = Readonly<{
   /**
    * Text to display inside the button. On Android the given title will be
    * converted to the uppercased form.
@@ -165,6 +164,9 @@ export type ButtonProps = Readonly<{
   accessibilityLanguage?: ?Stringish,
 }>;
 
+/** @build-types emit-as-interface Uniwind compatibility */
+export type ButtonProps = ButtonPropsCore;
+
 const NativeTouchable:
   typeof TouchableNativeFeedback | typeof TouchableOpacity =
   Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
@@ -230,7 +232,7 @@ const Button: component(
   } = props;
   const buttonStyles: Array<ViewStyleProp> = [styles.button];
   const textStyles: Array<TextStyleProp> = [styles.text];
-  if (color) {
+  if (Boolean(color)) {
     if (Platform.OS === 'ios') {
       textStyles.push({color: color});
     } else {
@@ -254,7 +256,7 @@ const Button: component(
       ? {..._accessibilityState, disabled}
       : _accessibilityState;
 
-  if (disabled) {
+  if (disabled === true) {
     buttonStyles.push(styles.buttonDisabled);
     textStyles.push(styles.textDisabled);
   }
@@ -277,7 +279,10 @@ const Button: component(
       accessible={accessible}
       accessibilityActions={accessibilityActions}
       onAccessibilityAction={onAccessibilityAction}
-      accessibilityLabel={ariaLabel || accessibilityLabel}
+      accessibilityLabel={
+        // $FlowFixMe[sketchy-null-string]
+        ariaLabel || accessibilityLabel
+      }
       accessibilityHint={accessibilityHint}
       accessibilityLanguage={accessibilityLanguage}
       accessibilityRole="button"

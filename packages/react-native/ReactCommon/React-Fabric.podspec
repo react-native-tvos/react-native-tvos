@@ -84,14 +84,8 @@ Pod::Spec.new do |s|
 
   s.subspec "bridging" do |ss|
     ss.source_files         = podspec_sources("react/renderer/bridging/**/*.{m,mm,cpp,h}", "react/renderer/bridging/**/*.{h}")
-    ss.exclude_files        = ["react/renderer/bridging/tests", "react/renderer/bridging/React"]
+    ss.exclude_files        = "react/renderer/bridging/tests"
     ss.header_dir           = "react/renderer/bridging"
-  end
-
-  s.subspec "bridgingUmbrella" do |ss|
-    ss.source_files         = "react/renderer/bridging/React/*.h"
-    ss.header_dir           = "React"
-    ss.header_mappings_dir  = "react/renderer/bridging/React"
   end
 
   s.subspec "core" do |ss|
@@ -110,20 +104,34 @@ Pod::Spec.new do |s|
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/text/platform/cxx\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/textinput/platform/ios\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view/platform/cxx\"",
+        "\"$(PODS_TARGET_SRCROOT)/react/renderer/core\"",
+        "\"$(PODS_TARGET_SRCROOT)/react/renderer/debug\"",
       ]
     end
 
     ss.source_files         = podspec_sources("react/renderer/core/**/*.{m,mm,cpp,h}", "react/renderer/core/**/*.{h}")
-    ss.exclude_files        = "react/renderer/core/tests"
+    ss.exclude_files        = ["react/renderer/core/tests", "react/renderer/core/React"]
     ss.header_dir           = "react/renderer/core"
     ss.pod_target_xcconfig  = {
       "HEADER_SEARCH_PATHS" => header_search_path.join(" ")
     }
   end
 
+  s.subspec "coreUmbrella" do |ss|
+    ss.source_files         = "react/renderer/core/React/*.h"
+    ss.header_dir           = ""
+    ss.header_mappings_dir  = "react/renderer/core"
+  end
+
   s.subspec "componentregistry" do |ss|
     ss.source_files         = podspec_sources("react/renderer/componentregistry/*.{m,mm,cpp,h}", "react/renderer/componentregistry/*.{h}")
     ss.header_dir           = "react/renderer/componentregistry"
+  end
+
+  s.subspec "componentregistryUmbrella" do |ss|
+    ss.source_files         = "react/renderer/componentregistry/React/*.h"
+    ss.header_dir           = ""
+    ss.header_mappings_dir  = "react/renderer/componentregistry"
   end
 
   s.subspec "componentregistrynative" do |ss|
@@ -134,14 +142,8 @@ Pod::Spec.new do |s|
   s.subspec "components" do |ss|
     ss.subspec "root" do |sss|
       sss.source_files         = podspec_sources("react/renderer/components/root/**/*.{m,mm,cpp,h}", "react/renderer/components/root/**/*.{h}")
-      sss.exclude_files        = ["react/renderer/components/root/tests", "react/renderer/components/root/React"]
+      sss.exclude_files        = "react/renderer/components/root/tests"
       sss.header_dir           = "react/renderer/components/root"
-    end
-
-    ss.subspec "rootUmbrella" do |sss|
-      sss.source_files         = "react/renderer/components/root/React/*.h"
-      sss.header_dir           = "React"
-      sss.header_mappings_dir  = "react/renderer/components/root/React"
     end
 
     ss.subspec "view" do |sss|
@@ -153,20 +155,14 @@ Pod::Spec.new do |s|
 
     ss.subspec "viewUmbrella" do |sss|
       sss.source_files         = "react/renderer/components/view/React/*.h"
-      sss.header_dir           = "React"
-      sss.header_mappings_dir  = "react/renderer/components/view/React"
+      sss.header_dir           = ""
+      sss.header_mappings_dir  = "react/renderer/components/view"
     end
 
     ss.subspec "scrollview" do |sss|
       sss.source_files         = podspec_sources("react/renderer/components/scrollview/**/*.{m,mm,cpp,h}", "react/renderer/components/scrollview/**/*.{h}")
       sss.header_dir           = "react/renderer/components/scrollview"
-      sss.exclude_files        = "react/renderer/components/scrollview/tests", "react/renderer/components/scrollview/platform/android", "react/renderer/components/scrollview/React"
-    end
-
-    ss.subspec "scrollviewUmbrella" do |sss|
-      sss.source_files         = "react/renderer/components/scrollview/React/*.h"
-      sss.header_dir           = "React"
-      sss.header_mappings_dir  = "react/renderer/components/scrollview/React"
+      sss.exclude_files        = "react/renderer/components/scrollview/tests", "react/renderer/components/scrollview/platform/android"
     end
 
     ss.subspec "legacyviewmanagerinterop" do |sss|
@@ -198,6 +194,12 @@ Pod::Spec.new do |s|
   s.subspec "imagemanager" do |ss|
     ss.source_files         = podspec_sources("react/renderer/imagemanager/*.{m,mm,cpp,h}", "react/renderer/imagemanager/*.h")
     ss.header_dir           = "react/renderer/imagemanager"
+  end
+
+  s.subspec "imagemanagerUmbrella" do |ss|
+    ss.source_files         = "react/renderer/imagemanager/React/*.h"
+    ss.header_dir           = ""
+    ss.header_mappings_dir  = "react/renderer/imagemanager"
   end
 
   s.subspec "mounting" do |ss|
@@ -254,12 +256,6 @@ Pod::Spec.new do |s|
     ss.dependency             "React-rendererconsistency"
     ss.source_files         = podspec_sources("react/renderer/uimanager/*.{m,mm,cpp,h}", "react/renderer/uimanager/*.h")
     ss.header_dir           = "react/renderer/uimanager"
-  end
-
-  s.subspec "uimanagerUmbrella" do |ss|
-    ss.source_files         = "react/renderer/uimanager/React/*.h"
-    ss.header_dir           = "React"
-    ss.header_mappings_dir  = "react/renderer/uimanager/React"
   end
 
   s.subspec "leakchecker" do |ss|

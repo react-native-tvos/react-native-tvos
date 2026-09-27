@@ -13,6 +13,8 @@ import com.facebook.react.ReactRootView
 import com.facebook.react.bridge.JSExceptionHandler
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.fabric.mounting.MountingManager
 import com.facebook.react.fabric.mounting.MountingManager.MountItemExecutor
 import com.facebook.react.fabric.mounting.mountitems.IntBufferBatchMountItem
@@ -84,15 +86,16 @@ class FabricMountingManagerInstrumentationTest {
       index: Int,
       componentName: String = "RCTView",
   ): IntBufferBatchMountItem {
-    val intBuffer = intArrayOf(
-        IntBufferBatchMountItem.INSTRUCTION_CREATE,
-        reactTag,
-        1,
-        IntBufferBatchMountItem.INSTRUCTION_INSERT,
-        reactTag,
-        parentTag,
-        index,
-    )
+    val intBuffer =
+        intArrayOf(
+            IntBufferBatchMountItem.INSTRUCTION_CREATE,
+            reactTag,
+            1,
+            IntBufferBatchMountItem.INSTRUCTION_INSERT,
+            reactTag,
+            parentTag,
+            index,
+        )
     val objBuffer = arrayOf<Any?>(componentName, JavaOnlyMap.of(), null, null)
     return IntBufferBatchMountItem(surfaceId, intBuffer, objBuffer, 1)
   }
@@ -108,6 +111,22 @@ class FabricMountingManagerInstrumentationTest {
     val smm = mountingManager.getSurfaceManagerEnforced(surfaceId, "test")
     assertThat(smm.getViewExists(42)).isTrue()
     assertThat(smm.getView(42)).isNotNull()
+  }
+
+  @Test
+  fun writableNativeMap_mutationAfterImportingValues_preservesCachedPointers() {
+    val map = WritableNativeMap()
+    map.putDouble("opacity", 1.0)
+
+    assertThat(map.hasKey("opacity")).isTrue()
+    assertThat(map.getType("opacity")).isEqualTo(ReadableType.Number)
+
+    map.putDouble("opacity", 0.3)
+    repeat(64) { map.putInt("newKey$it", it) }
+
+    val entry = map.entryIterator.next()
+    assertThat(entry.key).isEqualTo("opacity")
+    assertThat(entry.value).isEqualTo(0.3)
   }
 
   /**
@@ -174,21 +193,22 @@ class FabricMountingManagerInstrumentationTest {
     initialMount.execute(mountingManager)
     assertThat(smm.getView(42)).isNotNull()
 
-    val intBuffer = intArrayOf(
-        IntBufferBatchMountItem.INSTRUCTION_REMOVE,
-        42,
-        surfaceId,
-        0,
-        IntBufferBatchMountItem.INSTRUCTION_DELETE,
-        42,
-        IntBufferBatchMountItem.INSTRUCTION_CREATE,
-        42,
-        1,
-        IntBufferBatchMountItem.INSTRUCTION_INSERT,
-        42,
-        surfaceId,
-        0,
-    )
+    val intBuffer =
+        intArrayOf(
+            IntBufferBatchMountItem.INSTRUCTION_REMOVE,
+            42,
+            surfaceId,
+            0,
+            IntBufferBatchMountItem.INSTRUCTION_DELETE,
+            42,
+            IntBufferBatchMountItem.INSTRUCTION_CREATE,
+            42,
+            1,
+            IntBufferBatchMountItem.INSTRUCTION_INSERT,
+            42,
+            surfaceId,
+            0,
+        )
     val objBuffer = arrayOf<Any?>("RCTView", JavaOnlyMap.of(), null, null)
     val batchMount = IntBufferBatchMountItem(surfaceId, intBuffer, objBuffer, 2)
     batchMount.execute(mountingManager)

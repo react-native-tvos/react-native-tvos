@@ -353,7 +353,8 @@ static void updateBorderColorPropValue(
     const std::optional<SharedColor>& newColor,
     const std::optional<SharedColor>& oldColor) {
   if (newColor != oldColor) {
-    result[propName] = newColor.has_value() ? *newColor.value() : NULL;
+    result[propName] = newColor.has_value() ? folly::dynamic(*newColor.value())
+                                            : folly::dynamic(nullptr);
   }
 }
 
@@ -461,7 +462,13 @@ inline static void updateAccessibilityStateProp(
   }
 
   if (!oldState.has_value() || newState->selected != oldState->selected) {
-    resultState["selected"] = newState->selected;
+    // Omitting the key when `selected` is unset is what tells the platform the
+    // component is not selectable. BaseViewManager#setViewState falls back to
+    // `setSelected(false)` for an absent key, so the rendered result is
+    // unchanged from when this was a plain `bool`.
+    if (newState->selected.has_value()) {
+      resultState["selected"] = newState->selected.value();
+    }
   }
 
   if (!oldState.has_value() || newState->busy != oldState->busy) {

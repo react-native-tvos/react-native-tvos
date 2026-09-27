@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <react/renderer/mounting/MountingCoordinator.h>
 
 namespace facebook::react {
@@ -43,12 +45,6 @@ class ShadowTreeDelegate {
    * Called right after Shadow Tree commits a new React revision of the tree.
    */
   virtual void shadowTreeDidFinishReactCommit(const ShadowTree &shadowTree) const = 0;
-
-  /*
-   * Called right after Shadow Tree promotes a React revision of the tree to
-   * be merged.
-   */
-  virtual void shadowTreeDidPromoteReactRevision(const ShadowTree &shadowTree) const = 0;
 
   /*
    * Called right after a Shadow Tree commits a new tree, reporting the nodes

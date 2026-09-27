@@ -70,6 +70,7 @@ let rctDeprecation = RNTarget(
 let yoga = RNTarget(
   name: .yoga,
   path: "ReactCommon/yoga",
+  excludedPaths: ["test"],
   publicHeadersPath: "yoga"
 )
 
@@ -135,7 +136,8 @@ let reactFeatureFlags = RNTarget(
 let reactPerfLogger = RNTarget(
   name: .reactPerfLogger,
   path: "ReactCommon/reactperflogger",
-  excludedPaths: ["fusebox"]
+  excludedPaths: ["fusebox"],
+  dependencies: [.reactDebug, .reactNativeDependencies]
 )
 
 /// React-logger.podspec

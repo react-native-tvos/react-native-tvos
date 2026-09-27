@@ -116,21 +116,6 @@
   return YES;
 }
 
-- (BOOL)bridgelessEnabled
-{
-  return YES;
-}
-
-- (BOOL)fabricEnabled
-{
-  return YES;
-}
-
-- (BOOL)turboModuleEnabled
-{
-  return YES;
-}
-
 - (Class)getModuleClassFromName:(const char *)name
 {
   return nullptr;

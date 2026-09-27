@@ -242,6 +242,7 @@ public class FabricUIManager
   // It's initialized only when addUIBlock or prependUIBlock is called the first time.
   @Nullable private InteropUIBlockListener mInteropUIBlockListener;
 
+  @SuppressWarnings("this-escape")
   public FabricUIManager(
       ReactApplicationContext reactContext,
       ViewManagerRegistry viewManagerRegistry,
@@ -551,7 +552,7 @@ public class FabricUIManager
       ReadableMapBuffer paragraphAttributes,
       float width,
       float height) {
-    ViewManager textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
+    ViewManager<?, ?> textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
 
     return (NativeArray)
         TextLayoutManager.measureLines(
@@ -641,7 +642,7 @@ public class FabricUIManager
       float maxHeight,
       @Nullable float[] attachmentsPositions) {
 
-    ViewManager textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
+    ViewManager<?, ?> textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
 
     return TextLayoutManager.measureText(
         mReactApplicationContext.getAssets(),
@@ -669,7 +670,7 @@ public class FabricUIManager
       float maxWidth,
       float minHeight,
       float maxHeight) {
-    ViewManager textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
+    ViewManager<?, ?> textViewManager = mViewManagerRegistry.get(ReactTextViewManager.REACT_CLASS);
 
     return TextLayoutManager.createPreparedLayout(
         mReactApplicationContext.getAssets(),
@@ -1627,7 +1628,7 @@ public class FabricUIManager
 
       // Drain pending React revision merges first so that animations,
       // preallocation, and mount items operate against the latest revision.
-      if (ReactNativeFeatureFlags.enableFabricCommitBranching()) {
+      if (ReactNativeFeatureFlags.enableFabricCommitBranchingMergeOnMainThread()) {
         FabricUIManagerBinding binding = mBinding;
         if (binding != null) {
           Integer mergeSurfaceId;

@@ -8,7 +8,11 @@
  * @format
  */
 
-const {createLogger, getMavenRepositoryUrls} = require('./utils');
+const {
+  createLogger,
+  getMavenRepositoryUrls,
+  isMavenArtifactVersionPublished,
+} = require('./utils');
 const {execSync} = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -246,6 +250,10 @@ async function findExistingTarballUrl(
   version /*: string */,
   buildType /*: BuildFlavor */,
 ) /*: Promise<?string> */ {
+  if (!isMavenArtifactVersionPublished(version)) {
+    return null;
+  }
+
   const candidates = getTarballUrls(version, buildType);
   for (const url of candidates) {
     if (await hermesArtifactExists(url)) {
@@ -383,6 +391,11 @@ async function downloadHermesTarball(
     const tmpFile = `${artifactsPath}/hermes-ios.download`;
     try {
       fs.mkdirSync(artifactsPath, {recursive: true});
+      if (!isMavenArtifactVersionPublished(version)) {
+        throw new Error(
+          `Maven artifacts are not published for the development version ${version}`,
+        );
+      }
       hermesLog(`Downloading Hermes tarball from ${tarballUrl}`);
 
       const response /*: Response */ = await fetch(tarballUrl);

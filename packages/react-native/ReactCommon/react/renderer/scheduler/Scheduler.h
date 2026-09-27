@@ -11,19 +11,17 @@
 
 #include <atomic>
 #include <memory>
+#include <optional>
+#include <shared_mutex>
 #include <vector>
 
 #include <ReactCommon/RuntimeExecutor.h>
-#include <react/performance/cdpmetrics/CdpMetricsReporter.h>
-#include <react/performance/cdpmetrics/CdpPerfIssuesReporter.h>
-#include <react/performance/timeline/PerformanceEntryReporter.h>
 #include <react/renderer/componentregistry/ComponentDescriptorFactory.h>
 #include <react/renderer/core/ComponentDescriptor.h>
 #include <react/renderer/core/EventEmitter.h>
 #include <react/renderer/core/EventListener.h>
 #include <react/renderer/core/LayoutConstraints.h>
 #include <react/renderer/mounting/MountingOverrideDelegate.h>
-#include <react/renderer/observers/events/EventPerformanceLogger.h>
 #include <react/renderer/scheduler/InspectorData.h>
 #include <react/renderer/scheduler/SchedulerDelegate.h>
 #include <react/renderer/scheduler/SchedulerToolbox.h>
@@ -31,10 +29,15 @@
 #include <react/renderer/uimanager/UIManagerAnimationDelegate.h>
 #include <react/renderer/uimanager/UIManagerBinding.h>
 #include <react/renderer/uimanager/UIManagerDelegate.h>
-#include <react/renderer/viewtransition/ViewTransitionModule.h>
 #include <react/utils/ContextContainer.h>
 
 namespace facebook::react {
+
+class CdpMetricsReporter;
+class CdpPerfIssuesReporter;
+class EventPerformanceLogger;
+class PerformanceEntryReporter;
+class ViewTransitionModule;
 
 /*
  * Scheduler coordinates Shadow Tree updates and event flows.
@@ -104,7 +107,6 @@ class Scheduler final : public UIManagerDelegate {
   void uiManagerShouldAddEventListener(std::shared_ptr<const EventListener> listener) final;
   void uiManagerShouldRemoveEventListener(const std::shared_ptr<const EventListener> &listener) final;
   void uiManagerDidFinishReactCommit(const ShadowTree &shadowTree) override;
-  void uiManagerDidPromoteReactRevision(const ShadowTree &shadowTree) override;
   void uiManagerDidStartSurface(const ShadowTree &shadowTree) override;
 
 #pragma mark - ContextContainer
@@ -142,8 +144,8 @@ class Scheduler final : public UIManagerDelegate {
   std::shared_ptr<std::optional<const EventDispatcher>> eventDispatcher_;
 
   std::shared_ptr<PerformanceEntryReporter> performanceEntryReporter_;
-  std::optional<CdpMetricsReporter> cdpMetricsReporter_;
-  std::optional<CdpPerfIssuesReporter> cdpPerfIssuesReporter_;
+  std::unique_ptr<CdpMetricsReporter> cdpMetricsReporter_;
+  std::unique_ptr<CdpPerfIssuesReporter> cdpPerfIssuesReporter_;
   std::shared_ptr<EventPerformanceLogger> eventPerformanceLogger_;
 
   /**

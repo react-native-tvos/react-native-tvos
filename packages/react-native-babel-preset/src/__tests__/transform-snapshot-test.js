@@ -171,6 +171,33 @@ function transformCode(
   return result?.code ?? null;
 }
 
+function transformCodeWithSourceOptimization(
+  code: string,
+  options: {[string]: unknown},
+): string | null {
+  const config = preset.getPreset(code, options);
+  const result = babel.transformSync(code, {
+    ...config,
+    babelrc: false,
+    configFile: false,
+    filename: MOCK_FILENAME,
+    sourceMaps: false,
+  });
+  return result?.code ?? null;
+}
+
+function transformWithoutBabelApi(code: string): string | null {
+  const config = preset.getPreset(code, {dev: false});
+  const result = babel.transformSync(code, {
+    ...config,
+    babelrc: false,
+    configFile: false,
+    filename: MOCK_FILENAME,
+    sourceMaps: false,
+  });
+  return result?.code ?? null;
+}
+
 function getSnapshotPath(configName: string): string {
   return path.join(OUTPUT_DIR, `${configName}.js`);
 }
@@ -267,6 +294,54 @@ describe('react-native-babel-preset transform snapshots', () => {
   );
 
   describe('specific feature transformations', () => {
+    it('builds the default config without options or a Babel API', () => {
+      expect(() => preset()).not.toThrow();
+    });
+
+    it('uses the default transform profile without a Babel API', () => {
+      const result = transformWithoutBabelApi('class Animal {}');
+      expect(result).toContain('class Animal');
+    });
+
+    it('adds display names when React.createClass contains trivia', () => {
+      const code = `
+        const Component = React /* comment */ . createClass({
+          render() { return null; }
+        });
+      `;
+      const result = transformCodeWithSourceOptimization(code, {dev: false});
+      expect(result).toContain('displayName:"Component"');
+    });
+
+    it('runs codegen when the type arguments are separated by trivia', () => {
+      const code = `
+        // @flow strict-local
+        import {
+          codegenNativeComponent,
+          type HostComponent,
+          type ViewProps,
+        } from 'react-native';
+
+        type NativeProps = Readonly<{
+          ...ViewProps,
+        }>;
+
+        export default codegenNativeComponent /* comment */ <NativeProps>(
+          'View',
+        ) as HostComponent<NativeProps>;
+      `;
+      const config = preset.getPreset(code, {});
+      const result = babel.transformSync(code, {
+        ...config,
+        babelrc: false,
+        configFile: false,
+        filename: MOCK_FILENAME,
+        sourceMaps: false,
+      });
+
+      expect(result?.code).toContain('__INTERNAL_VIEW_CONFIG');
+    });
+
     it('handles async generators', () => {
       const code = `
         async function* gen() {
@@ -438,6 +513,25 @@ describe('react-native-babel-preset transform snapshots', () => {
       const result = transformCode(code, {
         dev: false,
         unstable_transformProfile: 'hermes-stable',
+      });
+      expect(result).not.toContain('#count');
+      expect(result).not.toContain('#privateMethod');
+      expect(result).toContain('_classPrivateFieldLooseKey');
+    });
+
+    it('transforms private class fields when the profile lowers classes', () => {
+      const code = `
+        class Counter {
+          #count = 0;
+          #privateMethod() { return this.#count; }
+        }
+      `;
+      const result = transformCode(code, {
+        dev: false,
+        unstable_transformProfile: 'hermes-legacy',
+        customTransformOptions: {
+          unstable_preserveClassPrivate: true,
+        },
       });
       expect(result).not.toContain('#count');
       expect(result).not.toContain('#privateMethod');

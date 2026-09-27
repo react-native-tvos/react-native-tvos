@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <react/renderer/core/ReactPrimitives.h>
 #include <react/renderer/core/ShadowNode.h>
@@ -90,11 +90,6 @@ class UIManagerDelegate {
    * Called after a new React revision of the shadow tree is committed.
    */
   virtual void uiManagerDidFinishReactCommit(const ShadowTree &shadowTree) = 0;
-
-  /*
-   * Called after a React revision of the shadow tree is promoted to be merged.
-   */
-  virtual void uiManagerDidPromoteReactRevision(const ShadowTree &shadowTree) = 0;
 
   using OnSurfaceStartCallback = std::function<void(const ShadowTree &shadowTree)>;
   virtual void uiManagerShouldAddOnSurfaceStartCallback(OnSurfaceStartCallback &&callback) = 0;

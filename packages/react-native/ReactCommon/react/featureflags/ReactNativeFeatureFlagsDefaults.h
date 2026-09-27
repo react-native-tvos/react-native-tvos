@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<62795aac7abe2618321e73ff6e9e7e83>>
+ * @generated SignedSource<<944a65b449e3659d982f4b8ca2191f31>>
  */
 
 /**
@@ -18,6 +18,8 @@
  */
 
 #pragma once
+
+#include <react/cxxstableapi/UmbrellaGuard.h>
 
 #include <react/featureflags/ReactNativeFeatureFlagsProvider.h>
 
@@ -75,11 +77,19 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool enableAndroidAutoOffscreenCompositingForElevation() override {
+    return false;
+  }
+
   bool enableAndroidTextMeasurementOptimizations() override {
     return false;
   }
 
   bool enableBridgelessArchitecture() override {
+    return true;
+  }
+
+  bool enableBufferedCallInvoker() override {
     return true;
   }
 
@@ -108,6 +118,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableFabricCommitBranching() override {
+    return false;
+  }
+
+  bool enableFabricCommitBranchingMergeOnMainThread() override {
     return false;
   }
 
@@ -144,6 +158,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    return false;
+  }
+
+  bool enableImperativeEvents() override {
     return false;
   }
 
@@ -229,10 +247,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
 
   bool enableVirtualViewContainerStateExperimental() override {
     return false;
-  }
-
-  bool fixDifferentiatorParentTagForUnflattenCase() override {
-    return true;
   }
 
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {

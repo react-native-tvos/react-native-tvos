@@ -93,7 +93,7 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     HasChildPressedStateDelay {
 
   private companion object {
-    private val DEBUG_MODE = false && ReactBuildConfig.DEBUG
+    private val DEBUG_MODE = ReactBuildConfig.DEBUG && false
     private val TAG = ReactHorizontalScrollView::class.java.simpleName
 
     private const val NO_SCROLL_POSITION = Int.MIN_VALUE

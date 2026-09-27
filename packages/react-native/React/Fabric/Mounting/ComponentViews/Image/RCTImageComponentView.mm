@@ -38,8 +38,6 @@ using namespace facebook::react;
     _imageView.layer.minificationFilter = kCAFilterTrilinear;
     _imageView.layer.magnificationFilter = kCAFilterTrilinear;
 
-    _imageResponseObserverProxy = std::make_shared<RCTImageResponseObserverProxy>(self);
-
     self.contentView = _imageView;
   }
 
@@ -94,19 +92,23 @@ using namespace facebook::react;
   auto oldImageState = std::static_pointer_cast<const ImageShadowNode::ConcreteState>(_state);
   auto newImageState = std::static_pointer_cast<const ImageShadowNode::ConcreteState>(state);
 
-  [self _setStateAndResubscribeImageResponseObserver:newImageState];
-
   bool havePreviousData = oldImageState && oldImageState->getData().getImageSource() != ImageSource{};
 
   if (!havePreviousData ||
       (newImageState && newImageState->getData().getImageSource() != oldImageState->getData().getImageSource())) {
     // Loading actually starts a little before this, but this is the first time we know
-    // the image is loading and can fire an event from this component
+    // the image is loading and can fire an event from this component.
+    //
+    // This has to be emitted before subscribing below: the observer coordinator
+    // replays an already-`Completed` (or `Failed`) response synchronously, so
+    // subscribing first can deliver `onLoad`/`onLoadEnd` ahead of `onLoadStart`.
     static_cast<const ImageEventEmitter &>(*_eventEmitter).onLoadStart();
 
     // TODO (T58941612): Tracking for visibility should be done directly on this class.
     // For now, we consolidate instrumentation logic in the image loader, so that pre-Fabric gets the same treatment.
   }
+
+  [self _setStateAndResubscribeImageResponseObserver:newImageState];
 }
 
 - (void)_setStateAndResubscribeImageResponseObserver:(const ImageShadowNode::ConcreteState::Shared &)state
@@ -120,6 +122,11 @@ using namespace facebook::react;
   _state = state;
 
   if (_state) {
+    // A new observer per subscription: callbacks of a previous request can still be queued on the
+    // main queue (e.g. after this view was recycled and reused), and must not be applied here.
+    // The callbacks are matched by the proxy's address. The new proxy is allocated before the
+    // previous one is released, so two consecutive subscriptions never share an address.
+    _imageResponseObserverProxy = std::make_shared<RCTImageResponseObserverProxy>(self);
     auto &observerCoordinator = _state->getData().getImageRequest().getObserverCoordinator();
     observerCoordinator.addObserver(_imageResponseObserverProxy);
   }
@@ -136,8 +143,9 @@ using namespace facebook::react;
 
 - (void)didReceiveImage:(UIImage *)image metadata:(id)metadata fromObserver:(const void *)observer
 {
-  if (!_eventEmitter || !_state) {
-    // Notifications are delivered asynchronously and might arrive after the view is already recycled.
+  if (!_eventEmitter || !_state || observer != _imageResponseObserverProxy.get()) {
+    // Notifications are delivered asynchronously and might arrive after the view is already recycled,
+    // or after it has been reused for another image.
     // In the future, we should incorporate an `EventEmitter` into a separate object owned by `ImageRequest` or `State`.
     // See for more info: T46311063.
     return;
@@ -183,7 +191,7 @@ using namespace facebook::react;
                      total:(int64_t)total
               fromObserver:(const void *)observer
 {
-  if (!_eventEmitter) {
+  if (!_eventEmitter || observer != _imageResponseObserverProxy.get()) {
     return;
   }
 
@@ -192,6 +200,10 @@ using namespace facebook::react;
 
 - (void)didReceiveFailure:(NSError *)error fromObserver:(const void *)observer
 {
+  if (observer != _imageResponseObserverProxy.get()) {
+    return;
+  }
+
   _imageView.image = nil;
 
   if (!_eventEmitter) {

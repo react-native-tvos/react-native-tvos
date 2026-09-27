@@ -492,6 +492,7 @@ void ShadowTree::mount(ShadowTreeRevision revision, bool mountSynchronously)
 }
 
 void ShadowTree::mergeReactRevision() const {
+  TraceSection s("ShadowTree::mergeReactRevision");
   ShadowTreeRevision promotedRevision;
   std::vector<ShadowTreeRevision> promotedRevisions;
   // If props updates accumulation is guaranteed, we can merge the promoted
@@ -568,7 +569,7 @@ void ShadowTree::mergeReactRevision() const {
   }
 }
 
-void ShadowTree::promoteReactRevision() const {
+bool ShadowTree::promoteReactRevision() const {
   // Promote only when props updates accumulation is guaranteed. Otherwise,
   // queuedReactRevisions_ will be used instead.
   if (isPropsUpdatesAccumulationGuaranteed()) {
@@ -579,7 +580,7 @@ void ShadowTree::promoteReactRevision() const {
       // have more than one promotion in a row. In this case, all but the first
       // one should no-op.
       if (!currentReactRevision_.has_value()) {
-        return;
+        return false;
       }
       currentReactRevision = currentReactRevision_.value();
     }
@@ -592,7 +593,7 @@ void ShadowTree::promoteReactRevision() const {
     UniqueLock lock = uniqueRevisionLock(false);
 
     if (queuedReactRevisions_.empty()) {
-      return;
+      return false;
     }
 
     // Move all queued revisions to the promoted revisions.
@@ -603,7 +604,7 @@ void ShadowTree::promoteReactRevision() const {
     queuedReactRevisions_.clear();
   }
 
-  delegate_.shadowTreeDidPromoteReactRevision(*this);
+  return true;
 }
 
 void ShadowTree::scheduleReactRevisionPromotion() const {

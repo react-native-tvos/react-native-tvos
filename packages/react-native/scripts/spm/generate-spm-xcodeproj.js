@@ -319,7 +319,11 @@ function shellScriptPhase(
       outputFileListPaths: empty,
       outputPaths: pathList(options.outputPaths),
       runOnlyForDeploymentPostprocessing: '0',
-      shellPath: '/bin/sh',
+      // React Native's own bodies here start with `set -euo pipefail`, which
+      // /bin/sh rejects on a host where it isn't bash (e.g. dash's `set -o
+      // pipefail: Illegal option`). Run every phase under bash, including
+      // plugin-contributed ones, so a plugin's body can rely on it too.
+      shellPath: '/bin/bash',
       shellScript: quoteIfNeeded(script),
     },
   };
@@ -763,7 +767,9 @@ if [ "$STALE" -eq 0 ] && [ -f "$WATCH_FILE" ]; then
   while IFS= read -r P; do
     [ -z "$P" ] && continue
     if [ -d "$P" ]; then
-      if [ -n "$(find "$P" -newer "$STAMP" -print -quit 2>/dev/null)" ]; then
+      # .swiftpm holds Xcode's own per-user scheme state, which it rewrites
+      # during a build — reading it as a change makes every IDE build re-sync.
+      if [ -n "$(find "$P" -name .swiftpm -prune -o -newer "$STAMP" -print -quit 2>/dev/null)" ]; then
         STALE=1
         break
       fi
@@ -899,7 +905,8 @@ function generateXcscheme(
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Sync SPM Autolinking"
-               scriptText = "${escapedSync}">
+               scriptText = "${escapedSync}"
+               shellToInvoke = "/bin/bash">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
@@ -1250,7 +1257,6 @@ function injectSpmIntoPbxproj(
   plan /*: {rootUuid: string, targetUuid: string, configUuids: Array<string>, frameworksPhaseUuid: string, sourcesPhaseUuid?: ?string} */,
   reactNativePath /*: string */,
   remote /*: ?RemoteCfg */,
-  hermesCliPath /*: ?string */ = null,
   generatedSources /*: ReadonlyArray<GeneratedSource> */ = [],
   flavoredFrameworks /*: ReadonlyArray<FlavoredFrameworkManifestEntry> */ = [],
   scriptPhases /*: ReadonlyArray<PluginScriptPhase> */ = [],
@@ -1350,7 +1356,6 @@ function injectSpmIntoPbxproj(
       configUuid,
       buildConfigurationName(text, configUuid),
       reactNativePath,
-      hermesCliPath,
       flavoredFrameworks,
     );
     text = merged.text;
@@ -1363,27 +1368,29 @@ function injectSpmIntoPbxproj(
   //    bundles JS via its own phase.
   const syncScript = buildSyncAutolinkingScript(reactNativePath);
   const syncPhaseUuid = mkUuid('PBXShellScriptBuildPhase', 'SyncAutolinking');
+  const syncEntry = shellScriptPhase(
+    syncPhaseUuid,
+    'Sync SPM Autolinking',
+    syncScript,
+  );
   if (!text.includes(syncPhaseUuid)) {
     text = insertObjectsIntoSection(
       text,
       'PBXShellScriptBuildPhase',
-      serializeEntry(
-        shellScriptPhase(syncPhaseUuid, 'Sync SPM Autolinking', syncScript),
-      ),
+      serializeEntry(syncEntry),
     );
   } else {
-    // Already injected on a prior run — the phase object owns its
-    // shellScript, so refresh it in place (same quoting used at creation) in
-    // case the generated script changed since. Byte-identical when it
-    // didn't; field order and every other byte of the phase are untouched.
-    const existingPhase = findObjectByUuid(text, syncPhaseUuid);
-    if (existingPhase != null) {
-      text = setScalarField(
-        text,
-        existingPhase,
-        'shellScript',
-        quoteIfNeeded(syncScript),
-      );
+    // Already injected on a prior run — the phase object owns these fields,
+    // so refresh them in place (same quoting used at creation) in case the
+    // generated script changed, or a project injected before shellPath moved
+    // to bash (see shellScriptPhase) still has the stale value. Byte-identical
+    // when neither did; field order and every other byte of the phase are
+    // untouched.
+    for (const key of ['shellScript', 'shellPath']) {
+      const current = findObjectByUuid(text, syncPhaseUuid);
+      if (current != null) {
+        text = setScalarField(text, current, key, syncEntry.fields[key]);
+      }
     }
   }
   injectedUuids.push(syncPhaseUuid);
@@ -1431,7 +1438,12 @@ function injectSpmIntoPbxproj(
   } else {
     const existingPhase = findObjectByUuid(text, embedPhaseUuid);
     if (existingPhase != null) {
-      for (const key of ['shellScript', 'inputPaths', 'outputPaths']) {
+      for (const key of [
+        'shellScript',
+        'inputPaths',
+        'outputPaths',
+        'shellPath',
+      ]) {
         const current = findObjectByUuid(text, embedPhaseUuid);
         if (current != null) {
           text = setScalarField(text, current, key, embedEntry.fields[key]);
@@ -1608,6 +1620,7 @@ function injectSpmIntoPbxproj(
           'shellScript',
           'inputPaths',
           'outputPaths',
+          'shellPath',
         ]) {
           const current = findObjectByUuid(text, uuid);
           if (current != null) {
@@ -1659,48 +1672,6 @@ function findApplicationTargetByUuid(
   return obj;
 }
 
-/**
- * Merge the React build settings into one XCBuildConfiguration's dict. Returns
- * the modified text plus a precise record of what was actually added — so
- * `deinit` (removeSpmInjection) can reverse exactly these edits, never touching
- * a value the user already had (key insight: ensureScalarField/
- * addArrayStringValues are no-ops / dedupe when a value is already present).
- */
-/**
- * Resolves the host `hermesc` from the `hermes-compiler` npm package and returns
- * its ABSOLUTE path as the HERMES_CLI_PATH value, or null when it can't be found
- * (e.g. USE_HERMES=false apps without the package). require.resolve (anchored at
- * reactNativeRoot) follows Node's lookup, so a hoisted monorepo layout — where
- * hermes-compiler sits in the workspace-root node_modules, NOT next to
- * react-native — resolves correctly.
- *
- * The value is intentionally ABSOLUTE, not `$(REACT_NATIVE_PATH)/../...`: when
- * react-native is a symlink (the monorepo default, and common in real apps), a
- * `..` after it resolves — kernel-side — to the symlink TARGET's parent, not the
- * node_modules dir, so the relative form points at a non-existent
- * `<rn-target>/../hermes-compiler`. An absolute path sidesteps that entirely
- * (and matches how the CocoaPods hermes-engine pod sets HERMES_CLI_PATH). It is
- * regenerated on every `spm add`, so machine-specificity is a non-issue.
- */
-function resolveHermesCliPathSetting(
-  reactNativeRoot /*: string */,
-) /*: ?string */ {
-  try {
-    const pkg = require.resolve('hermes-compiler/package.json', {
-      paths: [reactNativeRoot],
-    });
-    const hermesc = path.join(
-      path.dirname(pkg),
-      'hermesc',
-      'osx-bin',
-      'hermesc',
-    );
-    return fs.existsSync(hermesc) ? hermesc : null;
-  } catch {
-    return null;
-  }
-}
-
 /** Strip the surrounding plist quotes from a build-setting token, if any. */
 function unquotePlist(s /*: string */) /*: string */ {
   return s.replace(/^"/, '').replace(/"$/, '');
@@ -1723,29 +1694,24 @@ function buildSettingValueTokens(value /*: string */) /*: Set<string> */ {
   );
 }
 
+/**
+ * Merge the React build settings into one XCBuildConfiguration's dict. Returns
+ * the modified text plus a precise record of what was actually added — so
+ * `deinit` (removeSpmInjection) can reverse exactly these edits, never touching
+ * a value the user already had (key insight: ensureScalarField/
+ * addArrayStringValues are no-ops / dedupe when a value is already present).
+ */
 function mergeReactBuildSettings(
   input /*: string */,
   configUuid /*: string */,
   configurationName /*: string */,
   reactNativePath /*: string */,
-  hermesCliPath /*: ?string */ = null,
   flavoredFrameworks /*: ReadonlyArray<FlavoredFrameworkManifestEntry> */ = [],
 ) /*: {text: string, change: BuildSettingChange} */ {
   let text = input;
   const scalars = [
     {key: 'CLANG_CXX_LANGUAGE_STANDARD', value: '"c++20"'},
     {key: 'REACT_NATIVE_PATH', value: quoteIfNeeded(reactNativePath)},
-    // Under SwiftPM there is no hermes-engine pod, so react-native-xcode.sh's
-    // fallback ($PODS_ROOT/hermes-engine/destroot/bin/hermesc) resolves to a
-    // non-existent "/hermes-engine/..." and the Release JS→Hermes bundling
-    // fails. Point HERMES_CLI_PATH at the hermes-compiler npm package's host
-    // hermesc (an ABSOLUTE path resolved by the caller — see
-    // resolveHermesCliPathSetting). react-native-xcode.sh honors an already-set
-    // HERMES_CLI_PATH before its pod fallback; ensureScalarField leaves any
-    // user-provided value untouched.
-    ...(hermesCliPath != null
-      ? [{key: 'HERMES_CLI_PATH', value: quoteIfNeeded(hermesCliPath)}]
-      : []),
   ];
   // Re-locate the buildSettings dict before each edit (offsets shift).
   const dict = () => {
@@ -1925,11 +1891,40 @@ function addPreActionToScheme(
     // value itself never contains one — the next `"` is always the closing
     // delimiter.
     const valueEnd = xml.indexOf('"', valueStart);
-    return (
+    let xmlWithScript =
       xml.slice(0, valueStart) +
       escapeXmlAttribute(syncScript) +
-      xml.slice(valueEnd)
+      xml.slice(valueEnd);
+
+    // Xcode always runs a scheme pre-action's scriptText under the shell this
+    // attribute names (default /bin/sh), independent of a
+    // PBXShellScriptBuildPhase's own shellPath (see shellScriptPhase) — pin
+    // it to bash too. `>` can't appear unescaped inside either attribute
+    // value, so it reliably closes the ActionContent open tag. Search the
+    // whole open tag (not just after scriptText) and allow any spacing
+    // around `=`, since attribute order and formatting aren't guaranteed.
+    const contentOpenIdx = xmlWithScript.lastIndexOf(
+      '<ActionContent',
+      titleIdx,
     );
+    const contentCloseIdx = xmlWithScript.indexOf('>', stIdx);
+    const openTag = xmlWithScript.slice(contentOpenIdx, contentCloseIdx);
+    const stiMatch = openTag.match(/shellToInvoke\s*=\s*"/);
+    if (stiMatch != null) {
+      const stiValueStart =
+        contentOpenIdx + stiMatch.index + stiMatch[0].length;
+      const stiValueEnd = xmlWithScript.indexOf('"', stiValueStart);
+      xmlWithScript =
+        xmlWithScript.slice(0, stiValueStart) +
+        '/bin/bash' +
+        xmlWithScript.slice(stiValueEnd);
+    } else {
+      xmlWithScript =
+        xmlWithScript.slice(0, contentCloseIdx) +
+        '\n               shellToInvoke = "/bin/bash"' +
+        xmlWithScript.slice(contentCloseIdx);
+    }
+    return xmlWithScript;
   }
   const refMatch = xml.match(
     new RegExp(
@@ -1956,7 +1951,8 @@ function addPreActionToScheme(
     `            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">\n` +
     `            <ActionContent\n` +
     `               title = "Sync SPM Autolinking"\n` +
-    `               scriptText = "${escapeXmlAttribute(syncScript)}">\n` +
+    `               scriptText = "${escapeXmlAttribute(syncScript)}"\n` +
+    `               shellToInvoke = "/bin/bash">\n` +
     `               <EnvironmentBuildable>\n` +
     `                  ${cleanRef}\n` +
     `               </EnvironmentBuildable>\n` +
@@ -2230,7 +2226,7 @@ function readScriptPhasesManifest(
  */
 function readMarker(
   xcodeprojPath /*: string */,
-) /*: ?{generatedSources?: {[string]: Array<string>}, scriptPhases?: {[string]: string}, artifactsVersionOverride?: ?string, configCommand?: ?Array<string>, buildSettingChanges?: Array<BuildSettingChange>, createdArrayFields?: Array<CreatedArrayField>, scheme?: {file?: ?string, created?: ?boolean}, ...} */ {
+) /*: ?{targetUuid?: ?string, generatedSources?: {[string]: Array<string>}, scriptPhases?: {[string]: string}, artifactsVersionOverride?: ?string, configCommand?: ?Array<string>, buildSettingChanges?: Array<BuildSettingChange>, createdArrayFields?: Array<CreatedArrayField>, scheme?: {file?: ?string, created?: ?boolean}, ...} */ {
   const markerPath = path.join(xcodeprojPath, SPM_INJECTED_MARKER);
   try {
     // $FlowFixMe[incompatible-return] JSON.parse returns any
@@ -2368,7 +2364,6 @@ function injectSpmIntoExistingXcodeproj(
   }
   const reactNativePath = path.relative(appRoot, reactNativeRoot);
   const remote = remotePackageConfig(appRoot);
-  const hermesCliPath = resolveHermesCliPathSetting(reactNativeRoot);
   const generatedSources = readGeneratedSourcesManifest(appRoot);
   const scriptPhases = readScriptPhasesManifest(appRoot);
   const flavoredFrameworks = readFlavoredFrameworksManifest(appRoot).frameworks;
@@ -2441,7 +2436,6 @@ function injectSpmIntoExistingXcodeproj(
     },
     reactNativePath,
     remote,
-    hermesCliPath,
     generatedSources,
     flavoredFrameworks,
     scriptPhases,
@@ -2769,6 +2763,7 @@ module.exports = {
   buildSchemePreActionScript,
   buildEmbedFrameworksScript,
   flavorForBuildConfiguration,
+  targetBuildConfigUuids,
   frameworkConditionalSettings,
   ensureStubPackages,
   buildSpmDependencyGraph,
@@ -2783,6 +2778,7 @@ module.exports = {
   addPreActionToScheme,
   removePreActionFromScheme,
   findInjectedXcodeproj,
+  readMarker,
   readArtifactsVersionOverride,
   readPinnedConfigCommand,
   readScriptPhasesManifest,

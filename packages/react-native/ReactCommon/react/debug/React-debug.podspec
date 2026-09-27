@@ -39,10 +39,10 @@ Pod::Spec.new do |s|
 
   resolve_use_frameworks(s, header_mappings_dir: "../..", module_name: "React_debug")
 
-  s.subspec "DebugUmbrella" do |ss|
+  s.subspec "debugUmbrella" do |ss|
     ss.source_files         = "React/*.h"
-    ss.header_dir           = "React"
-    ss.header_mappings_dir  = "React"
+    ss.header_dir           = ""
+    ss.header_mappings_dir  = "."
   end
 
   s.subspec "redbox" do |ss|

@@ -67,7 +67,7 @@ export type RNTesterNavigationState = {
 };
 
 export type RNTesterJsStallsState = {
-  stallIntervalId: ?IntervalID,
+  stallIntervalId: ?ReturnType<typeof setInterval>,
   busyTime: null | number,
   filteredStall: number,
   tracking: boolean,

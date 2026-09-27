@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <react/cxxstableapi/PrivateGuard.h>
+#pragma once
+
+#include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <ReactCommon/TurboModule.h>
 

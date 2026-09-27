@@ -93,7 +93,7 @@ function configureNext(
   // conditionally enabled on iOS (pending fully shipping; this is a temporary state).
   const FabricUIManager = getFabricUIManager();
   if (FabricUIManager?.configureNextLayoutAnimation) {
-    global?.nativeFabricUIManager?.configureNextLayoutAnimation(
+    FabricUIManager.configureNextLayoutAnimation(
       config,
       onAnimationComplete,
       onAnimationDidFail ??

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <functional>
 #include <limits>
 
@@ -90,6 +92,11 @@ enum class TextBreakStrategy {
   Simple, // Simple strategy.
   HighQuality, // High-quality strategy, including hyphenation.
   Balanced // Balances line lengths.
+};
+
+enum class TextWidthMode {
+  Auto,
+  LongestLine,
 };
 
 enum class TextAlignment {

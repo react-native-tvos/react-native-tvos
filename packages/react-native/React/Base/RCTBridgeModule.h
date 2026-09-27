@@ -122,10 +122,11 @@ RCT_EXTERN_C_END
 
 #endif // defined(RCT_REMOVE_LEGACY_MODULE_INTEROP) && defined(RCT_REMOVE_LEGACY_COMPONENT_INTEROP)
 
-// Implemented by RCT_EXPORT_MODULE
-+ (NSString *)moduleName;
-
 @optional
+
+// Implemented by RCT_EXPORT_MODULE. When absent, callers fall back to the ObjC class
+// name, so a TurboModule resolved via a provider or plugin socket need not declare it.
++ (NSString *)moduleName;
 
 /**
  * A reference to the RCTModuleRegistry. Useful for modules that require access

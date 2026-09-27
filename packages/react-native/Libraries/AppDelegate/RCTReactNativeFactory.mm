@@ -289,10 +289,7 @@ static NSDictionary *RCTConvertConnectionOptionsToLaunchOptions(UISceneConnectio
   };
 
   RCTRootViewFactoryConfiguration *configuration =
-      [[RCTRootViewFactoryConfiguration alloc] initWithBundleURLBlock:bundleUrlBlock
-                                                       newArchEnabled:YES
-                                                   turboModuleEnabled:YES
-                                                    bridgelessEnabled:YES];
+      [[RCTRootViewFactoryConfiguration alloc] initWithBundleURLBlock:bundleUrlBlock newArchEnabled:YES];
 
   configuration.customizeRootView = ^(UIView *_Nonnull rootView) {
     [weakSelf.delegate customizeRootView:(RCTRootView *)rootView];

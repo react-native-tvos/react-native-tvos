@@ -50,10 +50,10 @@ Pod::Spec.new do |s|
                             "HEADER_SEARCH_PATHS" => header_search_path.join(" ")
                           }
 
-  s.subspec "ImageUmbrella" do |ss|
+  s.subspec "imageUmbrella" do |ss|
     ss.source_files        = "react/renderer/components/image/React/*.h"
-    ss.header_dir          = "React"
-    ss.header_mappings_dir = "react/renderer/components/image/React"
+    ss.header_dir          = ""
+    ss.header_mappings_dir = "react/renderer/components/image"
   end
 
   resolve_use_frameworks(s, header_mappings_dir: './', module_name: "React_FabricImage")

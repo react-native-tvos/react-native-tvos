@@ -15,6 +15,7 @@
 #include <react/renderer/mounting/MountingTransaction.h>
 #include <react/renderer/mounting/ShadowTree.h>
 #include <react/renderer/uimanager/UIManager.h>
+#include <react/renderer/uimanager/consistency/ShadowTreeRevisionProvider.h>
 
 namespace facebook::react {
 
@@ -553,7 +554,7 @@ ViewTransitionModule::getViewTransitionInstance(
       auto pseudoElementIt = oldPseudoElementNodes_.find(name);
       auto nativeTag = pseudoElementIt != oldPseudoElementNodes_.end()
           ? pseudoElementIt->second->getTag()
-          : -1;
+          : kNoTag;
       return ViewTransitionInstance{
           .x = view.layoutMetrics.originFromRoot.x,
           .y = view.layoutMetrics.originFromRoot.y,

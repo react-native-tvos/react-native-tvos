@@ -36,8 +36,7 @@ export type PressableInstance = HostInstance;
 
 export type {PressableAndroidRippleConfig};
 
-/** @build-types emit-as-interface react-native-web compatibility */
-export type PressableStateCallbackType = Readonly<{
+type PressableStateCallbackTypeCore = Readonly<{
   pressed: boolean,
   focused: boolean,
 }>;
@@ -56,6 +55,9 @@ type TVProps = $ReadOnly<{
   onFocusCapture?: ?(event: FocusEvent) => void,
   onBlurCapture?: ?(event: BlurEvent) => void,
 }>;
+
+/** @build-types emit-as-interface react-native-web compatibility */
+export type PressableStateCallbackType = PressableStateCallbackTypeCore;
 
 type PressableBaseProps = Readonly<{
   /**

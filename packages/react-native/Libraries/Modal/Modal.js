@@ -14,6 +14,7 @@ import type {RootTag} from '../ReactNative/RootTag';
 import type {DirectEventHandler} from '../Types/CodegenTypes';
 
 import {type ColorValue} from '../StyleSheet/StyleSheet';
+import Platform from '../Utilities/Platform';
 import RCTModalHostView from './RCTModalHostViewNativeComponent';
 import VirtualizedLists from '@react-native-tvos/virtualized-lists';
 import * as React from 'react';
@@ -24,7 +25,6 @@ const AppContainer = require('../ReactNative/AppContainer').default;
 const I18nManager = require('../ReactNative/I18nManager').default;
 const {RootTagContext} = require('../ReactNative/RootTag');
 const StyleSheet = require('../StyleSheet/StyleSheet').default;
-const Platform = require('../Utilities/Platform').default;
 
 const VirtualizedListContextResetter =
   VirtualizedLists.VirtualizedListContextResetter;
@@ -41,8 +41,7 @@ type OrientationChangeEvent = Readonly<{
   orientation: 'portrait' | 'landscape',
 }>;
 
-/** @build-types emit-as-interface Uniwind compatibility */
-export type ModalBaseProps = {
+type ModalBasePropsCore = {
   /**
    * Controls how the modal animates. `'slide'` slides in from the bottom,
    * `'fade'` fades into view, `'none'` appears without animation.
@@ -91,6 +90,9 @@ export type ModalBaseProps = {
    */
   modalRef?: React.RefSetter<ModalInstance>,
 };
+
+/** @build-types emit-as-interface Uniwind compatibility */
+export type ModalBaseProps = ModalBasePropsCore;
 
 export type ModalPropsIOS = {
   /**
@@ -339,6 +341,8 @@ class Modal extends React.Component<ModalProps, ModalState> {
         identifier={this._identifier}
         style={styles.modal}
         // $FlowFixMe[method-unbinding] added when improving typing for this parameters
+        /* $FlowFixMe[incompatible-type] Error exposed after fixing this typing
+         * unsoundness in flow */
         onStartShouldSetResponder={this._shouldSetResponder}
         supportedOrientations={this.props.supportedOrientations}
         onOrientationChange={this.props.onOrientationChange}

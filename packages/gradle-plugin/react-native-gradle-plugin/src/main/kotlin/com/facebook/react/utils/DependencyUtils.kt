@@ -31,6 +31,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 internal object DependencyUtils {
   private const val REACT_NATIVE_MAVEN_MIRROR_URL = "https://repo.reactnative.dev/maven2"
   private const val REACT_NATIVE_MAVEN_MIRROR_ENABLED_ENV = "RCT_REACT_NATIVE_MAVEN_MIRROR_ENABLED"
+  private const val UNPUBLISHED_MAVEN_VERSION = "1000.0.0"
 
   internal data class Coordinates(
       val versionString: String,
@@ -117,6 +118,41 @@ internal object DependencyUtils {
               content.excludeGroup("org.webkit")
               content.excludeGroup("io.github.react-native-community")
               content.excludeGroup("com.facebook.react")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Configures repositories without asking remote repositories for versions that are known to be
+   * unpublished.
+   */
+  fun configureRepositories(project: Project, coordinates: Coordinates) {
+    configureRepositories(project, coordinates.isNightly)
+
+    project.rootProject.allprojects { eachProject ->
+      eachProject.repositories.withType(MavenArtifactRepository::class.java).configureEach { repo ->
+        if (repo.url.scheme != "file") {
+          repo.content { content ->
+            if (!coordinates.versionString.isMavenArtifactVersionPublished()) {
+              setOf(DEFAULT_INTERNAL_REACT_PUBLISHING_GROUP, coordinates.reactGroupString)
+                  .forEach { group ->
+                    content.excludeVersion(group, "react-native", UNPUBLISHED_MAVEN_VERSION)
+                    content.excludeVersion(group, "react-android", UNPUBLISHED_MAVEN_VERSION)
+                  }
+            }
+            if (!coordinates.hermesVersionString.isMavenArtifactVersionPublished()) {
+              setOf(
+                      DEFAULT_INTERNAL_REACT_PUBLISHING_GROUP,
+                      DEFAULT_INTERNAL_HERMES_PUBLISHING_GROUP,
+                      coordinates.hermesGroupString,
+                  )
+                  .forEach { group ->
+                    content.excludeVersion(group, "hermes-engine", UNPUBLISHED_MAVEN_VERSION)
+                    content.excludeVersion(group, "hermes-android", UNPUBLISHED_MAVEN_VERSION)
+                  }
             }
           }
         }
@@ -302,6 +338,8 @@ internal object DependencyUtils {
       }
 
   internal fun String.isNightly(): Boolean = this.startsWith("0.0.0") || "-nightly-" in this
+
+  internal fun String.isMavenArtifactVersionPublished(): Boolean = this != UNPUBLISHED_MAVEN_VERSION
 
   internal fun Project.exclusiveEnterpriseRepository() =
       when {

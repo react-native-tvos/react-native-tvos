@@ -4,11 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  * @format
  */
 
 'use strict';
+
+import type {ViewManagerConfig} from './NativeUIManager';
 
 import processBoxShadow from '../StyleSheet/processBoxShadow';
 
@@ -35,7 +37,9 @@ const sizesDiffer = require('../Utilities/differ/sizesDiffer').default;
 const UIManager = require('./UIManager').default;
 const nullthrows = require('nullthrows');
 
-function getNativeComponentAttributes(uiViewClassName: string): any {
+function getNativeComponentAttributes(
+  uiViewClassName: string,
+): ViewManagerConfig {
   const viewConfig = UIManager.getViewManagerConfig(uiViewClassName);
 
   if (viewConfig == null) {
@@ -106,21 +110,20 @@ function getNativeComponentAttributes(uiViewClassName: string): any {
     directEventTypes,
   });
 
-  attachDefaultEventTypes(viewConfig);
-
-  return viewConfig;
+  return attachDefaultEventTypes(viewConfig);
 }
 
-function attachDefaultEventTypes(viewConfig: any) {
+function attachDefaultEventTypes(
+  viewConfig: ViewManagerConfig,
+): ViewManagerConfig {
   // This is supported on UIManager platforms (ex: Android),
   // as lazy view managers are not implemented for all platforms.
   // See [UIManager] for details on constants and implementations.
   const constants = UIManager.getConstants();
   if (constants.ViewManagerNames || constants.LazyViewManagersEnabled) {
     // Lazy view managers enabled.
-    viewConfig = merge(
-      viewConfig,
-      nullthrows(UIManager.getDefaultEventTypes)(),
+    return nullthrows(
+      merge(viewConfig, nullthrows(UIManager.getDefaultEventTypes)()),
     );
   } else {
     viewConfig.bubblingEventTypes = merge(
@@ -131,11 +134,18 @@ function attachDefaultEventTypes(viewConfig: any) {
       viewConfig.directEventTypes,
       constants.genericDirectEventTypes,
     );
+    return viewConfig;
   }
 }
 
+// $FlowFixMe[method-unbinding]
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
 // TODO: Figure out how to avoid all this runtime initialization cost.
-function merge(destination: ?Object, source: ?Object): ?Object {
+function merge(
+  destination: ?ViewManagerConfig,
+  source: ?ViewManagerConfig,
+): ?ViewManagerConfig {
   if (!source) {
     return destination;
   }
@@ -144,12 +154,16 @@ function merge(destination: ?Object, source: ?Object): ?Object {
   }
 
   for (const key in source) {
-    if (!source.hasOwnProperty(key)) {
+    /* $FlowFixMe[invalid-this-arg] Error exposed after fixing this typing
+     * unsoundness in flow */
+    if (!hasOwnProperty.call(source, key)) {
       continue;
     }
 
     let sourceValue = source[key];
-    if (destination.hasOwnProperty(key)) {
+    /* $FlowFixMe[invalid-this-arg] Error exposed after fixing this typing
+     * unsoundness in flow */
+    if (hasOwnProperty.call(destination, key)) {
       const destinationValue = destination[key];
       if (
         typeof sourceValue === 'object' &&
@@ -165,7 +179,12 @@ function merge(destination: ?Object, source: ?Object): ?Object {
 
 function getDifferForType(
   typeName: string,
-): ?(prevProp: any, nextProp: any) => boolean {
+): ?(
+  | typeof insetsDiffer
+  | typeof matricesDiffer
+  | typeof pointsDiffer
+  | typeof sizesDiffer
+) {
   switch (typeName) {
     // iOS Types
     case 'CATransform3D':
@@ -188,7 +207,18 @@ function getDifferForType(
 function getProcessorForAttribute(
   attributeName: string,
   typeName: string,
-): ?(nextProp: any) => any {
+): ?(
+  | typeof processBackgroundImage
+  | typeof processBackgroundPosition
+  | typeof processBackgroundRepeat
+  | typeof processBackgroundSize
+  | typeof processBoxShadow
+  | typeof processColor
+  | typeof processColorArray
+  | typeof processFilter
+  | typeof processFontVariationSettings
+  | typeof resolveAssetSource
+) {
   if (attributeName === 'fontVariationSettings') {
     return processFontVariationSettings;
   }

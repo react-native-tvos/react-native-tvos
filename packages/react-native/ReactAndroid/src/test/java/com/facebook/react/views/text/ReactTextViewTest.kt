@@ -27,6 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 class ReactTextViewTest {
@@ -86,6 +87,28 @@ class ReactTextViewTest {
     assertThat(fontSizeWhenShort).isLessThan(fontSizeWhenTall)
   }
 
+  @Test
+  @Config(sdk = [35])
+  fun breaksLinesOnAdvancesLikeMeasurementOnApi35() {
+    // TextLayoutManager measures with an advance-based StaticLayout; on API 35+ a TextView in an
+    // app targeting 35+ defaults to bounds-based breaking, which can wrap one more line at draw
+    // than at measure and clip it. The view must opt out so both agree.
+    val view = ReactTextView(RuntimeEnvironment.getApplication())
+
+    assertThat(view.useBoundsForWidth).isFalse()
+  }
+
+  @Test
+  @Config(sdk = [35])
+  fun recyclingRestoresAdvanceBasedLineBreaking() {
+    val view = ReactTextView(RuntimeEnvironment.getApplication())
+    view.useBoundsForWidth = true
+
+    view.recycleView()
+
+    assertThat(view.useBoundsForWidth).isFalse()
+  }
+
   private fun layoutAndDraw(view: TestReactTextView, width: Int, height: Int) {
     view.measure(
         View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
@@ -134,9 +157,7 @@ class ReactTextViewTest {
     )
     view.layout(0, 0, width, viewHeight)
 
-    return createBitmap(width, bitmapHeight).also {
-      view.drawTextForTest(Canvas(it))
-    }
+    return createBitmap(width, bitmapHeight).also { view.drawTextForTest(Canvas(it)) }
   }
 
   private fun hasVisiblePixelBelowViewBounds(bitmap: Bitmap): Boolean {

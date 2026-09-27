@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  * @format
  */
 
@@ -38,11 +38,7 @@ type ActivityIndicatorIOSProps = Readonly<{
   hidesWhenStopped?: ?boolean,
 }>;
 
-/** @build-types emit-as-interface Uniwind compatibility */
-export type ActivityIndicatorProps = Readonly<{
-  ...ViewProps,
-  ...ActivityIndicatorIOSProps,
-
+type ActivityIndicatorPropsCore = Readonly<{
   /**
    * Whether to show the indicator (`true`) or hide it (`false`).
    */
@@ -65,6 +61,13 @@ export type ActivityIndicatorProps = Readonly<{
    * @type {@platform android} number
    */
   size?: ?IndicatorSize,
+}>;
+
+/** @build-types emit-as-interface Uniwind compatibility */
+export type ActivityIndicatorProps = Readonly<{
+  ...ViewProps,
+  ...ActivityIndicatorIOSProps,
+  ...ActivityIndicatorPropsCore,
 }>;
 
 /**
@@ -115,7 +118,7 @@ const ActivityIndicator: component(
   style,
   ...restProps
 }: {
-  ref?: any,
+  ref?: React.RefSetter<ActivityIndicatorInstance>,
   ...ActivityIndicatorProps,
 }) => {
   let sizeStyle;

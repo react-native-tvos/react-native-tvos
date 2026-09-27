@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @flow strict-local
  * @format
  */
 
@@ -64,10 +64,10 @@ type PassThroughProps = Readonly<{
   passthroughAnimatedPropExplicitValues?: ViewProps | null,
 }>;
 
-type LooseOmit<O extends interface {}, K extends keyof $FlowFixMe> = Pick<
-  O,
-  Exclude<keyof O, K>,
->;
+type LooseOmit<
+  O extends interface {},
+  K extends string | number | symbol,
+> = Pick<O, Exclude<keyof O, K>>;
 
 export type AnimatedProps<Props extends {...}> = LooseOmit<
   {
@@ -94,7 +94,7 @@ export type AnimatedComponentType<
 > = component(ref?: React.RefSetter<Instance>, ...AnimatedProps<Props>);
 
 export default function createAnimatedComponent<
-  TInstance extends React.ComponentType<any>,
+  TInstance extends Exclude<React.ElementType, string>,
 >(
   Component: TInstance,
 ): AnimatedComponentType<
@@ -157,9 +157,11 @@ export function unstable_createAnimatedComponentWithAllowlist<
     );
   };
 
-  AnimatedComponent.displayName = `Animated(${
-    Component.displayName || 'Anonymous'
-  })`;
+  const componentName =
+    Component.displayName != null && Component.displayName !== ''
+      ? Component.displayName
+      : 'Anonymous';
+  AnimatedComponent.displayName = `Animated(${componentName})`;
 
   return AnimatedComponent;
 }
