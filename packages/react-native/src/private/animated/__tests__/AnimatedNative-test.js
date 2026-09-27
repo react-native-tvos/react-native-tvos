@@ -348,6 +348,55 @@ describe('Native Animated', () => {
       expect(listener).toBeCalledWith({value: 42});
       expect(listener).toHaveBeenCalledTimes(1);
     });
+
+    it('subscribes to native updates for nodes derived from a value', () => {
+      const {Animated} = importModules();
+
+      const base = new Animated.Value(0);
+      // Every operator and interpolation node is backed by a native value
+      // node, so each must subscribe for its own tag rather than relying on
+      // the JS graph, which native updates bypass. Listening starts here from
+      // an already-native node, exercising the `__isNative` branch of
+      // `addListener`; AnimatedComposition-itest covers the `__makeNative`
+      // one, where the listener predates the node going native.
+      const derived = [
+        Animated.add(base, 10),
+        Animated.subtract(base, 10),
+        Animated.multiply(base, 2),
+        Animated.divide(base, 2),
+        Animated.modulo(base, 7),
+        Animated.diffClamp(base, 0, 20),
+        base.interpolate({inputRange: [0, 1], outputRange: [0, 1]}),
+      ];
+
+      for (const node of derived) {
+        node.__makeNative();
+        node.addListener(jest.fn());
+        expect(
+          NativeAnimatedModule.startListeningToAnimatedNodeValue,
+        ).toHaveBeenCalledWith(node.__getNativeTag());
+      }
+
+      expect(
+        NativeAnimatedModule.startListeningToAnimatedNodeValue,
+      ).toHaveBeenCalledTimes(derived.length);
+    });
+
+    it('never subscribes to native updates for a non-value node', () => {
+      const {Animated} = importModules();
+
+      // `startListeningToAnimatedNodeValue` throws on Android for any tag that
+      // is not backed by a `ValueAnimatedNode`, so nodes that do not hold a
+      // number must never reach it. `Animated.Color` is the only such node
+      // that is publicly constructible.
+      const color = new Animated.Color('red');
+      color.__makeNative();
+      color.addListener(jest.fn());
+
+      expect(
+        NativeAnimatedModule.startListeningToAnimatedNodeValue,
+      ).not.toHaveBeenCalledWith(color.__getNativeTag());
+    });
   });
 
   describe('Animated Events', () => {

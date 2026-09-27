@@ -21,11 +21,17 @@
 // =============================================================================
 
 // Marks that the following headers are pulled in through the umbrella, so their
-// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them.
-#define RN_UMBRELLA_CONTEXT
+// shared guard (<react/cxxstableapi/UmbrellaGuard.h>) accepts them. The marker
+// is saved and restored rather than defined and undefined: the scope ends at
+// this block, so later *direct* includes in the same TU are still caught, and
+// it nests inside an enclosing umbrella rather than disarming it.
+#pragma push_macro("RN_UMBRELLA_CONTEXT")
+#undef RN_UMBRELLA_CONTEXT
+#define RN_UMBRELLA_CONTEXT 1
 
 #include <react/debug/flags.h>
 #include <react/debug/react_native_assert.h>
 #include <react/debug/react_native_expect.h>
 
 #undef RN_UMBRELLA_CONTEXT
+#pragma pop_macro("RN_UMBRELLA_CONTEXT")

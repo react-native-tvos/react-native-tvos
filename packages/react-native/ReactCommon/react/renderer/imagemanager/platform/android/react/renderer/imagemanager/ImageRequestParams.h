@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <utility>
 
 #include <react/renderer/graphics/Color.h>

@@ -67,11 +67,6 @@ function withHeaderSearchPaths(value) {
 }
 
 const RN_PATH = '../node_modules/react-native';
-
-// Absolute, mirroring resolveHermesCliPathSetting (a `..`-relative path through
-// a symlinked react-native would resolve to the wrong dir at build time).
-const TEST_HERMES_CLI_PATH =
-  '/abs/node_modules/hermes-compiler/hermesc/osx-bin/hermesc';
 const TEST_FRAMEWORKS = [
   {
     id: 'react',
@@ -104,7 +99,10 @@ const TEST_FRAMEWORKS = [
 function inject(
   text,
   remote = null,
-  hermesCliPath = TEST_HERMES_CLI_PATH,
+  // Dead positional slot: injectSpmIntoPbxproj no longer takes a hermesCliPath
+  // (see the HERMES_CLI_PATH test below). Kept so the call sites below, which
+  // pass it as `null`, stay untouched.
+  _hermesCliPath = null,
   generatedSources = [],
   scriptPhases = [],
 ) {
@@ -121,7 +119,6 @@ function inject(
     },
     RN_PATH,
     remote,
-    hermesCliPath,
     generatedSources,
     TEST_FRAMEWORKS,
     scriptPhases,
@@ -237,10 +234,6 @@ describe('injectSpmIntoPbxproj — Tier 2 (build settings + phase)', () => {
     expect(text.match(/CLANG_CXX_LANGUAGE_STANDARD = "c\+\+20"/g)).toHaveLength(
       2,
     );
-    // HERMES_CLI_PATH points react-native-xcode.sh at the hermes-compiler npm
-    // package (no hermes-engine pod under SPM), injected into both configs.
-    expect(text.match(/HERMES_CLI_PATH = /g)).toHaveLength(2);
-    expect(text).toContain(TEST_HERMES_CLI_PATH);
     expect(text).toContain('RN_SPM_FLAVOR = debug');
     expect(text).toContain('RN_SPM_FLAVOR = release');
     expect(text).toContain('RN_SPM_REACT_BINARY[sdk=iphoneos*]');
@@ -248,9 +241,15 @@ describe('injectSpmIntoPbxproj — Tier 2 (build settings + phase)', () => {
     expect(text).toContain('$(RN_SPM_REACT_BINARY)');
   });
 
-  it('omits HERMES_CLI_PATH when hermesc could not be resolved', () => {
-    const {text} = inject(PLAIN, null, null);
+  // An absolute hermesc path is machine-specific, and the app commits its
+  // project.pbxproj. react-native-xcode.sh resolves hermesc through
+  // react-native's own dependency graph at build time instead.
+  it('never writes HERMES_CLI_PATH into either configuration', () => {
+    const {text, buildSettingChanges} = inject(PLAIN);
     expect(text).not.toContain('HERMES_CLI_PATH');
+    expect(
+      buildSettingChanges.flatMap(change => change.createdScalars ?? []),
+    ).not.toContain('HERMES_CLI_PATH');
   });
 
   // Swift's `#if DEBUG` — which AppDelegate.swift's bundleURL() uses to pick the
@@ -296,6 +295,35 @@ describe('injectSpmIntoPbxproj — Tier 2 (build settings + phase)', () => {
     const sourcesIdx = text.indexOf('Sources */,');
     expect(syncIdx).toBeGreaterThan(-1);
     expect(syncIdx).toBeLessThan(sourcesIdx);
+  });
+
+  it('runs every injected shell-script build phase under bash, not /bin/sh', () => {
+    // Their bodies start with `set -euo pipefail`, which a non-bash /bin/sh
+    // (e.g. dash) rejects at runtime.
+    const {text} = inject(PLAIN);
+    const phaseCount = text.match(/isa = PBXShellScriptBuildPhase;/g)?.length;
+    const bashCount = text.match(/shellPath = \/bin\/bash;/g)?.length;
+    expect(phaseCount).toBeGreaterThan(0);
+    expect(bashCount).toBe(phaseCount);
+  });
+
+  it('upgrades an already-injected phase from /bin/sh to bash on re-run', () => {
+    // A project injected before this fix recorded `shellPath = /bin/sh;` on
+    // the Sync SPM Autolinking phase. Re-running inject (e.g. `spm update`)
+    // must refresh it in place, not just apply bash to newly-created phases.
+    const {text: firstText} = inject(PLAIN);
+    const downgraded = firstText.replace(
+      /shellPath = \/bin\/bash;/g,
+      'shellPath = /bin/sh;',
+    );
+    const {text: secondText} = inject(downgraded);
+    expect(secondText).not.toContain('shellPath = /bin/sh;');
+    const phaseCount = secondText.match(
+      /isa = PBXShellScriptBuildPhase;/g,
+    )?.length;
+    expect(secondText.match(/shellPath = \/bin\/bash;/g)?.length).toBe(
+      phaseCount,
+    );
   });
 
   it.each([
@@ -419,7 +447,6 @@ describe('injectSpmIntoPbxproj — Tier 3 (plugin generated sources)', () => {
       },
       RN_PATH,
       null,
-      null,
       [PROVIDER_SOURCE],
       TEST_FRAMEWORKS,
     ).text;
@@ -458,7 +485,6 @@ describe('injectSpmIntoPbxproj — Tier 3 (plugin generated sources)', () => {
         sourcesPhaseUuid: plan.sourcesPhaseUuid,
       },
       RN_PATH,
-      null,
       null,
       [PROVIDER_SOURCE],
       TEST_FRAMEWORKS,
@@ -1104,7 +1130,6 @@ describe('injectSpmIntoPbxproj — invariants', () => {
       },
       RN_PATH,
       null,
-      null,
       [],
       TEST_FRAMEWORKS,
     ).text;
@@ -1144,7 +1169,6 @@ describe('injectSpmIntoPbxproj — invariants', () => {
         frameworksPhaseUuid: plan.frameworksPhaseUuid,
       },
       RN_PATH,
-      null,
       null,
       [],
       TEST_FRAMEWORKS,

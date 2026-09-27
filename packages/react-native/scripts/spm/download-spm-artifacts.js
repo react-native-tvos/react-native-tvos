@@ -454,10 +454,9 @@ async function resolveRNDepsArtifact(
 
 /**
  * Resolves the `hermes-compiler` npm package's version from THIS project's own
- * node_modules — the exact same lookup generate-spm-xcodeproj.js's
- * resolveHermesCliPathSetting() uses to find the hermesc binary that will
- * compile the JS bundle, and the same one react-native-xcode.sh falls back to
- * for SwiftPM builds. Returns null when the package isn't resolvable (e.g.
+ * node_modules — the same lookup react-native-xcode.sh falls back to for
+ * SwiftPM builds to find the hermesc binary that compiles the JS bundle.
+ * Returns null when the package isn't resolvable (e.g.
  * USE_HERMES=false apps that never installed it) so the caller can fall back
  * to the npm dist-tag lookup.
  */
@@ -499,8 +498,8 @@ function resolveLocalHermesCompilerVersion(
  *   HERMES_VERSION unset       → version pinned by the locally installed
  *                                hermes-compiler package (node_modules).
  *                                This is the SAME source
- *                                resolveHermesCliPathSetting() reads for
- *                                HERMES_CLI_PATH, so the downloaded VM and
+ *                                react-native-xcode.sh resolves hermesc
+ *                                from, so the downloaded VM and
  *                                the hermesc that compiles the JS bundle
  *                                always agree — a mismatched pair crashes at
  *                                launch with "Wrong bytecode version" (#57917).

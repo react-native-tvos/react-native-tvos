@@ -654,16 +654,6 @@ interface RCTAppearance : public RCTEventEmitter <RCTBridgeModule> {
   public virtual instancetype init();
 }
 
-interface RCTArrayBuffer : public NSObject {
-  public @property (assign, readonly) BOOL owningBytes;
-  public @property (assign, readonly) NSUInteger length;
-  public @property (assign, readonly) void* mutableBytes NS_RETURNS_INNER_POINTER;
-  public virtual static instancetype arrayBufferWithCopiedBytes:length:(const void* _Nullable bytes, NSUInteger length);
-  public virtual static instancetype arrayBufferWithLength:(NSUInteger length);
-  public virtual static instancetype arrayBufferWithOwnedBytes:length:cleanup:(_Nullable void* bytes, NSUInteger length, _Nullable void(^)(void) cleanup);
-  public virtual static instancetype arrayBufferWithUnownedBytes:length:(_Nullable void* bytes, NSUInteger length);
-}
-
 interface RCTBackedTextFieldDelegateAdapter : public NSObject {
   public virtual instancetype initWithTextField:(UITextField<RCTBackedTextInputViewProtocol>* backedTextInputView);
   public virtual void selectedTextRangeWasSet();
@@ -2506,25 +2496,25 @@ protocol NativeRedBoxSpec : public NSObjectRCTBridgeModule, public RCTTurboModul
 }
 
 protocol NativeSampleTurboModuleSpec : public NSObjectRCTBridgeModule, public RCTTurboModule {
-  public virtual NSArray<id<NSObject>>* getArray:(NSArray* arg);
+  public virtual NSArray<NSDictionary*>* getArray:(NSArray* arg);
   public virtual NSDictionary* getObject:(NSDictionary* arg);
   public virtual NSDictionary* getObjectAssert:(NSDictionary* arg);
   public virtual NSDictionary* getObjectThrows:(NSDictionary* arg);
   public virtual NSDictionary* getUnsafeObject:(NSDictionary* arg);
   public virtual NSDictionary* getValue:y:z:(double x, NSString* y, NSDictionary* z);
+  public virtual NSMutableData* createNativeBuffer:(double size);
+  public virtual NSMutableData* getArrayBuffer:(NSMutableData* buffer);
   public virtual NSNumber* getBool:(BOOL arg);
   public virtual NSNumber* getEnum:(double arg);
   public virtual NSNumber* getNumber:(double arg);
   public virtual NSNumber* getRootTag:(double arg);
   public virtual NSString* getString:(NSString* arg);
-  public virtual RCTArrayBuffer* createNativeBuffer:(double size);
-  public virtual RCTArrayBuffer* getArrayBuffer:(RCTArrayBuffer* buffer);
   public virtual facebook::react::ModuleConstants<JS::NativeSampleTurboModule::Constants> constantsToExport();
   public virtual facebook::react::ModuleConstants<JS::NativeSampleTurboModule::Constants> getConstants();
   public virtual void getImageUrl:reject:(RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
   public virtual void getValueWithCallback:(RCTResponseSenderBlock callback);
   public virtual void getValueWithPromise:resolve:reject:(BOOL error, RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
-  public virtual void processAsyncBuffer:resolve:reject:(RCTArrayBuffer* payload, RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
+  public virtual void processAsyncBuffer:resolve:reject:(NSMutableData* payload, RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
   public virtual void promiseAssert:reject:(RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
   public virtual void promiseThrows:reject:(RCTPromiseResolveBlock resolve, RCTPromiseRejectBlock reject);
   public virtual void voidFunc();
@@ -3863,6 +3853,8 @@ template <Hashable T, Hashable... Args>
 std::size_t facebook::react::hash_combine(const T& v, const Args &... args);
 template <Hashable T, Hashable... Rest>
 void facebook::react::hash_combine(std::size_t& seed, const T& v, const Rest &... rest);
+template <Hashable... Ts>
+void facebook::react::hash_combine_optionals(std::size_t& seed, const std::optional<Ts> &... optionals);
 template <class T, class T0 = typename std::remove_reference<T>::type>
 facebook::react::MoveWrapper<T0> facebook::react::makeMoveWrapper(T&& t);
 template <typename CSSColor>
@@ -4483,15 +4475,18 @@ class facebook::react::BridgelessNativeMethodCallInvoker : public facebook::reac
 }
 
 class facebook::react::BufferedRuntimeExecutor {
-  public BufferedRuntimeExecutor(facebook::react::RuntimeExecutor runtimeExecutor);
+  public BufferedRuntimeExecutor(facebook::react::BufferedRuntimeExecutor::Executor executor);
+  public using Executor = std::function<void(facebook::react::SchedulerPriority, facebook::react::BufferedRuntimeExecutor::Work&&)>;
   public using Work = std::function<void(facebook::jsi::Runtime& runtime)>;
   public void execute(facebook::react::BufferedRuntimeExecutor::Work&& callback);
+  public void execute(facebook::react::SchedulerPriority priority, facebook::react::BufferedRuntimeExecutor::Work&& callback);
   public void flush();
 }
 
 struct facebook::react::BufferedRuntimeExecutor::BufferedWork {
   public bool operator<(const facebook::react::BufferedRuntimeExecutor::BufferedWork& rhs) const;
   public facebook::react::BufferedRuntimeExecutor::Work work_;
+  public facebook::react::SchedulerPriority priority_;
   public uint64_t index_;
 }
 
@@ -4551,6 +4546,13 @@ class facebook::react::CallInvoker {
   public virtual void invokeSync(facebook::react::CallFunc&& func) = 0;
   public virtual void invokeSync(std::function<void()>&& func);
   public virtual ~CallInvoker() = default;
+}
+
+class facebook::react::CallInvokerImpl : public facebook::react::CallInvoker {
+  public CallInvokerImpl(std::shared_ptr<facebook::react::BufferedRuntimeExecutor> bufferedRuntimeExecutor, std::weak_ptr<facebook::react::RuntimeScheduler> runtimeScheduler);
+  public virtual void invokeAsync(facebook::react::CallFunc&& func) noexcept override;
+  public virtual void invokeAsync(facebook::react::SchedulerPriority priority, facebook::react::CallFunc&& func) noexcept override;
+  public virtual void invokeSync(facebook::react::CallFunc&& func) override;
 }
 
 class facebook::react::CallbackWrapper : public facebook::react::LongLivedObject {
@@ -6157,7 +6159,7 @@ class facebook::react::ObjCInteropTurboModule : public facebook::react::ObjCTurb
   protected virtual NSString* getArgumentTypeName(facebook::jsi::Runtime& runtime, NSString* methodName, int argIndex) override;
   protected virtual facebook::jsi::Value convertReturnIdToJSIValue(facebook::jsi::Runtime& runtime, const char* methodName, facebook::react::TurboModuleMethodValueKind returnType, id result) override;
   protected virtual facebook::jsi::Value create(facebook::jsi::Runtime& runtime, const facebook::jsi::PropNameID& propName) override;
-  protected virtual void setInvocationArg(facebook::jsi::Runtime& runtime, const char* methodName, const std::string& objCArgType, const facebook::jsi::Value& arg, size_t i, NSInvocation* inv, NSMutableArray* retainedObjectsForInvocation, bool mustCopyBytes) override;
+  protected virtual void setInvocationArg(facebook::jsi::Runtime& runtime, const char* methodName, const std::string& objCArgType, const facebook::jsi::Value& arg, size_t i, NSInvocation* inv, NSMutableArray* retainedObjectsForInvocation) override;
   public ObjCInteropTurboModule(const facebook::react::ObjCTurboModule::InitParams& params);
   public virtual std::vector<facebook::jsi::PropNameID> getPropertyNames(facebook::jsi::Runtime& runtime) override;
 }
@@ -6172,7 +6174,7 @@ struct facebook::react::ObjCInteropTurboModule::MethodDescriptor {
 class facebook::react::ObjCTurboModule : public facebook::react::TurboModule {
   protected virtual NSString* getArgumentTypeName(facebook::jsi::Runtime& runtime, NSString* methodName, int argIndex);
   protected virtual facebook::jsi::Value convertReturnIdToJSIValue(facebook::jsi::Runtime& runtime, const char* methodName, facebook::react::TurboModuleMethodValueKind returnType, id result);
-  protected virtual void setInvocationArg(facebook::jsi::Runtime& runtime, const char* methodName, const std::string& objCArgType, const facebook::jsi::Value& arg, size_t i, NSInvocation* inv, NSMutableArray* retainedObjectsForInvocation, bool mustCopyBytes);
+  protected virtual void setInvocationArg(facebook::jsi::Runtime& runtime, const char* methodName, const std::string& objCArgType, const facebook::jsi::Value& arg, size_t i, NSInvocation* inv, NSMutableArray* retainedObjectsForInvocation);
   protected void setEventEmitterCallback(facebook::react::EventEmitterCallback eventEmitterCallback);
   protected void setMethodArgConversionSelector(NSString* methodName, size_t argIndex, NSString* fnName);
   public ObjCTurboModule(const facebook::react::ObjCTurboModule::InitParams& params);
@@ -6523,6 +6525,7 @@ class facebook::react::ReactInstance {
   public facebook::react::ReactInstance& operator=(facebook::react::ReactInstance&&) = delete;
   public facebook::react::RuntimeExecutor getBufferedRuntimeExecutor() noexcept;
   public facebook::react::RuntimeExecutor getUnbufferedRuntimeExecutor() noexcept;
+  public std::shared_ptr<facebook::react::CallInvoker> createJSCallInvoker() noexcept;
   public std::shared_ptr<facebook::react::RuntimeScheduler> getRuntimeScheduler() noexcept;
   public using BindingsInstallFunc = std::function<void(facebook::jsi::Runtime& runtime)>;
   public void callFunctionOnModule(const std::string& moduleName, const std::string& methodName, folly::dynamic&& args);
@@ -13648,7 +13651,7 @@ struct facebook::react::dom::RNMeasureRect {
 
 
 facebook::jsi::Value facebook::react::TurboModuleConvertUtils::convertObjCObjectToJSIValue(facebook::jsi::Runtime& runtime, id value);
-id facebook::react::TurboModuleConvertUtils::convertJSIValueToObjCObject(facebook::jsi::Runtime& runtime, const facebook::jsi::Value& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker, BOOL useNSNull = NO, BOOL mustCopyBytes = YES);
+id facebook::react::TurboModuleConvertUtils::convertJSIValueToObjCObject(facebook::jsi::Runtime& runtime, const facebook::jsi::Value& value, const std::shared_ptr<facebook::react::CallInvoker>& jsInvoker, BOOL useNSNull = NO);
 
 
 static const facebook::react::Color facebook::react::HostPlatformColor::UndefinedColor;
@@ -15041,6 +15044,17 @@ class facebook::yoga::Config : public YGConfig {
   public void* getContext() const;
 }
 
+class facebook::yoga::GridStyleStorage {
+  public GridStyleStorage() = default;
+  public GridStyleStorage(const facebook::yoga::GridStyleStorage& other);
+  public GridStyleStorage(facebook::yoga::GridStyleStorage&&) noexcept = default;
+  public bool operator==(const facebook::yoga::GridStyleStorage& other) const;
+  public const facebook::yoga::GridStyle& get() const;
+  public facebook::yoga::GridStyle& ensure();
+  public facebook::yoga::GridStyleStorage& operator=(const facebook::yoga::GridStyleStorage& other);
+  public facebook::yoga::GridStyleStorage& operator=(facebook::yoga::GridStyleStorage&&) noexcept = default;
+}
+
 class facebook::yoga::Node : public YGNode {
   public Node();
   public Node(const facebook::yoga::Config* config);
@@ -15602,6 +15616,18 @@ struct facebook::yoga::GridLine {
   public static constexpr facebook::yoga::GridLine auto_();
   public static constexpr facebook::yoga::GridLine fromInteger(int32_t value);
   public static constexpr facebook::yoga::GridLine span(int32_t value);
+}
+
+struct facebook::yoga::GridStyle {
+  public bool operator==(const facebook::yoga::GridStyle& other) const = default;
+  public facebook::yoga::GridLine columnEnd;
+  public facebook::yoga::GridLine columnStart;
+  public facebook::yoga::GridLine rowEnd;
+  public facebook::yoga::GridLine rowStart;
+  public facebook::yoga::GridTrackList autoColumns;
+  public facebook::yoga::GridTrackList autoRows;
+  public facebook::yoga::GridTrackList templateColumns;
+  public facebook::yoga::GridTrackList templateRows;
 }
 
 struct facebook::yoga::GridTrackSize {

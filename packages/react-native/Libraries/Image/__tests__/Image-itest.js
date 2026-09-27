@@ -102,19 +102,28 @@ describe('<Image>', () => {
         );
       });
 
-      it('sets the "Access-Control-Allow-Credentials" header in "use-credentials" mode', () => {
+      it('adds the credentials header without replacing source headers', () => {
         const root = Fantom.createRoot();
 
         Fantom.runTask(() => {
           root.render(
-            <Image crossOrigin="use-credentials" source={LOGO_SOURCE} />,
+            <Image
+              crossOrigin="use-credentials"
+              source={{
+                ...LOGO_SOURCE,
+                headers: {Authorization: 'Bearer token'},
+              }}
+            />,
           );
         });
 
         expect(
           root.getRenderedOutput({props: ['source-header']}).toJSX(),
         ).toEqual(
-          <rn-image source-header-Access-Control-Allow-Credentials="true" />,
+          <rn-image
+            source-header-Access-Control-Allow-Credentials="true"
+            source-header-Authorization="Bearer token"
+          />,
         );
       });
     });

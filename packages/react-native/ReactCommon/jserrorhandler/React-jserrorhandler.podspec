@@ -18,6 +18,12 @@ end
 
 react_native_path = ".."
 
+header_search_paths = []
+
+if ENV['USE_FRAMEWORKS']
+  header_search_paths << "\"$(PODS_TARGET_SRCROOT)/..\"" # ReactCommon, for <react/cxxstableapi/...>
+end
+
 Pod::Spec.new do |s|
   s.name                   = "React-jserrorhandler"
   s.version                = version
@@ -30,6 +36,7 @@ Pod::Spec.new do |s|
   s.header_dir             = "jserrorhandler"
   s.source_files           = podspec_sources(["ErrorUtils.{cpp,h}", "JsErrorHandler.{cpp,h}", "StackTraceParser.{cpp,h}"], ["ErrorUtils.h", "JsErrorHandler.h", "StackTraceParser.h"])
   s.pod_target_xcconfig = {
+    "HEADER_SEARCH_PATHS" => header_search_paths.join(' '),
     "USE_HEADERMAP" => "YES",
     "CLANG_CXX_LANGUAGE_STANDARD" => rct_cxx_language_standard()
   }
@@ -38,6 +45,7 @@ Pod::Spec.new do |s|
 
   s.dependency "React-jsi"
   s.dependency "React-bridging"
+  s.dependency "React-cxxstableapi"
   add_dependency(s, "React-featureflags")
   add_dependency(s, "React-debug")
 

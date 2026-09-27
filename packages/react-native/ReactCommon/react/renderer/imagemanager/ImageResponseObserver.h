@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <react/renderer/imagemanager/ImageResponse.h>
 
 namespace facebook::react {

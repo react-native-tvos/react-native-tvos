@@ -95,12 +95,6 @@ Pod::Spec.new do |s|
       sss.header_dir           = "react/renderer/components/modal"
     end
 
-    ss.subspec "modalUmbrella" do |sss|
-      sss.source_files         = "react/renderer/components/modal/React/*.h"
-      sss.header_dir           = "React"
-      sss.header_mappings_dir  = "react/renderer/components/modal/React"
-    end
-
     ss.subspec "safeareaview" do |sss|
       sss.source_files         = podspec_sources("react/renderer/components/safeareaview/**/*.{m,mm,cpp,h}", "react/renderer/components/safeareaview/**/*.h")
       # Exclude tests to avoid conflicts with the react-native-safe-area-context package
@@ -114,12 +108,6 @@ Pod::Spec.new do |s|
                                   ["react/renderer/components/text/*.h",
                                   "react/renderer/components/text/platform/cxx/**/*.h"])
       sss.header_dir           = "react/renderer/components/text"
-    end
-
-    ss.subspec "textUmbrella" do |sss|
-      sss.source_files         = "react/renderer/components/text/React/*.h"
-      sss.header_dir           = "React"
-      sss.header_mappings_dir  = "react/renderer/components/text/React"
     end
 
     ss.subspec "iostextinput" do |sss|

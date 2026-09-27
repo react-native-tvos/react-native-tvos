@@ -68,7 +68,6 @@ export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
 export default codegenNativeComponent<PullToRefreshNativeProps>(
   'PullToRefreshView',
   {
-    paperComponentName: 'RCTRefreshControl',
     excludedPlatforms: ['android'],
   },
 ) as HostComponent<PullToRefreshNativeProps>;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<100e31bd98a30aba4abef10f168638fc>>
+ * @generated SignedSource<<e991f910f4be27f532c6b81c436bcdf1>>
  */
 
 /**
@@ -51,6 +51,8 @@ public interface ReactNativeFeatureFlagsProvider {
 
   @DoNotStrip public fun enableBridgelessArchitecture(): Boolean
 
+  @DoNotStrip public fun enableBufferedCallInvoker(): Boolean
+
   @DoNotStrip public fun enableCppPropsIteratorSetter(): Boolean
 
   @DoNotStrip public fun enableCustomFocusSearchOnClippedElementsAndroid(): Boolean
@@ -82,6 +84,8 @@ public interface ReactNativeFeatureFlagsProvider {
   @DoNotStrip public fun enableImageTransparentTintColor(): Boolean
 
   @DoNotStrip public fun enableImmediateUpdateModeForContentOffsetChanges(): Boolean
+
+  @DoNotStrip public fun enableImperativeEvents(): Boolean
 
   @DoNotStrip public fun enableImperativeFocus(): Boolean
 

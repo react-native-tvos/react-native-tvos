@@ -14,6 +14,11 @@ appId: ${APP_ID} # iOS: com.meta.RNTester.localDevelopment | Android: com.facebo
     id: 'example_search'
 - inputText:
     text: 'Image.getSize'
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - hideKeyboard
 - tapOn:
     id: 'platform-test-results'
 - assertVisible: 'Results'

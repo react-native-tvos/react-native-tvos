@@ -29,6 +29,7 @@ import typeof ExceptionsManager from '../Libraries/Core/ExceptionsManager';
 import typeof RawEventEmitter from '../Libraries/Core/RawEventEmitter';
 import typeof ReactFiberErrorDialog from '../Libraries/Core/ReactFiberErrorDialog';
 import typeof RCTEventEmitter from '../Libraries/EventEmitter/RCTEventEmitter';
+import type {Spec as FabricUIManager} from '../Libraries/ReactNative/FabricUIManager';
 import typeof {
   createPublicInstance,
   createPublicRootInstance,
@@ -48,6 +49,7 @@ import type {DangerouslyImpreciseStyleProp} from '../Libraries/StyleSheet/StyleS
 import typeof deepFreezeAndThrowOnMutationInDev from '../Libraries/Utilities/deepFreezeAndThrowOnMutationInDev';
 import typeof deepDiffer from '../Libraries/Utilities/differ/deepDiffer';
 import typeof Platform from '../Libraries/Utilities/Platform';
+import typeof * as ReactNativeFeatureFlags from './private/featureflags/ReactNativeFeatureFlags';
 import typeof dispatchNativeEvent from './private/renderer/events/dispatchNativeEvent';
 import typeof CustomEvent from './private/webapis/dom/events/CustomEvent';
 
@@ -69,6 +71,9 @@ module.exports = {
   get RCTEventEmitter(): RCTEventEmitter {
     return require('../Libraries/EventEmitter/RCTEventEmitter').default;
   },
+  get ReactNativeFeatureFlags(): ReactNativeFeatureFlags {
+    return require('./private/featureflags/ReactNativeFeatureFlags');
+  },
   get ReactNativeViewConfigRegistry(): ReactNativeViewConfigRegistry {
     return require('../Libraries/Renderer/shims/ReactNativeViewConfigRegistry');
   },
@@ -77,6 +82,9 @@ module.exports = {
   },
   get UIManager(): UIManager {
     return require('../Libraries/ReactNative/UIManager').default;
+  },
+  get fabricUIManager(): ?FabricUIManager {
+    return require('../Libraries/ReactNative/FabricUIManager').getFabricUIManager();
   },
   // TODO: Remove when React has migrated to `createAttributePayload` and `diffAttributePayloads`
   get deepDiffer(): deepDiffer {

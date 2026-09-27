@@ -592,6 +592,32 @@ describe('<Text>', () => {
       });
     });
 
+    describe('accessibilityState', () => {
+      it('does not mutate the prop when disabled overrides it', () => {
+        const accessibilityState: AccessibilityProps['accessibilityState'] = {
+          disabled: false,
+        };
+        const root = Fantom.createRoot();
+
+        Fantom.runTask(() => {
+          root.render(
+            <Text disabled accessibilityState={accessibilityState}>
+              {TEST_TEXT}
+            </Text>,
+          );
+        });
+
+        expect(accessibilityState).toEqual({disabled: false});
+        expect(
+          root.getRenderedOutput({props: ['accessibilityState']}).toJSX(),
+        ).toEqual(
+          <rn-paragraph accessibilityState="{disabled:true,selected:false,checked:None,busy:false,expanded:null}">
+            {TEST_TEXT}
+          </rn-paragraph>,
+        );
+      });
+    });
+
     describe('aria-hidden', () => {
       it('is is passed as importantForAccessibility', () => {
         const root = Fantom.createRoot();

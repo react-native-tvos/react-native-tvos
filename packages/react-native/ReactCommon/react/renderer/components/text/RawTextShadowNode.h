@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <react/renderer/components/text/RawTextProps.h>
 #include <react/renderer/core/ConcreteShadowNode.h>

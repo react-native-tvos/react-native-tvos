@@ -475,8 +475,9 @@ describe('findFilesWithExtension', () => {
         return [];
       },
       existsSync: () => true,
-      statSync: () => ({
+      lstatSync: () => ({
         isDirectory: () => false,
+        isSymbolicLink: () => false,
       }),
       readFileSync: () => packageJson,
     }));
@@ -508,11 +509,12 @@ describe('findFilesWithExtension', () => {
         return [];
       },
       existsSync: () => true,
-      statSync: filePath => ({
+      lstatSync: filePath => ({
         isDirectory: () =>
           filePath === pnpmFolder ||
           filePath === packageFolder ||
           filePath === path.join(targetFolder, '.hidden'),
+        isSymbolicLink: () => false,
       }),
       readFileSync: () => packageJson,
     }));
@@ -541,8 +543,9 @@ describe('findFilesWithExtension', () => {
         return [];
       },
       existsSync: () => true,
-      statSync: filePath => ({
+      lstatSync: filePath => ({
         isDirectory: () => filePath === path.join(targetFolder, 'Components'),
+        isSymbolicLink: () => false,
       }),
       readFileSync: () => packageJson,
     }));
@@ -556,6 +559,67 @@ describe('findFilesWithExtension', () => {
     expect(result).toEqual([
       path.join(targetFolder, 'Components', 'MyComponent.mm'),
     ]);
+  });
+
+  it('skips nested node_modules folders', () => {
+    const targetFolder = '/project/my-library';
+    const nodeModules = path.join(targetFolder, 'node_modules');
+
+    jest.mock('node:fs', () => ({
+      readdirSync: dirPath => {
+        if (dirPath === targetFolder) {
+          return ['node_modules', 'Component.mm'];
+        }
+        if (dirPath === nodeModules) {
+          return ['Dependency.mm'];
+        }
+        return [];
+      },
+      existsSync: () => true,
+      lstatSync: filePath => ({
+        isDirectory: () => filePath === nodeModules,
+        isSymbolicLink: () => false,
+      }),
+      readFileSync: () => packageJson,
+    }));
+
+    const {
+      findFilesWithExtension: findFiles,
+    } = require('../generate-artifacts-executor/generateRCTThirdPartyComponents');
+
+    const result = findFiles(targetFolder, '.mm');
+    expect(result).toEqual([path.join(targetFolder, 'Component.mm')]);
+  });
+
+  it('does not follow symlinked folders', () => {
+    const targetFolder = '/project/my-library';
+    const symlinkedFolder = path.join(targetFolder, 'linked');
+
+    jest.mock('node:fs', () => ({
+      readdirSync: dirPath => {
+        if (dirPath === targetFolder) {
+          return ['linked', 'Component.mm'];
+        }
+        // A symlink pointing back at its parent: following it never terminates.
+        if (dirPath === symlinkedFolder) {
+          return ['linked', 'Component.mm'];
+        }
+        return [];
+      },
+      existsSync: () => true,
+      lstatSync: filePath => ({
+        isDirectory: () => filePath.endsWith('linked'),
+        isSymbolicLink: () => filePath.endsWith('linked'),
+      }),
+      readFileSync: () => packageJson,
+    }));
+
+    const {
+      findFilesWithExtension: findFiles,
+    } = require('../generate-artifacts-executor/generateRCTThirdPartyComponents');
+
+    const result = findFiles(targetFolder, '.mm');
+    expect(result).toEqual([path.join(targetFolder, 'Component.mm')]);
   });
 });
 

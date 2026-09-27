@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #import <Foundation/Foundation.h>
 #import <react/renderer/core/ReactPrimitives.h>
 #import <react/renderer/imagemanager/ImageRequest.h>

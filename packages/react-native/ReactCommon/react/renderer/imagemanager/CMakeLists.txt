@@ -36,6 +36,7 @@ react_native_android_selector(reactnativejni reactnativejni "")
 target_link_libraries(react_renderer_imagemanager
         folly_runtime
         ${mapbufferjni}
+        react_cxxstableapi
         react_debug
         react_renderer_core
         react_renderer_debug

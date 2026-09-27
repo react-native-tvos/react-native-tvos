@@ -117,6 +117,7 @@ val preparePrefab by
                       Pair("../ReactCommon/cxxreact/", "cxxreact/"),
                       // react_featureflags
                       Pair("../ReactCommon/react/featureflags/", "react/featureflags/"),
+                      Pair("../ReactCommon/react/featureflags/React/", "React/"),
                       // react_devtoolsruntimesettings
                       Pair(
                           "../ReactCommon/react/devtoolsruntimesettings/",
@@ -129,7 +130,6 @@ val preparePrefab by
                       ),
                       // react_renderer_bridging
                       Pair("../ReactCommon/react/renderer/bridging/", "react/renderer/bridging/"),
-                      Pair("../ReactCommon/react/renderer/bridging/React/", "React/"),
                       // react_renderer_componentregistry
                       Pair(
                           "../ReactCommon/react/renderer/componentregistry/",
@@ -164,17 +164,12 @@ val preparePrefab by
                       Pair("../ReactCommon/react/renderer/scheduler/", "react/renderer/scheduler/"),
                       // react_renderer_uimanager
                       Pair("../ReactCommon/react/renderer/uimanager/", "react/renderer/uimanager/"),
-                      Pair("../ReactCommon/react/renderer/uimanager/React/", "React/"),
                       // react_utils
                       Pair("../ReactCommon/react/utils/", "react/utils/"),
                       // rrc_image
                       Pair(
                           "../ReactCommon/react/renderer/components/image/",
                           "react/renderer/components/image/",
-                      ),
-                      Pair(
-                          "../ReactCommon/react/renderer/components/image/React/",
-                          "React/",
                       ),
                       // rrc_view
                       Pair(
@@ -191,10 +186,6 @@ val preparePrefab by
                           "../ReactCommon/react/renderer/components/root/",
                           "react/renderer/components/root/",
                       ),
-                      Pair(
-                          "../ReactCommon/react/renderer/components/root/React/",
-                          "React/",
-                      ),
                       // runtimeexecutor
                       Pair("../ReactCommon/runtimeexecutor/", ""),
                       // react_renderer_textlayoutmanager
@@ -207,10 +198,6 @@ val preparePrefab by
                       Pair(
                           "../ReactCommon/react/renderer/components/text/",
                           "react/renderer/components/text/",
-                      ),
-                      Pair(
-                          "../ReactCommon/react/renderer/components/text/React/",
-                          "React/",
                       ),
                       Pair("../ReactCommon/react/renderer/components/text/platform/android/", ""),
                       Pair(

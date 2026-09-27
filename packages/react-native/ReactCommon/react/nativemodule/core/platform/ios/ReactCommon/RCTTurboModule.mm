@@ -7,7 +7,6 @@
 
 #import "RCTTurboModule.h"
 
-#import <React/RCTArrayBuffer.h>
 #import <React/RCTBridgeModule.h>
 #import <React/RCTConvert.h>
 #import <React/RCTCxxConvert.h>
@@ -90,43 +89,35 @@ static std::vector<jsi::Value> convertNSArrayToStdVector(jsi::Runtime &runtime, 
   return result;
 }
 
-static jsi::ArrayBuffer convertRCTArrayBufferToJSIArrayBuffer(jsi::Runtime &runtime, RCTArrayBuffer *value)
+static jsi::ArrayBuffer convertNSMutableDataToJSIArrayBuffer(jsi::Runtime &runtime, NSMutableData *value)
 {
-  class RCTArrayBufferMutableBuffer final : public jsi::MutableBuffer {
+  class NSMutableDataBuffer final : public jsi::MutableBuffer {
    public:
-    explicit RCTArrayBufferMutableBuffer(RCTArrayBuffer *buffer)
-        : buffer_(buffer), data_(static_cast<uint8_t *>(buffer.mutableBytes)), size_(buffer.length)
-    {
-    }
+    explicit NSMutableDataBuffer(NSMutableData *data) : data_(data) {}
 
     size_t size() const override
     {
-      return size_;
+      return data_.length;
     }
 
     uint8_t *data() override
     {
-      return data_;
+      return static_cast<uint8_t *>(data_.mutableBytes);
     }
 
    private:
-    // Never read: retains the buffer so `data_` stays valid for the ArrayBuffer's lifetime.
-    [[maybe_unused]] RCTArrayBuffer *buffer_;
-    uint8_t *data_;
-    size_t size_;
+    NSMutableData *data_;
   };
 
-  // nil would yield a NULL pointer via ObjC nil-messaging and corrupt the ArrayBuffer.
+  // A nil NSMutableData would silently yield a NULL `mutableBytes` pointer
+  // (ObjC nil-messaging) and corrupt the resulting ArrayBuffer. Substitute a
+  // fresh empty NSMutableData so the wrapped pointer is always well-defined.
   if (value == nil) {
-    RCTLogWarn(@"convertRCTArrayBufferToJSIArrayBuffer: received nil RCTArrayBuffer; returning empty ArrayBuffer");
-    value = [RCTArrayBuffer arrayBufferWithLength:0];
+    RCTLogWarn(@"convertNSMutableDataToJSIArrayBuffer: received nil NSMutableData; returning empty ArrayBuffer");
+    value = [NSMutableData data];
   }
-
-  if (!value.isOwningBytes) {
-    value = [RCTArrayBuffer arrayBufferWithCopiedBytes:value.mutableBytes length:value.length];
-  }
-
-  return {runtime, std::make_shared<RCTArrayBufferMutableBuffer>(value)};
+  auto buffer = std::make_shared<NSMutableDataBuffer>(value);
+  return {runtime, std::move(buffer)};
 }
 
 jsi::Value convertObjCObjectToJSIValue(jsi::Runtime &runtime, id value)
@@ -142,8 +133,8 @@ jsi::Value convertObjCObjectToJSIValue(jsi::Runtime &runtime, id value)
     return convertNSDictionaryToJSIObject(runtime, (NSDictionary *)value);
   } else if ([value isKindOfClass:[NSArray class]]) {
     return convertNSArrayToJSIArray(runtime, (NSArray *)value);
-  } else if ([value isKindOfClass:[RCTArrayBuffer class]]) {
-    return convertRCTArrayBufferToJSIArrayBuffer(runtime, (RCTArrayBuffer *)value);
+  } else if ([value isKindOfClass:[NSMutableData class]]) {
+    return convertNSMutableDataToJSIArrayBuffer(runtime, (NSMutableData *)value);
   } else if (value == (id)kCFNull) {
     return jsi::Value::null();
   }
@@ -210,41 +201,23 @@ convertJSIFunctionToCallback(jsi::Runtime &rt, jsi::Function &&function, const s
   };
 }
 
-// Native-backed buffers are aliased and keep their backing store alive, so they stay valid for
-// as long as the module holds them. JS-heap buffers have nothing to retain — their bytes are
-// freed when the ArrayBuffer is collected or detached — so `mustCopyBytes` is set whenever the
-// invocation may outlive the JS call, and they are aliased only when it cannot. Engines that
-// don't hand out the backing MutableBuffer fall back to those JS-heap rules for every buffer.
-static RCTArrayBuffer *
-convertJSIArrayBufferToRCTArrayBuffer(jsi::Runtime &rt, const jsi::ArrayBuffer &arrayBuffer, BOOL mustCopyBytes)
+// Copy the ArrayBuffer's bytes into an NSMutableData. A zero-copy wrap is not
+// possible here: NSMutableData needs its own resizable backing store and cannot
+// alias a foreign buffer (even via initWithBytesNoCopy:length:deallocator:, which
+// copies eagerly for the mutable subclass). Copying also makes the result safe to
+// retain in a block, store, or dispatch to another thread, regardless of whether
+// the bytes were owned by JS (valid only for this callstack) or by a native
+// MutableBuffer (which the JS ArrayBuffer may GC concurrently).
+static NSMutableData *convertJSIArrayBufferToNSMutableData(jsi::Runtime &rt, const jsi::ArrayBuffer &value)
 {
-  if (auto nativeBuffer = arrayBuffer.tryGetMutableBuffer(rt)) {
-    auto keepAlive = std::move(nativeBuffer);
-    return [RCTArrayBuffer arrayBufferWithOwnedBytes:keepAlive->data()
-                                              length:keepAlive->size()
-                                             cleanup:^{
-                                               (void)keepAlive;
-                                             }];
-  }
-
-  void *bytes = arrayBuffer.data(rt);
-  size_t size = arrayBuffer.size(rt);
-
-  // The bytes belong to the JS heap -> async call.
-  if (mustCopyBytes) {
-    return [RCTArrayBuffer arrayBufferWithCopiedBytes:bytes length:size];
-  }
-
-  // The bytes belong to the JS heap -> sync call.
-  return [RCTArrayBuffer arrayBufferWithUnownedBytes:bytes length:size];
+  return [NSMutableData dataWithBytes:value.data(rt) length:value.size(rt)];
 }
 
 id convertJSIValueToObjCObject(
     jsi::Runtime &runtime,
     const jsi::Value &value,
     const std::shared_ptr<CallInvoker> &jsInvoker,
-    BOOL useNSNull,
-    BOOL mustCopyBytes)
+    BOOL useNSNull)
 {
   if (value.isUndefined() || (value.isNull() && !useNSNull)) {
     return nil;
@@ -270,7 +243,7 @@ id convertJSIValueToObjCObject(
       return convertJSIFunctionToCallback(runtime, o.getFunction(runtime), jsInvoker);
     }
     if (o.isArrayBuffer(runtime)) {
-      return convertJSIArrayBufferToRCTArrayBuffer(runtime, o.getArrayBuffer(runtime), mustCopyBytes);
+      return convertJSIArrayBufferToNSMutableData(runtime, o.getArrayBuffer(runtime));
     }
     return convertJSIObjectToNSDictionary(runtime, o, jsInvoker, useNSNull);
   }
@@ -305,6 +278,35 @@ static jsi::JSError convertNSExceptionToJSError(
   jsi::Value error = createJSRuntimeError(runtime, message);
   error.asObject(runtime).setProperty(runtime, "cause", std::move(cause));
   return {runtime, std::move(error)};
+}
+
+/**
+ * userInfo key under which `addModuleIdentityToException` preserves the exception it wraps, so its
+ * raise-site `callStackReturnAddresses` and `callStackSymbols` stay available to symbolication.
+ */
+static NSString *const RCTTurboModuleOriginalExceptionKey = @"RCTTurboModuleOriginalException";
+
+/**
+ * Async and void method calls have no JS runtime to attach a JSError to, so an NSException raised
+ * by the module escapes to the process-level handler instead. The stack it arrives with has
+ * already unwound past the module, so unless the module and method names travel on the exception
+ * itself the resulting crash cannot be attributed to an owning module.
+ */
+static NSException *
+addModuleIdentityToException(NSException *exception, const std::string &moduleName, const std::string &methodName)
+{
+  // A newly constructed NSException captures its call stack at @throw rather than at the original
+  // raise, so the original exception is carried across whole.
+  NSMutableDictionary *userInfo =
+      [NSMutableDictionary dictionaryWithDictionary:exception.userInfo != nil ? exception.userInfo : @{}];
+  userInfo[RCTTurboModuleOriginalExceptionKey] = exception;
+
+  return [NSException exceptionWithName:exception.name
+                                 reason:[NSString stringWithFormat:@"%s.%s raised an exception: %@",
+                                                                   moduleName.c_str(),
+                                                                   methodName.c_str(),
+                                                                   exception.reason]
+                               userInfo:userInfo];
 }
 
 /**
@@ -477,7 +479,7 @@ id ObjCTurboModule::performMethodInvocation(
         // See https://github.com/reactwg/react-native-new-architecture/discussions/276#discussioncomment-12567155
         throw convertNSExceptionToJSError(runtime, exception, std::string{moduleName}, methodNameStr);
       } else {
-        @throw exception;
+        @throw addModuleIdentityToException(exception, std::string{moduleName}, methodNameStr);
       }
     } @finally {
       [retainedObjectsForInvocation removeAllObjects];
@@ -539,7 +541,7 @@ void ObjCTurboModule::performVoidMethodInvocation(
     } @catch (NSException *exception) {
       // Void methods are always async, re-throw instead of converting to
       // JSError, same as the async branch in performMethodInvocation.
-      @throw exception;
+      @throw addModuleIdentityToException(exception, std::string{moduleName}, methodNameStr);
     } @finally {
       [retainedObjectsForInvocation removeAllObjects];
     }
@@ -600,11 +602,11 @@ jsi::Value ObjCTurboModule::convertReturnIdToJSIValue(
       break;
     }
     case ArrayBufferKind: {
-      if (result != nil && ![result isKindOfClass:[RCTArrayBuffer class]]) {
-        RCTLogError(@"convertReturnIdToJSIValue: expected RCTArrayBuffer for ArrayBufferKind, got %@", [result class]);
+      if (result != nil && ![result isKindOfClass:[NSMutableData class]]) {
+        RCTLogError(@"convertReturnIdToJSIValue: expected NSMutableData for ArrayBufferKind, got %@", [result class]);
         break;
       }
-      returnValue = convertRCTArrayBufferToJSIArrayBuffer(runtime, (RCTArrayBuffer *)result);
+      returnValue = convertNSMutableDataToJSIArrayBuffer(runtime, (NSMutableData *)result);
       break;
     }
     case FunctionKind:
@@ -681,8 +683,7 @@ void ObjCTurboModule::setInvocationArg(
     const jsi::Value &arg,
     size_t i,
     NSInvocation *inv,
-    NSMutableArray *retainedObjectsForInvocation,
-    bool mustCopyBytes)
+    NSMutableArray *retainedObjectsForInvocation)
 {
   if (arg.isBool()) {
     bool v = arg.getBool();
@@ -725,8 +726,13 @@ void ObjCTurboModule::setInvocationArg(
    * Convert arg to ObjC objects.
    */
   BOOL enableModuleArgumentNSNullConversionIOS = ReactNativeFeatureFlags::enableModuleArgumentNSNullConversionIOS();
-  id objCArg =
-      convertJSIValueToObjCObject(runtime, arg, jsInvoker_, enableModuleArgumentNSNullConversionIOS, mustCopyBytes);
+  id objCArg = convertJSIValueToObjCObject(runtime, arg, jsInvoker_, enableModuleArgumentNSNullConversionIOS);
+
+  // A JS `null` in argument position must reach ObjC as `nil`; only nulls nested inside arrays and
+  // dictionaries are preserved as `kCFNull`. Skipping `setArgument:` leaves the slot zeroed.
+  if (enableModuleArgumentNSNullConversionIOS && objCArg == (id)kCFNull) {
+    return;
+  }
   if (objCArg != nullptr) {
     NSString *methodNameNSString = @(methodName);
 
@@ -787,7 +793,6 @@ void ObjCTurboModule::setInvocationArg(
 NSInvocation *ObjCTurboModule::createMethodInvocation(
     jsi::Runtime &runtime,
     bool isSync,
-    bool mustCopyBytes,
     const char *methodName,
     SEL selector,
     const jsi::Value *args,
@@ -816,7 +821,7 @@ NSInvocation *ObjCTurboModule::createMethodInvocation(
   for (size_t i = 0; i < count; i++) {
     const jsi::Value &arg = args[i];
     const std::string objCArgType = [methodSignature getArgumentTypeAtIndex:i + 2];
-    setInvocationArg(runtime, methodName, objCArgType, arg, i, inv, retainedObjectsForInvocation, mustCopyBytes);
+    setInvocationArg(runtime, methodName, objCArgType, arg, i, inv, retainedObjectsForInvocation);
   }
 
   if (isSync) {
@@ -835,12 +840,6 @@ bool ObjCTurboModule::isMethodSync(TurboModuleMethodValueKind returnType)
   }
 
   return returnType != VoidKind && returnType != PromiseKind;
-}
-
-bool ObjCTurboModule::mustCopyJSHeapArrayBufferBytes(TurboModuleMethodValueKind returnType)
-{
-  // Void always dispatches via invokeAsync and promise may.
-  return returnType == VoidKind || returnType == PromiseKind;
 }
 
 ObjCTurboModule::ObjCTurboModule(const InitParams &params)
@@ -863,7 +862,6 @@ jsi::Value ObjCTurboModule::invokeObjCMethod(
   const char *methodName = methodNameStr.c_str();
 
   bool isSyncInvocation = isMethodSync(returnType);
-  bool mustCopyBytes = mustCopyJSHeapArrayBufferBytes(returnType);
 
   if (isSyncInvocation) {
     TurboModulePerfLogger::syncMethodCallStart(moduleName, methodName);
@@ -873,7 +871,7 @@ jsi::Value ObjCTurboModule::invokeObjCMethod(
 
   NSMutableArray *retainedObjectsForInvocation = [NSMutableArray arrayWithCapacity:count + 2];
   NSInvocation *inv = createMethodInvocation(
-      runtime, isSyncInvocation, mustCopyBytes, methodName, selector, args, count, retainedObjectsForInvocation);
+      runtime, isSyncInvocation, methodName, selector, args, count, retainedObjectsForInvocation);
 
   jsi::Value returnValue = jsi::Value::undefined();
 

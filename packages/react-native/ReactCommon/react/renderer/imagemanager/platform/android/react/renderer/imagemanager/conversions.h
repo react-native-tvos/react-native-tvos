@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <react/cxxstableapi/FrameworksGuard.h>
+
 #include <react/featureflags/ReactNativeFeatureFlags.h>
 #include <react/renderer/core/graphicsConversions.h>
 #include <react/renderer/imagemanager/ImageRequestParams.h>

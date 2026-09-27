@@ -70,17 +70,8 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
       {
         name: 'bridging',
         headerPatterns: ['react/renderer/bridging/**/*.h'],
-        excludePatterns: [
-          'react/renderer/bridging/tests',
-          'react/renderer/bridging/React',
-        ],
+        excludePatterns: ['react/renderer/bridging/tests'],
         headerDir: 'react/renderer/bridging',
-      },
-
-      {
-        name: 'bridgingUmbrella',
-        headerPatterns: ['react/renderer/bridging/React/*.h'],
-        headerDir: 'React',
       },
 
       {
@@ -110,17 +101,8 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
           {
             name: 'root',
             headerPatterns: ['react/renderer/components/root/**/*.h'],
-            excludePatterns: [
-              'react/renderer/components/root/tests',
-              'react/renderer/components/root/React',
-            ],
+            excludePatterns: ['react/renderer/components/root/tests'],
             headerDir: 'react/renderer/components/root',
-          },
-
-          {
-            name: 'rootUmbrella',
-            headerPatterns: ['react/renderer/components/root/React/*.h'],
-            headerDir: 'React',
           },
           {
             name: 'view',
@@ -144,14 +126,7 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
             excludePatterns: [
               'react/renderer/components/scrollview/tests',
               'react/renderer/components/scrollview/platform/android',
-              'react/renderer/components/scrollview/React',
             ],
-          },
-
-          {
-            name: 'scrollviewUmbrella',
-            headerPatterns: ['react/renderer/components/scrollview/React/*.h'],
-            headerDir: 'React',
           },
 
           {
@@ -241,12 +216,6 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
       },
 
       {
-        name: 'uimanagerUmbrella',
-        headerPatterns: ['react/renderer/uimanager/React/*.h'],
-        headerDir: 'React',
-      },
-
-      {
         name: 'leakchecker',
         headerPatterns: ['react/renderer/leakchecker/**/*.h'],
         excludePatterns: ['react/renderer/leakchecker/tests'],
@@ -318,6 +287,23 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
     headerPatterns: ['*.h'],
     headerDir: 'jsinspector-modern/tracing',
   },
+  'ReactCommon/react/featureflags/React-featureflags.podspec': {
+    name: 'React-featureflags',
+    headerPatterns: [],
+    headerDir: '',
+    subSpecs: [
+      {
+        name: 'featureflags',
+        headerPatterns: ['*.h'],
+        headerDir: 'react/featureflags',
+      },
+      {
+        name: 'featureflagsUmbrella',
+        headerPatterns: ['React/*.h'],
+        headerDir: 'React',
+      },
+    ],
+  },
   'React/React-RCTFabric.podspec': {
     name: 'React-RCTFabric',
     headerPatterns: ['Fabric/**/*.h'],
@@ -364,12 +350,6 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
           },
 
           {
-            name: 'modalUmbrella',
-            headerPatterns: ['react/renderer/components/modal/React/*.h'],
-            headerDir: 'React',
-          },
-
-          {
             name: 'safeareaview',
             headerPatterns: ['react/renderer/components/safeareaview/**/*.h'],
             excludePatterns: ['react/renderer/components/safeareaview/tests'],
@@ -393,12 +373,6 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
               'react/renderer/components/text/platform/cxx/**/*.h',
             ],
             headerDir: 'react/renderer/components/text',
-          },
-
-          {
-            name: 'textUmbrella',
-            headerPatterns: ['react/renderer/components/text/React/*.h'],
-            headerDir: 'React',
           },
 
           {
@@ -491,24 +465,8 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
     headerDir: 'react/renderer/mapbuffer',
     subSpecs: [
       {
-        name: 'MapBufferUmbrella',
+        name: 'mapbufferUmbrella',
         headerPatterns: ['react/renderer/mapbuffer/React/*.h'],
-        headerDir: 'React',
-      },
-    ],
-  },
-  'ReactCommon/React-FabricImage.podspec': {
-    name: 'React-FabricImage',
-    headerPatterns: ['react/renderer/components/image/**/*.h'],
-    excludePatterns: [
-      'react/renderer/components/image/tests',
-      'react/renderer/components/image/React',
-    ],
-    headerDir: 'react/renderer/components/image',
-    subSpecs: [
-      {
-        name: 'ImageUmbrella',
-        headerPatterns: ['react/renderer/components/image/React/*.h'],
         headerDir: 'React',
       },
     ],
@@ -520,7 +478,7 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
     headerDir: 'ReactCommon',
     subSpecs: [
       {
-        name: 'CallInvokerUmbrella',
+        name: 'callinvokerUmbrella',
         headerPatterns: ['React/*.h'],
         headerDir: 'React',
       },
@@ -532,7 +490,7 @@ const PodspecExceptions /*: {[key: string]: PodSpecConfiguration} */ = {
     headerDir: 'react/debug',
     subSpecs: [
       {
-        name: 'DebugUmbrella',
+        name: 'debugUmbrella',
         headerPatterns: ['React/*.h'],
         headerDir: 'React',
       },

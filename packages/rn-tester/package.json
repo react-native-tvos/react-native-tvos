@@ -1,6 +1,6 @@
 {
   "name": "@react-native/tester",
-  "version": "0.87.0-main",
+  "version": "0.88.0-rc.2",
   "private": true,
   "description": "React Native tester app.",
   "license": "MIT",
@@ -37,8 +37,8 @@
     "e2e-test-ios": "./scripts/maestro-test-ios.sh"
   },
   "dependencies": {
-    "@react-native/new-app-screen": "0.87.0-main",
-    "@react-native/popup-menu-android": "0.87.0-main",
+    "@react-native/new-app-screen": "0.88.0-rc.2",
+    "@react-native/popup-menu-android": "0.88.0-rc.2",
     "flow-enums-runtime": "^0.0.6",
     "invariant": "^2.2.4",
     "nullthrows": "^1.1.1",
@@ -46,8 +46,8 @@
     "react-native-test-library-common": "0.87.0-main"
   },
   "peerDependencies": {
-    "react": "19.2.3",
-    "react-native": "1000.0.0"
+    "react": "19.3.0",
+    "react-native": "0.88.0-rc.2"
   },
   "codegenConfig": {
     "name": "AppSpecs",
@@ -73,5 +73,32 @@
     "commander": "^12.0.0",
     "listr2": "^6.4.1",
     "rxjs": "npm:@react-native-community/rxjs@6.5.4-custom"
+  },
+  "swiftpmConfig": {
+    "modules": [
+      {
+        "name": "ReactCommonSamples",
+        "path": "../react-native/ReactCommon/react/nativemodule/samples/platform/ios"
+      },
+      {
+        "name": "ReactRCTPushNotification",
+        "path": "../react-native/Libraries/PushNotificationIOS",
+        "exclude": [
+          "React-RCTPushNotification.podspec"
+        ]
+      },
+      {
+        "name": "ScreenshotManager",
+        "path": "NativeModuleExample"
+      },
+      {
+        "name": "MyNativeView",
+        "path": "NativeComponentExample/ios"
+      },
+      {
+        "name": "NativeCxxModuleExample",
+        "path": "NativeCxxModuleExample"
+      }
+    ]
   }
 }

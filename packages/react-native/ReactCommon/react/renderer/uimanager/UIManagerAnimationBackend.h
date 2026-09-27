@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <ReactCommon/CallInvoker.h>
 #include <react/renderer/core/ReactPrimitives.h>

@@ -44,8 +44,8 @@ Pod::Spec.new do |s|
 
   s.subspec "timingUmbrella" do |ss|
     ss.source_files         = "React/*.h"
-    ss.header_dir           = "React"
-    ss.header_mappings_dir  = "React"
+    ss.header_dir           = ""
+    ss.header_mappings_dir  = "."
   end
 
   s.resource_bundles = {'React-timing_privacy' => 'PrivacyInfo.xcprivacy'}
