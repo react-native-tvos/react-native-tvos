@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.88.0-rc.3
+
+### Changed
+
+- **Hermes**: Bump Hermes to 260318099.0.4 ([993be7d6c6](https://github.com/react/react-native/commit/993be7d6c69c838bd6fb7acf6b979f8ea65ca03c) by [@fabriziocucci](https://github.com/fabriziocucci))
+
+### Fixed
+
+- **VirtualizedList**: Fix the Metro package-exports warning caused by `react-native/virtualized-lists` importing an unexported React Native subpath ([a506ed66cc](https://github.com/react/react-native/commit/a506ed66cc5744ec017556f49a2c296fb4bad318) by [@giaBaoJS](https://github.com/giaBaoJS))
+
+#### Android specific
+
+- **Renderer**: Bump androidx.collection to 1.4.4 to fix view registry entries getting lost in `SurfaceMountingManager` ([d6a5f159c6](https://github.com/react/react-native/commit/d6a5f159c6ef81651d38af2a33338b921700e044) by [@pawicao](https://github.com/pawicao))
+
+#### iOS specific
+
+- **SwiftPM**: Stop autolinking from recreating library package roots on every sync, which broke Xcode builds of apps using libraries that ship their own `Package.swift` ([97cc934dc7](https://github.com/react/react-native/commit/97cc934dc75184977363e06b1793277de82fed54) by [@chrfalch](https://github.com/chrfalch))
+
 ## v0.88.0-rc.2
 
 ### Changed
