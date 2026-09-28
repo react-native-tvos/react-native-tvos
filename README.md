@@ -1,6 +1,6 @@
 ## react-native-tvos
 
-Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` npm package, and not in the [core repo](https://github.com/facebook/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
+Apple TV and Android TV support for React Native are maintained here and in the corresponding `react-native-tvos` npm package, and not in the [core repo](https://github.com/react/react-native/).  This is a full fork of the main repository, with only the changes needed to support Apple TV and Android TV.
 
 Releases of `react-native-tvos` will be based on a public release of `react-native`; e.g. the 0.81.0-0 release of this package will be derived from the 0.81.0 release of `react-native`. All releases of this repo will follow the 0.xx.x-y format, where x digits are from a specific RN core release, and y represents the additional versioning from this repo.
 
@@ -19,7 +19,7 @@ You cannot use this package and the core react-native package simultaneously in 
 This README covers only TV-specific features. For more general documentation and for changes between versions, you should also see these resources:
 
 - React Native documentation: https://reactnative.dev
-- The React Native changelog: https://github.com/facebook/react-native/blob/main/CHANGELOG.md
+- The React Native changelog: https://github.com/react/react-native/blob/main/CHANGELOG.md
 
 ### Hermes JS support
 
@@ -241,7 +241,7 @@ class Game2048 extends React.Component {
 - _Back navigation with the TV remote menu button_: The `BackHandler` component, originally written to support the Android back button, now also supports back navigation on the Apple TV using the menu button or '<' button on the Apple TV remote, and the back button as usual on Android TV remote.
 
 - _TVEventControl for AppleTV_: (Formerly "TVMenuControl") This module provides methods to enable and disable features on the Apple TV Siri remote:
-  - `enableTVMenuKey`/`disableTVMenuKey`:  Method to enable and disable the menu key gesture recognizer, in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/facebook/react-native/issues/18930).  The `RNTester` app uses these methods to implement correct menu key behavior for back navigation.
+  - `enableTVMenuKey`/`disableTVMenuKey`:  Method to enable and disable the menu key gesture recognizer, in order to fix an issue with Apple's guidelines for menu key navigation (see https://github.com/react/react-native/issues/18930).  The `RNTester` app uses these methods to implement correct menu key behavior for back navigation.
   - `enableTVPanGesture`/`disableTVPanGesture`: Methods to enable and disable detection of finger touches that pan across the touch surface of the Siri remote. See `TVEventHandlerExample` in the `RNTester` app for a demo.
   - `enableGestureHandlersCancelTouches`/`disableGestureHandlersCancelTouches`: Methods to turn on and turn off cancellation of touches by the gesture handlers in `RCTTVRemoteHandler` (see #366). Cancellation of touches is turned on (enabled) by default in 0.69 and earlier releases.
 
