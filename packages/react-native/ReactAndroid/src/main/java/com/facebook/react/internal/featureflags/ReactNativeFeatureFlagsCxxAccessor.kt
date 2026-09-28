@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<00e1e0529cbef727ab81a6a75174c87e>>
+ * @generated SignedSource<<cd1753241fa2f51c23cd4e01ffe3f18c>>
  */
 
 /**
@@ -25,6 +25,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var defaultTextToOverflowHiddenCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
+  private var disableIdleMountItemFrameCallbackRearmAndroidCache: Boolean? = null
   private var disableImageViewPreallocationAndroidCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
   private var disableSubviewClippingAndroidCache: Boolean? = null
@@ -150,6 +151,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.disableEarlyViewCommandExecution()
       disableEarlyViewCommandExecutionCache = cached
+    }
+    return cached
+  }
+
+  override fun disableIdleMountItemFrameCallbackRearmAndroid(): Boolean {
+    var cached = disableIdleMountItemFrameCallbackRearmAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.disableIdleMountItemFrameCallbackRearmAndroid()
+      disableIdleMountItemFrameCallbackRearmAndroidCache = cached
     }
     return cached
   }

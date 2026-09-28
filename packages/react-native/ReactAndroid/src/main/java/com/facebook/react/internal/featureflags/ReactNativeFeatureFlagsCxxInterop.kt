@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<427c98d364e8a0aec3a0834b6a8117c8>>
+ * @generated SignedSource<<eb8737673aaec0b1eda6ae2ebc0b9970>>
  */
 
 /**
@@ -37,6 +37,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun defaultTextToOverflowHidden(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableEarlyViewCommandExecution(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun disableIdleMountItemFrameCallbackRearmAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableImageViewPreallocationAndroid(): Boolean
 

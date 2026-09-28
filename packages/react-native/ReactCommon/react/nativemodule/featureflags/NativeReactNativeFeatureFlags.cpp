@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5c2c17d2dfe28c291757bc5d9b24b900>>
+ * @generated SignedSource<<1bfe886891d4d195940b57548e3fcc6e>>
  */
 
 /**
@@ -67,6 +67,11 @@ bool NativeReactNativeFeatureFlags::defaultTextToOverflowHidden(
 bool NativeReactNativeFeatureFlags::disableEarlyViewCommandExecution(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
+}
+
+bool NativeReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::disableImageViewPreallocationAndroid(

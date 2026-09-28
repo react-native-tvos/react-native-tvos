@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<75c8cd4da8fc81a393ba491373619d53>>
+ * @generated SignedSource<<bd4f6cafcd3c1bd4217792d0cf25dbe5>>
  */
 
 /**
@@ -39,6 +39,7 @@ class ReactNativeFeatureFlagsAccessor {
   bool cxxNativeAnimatedEnabled();
   bool defaultTextToOverflowHidden();
   bool disableEarlyViewCommandExecution();
+  bool disableIdleMountItemFrameCallbackRearmAndroid();
   bool disableImageViewPreallocationAndroid();
   bool disableMountItemReorderingAndroid();
   bool disableSubviewClippingAndroid();
@@ -133,13 +134,14 @@ class ReactNativeFeatureFlagsAccessor {
   std::unique_ptr<ReactNativeFeatureFlagsProvider> currentProvider_;
   bool wasOverridden_;
 
-  std::array<std::atomic<const char*>, 88> accessedFeatureFlags_;
+  std::array<std::atomic<const char*>, 89> accessedFeatureFlags_;
 
   std::atomic<std::optional<bool>> commonTestFlag_;
   std::atomic<std::optional<bool>> cdpInteractionMetricsEnabled_;
   std::atomic<std::optional<bool>> cxxNativeAnimatedEnabled_;
   std::atomic<std::optional<bool>> defaultTextToOverflowHidden_;
   std::atomic<std::optional<bool>> disableEarlyViewCommandExecution_;
+  std::atomic<std::optional<bool>> disableIdleMountItemFrameCallbackRearmAndroid_;
   std::atomic<std::optional<bool>> disableImageViewPreallocationAndroid_;
   std::atomic<std::optional<bool>> disableMountItemReorderingAndroid_;
   std::atomic<std::optional<bool>> disableSubviewClippingAndroid_;

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<13e3827487eba885b4de3746844f1942>>
+ * @generated SignedSource<<e6f56d60147d5c08e0b38549b9956e52>>
  */
 
 /**
@@ -66,6 +66,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableEarlyViewCommandExecution() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableEarlyViewCommandExecution");
+    return method(javaProvider_);
+  }
+
+  bool disableIdleMountItemFrameCallbackRearmAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableIdleMountItemFrameCallbackRearmAndroid");
     return method(javaProvider_);
   }
 
@@ -596,6 +602,11 @@ bool JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution(
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::disableIdleMountItemFrameCallbackRearmAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableImageViewPreallocationAndroid();
@@ -1057,6 +1068,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "disableEarlyViewCommandExecution",
         JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution),
+      makeNativeMethod(
+        "disableIdleMountItemFrameCallbackRearmAndroid",
+        JReactNativeFeatureFlagsCxxInterop::disableIdleMountItemFrameCallbackRearmAndroid),
       makeNativeMethod(
         "disableImageViewPreallocationAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid),

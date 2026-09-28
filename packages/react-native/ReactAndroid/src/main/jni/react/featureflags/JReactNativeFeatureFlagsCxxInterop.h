@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<c26583b78a9872a4918ce98631899c72>>
+ * @generated SignedSource<<25d66101785e737822e86d218789912d>>
  */
 
 /**
@@ -43,6 +43,9 @@ class JReactNativeFeatureFlagsCxxInterop
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool disableEarlyViewCommandExecution(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
+
+  static bool disableIdleMountItemFrameCallbackRearmAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop>);
 
   static bool disableImageViewPreallocationAndroid(

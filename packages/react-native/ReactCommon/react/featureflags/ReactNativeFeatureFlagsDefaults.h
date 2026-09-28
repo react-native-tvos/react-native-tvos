@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5c0f5afb3f37733dd6fc94be39bae1b8>>
+ * @generated SignedSource<<f09ab21f8e13dddf1b548cb8e156837e>>
  */
 
 /**
@@ -46,6 +46,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool disableEarlyViewCommandExecution() override {
+    return false;
+  }
+
+  bool disableIdleMountItemFrameCallbackRearmAndroid() override {
     return false;
   }
 
