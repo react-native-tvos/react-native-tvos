@@ -104,6 +104,7 @@ Pod::Spec.new do |s|
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/text/platform/cxx\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/textinput/platform/ios\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view/platform/cxx\"",
+        "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/core\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/debug\"",
       ]
