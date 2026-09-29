@@ -405,9 +405,6 @@ class ReactNativeDependenciesUtils
     def self.artifact_exists(tarball_url)
         # -L is used to follow redirects, useful for the nightlies
         # I also needed to wrap the url in quotes to avoid escaping & and ?.
-        if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
-            return true
-        end
         return ReactNativePodsUtils.artifact_exists?(tarball_url)
     end
 
