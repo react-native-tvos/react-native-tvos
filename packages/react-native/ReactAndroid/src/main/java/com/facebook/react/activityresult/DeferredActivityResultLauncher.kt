@@ -26,10 +26,10 @@ import com.facebook.react.common.ReactConstants
  */
 internal class DeferredActivityResultLauncher<I>(
     private val key: String,
-    contract: ActivityResultContract<I, *>,
+    override val contract: ActivityResultContract<I, *>,
     private val onUnregister: () -> Unit,
     private val onLaunchFailure: (RuntimeException) -> Unit = {},
-) : ActivityResultLauncherCompat<I>(contract) {
+) : ActivityResultLauncher<I>() {
 
   private class PendingLaunch<I>(val input: I, val options: ActivityOptionsCompat?)
 
