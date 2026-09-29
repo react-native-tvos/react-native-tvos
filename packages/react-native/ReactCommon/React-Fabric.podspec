@@ -105,6 +105,7 @@ Pod::Spec.new do |s|
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/textinput/platform/ios\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view/platform/cxx\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view\"",
+        "\"$(PODS_TARGET_SRCROOT)/react/renderer/componentregistry\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/core\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/debug\"",
       ]
@@ -259,6 +260,9 @@ Pod::Spec.new do |s|
     end
 
     ss.dependency             "React-rendererconsistency"
+    ss.dependency             "React-Fabric/coreUmbrella"
+    ss.dependency             "React-Fabric/componentregistryUmbrella"
+    ss.dependency             "React-Fabric/components/viewUmbrella"
     ss.source_files         = podspec_sources("react/renderer/uimanager/*.{m,mm,cpp,h}", "react/renderer/uimanager/*.h")
     ss.header_dir           = "react/renderer/uimanager"
   end
