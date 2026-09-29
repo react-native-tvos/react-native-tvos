@@ -359,13 +359,7 @@ class ReactNativeCoreUtils
     def self.stable_tarball_urls(version, build_type, dsyms = false)
         # group = "com/facebook/react"
         group = "io/github/react-native-tvos"
-        # maven_repo_url =
-        #    ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != "" ?
-        #     ENV['ENTERPRISE_REPOSITORY'] :
-        #     ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != "" ?
-        #    ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] :
-        #     "https://repo1.maven.org/maven2"
-        return ReactNativePodsUtils.maven_repository_urls().map { |maven_repo_url|
+        return rncore_repository_urls().map { |maven_repo_url|
             # Sample url from Maven:
             # https://repo1.maven.org/maven2/com/facebook/react/react-native-artifacts/0.81.0/react-native-artifacts-0.81.0-reactnative-core-debug.tar.gz
 
@@ -373,6 +367,19 @@ class ReactNativeCoreUtils
             # https://repo.reactnative.dev/maven2/com/facebook/react/react-native-artifacts/0.81.0/react-native-artifacts-0.81.0-reactnative-core-debug.tar.gz
             "#{maven_repo_url}/#{group}/react-native-artifacts/#{version}/react-native-artifacts-#{version}-reactnative-core-#{dsyms ? "dSYM-" : ""}#{build_type.to_s}.tar.gz"
         }
+    end
+
+    # RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY holds only the ReactNativeCore artifacts,
+    # so it must not leak into ReactNativePodsUtils.maven_repository_urls(), which
+    # ReactNativeDependencies also uses.
+    def self.rncore_repository_urls()
+        enterprise_repository = ENV['ENTERPRISE_REPOSITORY']
+        local_repository = ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY']
+        if (enterprise_repository == nil || enterprise_repository == "") &&
+            local_repository != nil && local_repository != ""
+            return [local_repository.sub(/\/+$/, "")]
+        end
+        return ReactNativePodsUtils.maven_repository_urls()
     end
 
     def self.read_nightly_tarball_xml(xml_url)
