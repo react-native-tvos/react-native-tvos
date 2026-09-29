@@ -34,9 +34,6 @@ class ReactNativePodsUtils
         if ENV['ENTERPRISE_REPOSITORY'] != nil && ENV['ENTERPRISE_REPOSITORY'] != ""
             return [ENV['ENTERPRISE_REPOSITORY'].sub(/\/+$/, "")]
         end
-        if ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != nil && ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'] != ""
-            return [ENV['RNTV_TESTONLY_LOCAL_RNCORE_REPOSITORY'].sub(/\/+$/, "")]
-        end
 
         # Keep the React Native Maven mirror before Maven Central so cached artifacts are tried first
         # and Maven Central remains the fallback.
