@@ -9,8 +9,8 @@
 
 #include <react/cxxstableapi/FrameworksGuard.h>
 
+#include <React/Graphics.h>
 #include <react/renderer/animations/primitives.h>
-#include <react/renderer/graphics/Float.h>
 #include <react/renderer/mounting/ShadowViewMutation.h>
 
 namespace facebook::react {
