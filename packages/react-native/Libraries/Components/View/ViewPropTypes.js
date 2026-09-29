@@ -306,14 +306,6 @@ export type ViewPropsAndroid = Readonly<{
   renderToHardwareTextureAndroid?: ?boolean,
 
   /**
-   * Whether to force the Android TV focus engine to move focus to this view.
-   *
-   * @platform android
-   * @deprecated Use `focusable` instead
-   */
-  hasTVPreferredFocus?: ?boolean,
-
-  /**
    * Designates the next view to receive focus when the user navigates down.
    * The value is the `nativeID` of the target view.
    *
@@ -389,14 +381,6 @@ export type TVViewPropsIOS = Readonly<{
    * @platform ios
    */
   isTVSelectable?: boolean,
-
-  /**
-   * *(Apple TV only)* May be set to true to force the Apple TV focus engine to move focus to this view.
-   *
-   * @platform ios
-   * @deprecated Use `focusable` instead
-   */
-  hasTVPreferredFocus?: boolean,
 
   /**
    * *(Apple TV only)* May be used to change the appearance of the Apple TV parallax effect when this view goes in or out of focus.  Defaults to 2.0.

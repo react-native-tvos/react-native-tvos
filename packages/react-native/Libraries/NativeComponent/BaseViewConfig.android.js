@@ -360,7 +360,6 @@ const validAttributesForNonEventProps = {
 
   // ReactViewManager @ReactProps
   accessible: true,
-  hasTVPreferredFocus: true,
   nextFocusDown: true,
   nextFocusForward: true,
   nextFocusLeft: true,

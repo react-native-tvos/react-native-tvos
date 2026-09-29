@@ -2512,7 +2512,6 @@ class facebook::react::HostPlatformViewProps : public facebook::react::BaseViewP
   public HostPlatformViewProps(const facebook::react::PropsParserContext& context, const facebook::react::HostPlatformViewProps& sourceProps, const facebook::react::RawProps& rawProps);
   public HostPlatformViewProps(const facebook::react::PropsParserContext& context, const facebook::react::HostPlatformViewProps& sourceProps, const facebook::react::RawProps& rawProps, const std::function<bool(const std::string&)>& filterObjectKeys = nullptr);
   public bool focusable;
-  public bool hasTVPreferredFocus;
   public bool needsOffscreenAlphaCompositing;
   public bool renderToHardwareTextureAndroid;
   public bool screenReaderFocusable;
