@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ae3d44a13f9aa325303d58a5f50aac51>>
+ * @generated SignedSource<<feee721a90dc8eb3371e87778bdbccc7>>
  */
 
 /**
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/PrivateGuard.h>
 
 #include <folly/dynamic.h>
 #include <react/featureflags/ReactNativeFeatureFlagsDefaults.h>

@@ -122,7 +122,6 @@ async function setup(
   link('ReactCommon/react/renderer/debug');
   link('ReactCommon/react/renderer/debug/React', 'React');
   link('ReactCommon/react/featureflags');
-  link('ReactCommon/react/featureflags/React', 'React');
   link('ReactCommon/react/renderer/graphics');
   link(
     'ReactCommon/react/renderer/graphics/platform/ios',

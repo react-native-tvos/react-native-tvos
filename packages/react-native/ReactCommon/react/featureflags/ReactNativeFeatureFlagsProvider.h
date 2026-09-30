@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<51165e8390c454fe7f3bb07bb3a69bb9>>
+ * @generated SignedSource<<bad95ec81f97c64414c52106fd0a1b7e>>
  */
 
 /**
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/PrivateGuard.h>
 
 namespace facebook::react {
 
