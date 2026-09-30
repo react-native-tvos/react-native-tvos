@@ -9,8 +9,7 @@
 
 #include <react/cxxstableapi/FrameworksGuard.h>
 
-#include <react/renderer/graphics/Rect.h>
-#include <react/renderer/graphics/Transform.h>
+#include <React/Graphics.h>
 
 namespace facebook::react {
 
