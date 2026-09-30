@@ -11,6 +11,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.os.Bundle
 import android.os.Looper
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -90,11 +91,19 @@ class ReactActivityResultCallerThreadingTest {
   private val moduleA = ModuleA()
   private val expectedKey = "${ModuleA::class.java.name}:${GetContent::class.java.name}"
 
+  private fun createCaller(context: ReactApplicationContext): ReactActivityResultCallerImpl =
+      ReactActivityResultCallerImpl(
+          ActivityResultRegistryProvider {
+            (context.currentActivity as? ActivityResultRegistryOwner)?.activityResultRegistry
+          },
+          ActivityResultCallback { exception -> context.handleException(exception) },
+      )
+
   @Before
   fun setUp() {
     reactContext = mock<ReactApplicationContext>()
     registry = resumeNewActivity()
-    caller = ReactActivityResultCallerImpl(reactContext)
+    caller = createCaller(reactContext)
   }
 
   /** Stands in for a new Activity becoming current, and returns its registry. */
