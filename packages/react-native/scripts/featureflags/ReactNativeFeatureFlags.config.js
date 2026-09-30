@@ -181,6 +181,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'canary',
     },
     enableAccumulatedUpdatesInRawPropsAndroid: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2024-12-10',
@@ -233,6 +234,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableCppPropsIteratorSetter: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2024-09-13',
@@ -287,6 +289,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableExclusivePropsUpdateAndroid: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2025-11-11',
@@ -517,6 +520,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableNativeCSSParsing: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2025-02-07',
@@ -538,6 +542,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enablePropsUpdateReconciliationAndroid: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2024-07-12',
@@ -923,6 +928,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     useSharedAnimatedBackend: {
+      dangerouslyExposeInPublicCppHeaders: true,
       defaultValue: false,
       metadata: {
         dateAdded: '2025-08-02',
