@@ -9,7 +9,7 @@
 
 #include <react/cxxstableapi/UmbrellaGuard.h>
 #include <react/debug/react_native_expect.h>
-#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/core/RawValue.h>
 #include <react/renderer/css/CSSColor.h>
 #include <react/renderer/css/CSSValueParser.h>
@@ -28,7 +28,7 @@ inline void fromRawValueShared(
 {
   ColorComponents colorComponents = {0, 0, 0, 0};
 
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing() && value.hasType<std::string>()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing() && value.hasType<std::string>()) {
     auto cssColor = parseCSSProperty<CSSColor>((std::string)value);
     if (std::holds_alternative<CSSColor>(cssColor)) {
       auto c = std::get<CSSColor>(cssColor);

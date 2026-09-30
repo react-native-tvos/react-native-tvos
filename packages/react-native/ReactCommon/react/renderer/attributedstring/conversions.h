@@ -10,7 +10,7 @@
 #include <react/cxxstableapi/FrameworksGuard.h>
 
 #include <react/debug/react_native_expect.h>
-#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/attributedstring/AttributedString.h>
 #include <react/renderer/attributedstring/ParagraphAttributes.h>
 #include <react/renderer/attributedstring/TextAttributes.h>
@@ -517,7 +517,7 @@ inline void parseUnprocessedFontVariant(const PropsParserContext &context, const
 
 inline void fromRawValue(const PropsParserContext &context, const RawValue &value, FontVariant &result)
 {
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing()) {
     parseUnprocessedFontVariant(context, value, result);
   } else {
     parseProcessedFontVariant(context, value, result);

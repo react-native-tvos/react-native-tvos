@@ -13,7 +13,7 @@
 #include <vector>
 
 #include <react/debug/react_native_assert.h>
-#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/core/ComponentDescriptor.h>
 #include <react/renderer/core/EventDispatcher.h>
 #include <react/renderer/core/Props.h>
@@ -56,7 +56,7 @@ class ConcreteComponentDescriptor : public ComponentDescriptor {
     // iterator-setter path and the runtime flag is on, `parse()` is never
     // called, so the O(n²) preparation here is wasted. Skip it.
     if constexpr (HasIteratorSetterCtor<ConcreteProps>) {
-      if (!ReactNativeFeatureFlags::enableCppPropsIteratorSetter()) {
+      if (!ReactNativeFeatureFlags_DO_NOT_USE::enableCppPropsIteratorSetter()) {
         rawPropsParser_.prepare<ConcreteProps>();
       }
     } else {
@@ -136,7 +136,8 @@ class ConcreteComponentDescriptor : public ComponentDescriptor {
     //    and the only path when the flag is off): parse + per-field
     //    `convertRawProp` via the 3-arg ctor.
     constexpr bool kSupportsIteratorSetter = HasIteratorSetterCtor<ConcreteProps>;
-    const bool useIteratorSetter = kSupportsIteratorSetter && ReactNativeFeatureFlags::enableCppPropsIteratorSetter();
+    const bool useIteratorSetter =
+        kSupportsIteratorSetter && ReactNativeFeatureFlags_DO_NOT_USE::enableCppPropsIteratorSetter();
 
     std::shared_ptr<ConcreteProps> shadowNodeProps;
     if constexpr (kSupportsIteratorSetter) {
@@ -151,11 +152,11 @@ class ConcreteComponentDescriptor : public ComponentDescriptor {
 
 #ifdef RN_SERIALIZABLE_STATE
     bool fallbackToDynamicRawPropsAccumulation = true;
-    if (ReactNativeFeatureFlags::enableExclusivePropsUpdateAndroid() &&
-        ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid()) {
+    if (ReactNativeFeatureFlags_DO_NOT_USE::enableExclusivePropsUpdateAndroid() &&
+        ReactNativeFeatureFlags_DO_NOT_USE::enableAccumulatedUpdatesInRawPropsAndroid()) {
       // When exclusive props update is enabled, we only apply Props 1.5 processing
       // (raw props merging) when Props 2.0 is not available.
-      if (ReactNativeFeatureFlags::enablePropsUpdateReconciliationAndroid()) {
+      if (ReactNativeFeatureFlags_DO_NOT_USE::enablePropsUpdateReconciliationAndroid()) {
         // Cast to base Props reference to safely call virtual method
         const auto &baseProps = static_cast<const Props &>(*shadowNodeProps);
         if (strcmp(ShadowNodeT::Name(), baseProps.getDiffPropsImplementationTarget()) == 0) {

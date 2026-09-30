@@ -11,7 +11,7 @@
 
 #include <glog/logging.h>
 #include <react/debug/react_native_expect.h>
-#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/components/view/CSSConversions.h>
 #include <react/renderer/core/PropsParserContext.h>
 #include <react/renderer/core/RawProps.h>
@@ -255,7 +255,7 @@ parseUnprocessedBoxShadow(const PropsParserContext &context, const RawValue &val
 
 inline void fromRawValue(const PropsParserContext &context, const RawValue &value, std::vector<BoxShadow> &result)
 {
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing()) {
     parseUnprocessedBoxShadow(context, value, result);
   } else {
     parseProcessedBoxShadow(context, value, result);

@@ -11,7 +11,7 @@
 
 #include <glog/logging.h>
 #include <react/debug/react_native_expect.h>
-#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/components/view/primitives.h>
 #include <react/renderer/core/LayoutMetrics.h>
 #include <react/renderer/core/PropsParserContext.h>
@@ -520,7 +520,7 @@ inline yoga::FloatOptional convertAspectRatio(const PropsParserContext & /*conte
   if (value.hasType<float>()) {
     return yoga::FloatOptional((float)value);
   }
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing() && value.hasType<std::string>()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing() && value.hasType<std::string>()) {
     auto ratio = parseCSSProperty<CSSRatio>((std::string)value);
     if (std::holds_alternative<CSSRatio>(ratio)) {
       auto r = std::get<CSSRatio>(ratio);
@@ -995,7 +995,7 @@ inline void parseUnprocessedTransform(const PropsParserContext &context, const R
 
 inline void fromRawValue(const PropsParserContext &context, const RawValue &value, Transform &result)
 {
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing()) {
     parseUnprocessedTransform(context, value, result);
   } else {
     parseProcessedTransform(context, value, result);
@@ -1079,7 +1079,7 @@ parseUnprocessedTransformOrigin(const PropsParserContext &context, const RawValu
 
 inline void fromRawValue(const PropsParserContext &context, const RawValue &value, TransformOrigin &result)
 {
-  if (ReactNativeFeatureFlags::enableNativeCSSParsing()) {
+  if (ReactNativeFeatureFlags_DO_NOT_USE::enableNativeCSSParsing()) {
     parseUnprocessedTransformOrigin(context, value, result);
   } else {
     parseProcessedTransformOrigin(context, value, result);
