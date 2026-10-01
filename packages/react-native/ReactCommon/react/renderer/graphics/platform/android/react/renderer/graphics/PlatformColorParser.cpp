@@ -7,8 +7,7 @@
 
 #include <react/renderer/graphics/PlatformColorParser.h>
 
-#include "configurePlatformColorCacheInvalidationHook.h"
-
+#include <fbjni/NativeRunnable.h>
 #include <fbjni/fbjni.h>
 #include <folly/container/EvictingCacheMap.h>
 #include <react/renderer/css/CSSColor.h>
@@ -20,6 +19,22 @@
 
 namespace facebook::react {
 
+namespace {
+
+void configurePlatformColorCacheInvalidationHook(std::function<void()>&& hook) {
+  auto appearanceModuleClass = jni::findClassLocal(
+      "com/facebook/react/modules/appearance/AppearanceModule");
+  if (appearanceModuleClass) {
+    auto callbackField =
+        appearanceModuleClass->getStaticField<jni::JRunnable::javaobject>(
+            "invalidatePlatformColorCache");
+    jni::local_ref<jni::JRunnable> invalidationCallback =
+        jni::JNativeRunnable::newObjectCxxArgs(std::move(hook));
+    appearanceModuleClass->setStaticFieldValue(
+        callbackField, invalidationCallback.get());
+  }
+}
+
 size_t hashGetColourArguments(
     int32_t surfaceId,
     const std::vector<std::string>& resourcePaths) {
@@ -30,6 +45,8 @@ size_t hashGetColourArguments(
   }
   return seed;
 }
+
+} // namespace
 
 SharedColor parsePlatformColor(
     const ContextContainer& contextContainer,
