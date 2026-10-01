@@ -12,10 +12,10 @@
 #include "HostTarget.h"
 #include "InspectorInterfaces.h"
 
+#include <React/Timing.h>
 #include <jsinspector-modern/cdp/CdpJson.h>
 #include <jsinspector-modern/tracing/HostTracingProfile.h>
 #include <jsinspector-modern/tracing/Timing.h>
-#include <react/timing/primitives.h>
 
 namespace facebook::react::jsinspector_modern {
 
