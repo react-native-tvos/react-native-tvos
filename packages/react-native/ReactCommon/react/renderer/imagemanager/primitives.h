@@ -12,12 +12,11 @@
 #include <string>
 #include <vector>
 
-#include <react/debug/react_native_assert.h>
-#include <react/renderer/core/graphicsConversions.h>
-#include <react/renderer/core/propsConversions.h>
+#include <React/Debug.h>
+#include <React/Graphics.h>
+#include <React/RendererCore.h>
+#include <React/RendererDebug.h>
 #include <react/renderer/debug/debugStringConvertibleUtils.h>
-#include <react/renderer/graphics/Float.h>
-#include <react/renderer/graphics/Size.h>
 
 namespace facebook::react {
 

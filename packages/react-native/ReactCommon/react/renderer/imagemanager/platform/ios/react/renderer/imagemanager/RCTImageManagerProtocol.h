@@ -6,7 +6,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <react/renderer/core/ReactPrimitives.h>
+#import <React/RendererCore.h>
 #import <react/renderer/imagemanager/ImageRequest.h>
 
 @protocol RCTImageManagerProtocol <NSObject>
