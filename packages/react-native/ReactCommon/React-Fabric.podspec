@@ -111,6 +111,7 @@ Pod::Spec.new do |s|
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/components/view\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/componentregistry\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/core\"",
+        "\"$(PODS_TARGET_SRCROOT)/react/renderer/componentregistry\"",
         "\"$(PODS_TARGET_SRCROOT)/react/renderer/debug\"",
       ]
     end
