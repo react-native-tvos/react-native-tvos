@@ -9,9 +9,9 @@
 
 #include <react/cxxstableapi/FrameworksGuard.h>
 
+#include <React/RendererCore.h>
+#include <React/View.h>
 #include <folly/dynamic.h>
-#include <react/renderer/components/view/BaseViewProps.h>
-#include <react/renderer/core/ReactPrimitives.h>
 #include <react/renderer/uimanager/UIManager.h>
 #include <react/renderer/uimanager/UIManagerCommitHook.h>
 #include "AnimatedProps.h"

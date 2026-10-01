@@ -9,8 +9,8 @@
 
 #include <react/cxxstableapi/FrameworksGuard.h>
 
-#include <ReactCommon/CallInvoker.h>
-#include <react/renderer/core/ReactPrimitives.h>
+#include <React/CallInvoker.h>
+#include <React/RendererCore.h>
 #include <react/renderer/uimanager/UIManager.h>
 #include <react/renderer/uimanager/UIManagerAnimationBackend.h>
 #include <functional>

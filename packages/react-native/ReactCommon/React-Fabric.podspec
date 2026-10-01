@@ -72,6 +72,10 @@ Pod::Spec.new do |s|
   end
 
   s.subspec "animationbackend" do |ss|
+    ss.dependency             "React-Fabric/coreUmbrella"
+    ss.dependency             "React-Fabric/components/viewUmbrella"
+    ss.dependency             "React-callinvoker"
+    ss.dependency             "React-timing"
     ss.source_files         = podspec_sources("react/renderer/animationbackend/**/*.{m,mm,cpp,h}", "react/renderer/animationbackend/**/*.{h}")
     ss.header_dir           = "react/renderer/animationbackend"
   end
