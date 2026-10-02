@@ -11,10 +11,10 @@
 
 #include <limits>
 
+#include <React/Graphics.h>
+#include <React/RendererCore.h>
+#include <React/Utils.h>
 #include <react/renderer/attributedstring/primitives.h>
-#include <react/renderer/debug/DebugStringConvertible.h>
-#include <react/renderer/graphics/Float.h>
-#include <react/utils/hash_combine.h>
 
 namespace facebook::react {
 

@@ -8,6 +8,7 @@
 #import "RCTTextLayoutManager.h"
 
 #import <array>
+#import <cmath>
 
 #import "RCTAttributedTextUtils.h"
 
@@ -186,8 +187,8 @@ static NSLineBreakMode RCTNSLineBreakModeFromEllipsizeMode(EllipsizeMode ellipsi
                     // remains visible at small sizes and proportionate at
                     // large ones. ~`fontSize / 12` plus a 1.5pt floor.
                     CGFloat thickness = MAX(fontSize / 12.0f, 1.5f);
-                    CGFloat wavyWavelength = 1.0f + 2.0f * round(2.0f * thickness + 0.5f);
-                    CGFloat wavyCpDistance = 0.5f + round(3.0f * thickness + 0.5f);
+                    CGFloat wavyWavelength = 1.0f + 2.0f * std::round(2.0f * thickness + 0.5f);
+                    CGFloat wavyCpDistance = 0.5f + std::round(3.0f * thickness + 0.5f);
 
                     NSRange targetGlyphRange = [layoutManager glyphRangeForCharacterRange:attrRange
                                                                      actualCharacterRange:nullptr];

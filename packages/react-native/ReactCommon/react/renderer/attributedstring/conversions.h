@@ -9,28 +9,20 @@
 
 #include <react/cxxstableapi/FrameworksGuard.h>
 
-#include <react/debug/react_native_expect.h>
+#include <React/CSS.h>
+#include <React/Debug.h>
+#include <React/RendererCore.h>
+#include <React/View.h>
 #include <react/featureflags/ReactNativePublicFeatureFlags.h>
 #include <react/renderer/attributedstring/AttributedString.h>
 #include <react/renderer/attributedstring/ParagraphAttributes.h>
 #include <react/renderer/attributedstring/TextAttributes.h>
-#include <react/renderer/attributedstring/conversions.h>
 #include <react/renderer/attributedstring/primitives.h>
-#include <react/renderer/components/view/accessibilityPropsConversions.h>
-#include <react/renderer/core/LayoutableShadowNode.h>
-#include <react/renderer/core/PropsParserContext.h>
-#include <react/renderer/core/ShadowNode.h>
-#include <react/renderer/core/conversions.h>
-#include <react/renderer/core/graphicsConversions.h>
-#include <react/renderer/core/propsConversions.h>
-#include <react/renderer/css/CSSFontVariant.h>
-#include <react/renderer/css/CSSValueParser.h>
 #include <unordered_map>
 
 #ifdef RN_SERIALIZABLE_STATE
+#include <React/MapBuffer.h>
 #include <folly/json.h>
-#include <react/renderer/mapbuffer/MapBuffer.h>
-#include <react/renderer/mapbuffer/MapBufferBuilder.h>
 #endif
 
 #include <glog/logging.h>

@@ -14,16 +14,12 @@
 #include <optional>
 #include <vector>
 
+#include <React/Graphics.h>
+#include <React/RendererCore.h>
+#include <React/Utils.h>
+#include <React/View.h>
 #include <folly/dynamic.h>
 #include <react/renderer/attributedstring/primitives.h>
-#include <react/renderer/components/view/AccessibilityPrimitives.h>
-#include <react/renderer/core/LayoutPrimitives.h>
-#include <react/renderer/core/ReactPrimitives.h>
-#include <react/renderer/debug/DebugStringConvertible.h>
-#include <react/renderer/graphics/Color.h>
-#include <react/renderer/graphics/Float.h>
-#include <react/renderer/graphics/Size.h>
-#include <react/utils/hash_combine.h>
 
 namespace facebook::react {
 
