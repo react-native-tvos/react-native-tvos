@@ -531,6 +531,17 @@ const definitions: FeatureFlagDefinitions = {
       },
       ossReleaseStage: 'none',
     },
+    enablePreallocatedPropsDiffOnInsertAndroid: {
+      defaultValue: false,
+      metadata: {
+        dateAdded: '2026-09-30',
+        description:
+          'When enabled together with `enableAccumulatedUpdatesInRawPropsAndroid`, the Insert of a preallocated view only sends the difference between the props the view was preallocated with and the inserted props, instead of sending all props again on every Insert.',
+        expectedReleaseValue: true,
+        purpose: 'experimentation',
+      },
+      ossReleaseStage: 'none',
+    },
     enablePreparedTextLayout: {
       defaultValue: false,
       metadata: {

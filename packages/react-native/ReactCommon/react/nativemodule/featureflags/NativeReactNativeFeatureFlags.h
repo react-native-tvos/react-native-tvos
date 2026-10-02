@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dde6447659f81e2f474e857cdf2259d5>>
+ * @generated SignedSource<<dff9379b2aa73e50088d4be72cd1c359>>
  */
 
 /**
@@ -127,6 +127,8 @@ class NativeReactNativeFeatureFlags
   bool enableMutationObserverByDefault(jsi::Runtime& runtime);
 
   bool enableNativeCSSParsing(jsi::Runtime& runtime);
+
+  bool enablePreallocatedPropsDiffOnInsertAndroid(jsi::Runtime& runtime);
 
   bool enablePreparedTextLayout(jsi::Runtime& runtime);
 

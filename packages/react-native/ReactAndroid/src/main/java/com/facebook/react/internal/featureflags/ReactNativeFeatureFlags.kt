@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<a39494512e761e266940e5d1853f38fc>>
+ * @generated SignedSource<<86390dbd6b2c57cb4f8cdd7cb73cc1f7>>
  */
 
 /**
@@ -299,6 +299,12 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableNativeCSSParsing(): Boolean = accessor.enableNativeCSSParsing()
+
+  /**
+   * When enabled together with `enableAccumulatedUpdatesInRawPropsAndroid`, the Insert of a preallocated view only sends the difference between the props the view was preallocated with and the inserted props, instead of sending all props again on every Insert.
+   */
+  @JvmStatic
+  public fun enablePreallocatedPropsDiffOnInsertAndroid(): Boolean = accessor.enablePreallocatedPropsDiffOnInsertAndroid()
 
   /**
    * Enables caching text layout artifacts for later reuse
