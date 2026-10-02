@@ -9,6 +9,9 @@
 
 #include <react/cxxstableapi/UmbrellaGuard.h>
 
+#include <optional>
+#include <string>
+
 #include <react/renderer/components/view/ViewProps.h>
 #include <react/renderer/core/PropsParserContext.h>
 #include <react/renderer/graphics/Color.h>

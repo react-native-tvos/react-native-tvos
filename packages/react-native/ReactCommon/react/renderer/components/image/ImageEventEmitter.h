@@ -9,6 +9,8 @@
 
 #include <react/cxxstableapi/UmbrellaGuard.h>
 
+#include <cstdint>
+
 #include <react/renderer/components/view/ViewEventEmitter.h>
 #include <react/renderer/imagemanager/primitives.h>
 
