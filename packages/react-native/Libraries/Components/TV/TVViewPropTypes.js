@@ -72,6 +72,14 @@ export type TVViewProps = $ReadOnly<{|
   focusable?: ?boolean,
 
   /**
+   * Android TV only. Sets the same native focusable flag as `focusable` and,
+   * when false, also blocks focus for all descendants.
+   *
+   * @platform android
+   */
+  tvFocusable?: ?boolean,
+
+  /**
    * May be set to true to force the focus engine to move focus to this view.
    *
    */
