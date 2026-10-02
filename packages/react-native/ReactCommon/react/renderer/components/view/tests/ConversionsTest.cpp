@@ -6,9 +6,12 @@
  */
 
 #include <array>
+#include <memory>
 
 #include <gtest/gtest.h>
 
+#include <react/featureflags/ReactNativeFeatureFlags.h>
+#include <react/featureflags/ReactNativeFeatureFlagsDefaults.h>
 #include <react/renderer/attributedstring/conversions.h>
 #include <react/renderer/components/view/BoxShadowPropsConversions.h>
 #include <react/renderer/components/view/FilterPropsConversions.h>
@@ -16,6 +19,30 @@
 #include <react/renderer/components/view/conversions.h>
 
 namespace facebook::react {
+
+namespace {
+
+class NativeCSSParsingEnabledFlags : public ReactNativeFeatureFlagsDefaults {
+ public:
+  bool enableNativeCSSParsing() override {
+    return true;
+  }
+};
+
+class NativeCSSConversionsTest : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    ReactNativeFeatureFlags::dangerouslyReset();
+    ReactNativeFeatureFlags::override(
+        std::make_unique<NativeCSSParsingEnabledFlags>());
+  }
+
+  void TearDown() override {
+    ReactNativeFeatureFlags::dangerouslyReset();
+  }
+};
+
+} // namespace
 
 TEST(ConversionsTest, accessibility_roles_round_trip) {
   struct AccessibilityRoleTestCase {
@@ -122,13 +149,12 @@ TEST(ConversionsTest, accessibility_roles_round_trip) {
   }
 }
 
-TEST(ConversionsTest, unprocessed_box_shadow_string) {
+TEST_F(NativeCSSConversionsTest, unprocessed_box_shadow_string) {
   RawValue value{
       folly::dynamic("10px 2px 0 5px #fff, inset 20px 10px 5px 0 #000")};
 
   std::vector<BoxShadow> boxShadows;
-  parseUnprocessedBoxShadow(
-      PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
 
   EXPECT_EQ(boxShadows.size(), 2);
   EXPECT_EQ(boxShadows[0].offsetX, 10);
@@ -146,7 +172,7 @@ TEST(ConversionsTest, unprocessed_box_shadow_string) {
   EXPECT_TRUE(boxShadows[1].inset);
 }
 
-TEST(ConversionsTest, unprocessed_box_shadow_objects) {
+TEST_F(NativeCSSConversionsTest, unprocessed_box_shadow_objects) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object("offsetX", 10)("offsetY", 2)("blurRadius", 3)(
           "spreadDistance", 5),
@@ -154,8 +180,7 @@ TEST(ConversionsTest, unprocessed_box_shadow_objects) {
           "color", "#fff")("inset", true))};
 
   std::vector<BoxShadow> boxShadows;
-  parseUnprocessedBoxShadow(
-      PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
 
   EXPECT_EQ(boxShadows.size(), 2);
   EXPECT_EQ(boxShadows[0].offsetX, 10);
@@ -173,37 +198,34 @@ TEST(ConversionsTest, unprocessed_box_shadow_objects) {
   EXPECT_TRUE(boxShadows[1].inset);
 }
 
-TEST(ConversionsTest, unprocessed_box_object_invalid_color) {
+TEST_F(NativeCSSConversionsTest, unprocessed_box_object_invalid_color) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object("offsetX", 10)("offsetY", 2)("blurRadius", 3)(
           "spreadDistance", 5)("color", "hello"))};
 
   std::vector<BoxShadow> boxShadows;
-  parseUnprocessedBoxShadow(
-      PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
 
   EXPECT_TRUE(boxShadows.empty());
 }
 
-TEST(ConversionsTest, unprocessed_box_object_negative_blur) {
+TEST_F(NativeCSSConversionsTest, unprocessed_box_object_negative_blur) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object("offsetX", 10)("offsetY", 2)("blurRadius", -3)(
           "spreadDistance", 5))};
 
   std::vector<BoxShadow> boxShadows;
-  parseUnprocessedBoxShadow(
-      PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, boxShadows);
 
   EXPECT_TRUE(boxShadows.empty());
 }
 
-TEST(ConversionsTest, unprocessed_filter_string) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_string) {
   RawValue value{folly::dynamic(
       "drop-shadow(10px -2px 0.5px #fff) blur(5px) hue-rotate(90deg) saturate(2) brightness(50%)")};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_EQ(filters.size(), 5);
 
@@ -234,7 +256,7 @@ TEST(ConversionsTest, unprocessed_filter_string) {
   EXPECT_EQ(std::get<Float>(filters[4].parameters), 0.5f);
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_objects) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object(
           "drop-shadow",
@@ -247,8 +269,7 @@ TEST(ConversionsTest, unprocessed_filter_objects) {
       folly::dynamic::object("brightness", "50%"))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_EQ(filters.size(), 6);
 
@@ -288,7 +309,9 @@ TEST(ConversionsTest, unprocessed_filter_objects) {
   EXPECT_EQ(std::get<Float>(filters[5].parameters), 0.5f);
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_negative_shadow_blur) {
+TEST_F(
+    NativeCSSConversionsTest,
+    unprocessed_filter_objects_negative_shadow_blur) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object(
           "drop-shadow",
@@ -296,40 +319,38 @@ TEST(ConversionsTest, unprocessed_filter_objects_negative_shadow_blur) {
               "standardDeviation", -0.5)))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_TRUE(filters.empty());
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_negative_blur) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_objects_negative_blur) {
   RawValue value{folly::dynamic::array(folly::dynamic::object("blur", -5))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_TRUE(filters.empty());
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_negative_contrast) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_objects_negative_contrast) {
   RawValue value{
       folly::dynamic::array(folly::dynamic::object("constrast", -5))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_TRUE(filters.empty());
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_negative_hue_rotate) {
+TEST_F(
+    NativeCSSConversionsTest,
+    unprocessed_filter_objects_negative_hue_rotate) {
   RawValue value{
       folly::dynamic::array(folly::dynamic::object("hue-rotate", -5))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_EQ(filters.size(), 1);
 
@@ -338,24 +359,22 @@ TEST(ConversionsTest, unprocessed_filter_objects_negative_hue_rotate) {
   EXPECT_EQ(std::get<Float>(filters[0].parameters), -5.0f);
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_multiple_objects) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_objects_multiple_objects) {
   RawValue value{folly::dynamic::array(
       folly::dynamic::object("blur", 5)("hue-rotate", "90deg"))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_TRUE(filters.empty());
 }
 
-TEST(ConversionsTest, unprocessed_filter_objects_unknown_type) {
+TEST_F(NativeCSSConversionsTest, unprocessed_filter_objects_unknown_type) {
   RawValue value{
       folly::dynamic::array(folly::dynamic::object("unknown-filter", 5))};
 
   std::vector<FilterFunction> filters;
-  parseUnprocessedFilter(
-      PropsParserContext{-1, ContextContainer{}}, value, filters);
+  fromRawValue(PropsParserContext{-1, ContextContainer{}}, value, filters);
 
   EXPECT_TRUE(filters.empty());
 }
