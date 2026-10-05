@@ -13,6 +13,7 @@
 #include <optional>
 #include <variant>
 
+#include <React/Utils.h>
 #include <react/renderer/css/CSSAngle.h>
 #include <react/renderer/css/CSSCompoundDataType.h>
 #include <react/renderer/css/CSSDataType.h>
@@ -22,8 +23,6 @@
 #include <react/renderer/css/CSSNumber.h>
 #include <react/renderer/css/CSSValueParser.h>
 #include <react/renderer/css/CSSZero.h>
-#include <react/utils/TemplateStringLiteral.h>
-#include <react/utils/iequals.h>
 
 namespace facebook::react {
 

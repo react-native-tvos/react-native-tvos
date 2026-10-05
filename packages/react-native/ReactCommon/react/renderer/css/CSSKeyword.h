@@ -13,9 +13,8 @@
 #include <optional>
 #include <string_view>
 
+#include <React/Utils.h>
 #include <react/renderer/css/CSSDataType.h>
-#include <react/utils/fnv1a.h>
-#include <react/utils/to_underlying.h>
 
 namespace facebook::react {
 

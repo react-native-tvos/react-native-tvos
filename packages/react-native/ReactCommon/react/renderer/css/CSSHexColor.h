@@ -12,7 +12,7 @@
 #include <optional>
 #include <string_view>
 
-#include <react/utils/toLower.h>
+#include <React/Utils.h>
 
 namespace facebook::react {
 
