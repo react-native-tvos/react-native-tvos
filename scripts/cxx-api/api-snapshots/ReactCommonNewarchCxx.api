@@ -889,9 +889,9 @@ class facebook::react::AnimationBackend : public facebook::react::UIManagerAnima
   public virtual void registerJSInvoker(std::shared_ptr<facebook::react::CallInvoker> jsInvoker) override;
   public virtual void stop(facebook::react::CallbackId callbackId) override;
   public virtual void trigger() override;
-  public void commitUpdates(facebook::react::SurfaceId surfaceId, facebook::react::SurfaceUpdates& surfaceUpdates);
   public void requestAsyncFlushForSurfaces(const std::set<facebook::react::SurfaceId>& surfaces);
   public void synchronouslyUpdateProps(const std::unordered_map<facebook::react::Tag, facebook::react::AnimatedProps>& updates);
+  public ~AnimationBackend() override;
 }
 
 class facebook::react::AnimationBackendCommitHook : public facebook::react::UIManagerCommitHook {
