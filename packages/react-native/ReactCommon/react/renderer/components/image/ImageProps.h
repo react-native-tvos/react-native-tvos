@@ -42,8 +42,8 @@ class ImageProps final : public ViewProps {
   Float resizeMultiplier{1.f};
   bool shouldNotifyLoadEvents{};
   SharedColor overlayColor{};
-  Float fadeDuration{300.f};
-  bool progressiveRenderingEnabled{};
+  std::optional<Float> fadeDuration{};
+  std::optional<bool> progressiveRenderingEnabled{};
 
 #ifdef RN_SERIALIZABLE_STATE
   ComponentName getDiffPropsImplementationTarget() const override;

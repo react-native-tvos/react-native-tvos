@@ -1705,11 +1705,9 @@ class facebook::react::ImageManager {
 
 class facebook::react::ImageProps : public facebook::react::HostPlatformViewProps {
   public Float blurRadius;
-  public Float fadeDuration;
   public Float resizeMultiplier;
   public ImageProps() = default;
   public ImageProps(const facebook::react::PropsParserContext& context, const facebook::react::ImageProps& sourceProps, const facebook::react::RawProps& rawProps);
-  public bool progressiveRenderingEnabled;
   public bool shouldNotifyLoadEvents;
   public facebook::react::EdgeInsets capInsets;
   public facebook::react::ImageResizeMode resizeMode;
@@ -1717,6 +1715,8 @@ class facebook::react::ImageProps : public facebook::react::HostPlatformViewProp
   public facebook::react::ImageSource loadingIndicatorSource;
   public facebook::react::ImageSources sources;
   public facebook::react::SharedColor overlayColor;
+  public std::optional<Float> fadeDuration;
+  public std::optional<bool> progressiveRenderingEnabled;
   public std::optional<facebook::react::SharedColor> tintColor;
   public std::string resizeMethod;
   public void setProp(const facebook::react::PropsParserContext& context, facebook::react::RawPropsPropNameHash hash, const char* propName, const facebook::react::RawValue& value);
