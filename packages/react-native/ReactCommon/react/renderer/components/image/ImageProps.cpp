@@ -42,7 +42,7 @@ ImageProps::ImageProps(
           rawProps,
           "resizeMode",
           sourceProps.resizeMode,
-          ImageResizeMode::Stretch)),
+          ImageResizeMode::Cover)),
       blurRadius(convertRawProp(
           context,
           rawProps,
