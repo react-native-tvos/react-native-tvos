@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<13e3827487eba885b4de3746844f1942>>
+ * @generated SignedSource<<dad8d48d93f01fc5ec68f70dbd9a9e73>>
  */
 
 /**
@@ -66,6 +66,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool disableEarlyViewCommandExecution() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableEarlyViewCommandExecution");
+    return method(javaProvider_);
+  }
+
+  bool disableIdleMountItemFrameCallbackRearmAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("disableIdleMountItemFrameCallbackRearmAndroid");
     return method(javaProvider_);
   }
 
@@ -300,6 +306,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableNativeCSSParsing() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableNativeCSSParsing");
+    return method(javaProvider_);
+  }
+
+  bool enablePreallocatedPropsDiffOnInsertAndroid() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enablePreallocatedPropsDiffOnInsertAndroid");
     return method(javaProvider_);
   }
 
@@ -596,6 +608,11 @@ bool JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution(
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
 }
 
+bool JReactNativeFeatureFlagsCxxInterop::disableIdleMountItemFrameCallbackRearmAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid();
+}
+
 bool JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::disableImageViewPreallocationAndroid();
@@ -789,6 +806,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableMutationObserverByDefault(
 bool JReactNativeFeatureFlagsCxxInterop::enableNativeCSSParsing(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableNativeCSSParsing();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::enablePreallocatedPropsDiffOnInsertAndroid(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enablePreallocatedPropsDiffOnInsertAndroid();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enablePreparedTextLayout(
@@ -1058,6 +1080,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "disableEarlyViewCommandExecution",
         JReactNativeFeatureFlagsCxxInterop::disableEarlyViewCommandExecution),
       makeNativeMethod(
+        "disableIdleMountItemFrameCallbackRearmAndroid",
+        JReactNativeFeatureFlagsCxxInterop::disableIdleMountItemFrameCallbackRearmAndroid),
+      makeNativeMethod(
         "disableImageViewPreallocationAndroid",
         JReactNativeFeatureFlagsCxxInterop::disableImageViewPreallocationAndroid),
       makeNativeMethod(
@@ -1174,6 +1199,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableNativeCSSParsing",
         JReactNativeFeatureFlagsCxxInterop::enableNativeCSSParsing),
+      makeNativeMethod(
+        "enablePreallocatedPropsDiffOnInsertAndroid",
+        JReactNativeFeatureFlagsCxxInterop::enablePreallocatedPropsDiffOnInsertAndroid),
       makeNativeMethod(
         "enablePreparedTextLayout",
         JReactNativeFeatureFlagsCxxInterop::enablePreparedTextLayout),

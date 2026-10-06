@@ -217,7 +217,6 @@ const Button: component(
     onPress,
     touchSoundDisabled,
     title,
-    hasTVPreferredFocus,
     nextFocusDown,
     nextFocusForward,
     nextFocusLeft,
@@ -288,7 +287,6 @@ const Button: component(
       accessibilityRole="button"
       accessibilityState={_accessibilityState}
       importantForAccessibility={_importantForAccessibility}
-      hasTVPreferredFocus={hasTVPreferredFocus}
       nextFocusDown={nextFocusDown}
       nextFocusForward={nextFocusForward}
       nextFocusLeft={nextFocusLeft}

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e6dd37a212febbe7bf27c9348d32b466>>
+ * @generated SignedSource<<e653cf5e9291c710d0b44d1f10477fc0>>
  */
 
 /**
@@ -32,6 +32,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun defaultTextToOverflowHidden(): Boolean = true
 
   override fun disableEarlyViewCommandExecution(): Boolean = false
+
+  override fun disableIdleMountItemFrameCallbackRearmAndroid(): Boolean = false
 
   override fun disableImageViewPreallocationAndroid(): Boolean = false
 
@@ -110,6 +112,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableMutationObserverByDefault(): Boolean = false
 
   override fun enableNativeCSSParsing(): Boolean = false
+
+  override fun enablePreallocatedPropsDiffOnInsertAndroid(): Boolean = false
 
   override fun enablePreparedTextLayout(): Boolean = false
 

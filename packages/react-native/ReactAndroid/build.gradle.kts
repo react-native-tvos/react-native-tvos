@@ -117,7 +117,6 @@ val preparePrefab by
                       Pair("../ReactCommon/cxxreact/React/", "React/"),
                       // react_featureflags
                       Pair("../ReactCommon/react/featureflags/", "react/featureflags/"),
-                      Pair("../ReactCommon/react/featureflags/React/", "React/"),
                       // react_devtoolsruntimesettings
                       Pair(
                           "../ReactCommon/react/devtoolsruntimesettings/",
@@ -146,7 +145,6 @@ val preparePrefab by
                       Pair("../ReactCommon/react/renderer/core/React/", "React/"),
                       // react_renderer_css
                       Pair("../ReactCommon/react/renderer/css/", "react/renderer/css/"),
-                      Pair("../ReactCommon/react/renderer/css/React/", "React/"),
                       // react_debug
                       Pair("../ReactCommon/react/debug/", "react/debug/"),
                       Pair("../ReactCommon/react/debug/React/", "React/"),
@@ -731,6 +729,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
+  api(libs.androidx.activity)
   api(libs.androidx.appcompat)
   api(libs.androidx.appcompat.resources)
   api(libs.androidx.autofill)

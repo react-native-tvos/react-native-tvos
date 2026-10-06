@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e46a223ac0232b1fd67a03f3b83a36a7>>
+ * @generated SignedSource<<428c475acbb4baed380207f0b08b4e26>>
  */
 
 /**
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/PrivateGuard.h>
 
 namespace facebook::react {
 
@@ -32,6 +32,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool cxxNativeAnimatedEnabled() = 0;
   virtual bool defaultTextToOverflowHidden() = 0;
   virtual bool disableEarlyViewCommandExecution() = 0;
+  virtual bool disableIdleMountItemFrameCallbackRearmAndroid() = 0;
   virtual bool disableImageViewPreallocationAndroid() = 0;
   virtual bool disableMountItemReorderingAndroid() = 0;
   virtual bool disableSubviewClippingAndroid() = 0;
@@ -71,6 +72,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableMountingCoordinatorPullModelAndroid() = 0;
   virtual bool enableMutationObserverByDefault() = 0;
   virtual bool enableNativeCSSParsing() = 0;
+  virtual bool enablePreallocatedPropsDiffOnInsertAndroid() = 0;
   virtual bool enablePreparedTextLayout() = 0;
   virtual bool enablePropsUpdateReconciliationAndroid() = 0;
   virtual bool enableResizeObserverByDefault() = 0;

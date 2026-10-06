@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<5bf7fb7915acc1958df414702331e5fd>>
+ * @generated SignedSource<<625c7c4f1d55e7ca5c226793fe982c7b>>
  */
 
 /**
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/PrivateGuard.h>
 
 #include <folly/dynamic.h>
 #include <react/featureflags/ReactNativeFeatureFlagsDefaults.h>
@@ -90,6 +90,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::disableEarlyViewCommandExecution();
+  }
+
+  bool disableIdleMountItemFrameCallbackRearmAndroid() override {
+    auto value = values_["disableIdleMountItemFrameCallbackRearmAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::disableIdleMountItemFrameCallbackRearmAndroid();
   }
 
   bool disableImageViewPreallocationAndroid() override {
@@ -441,6 +450,15 @@ class ReactNativeFeatureFlagsDynamicProvider : public ReactNativeFeatureFlagsDef
     }
 
     return ReactNativeFeatureFlagsDefaults::enableNativeCSSParsing();
+  }
+
+  bool enablePreallocatedPropsDiffOnInsertAndroid() override {
+    auto value = values_["enablePreallocatedPropsDiffOnInsertAndroid"];
+    if (!value.isNull()) {
+      return value.getBool();
+    }
+
+    return ReactNativeFeatureFlagsDefaults::enablePreallocatedPropsDiffOnInsertAndroid();
   }
 
   bool enablePreparedTextLayout() override {

@@ -302,7 +302,6 @@ class TouchableNativeFeedback extends React.Component<
         accessibilityLiveRegion: accessibilityLiveRegion,
         accessibilityElementsHidden:
           this.props['aria-hidden'] ?? this.props.accessibilityElementsHidden,
-        hasTVPreferredFocus: this.props.hasTVPreferredFocus,
         hitSlop: this.props.hitSlop,
         nativeID: this.props.id ?? this.props.nativeID,
         nextFocusDown: tagForComponentOrHandle(this.props.nextFocusDown),

@@ -7,6 +7,7 @@
 
 #include "AnimationBackend.h"
 #include "AnimatedPropsRegistry.h"
+#include "AnimationBackendCommitHook.h"
 
 #include <react/debug/react_native_assert.h>
 #include <react/featureflags/ReactNativeFeatureFlags.h>
@@ -53,7 +54,10 @@ AnimationBackend::AnimationBackend(
     std::shared_ptr<UIManager> uiManager)
     : animatedPropsRegistry_(std::make_shared<AnimatedPropsRegistry>()),
       animationChoreographer_(std::move(animationChoreographer)),
-      commitHook_(*uiManager, animatedPropsRegistry_),
+      commitHook_(
+          std::make_unique<AnimationBackendCommitHook>(
+              *uiManager,
+              animatedPropsRegistry_)),
       uiManager_(std::move(uiManager)) {
   react_native_assert(uiManager_.expired() == false);
 
@@ -74,6 +78,8 @@ AnimationBackend::AnimationBackend(
         });
   }
 }
+
+AnimationBackend::~AnimationBackend() = default;
 
 void AnimationBackend::unpackMutations(
     AnimationMutations& mutations,

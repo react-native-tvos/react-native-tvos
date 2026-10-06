@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<13ce24473fdf631a2689e2ad89904fcd>>
+ * @generated SignedSource<<aef7d6ac25fdeb2423ebf4a2a9ac6f2e>>
  */
 
 /**
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <react/cxxstableapi/UmbrellaGuard.h>
+#include <react/cxxstableapi/PrivateGuard.h>
 
 #include <react/featureflags/ReactNativeFeatureFlagsAccessor.h>
 #include <react/featureflags/ReactNativeFeatureFlagsProvider.h>
@@ -65,6 +65,11 @@ class ReactNativeFeatureFlags {
    * Dispatch view commands in mount item order.
    */
   RN_EXPORT static bool disableEarlyViewCommandExecution();
+
+  /**
+   * Stop re-arming the DISPATCH_UI Choreographer frame callback at vsync rate while no mount items are pending on Android; queueing new items re-arms it
+   */
+  RN_EXPORT static bool disableIdleMountItemFrameCallbackRearmAndroid();
 
   /**
    * Force disable view preallocation for images triggered from createNode off the main thread on Android
@@ -260,6 +265,11 @@ class ReactNativeFeatureFlags {
    * Parse CSS strings using the Fabric CSS parser instead of ViewConfig processing
    */
   RN_EXPORT static bool enableNativeCSSParsing();
+
+  /**
+   * When enabled together with `enableAccumulatedUpdatesInRawPropsAndroid`, the Insert of a preallocated view only sends the difference between the props the view was preallocated with and the inserted props, instead of sending all props again on every Insert.
+   */
+  RN_EXPORT static bool enablePreallocatedPropsDiffOnInsertAndroid();
 
   /**
    * Enables caching text layout artifacts for later reuse

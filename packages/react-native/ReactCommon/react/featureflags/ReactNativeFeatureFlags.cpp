@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<32b83f89bbe2015f8e5dc52bbd621921>>
+ * @generated SignedSource<<8b23b6ea5f2d377f8126adffd753dae7>>
  */
 
 /**
@@ -44,6 +44,10 @@ bool ReactNativeFeatureFlags::defaultTextToOverflowHidden() {
 
 bool ReactNativeFeatureFlags::disableEarlyViewCommandExecution() {
   return getAccessor().disableEarlyViewCommandExecution();
+}
+
+bool ReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid() {
+  return getAccessor().disableIdleMountItemFrameCallbackRearmAndroid();
 }
 
 bool ReactNativeFeatureFlags::disableImageViewPreallocationAndroid() {
@@ -200,6 +204,10 @@ bool ReactNativeFeatureFlags::enableMutationObserverByDefault() {
 
 bool ReactNativeFeatureFlags::enableNativeCSSParsing() {
   return getAccessor().enableNativeCSSParsing();
+}
+
+bool ReactNativeFeatureFlags::enablePreallocatedPropsDiffOnInsertAndroid() {
+  return getAccessor().enablePreallocatedPropsDiffOnInsertAndroid();
 }
 
 bool ReactNativeFeatureFlags::enablePreparedTextLayout() {

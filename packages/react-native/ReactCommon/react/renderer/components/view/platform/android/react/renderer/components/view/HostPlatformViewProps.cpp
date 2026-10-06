@@ -526,10 +526,6 @@ folly::dynamic HostPlatformViewProps::getDiffProps(
     result["focusable"] = focusable;
   }
 
-  if (hasTVPreferredFocus != oldProps->hasTVPreferredFocus) {
-    result["hasTVPreferredFocus"] = hasTVPreferredFocus;
-  }
-
   if (needsOffscreenAlphaCompositing !=
       oldProps->needsOffscreenAlphaCompositing) {
     result["needsOffscreenAlphaCompositing"] = needsOffscreenAlphaCompositing;

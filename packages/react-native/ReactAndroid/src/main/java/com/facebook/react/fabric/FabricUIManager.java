@@ -107,6 +107,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * We instruct ProGuard not to strip out any fields or methods, because many of these methods are
@@ -212,7 +213,7 @@ public class FabricUIManager
    */
   private volatile boolean mDestroyed = false;
 
-  private boolean mDriveCxxAnimations = false;
+  private volatile boolean mDriveCxxAnimations = false;
 
   private @Nullable ViewTransitionSnapshotManager mViewTransitionSnapshotManager;
 
@@ -1463,6 +1464,11 @@ public class FabricUIManager
   @AnyThread
   public void onAnimationStarted() {
     mDriveCxxAnimations = true;
+    if (ReactNativeFeatureFlags.disableIdleMountItemFrameCallbackRearmAndroid()) {
+      // A C++ animation session may begin while the DISPATCH_UI frame callback is disarmed at
+      // idle and no mount items are pending yet; re-arm it for the first tick.
+      mDispatchUIFrameCallback.schedule();
+    }
   }
 
   // Called from Binding.cpp
@@ -1548,6 +1554,12 @@ public class FabricUIManager
         listener.didDispatchMountItems(FabricUIManager.this);
       }
     }
+
+    @Override
+    public void onItemsQueued() {
+      // Items may be queued from any thread while the DISPATCH_UI frame callback is idle.
+      mDispatchUIFrameCallback.schedule();
+    }
   }
 
   /**
@@ -1574,24 +1586,38 @@ public class FabricUIManager
 
     private volatile boolean mIsMountingEnabled = true;
 
-    @ThreadConfined(UI)
-    private boolean mShouldSchedule = false;
+    private volatile boolean mShouldSchedule = false;
 
-    @ThreadConfined(UI)
-    private boolean mIsScheduled = false;
+    private final AtomicBoolean mScheduleTaskPending = new AtomicBoolean(false);
+    private volatile boolean mIsScheduled = false;
 
     private DispatchUIFrameCallback(ReactContext reactContext) {
       super(reactContext);
     }
 
-    @UiThread
-    @ThreadConfined(UI)
-    private void schedule() {
-      if (!mIsScheduled && mShouldSchedule) {
-        mIsScheduled = true;
-        ReactChoreographer.getInstance()
-            .postFrameCallback(ReactChoreographer.CallbackType.DISPATCH_UI, this);
+    @AnyThread
+    void schedule() {
+      if (mIsScheduled || !mShouldSchedule) {
+        return;
       }
+
+      if (!UiThreadUtil.isOnUiThread()) {
+        if (mScheduleTaskPending.compareAndSet(false, true)) {
+          UiThreadUtil.runOnUiThread(
+              () -> {
+                try {
+                  schedule();
+                } finally {
+                  mScheduleTaskPending.set(false);
+                }
+              });
+        }
+        return;
+      }
+
+      mIsScheduled = true;
+      ReactChoreographer.getInstance()
+          .postFrameCallback(ReactChoreographer.CallbackType.DISPATCH_UI, this);
     }
 
     @UiThread
@@ -1639,9 +1665,6 @@ public class FabricUIManager
       }
 
       // Drive any animations from C++.
-      // There is a race condition here between getting/setting
-      // `mDriveCxxAnimations` which shouldn't matter; it's safe to call
-      // the mBinding method, unless mBinding has gone away.
       if ((mDriveCxxAnimations || ReactNativeFeatureFlags.cxxNativeAnimatedEnabled())
           && mBinding != null) {
         mBinding.driveCxxAnimations();
@@ -1664,7 +1687,19 @@ public class FabricUIManager
         mIsMountingEnabled = false;
         throw ex;
       } finally {
-        schedule();
+        // Keep the Choreographer armed while items remain pending or a C++ animation driver
+        // needs per-frame ticks from this callback (driveCxxAnimations and
+        // driveAnimationBackend run here). Queueing new items re-arms it via
+        // MountItemDispatcher.onItemsQueued, and onAnimationStarted re-arms it when the C++
+        // side begins an animation session. The two flags below drive animations from this
+        // callback unconditionally, so they disable the idle optimization entirely.
+        if (!ReactNativeFeatureFlags.disableIdleMountItemFrameCallbackRearmAndroid()
+            || mMountItemDispatcher.hasPendingItems()
+            || mDriveCxxAnimations
+            || ReactNativeFeatureFlags.cxxNativeAnimatedEnabled()
+            || ReactNativeFeatureFlags.useSharedAnimatedBackend()) {
+          schedule();
+        }
       }
 
       if (ReactNativeFeatureFlags.useSharedAnimatedBackend() && mBinding != null) {

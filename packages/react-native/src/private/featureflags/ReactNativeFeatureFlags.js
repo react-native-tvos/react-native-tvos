@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<afd104247e77e4afc46761aa8a64f671>>
+ * @generated SignedSource<<abc0eca8c8c73b3dce56d5f7c02c545f>>
  * @flow strict
  * @noformat
  */
@@ -54,6 +54,7 @@ export type ReactNativeFeatureFlags = Readonly<{
   cxxNativeAnimatedEnabled: Getter<boolean>,
   defaultTextToOverflowHidden: Getter<boolean>,
   disableEarlyViewCommandExecution: Getter<boolean>,
+  disableIdleMountItemFrameCallbackRearmAndroid: Getter<boolean>,
   disableImageViewPreallocationAndroid: Getter<boolean>,
   disableMountItemReorderingAndroid: Getter<boolean>,
   disableSubviewClippingAndroid: Getter<boolean>,
@@ -93,6 +94,7 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableMountingCoordinatorPullModelAndroid: Getter<boolean>,
   enableMutationObserverByDefault: Getter<boolean>,
   enableNativeCSSParsing: Getter<boolean>,
+  enablePreallocatedPropsDiffOnInsertAndroid: Getter<boolean>,
   enablePreparedTextLayout: Getter<boolean>,
   enablePropsUpdateReconciliationAndroid: Getter<boolean>,
   enableResizeObserverByDefault: Getter<boolean>,
@@ -233,6 +235,10 @@ export const defaultTextToOverflowHidden: Getter<boolean> = createNativeFlagGett
  * Dispatch view commands in mount item order.
  */
 export const disableEarlyViewCommandExecution: Getter<boolean> = createNativeFlagGetter('disableEarlyViewCommandExecution', false);
+/**
+ * Stop re-arming the DISPATCH_UI Choreographer frame callback at vsync rate while no mount items are pending on Android; queueing new items re-arms it
+ */
+export const disableIdleMountItemFrameCallbackRearmAndroid: Getter<boolean> = createNativeFlagGetter('disableIdleMountItemFrameCallbackRearmAndroid', false);
 /**
  * Force disable view preallocation for images triggered from createNode off the main thread on Android
  */
@@ -389,6 +395,10 @@ export const enableMutationObserverByDefault: Getter<boolean> = createNativeFlag
  * Parse CSS strings using the Fabric CSS parser instead of ViewConfig processing
  */
 export const enableNativeCSSParsing: Getter<boolean> = createNativeFlagGetter('enableNativeCSSParsing', false);
+/**
+ * When enabled together with `enableAccumulatedUpdatesInRawPropsAndroid`, the Insert of a preallocated view only sends the difference between the props the view was preallocated with and the inserted props, instead of sending all props again on every Insert.
+ */
+export const enablePreallocatedPropsDiffOnInsertAndroid: Getter<boolean> = createNativeFlagGetter('enablePreallocatedPropsDiffOnInsertAndroid', false);
 /**
  * Enables caching text layout artifacts for later reuse
  */
