@@ -611,20 +611,14 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   }
 
   private fun manageFocusGuideAccessibilityDelegate(view: ReactViewGroup) {
-    val accessibilityManager = view.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-    val a11yServiceList = accessibilityManager.getEnabledAccessibilityServiceList(
-      AccessibilityServiceInfo.FEEDBACK_SPOKEN)
-    var isTalkbackInstalledAndEnabled = false
+    val hasDelegate = view.hasFocusGuideTalkbackAccessibilityDelegate()
+    // A view that is not a focus guide and has no delegate is left as it is whatever the
+    // TalkBack state, so skip the synchronous binder call to AccessibilityManagerService.
+    if (!hasDelegate && !view.isTVFocusGuide) return
 
-    for (serviceInfo in a11yServiceList) {
-      val a11yServiceId = serviceInfo.id
-      if (a11yServiceId != null && a11yServiceId.contains("talkback")) {
-        isTalkbackInstalledAndEnabled = true
-      }
-    }
-
+    val isTalkbackInstalledAndEnabled = isTalkbackEnabled(view.context)
     val isTVFocusable = view.descendantFocusability != ViewGroup.FOCUS_BLOCK_DESCENDANTS
-    if (!view.hasFocusGuideTalkbackAccessibilityDelegate()) {
+    if (!hasDelegate) {
       if (view.isTVFocusGuide && isTVFocusable && isTalkbackInstalledAndEnabled) {
         // Custom accessibility delegate is needed only for Talkback,
         // as it's not handling TV focus guide scenarios as well as e.g. Amazon's VoiceView
@@ -641,6 +635,17 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
         view.cleanupFocusGuideTalkbackAccessibilityDelegate()
       }
     }
+  }
+
+  private fun isTalkbackEnabled(context: Context): Boolean {
+    val accessibilityManager =
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+    // isEnabled is answered from AccessibilityManager's local state; the service list is a
+    // binder call, so only ask for it when some accessibility service is running at all.
+    if (!accessibilityManager.isEnabled) return false
+    return accessibilityManager
+        .getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_SPOKEN)
+        .any { it.id?.contains("talkback") == true }
   }
 
   private fun hasTouchScreen(context: Context): Boolean {
