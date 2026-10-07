@@ -17,11 +17,15 @@ const getPackagesMock = jest.fn();
 const execSync = jest.fn();
 const execMock = jest.fn();
 const fetchMock = jest.fn();
+const validateNpmPackageMetadataInRepoMock = jest.fn();
 
 jest.mock('child_process', () => ({execSync}));
 jest.mock('shelljs', () => ({exec: execMock}));
 jest.mock('../../shared/monorepoUtils', () => ({
   getPackages: getPackagesMock,
+}));
+jest.mock('../validate-npm-package-metadata', () => ({
+  validateNpmPackageMetadataInRepo: validateNpmPackageMetadataInRepoMock,
 }));
 // $FlowFixMe[cannot-write]
 global.fetch = fetchMock;
@@ -71,6 +75,20 @@ describe('publishUpdatedPackages', () => {
         ],
       ]
     `);
+  });
+
+  test('stops before registry lookup when package metadata is invalid', async () => {
+    execSync.mockReturnValue(BUMP_COMMIT_MESSAGE);
+    validateNpmPackageMetadataInRepoMock.mockRejectedValueOnce(
+      new Error('Invalid npm package repository metadata'),
+    );
+
+    await expect(publishUpdatedPackages()).rejects.toThrow(
+      'Invalid npm package repository metadata',
+    );
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(execMock).not.toHaveBeenCalled();
   });
 
   test('should throw an error if updated version is not 0.x.x', async () => {

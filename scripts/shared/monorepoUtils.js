@@ -16,10 +16,19 @@ const {globSync} = require('tinyglobby');
 const WORKSPACES_CONFIG = '{packages,private}/*';
 
 /*::
+export type Repository =
+  | string
+  | {
+      type?: string,
+      url?: string,
+      ...,
+    };
+
 export type PackageJson = {
   name: string,
   version: string,
   private?: boolean,
+  repository?: Repository,
   dependencies?: Record<string, string>,
   devDependencies?: Record<string, string>,
   peerDependencies?: Record<string, string>,

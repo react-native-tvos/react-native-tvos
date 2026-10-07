@@ -22,7 +22,7 @@
     "app-framework",
     "mobile-development"
   ],
-  "bugs": "https://github.com/facebook/react-native/issues",
+  "bugs": "https://github.com/react/react-native/issues",
   "engines": {
     "node": "^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0"
   },

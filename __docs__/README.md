@@ -7,7 +7,7 @@ interact with each other.
 The intended audience is people who want to learn about the internals of React
 Native and contribute to it. **End users of React Native are meant to use the
 [public website](https://reactnative.dev) instead** (its code can be found
-[here](https://github.com/facebook/react-native-website)).
+[here](https://github.com/react/react-native-website)).
 
 For details on how we approach technical documentation in this repository, see
 [GUIDELINES.md](./GUIDELINES.md).

@@ -29,6 +29,9 @@ const {
 const {getBranchName} = require('../releases/utils/scm-utils');
 const {REACT_NATIVE_PACKAGE_DIR} = require('../shared/consts');
 const {getPackages, getReactNativePackage} = require('../shared/monorepoUtils');
+const {
+  validateNpmPackageMetadataInRepo,
+} = require('./validate-npm-package-metadata');
 const yargs = require('yargs');
 
 /**
@@ -94,6 +97,8 @@ async function publishMonorepoPackages(tag /*: ?string */) {
 }
 
 async function publishNpm(buildType /*: BuildType */) /*: Promise<void> */ {
+  await validateNpmPackageMetadataInRepo();
+
   const {version, tag} = getNpmInfo(buildType);
 
   // For stable releases, ci job `prepare_package_for_release` handles this

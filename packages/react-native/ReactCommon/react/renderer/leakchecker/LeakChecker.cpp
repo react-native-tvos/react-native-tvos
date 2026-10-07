@@ -32,7 +32,7 @@ void LeakChecker::stopSurface(SurfaceId surfaceId) {
       // For now check the previous surface because React uses double
       // buffering which keeps the surface that was just stopped in
       // memory. This is a documented problem in the last point of
-      // https://github.com/facebook/react/issues/16087
+      // https://github.com/react/react/issues/16087
       checkSurfaceForLeaks(previouslyStoppedSurface);
     });
   }

@@ -7,11 +7,11 @@
     "cli-utils",
     "react-native"
   ],
-  "homepage": "https://github.com/facebook/react-native/tree/HEAD/packages/core-cli-utils#readme",
-  "bugs": "https://github.com/facebook/react-native/issues",
+  "homepage": "https://github.com/react/react-native/tree/HEAD/packages/core-cli-utils#readme",
+  "bugs": "https://github.com/react/react-native/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/facebook/react-native.git",
+    "url": "git+https://github.com/react/react-native.git",
     "directory": "packages/core-cli-utils"
   },
   "main": "./src/index.flow.js",

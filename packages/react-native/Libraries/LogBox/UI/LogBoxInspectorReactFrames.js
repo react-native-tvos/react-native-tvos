@@ -23,7 +23,7 @@ import {useState} from 'react';
 
 const BEFORE_SLASH_RE = /^(.*)[\\/]/;
 
-// Taken from React https://github.com/facebook/react/blob/206d61f72214e8ae5b935f0bf8628491cb7f0797/packages/react-devtools-shared/src/backend/describeComponentFrame.js#L27-L41
+// Taken from React https://github.com/react/react/blob/206d61f72214e8ae5b935f0bf8628491cb7f0797/packages/react-devtools-shared/src/backend/describeComponentFrame.js#L27-L41
 function getPrettyFileName(path: string) {
   let fileName = path.replace(BEFORE_SLASH_RE, '');
 

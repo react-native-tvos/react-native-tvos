@@ -22,6 +22,11 @@ const generateAndroidArtifactsMock = jest.fn();
 const getPackagesMock = jest.fn();
 const updateHermesVersionsToNightlyMock = jest.fn();
 const getBranchName = jest.fn();
+const validateNpmPackageMetadataInRepoMock = jest.fn();
+
+jest.mock('../validate-npm-package-metadata', () => ({
+  validateNpmPackageMetadataInRepo: validateNpmPackageMetadataInRepoMock,
+}));
 
 const {REPO_ROOT} = require('../../shared/consts');
 const {publishNpm} = require('../publish-npm');
@@ -78,6 +83,21 @@ describe('publish-npm', () => {
     console.log = consoleLog;
     jest.resetModules();
     jest.resetAllMocks();
+  });
+
+  it('stops before publishing when package metadata is invalid', async () => {
+    validateNpmPackageMetadataInRepoMock.mockRejectedValueOnce(
+      new Error('Invalid npm package repository metadata'),
+    );
+
+    await expect(publishNpm('release')).rejects.toThrow(
+      'Invalid npm package repository metadata',
+    );
+
+    expect(getNpmInfoMock).not.toHaveBeenCalled();
+    expect(publishAndroidArtifactsToMavenMock).not.toHaveBeenCalled();
+    expect(publishExternalArtifactsToMavenMock).not.toHaveBeenCalled();
+    expect(publishPackageMock).not.toHaveBeenCalled();
   });
 
   it('should fail when invalid build type is passed', async () => {

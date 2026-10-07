@@ -9,7 +9,7 @@ contact_links:
       about: |
         If you're using Expo in your project, please report the issue first in the Expo issue tracker.
     - name: 📃 Documentation Issue
-      url: https://github.com/facebook/react-native-website/issues
+      url: https://github.com/react/react-native-website/issues
       about: Please report documentation issues in the React Native website repository.
     - name: 📦 Metro Issue
       url: https://github.com/facebook/metro/issues/new

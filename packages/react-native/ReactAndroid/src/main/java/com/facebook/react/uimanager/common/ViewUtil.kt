@@ -30,7 +30,7 @@ public object ViewUtil {
 
   /**
    * Counter for uniquely identifying views. - % 2 === 0 means it is a Fabric tag. See
-   * https://github.com/facebook/react/pull/12587
+   * https://github.com/react/react/pull/12587
    *
    * @param viewTag tag of the view this is event is dispatched to
    */

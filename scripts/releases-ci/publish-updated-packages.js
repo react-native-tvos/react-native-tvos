@@ -10,6 +10,9 @@
 
 const {publishPackage} = require('../releases/utils/npm-utils');
 const {getPackages} = require('../shared/monorepoUtils');
+const {
+  validateNpmPackageMetadataInRepo,
+} = require('./validate-npm-package-metadata');
 const {execSync} = require('child_process');
 const {parseArgs} = require('util');
 
@@ -56,6 +59,8 @@ async function publishUpdatedPackages() {
     );
     return;
   }
+
+  await validateNpmPackageMetadataInRepo();
 
   console.log('Discovering updated packages');
 

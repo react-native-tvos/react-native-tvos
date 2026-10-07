@@ -1209,7 +1209,7 @@ RCT_EXTERN NSString *RCTDropReactPrefixes(NSString *s)
 
 RCT_EXTERN BOOL RCTUIManagerTypeForTagIsFabric(NSNumber *reactTag)
 {
-  // See https://github.com/facebook/react/pull/12587
+  // See https://github.com/react/react/pull/12587
   return [reactTag integerValue] % 2 == 0;
 }
 
