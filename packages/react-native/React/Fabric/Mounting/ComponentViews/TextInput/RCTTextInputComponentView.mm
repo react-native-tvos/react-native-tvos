@@ -624,8 +624,6 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 - (NSString *)returnKeyTypeToString:(UIReturnKeyType)returnKeyType
 {
   switch (returnKeyType) {
-    case UIReturnKeyDefault:
-      return @"Default";
     case UIReturnKeyGo:
       return RCTLocalizedString("Go", "keyboard return key button label for go action");
     case UIReturnKeyNext:
@@ -653,7 +651,6 @@ static NSSet<NSNumber *> *returnKeyTypesSet;
 {
   returnKeyTypesSet = [NSSet setWithObjects:@(UIReturnKeyDone),
                                             @(UIReturnKeyGo),
-                                            @(UIReturnKeyDefault),
                                             @(UIReturnKeyNext),
                                             @(UIReturnKeySearch),
                                             @(UIReturnKeySend),
