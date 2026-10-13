@@ -302,7 +302,7 @@ function Pressable({
     ariaLive === 'off' ? 'none' : (ariaLive ?? props.accessibilityLiveRegion);
 
   const accessibilityLabel = ariaLabel ?? props.accessibilityLabel;
-  const restPropsWithDefaults: React.ElementConfig<typeof View> = {
+  const restPropsWithDefaults: React.ComponentProps<typeof View> = {
     ...restProps,
     ...android_rippleConfig?.viewProps,
     accessible: accessible !== false,

@@ -112,9 +112,13 @@ export function LogBoxNotificationContainer(props: Props): React.Node {
 
 const styles = StyleSheet.create({
   list: {
+    alignItems: 'center',
     bottom: 20,
     left: 10,
     right: 10,
+    // The container spans the width of the screen, so it passes touches outside the toasts through to the app, such
+    // as to a tab bar beside them.
+    pointerEvents: 'box-none',
     position: 'absolute',
   },
   tvlist: {
@@ -124,9 +128,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   toast: {
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 5,
+    maxWidth: 600,
     overflow: 'hidden',
+    width: '100%',
   },
 });
 

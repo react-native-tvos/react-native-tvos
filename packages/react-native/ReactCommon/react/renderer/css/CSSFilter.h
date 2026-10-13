@@ -22,6 +22,8 @@
 #include <react/renderer/css/CSSNumber.h>
 #include <react/renderer/css/CSSPercentage.h>
 #include <react/renderer/css/CSSZero.h>
+#include <react/utils/TemplateStringLiteral.h>
+#include <react/utils/iequals.h>
 
 namespace facebook::react {
 

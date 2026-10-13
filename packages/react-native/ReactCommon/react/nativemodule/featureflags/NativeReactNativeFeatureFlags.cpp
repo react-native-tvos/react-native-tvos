@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<d032dbd4f066b7a8cf742b7f91f66c3b>>
+ * @generated SignedSource<<ed19cd37fe6ded9bdc807b0b6882b209>>
  */
 
 /**
@@ -69,6 +69,11 @@ bool NativeReactNativeFeatureFlags::disableEarlyViewCommandExecution(
   return ReactNativeFeatureFlags::disableEarlyViewCommandExecution();
 }
 
+bool NativeReactNativeFeatureFlags::disableIdleEventDispatchFrameCallbackRearmAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::disableIdleEventDispatchFrameCallbackRearmAndroid();
+}
+
 bool NativeReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::disableIdleMountItemFrameCallbackRearmAndroid();
@@ -119,14 +124,14 @@ bool NativeReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations(
   return ReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations();
 }
 
+bool NativeReactNativeFeatureFlags::enableAsyncDiskCacheCheckInMultiSourceImageAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableAsyncDiskCacheCheckInMultiSourceImageAndroid();
+}
+
 bool NativeReactNativeFeatureFlags::enableBridgelessArchitecture(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableBridgelessArchitecture();
-}
-
-bool NativeReactNativeFeatureFlags::enableBufferedCallInvoker(
-    jsi::Runtime& /*runtime*/) {
-  return ReactNativeFeatureFlags::enableBufferedCallInvoker();
 }
 
 bool NativeReactNativeFeatureFlags::enableCppPropsIteratorSetter(
@@ -327,6 +332,11 @@ bool NativeReactNativeFeatureFlags::enableViewRecyclingForView(
 bool NativeReactNativeFeatureFlags::enableVirtualViewContainerStateExperimental(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableVirtualViewContainerStateExperimental();
+}
+
+bool NativeReactNativeFeatureFlags::fixBorderlessRippleAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::fixBorderlessRippleAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact(

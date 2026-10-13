@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<3e939eebe846d12cab15905db8efba18>>
+ * @generated SignedSource<<ea771505a9f0b070dd8b2c4b50411c6e>>
  */
 
 /**
@@ -25,6 +25,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var defaultTextToOverflowHiddenCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
+  private var disableIdleEventDispatchFrameCallbackRearmAndroidCache: Boolean? = null
   private var disableIdleMountItemFrameCallbackRearmAndroidCache: Boolean? = null
   private var disableImageViewPreallocationAndroidCache: Boolean? = null
   private var disableMountItemReorderingAndroidCache: Boolean? = null
@@ -35,8 +36,8 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableAccumulatedUpdatesInRawPropsAndroidCache: Boolean? = null
   private var enableAndroidAutoOffscreenCompositingForElevationCache: Boolean? = null
   private var enableAndroidTextMeasurementOptimizationsCache: Boolean? = null
+  private var enableAsyncDiskCacheCheckInMultiSourceImageAndroidCache: Boolean? = null
   private var enableBridgelessArchitectureCache: Boolean? = null
-  private var enableBufferedCallInvokerCache: Boolean? = null
   private var enableCppPropsIteratorSetterCache: Boolean? = null
   private var enableCustomFocusSearchOnClippedElementsAndroidCache: Boolean? = null
   private var enableDestroyShadowTreeRevisionAsyncCache: Boolean? = null
@@ -77,6 +78,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableViewRecyclingForTextCache: Boolean? = null
   private var enableViewRecyclingForViewCache: Boolean? = null
   private var enableVirtualViewContainerStateExperimentalCache: Boolean? = null
+  private var fixBorderlessRippleAndroidCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
   private var fixYogaFlexBasisFitContentInMainAxisCache: Boolean? = null
   private var fuseboxAssertSingleHostStateCache: Boolean? = null
@@ -152,6 +154,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.disableEarlyViewCommandExecution()
       disableEarlyViewCommandExecutionCache = cached
+    }
+    return cached
+  }
+
+  override fun disableIdleEventDispatchFrameCallbackRearmAndroid(): Boolean {
+    var cached = disableIdleEventDispatchFrameCallbackRearmAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.disableIdleEventDispatchFrameCallbackRearmAndroid()
+      disableIdleEventDispatchFrameCallbackRearmAndroidCache = cached
     }
     return cached
   }
@@ -246,20 +257,20 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun enableAsyncDiskCacheCheckInMultiSourceImageAndroid(): Boolean {
+    var cached = enableAsyncDiskCacheCheckInMultiSourceImageAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableAsyncDiskCacheCheckInMultiSourceImageAndroid()
+      enableAsyncDiskCacheCheckInMultiSourceImageAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun enableBridgelessArchitecture(): Boolean {
     var cached = enableBridgelessArchitectureCache
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableBridgelessArchitecture()
       enableBridgelessArchitectureCache = cached
-    }
-    return cached
-  }
-
-  override fun enableBufferedCallInvoker(): Boolean {
-    var cached = enableBufferedCallInvokerCache
-    if (cached == null) {
-      cached = ReactNativeFeatureFlagsCxxInterop.enableBufferedCallInvoker()
-      enableBufferedCallInvokerCache = cached
     }
     return cached
   }
@@ -620,6 +631,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableVirtualViewContainerStateExperimental()
       enableVirtualViewContainerStateExperimentalCache = cached
+    }
+    return cached
+  }
+
+  override fun fixBorderlessRippleAndroid(): Boolean {
+    var cached = fixBorderlessRippleAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.fixBorderlessRippleAndroid()
+      fixBorderlessRippleAndroidCache = cached
     }
     return cached
   }

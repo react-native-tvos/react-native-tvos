@@ -10,15 +10,12 @@
 #import <React/RCTComponentViewProtocol.h>
 #import <React/RCTConstants.h>
 #import <React/RCTTouchableComponentViewProtocol.h>
+#import <React/RendererCore.h>
 #import <React/UIView+ComponentViewProtocol.h>
 #if TARGET_OS_TV
 #import <React/RCTTVRemoteSelectHandler.h>
 #endif
-#import <react/renderer/components/view/ViewEventEmitter.h>
-#import <react/renderer/components/view/ViewProps.h>
-#import <react/renderer/core/EventEmitter.h>
-#import <react/renderer/core/LayoutMetrics.h>
-#import <react/renderer/core/Props.h>
+#import <React/View.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

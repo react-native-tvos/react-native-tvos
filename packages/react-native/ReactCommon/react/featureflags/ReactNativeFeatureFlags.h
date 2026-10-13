@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<aef7d6ac25fdeb2423ebf4a2a9ac6f2e>>
+ * @generated SignedSource<<2bace47aeee75bd0e4d2602403a67490>>
  */
 
 /**
@@ -67,6 +67,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool disableEarlyViewCommandExecution();
 
   /**
+   * Make the batched-event-dispatch Choreographer frame callback one-shot on Android instead of re-posting itself every frame
+   */
+  RN_EXPORT static bool disableIdleEventDispatchFrameCallbackRearmAndroid();
+
+  /**
    * Stop re-arming the DISPATCH_UI Choreographer frame callback at vsync rate while no mount items are pending on Android; queueing new items re-arms it
    */
   RN_EXPORT static bool disableIdleMountItemFrameCallbackRearmAndroid();
@@ -117,14 +122,14 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableAndroidTextMeasurementOptimizations();
 
   /**
+   * Runs multi-source image disk-cache checks asynchronously on Android.
+   */
+  RN_EXPORT static bool enableAsyncDiskCacheCheckInMultiSourceImageAndroid();
+
+  /**
    * Feature flag to enable the new bridgeless architecture.
    */
   RN_EXPORT static bool enableBridgelessArchitecture();
-
-  /**
-   * Route async CallInvoker work through the ReactInstance buffered runtime executor, so it is ordered against callable module calls and cannot run before the JS bundle has finished evaluating. invokeSync is unaffected.
-   */
-  RN_EXPORT static bool enableBufferedCallInvoker();
 
   /**
    * Enable prop iterator setter-style construction of Props in C++ (this flag is not used in Java).
@@ -327,6 +332,11 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableVirtualViewContainerStateExperimental();
 
   /**
+   * Prevents a borderless ripple feedback underlay from projecting the entire view background on Android, which could hide the background and ripple.
+   */
+  RN_EXPORT static bool fixBorderlessRippleAndroid();
+
+  /**
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
@@ -362,7 +372,7 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool fuseboxWebSocketEventsEnabled();
 
   /**
-   * When enabled, uses optimized platform-specific paths to apply animated props synchronously. On Android, this uses a batched int/double buffer protocol with a single JNI call. On iOS, this passes AnimatedProps directly through the delegate chain and applies them via cloneProps, avoiding the folly::dynamic round-trip.
+   * When enabled, uses optimized platform-specific paths to apply animated props synchronously. On Android, this uses a batched int/double buffer protocol with a single JNI call. Other platforms apply the props of each view through the existing synchronous update.
    */
   RN_EXPORT static bool optimizedAnimatedPropUpdates();
 

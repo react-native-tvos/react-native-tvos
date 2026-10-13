@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e653cf5e9291c710d0b44d1f10477fc0>>
+ * @generated SignedSource<<8fb86ca4e28afc15041d50af4258e71d>>
  */
 
 /**
@@ -33,6 +33,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun disableEarlyViewCommandExecution(): Boolean = false
 
+  override fun disableIdleEventDispatchFrameCallbackRearmAndroid(): Boolean = false
+
   override fun disableIdleMountItemFrameCallbackRearmAndroid(): Boolean = false
 
   override fun disableImageViewPreallocationAndroid(): Boolean = false
@@ -53,9 +55,9 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
 
   override fun enableAndroidTextMeasurementOptimizations(): Boolean = false
 
-  override fun enableBridgelessArchitecture(): Boolean = true
+  override fun enableAsyncDiskCacheCheckInMultiSourceImageAndroid(): Boolean = false
 
-  override fun enableBufferedCallInvoker(): Boolean = true
+  override fun enableBridgelessArchitecture(): Boolean = true
 
   override fun enableCppPropsIteratorSetter(): Boolean = false
 
@@ -136,6 +138,8 @@ public open class ReactNativeFeatureFlagsDefaults : ReactNativeFeatureFlagsProvi
   override fun enableViewRecyclingForView(): Boolean = true
 
   override fun enableVirtualViewContainerStateExperimental(): Boolean = false
+
+  override fun fixBorderlessRippleAndroid(): Boolean = false
 
   override fun fixMappingOfEventPrioritiesBetweenFabricAndReact(): Boolean = false
 

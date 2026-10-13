@@ -9,6 +9,7 @@
  */
 
 import type {HostInstance} from '../../../src/private/types/HostInstance';
+import type {SafeAreaInsetsChangeEvent} from '../../Types/CoreEventTypes';
 import type {ViewProps} from './ViewPropTypes';
 
 import TextAncestorContext from '../../Text/TextAncestorContext';
@@ -18,6 +19,13 @@ import ViewNativeComponent from './ViewNativeComponent';
 import {Commands} from './ViewNativeComponent';
 import * as React from 'react';
 import {use} from 'react';
+
+const warnOnRepeatedSafeAreaInsetsChanges: (
+  onSafeAreaInsetsChange: (event: SafeAreaInsetsChangeEvent) => unknown,
+) => (event: SafeAreaInsetsChangeEvent) => unknown = __DEV__
+  ? require('../../../src/private/components/view/warnOnRepeatedSafeAreaInsetsChanges')
+      .default
+  : onSafeAreaInsetsChange => onSafeAreaInsetsChange;
 
 export type ViewInstance = HostInstance;
 
@@ -194,6 +202,15 @@ component View(ref?: React.RefSetter<ViewInstance>, ...props: ViewProps) {
     ) {
       resolvedProps.collapsable = false;
     }
+
+  if (__DEV__) {
+    const onSafeAreaInsetsChange =
+      resolvedProps.experimental_onSafeAreaInsetsChange;
+    if (onSafeAreaInsetsChange != null) {
+      resolvedProps.experimental_onSafeAreaInsetsChange =
+        warnOnRepeatedSafeAreaInsetsChanges(onSafeAreaInsetsChange);
+    }
+  }
 
   const actualView =
     ref == null ? (

@@ -21,6 +21,7 @@
 #include <react/renderer/css/CSSNumber.h>
 #include <react/renderer/css/CSSPercentage.h>
 #include <react/renderer/css/CSSValueParser.h>
+#include <react/utils/PackTraits.h>
 
 namespace facebook::react {
 

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dff9379b2aa73e50088d4be72cd1c359>>
+ * @generated SignedSource<<ea523888b9e8591a28b2ecf32b685436>>
  */
 
 /**
@@ -48,6 +48,8 @@ class NativeReactNativeFeatureFlags
 
   bool disableEarlyViewCommandExecution(jsi::Runtime& runtime);
 
+  bool disableIdleEventDispatchFrameCallbackRearmAndroid(jsi::Runtime& runtime);
+
   bool disableIdleMountItemFrameCallbackRearmAndroid(jsi::Runtime& runtime);
 
   bool disableImageViewPreallocationAndroid(jsi::Runtime& runtime);
@@ -68,9 +70,9 @@ class NativeReactNativeFeatureFlags
 
   bool enableAndroidTextMeasurementOptimizations(jsi::Runtime& runtime);
 
-  bool enableBridgelessArchitecture(jsi::Runtime& runtime);
+  bool enableAsyncDiskCacheCheckInMultiSourceImageAndroid(jsi::Runtime& runtime);
 
-  bool enableBufferedCallInvoker(jsi::Runtime& runtime);
+  bool enableBridgelessArchitecture(jsi::Runtime& runtime);
 
   bool enableCppPropsIteratorSetter(jsi::Runtime& runtime);
 
@@ -151,6 +153,8 @@ class NativeReactNativeFeatureFlags
   bool enableViewRecyclingForView(jsi::Runtime& runtime);
 
   bool enableVirtualViewContainerStateExperimental(jsi::Runtime& runtime);
+
+  bool fixBorderlessRippleAndroid(jsi::Runtime& runtime);
 
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact(jsi::Runtime& runtime);
 
