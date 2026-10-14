@@ -31,10 +31,6 @@ class BaseViewEventEmitter : public TouchEventEmitter {
   void onAccessibilityMagicTap() const;
   void onAccessibilityEscape() const;
 
-#pragma mark - Layout
-
-  void onLayout(const LayoutMetrics &layoutMetrics) const;
-
 #pragma mark - Focus
   void onFocus() const;
   void onBlur() const;

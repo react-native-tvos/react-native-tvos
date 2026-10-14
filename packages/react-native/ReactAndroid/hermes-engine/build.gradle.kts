@@ -98,6 +98,7 @@ val ndkBuildJobs = Runtime.getRuntime().availableProcessors().toString()
 val prefabHeadersDir = File("$buildDir/prefab-headers")
 
 // We inject the JSI directory used inside the Hermes build with the -DJSI_DIR config.
+// CMake reads the backslashes of a Windows path as escape sequences, so we pass forward slashes.
 val jsiDir = File(reactNativeRootDir, "ReactCommon/jsi")
 
 val downloadHermesDest = File(downloadsDir, "hermes.tar.gz")
@@ -160,7 +161,7 @@ fun configureBuildForHermesCommandLineArgs(
       ".",
       "-B",
       hermesBuildDir.toString(),
-      "-DJSI_DIR=" + jsiDir.absolutePath,
+      "-DJSI_DIR=" + jsiDir.invariantSeparatorsPath,
       "-DCMAKE_BUILD_TYPE=Release",
   )
   if (enableDebugger) {
@@ -342,7 +343,7 @@ android {
             "-DANDROID_STL=c++_shared",
             "-DANDROID_PIE=True",
             "-DIMPORT_HOST_COMPILERS=${File(hermesBuildDir, "ImportHostCompilers.cmake").toString()}",
-            "-DJSI_DIR=${jsiDir}",
+            "-DJSI_DIR=${jsiDir.invariantSeparatorsPath}",
             "-DHERMES_BUILD_SHARED_JSI=True",
             "-DHERMES_RELEASE_VERSION=for RNTV ${version}",
             "-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=True",
