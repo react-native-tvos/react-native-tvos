@@ -5,7 +5,6 @@
 set -eox pipefail
 
 yarn
-patch -p1 < tools/rntv-workflows/microsoft-api-extractor.patch
 yarn --cwd packages/react-native featureflags-check --update
 yarn lint
 yarn --cwd packages/react-native-codegen build
@@ -14,4 +13,3 @@ yarn --cwd packages/react-native-codegen-typescript-test build
 npx jest packages/react-native -u
 yarn build-types
 yarn test-generated-typescript
-patch -p1 -R < tools/rntv-workflows/microsoft-api-extractor.patch

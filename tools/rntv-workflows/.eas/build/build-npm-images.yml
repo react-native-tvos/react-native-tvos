@@ -4,11 +4,6 @@ build:
     - eas/checkout
     - eas/install_node_modules
     - run:
-        name: Patch @microsoft/api-extractor
-        working_directory: ../..
-        command: |
-          patch -p1 < ./tools/rntv-workflows/microsoft-api-extractor.patch
-    - run:
         name: Run Typescript generation
         working_directory: ../..
         command: |
