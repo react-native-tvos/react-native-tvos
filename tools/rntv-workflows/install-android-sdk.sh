@@ -15,10 +15,13 @@ fi
 
 echo "Installing OpenJDK 17..."
 brew install openjdk@17
+JAVA_HOME="$("$(dirname "$0")/openjdk17-home.sh")"
+export JAVA_HOME
+echo "JAVA_HOME=$JAVA_HOME"
 echo "Installing Android command line tools..."
 brew install --cask android-commandlinetools
 echo "Unpacking Android licenses..."
-tar zxf $ANDROID_SDK_LICENSES -C $ANDROID_SDK_ROOT
+tar zxf "$ANDROID_SDK_LICENSES" -C "$ANDROID_SDK_ROOT"
 echo "Run Android license tool..."
 sdkmanager --licenses
 echo "Installing platform tools..."
