@@ -8,6 +8,7 @@
  * @flow
  */
 
+import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
 import typeof Props from '../ScrollView/ScrollView';
 
 import tagForComponentOrHandle from './tagForComponentOrHandle';
@@ -56,11 +57,11 @@ class TVTextScrollView extends React.Component<{
   /**
    * Called when the scroller comes into focus (e.g. for highlighting)
    */
-  onFocus?: (evt: Event) => void,
+  onFocus?: (evt: TVRemoteEvent) => void,
   /**
    * Called when the scroller goes out of focus
    */
-  onBlur?: (evt: Event) => void,
+  onBlur?: (evt: TVRemoteEvent) => void,
 }> {
   _subscription: any;
 
