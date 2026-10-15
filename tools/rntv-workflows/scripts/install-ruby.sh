@@ -15,7 +15,7 @@ fi
 
 echo "Installing Ruby..."
 brew install ruby
-. ./ruby-env.sh
+. "$(dirname "${BASH_SOURCE[0]}")/ruby-env.sh"
 echo "Verify Ruby path and version..."
 which ruby
 ruby -v
@@ -26,5 +26,5 @@ echo "Verify bundler path and version..."
 which bundler
 bundler -v
 echo "Configure Node..."
-sudo ln -s $(which node) /usr/local/bin/node
+sudo ln -s "$(which node)" /usr/local/bin/node
 echo "Done."

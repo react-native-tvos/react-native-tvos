@@ -16,7 +16,7 @@ build:
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
           if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            . ./tools/rntv-workflows/override-nightly-build-version.sh
+            . ./tools/rntv-workflows/scripts/override-nightly-build-version.sh
             echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
             set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
             node ./scripts/releases/use-hermes-nightly.js
@@ -37,7 +37,7 @@ build:
         name: Build RNTester for iOS using RNCore minimal artifacts
         working_directory: ../../packages/rn-tester
         command: |
-          . ../../tools/rntv-workflows/ruby-env.sh
+          . ../../tools/rntv-workflows/scripts/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-iOS-$RNTESTER_CONFIGURATION
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
@@ -60,7 +60,7 @@ build:
         name: Build RNTester for tvOS using RNCore artifacts
         working_directory: ../../packages/rn-tester
         command: |
-          . ../../tools/rntv-workflows/ruby-env.sh
+          . ../../tools/rntv-workflows/scripts/ruby-env.sh
           mkdir $ROOT_DIR/RNTester-tvOS-$RNTESTER_CONFIGURATION
           export RCT_USE_RN_DEP=1
           export RCT_USE_PREBUILT_RNCORE=1
