@@ -22,7 +22,7 @@ build:
           export ROOT_DIR=$PWD
           set-env ROOT_DIR $ROOT_DIR
           if [[ "$RNTV_RELEASE_BUILD" != "1" ]]; then
-            . ./tools/rntv-workflows/override-nightly-build-version.sh
+            . ./tools/rntv-workflows/scripts/override-nightly-build-version.sh
             echo "Hermes build from nightly build: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
             set-env REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION
             # node ./scripts/releases/use-hermes-nightly.js

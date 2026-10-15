@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Prints the JAVA_HOME of the Homebrew openjdk@17 installation.
-# Usage: export JAVA_HOME="$(./openjdk17-home.sh)"
+# Usage: export JAVA_HOME="$(./scripts/openjdk17-home.sh)"
 
 if ! command -v brew >/dev/null 2>&1; then
   echo "openjdk17-home.sh: brew not found in PATH. Install Homebrew and run 'brew install openjdk@17'." >&2

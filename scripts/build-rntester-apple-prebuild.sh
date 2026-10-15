@@ -12,7 +12,7 @@ export RCT_TESTONLY_RNCORE_TARBALL_PATH=$REACT_NATIVE_ROOT_DIR/packages/rn-teste
 echo "RCT_TESTONLY_RNCORE_TARBALL_PATH: $RCT_TESTONLY_RNCORE_TARBALL_PATH"
 
 # Get the version of the latest nightly build
-. ./tools/rntv-workflows/override-nightly-build-version.sh
+. ./tools/rntv-workflows/scripts/override-nightly-build-version.sh
 echo "REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION: $REACT_NATIVE_OVERRIDE_NIGHTLY_BUILD_VERSION"
 
 ######### Build the RNCore framework ############
