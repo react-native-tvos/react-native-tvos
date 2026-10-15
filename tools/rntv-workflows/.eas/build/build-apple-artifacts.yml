@@ -6,10 +6,10 @@ build:
         name: Set up JDK 17 and Android dependencies
         id: setuptools
         env:
-          JAVA_HOME: /opt/homebrew/Cellar/openjdk@17/17.0.19/libexec/openjdk.jdk/Contents/Home
           ANDROID_SDK_ROOT: /opt/homebrew/share/android-commandlinetools
         command: |
           ./install-android-sdk.sh
+          JAVA_HOME="$(./openjdk17-home.sh)"
           # Set environment for subsequent steps
           set-env JAVA_HOME $JAVA_HOME
           set-env ANDROID_SDK_ROOT $ANDROID_SDK_ROOT
