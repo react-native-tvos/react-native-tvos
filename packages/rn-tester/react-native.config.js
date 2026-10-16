@@ -10,10 +10,19 @@
 
 'use strict';
 
+// Inside the React Native monorepo, the CLI does not discover the adjacent
+// react-native package, so extend its config (the tvOS platform and commands)
+// explicitly.
+const config = require('../react-native/react-native.config.js');
+
 module.exports = {
+  ...config,
   reactNativePath: '../react-native',
   project: {
     ios: {
+      sourceDir: '.',
+    },
+    tvos: {
       sourceDir: '.',
     },
     android: {
