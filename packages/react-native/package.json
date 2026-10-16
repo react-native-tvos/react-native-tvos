@@ -81,7 +81,7 @@
     "LICENSE",
     "React-Core.podspec",
     "React-Core-prebuilt.podspec",
-    "tvosCommands.js",
+    "react-native.config.js",
     "React.podspec",
     "React",
     "!React/Fabric/RCTThirdPartyFabricComponentsProvider.*",
