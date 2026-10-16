@@ -1024,7 +1024,12 @@ type TextInputBaseProps = Readonly<{
 
 /** @build-types emit-as-interface Uniwind compatibility */
 export type TextInputProps = Readonly<{
-  ...Omit<ViewProps, 'style' | 'experimental_accessibilityOrder'>,
+  // `onPressIn` and `onPressOut` are replaced by the Pressability handlers in
+  // TextInputBaseProps, not the TV remote handlers in ViewProps.
+  ...Omit<
+    ViewProps,
+    'style' | 'experimental_accessibilityOrder' | 'onPressIn' | 'onPressOut',
+  >,
   ...TextInputIOSProps,
   ...TextInputAndroidProps,
   ...TextInputBaseProps,

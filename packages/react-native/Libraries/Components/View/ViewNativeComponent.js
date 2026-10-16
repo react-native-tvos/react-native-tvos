@@ -27,10 +27,10 @@ interface NativeCommands {
   readonly setPressed: (viewRef: HostInstance, pressed: boolean) => void;
   // Focus Guide API
   readonly setDestinations: (
-    viewRef: React.ElementRef<HostComponent<mixed>>,
+    viewRef: HostInstance,
     destinations: Array<number>, // Node handles are basically integers
   ) => void;
-  readonly requestTVFocus: (viewRef: React.ElementRef<HostComponent<mixed>>) => void;
+  readonly requestTVFocus: (viewRef: HostInstance) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({

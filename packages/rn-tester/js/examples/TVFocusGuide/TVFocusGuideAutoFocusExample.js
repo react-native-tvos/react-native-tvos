@@ -46,7 +46,7 @@ const screenHeight = Dimensions.get('window').height;
 const scale = screenHeight / 1080;
 
 const generateData = (length: number = 10, randomize: boolean = false) => {
-  return Array.from({length}).map((item, index) => {
+  return Array.from<unknown>({length}).map((item, index) => {
     if (randomize) {
       return Math.floor(Math.random() * 999);
     }
@@ -464,7 +464,7 @@ const SlowListFocusTest = () => {
   );
 };
 
-type ContentAreaProps = $ReadOnly<{|
+type ContentAreaProps = Readonly<{|
   sideMenuRef: {current: any},
 |}>;
 

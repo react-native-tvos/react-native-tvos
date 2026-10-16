@@ -74,6 +74,14 @@ type IOSPlatform = {
   get isTV(): boolean,
 
   /**
+   * Whether the app is running on an Apple TV device.
+   *
+   * @platform ios
+   */
+  // $FlowFixMe[unsafe-getters-setters]
+  get isTVOS(): boolean,
+
+  /**
    * Whether the app is running on Apple Vision Pro.
    *
    * @platform ios

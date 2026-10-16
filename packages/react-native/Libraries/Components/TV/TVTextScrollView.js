@@ -9,7 +9,7 @@
  */
 
 import type {TVRemoteEvent} from '../../Types/CoreEventTypes';
-import typeof Props from '../ScrollView/ScrollView';
+import type {ScrollViewProps} from '../ScrollView/ScrollView';
 
 import tagForComponentOrHandle from './tagForComponentOrHandle';
 
@@ -30,7 +30,7 @@ const React = require('react');
  */
 
 class TVTextScrollView extends React.Component<{
-  ...Props,
+  ...ScrollViewProps,
   /**
    * The duration of the scroll animation when a swipe is detected.
    * Default value is 0.3 s

@@ -27,5 +27,5 @@ export const validAttributesForTVProps = {
   trapFocusUp: true,
   scrollSnapAlign: true,
   scrollSnapOffset: true,
-};
+} as const;
 

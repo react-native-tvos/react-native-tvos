@@ -411,26 +411,19 @@ module.exports = {
   },
   // #endregion
   // #region TV
-  get TVEventControl(): TVEventControl {
+  get TVEventControl() {
     return require('./Libraries/Components/TV/TVEventControl').default;
   },
-  get TVEventHandler(): TVEventHandler {
+  get TVEventHandler() {
     return require('./Libraries/Components/TV/TVEventHandler').default;
   },
-  get useTVEventHandler(): useTVEventHandler {
+  get useTVEventHandler() {
     return require('./Libraries/Components/TV/useTVEventHandler').default;
   },
-  get TVFocusGuideView(): TVFocusGuideView {
+  get TVFocusGuideView() {
     return require('./Libraries/Components/TV/TVFocusGuideView').default;
   },
-  get TVMenuControl(): TVEventControl {
-    warnOnce(
-      'TVMenuControl-moved',
-      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
-    );
-    return require('./Libraries/Components/TV/TVEventControl').default;
-  },
-  get TVTextScrollView(): TVTextScrollView {
+  get TVTextScrollView() {
     return require('./Libraries/Components/TV/TVTextScrollView').default;
   },
   // #endregion
@@ -448,6 +441,21 @@ Object.defineProperty(module.exports, 'Touchable', {
   configurable: true,
   get() {
     return require('./Libraries/Components/Touchable/Touchable').default;
+  },
+});
+
+// `TVMenuControl` is a deprecated alias of `TVEventControl`. It is kept at
+// runtime for backwards compatibility, but is absent from the public API types.
+/* $FlowFixMe[invalid-export] This is intentional: `TVMenuControl` is a value-only
+ * re-export that is absent from the public API types. */
+Object.defineProperty(module.exports, 'TVMenuControl', {
+  configurable: true,
+  get() {
+    warnOnce(
+      'TVMenuControl-moved',
+      'TVMenuControl has been moved to TVEventControl, and now supports enabling/disabling both menu key events and pan gesture events.',
+    );
+    return require('./Libraries/Components/TV/TVEventControl').default;
   },
 });
 

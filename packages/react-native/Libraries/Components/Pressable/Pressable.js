@@ -41,7 +41,7 @@ type PressableStateCallbackTypeCore = Readonly<{
   focused: boolean,
 }>;
 
-type TVProps = $ReadOnly<{
+type TVProps = Readonly<{
   hasTVPreferredFocus?: boolean,
   isTVSelectable?: ?boolean,
   tvParallaxProperties?: TVParallaxPropertiesType,
@@ -50,8 +50,8 @@ type TVProps = $ReadOnly<{
   nextFocusLeft?: ?number,
   nextFocusRight?: ?number,
   nextFocusUp?: ?number,
-  onFocus?: ?(event: FocusEvent) => mixed,
-  onBlur?: ?(event: BlurEvent) => mixed,
+  onFocus?: ?(event: FocusEvent) => unknown,
+  onBlur?: ?(event: BlurEvent) => unknown,
   onFocusCapture?: ?(event: FocusEvent) => void,
   onBlurCapture?: ?(event: BlurEvent) => void,
 }>;
@@ -204,7 +204,12 @@ export type PressableProps = Readonly<{
   // Pressability may override `onMouseEnter` and `onMouseLeave` to
   // implement `onHoverIn` and `onHoverOut` in a platform-agnostic way.
   // Hover events should be used instead of mouse events.
-  ...Omit<ViewProps, 'onMouseEnter' | 'onMouseLeave'>,
+  // `onPressIn` and `onPressOut` are replaced by the Pressability handlers in
+  // PressableBaseProps, not the TV remote handlers in ViewProps.
+  ...Omit<
+    ViewProps,
+    'onMouseEnter' | 'onMouseLeave' | 'onPressIn' | 'onPressOut',
+  >,
   ...PressableBaseProps,
   /**
    * Props needed for Apple TV and Android TV

@@ -9,7 +9,7 @@
  */
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
-import type {RenderItemType} from 'react-native/Libraries/Lists/VirtualizedList';
+import type {ListRenderItem} from 'react-native';
 
 import {useTheme} from '../../components/RNTesterTheme';
 import * as React from 'react';
@@ -65,7 +65,7 @@ export function FlatList_additionalRenderRegions(): React.Node {
   const [additionalRenderRegionsEnabled, setAdditionalRenderRegionsEnabled] =
     React.useState(true);
 
-  const renderItem: RenderItemType<ItemType> = ({index}) => (
+  const renderItem: ListRenderItem<ItemType> = ({index}) => (
     <Pressable
       onPress={() => {
         listRef.current?.scrollToOffset({offset: 0, animated: false});
@@ -114,12 +114,12 @@ export function FlatList_additionalRenderRegions(): React.Node {
   );
 }
 
-export default ({
+export default {
   title: 'Additional Render Regions',
   name: 'additionalRenderRegions',
   description: 'Test additionalRenderRegions feature on FlatList',
   render: () => <FlatList_additionalRenderRegions />,
-}: RNTesterModuleExample);
+} as RNTesterModuleExample;
 
 const styles = StyleSheet.create({
   pressableBaseStyle: {

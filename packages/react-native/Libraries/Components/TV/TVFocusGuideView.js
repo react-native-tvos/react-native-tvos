@@ -8,6 +8,7 @@
  * @format
  */
 
+import type {HostInstance} from '../../../src/private/types/HostInstance';
 import type {BlurEvent, FocusEvent} from '../../Types/CoreEventTypes';
 import type {ViewProps} from '../View/ViewPropTypes';
 import type {ComponentOrHandleType} from './tagForComponentOrHandle';
@@ -22,8 +23,10 @@ import useFocusEnterLeave from './useFocusEnterLeave';
 const StyleSheet = require('../../StyleSheet/StyleSheet').default;
 const React = require('react');
 
-type TVFocusGuideViewProps = $ReadOnly<{
+type TVFocusGuideViewProps = Readonly<{
   ...ViewProps,
+
+  ref?: React.RefSetter<HostInstance & TVFocusGuideViewImperativeMethods>,
 
   /**
    * If the view should be "visible". display "flex" if visible, otherwise "none".
@@ -69,7 +72,7 @@ type TVFocusGuideViewProps = $ReadOnly<{
   onFocusLeave?: ?(event: BlurEvent) => void,
 }>;
 
-export type TVFocusGuideViewImperativeMethods = $ReadOnly<{
+export type TVFocusGuideViewImperativeMethods = Readonly<{
   setDestinations: (destinations: (ComponentOrHandleType | number)[]) => void,
 }>;
 
@@ -107,7 +110,6 @@ function TVFocusGuideView({
 
   const setLocalRef = React.useCallback(
     (instance: HostInstance | null) => {
-      // $FlowExpectedError[incompatible-type]
       focusGuideRef.current = instance;
 
       if (instance != null) {
@@ -135,12 +137,14 @@ function TVFocusGuideView({
   React.useEffect(() => {
     if (focusable === false) {
       setDestinations([]);
-    } else if (destinationsProp !== null && destinationsProp !== undefined) {
-      setDestinations(destinationsProp); // $FlowFixMe[incompatible-call]
+    } else if (destinationsProp != null) {
+      setDestinations(destinationsProp);
     }
   }, [setDestinations, destinationsProp, focusable]);
 
-  const enabledStyle = {display: enabled ? 'flex' : 'none'};
+  const enabledStyle = {
+    display: enabled ? ('flex' as const) : ('none' as const),
+  };
   const style = [styles.container, props.style, enabledStyle];
 
   // If there are no destinations and the autoFocus is false the the default value of focusable should be false
@@ -149,10 +153,11 @@ function TVFocusGuideView({
     destinationsProp || autoFocus ? focusable !== false : false;
 
   return (
-    // $FlowFixMe[prop-missing]
     <View
       {...props}
       style={style}
+      // setLocalRef adds `setDestinations` to the instance before `ref` receives it.
+      // $FlowFixMe[incompatible-type]
       ref={mergedRef}
       collapsable={false}
       autoFocus={focusable === false ? true : autoFocus}

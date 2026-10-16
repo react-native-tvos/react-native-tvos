@@ -10,7 +10,7 @@
 
 'use strict';
 
-export type TVParallaxPropertiesType = $ReadOnly<{|
+export type TVParallaxPropertiesType = Readonly<{|
   /**
    * If true, parallax effects are enabled.  Defaults to true.
    */
@@ -57,7 +57,7 @@ export type TVParallaxPropertiesType = $ReadOnly<{|
  * TODO: update `@react-native/eslint-plugin` so that the
  * name can be changed to TVViewProps
  */
-export type TVViewProps = $ReadOnly<{|
+export type TVViewProps = Readonly<{|
   /**
    * @deprecated Replaced by `focusable`.
    *
@@ -99,6 +99,10 @@ export type TVViewProps = $ReadOnly<{|
   enabled?: boolean,
   autoFocus?: boolean,
   safePadding?: string | null,
+  trapFocusUp?: boolean,
+  trapFocusDown?: boolean,
+  trapFocusLeft?: boolean,
+  trapFocusRight?: boolean,
   onPressIn?: (event: any) => void,
   onPressOut?: (event: any) => void,
 

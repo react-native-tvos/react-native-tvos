@@ -71,6 +71,11 @@ type RequiredVirtualizedListProps = {
 type OptionalVirtualizedListProps = {
   renderItem?: ?ListRenderItem<Item>,
   /**
+   * Regions of the list, given as `first` and `last` item indices, that are
+   * always rendered and not subject to virtualization.
+   */
+  additionalRenderRegions?: ?ReadonlyArray<{first: number, last: number}>,
+  /**
    * `debug` will turn on extra logging and visual overlays to aid with debugging both usage and
    * implementation, but with a significant perf hit.
    */

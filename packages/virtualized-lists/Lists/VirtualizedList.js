@@ -2249,9 +2249,7 @@ class VirtualizedList extends StateSafePureComponent<
   }
 
   _getNonViewportRenderRegions = (
-    props: CellMetricProps & {
-      additionalRenderRegions?: {first: number, last: number}[],
-    },
+    props: VirtualizedListProps,
   ): ReadonlyArray<{
     first: number,
     last: number,
