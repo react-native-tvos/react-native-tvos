@@ -12,11 +12,15 @@
 export type Platform =
   'ios' |
   'ios-simulator' |
+  'tvos' |
+  'tvos-simulator' |
   'mac-catalyst';
 
 export type Destination =
   'iOS' |
   'iOS Simulator' |
+  'tvOS' |
+  'tvOS Simulator' |
   'macOS,variant=Mac Catalyst';
 
 export type BuildFlavor = 'Debug' | 'Release';

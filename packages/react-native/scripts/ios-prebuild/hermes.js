@@ -165,7 +165,7 @@ function getPinnedHermesVersionFromProperties() /*: string */ {
   } catch (e) {
     hermesLog(
       `Could not read pinned Hermes version from version.properties; falling back to latest v1. (${e.message})`,
-      'warn',
+      'warning',
     );
   }
   // Return the sentinel string (not a Promise): the caller resolves

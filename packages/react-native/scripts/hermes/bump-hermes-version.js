@@ -70,6 +70,6 @@ async function main() {
   await updateHermesRuntimeDependenciesVersions(bareVersion);
 }
 
-main().then(() => {
+void main().then(() => {
   exit(0);
 });
