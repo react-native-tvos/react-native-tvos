@@ -12,9 +12,9 @@
 
 import * as React from 'react';
 
-type Args = $ReadOnly<{|
+type Args = Readonly<{|
   getForwardedRef: () => ?React.ElementRef<any>,
-  setLocalRef: (ref: React.ElementRef<any>) => mixed,
+  setLocalRef: (ref: React.ElementRef<any>) => unknown,
 |}>;
 
 /**

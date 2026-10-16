@@ -13,14 +13,16 @@ import type {TurboModule} from '../../../../Libraries/TurboModule/RCTExport';
 import * as TurboModuleRegistry from '../../../../Libraries/TurboModule/TurboModuleRegistry';
 
 export interface Spec extends TurboModule {
-  +addListener: (eventName: string) => void;
-  +removeListeners: (count: number) => void;
-  +enableTVMenuKey: () => void;
-  +disableTVMenuKey: () => void;
-  +enableTVPanGesture: () => void;
-  +disableTVPanGesture: () => void;
-  +enableGestureHandlersCancelTouches: () => void;
-  +disableGestureHandlersCancelTouches: () => void;
+  readonly addListener: (eventName: string) => void;
+  readonly removeListeners: (count: number) => void;
+  readonly enableTVMenuKey: () => void;
+  readonly disableTVMenuKey: () => void;
+  readonly enableTVPanGesture: () => void;
+  readonly disableTVPanGesture: () => void;
+  readonly enableGestureHandlersCancelTouches: () => void;
+  readonly disableGestureHandlersCancelTouches: () => void;
 }
 
-export default (TurboModuleRegistry.get<Spec>('TVNavigationEventEmitter'): ?Spec);
+export default TurboModuleRegistry.get<Spec>(
+  'TVNavigationEventEmitter',
+) as ?Spec;
