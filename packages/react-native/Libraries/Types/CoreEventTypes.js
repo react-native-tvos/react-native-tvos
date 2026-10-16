@@ -101,17 +101,28 @@ type TextLayoutEventData = Readonly<{
 
 export type TextLayoutEvent = NativeSyntheticEvent<TextLayoutEventData>;
 
-export type RemotePressEvent = $ReadOnly<{
+export type RemotePressEvent = Readonly<{
   target: number,
 }>;
 
-export type TVRemoteEvent = $ReadOnly<{
+/**
+ * Gesture data sent with tvOS swipe and pan events. Swipe events send only
+ * `state`; pan events also send the translation and velocity.
+ */
+export type TVRemoteEventBody = Readonly<{
+  state?: 'Began' | 'Changed' | 'Ended',
+  x?: number,
+  y?: number,
+  velocityX?: number,
+  velocityY?: number,
+}>;
+
+export type TVRemoteEvent = Readonly<{
   tag?: number,
   target?: number,
   eventType: string,
-  eventKeyAction?: string,
-  // $FlowFixMe[unclear-type]
-  body?: any,
+  eventKeyAction?: number,
+  body?: TVRemoteEventBody,
 }>;
 
 /**

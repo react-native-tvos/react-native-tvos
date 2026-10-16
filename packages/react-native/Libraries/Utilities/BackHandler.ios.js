@@ -11,7 +11,7 @@
 // On Apple TV, this implements back navigation using the TV remote's menu button.
 // On iOS, this just implements a stub.
 
-import type {HardwareBackPressEvent} from './HardwareBackPressEvent';
+import {HardwareBackPressEvent} from './HardwareBackPressEvent';
 
 const TVEventHandler = require('../Components/TV/TVEventHandler').default;
 const Platform = require('./Platform').default;
@@ -73,17 +73,18 @@ let BackHandler: TBackHandler = {
 };
 
 if (Platform.isTV) {
-  const _backPressSubscriptions = new Set<() => ?boolean>();
+  const _backPressSubscriptions = new Set<BackPressHandler>();
 
   TVEventHandler.addListener(function (evt) {
     if (evt && evt.eventType === 'menu') {
+      const event = new HardwareBackPressEvent();
       let invokeDefault = true;
       const subscriptions = Array.from(
         _backPressSubscriptions.values(),
       ).reverse();
 
       for (let i = 0; i < subscriptions.length; ++i) {
-        if (subscriptions[i]()) {
+        if (subscriptions[i](event)) {
           invokeDefault = false;
           break;
         }
@@ -100,19 +101,14 @@ if (Platform.isTV) {
 
     addEventListener: function (
       _eventName: BackPressEventName,
-      _handler: () => ?boolean,
+      handler: BackPressHandler,
     ): {remove: () => void, ...} {
-      _backPressSubscriptions.add(_handler);
+      _backPressSubscriptions.add(handler);
       return {
-        remove: () => BackHandler.removeEventListener(_eventName, _handler),
+        remove: (): void => {
+          _backPressSubscriptions.delete(handler);
+        },
       };
-    },
-
-    removeEventListener: function (
-      _eventName: BackPressEventName,
-      _handler: () => ?boolean,
-    ) {
-      _backPressSubscriptions.delete(_handler);
     },
   };
 }

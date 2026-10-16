@@ -271,11 +271,15 @@ const TVEventHandlerView: () => React.Node = () => {
   const logEntryForEvent = (event: TVRemoteEvent) => {
     return [
       `type=${event.eventType}`,
-      event.eventKeyAction ? `action=${event.eventKeyAction}` : '',
-      event.body?.x ? `x=${event.body?.x}` : '',
-      event.body?.y ? `y=${event.body?.y}` : '',
-      event.body?.velocityX ? `vx=${Math.floor(event.body?.velocityX)}` : '',
-      event.body?.velocityY ? `vy=${Math.floor(event.body?.velocityY)}` : '',
+      event.eventKeyAction != null ? `action=${event.eventKeyAction}` : '',
+      event.body?.x != null ? `x=${event.body?.x}` : '',
+      event.body?.y != null ? `y=${event.body?.y}` : '',
+      event.body?.velocityX != null
+        ? `vx=${Math.floor(event.body?.velocityX)}`
+        : '',
+      event.body?.velocityY != null
+        ? `vy=${Math.floor(event.body?.velocityY)}`
+        : '',
     ].join(' ');
   };
 

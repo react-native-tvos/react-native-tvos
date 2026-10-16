@@ -9,6 +9,7 @@
  */
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
+import type {TVRemoteEvent} from 'react-native';
 
 import RNTesterText from '../../components/RNTesterText';
 import * as React from 'react';
@@ -26,7 +27,7 @@ import {
 
 function TVEventView(): React.Node {
   const [lastEventType, setLastEventType] = React.useState('');
-  const myTVEventHandler = (evt: {eventType: string}) => {
+  const myTVEventHandler = (evt: TVRemoteEvent) => {
     setLastEventType(evt.eventType);
   };
   useTVEventHandler(myTVEventHandler);
