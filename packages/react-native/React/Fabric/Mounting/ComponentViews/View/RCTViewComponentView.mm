@@ -262,15 +262,6 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 #pragma mark - Apple TV methods
 
-- (void)didMoveToWindow {
-  [super didMoveToWindow];
-
-  if (self->_shouldFocusOnMount) {
-    self->_shouldFocusOnMount = false;
-    [self focusSelf];
-  }
-}
-
 - (RCTSurfaceHostingProxyRootView *)containingRootView
 {
   UIView *rootview = self;
@@ -1487,6 +1478,12 @@ static BOOL RCTEdgeInsetsEqualWithThreshold(UIEdgeInsets lhs, UIEdgeInsets rhs, 
   if ([self _observesSafeAreaInsets]) {
     [self setNeedsLayout];
   }
+#if TARGET_OS_TV
+  if (self->_shouldFocusOnMount) {
+    self->_shouldFocusOnMount = false;
+    [self focusSelf];
+  }
+#endif
 }
 
 - (void)layoutSubviews
