@@ -1369,6 +1369,7 @@ class VirtualizedList extends StateSafePureComponent<
         }}>
         {Platform.isTV ? (
           <TVFocusGuideView
+            style={tvFocusGuideLayoutStyle(scrollProps.style)}
             {...trapFocusHorizontal}
             trapFocusUp={
               !horizontalOrDefault(this.props.horizontal) &&
@@ -2347,6 +2348,17 @@ class VirtualizedList extends StateSafePureComponent<
       );
     });
   }
+}
+
+// The focus guide wraps the ScrollView, so the list's own flex sizing (e.g. `flex: 1`) must also
+// apply to the guide. Otherwise the guide collapses to its `minHeight` and the list with it.
+function tvFocusGuideLayoutStyle(style: StyleProp<ViewStyle>): ViewStyle {
+  const flat = StyleSheet.flatten(style);
+  if (flat == null) {
+    return {};
+  }
+  const {flex, flexGrow, flexShrink, flexBasis, alignSelf} = flat;
+  return {flex, flexGrow, flexShrink, flexBasis, alignSelf};
 }
 
 const styles = StyleSheet.create({
