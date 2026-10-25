@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fe6f53b8f98378abeae064b70681ed39>>
+ * @generated SignedSource<<08c7aeb5d0329359da0e21fea43007df>>
  */
 
 /**
@@ -45,6 +45,8 @@ class NativeReactNativeFeatureFlags
   bool cxxNativeAnimatedEnabled(jsi::Runtime& runtime);
 
   bool defaultTextToOverflowHidden(jsi::Runtime& runtime);
+
+  bool deferTextInputTruncationIOS(jsi::Runtime& runtime);
 
   bool disableEarlyViewCommandExecution(jsi::Runtime& runtime);
 
@@ -93,6 +95,8 @@ class NativeReactNativeFeatureFlags
   bool enableFabricLogs(jsi::Runtime& runtime);
 
   bool enableFlexboxAutoMinSizeInStrictMode(jsi::Runtime& runtime);
+
+  bool enableFollowUpMountItemDispatchAndroid(jsi::Runtime& runtime);
 
   bool enableFontScaleChangesUpdatingLayout(jsi::Runtime& runtime);
 
@@ -172,6 +176,8 @@ class NativeReactNativeFeatureFlags
 
   bool fuseboxWebSocketEventsEnabled(jsi::Runtime& runtime);
 
+  bool keepTimersRunningWhileHostPausedAndroid(jsi::Runtime& runtime);
+
   bool optimizedAnimatedPropUpdates(jsi::Runtime& runtime);
 
   bool overrideBySynchronousMountPropsAtMountingAndroid(jsi::Runtime& runtime);
@@ -194,6 +200,8 @@ class NativeReactNativeFeatureFlags
 
   bool skipActivityIdentityAssertionOnHostPause(jsi::Runtime& runtime);
 
+  bool skipUnchangedChildrenInDifferentiator(jsi::Runtime& runtime);
+
   bool syncAndroidClipBoundsWithOverflow(jsi::Runtime& runtime);
 
   bool traceTurboModulePromiseRejectionsOnAndroid(jsi::Runtime& runtime);
@@ -215,6 +223,8 @@ class NativeReactNativeFeatureFlags
   bool useTraitHiddenOnAndroid(jsi::Runtime& runtime);
 
   bool useTurboModuleInterop(jsi::Runtime& runtime);
+
+  bool useWindowDensityForDisplayMetricsAndroid(jsi::Runtime& runtime);
 
   double viewCullingOutsetRatio(jsi::Runtime& runtime);
 

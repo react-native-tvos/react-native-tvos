@@ -184,7 +184,7 @@ BaseScrollViewProps::BaseScrollViewProps(
           rawProps,
           "persistentScrollbar",
           sourceProps.persistentScrollbar,
-          true)),
+          false)),
       horizontal(convertRawProp(
           context,
           rawProps,

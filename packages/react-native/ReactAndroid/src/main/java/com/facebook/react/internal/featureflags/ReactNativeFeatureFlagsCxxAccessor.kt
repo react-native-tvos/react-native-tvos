@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<0107593110db613063b6f4ceb50d8e58>>
+ * @generated SignedSource<<1cefe829b93cd661df195cbf3a3663a7>>
  */
 
 /**
@@ -24,6 +24,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var cdpInteractionMetricsEnabledCache: Boolean? = null
   private var cxxNativeAnimatedEnabledCache: Boolean? = null
   private var defaultTextToOverflowHiddenCache: Boolean? = null
+  private var deferTextInputTruncationIOSCache: Boolean? = null
   private var disableEarlyViewCommandExecutionCache: Boolean? = null
   private var disableIdleEventDispatchFrameCallbackRearmAndroidCache: Boolean? = null
   private var disableIdleMountItemFrameCallbackRearmAndroidCache: Boolean? = null
@@ -48,6 +49,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var enableFabricCommitBranchingMergeOnMainThreadCache: Boolean? = null
   private var enableFabricLogsCache: Boolean? = null
   private var enableFlexboxAutoMinSizeInStrictModeCache: Boolean? = null
+  private var enableFollowUpMountItemDispatchAndroidCache: Boolean? = null
   private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
   private var enableIOSCompressedTextFrameAdjustmentCache: Boolean? = null
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
@@ -87,6 +89,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var fuseboxFrameRecordingEnabledCache: Boolean? = null
   private var fuseboxScreenshotCaptureEnabledCache: Boolean? = null
   private var fuseboxWebSocketEventsEnabledCache: Boolean? = null
+  private var keepTimersRunningWhileHostPausedAndroidCache: Boolean? = null
   private var optimizedAnimatedPropUpdatesCache: Boolean? = null
   private var overrideBySynchronousMountPropsAtMountingAndroidCache: Boolean? = null
   private var perfIssuesEnabledCache: Boolean? = null
@@ -98,6 +101,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var shouldPressibilityUseW3CPointerEventsForHoverCache: Boolean? = null
   private var shouldTriggerResponderTransferOnScrollAndroidCache: Boolean? = null
   private var skipActivityIdentityAssertionOnHostPauseCache: Boolean? = null
+  private var skipUnchangedChildrenInDifferentiatorCache: Boolean? = null
   private var syncAndroidClipBoundsWithOverflowCache: Boolean? = null
   private var traceTurboModulePromiseRejectionsOnAndroidCache: Boolean? = null
   private var updateRuntimeShadowNodeReferencesOnCommitCache: Boolean? = null
@@ -109,6 +113,7 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
   private var useSharedAnimatedBackendCache: Boolean? = null
   private var useTraitHiddenOnAndroidCache: Boolean? = null
   private var useTurboModuleInteropCache: Boolean? = null
+  private var useWindowDensityForDisplayMetricsAndroidCache: Boolean? = null
   private var viewCullingOutsetRatioCache: Double? = null
   private var viewTransitionEnabledCache: Boolean? = null
   private var viewTransitionUseHardwareBitmapAndroidCache: Boolean? = null
@@ -146,6 +151,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.defaultTextToOverflowHidden()
       defaultTextToOverflowHiddenCache = cached
+    }
+    return cached
+  }
+
+  override fun deferTextInputTruncationIOS(): Boolean {
+    var cached = deferTextInputTruncationIOSCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.deferTextInputTruncationIOS()
+      deferTextInputTruncationIOSCache = cached
     }
     return cached
   }
@@ -362,6 +376,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.enableFlexboxAutoMinSizeInStrictMode()
       enableFlexboxAutoMinSizeInStrictModeCache = cached
+    }
+    return cached
+  }
+
+  override fun enableFollowUpMountItemDispatchAndroid(): Boolean {
+    var cached = enableFollowUpMountItemDispatchAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.enableFollowUpMountItemDispatchAndroid()
+      enableFollowUpMountItemDispatchAndroidCache = cached
     }
     return cached
   }
@@ -717,6 +740,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun keepTimersRunningWhileHostPausedAndroid(): Boolean {
+    var cached = keepTimersRunningWhileHostPausedAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.keepTimersRunningWhileHostPausedAndroid()
+      keepTimersRunningWhileHostPausedAndroidCache = cached
+    }
+    return cached
+  }
+
   override fun optimizedAnimatedPropUpdates(): Boolean {
     var cached = optimizedAnimatedPropUpdatesCache
     if (cached == null) {
@@ -816,6 +848,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     return cached
   }
 
+  override fun skipUnchangedChildrenInDifferentiator(): Boolean {
+    var cached = skipUnchangedChildrenInDifferentiatorCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.skipUnchangedChildrenInDifferentiator()
+      skipUnchangedChildrenInDifferentiatorCache = cached
+    }
+    return cached
+  }
+
   override fun syncAndroidClipBoundsWithOverflow(): Boolean {
     var cached = syncAndroidClipBoundsWithOverflowCache
     if (cached == null) {
@@ -911,6 +952,15 @@ internal class ReactNativeFeatureFlagsCxxAccessor : ReactNativeFeatureFlagsAcces
     if (cached == null) {
       cached = ReactNativeFeatureFlagsCxxInterop.useTurboModuleInterop()
       useTurboModuleInteropCache = cached
+    }
+    return cached
+  }
+
+  override fun useWindowDensityForDisplayMetricsAndroid(): Boolean {
+    var cached = useWindowDensityForDisplayMetricsAndroidCache
+    if (cached == null) {
+      cached = ReactNativeFeatureFlagsCxxInterop.useWindowDensityForDisplayMetricsAndroid()
+      useWindowDensityForDisplayMetricsAndroidCache = cached
     }
     return cached
   }

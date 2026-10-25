@@ -254,7 +254,7 @@ BaseViewProps::BaseViewProps(
           rawProps,
           "shadowOffset",
           sourceProps.shadowOffset,
-          {})),
+          Size{0, -3})),
       shadowOpacity(convertRawProp(
           context,
           rawProps,
@@ -266,7 +266,7 @@ BaseViewProps::BaseViewProps(
           rawProps,
           "shadowRadius",
           sourceProps.shadowRadius,
-          {})),
+          (Float)3)),
       cursor(
           convertRawProp(context, rawProps, "cursor", sourceProps.cursor, {})),
       boxShadow(convertRawProp(

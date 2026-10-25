@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fa0374808e3cbe7122ca993780c0b627>>
+ * @generated SignedSource<<e984b654c4b8fc17f99046e60306f3f6>>
  */
 
 /**
@@ -35,6 +35,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun cxxNativeAnimatedEnabled(): Boolean
 
   @DoNotStrip @JvmStatic public external fun defaultTextToOverflowHidden(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun deferTextInputTruncationIOS(): Boolean
 
   @DoNotStrip @JvmStatic public external fun disableEarlyViewCommandExecution(): Boolean
 
@@ -83,6 +85,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun enableFabricLogs(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableFlexboxAutoMinSizeInStrictMode(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun enableFollowUpMountItemDispatchAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun enableFontScaleChangesUpdatingLayout(): Boolean
 
@@ -162,6 +166,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun fuseboxWebSocketEventsEnabled(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun keepTimersRunningWhileHostPausedAndroid(): Boolean
+
   @DoNotStrip @JvmStatic public external fun optimizedAnimatedPropUpdates(): Boolean
 
   @DoNotStrip @JvmStatic public external fun overrideBySynchronousMountPropsAtMountingAndroid(): Boolean
@@ -184,6 +190,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
 
   @DoNotStrip @JvmStatic public external fun skipActivityIdentityAssertionOnHostPause(): Boolean
 
+  @DoNotStrip @JvmStatic public external fun skipUnchangedChildrenInDifferentiator(): Boolean
+
   @DoNotStrip @JvmStatic public external fun syncAndroidClipBoundsWithOverflow(): Boolean
 
   @DoNotStrip @JvmStatic public external fun traceTurboModulePromiseRejectionsOnAndroid(): Boolean
@@ -205,6 +213,8 @@ public object ReactNativeFeatureFlagsCxxInterop {
   @DoNotStrip @JvmStatic public external fun useTraitHiddenOnAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun useTurboModuleInterop(): Boolean
+
+  @DoNotStrip @JvmStatic public external fun useWindowDensityForDisplayMetricsAndroid(): Boolean
 
   @DoNotStrip @JvmStatic public external fun viewCullingOutsetRatio(): Double
 

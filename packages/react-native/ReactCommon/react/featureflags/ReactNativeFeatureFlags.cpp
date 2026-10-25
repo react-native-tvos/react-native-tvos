@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<fc4b67b43c846eac0085ed4a5528a170>>
+ * @generated SignedSource<<3acecfdec6d182a74c4616d6c8690e72>>
  */
 
 /**
@@ -40,6 +40,10 @@ bool ReactNativeFeatureFlags::cxxNativeAnimatedEnabled() {
 
 bool ReactNativeFeatureFlags::defaultTextToOverflowHidden() {
   return getAccessor().defaultTextToOverflowHidden();
+}
+
+bool ReactNativeFeatureFlags::deferTextInputTruncationIOS() {
+  return getAccessor().deferTextInputTruncationIOS();
 }
 
 bool ReactNativeFeatureFlags::disableEarlyViewCommandExecution() {
@@ -136,6 +140,10 @@ bool ReactNativeFeatureFlags::enableFabricLogs() {
 
 bool ReactNativeFeatureFlags::enableFlexboxAutoMinSizeInStrictMode() {
   return getAccessor().enableFlexboxAutoMinSizeInStrictMode();
+}
+
+bool ReactNativeFeatureFlags::enableFollowUpMountItemDispatchAndroid() {
+  return getAccessor().enableFollowUpMountItemDispatchAndroid();
 }
 
 bool ReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout() {
@@ -294,6 +302,10 @@ bool ReactNativeFeatureFlags::fuseboxWebSocketEventsEnabled() {
   return getAccessor().fuseboxWebSocketEventsEnabled();
 }
 
+bool ReactNativeFeatureFlags::keepTimersRunningWhileHostPausedAndroid() {
+  return getAccessor().keepTimersRunningWhileHostPausedAndroid();
+}
+
 bool ReactNativeFeatureFlags::optimizedAnimatedPropUpdates() {
   return getAccessor().optimizedAnimatedPropUpdates();
 }
@@ -338,6 +350,10 @@ bool ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause() {
   return getAccessor().skipActivityIdentityAssertionOnHostPause();
 }
 
+bool ReactNativeFeatureFlags::skipUnchangedChildrenInDifferentiator() {
+  return getAccessor().skipUnchangedChildrenInDifferentiator();
+}
+
 bool ReactNativeFeatureFlags::syncAndroidClipBoundsWithOverflow() {
   return getAccessor().syncAndroidClipBoundsWithOverflow();
 }
@@ -380,6 +396,10 @@ bool ReactNativeFeatureFlags::useTraitHiddenOnAndroid() {
 
 bool ReactNativeFeatureFlags::useTurboModuleInterop() {
   return getAccessor().useTurboModuleInterop();
+}
+
+bool ReactNativeFeatureFlags::useWindowDensityForDisplayMetricsAndroid() {
+  return getAccessor().useWindowDensityForDisplayMetricsAndroid();
 }
 
 double ReactNativeFeatureFlags::viewCullingOutsetRatio() {

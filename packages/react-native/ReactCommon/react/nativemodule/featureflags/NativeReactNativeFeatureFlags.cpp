@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<00cccf7098052c51f5855949375ea0f9>>
+ * @generated SignedSource<<43f74d6da837bdcab1da5faf8cc78291>>
  */
 
 /**
@@ -62,6 +62,11 @@ bool NativeReactNativeFeatureFlags::cxxNativeAnimatedEnabled(
 bool NativeReactNativeFeatureFlags::defaultTextToOverflowHidden(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::defaultTextToOverflowHidden();
+}
+
+bool NativeReactNativeFeatureFlags::deferTextInputTruncationIOS(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::deferTextInputTruncationIOS();
 }
 
 bool NativeReactNativeFeatureFlags::disableEarlyViewCommandExecution(
@@ -182,6 +187,11 @@ bool NativeReactNativeFeatureFlags::enableFabricLogs(
 bool NativeReactNativeFeatureFlags::enableFlexboxAutoMinSizeInStrictMode(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::enableFlexboxAutoMinSizeInStrictMode();
+}
+
+bool NativeReactNativeFeatureFlags::enableFollowUpMountItemDispatchAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::enableFollowUpMountItemDispatchAndroid();
 }
 
 bool NativeReactNativeFeatureFlags::enableFontScaleChangesUpdatingLayout(
@@ -379,6 +389,11 @@ bool NativeReactNativeFeatureFlags::fuseboxWebSocketEventsEnabled(
   return ReactNativeFeatureFlags::fuseboxWebSocketEventsEnabled();
 }
 
+bool NativeReactNativeFeatureFlags::keepTimersRunningWhileHostPausedAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::keepTimersRunningWhileHostPausedAndroid();
+}
+
 bool NativeReactNativeFeatureFlags::optimizedAnimatedPropUpdates(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::optimizedAnimatedPropUpdates();
@@ -434,6 +449,11 @@ bool NativeReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause(
   return ReactNativeFeatureFlags::skipActivityIdentityAssertionOnHostPause();
 }
 
+bool NativeReactNativeFeatureFlags::skipUnchangedChildrenInDifferentiator(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::skipUnchangedChildrenInDifferentiator();
+}
+
 bool NativeReactNativeFeatureFlags::syncAndroidClipBoundsWithOverflow(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::syncAndroidClipBoundsWithOverflow();
@@ -487,6 +507,11 @@ bool NativeReactNativeFeatureFlags::useTraitHiddenOnAndroid(
 bool NativeReactNativeFeatureFlags::useTurboModuleInterop(
     jsi::Runtime& /*runtime*/) {
   return ReactNativeFeatureFlags::useTurboModuleInterop();
+}
+
+bool NativeReactNativeFeatureFlags::useWindowDensityForDisplayMetricsAndroid(
+    jsi::Runtime& /*runtime*/) {
+  return ReactNativeFeatureFlags::useWindowDensityForDisplayMetricsAndroid();
 }
 
 double NativeReactNativeFeatureFlags::viewCullingOutsetRatio(
