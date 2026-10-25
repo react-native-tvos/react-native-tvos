@@ -13,6 +13,40 @@ if [[ "$EAS_BUILD_PLATFORM" != "ios" ]]; then
   exit 0
 fi
 
+REACT_NATIVE_DIR="$(dirname "$0")/../../../packages/react-native"
+VERSIONS_TOML="$REACT_NATIVE_DIR/gradle/libs.versions.toml"
+REACT_ANDROID_GRADLE="$REACT_NATIVE_DIR/ReactAndroid/build.gradle.kts"
+
+read_version() {
+  local file="$1"
+  local key="$2"
+  local pattern="$3"
+  local value
+  value="$(sed -n -E "s/$pattern/\\1/p" "$file" | head -n 1)"
+  if [[ -z "$value" ]]; then
+    echo "Could not read $key from $file" >&2
+    exit 1
+  fi
+  echo "$value"
+}
+
+read_toml_version() {
+  read_version "$VERSIONS_TOML" "$1" "^$1[[:space:]]*=[[:space:]]*\"([^\"]+)\".*"
+}
+
+# Gradle honors the same overrides
+NDK_VERSION="${ANDROID_NDK_VERSION:-$(read_toml_version ndkVersion)}"
+COMPILE_SDK="$(read_toml_version compileSdk)"
+# AGP names platforms from API 37 on with a minor version, e.g. android-37.0
+if [[ "$COMPILE_SDK" == *.* || "$COMPILE_SDK" -lt 37 ]]; then
+  ANDROID_PLATFORM="android-$COMPILE_SDK"
+else
+  ANDROID_PLATFORM="android-$COMPILE_SDK.0"
+fi
+BUILD_TOOLS_VERSION="$(read_toml_version buildTools)"
+CMAKE_VERSION="${CMAKE_VERSION:-$(read_version "$REACT_ANDROID_GRADLE" cmakeVersion \
+  '^val cmakeVersion = .*\?: "([^"]+)".*')}"
+
 echo "Installing OpenJDK 17..."
 brew install openjdk@17
 JAVA_HOME="$("$(dirname "$0")/openjdk17-home.sh")"
@@ -26,13 +60,13 @@ echo "Run Android license tool..."
 sdkmanager --licenses
 echo "Installing platform tools..."
 sdkmanager --install platform-tools
-echo "Installing Android 37.0..."
-sdkmanager --install "platforms;android-37.0"
-echo "Installing NDK 28.2.13676358..."
-sdkmanager --install "ndk;28.2.13676358"
-echo "Installing CMake 3.30.5..."
-sdkmanager --install "cmake;3.30.5"
-echo "Installing build tools 37.0.0..."
-sdkmanager --install "build-tools;37.0.0"
+echo "Installing platform $ANDROID_PLATFORM..."
+sdkmanager --install "platforms;$ANDROID_PLATFORM"
+echo "Installing NDK $NDK_VERSION..."
+sdkmanager --install "ndk;$NDK_VERSION"
+echo "Installing CMake $CMAKE_VERSION..."
+sdkmanager --install "cmake;$CMAKE_VERSION"
+echo "Installing build tools $BUILD_TOOLS_VERSION..."
+sdkmanager --install "build-tools;$BUILD_TOOLS_VERSION"
 
 echo "Done."
