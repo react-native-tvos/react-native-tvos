@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<8daa3cebd554caa27139d96604fcc368>>
+ * @generated SignedSource<<bb06401cf84ea9f84603f4c19ebf87fc>>
  */
 
 /**
@@ -31,6 +31,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool cdpInteractionMetricsEnabled() = 0;
   virtual bool cxxNativeAnimatedEnabled() = 0;
   virtual bool defaultTextToOverflowHidden() = 0;
+  virtual bool deferTextInputTruncationIOS() = 0;
   virtual bool disableEarlyViewCommandExecution() = 0;
   virtual bool disableIdleEventDispatchFrameCallbackRearmAndroid() = 0;
   virtual bool disableIdleMountItemFrameCallbackRearmAndroid() = 0;
@@ -55,6 +56,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool enableFabricCommitBranchingMergeOnMainThread() = 0;
   virtual bool enableFabricLogs() = 0;
   virtual bool enableFlexboxAutoMinSizeInStrictMode() = 0;
+  virtual bool enableFollowUpMountItemDispatchAndroid() = 0;
   virtual bool enableFontScaleChangesUpdatingLayout() = 0;
   virtual bool enableIOSCompressedTextFrameAdjustment() = 0;
   virtual bool enableIOSTextBaselineOffsetPerLine() = 0;
@@ -94,6 +96,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool fuseboxFrameRecordingEnabled() = 0;
   virtual bool fuseboxScreenshotCaptureEnabled() = 0;
   virtual bool fuseboxWebSocketEventsEnabled() = 0;
+  virtual bool keepTimersRunningWhileHostPausedAndroid() = 0;
   virtual bool optimizedAnimatedPropUpdates() = 0;
   virtual bool overrideBySynchronousMountPropsAtMountingAndroid() = 0;
   virtual bool perfIssuesEnabled() = 0;
@@ -105,6 +108,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool shouldPressibilityUseW3CPointerEventsForHover() = 0;
   virtual bool shouldTriggerResponderTransferOnScrollAndroid() = 0;
   virtual bool skipActivityIdentityAssertionOnHostPause() = 0;
+  virtual bool skipUnchangedChildrenInDifferentiator() = 0;
   virtual bool syncAndroidClipBoundsWithOverflow() = 0;
   virtual bool traceTurboModulePromiseRejectionsOnAndroid() = 0;
   virtual bool updateRuntimeShadowNodeReferencesOnCommit() = 0;
@@ -116,6 +120,7 @@ class ReactNativeFeatureFlagsProvider {
   virtual bool useSharedAnimatedBackend() = 0;
   virtual bool useTraitHiddenOnAndroid() = 0;
   virtual bool useTurboModuleInterop() = 0;
+  virtual bool useWindowDensityForDisplayMetricsAndroid() = 0;
   virtual double viewCullingOutsetRatio() = 0;
   virtual bool viewTransitionEnabled() = 0;
   virtual bool viewTransitionUseHardwareBitmapAndroid() = 0;

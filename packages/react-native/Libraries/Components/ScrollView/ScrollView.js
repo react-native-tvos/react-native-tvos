@@ -1630,8 +1630,8 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
       // then the second tap goes to the actual interior view)
       const {keyboardShouldPersistTaps} = this.props;
       const keyboardNeverPersistTaps =
-        // $FlowFixMe[sketchy-null-bool]
-        !keyboardShouldPersistTaps || keyboardShouldPersistTaps === 'never';
+        keyboardShouldPersistTaps == null ||
+        keyboardShouldPersistTaps === 'never';
 
       if (typeof e.target === 'number') {
         if (__DEV__) {
@@ -1713,8 +1713,8 @@ class ScrollView extends React.Component<ScrollViewProps, ScrollViewState> {
 
     const {keyboardShouldPersistTaps} = this.props;
     const keyboardNeverPersistsTaps =
-      // $FlowFixMe[sketchy-null-bool]
-      !keyboardShouldPersistTaps || keyboardShouldPersistTaps === 'never';
+      keyboardShouldPersistTaps == null ||
+      keyboardShouldPersistTaps === 'never';
 
     // Dismiss the keyboard now if we didn't become responder in capture phase
     // to eat presses, but still want to dismiss on interaction.
