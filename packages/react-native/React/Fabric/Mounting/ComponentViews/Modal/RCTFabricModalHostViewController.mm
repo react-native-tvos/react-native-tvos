@@ -15,12 +15,12 @@
   CGRect _lastViewBounds;
 #if !TARGET_OS_TV
   RCTSurfaceTouchHandler *_touchHandler;
-#endif
   BOOL _hasCapturedStatusBar;
   UIStatusBarStyle _capturedStatusBarStyle;
   BOOL _capturedStatusBarHidden;
   UIStatusBarStyle _jsStatusBarStyleAtCapture;
   BOOL _jsStatusBarHiddenAtCapture;
+#endif
 }
 
 - (instancetype)init
