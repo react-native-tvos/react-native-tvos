@@ -84,21 +84,20 @@ function pushDimensions(
   surfaceId: RootTag,
   displayMetrics: DisplayMetrics,
 ): void {
+  const previousDisplayMetrics = Dimensions.get('window');
   activeRootDisplayMetrics.set(surfaceId, displayMetrics);
   Dimensions.set({window: displayMetrics, screen: displayMetrics});
-  for (const metrics of activeRootDisplayMetrics.values()) {
-    if (
-      metrics.width !== displayMetrics.width ||
-      metrics.height !== displayMetrics.height ||
-      metrics.scale !== displayMetrics.scale ||
-      metrics.fontScale !== displayMetrics.fontScale
-    ) {
-      console.warn(
-        'Fantom.createRoot() updated global Dimensions while another active root has different display metrics. Dimensions and PixelRatio now reflect the new root.',
-        {existingRoot: metrics, newRoot: displayMetrics},
-      );
-      break;
-    }
+  if (
+    activeRootDisplayMetrics.size > 1 &&
+    (previousDisplayMetrics.width !== displayMetrics.width ||
+      previousDisplayMetrics.height !== displayMetrics.height ||
+      previousDisplayMetrics.scale !== displayMetrics.scale ||
+      previousDisplayMetrics.fontScale !== displayMetrics.fontScale)
+  ) {
+    console.warn(
+      'Fantom.createRoot() updated global Dimensions while another active root has different display metrics. Dimensions and PixelRatio now reflect the new root.',
+      {existingRoot: previousDisplayMetrics, newRoot: displayMetrics},
+    );
   }
 }
 

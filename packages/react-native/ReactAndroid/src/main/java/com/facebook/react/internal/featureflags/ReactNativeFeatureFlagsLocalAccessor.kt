@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f18d16c52745abc62a0b9ccad5358a0b>>
+ * @generated SignedSource<<c305274be2fc6720b6c0eb75e78bd6b0>>
  */
 
 /**
@@ -54,7 +54,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableFabricLogsCache: Boolean? = null
   private var enableFlexboxAutoMinSizeInStrictModeCache: Boolean? = null
   private var enableFollowUpMountItemDispatchAndroidCache: Boolean? = null
-  private var enableFontScaleChangesUpdatingLayoutCache: Boolean? = null
   private var enableIOSCompressedTextFrameAdjustmentCache: Boolean? = null
   private var enableIOSTextBaselineOffsetPerLineCache: Boolean? = null
   private var enableIOSViewClipToPaddingBoxCache: Boolean? = null
@@ -419,16 +418,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableFollowUpMountItemDispatchAndroid()
       accessedFeatureFlags.add("enableFollowUpMountItemDispatchAndroid")
       enableFollowUpMountItemDispatchAndroidCache = cached
-    }
-    return cached
-  }
-
-  override fun enableFontScaleChangesUpdatingLayout(): Boolean {
-    var cached = enableFontScaleChangesUpdatingLayoutCache
-    if (cached == null) {
-      cached = currentProvider.enableFontScaleChangesUpdatingLayout()
-      accessedFeatureFlags.add("enableFontScaleChangesUpdatingLayout")
-      enableFontScaleChangesUpdatingLayoutCache = cached
     }
     return cached
   }
