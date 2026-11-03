@@ -1263,7 +1263,9 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     _tvParallaxProperties.pressDelay = [self getFloat:newViewProps.tvParallaxProperties.pressDelay orDefault:0.0];
   }
   // `hasTVPreferredFocus
-  if (oldViewProps.hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
+  // Compare against the current state, not `_props`: `prepareForRecycle` resets
+  // `_hasTVPreferredFocus` but keeps `_props`.
+  if (_hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
     _hasTVPreferredFocus = newViewProps.hasTVPreferredFocus;
     if (_hasTVPreferredFocus) {
       [self requestFocusSelf];
@@ -1548,6 +1550,8 @@ static BOOL RCTEdgeInsetsEqualWithThreshold(UIEdgeInsets lhs, UIEdgeInsets rhs, 
 
 #if TARGET_OS_TV
   [self removeFocusGuide];
+  _hasTVPreferredFocus = NO;
+  _shouldFocusOnMount = false;
 #endif
 
   // Clean up box shadow layers to prevent cross-component contamination
