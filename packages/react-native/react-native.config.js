@@ -89,14 +89,6 @@ const config = {
     }>} */,
 };
 
-if (ios != null) {
-  config.commands.push(...ios.commands);
-  config.platforms.ios = {
-    projectConfig: ios.projectConfig,
-    dependencyConfig: ios.dependencyConfig,
-  };
-}
-
 if (android != null) {
   config.commands.push(...android.commands);
   config.platforms.android = {
@@ -113,6 +105,7 @@ try {
   config.platforms.tvos = {
     projectConfig: apple.getProjectConfig({platformName: 'tvos'}),
     dependencyConfig: apple.getDependencyConfig({platformName: 'tvos'}),
+    npmPackageName: 'react-native-macos',
   };
 } catch {
   if (verbose) {

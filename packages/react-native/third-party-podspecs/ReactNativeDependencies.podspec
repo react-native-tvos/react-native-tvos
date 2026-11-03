@@ -9,7 +9,7 @@ require_relative "../scripts/cocoapods/utils.rb"
 begin
   react_native_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
     'require.resolve(
-    "react-native",
+    "react-native-tvos",
     {paths: [process.argv[1]]},
     )', __dir__]).strip
   )

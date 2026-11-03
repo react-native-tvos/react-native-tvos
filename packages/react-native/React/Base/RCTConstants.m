@@ -7,7 +7,7 @@
 
 #import "RCTConstants.h"
 
-NSString *const RCTPlatformName = @"ios";
+NSString *const RCTPlatformName = @"tvos";
 
 NSString *const RCTUserInterfaceStyleDidChangeNotification = @"RCTUserInterfaceStyleDidChangeNotification";
 NSString *const RCTUserInterfaceStyleDidChangeNotificationTraitCollectionKey = @"traitCollection";

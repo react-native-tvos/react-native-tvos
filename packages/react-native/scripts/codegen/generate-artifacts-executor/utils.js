@@ -479,7 +479,7 @@ function findReactNativeRootPath(projectRoot /* : string */) /* : string */ {
   let reactNativePackageJsonPath;
   try {
     reactNativePackageJsonPath = require.resolve(
-      path.join('react-native', 'package.json'),
+      path.join('react-native-tvos', 'package.json'),
       {
         paths: [projectRoot],
       },

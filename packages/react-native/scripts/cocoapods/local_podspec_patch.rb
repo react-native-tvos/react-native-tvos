@@ -7,7 +7,7 @@
 # This is necessary because local podspec dependencies must be otherwise manually updated.
 module LocalPodspecPatch
     # Returns local podspecs whose versions differ from the one in the `react-native` package.
-    def self.pods_to_update(react_native_path: "../node_modules/react-native", dir_manager: Dir, file_manager: File)
+    def self.pods_to_update(react_native_path: "../node_modules/react-native-tvos", dir_manager: Dir, file_manager: File)
         @@local_podspecs = dir_manager.glob("#{react_native_path}/third-party-podspecs/*").map { |file| file_manager.basename(file, ".podspec") }
         @@local_podspecs = @@local_podspecs.select do |podspec_name|
 

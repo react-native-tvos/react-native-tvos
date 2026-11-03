@@ -38,7 +38,8 @@ def list_native_modules!(config_command)
   config = JSON.parse(json)
 
   packages = config["dependencies"]
-  ios_project_root = Pathname.new(config["project"]["ios"]["sourceDir"])
+  project_config = config["project"]["tvos"] || config["project"]["ios"]
+  ios_project_root = Pathname.new(project_config["sourceDir"])
   react_native_path = Pathname.new(config["reactNativePath"])
   codegen_output_path = ios_project_root.join("build/generated/autolinking/autolinking.json")
 
@@ -49,7 +50,7 @@ def list_native_modules!(config_command)
   found_pods = []
 
   packages.each do |package_name, package|
-    next unless package_config = package["platforms"]["ios"]
+    next unless package_config = package["platforms"]["tvos"] || package["platforms"]["ios"]
 
     name = package["name"]
     podspec_path = package_config["podspecPath"]
@@ -108,6 +109,8 @@ end
 #   - :react_native_path - Relative path to the react_native from the project, e.g. ./node_modules/react-native
 def link_native_modules!(config)
   Pod::UI.puts "link_native_modules! #{config}"
+
+  Pod::UI.warn("react_native_path = #{config[:react_native_path]}")
 
   if !(
     config[:ios_packages].is_a? Array and

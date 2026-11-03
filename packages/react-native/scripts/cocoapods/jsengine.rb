@@ -9,7 +9,7 @@ require_relative './utils.rb'
 #
 # @parameter react_native_path: relative path to react-native
 # @parameter fabric_enabled: whether Fabirc is enabled
-def setup_hermes!(react_native_path: "../node_modules/react-native")
+def setup_hermes!(react_native_path: "../node_modules/react-native-tvos")
     react_native_dir = Pod::Config.instance.installation_root.join(react_native_path)
     # This `:tag => hermestag` below is only to tell CocoaPods to update hermes-engine when React Native version changes.
     # We have custom logic to compute the source for hermes-engine. See sdks/hermes-engine/*

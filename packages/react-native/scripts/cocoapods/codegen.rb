@@ -11,7 +11,7 @@ def run_codegen!(
   config_file_dir,
   new_arch_enabled: true,
   disable_codegen: false,
-  react_native_path: "../node_modules/react-native",
+  react_native_path: "../node_modules/react-native-tvos",
   fabric_enabled: false,
   hermes_enabled: true,
   codegen_output_dir: 'build/generated/ios',

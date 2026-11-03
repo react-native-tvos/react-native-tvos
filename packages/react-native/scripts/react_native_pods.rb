@@ -41,7 +41,7 @@ end
 # By using this function, you won't have to manually change your Podfile
 # when we change the minimum version supported by the framework.
 def min_supported_versions
-  return  { :ios => min_ios_version_supported, :tvos => min_ios_version_supported }
+  return  { :tvos => min_ios_version_supported }
 end
 
 # This function prepares the project for React Native, before processing
@@ -87,7 +87,7 @@ end
 # - app_path: path to the React Native app. Required by the New Architecture.
 # - config_file_dir: directory of the `package.json` file, required by the New Architecture.
 def use_react_native! (
-  path: "../node_modules/react-native",
+  path: "../node_modules/react-native-tvos",
   fabric_enabled: false,
   new_arch_enabled: NewArchitectureHelper.new_arch_enabled,
   production: false, # deprecated
@@ -575,7 +575,7 @@ end
 # - enable_hermes_profiler: whether the hermes profiler should be turned on in Release mode
 def react_native_post_install(
   installer,
-  react_native_path = "../node_modules/react-native",
+  react_native_path = "../node_modules/react-native-tvos",
   mac_catalyst_enabled: false,
   ccache_enabled: ENV['USE_CCACHE'] == '1'
 )

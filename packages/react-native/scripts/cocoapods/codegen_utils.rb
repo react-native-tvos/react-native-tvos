@@ -26,7 +26,7 @@ class CodegenUtils
     def use_react_native_codegen_discovery!(
       codegen_disabled,
       app_path,
-      react_native_path: "../node_modules/react-native",
+      react_native_path: "../node_modules/react-native-tvos",
       fabric_enabled: false,
       hermes_enabled: true,
       config_file_dir: '',

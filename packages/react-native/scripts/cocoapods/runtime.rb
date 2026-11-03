@@ -7,7 +7,7 @@
 # Set up Bridgeless dependencies
 #
 # @parameter react_native_path: relative path to react-native
-def setup_bridgeless!(react_native_path: "../node_modules/react-native", use_hermes: true)
+def setup_bridgeless!(react_native_path: "../node_modules/react-native-tvos", use_hermes: true)
     pod "React-jsitracing", :path => "#{react_native_path}/ReactCommon/hermes/executor/"
     pod "React-runtimescheduler", :path => "#{react_native_path}/ReactCommon/react/renderer/runtimescheduler"
     pod 'React-RuntimeCore', :path => "#{react_native_path}/ReactCommon/react/runtime"
