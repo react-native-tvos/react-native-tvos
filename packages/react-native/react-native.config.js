@@ -105,7 +105,7 @@ try {
   config.platforms.tvos = {
     projectConfig: apple.getProjectConfig({platformName: 'tvos'}),
     dependencyConfig: apple.getDependencyConfig({platformName: 'tvos'}),
-    npmPackageName: 'react-native-macos',
+    npmPackageName: 'react-native-tvos',
   };
 } catch {
   if (verbose) {
