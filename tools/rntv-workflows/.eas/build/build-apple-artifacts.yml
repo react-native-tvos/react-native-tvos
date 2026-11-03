@@ -140,6 +140,10 @@ build:
         command: |
           export REACT_NATIVE_VERSION=`npx tsx tools/rntv-workflows/src/get-react-native-version.ts`
           echo "REACT_NATIVE_VERSION: $REACT_NATIVE_VERSION"
+          df -h .
+          du -sh maven-local packages/react-native/.build
+          rm -rf packages/react-native/.build
+          df -h .
           (cd maven-local; tar zcf $ROOT_DIR/react-native-artifacts-$REACT_NATIVE_VERSION.tgz *)
     - run:
         name: Send Apple artifacts to Sonatype
