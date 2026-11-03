@@ -9579,6 +9579,7 @@ class facebook::jsi::RuntimeDecorator : public facebook::jsi::Runtime {
   protected virtual facebook::jsi::WeakObject createWeakObject(const facebook::jsi::Object& o) override;
   protected virtual size_t byteLength(const facebook::jsi::TypedArray& typedArray) override;
   protected virtual size_t byteOffset(const facebook::jsi::TypedArray& typedArray) override;
+  protected virtual size_t length(const facebook::jsi::String& str) override;
   protected virtual size_t length(const facebook::jsi::TypedArray& typedArray) override;
   protected virtual size_t push(const facebook::jsi::Array& a, const facebook::jsi::Value* elements, size_t count) override;
   protected virtual size_t size(const facebook::jsi::Array& a) override;
@@ -9627,6 +9628,14 @@ class facebook::jsi::RuntimeDecorator : public facebook::jsi::Runtime {
   public virtual facebook::jsi::ICast* castInterface(const facebook::jsi::UUID& interfaceUUID) override;
   public virtual facebook::jsi::Instrumentation& instrumentation() override;
   public virtual facebook::jsi::Object global() override;
+  public virtual facebook::jsi::Value createError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createEvalError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createRangeError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createReferenceError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createSyntaxError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createTypeError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createURIError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createValueFromJsonUtf8(const uint8_t* json, size_t length) override;
   public virtual facebook::jsi::Value evaluateJavaScript(const std::shared_ptr<const facebook::jsi::Buffer>& buffer, const std::string& sourceURL) override;
   public virtual facebook::jsi::Value evaluatePreparedJavaScript(const std::shared_ptr<const facebook::jsi::PreparedJavaScript>& js) override;
   public virtual std::shared_ptr<const facebook::jsi::PreparedJavaScript> prepareJavaScript(const std::shared_ptr<const facebook::jsi::Buffer>& buffer, std::string sourceURL) override;
@@ -9697,6 +9706,7 @@ class facebook::jsi::WithRuntimeDecorator : public facebook::jsi::RuntimeDecorat
   protected virtual facebook::jsi::WeakObject createWeakObject(const facebook::jsi::Object& o) override;
   protected virtual size_t byteLength(const facebook::jsi::TypedArray& typedArray) override;
   protected virtual size_t byteOffset(const facebook::jsi::TypedArray& typedArray) override;
+  protected virtual size_t length(const facebook::jsi::String& str) override;
   protected virtual size_t length(const facebook::jsi::TypedArray& typedArray) override;
   protected virtual size_t push(const facebook::jsi::Array& a, const facebook::jsi::Value* elements, size_t count) override;
   protected virtual size_t size(const facebook::jsi::Array& a) override;
@@ -9732,6 +9742,13 @@ class facebook::jsi::WithRuntimeDecorator : public facebook::jsi::RuntimeDecorat
   public virtual facebook::jsi::ICast* castInterface(const facebook::jsi::UUID& interfaceUUID) override;
   public virtual facebook::jsi::Instrumentation& instrumentation() override;
   public virtual facebook::jsi::Object global() override;
+  public virtual facebook::jsi::Value createError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createEvalError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createRangeError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createReferenceError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createSyntaxError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createTypeError(const facebook::jsi::String& msg) override;
+  public virtual facebook::jsi::Value createURIError(const facebook::jsi::String& msg) override;
   public virtual facebook::jsi::Value evaluateJavaScript(const std::shared_ptr<const facebook::jsi::Buffer>& buffer, const std::string& sourceURL) override;
   public virtual facebook::jsi::Value evaluatePreparedJavaScript(const std::shared_ptr<const facebook::jsi::PreparedJavaScript>& js) override;
   public virtual std::shared_ptr<const facebook::jsi::PreparedJavaScript> prepareJavaScript(const std::shared_ptr<const facebook::jsi::Buffer>& buffer, std::string sourceURL) override;

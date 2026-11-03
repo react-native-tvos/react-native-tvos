@@ -70,7 +70,9 @@ let rctDeprecation = RNTarget(
 let yoga = RNTarget(
   name: .yoga,
   path: "ReactCommon/yoga",
-  publicHeadersPath: "yoga"
+  publicHeadersPath: "yoga",
+  // Android builds Yoga at -O2 in every build type, Debug included, so match it.
+  defines: [.unsafeFlags(["-O2"])]
 )
 
 // React-oscompat.podspec

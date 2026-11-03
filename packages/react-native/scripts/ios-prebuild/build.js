@@ -56,6 +56,23 @@ function computeFrameworkPaths(
   return frameworkPaths;
 }
 
+function getSwiftPackageBuildCommand(
+  buildType /*: BuildFlavor */,
+  platform /*: Destination */,
+  outputFolder /*: string */,
+) /*: string */ {
+  const command =
+    `xcodebuild -scheme React -destination "generic/platform=${platform}" -derivedDataPath "${outputFolder}" ` +
+    `-configuration "${buildType}" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES OTHER_SWIFT_FLAGS="-no-verify-emitted-module-interface" ` +
+    `DEBUG_INFORMATION_FORMAT="dwarf-with-dsym"`;
+  // Xcode defaults Release to -Os. Android builds React Native at -O2 in
+  // Release. A command-line setting applies to every configuration, so add it
+  // only to Release builds.
+  return buildType === 'Release'
+    ? `${command} GCC_OPTIMIZATION_LEVEL=2`
+    : command;
+}
+
 function buildSwiftPackage(
   rootFolder /*: string */,
   buildFolder /*: string */,
@@ -64,9 +81,9 @@ function buildSwiftPackage(
   outputFolder /*: string */,
 ) {
   const buildCommand =
-    `set -o pipefail && xcodebuild -scheme React -destination "generic/platform=${platform}" -derivedDataPath "${outputFolder}" ` +
-    `-configuration "${buildType}" SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES OTHER_SWIFT_FLAGS="-no-verify-emitted-module-interface" ` +
-    `DEBUG_INFORMATION_FORMAT="dwarf-with-dsym" | npx @expo/xcpretty`;
+    'set -o pipefail && ' +
+    getSwiftPackageBuildCommand(buildType, platform, outputFolder) +
+    ' | npx @expo/xcpretty';
   buildLog(`Building Swift package for ${buildType}`);
   buildLog(buildCommand);
 
@@ -109,4 +126,5 @@ module.exports = {
   buildSwiftPackage,
   computeFrameworkPaths,
   computeProductsFolder,
+  getSwiftPackageBuildCommand,
 };

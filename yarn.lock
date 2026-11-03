@@ -7130,10 +7130,10 @@ hasown@^2.0.3:
   dependencies:
     function-bind "^1.1.2"
 
-hermes-compiler@260318099.0.4:
-  version "260318099.0.4"
-  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-260318099.0.4.tgz#439234ef0621122062243cb0b77e7786357767ce"
-  integrity sha512-8odcPFkPC82HlqCl0C5QI9mBN4rEAT+IAo55sJhzwKw//K3qZloiv3ex6J2O8CuBbhdmkJozfidNsset2KH25w==
+hermes-compiler@260318099.0.5:
+  version "260318099.0.5"
+  resolved "https://registry.yarnpkg.com/hermes-compiler/-/hermes-compiler-260318099.0.5.tgz#8439c5d5bb3faee97ba19de30f3f5acfa5fb4954"
+  integrity sha512-4Gze+pGTGTUBRmnv6LtdOMo6ZzMMh3hEkvDiWzvuNL5LM0EO5YGhr8xh3fRjFaEqReUwEGjJGcGgEPFe9+E6Gw==
 
 hermes-estree@0.25.1:
   version "0.25.1"
