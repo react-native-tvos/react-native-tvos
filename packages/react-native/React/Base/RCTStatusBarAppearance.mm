@@ -10,6 +10,8 @@
 #import "RCTAssert.h"
 #import "RCTUtils.h"
 
+#if !TARGET_OS_TV
+
 static UIStatusBarStyle sStyle = UIStatusBarStyleDefault;
 static BOOL sHidden = NO;
 static UIStatusBarAnimation sUpdateAnimation = UIStatusBarAnimationNone;
@@ -60,3 +62,5 @@ static UIStatusBarAnimation sUpdateAnimation = UIStatusBarAnimationNone;
 }
 
 @end
+
+#endif // !TARGET_OS_TV

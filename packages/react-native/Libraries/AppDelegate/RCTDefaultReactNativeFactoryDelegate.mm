@@ -23,6 +23,7 @@
 
 @implementation RCTRootViewController
 
+#if !TARGET_OS_TV
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
   return RCTStatusBarAppearance.style;
@@ -37,6 +38,7 @@
 {
   return RCTStatusBarAppearance.updateAnimation;
 }
+#endif
 
 @end
 
