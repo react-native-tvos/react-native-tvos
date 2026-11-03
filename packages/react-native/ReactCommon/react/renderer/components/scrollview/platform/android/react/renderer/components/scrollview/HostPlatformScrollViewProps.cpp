@@ -50,6 +50,12 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
           "endFillColor",
           sourceProps.endFillColor,
           clearColor())),
+      scrollsChildToFocus(convertRawProp(
+          context,
+          rawProps,
+          "scrollsChildToFocus",
+          sourceProps.scrollsChildToFocus,
+          true)),
       snapToItemPadding(convertRawProp(
           context,
           rawProps,
@@ -67,13 +73,7 @@ HostPlatformScrollViewProps::HostPlatformScrollViewProps(
           rawProps,
           "scrollAnimationEasing",
           sourceProps.scrollAnimationEasing,
-          {})),
-      scrollsChildToFocus(convertRawProp(
-          context,
-          rawProps,
-          "scrollsChildToFocus",
-          sourceProps.scrollsChildToFocus,
-          true)) {}
+          {})) {}
 
 void HostPlatformScrollViewProps::setProp(
     const PropsParserContext& context,
