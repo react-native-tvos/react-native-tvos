@@ -65,6 +65,16 @@ describe('VirtualizedList on TV', () => {
     });
   });
 
+  test('gives the focus guide a flex key the list unsets', async () => {
+    expect(
+      await renderFocusGuideStyle([{flex: 1}, {flexGrow: undefined}]),
+    ).toStrictEqual({
+      flex: 1,
+      flexGrow: undefined,
+      flexShrink: 1,
+    });
+  });
+
   test('keeps size, margins and looks off the focus guide', async () => {
     expect(
       await renderFocusGuideStyle([

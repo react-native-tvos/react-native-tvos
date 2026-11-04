@@ -2400,19 +2400,20 @@ class VirtualizedList extends StateSafePureComponent<
 }
 
 // On TV the ScrollView sits inside a TVFocusGuideView, so the guide takes the
-// flex that the ScrollView would take in the list's parent.
+// flex that the ScrollView would take in the list's parent: the ScrollView base
+// flex, then each flex key the list's style sets, as the flattened style has it.
 function tvFocusGuideStyle(
   listStyle: StyleProp<ViewStyle>,
 ): StyleProp<ViewStyle> {
-  const {flex, flexGrow, flexShrink, flexBasis, alignSelf} =
-    StyleSheet.flatten(listStyle) ?? {};
+  const flatStyle = StyleSheet.flatten(listStyle) ?? {};
+  const {flex, flexGrow, flexShrink, flexBasis, alignSelf} = flatStyle;
   return [
     styles.tvFocusGuide,
-    flex != null ? {flex} : null,
-    flexGrow != null ? {flexGrow} : null,
-    flexShrink != null ? {flexShrink} : null,
-    flexBasis != null ? {flexBasis} : null,
-    alignSelf != null ? {alignSelf} : null,
+    'flex' in flatStyle ? {flex} : null,
+    'flexGrow' in flatStyle ? {flexGrow} : null,
+    'flexShrink' in flatStyle ? {flexShrink} : null,
+    'flexBasis' in flatStyle ? {flexBasis} : null,
+    'alignSelf' in flatStyle ? {alignSelf} : null,
   ];
 }
 
