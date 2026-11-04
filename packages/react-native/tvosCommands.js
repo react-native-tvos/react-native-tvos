@@ -2,16 +2,7 @@
  * @flow
  */
 
-let apple;
-try {
-  apple = require('@react-native-community/cli-platform-apple');
-} catch {
-  if (verbose) {
-    console.warn(
-      '@react-native-community/cli-platform-apple not found, the react-native.config.js may be unusable.'
-    );
-  }
-}
+const apple = require('@react-native-community/cli-platform-apple');
 
 const platformName = 'tvos';
 

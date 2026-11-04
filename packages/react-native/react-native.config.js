@@ -57,19 +57,6 @@ try {
   }
 }
 
-let ios;
-try {
-  ios = findCommunityPlatformPackage(
-    '@react-native-community/cli-platform-ios',
-  );
-} catch {
-  if (verbose) {
-    console.warn(
-      '@react-native-community/cli-platform-ios not found, the react-native.config.js may be unusable.',
-    );
-  }
-}
-
 const commands /*: Array<Command> */ = [];
 
 const {

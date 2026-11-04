@@ -110,8 +110,6 @@ end
 def link_native_modules!(config)
   Pod::UI.puts "link_native_modules! #{config}"
 
-  Pod::UI.warn("react_native_path = #{config[:react_native_path]}")
-
   if !(
     config[:ios_packages].is_a? Array and
     config[:ios_project_root_path].is_a? String and
