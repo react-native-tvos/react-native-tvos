@@ -1405,6 +1405,7 @@ class VirtualizedList extends StateSafePureComponent<
         }}>
         {Platform.isTV ? (
           <TVFocusGuideView
+            style={tvFocusGuideStyle(this.props.style)}
             {...trapFocusHorizontal}
             trapFocusUp={
               !horizontalOrDefault(this.props.horizontal) &&
@@ -2398,7 +2399,28 @@ class VirtualizedList extends StateSafePureComponent<
   }
 }
 
+// On TV the ScrollView sits inside a TVFocusGuideView, so the guide takes the
+// flex that the ScrollView would take in the list's parent.
+function tvFocusGuideStyle(
+  listStyle: StyleProp<ViewStyle>,
+): StyleProp<ViewStyle> {
+  const {flex, flexGrow, flexShrink, flexBasis, alignSelf} =
+    StyleSheet.flatten(listStyle) ?? {};
+  return [
+    styles.tvFocusGuide,
+    flex != null ? {flex} : null,
+    flexGrow != null ? {flexGrow} : null,
+    flexShrink != null ? {flexShrink} : null,
+    flexBasis != null ? {flexBasis} : null,
+    alignSelf != null ? {alignSelf} : null,
+  ];
+}
+
 const styles = StyleSheet.create({
+  tvFocusGuide: {
+    flexGrow: 1,
+    flexShrink: 1,
+  },
   verticallyInverted:
     Platform.OS === 'android'
       ? {transform: [{scale: -1}]}
