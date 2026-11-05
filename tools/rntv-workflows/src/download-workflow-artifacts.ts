@@ -7,11 +7,17 @@
  * Defaults to fetching the react-native-tvos NPM packages (`build_npm_packages`)
  * and the RNTester app builds (jobs whose key starts with `build_rntester_`).
  *
- * Each EAS artifact bundle is itself a thin wrapper around one or more inner
- * tarballs (e.g. `build/react-native-1000.0.0.tgz`, `build/rntester-*.tgz`).
- * The script downloads the bundle to a temp directory, extracts it, and copies
- * the inner `.tgz` files to the output directory; the outer bundle never lands
- * on disk in `outDir`.
+ * When a job uploads several files, EAS wraps them in a bundle (e.g. holding
+ * `build/react-native-1000.0.0.tgz`, `build/rntester-*.tgz`). The script
+ * downloads the bundle to a temp directory, extracts it, and copies the inner
+ * `.tgz` files to the output directory; the outer bundle never lands on disk in
+ * `outDir`.
+ *
+ * When a job uploads a single file, EAS serves that file as the artifact
+ * itself, under a generated name. The script detects this case (the archive
+ * holds no inner tarballs) and copies the download to `outDir` under the name
+ * the job gave it, rebuilt from the job key and the React Native version at the
+ * run's commit; see `getPassthroughFileName`.
  *
  * Usage (run from the top of the repository):
  *   tools/rntv-workflows/src/download-workflow-artifacts.ts [<runId>] [--include npm,rntester|all] [--out <dir>]
@@ -64,6 +70,7 @@ type WorkflowJob = {
 
 type WorkflowRun = {
   id: string;
+  gitCommitHash: string;
   jobs: WorkflowJob[];
 };
 
@@ -366,8 +373,18 @@ async function executeScriptAsync(): Promise<void> {
   // eslint-disable-next-line no-console
   console.log(`Downloading ${matched.length} artifact(s) to ${outDir}`);
 
+  const repoRoot = path.resolve(easProjectDir, '..', '..');
+  let version: string | undefined;
+  const getVersionAsync = async (): Promise<string> => {
+    version ??= await readReactNativeVersionAsync(
+      workflow.gitCommitHash,
+      repoRoot,
+    );
+    return version;
+  };
+
   for (const job of matched) {
-    await extractInnerTarballsForJobAsync(job, outDir);
+    await extractInnerTarballsForJobAsync(job, outDir, getVersionAsync);
   }
 
   // eslint-disable-next-line no-console
@@ -388,9 +405,47 @@ async function findInnerTarballsAsync(dir: string): Promise<string[]> {
   return results;
 }
 
+/**
+ * Read the React Native version at the run's commit, which names the RNTester
+ * tarballs. The commit must be present in the local clone.
+ */
+async function readReactNativeVersionAsync(
+  gitCommitHash: string,
+  repoRoot: string,
+): Promise<string> {
+  const spec = `${gitCommitHash}:packages/react-native/package.json`;
+  let stdout: string;
+  try {
+    ({ stdout } = await spawnAsync('git', ['show', spec], {
+      cwd: repoRoot,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    }));
+  } catch {
+    throw new Error(
+      `Cannot read ${spec} to name a single-file artifact. Fetch the run's commit (git fetch origin) and retry.`,
+    );
+  }
+  return (JSON.parse(stdout) as { version: string }).version;
+}
+
+/**
+ * The name a job gave its only uploaded file, which EAS does not keep. Must
+ * match the `tar zcf` output name in the job's build config.
+ */
+function getPassthroughFileName(jobKey: string, version: string): string {
+  const appleMatch = jobKey.match(/^build_rntester_apple_(debug|release)$/);
+  if (appleMatch) {
+    return `rntester-${version}-appletv-${appleMatch[1]}.tgz`;
+  }
+  throw new Error(
+    `Job ${jobKey} uploaded a single file, and this script does not know its name. Add the job to getPassthroughFileName.`,
+  );
+}
+
 async function extractInnerTarballsForJobAsync(
   job: WorkflowJob,
   outDir: string,
+  getVersionAsync: () => Promise<string>,
 ): Promise<void> {
   const url = getArtifactUrl(job)!;
   const outerExt = getExtensionFromUrl(url);
@@ -398,18 +453,24 @@ async function extractInnerTarballsForJobAsync(
 
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), `wf-${job.key}-`));
   try {
-    await downloadFileAsync(url, tempDir, outerName);
-    await unpackTarArchiveAsync(path.join(tempDir, outerName), tempDir);
+    const downloadDir = path.join(tempDir, 'download');
+    const contentsDir = path.join(tempDir, 'contents');
+    await fs.mkdir(downloadDir);
+    await fs.mkdir(contentsDir);
 
-    // Don't re-walk the outer archive itself.
-    await fs.rm(path.join(tempDir, outerName));
+    const outerPath = path.join(downloadDir, outerName);
+    await downloadFileAsync(url, downloadDir, outerName);
+    await unpackTarArchiveAsync(outerPath, contentsDir);
 
-    const innerTarballs = await findInnerTarballsAsync(tempDir);
+    const innerTarballs = await findInnerTarballsAsync(contentsDir);
     if (innerTarballs.length === 0) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `  ${job.key.padEnd(32)} -> (no .tgz files found inside ${outerName}; skipping)`,
+      const fileName = getPassthroughFileName(
+        job.key,
+        await getVersionAsync(),
       );
+      // eslint-disable-next-line no-console
+      console.log(`  ${job.key.padEnd(32)} -> ${fileName} (single file)`);
+      await fs.copyFile(outerPath, path.join(outDir, fileName));
       return;
     }
 
