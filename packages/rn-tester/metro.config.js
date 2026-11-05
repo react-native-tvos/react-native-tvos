@@ -14,6 +14,28 @@ const {getDefaultConfig} = require('@react-native/metro-config');
 const {mergeConfig} = require('metro-config');
 const path = require('node:path');
 
+const TVOS_PLATFORM_EXTENSIONS = ['tvos', 'ios', 'native'];
+
+/**
+ * Resolves `tvos` requests with the `.tvos`, `.ios`, `.native` file extensions in that order,
+ * because most React Native sources have an `.ios.js` file and no `.tvos.js` file.
+ *
+ * @type {NonNullable<import('metro-config').MetroConfig['resolver']>['resolveRequest']}
+ */
+function resolveRequest(context, moduleName, platform) {
+  if (platform !== 'tvos') {
+    return context.resolveRequest(context, moduleName, platform);
+  }
+  const sourceExts = TVOS_PLATFORM_EXTENSIONS.flatMap(platformExtension =>
+    context.sourceExts.map(sourceExt => `${platformExtension}.${sourceExt}`),
+  ).concat(context.sourceExts);
+  return context.resolveRequest(
+    {...context, preferNativePlatform: false, sourceExts},
+    moduleName,
+    null,
+  );
+}
+
 /**
  * This cli config is needed for development purposes, e.g. for running
  * integration tests during local development or on CI services.
@@ -40,9 +62,16 @@ const config = {
     blockList: [/..\/react-native\/sdks\/hermes/],
     extraNodeModules: {
       'react-native': path.resolve(__dirname, '../react-native'),
-      '@react-native-tvos/virtualized-lists': path.resolve(__dirname, '../virtualized-lists'),
-      '@react-native/virtualized-lists': path.resolve(__dirname, '../virtualized-lists'),
+      '@react-native-tvos/virtualized-lists': path.resolve(
+        __dirname,
+        '../virtualized-lists',
+      ),
+      '@react-native/virtualized-lists': path.resolve(
+        __dirname,
+        '../virtualized-lists',
+      ),
     },
+    resolveRequest,
   },
 };
 
