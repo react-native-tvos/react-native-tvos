@@ -71,6 +71,7 @@ export function baseCoreVersionStringForTV(versionStr: string) {
     }
     return versionToString({
       ...tvVersionInfo,
+      patch: corePatchForTVPatch(tvVersionInfo.patch),
       prerelease,
     });
   } catch (e) {} 
@@ -80,6 +81,15 @@ export function baseCoreVersionStringForTV(versionStr: string) {
     ...versionInfo,
     prerelease: null,
   });
+}
+
+/**
+ * Removes the 100 that out-of-tree preview releases add to the patch number of
+ * the core release they are built on: "0.88.101-tv.0" is built on "0.88.1".
+ */
+function corePatchForTVPatch(patch: string) {
+  const patchNumber = Number(patch);
+  return patchNumber >= 100 ? String(patchNumber - 100) : patch;
 }
 
 function versionToString(versionInfo: Version) {

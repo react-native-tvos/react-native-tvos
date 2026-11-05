@@ -865,6 +865,14 @@ class ReactNativePodsUtils
         end
     end
 
+    # Removes the 100 that out-of-tree preview releases add to the patch number of
+    # the core release they are built on: "0.88.101" gives "0.88.1".
+    def self.core_base_version_for_tv_base_version(base_version)
+        match = base_version.match(/^(\d+)\.(\d+)\.(\d+)$/)
+        return base_version if match.nil? || match[3].to_i < 100
+        return "#{match[1]}.#{match[2]}.#{match[3].to_i - 100}"
+    end
+
     # Computes the core release version on which a TV release version is based
     def self.core_version_for_tv_version(version)
         # See if the release version string has a dash (true for all TV releases)
@@ -881,7 +889,7 @@ class ReactNativePodsUtils
             return version
         end
 
-        core_base_version = match[1]
+        core_base_version = core_base_version_for_tv_base_version(match[1])
         prerelease = match[2]
         # Check to see if this matches the convention for TV prereleases ("0.79.0-0rc1", etc.)
         prerelease_match = prerelease.match(/0rc(\d+)/)

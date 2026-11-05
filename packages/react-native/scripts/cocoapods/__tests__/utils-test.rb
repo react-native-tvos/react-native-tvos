@@ -1123,6 +1123,17 @@ class UtilsTests < Test::Unit::TestCase
         assert_equal(["$(inherited)", test_flag], twiceProcessed_xcconfig.attributes["OTHER_CPLUSPLUSFLAGS"])
     end
 
+    # ============================================= #
+    # Test - Core Base Version For TV Base Version  #
+    # ============================================= #
+
+    def test_core_base_version_for_tv_base_version
+        assert_equal("0.75.2", ReactNativePodsUtils.core_base_version_for_tv_base_version("0.75.2"))
+        assert_equal("0.88.1", ReactNativePodsUtils.core_base_version_for_tv_base_version("0.88.101"))
+        assert_equal("0.88.10", ReactNativePodsUtils.core_base_version_for_tv_base_version("0.88.110"))
+        assert_equal("1000.0.0", ReactNativePodsUtils.core_base_version_for_tv_base_version("1000.0.0"))
+    end
+
     def test_add_ndebug_flag_to_pods_in_release
         # Arrange
         xcconfig = XCConfigMock.new("Config")

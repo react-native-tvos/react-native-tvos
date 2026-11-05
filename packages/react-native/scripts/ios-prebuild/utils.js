@@ -135,6 +135,20 @@ async function computeNightlyTarballURL(
 }
 
 /**
+ * Removes the 100 that out-of-tree preview releases add to the patch number of
+ * the core release they are built on: "0.88.101" gives "0.88.1".
+ */
+function coreBaseVersionForTVBaseVersion(
+  baseVersion /*: string */,
+) /*: string */ {
+  const match = baseVersion.match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!match || Number(match[3]) < 100) {
+    return baseVersion;
+  }
+  return `${match[1]}.${match[2]}.${Number(match[3]) - 100}`;
+}
+
+/**
  * Computes core release version needed for finding Hermes artifacts
  */
 function coreVersionForTVVersion(version /*: string */) /*: string */ {
@@ -155,7 +169,7 @@ function coreVersionForTVVersion(version /*: string */) /*: string */ {
     // Otherwise, return the entire version string
     return version;
   }
-  const coreBaseVersion = match[1];
+  const coreBaseVersion = coreBaseVersionForTVBaseVersion(match[1]);
   const prerelease = match[2];
   const prereleaseMatch = prerelease.match(/0rc(\d+)/);
   // Check to see if this matches the convention for TV prereleases ("0.79.0-0rc1", etc.)

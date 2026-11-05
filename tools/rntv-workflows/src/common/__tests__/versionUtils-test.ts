@@ -43,4 +43,10 @@ describe('baseCoreVersion tests', () => {
     expect(baseCoreVersionStringForTV('0.76.0-0rc1')).toEqual('0.76.0-rc.1');
     expect(baseCoreVersionStringForTV('0.75.3')).toEqual('0.75.3');
   });
+
+  test('Removes the out-of-tree preview offset from the patch number', () => {
+    expect(baseCoreVersionStringForTV('0.88.1-tv.0')).toEqual('0.88.1');
+    expect(baseCoreVersionStringForTV('0.88.101-tv.0')).toEqual('0.88.1');
+    expect(baseCoreVersionStringForTV('0.88.110-tv.2')).toEqual('0.88.10');
+  });
 });
