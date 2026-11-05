@@ -8,8 +8,6 @@
  * @format
  */
 
-
-
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
 const React = require('react');
@@ -80,7 +78,7 @@ const Card = ({
 // Section header
 const SectionHeader = ({title}: {title: string}) => (
   <View style={{marginBottom: px(16)}}>
-    <Text style={{color: '#e0e0e0', fontSize: px(28), fontWeight: '600' }}>
+    <Text style={{color: '#e0e0e0', fontSize: px(28), fontWeight: '600'}}>
       {title}
     </Text>
   </View>

@@ -382,7 +382,9 @@ const RNTesterApp = ({
   return (
     <RNTesterThemeContext.Provider value={theme}>
       <View style={styles.outerContainer}>
-        {Platform.OS === 'android' ? <StatusBar barStyle="dark-content" /> : null}
+        {Platform.OS === 'android' ? (
+          <StatusBar barStyle="dark-content" />
+        ) : null}
         {!shouldHideChrome && Platform.isTV && (
           <View style={styles.bottomNavbar}>
             <RNTesterNavBar

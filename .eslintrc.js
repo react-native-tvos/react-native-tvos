@@ -149,7 +149,7 @@ module.exports = {
       rules: {
         'eslint-comments/no-unused-disable': 'off',
         'ft-flow/require-valid-file-annotation': 'off',
-      }
-    }
+      },
+    },
   ],
 };

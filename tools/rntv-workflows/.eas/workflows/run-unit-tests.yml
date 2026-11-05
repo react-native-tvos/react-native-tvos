@@ -46,6 +46,6 @@ jobs:
           yarn test-generated-typescript
       - name: Run Jest tests
         id: test-jest
-        working_directory: ../..   
+        working_directory: ../..
         run: |
           npx jest packages/react-native
