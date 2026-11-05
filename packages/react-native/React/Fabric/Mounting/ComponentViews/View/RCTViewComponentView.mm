@@ -21,24 +21,23 @@
 #import <React/RCTBorderDrawing.h>
 #import <React/RCTBoxShadow.h>
 #import <React/RCTConversions.h>
+#import <React/RCTDefines.h>
 #import <React/RCTLinearGradient.h>
 #import <React/RCTLocalizedString.h>
 #import <React/RCTLog.h>
 #import <React/RCTRadialGradient.h>
 #import <React/RCTUtils.h>
 #import <react/featureflags/ReactNativeFeatureFlags.h>
-#import <React/RCTDefines.h>
-#import <React/RCTLog.h>
 
 #import <React/RCTSurfaceHostingProxyRootView.h>
 #if TARGET_OS_TV
 #import <React/RCTTVNavigationEventNotification.h>
 #endif
 
+#import <react/renderer/components/view/HostPlatformViewProps.h>
 #import <react/renderer/components/view/ViewComponentDescriptor.h>
 #import <react/renderer/components/view/ViewEventEmitter.h>
 #import <react/renderer/components/view/ViewProps.h>
-#import <react/renderer/components/view/HostPlatformViewProps.h>
 #import <react/renderer/components/view/accessibilityPropsConversions.h>
 #import <react/renderer/graphics/BlendMode.h>
 
@@ -154,7 +153,7 @@ static BOOL RCTViewIsInteractiveAccessibilityElement(UIView *view, const ViewPro
   BOOL _trapFocusDown;
   BOOL _trapFocusLeft;
   BOOL _trapFocusRight;
-  NSArray* _focusDestinations;
+  NSArray *_focusDestinations;
   id<UIFocusItem> _previouslyFocusedItem;
   NSString *_scrollSnapAlign;
   RCTSwiftUIContainerViewWrapper *_swiftUIWrapper;
@@ -187,7 +186,7 @@ static BOOL RCTViewIsInteractiveAccessibilityElement(UIView *view, const ViewPro
     _tvParallaxProperties.pressMagnification = 1.0f;
     _tvParallaxProperties.pressDuration = 0.3f;
     _tvParallaxProperties.pressDelay = 0.0f;
-    
+
     _shouldFocusOnMount = false;
 #endif
   }
@@ -275,10 +274,12 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 }
 
 /// Handles self-focusing logic. Shouldn't be used directly, use `requestFocusSelf` method instead.
--(bool)focusSelf {
+- (bool)focusSelf
+{
   RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];
-  if (rootview == nil) return false;
-  
+  if (rootview == nil)
+    return false;
+
   if (self.focusGuide != nil) {
     rootview.reactPreferredFocusEnvironments = self.focusGuide.preferredFocusEnvironments;
   } else {
@@ -291,9 +292,10 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 }
 
 /// Tries to move focus to `self`. Does that synchronously if possible, fallbacks to async if it fails.
--(void)requestFocusSelf {
+- (void)requestFocusSelf
+{
   bool focusedSync = [self focusSelf];
-  
+
   if (!focusedSync) {
     // `focusSelf` function relies on `rootView` which may not be present on the first render.
     // `focusSelf` fails and returns `false` in that case. We try re-executing the same action
@@ -302,7 +304,8 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   }
 }
 
-- (void)addFocusGuide:(NSArray*)destinations {
+- (void)addFocusGuide:(NSArray *)destinations
+{
   if (self.focusGuide == nil) {
     self.focusGuide = [UIFocusGuide new];
     [self addLayoutGuide:self.focusGuide];
@@ -312,11 +315,12 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     [self.focusGuide.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
     [self.focusGuide.heightAnchor constraintEqualToAnchor:self.heightAnchor].active = YES;
   }
-  
+
   self.focusGuide.preferredFocusEnvironments = destinations;
 }
 
-- (void)removeFocusGuide {
+- (void)removeFocusGuide
+{
   if (self.focusGuide != nil) {
     _focusDestinations = nil;
     _previouslyFocusedItem = nil;
@@ -335,18 +339,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   } else if (_autoFocus && _previouslyFocusedItem != nil) {
     // We also add `self` as the second option in case `previouslyFocusedItem` becomes unreachable (e.g gets detached).
     // `self` helps redirecting focus to the first focusable element in that case.
-    [self addFocusGuide:@[_previouslyFocusedItem, self]];
+    [self addFocusGuide:@[ _previouslyFocusedItem, self ]];
   } else if (_autoFocus) {
-    [self addFocusGuide:@[self]];
+    [self addFocusGuide:@[ self ]];
   } else {
     // Then there's no need to have `focusGuide`, remove it to prevent potential bugs.
     [self removeFocusGuide];
   }
 }
 
-- (void)setFocusDestinations:(NSArray*)destinations
+- (void)setFocusDestinations:(NSArray *)destinations
 {
-  if(destinations.count == 0) {
+  if (destinations.count == 0) {
     _focusDestinations = nil;
   } else {
     _focusDestinations = destinations;
@@ -357,17 +361,26 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (void)sendSelectNotification
 {
-  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionUp
+                                                                     tag:@(self.tag)
+                                                                  target:@(self.tag)];
 }
 
 - (void)sendLongSelectBeganNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:@(self.tag) target:@(self.tag)];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionDown
+                                                                     tag:@(self.tag)
+                                                                  target:@(self.tag)];
 }
 
 - (void)sendLongSelectEndedNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:@(self.tag) target:@(self.tag)];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionUp
+                                                                     tag:@(self.tag)
+                                                                  target:@(self.tag)];
 }
 
 - (void)animatePressIn
@@ -378,15 +391,16 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     // Duration of press animation
     float pressDuration = _tvParallaxProperties.pressDuration;
 
-    [UIView animateWithDuration:(pressDuration/2)
+    [UIView animateWithDuration:(pressDuration / 2)
                      animations:^{
-      self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
-    }
-                     completion:^(__unused BOOL finished){}];
+                       self.transform = CGAffineTransformMakeScale(pressMagnification, pressMagnification);
+                     }
+                     completion:^(__unused BOOL finished){
+                     }];
   }
 }
 
-- (void) animatePressOut
+- (void)animatePressOut
 {
   if (_tvParallaxProperties.enabled == YES) {
     float magnification = _tvParallaxProperties.magnification;
@@ -394,11 +408,12 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     // Duration of press animation
     float pressDuration = _tvParallaxProperties.pressDuration;
 
-    [UIView animateWithDuration:(pressDuration/2)
+    [UIView animateWithDuration:(pressDuration / 2)
                      animations:^{
-      self.transform = CGAffineTransformMakeScale(magnification, magnification);
-    }
-                     completion:^(__unused BOOL finished){}];
+                       self.transform = CGAffineTransformMakeScale(magnification, magnification);
+                     }
+                     completion:^(__unused BOOL finished){
+                     }];
   }
 }
 
@@ -414,39 +429,39 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (void)addParallaxMotionEffects
 {
-  if(!_tvParallaxProperties.enabled) {
+  if (!_tvParallaxProperties.enabled) {
     return;
   }
 
-  if(_motionEffectsAdded == YES) {
+  if (_motionEffectsAdded == YES) {
     return;
   }
 
   // Size of shift movements
-  CGFloat const shiftDistanceX = _tvParallaxProperties.shiftDistanceX;
-  CGFloat const shiftDistanceY = _tvParallaxProperties.shiftDistanceY;
+  const CGFloat shiftDistanceX = _tvParallaxProperties.shiftDistanceX;
+  const CGFloat shiftDistanceY = _tvParallaxProperties.shiftDistanceY;
 
   // Make horizontal movements shift the centre left and right
   UIInterpolatingMotionEffect *xShift =
-  [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
-                                                  type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+      [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
+                                                      type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
   xShift.minimumRelativeValue = @(shiftDistanceX * -1.0f);
   xShift.maximumRelativeValue = @(shiftDistanceX);
 
   // Make vertical movements shift the centre up and down
   UIInterpolatingMotionEffect *yShift =
-  [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
-                                                  type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+      [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.y"
+                                                      type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
   yShift.minimumRelativeValue = @(shiftDistanceY * -1.0f);
   yShift.maximumRelativeValue = @(shiftDistanceY);
 
   // Size of tilt movements
-  CGFloat const tiltAngle = _tvParallaxProperties.tiltAngle;
+  const CGFloat tiltAngle = _tvParallaxProperties.tiltAngle;
 
   // Now make horizontal movements effect a rotation about the Y axis for side-to-side rotation.
   UIInterpolatingMotionEffect *xTilt =
-  [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.transform"
-                                                  type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+      [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.transform"
+                                                      type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
 
   // CATransform3D value for minimumRelativeValue
   CATransform3D transMinimumTiltAboutY = CATransform3DIdentity;
@@ -464,8 +479,8 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
   // Now make vertical movements effect a rotation about the X axis for up and down rotation.
   UIInterpolatingMotionEffect *yTilt =
-  [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.transform"
-                                                  type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+      [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.transform"
+                                                      type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
 
   // CATransform3D value for minimumRelativeValue
   CATransform3D transMinimumTiltAboutX = CATransform3DIdentity;
@@ -482,7 +497,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   yTilt.maximumRelativeValue = [NSValue valueWithCATransform3D:transMaximumTiltAboutX];
 
   // Add all of the motion effects to this group
-  //self.motionEffects = @[ xShift, yShift, xTilt, yTilt ];
+  // self.motionEffects = @[ xShift, yShift, xTilt, yTilt ];
 
   // In Fabric, the tilt motion transforms conflict with other CATransform3D transforms
   // being applied elsewhere in the framework. We are disabling them for now until
@@ -492,7 +507,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   float magnification = _tvParallaxProperties.magnification;
 
   if (magnification != 1.0) {
-      self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
+    self.transform = CGAffineTransformScale(self.transform, magnification, magnification);
   }
 
   _motionEffectsAdded = YES;
@@ -500,17 +515,17 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (void)removeParallaxMotionEffects
 {
-  if(_motionEffectsAdded == NO) {
+  if (_motionEffectsAdded == NO) {
     return;
   }
 
   float magnification = self->_tvParallaxProperties.magnification;
   BOOL enabled = self->_tvParallaxProperties.enabled;
   if (enabled && magnification != 0.0 && magnification != 1.0) {
-    self.transform = CGAffineTransformScale(self.transform, 1.0/magnification, 1.0/magnification);
+    self.transform = CGAffineTransformScale(self.transform, 1.0 / magnification, 1.0 / magnification);
   }
 
-  for (UIMotionEffect *effect in [self.motionEffects copy]){
+  for (UIMotionEffect *effect in [self.motionEffects copy]) {
     [self removeMotionEffect:effect];
   }
 
@@ -527,13 +542,12 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 - (BOOL)isTVFocusGuide
 {
-  #if TARGET_OS_TV
-    return self.focusGuide != nil;
-  #endif
-  
+#if TARGET_OS_TV
+  return self.focusGuide != nil;
+#endif
+
   return NO;
 }
-
 
 - (BOOL)isUserInteractionEnabled
 {
@@ -607,7 +621,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideUp.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideUp.preferredFocusEnvironments = @[self->_nextFocusUp];
+    self.focusGuideUp.preferredFocusEnvironments = @[ self->_nextFocusUp ];
   }
 
   if (self->_nextFocusDown != nil) {
@@ -621,7 +635,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideDown.leftAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideDown.preferredFocusEnvironments = @[self->_nextFocusDown];
+    self.focusGuideDown.preferredFocusEnvironments = @[ self->_nextFocusDown ];
   }
 
   if (self->_nextFocusLeft != nil) {
@@ -635,7 +649,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideLeft.rightAnchor constraintEqualToAnchor:self.leftAnchor].active = YES;
     }
 
-    self.focusGuideLeft.preferredFocusEnvironments = @[self->_nextFocusLeft];
+    self.focusGuideLeft.preferredFocusEnvironments = @[ self->_nextFocusLeft ];
   }
 
   if (self->_nextFocusRight != nil) {
@@ -649,7 +663,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self.focusGuideRight.leftAnchor constraintEqualToAnchor:self.rightAnchor].active = YES;
     }
 
-    self.focusGuideRight.preferredFocusEnvironments = @[self->_nextFocusRight];
+    self.focusGuideRight.preferredFocusEnvironments = @[ self->_nextFocusRight ];
   }
 }
 // Called when focus leaves this view -- disable the directional focus guides
@@ -680,11 +694,10 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 {
   // This is  the `trapFocus*` logic that prevents the focus updates if
   // focus should be trapped and `nextFocusedItem` is not a child FocusEnv.
-  if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp)
-     || (_trapFocusDown && context.focusHeading == UIFocusHeadingDown)
-     || (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft)
-     || (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
-    
+  if ((_trapFocusUp && context.focusHeading == UIFocusHeadingUp) ||
+      (_trapFocusDown && context.focusHeading == UIFocusHeadingDown) ||
+      (_trapFocusLeft && context.focusHeading == UIFocusHeadingLeft) ||
+      (_trapFocusRight && context.focusHeading == UIFocusHeadingRight)) {
     // Checks if `nextFocusedItem` is a child `FocusEnvironment`.
     // If not, it returns false thus it keeps the focus inside.
     return [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem];
@@ -693,38 +706,48 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   return [super shouldUpdateFocusInContext:context];
 }
 
-- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
+       withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-    if (context.previouslyFocusedItem == context.nextFocusedItem) {
-      return;
-    }
-  
-    if (_autoFocus && self.focusGuide != nil && context.previouslyFocusedItem != nil) {
-      // Whenever focus leaves the container, `nextFocusedItem` is the destination, the item outside the container.
-      // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
-      // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
-      // the last focused element and redirects the focus to it whenever focus comes back.
-      _previouslyFocusedItem = context.previouslyFocusedItem;
-      [self handleFocusGuide];
-    }
+  if (context.previouslyFocusedItem == context.nextFocusedItem) {
+    return;
+  }
 
-    if (context.nextFocusedItem == self) {
-      [self becomeFirstResponder];
-      [self enableDirectionalFocusGuides];
-      if (self->_eventEmitter) self->_eventEmitter->onFocus();
-      [coordinator addCoordinatedFocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
+  if (_autoFocus && self.focusGuide != nil && context.previouslyFocusedItem != nil) {
+    // Whenever focus leaves the container, `nextFocusedItem` is the destination, the item outside the container.
+    // So, `previouslyFocusedItem` is always the last focused child of `TVFocusGuide`.
+    // We should update `preferredFocusEnvironments` in this case to make sure `FocusGuide` remembers
+    // the last focused element and redirects the focus to it whenever focus comes back.
+    _previouslyFocusedItem = context.previouslyFocusedItem;
+    [self handleFocusGuide];
+  }
+
+  if (context.nextFocusedItem == self) {
+    [self becomeFirstResponder];
+    [self enableDirectionalFocusGuides];
+    if (self->_eventEmitter)
+      self->_eventEmitter->onFocus();
+    [coordinator
+        addCoordinatedFocusingAnimations:^(id<UIFocusAnimationContext> _Nonnull animationContext) {
           [self addParallaxMotionEffects];
-      } completion:^(void){}];
-      // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
-      // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
-      // Generally speaking, it would happen for any non-collapsable `View`.
-    } else if (context.previouslyFocusedItem == self) {
-      if (self->_eventEmitter) self->_eventEmitter->onBlur();
-      [coordinator addCoordinatedUnfocusingAnimations:^(id<UIFocusAnimationContext>  _Nonnull animationContext) {
+        }
+                              completion:^(void){
+                              }];
+    // Without this check, onBlur would also trigger when `TVFocusGuideView` transfers focus to its children.
+    // [self isTVFocusGuide] is false when autofocus and destinations are not used, so we cannot use that.
+    // Generally speaking, it would happen for any non-collapsable `View`.
+  } else if (context.previouslyFocusedItem == self) {
+    if (self->_eventEmitter)
+      self->_eventEmitter->onBlur();
+    [coordinator
+        addCoordinatedUnfocusingAnimations:^(id<UIFocusAnimationContext> _Nonnull animationContext) {
           [self removeParallaxMotionEffects];
-      } completion:^(void){[self disableDirectionalFocusGuides];}];
-      [self resignFirstResponder];
-    }
+        }
+        completion:^(void) {
+          [self disableDirectionalFocusGuides];
+        }];
+    [self resignFirstResponder];
+  }
 }
 
 #endif
@@ -738,8 +761,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   NSLog(@"RCTViewComponentView handleTVCommand: %@", commandName);
   if ([commandName isEqualToString:@"setDestinations"]) {
     if ([args count] != 1) {
-      RCTLogError(
-          @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 1);
+      RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 1);
       return;
     }
     if (!RCTValidateTypeOfViewCommandArgument(args[0], [NSArray class], @"number", @"View", commandName, @"1st")) {
@@ -758,8 +780,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     return;
   } else if ([commandName isEqualToString:@"requestTVFocus"]) {
     if ([args count] != 0) {
-      RCTLogError(
-          @"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 0);
+      RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"View", commandName, (int)[args count], 0);
       return;
     }
 
@@ -1244,21 +1265,24 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   // `isTVSelectable`
   if (oldViewProps.isTVSelectable != newViewProps.isTVSelectable) {
     if (newViewProps.isTVSelectable && ![self isTVFocusGuide]) {
-      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc]initWithView:self];
+      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
     } else {
       self.tvRemoteSelectHandler = nil;
     }
   }
   // `tvParallaxProperties
   if (oldViewProps.tvParallaxProperties != newViewProps.tvParallaxProperties) {
-    _tvParallaxProperties.enabled = newViewProps.tvParallaxProperties.enabled.has_value() ?
-                                      newViewProps.tvParallaxProperties.enabled.value() :
-                                      newViewProps.isTVSelectable;
-    _tvParallaxProperties.shiftDistanceX = [self getFloat:newViewProps.tvParallaxProperties.shiftDistanceX orDefault:2.0];
-    _tvParallaxProperties.shiftDistanceY = [self getFloat:newViewProps.tvParallaxProperties.shiftDistanceY orDefault:2.0];
+    _tvParallaxProperties.enabled = newViewProps.tvParallaxProperties.enabled.has_value()
+        ? newViewProps.tvParallaxProperties.enabled.value()
+        : newViewProps.isTVSelectable;
+    _tvParallaxProperties.shiftDistanceX = [self getFloat:newViewProps.tvParallaxProperties.shiftDistanceX
+                                                orDefault:2.0];
+    _tvParallaxProperties.shiftDistanceY = [self getFloat:newViewProps.tvParallaxProperties.shiftDistanceY
+                                                orDefault:2.0];
     _tvParallaxProperties.tiltAngle = [self getFloat:newViewProps.tvParallaxProperties.tiltAngle orDefault:0.05];
     _tvParallaxProperties.magnification = [self getFloat:newViewProps.tvParallaxProperties.magnification orDefault:1.0];
-    _tvParallaxProperties.pressMagnification = [self getFloat:newViewProps.tvParallaxProperties.pressMagnification orDefault:1.0];
+    _tvParallaxProperties.pressMagnification = [self getFloat:newViewProps.tvParallaxProperties.pressMagnification
+                                                    orDefault:1.0];
     _tvParallaxProperties.pressDuration = [self getFloat:newViewProps.tvParallaxProperties.pressDuration orDefault:0.3];
     _tvParallaxProperties.pressDelay = [self getFloat:newViewProps.tvParallaxProperties.pressDelay orDefault:0.0];
   }
@@ -1321,7 +1345,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       _nextFocusRight = nil;
     }
   }
-  
+
   // `autoFocus`
   if (oldViewProps.autoFocus != newViewProps.autoFocus) {
     _autoFocus = newViewProps.autoFocus;
@@ -1405,7 +1429,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     auto newTransform = _props->resolveTransform(layoutMetrics);
     self.layer.transform = RCTCATransform3DFromTransformMatrix(newTransform);
   }
-  
+
 #if TARGET_OS_TV
   if (_hasTVPreferredFocus) {
     RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];

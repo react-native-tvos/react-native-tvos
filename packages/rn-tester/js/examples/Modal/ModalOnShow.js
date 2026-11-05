@@ -46,7 +46,8 @@ function ModalOnShowOnDismiss(): React.Node {
 
   const [lastEvent, setLastEvent] = React.useState('');
   const [lastDialogKeyUpEvent, setLastDialogKeyUpEvent] = React.useState('');
-  const [lastDialogKeyDownEvent, setLastDialogKeyDownEvent] = React.useState('');
+  const [lastDialogKeyDownEvent, setLastDialogKeyDownEvent] =
+    React.useState('');
 
   const buttonOpacity = (pressed: boolean, focused: boolean) =>
     pressed || focused ? 0.7 : 1.0;
@@ -56,13 +57,19 @@ function ModalOnShowOnDismiss(): React.Node {
   });
 
   useEffect(() => {
-    const onDialogKeyUpEventSubscription = DeviceEventEmitter.addListener('onDialogKeyUpEvent', (event) => {
-      setLastDialogKeyUpEvent(event.keyCode);
-    });
+    const onDialogKeyUpEventSubscription = DeviceEventEmitter.addListener(
+      'onDialogKeyUpEvent',
+      event => {
+        setLastDialogKeyUpEvent(event.keyCode);
+      },
+    );
 
-    const onDialogKeyDownEventSubscription = DeviceEventEmitter.addListener('onDialogKeyDownEvent', (event) => {
-      setLastDialogKeyDownEvent(event.keyCode);
-    });
+    const onDialogKeyDownEventSubscription = DeviceEventEmitter.addListener(
+      'onDialogKeyDownEvent',
+      event => {
+        setLastDialogKeyDownEvent(event.keyCode);
+      },
+    );
 
     return () => {
       onDialogKeyUpEventSubscription.remove();
@@ -97,7 +104,8 @@ function ModalOnShowOnDismiss(): React.Node {
               </Text>
               {Platform.OS === 'android' && (
                 <Text>
-                  Delegated to MainActivity: keyUp={lastDialogKeyUpEvent}, keyDown={lastDialogKeyDownEvent}
+                  Delegated to MainActivity: keyUp={lastDialogKeyUpEvent},
+                  keyDown={lastDialogKeyDownEvent}
                 </Text>
               )}
               <Pressable

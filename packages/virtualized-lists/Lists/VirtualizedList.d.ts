@@ -387,9 +387,7 @@ export interface VirtualizedListWithoutRenderItemProps<
    * notify VirtualizedList of changes within the cell.
    */
   CellRendererComponent?:
-    | React.ComponentType<CellRendererProps<ItemT>>
-    | null
-    | undefined;
+    React.ComponentType<CellRendererProps<ItemT>> | null | undefined;
 
   /**
    * Defines regions within the list that are exempt from virtualization,

@@ -161,4 +161,3 @@ build:
           type: build-artifact
           path: |
             react-native-artifacts-*.tgz
-

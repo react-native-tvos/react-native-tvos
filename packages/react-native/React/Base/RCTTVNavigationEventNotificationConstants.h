@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * _Nonnull const RCTTVNavigationEventNotificationName;
+extern NSString *_Nonnull const RCTTVNavigationEventNotificationName;
 
 typedef NSString *RCTTVNavigationEventNotificationKey NS_TYPED_ENUM;
 extern RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyEventType;

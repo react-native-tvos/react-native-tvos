@@ -34,7 +34,7 @@ class BaseViewEventEmitter : public TouchEventEmitter {
 #pragma mark - Focus
   void onFocus() const;
   void onBlur() const;
-  
+
 #pragma mark - Press
   void onPressIn() const;
   void onPressOut() const;

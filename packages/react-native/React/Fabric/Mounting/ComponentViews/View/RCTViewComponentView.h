@@ -26,7 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
  * UIView class for <View> component.
  */
 #if TARGET_OS_TV
-@interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, RCTTVRemoteSelectHandlerDelegate> {
+@interface RCTViewComponentView
+    : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol, RCTTVRemoteSelectHandlerDelegate> {
 #else
 @interface RCTViewComponentView : UIView <RCTComponentViewProtocol, RCTTouchableComponentViewProtocol> {
 #endif
@@ -71,12 +72,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) UIEdgeInsets hitTestEdgeInsets;
 
 #if TARGET_OS_TV
-@property(nonatomic, nullable) UIFocusGuide *focusGuide;
-@property(nonatomic, nullable) UIFocusGuide *focusGuideUp;
-@property(nonatomic, nullable) UIFocusGuide *focusGuideDown;
-@property(nonatomic, nullable) UIFocusGuide *focusGuideLeft;
-@property(nonatomic, nullable) UIFocusGuide *focusGuideRight;
-@property(nonatomic, nullable, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
+@property (nonatomic, nullable) UIFocusGuide *focusGuide;
+@property (nonatomic, nullable) UIFocusGuide *focusGuideUp;
+@property (nonatomic, nullable) UIFocusGuide *focusGuideDown;
+@property (nonatomic, nullable) UIFocusGuide *focusGuideLeft;
+@property (nonatomic, nullable) UIFocusGuide *focusGuideRight;
+@property (nonatomic, nullable, strong) RCTTVRemoteSelectHandler *tvRemoteSelectHandler;
 
 - (NSString *)scrollSnapAlign;
 #endif

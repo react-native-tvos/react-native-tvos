@@ -61,16 +61,25 @@ function findGoogleJavaFormatJar() {
 }
 
 function main() {
-  const check = process.argv[2] === '--check';
+  const arguments_ = process.argv.slice(2);
+  const check = arguments_.includes('--check');
+  const positionalArguments = arguments_.filter(
+    argument => argument !== '--check',
+  );
   const java = findJava(MINIMUM_JAVA_VERSION);
   if (java == null) {
     warnMissingJava('Java');
     return;
   }
   const googleJavaFormatJar = findGoogleJavaFormatJar();
-  const files = globSync('**/*.java', {cwd: REPO_ROOT, ignore: IGNORE}).filter(
-    file => !isGenerated(file),
-  );
+  const discoveredFiles = globSync('**/*.java', {
+    cwd: REPO_ROOT,
+    ignore: IGNORE,
+  }).filter(file => !isGenerated(file));
+  const files =
+    positionalArguments.length > 0
+      ? positionalArguments.filter(file => discoveredFiles.includes(file))
+      : discoveredFiles;
 
   let exitStatus = 0;
   for (let i = 0; i < files.length; i += MAX_FILES_PER_PROCESS) {

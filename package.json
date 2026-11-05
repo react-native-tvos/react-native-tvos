@@ -15,6 +15,7 @@
     "flow-check": "flow full-check",
     "flow": "flow",
     "format-check": "yarn format-check-javascript && yarn format-check-cpp && yarn format-check-kotlin && yarn format-check-java && yarn format-check-python && yarn format-check-swift",
+    "format-check-changed": "node ./scripts/format-check-changed.js",
     "format-check-cpp": "node ./scripts/clang-format.js --check",
     "format-check-java": "node ./scripts/format-java.js --check",
     "format-check-javascript": "prettier --check \"./**/*.{cjs,cts,flow,js,jsx,md,mjs,mts,ts,tsx,yaml,yml}\"",

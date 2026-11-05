@@ -23,11 +23,12 @@
 using namespace facebook::react;
 
 @interface RCTPullToRefreshViewComponentView () <
-  RCTPullToRefreshViewViewProtocol
+    RCTPullToRefreshViewViewProtocol
 #if !TARGET_OS_TV
-  ,RCTRefreshableProtocol
+    ,
+    RCTRefreshableProtocol
 #endif
->
+    >
 @end
 
 #if TARGET_OS_TV

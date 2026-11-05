@@ -14,19 +14,16 @@
 
 @interface NSNotificationCenter (RCTTVNavigationEventNotification)
 
-- (void)postNavigationFocusEventWithTag:(NSNumber * _Nullable)eventTag
-                                 target:(NSNumber * _Nullable)eventTarget;
+- (void)postNavigationFocusEventWithTag:(NSNumber *_Nullable)eventTag target:(NSNumber *_Nullable)eventTarget;
 
-- (void)postNavigationBlurEventWithTag:(NSNumber * _Nullable)eventTag
-                                target:(NSNumber * _Nullable)eventTarget;
+- (void)postNavigationBlurEventWithTag:(NSNumber *_Nullable)eventTag target:(NSNumber *_Nullable)eventTarget;
 
 - (void)postNavigationPressEventWithType:(RCTTVRemoteEvent _Nonnull)eventType
                                keyAction:(RCTTVRemoteEventKeyAction _Nullable)eventKeyAction
-                                     tag:(NSNumber * _Nullable)eventTag
-                                  target:(NSNumber * _Nullable)eventTarget;
+                                     tag:(NSNumber *_Nullable)eventTag
+                                  target:(NSNumber *_Nullable)eventTarget;
 
-- (void)postNavigationTouchEventWithType:(RCTTVRemoteEvent _Nonnull)eventType
-                                    body:(NSDictionary * _Nullable)eventBody;
+- (void)postNavigationTouchEventWithType:(RCTTVRemoteEvent _Nonnull)eventType body:(NSDictionary *_Nullable)eventBody;
 @end
 
 @interface UIGestureRecognizer (RCTTVNavigationEventNotification)

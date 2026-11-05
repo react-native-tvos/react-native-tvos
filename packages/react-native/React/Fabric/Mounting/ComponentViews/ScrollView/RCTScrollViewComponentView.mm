@@ -26,10 +26,10 @@
 #import "RCTVirtualViewContainerState.h"
 
 #if TARGET_OS_TV
-#import <React/RCTTVRemoteHandler.h>
 #import <React/RCTTVNavigationEventNotification.h>
-#import "React/RCTI18nUtil.h"
+#import <React/RCTTVRemoteHandler.h>
 #import "RCTViewComponentView.h"
+#import "React/RCTI18nUtil.h"
 #endif
 
 using namespace facebook::react;
@@ -124,7 +124,7 @@ RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrollView, NSInt
   NSInteger _firstVisibleViewTag;
 
   CGFloat _endDraggingSensitivityMultiplier;
-    
+
   BOOL _blockFirstTouch;
   NSMutableDictionary *_tvRemoteGestureRecognizers;
 
@@ -173,7 +173,7 @@ RCTSendScrollEventForNativeAnimations_DEPRECATED(UIScrollView *scrollView, NSInt
 
     _scrollEventThrottle = 0;
     _endDraggingSensitivityMultiplier = 1;
-      
+
     _tvRemoteGestureRecognizers = [NSMutableDictionary new];
     _preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
   }
@@ -391,7 +391,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 #if TARGET_OS_TV
   if (oldScrollViewProps.showsScrollIndex != newScrollViewProps.showsScrollIndex) {
-      _scrollView.indexDisplayMode = newScrollViewProps.showsScrollIndex ? UIScrollViewIndexDisplayModeAutomatic : UIScrollViewIndexDisplayModeAlwaysHidden;
+    _scrollView.indexDisplayMode = newScrollViewProps.showsScrollIndex ? UIScrollViewIndexDisplayModeAutomatic
+                                                                       : UIScrollViewIndexDisplayModeAlwaysHidden;
   }
 #endif
 
@@ -765,10 +766,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                      withVelocity:(CGPoint)velocity
               targetContentOffset:(inout CGPoint *)targetContentOffset
 {
-    if (!CGPointEqualToPoint(self.preferredContentOffset, NO_PREFERRED_CONTENT_OFFSET))
-    {
-        *targetContentOffset = self.preferredContentOffset;
-    } else if (fabs(_endDraggingSensitivityMultiplier - 1) > 0.0001f) {
+  if (!CGPointEqualToPoint(self.preferredContentOffset, NO_PREFERRED_CONTENT_OFFSET)) {
+    *targetContentOffset = self.preferredContentOffset;
+  } else if (fabs(_endDraggingSensitivityMultiplier - 1) > 0.0001f) {
     if (targetContentOffset->y > 0) {
       const CGFloat travel = targetContentOffset->y - scrollView.contentOffset.y;
       targetContentOffset->y = scrollView.contentOffset.y + travel * _endDraggingSensitivityMultiplier;
@@ -1269,422 +1269,435 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 // return). Walk is inner→outer, latest marker wins (same as PR-1068's
 // scrollSnapAlign behavior). On a single view declaring both, scrollSnapOffset
 // wins as the more specific config.
-- (UIView *)findScrollSnapInView:(UIView *)view
-                        outAlign:(NSString **)outAlign
-                       outOffset:(NSNumber **)outOffset
+- (UIView *)findScrollSnapInView:(UIView *)view outAlign:(NSString **)outAlign outOffset:(NSNumber **)outOffset
 {
-    UIView *testView = view;
-    UIView *snapTarget;
-    NSString *align;
-    NSNumber *offset;
+  UIView *testView = view;
+  UIView *snapTarget;
+  NSString *align;
+  NSNumber *offset;
 
-    while (testView && testView != self) {
-        if (![testView isKindOfClass:RCTViewComponentView.class])
-        {
-            testView = [testView superview];
-            continue;
-        }
-        RCTViewComponentView *componentView = (RCTViewComponentView *)testView;
-
-        const auto &viewProps = static_cast<const facebook::react::BaseViewProps &>(*componentView.props);
-        if (viewProps.scrollSnapOffset.has_value()) {
-            offset = @(viewProps.scrollSnapOffset.value());
-            align = nil;
-            snapTarget = componentView;
-        } else if (viewProps.scrollSnapAlign.has_value() && !viewProps.scrollSnapAlign.value().empty()) {
-            align = [NSString stringWithUTF8String:viewProps.scrollSnapAlign.value().c_str()];
-            offset = nil;
-            snapTarget = componentView;
-        }
-
-        testView = [testView superview];
+  while (testView && testView != self) {
+    if (![testView isKindOfClass:RCTViewComponentView.class]) {
+      testView = [testView superview];
+      continue;
     }
-    *outAlign = align;
-    *outOffset = offset;
-    return snapTarget;
+    RCTViewComponentView *componentView = (RCTViewComponentView *)testView;
+
+    const auto &viewProps = static_cast<const facebook::react::BaseViewProps &>(*componentView.props);
+    if (viewProps.scrollSnapOffset.has_value()) {
+      offset = @(viewProps.scrollSnapOffset.value());
+      align = nil;
+      snapTarget = componentView;
+    } else if (viewProps.scrollSnapAlign.has_value() && !viewProps.scrollSnapAlign.value().empty()) {
+      align = [NSString stringWithUTF8String:viewProps.scrollSnapAlign.value().c_str()];
+      offset = nil;
+      snapTarget = componentView;
+    }
+
+    testView = [testView superview];
+  }
+  *outAlign = align;
+  *outOffset = offset;
+  return snapTarget;
 }
 
 - (void)_handleScrollSnapForFocusedView:(UIView *)focusedView
 {
-    const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
+  const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
 
-    NSString *scrollSnapAlign = nil;
-    NSNumber *scrollSnapOffset = nil;
-    UIView *snapTargetView = [self findScrollSnapInView:focusedView
-                                               outAlign:&scrollSnapAlign
-                                              outOffset:&scrollSnapOffset];
-    if (snapTargetView == nil || (scrollSnapAlign == nil && scrollSnapOffset == nil)) {
-        return;
-    }
-    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-    CGRect focusedFrame = [snapTargetView convertRect:snapTargetView.bounds toView:_scrollView];
-    CGFloat targetOffset;
-    CGFloat snapToItemPadding = scrollProps.snapToItemPadding;
+  NSString *scrollSnapAlign = nil;
+  NSNumber *scrollSnapOffset = nil;
+  UIView *snapTargetView = [self findScrollSnapInView:focusedView
+                                             outAlign:&scrollSnapAlign
+                                            outOffset:&scrollSnapOffset];
+  if (snapTargetView == nil || (scrollSnapAlign == nil && scrollSnapOffset == nil)) {
+    return;
+  }
+  RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+  CGRect focusedFrame = [snapTargetView convertRect:snapTargetView.bounds toView:_scrollView];
+  CGFloat targetOffset;
+  CGFloat snapToItemPadding = scrollProps.snapToItemPadding;
 
-    BOOL isHorizontalSnap = _scrollView.contentSize.width > self.frame.size.width;
-    // Determine axis-specific properties
-    CGFloat viewportSize, focusedOrigin, focusedSize, currentOffset, maxContentSize;
-    if (isHorizontalSnap) {
-        viewportSize = scrollView.bounds.size.width;
-        focusedOrigin = focusedFrame.origin.x;
-        focusedSize = focusedFrame.size.width;
-        currentOffset = scrollView.contentOffset.x;
-        maxContentSize = scrollView.contentSize.width;
-    } else {
-        viewportSize = scrollView.bounds.size.height;
-        focusedOrigin = focusedFrame.origin.y;
-        focusedSize = focusedFrame.size.height;
-        currentOffset = scrollView.contentOffset.y;
-        maxContentSize = scrollView.contentSize.height;
-    }
+  BOOL isHorizontalSnap = _scrollView.contentSize.width > self.frame.size.width;
+  // Determine axis-specific properties
+  CGFloat viewportSize, focusedOrigin, focusedSize, currentOffset, maxContentSize;
+  if (isHorizontalSnap) {
+    viewportSize = scrollView.bounds.size.width;
+    focusedOrigin = focusedFrame.origin.x;
+    focusedSize = focusedFrame.size.width;
+    currentOffset = scrollView.contentOffset.x;
+    maxContentSize = scrollView.contentSize.width;
+  } else {
+    viewportSize = scrollView.bounds.size.height;
+    focusedOrigin = focusedFrame.origin.y;
+    focusedSize = focusedFrame.size.height;
+    currentOffset = scrollView.contentOffset.y;
+    maxContentSize = scrollView.contentSize.height;
+  }
 
-    if (scrollSnapOffset != nil) {
-        // Per-item pixel offset path: land the snap target's leading edge
-        // at viewport coordinate = scrollSnapOffset.
-        targetOffset = focusedOrigin - scrollSnapOffset.doubleValue;
-    } else if ([scrollSnapAlign isEqualToString:@"start"]) {
-        targetOffset = focusedOrigin - snapToItemPadding;
-    } else if ([scrollSnapAlign isEqualToString:@"center"]) {
-        CGFloat viewportCenter = viewportSize / 2;
-        CGFloat focusedCenter = focusedOrigin + (focusedSize / 2);
-        targetOffset = focusedCenter - viewportCenter + (snapToItemPadding / 2);
-    } else if ([scrollSnapAlign isEqualToString:@"end"]) {
-        targetOffset = (focusedOrigin + focusedSize) - viewportSize + snapToItemPadding;
-    } else {
-        targetOffset = currentOffset;
-    }
+  if (scrollSnapOffset != nil) {
+    // Per-item pixel offset path: land the snap target's leading edge
+    // at viewport coordinate = scrollSnapOffset.
+    targetOffset = focusedOrigin - scrollSnapOffset.doubleValue;
+  } else if ([scrollSnapAlign isEqualToString:@"start"]) {
+    targetOffset = focusedOrigin - snapToItemPadding;
+  } else if ([scrollSnapAlign isEqualToString:@"center"]) {
+    CGFloat viewportCenter = viewportSize / 2;
+    CGFloat focusedCenter = focusedOrigin + (focusedSize / 2);
+    targetOffset = focusedCenter - viewportCenter + (snapToItemPadding / 2);
+  } else if ([scrollSnapAlign isEqualToString:@"end"]) {
+    targetOffset = (focusedOrigin + focusedSize) - viewportSize + snapToItemPadding;
+  } else {
+    targetOffset = currentOffset;
+  }
 
-    // Apply snap-to-interval if configured
-    if (scrollView.snapToInterval > 0) {
-        CGFloat interval = scrollView.snapToInterval;
-        targetOffset = floor(targetOffset / interval) * interval;
-    }
+  // Apply snap-to-interval if configured
+  if (scrollView.snapToInterval > 0) {
+    CGFloat interval = scrollView.snapToInterval;
+    targetOffset = floor(targetOffset / interval) * interval;
+  }
 
-    // Clamp to valid range
-    CGFloat maxOffset = MAX(maxContentSize - viewportSize, 0);
-    targetOffset = MAX(0, MIN(targetOffset, maxOffset));
-    CGPoint targetContentOffset = isHorizontalSnap
-        ? CGPointMake(targetOffset, scrollView.contentOffset.y)
-        : CGPointMake(scrollView.contentOffset.x, targetOffset);
-    // Where the focused item should snap to. We don't scroll to it here: this view's
-    // scrollViewWillEndDragging:withVelocity:targetContentOffset: override sets
-    // *targetContentOffset = preferredContentOffset. On tvOS the focus engine routes its
-    // focus-driven scroll through that delegate, so the item snaps to this offset via the
-    // engine's own scroll, even when it's already on screen. An explicit setContentOffset here
-    // would just scroll a second time.
-    // https://developer.apple.com/documentation/uikit/uiscrollviewdelegate/scrollviewwillenddragging(_:withvelocity:targetcontentoffset:)
-    // https://developer.apple.com/forums/thread/22103?answerId=73300022#73300022
-    self.preferredContentOffset = targetContentOffset;
-    if (!scrollProps.scrollAnimationEnabled) {
-        // Animations off: RCTEnhancedScrollView.didUpdateFocusInContext blocks the engine's
-        // scroll, so the delegate never fires — set the offset directly.
-        scrollView.contentOffset = targetContentOffset;
-    }
+  // Clamp to valid range
+  CGFloat maxOffset = MAX(maxContentSize - viewportSize, 0);
+  targetOffset = MAX(0, MIN(targetOffset, maxOffset));
+  CGPoint targetContentOffset = isHorizontalSnap ? CGPointMake(targetOffset, scrollView.contentOffset.y)
+                                                 : CGPointMake(scrollView.contentOffset.x, targetOffset);
+  // Where the focused item should snap to. We don't scroll to it here: this view's
+  // scrollViewWillEndDragging:withVelocity:targetContentOffset: override sets
+  // *targetContentOffset = preferredContentOffset. On tvOS the focus engine routes its
+  // focus-driven scroll through that delegate, so the item snaps to this offset via the
+  // engine's own scroll, even when it's already on screen. An explicit setContentOffset here
+  // would just scroll a second time.
+  // https://developer.apple.com/documentation/uikit/uiscrollviewdelegate/scrollviewwillenddragging(_:withvelocity:targetcontentoffset:)
+  // https://developer.apple.com/forums/thread/22103?answerId=73300022#73300022
+  self.preferredContentOffset = targetContentOffset;
+  if (!scrollProps.scrollAnimationEnabled) {
+    // Animations off: RCTEnhancedScrollView.didUpdateFocusInContext blocks the engine's
+    // scroll, so the delegate never fires — set the offset directly.
+    scrollView.contentOffset = targetContentOffset;
+  }
 }
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context
        withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
-    self.preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
-    const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
-    BOOL hasItemSnapAlignment = scrollProps.snapToAlignment == ScrollViewSnapToAlignment::Item;
-    if (context.previouslyFocusedView == context.nextFocusedView) {
-        return;
+  self.preferredContentOffset = NO_PREFERRED_CONTENT_OFFSET;
+  const auto &scrollProps = static_cast<const ScrollViewProps &>(*_props);
+  BOOL hasItemSnapAlignment = scrollProps.snapToAlignment == ScrollViewSnapToAlignment::Item;
+  if (context.previouslyFocusedView == context.nextFocusedView) {
+    return;
+  }
+  if (!_props->isTVSelectable && !hasItemSnapAlignment) {
+    if (!scrollProps.scrollAnimationEnabled && [context.nextFocusedView isDescendantOfView:_scrollView]) {
+      // When animations are disabled and there's no snap alignment, manually scroll
+      // the focused view into view instantly. We can't let UIScrollView's default
+      // focus handling do this because it uses deceleration (timer-based) that can't
+      // be blocked by the animation-blocking layer.
+      CGRect targetRect = [context.nextFocusedView convertRect:context.nextFocusedView.bounds toView:_scrollView];
+      [_scrollView scrollRectToVisible:targetRect animated:NO];
     }
-    if (!_props->isTVSelectable && !hasItemSnapAlignment) {
-        if (!scrollProps.scrollAnimationEnabled && [context.nextFocusedView isDescendantOfView:_scrollView]) {
-            // When animations are disabled and there's no snap alignment, manually scroll
-            // the focused view into view instantly. We can't let UIScrollView's default
-            // focus handling do this because it uses deceleration (timer-based) that can't
-            // be blocked by the animation-blocking layer.
-            CGRect targetRect = [context.nextFocusedView convertRect:context.nextFocusedView.bounds toView:_scrollView];
-            [_scrollView scrollRectToVisible:targetRect animated:NO];
-        }
-        return;
+    return;
+  }
+  if (_props->isTVSelectable && context.nextFocusedView == self) {
+    [self becomeFirstResponder];
+    [self addSwipeGestureRecognizers];
+    [self sendFocusEvent];
+    // if we enter the scroll view from different view then block first touch event since it is the event that triggered
+    // the focus
+    _blockFirstTouch = (unsigned long)context.focusHeading != 0;
+    [self addArrowsListeners];
+  } else if (_props->isTVSelectable && context.previouslyFocusedView == self) {
+    [self removeArrowsListeners];
+    [self sendBlurEvent];
+    [self removeSwipeGestureRecognizers];
+    [self resignFirstResponder];
+    // If scrolling is enabled:
+    // - Scroll to the top when moving up and to the bottom when moving down.
+    // - Similarly, scroll towards leading edge when moving towards leading edge and to the trailing edge when moving
+    // towards the trailing edge.
+    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+    BOOL isMovingTowardsLeadingEdge =
+        (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+    BOOL isMovingTowardsTrailingEdge =
+        (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
+    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+    if (scrollView.isScrollEnabled) {
+      if (context.focusHeading == UIFocusHeadingUp && scrollView.snapToStart) {
+        [self scrollToVerticalOffset:0.0];
+      } else if (context.focusHeading == UIFocusHeadingDown && scrollView.snapToEnd) {
+        [self scrollToVerticalOffset:scrollView.contentSize.height];
+      } else if (isMovingTowardsLeadingEdge && scrollView.snapToStart) {
+        [self scrollToHorizontalOffset:0.0];
+      } else if (isMovingTowardsTrailingEdge && scrollView.snapToEnd) {
+        [self scrollToHorizontalOffset:scrollView.contentSize.width];
+      }
     }
-    if (_props->isTVSelectable && context.nextFocusedView == self) {
-        [self becomeFirstResponder];
-        [self addSwipeGestureRecognizers];
-        [self sendFocusEvent];
-        // if we enter the scroll view from different view then block first touch event since it is the event that triggered the focus
-        _blockFirstTouch = (unsigned long)context.focusHeading != 0;
-        [self addArrowsListeners];
-    } else if (_props->isTVSelectable && context.previouslyFocusedView == self) {
-        [self removeArrowsListeners];
-        [self sendBlurEvent];
-        [self removeSwipeGestureRecognizers];
-        [self resignFirstResponder];
-        // If scrolling is enabled:
-        // - Scroll to the top when moving up and to the bottom when moving down.
-        // - Similarly, scroll towards leading edge when moving towards leading edge and to the trailing edge when moving towards the trailing edge.
-        BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
-        BOOL isMovingTowardsLeadingEdge = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
-        BOOL isMovingTowardsTrailingEdge = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
-        RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-        if (scrollView.isScrollEnabled) {
-            if (context.focusHeading == UIFocusHeadingUp && scrollView.snapToStart) {
-                [self scrollToVerticalOffset:0.0];
-            } else if(context.focusHeading == UIFocusHeadingDown && scrollView.snapToEnd) {
-                [self scrollToVerticalOffset:scrollView.contentSize.height];
-            } else if(isMovingTowardsLeadingEdge && scrollView.snapToStart) {
-                [self scrollToHorizontalOffset:0.0];
-            } else if(isMovingTowardsTrailingEdge && scrollView.snapToEnd) {
-                [self scrollToHorizontalOffset:scrollView.contentSize.width];
-            }
-        }
-    } else if ([context.nextFocusedView isDescendantOfView:_scrollView]) {
-        [self _handleScrollSnapForFocusedView:context.nextFocusedView];
-    }
+  } else if ([context.nextFocusedView isDescendantOfView:_scrollView]) {
+    [self _handleScrollSnapForFocusedView:context.nextFocusedView];
+  }
 }
 
 - (void)addArrowsListeners
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleTVNavigationEventNotification:)
-                                                 name:RCTTVNavigationEventNotificationName
-                                               object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(handleTVNavigationEventNotification:)
+                                               name:RCTTVNavigationEventNotificationName
+                                             object:nil];
 }
 
 - (void)removeArrowsListeners
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVNavigationEventNotificationName
-                                                  object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTTVNavigationEventNotificationName object:nil];
 }
 
 - (void)handleTVNavigationEventNotification:(NSNotification *)notif
 {
-    NSArray *supportedEvents = @[RCTTVRemoteEventUp, RCTTVRemoteEventDown, RCTTVRemoteEventLeft, RCTTVRemoteEventRight];
+  NSArray *supportedEvents = @[ RCTTVRemoteEventUp, RCTTVRemoteEventDown, RCTTVRemoteEventLeft, RCTTVRemoteEventRight ];
 
-    if (notif.object == nil || notif.object[RCTTVNavigationEventNotificationKeyEventType] == nil || ![supportedEvents containsObject:notif.object[RCTTVNavigationEventNotificationKeyEventType]] ) {
-        return;
+  if (notif.object == nil || notif.object[RCTTVNavigationEventNotificationKeyEventType] == nil ||
+      ![supportedEvents containsObject:notif.object[RCTTVNavigationEventNotificationKeyEventType]]) {
+    return;
+  }
+
+  if (_blockFirstTouch) {
+    _blockFirstTouch = NO;
+    return;
+  }
+
+  BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
+  if (!isHorizontal) {
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventDown]) {
+      [self swipedDown];
+      return;
     }
 
-    if (_blockFirstTouch) {
-        _blockFirstTouch = NO;
-        return;
+    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventUp]) {
+      [self swipedUp];
+      return;
     }
+  }
 
-    BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
-    if (!isHorizontal) {
-        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventDown]) {
-            [self swipedDown];
-            return;
-        }
+  if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventLeft]) {
+    [self swipedLeft];
+    return;
+  }
 
-        if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventUp]) {
-            [self swipedUp];
-            return;
-        }
-    }
-
-    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventLeft]) {
-        [self swipedLeft];
-        return;
-    }
-
-    if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventRight]) {
-        [self swipedRight];
-        return;
-    }
+  if ([notif.object[RCTTVNavigationEventNotificationKeyEventType] isEqual:RCTTVRemoteEventRight]) {
+    [self swipedRight];
+    return;
+  }
 }
 
 - (BOOL)shouldUpdateFocusInContext:(UIFocusUpdateContext *)context
 {
-    // If the previously focused item is this view and scrolling is disabled, defer to the superclass
-    if (context.previouslyFocusedItem == self && !self.scrollView.isScrollEnabled) {
-        return [super shouldUpdateFocusInContext:context];
-    }
-
-    // Determine if the layout is Right-to-Left
-    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
-    BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
-    // Adjust for horizontal scrolling with RTL support
-    if (isHorizontal) {
-        BOOL isMovingTowardsLeadingEdge = (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
-        BOOL isMovingTowardsTrailingEdge = (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
-
-        BOOL isScrollingToLeading = (isMovingTowardsLeadingEdge && self.scrollView.contentOffset.x > 0);
-        BOOL isScrollingToTrailing = (isMovingTowardsTrailingEdge && self.scrollView.contentOffset.x < self.scrollView.contentSize.width - MAX(self.scrollView.visibleSize.width, 1));
-
-        if (isScrollingToLeading || isScrollingToTrailing) {
-            return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
-        }
-    } else {
-        // Handle vertical scrolling as before
-        BOOL isMovingUp = (context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0);
-        BOOL isMovingDown = (context.focusHeading == UIFocusHeadingDown && self.scrollView.contentOffset.y < self.scrollView.contentSize.height - MAX(self.scrollView.visibleSize.height, 1));
-
-        if (isMovingUp || isMovingDown) {
-            return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
-        }
-    }
+  // If the previously focused item is this view and scrolling is disabled, defer to the superclass
+  if (context.previouslyFocusedItem == self && !self.scrollView.isScrollEnabled) {
     return [super shouldUpdateFocusInContext:context];
+  }
+
+  // Determine if the layout is Right-to-Left
+  BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+  BOOL isHorizontal = _scrollView.contentSize.width > self.frame.size.width;
+  // Adjust for horizontal scrolling with RTL support
+  if (isHorizontal) {
+    BOOL isMovingTowardsLeadingEdge =
+        (isRTL ? context.focusHeading == UIFocusHeadingRight : context.focusHeading == UIFocusHeadingLeft);
+    BOOL isMovingTowardsTrailingEdge =
+        (isRTL ? context.focusHeading == UIFocusHeadingLeft : context.focusHeading == UIFocusHeadingRight);
+
+    BOOL isScrollingToLeading = (isMovingTowardsLeadingEdge && self.scrollView.contentOffset.x > 0);
+    BOOL isScrollingToTrailing =
+        (isMovingTowardsTrailingEdge &&
+         self.scrollView.contentOffset.x <
+             self.scrollView.contentSize.width - MAX(self.scrollView.visibleSize.width, 1));
+
+    if (isScrollingToLeading || isScrollingToTrailing) {
+      return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
+    }
+  } else {
+    // Handle vertical scrolling as before
+    BOOL isMovingUp = (context.focusHeading == UIFocusHeadingUp && self.scrollView.contentOffset.y > 0);
+    BOOL isMovingDown =
+        (context.focusHeading == UIFocusHeadingDown &&
+         self.scrollView.contentOffset.y <
+             self.scrollView.contentSize.height - MAX(self.scrollView.visibleSize.height, 1));
+
+    if (isMovingUp || isMovingDown) {
+      return (context.nextFocusedItem && [UIFocusSystem environment:self containsEnvironment:context.nextFocusedItem]);
+    }
+  }
+  return [super shouldUpdateFocusInContext:context];
 }
 
 - (NSInteger)swipeVerticalInterval
 {
-    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-    if (scrollView.snapToInterval) {
-        return scrollView.snapToInterval;
-    }
-    return scrollView.visibleSize.height / 2;
+  RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+  if (scrollView.snapToInterval) {
+    return scrollView.snapToInterval;
+  }
+  return scrollView.visibleSize.height / 2;
 }
 
 - (NSInteger)swipeHorizontalInterval
 {
-    RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
-    if (scrollView.snapToInterval) {
-        return scrollView.snapToInterval;
-    }
-    return scrollView.visibleSize.width / 2;
+  RCTEnhancedScrollView *scrollView = (RCTEnhancedScrollView *)_scrollView;
+  if (scrollView.snapToInterval) {
+    return scrollView.snapToInterval;
+  }
+  return scrollView.visibleSize.width / 2;
 }
 
 - (NSTimeInterval)swipeDuration
 {
-    auto pressDuration = _props->tvParallaxProperties.pressDuration;
-    auto duration = pressDuration.has_value() ? pressDuration.value() : TV_DEFAULT_SWIPE_DURATION;
-    if (duration == 0.0) {
-        duration = TV_DEFAULT_SWIPE_DURATION;
-    }
-    return duration;
+  auto pressDuration = _props->tvParallaxProperties.pressDuration;
+  auto duration = pressDuration.has_value() ? pressDuration.value() : TV_DEFAULT_SWIPE_DURATION;
+  if (duration == 0.0) {
+    duration = TV_DEFAULT_SWIPE_DURATION;
+  }
+  return duration;
 }
 
 - (void)scrollToVerticalOffset:(CGFloat)yOffset
 {
-    _blockFirstTouch = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat limitedOffset = yOffset;
+  _blockFirstTouch = NO;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    CGFloat limitedOffset = yOffset;
 
-        // Ensure content size and visible size are non-negative
-        CGFloat contentHeight = MAX(self.scrollView.contentSize.height, 0.0);
-        CGFloat visibleHeight = MAX(self.scrollView.visibleSize.height, 0.0);
+    // Ensure content size and visible size are non-negative
+    CGFloat contentHeight = MAX(self.scrollView.contentSize.height, 0.0);
+    CGFloat visibleHeight = MAX(self.scrollView.visibleSize.height, 0.0);
 
-        // Compute the maximum offset, ensuring it's non-negative
-        CGFloat maxOffset = MAX(contentHeight - visibleHeight, 0.0);
+    // Compute the maximum offset, ensuring it's non-negative
+    CGFloat maxOffset = MAX(contentHeight - visibleHeight, 0.0);
 
-        // Clamp the offset within valid bounds
-        limitedOffset = MAX(limitedOffset, 0.0);
-        limitedOffset = MIN(limitedOffset, maxOffset);
+    // Clamp the offset within valid bounds
+    limitedOffset = MAX(limitedOffset, 0.0);
+    limitedOffset = MIN(limitedOffset, maxOffset);
 
-        const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
-        if (scrollProps.scrollAnimationEnabled) {
-            [UIView animateWithDuration:[self swipeDuration] animations:^{
-                self.scrollView.contentOffset =
-                CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
-            }];
-        } else {
-            self.scrollView.contentOffset =
-            CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
-        }
-    });
+    const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
+    if (scrollProps.scrollAnimationEnabled) {
+      [UIView animateWithDuration:[self swipeDuration]
+                       animations:^{
+                         self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+                       }];
+    } else {
+      self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x, limitedOffset);
+    }
+  });
 }
 
 - (void)scrollToHorizontalOffset:(CGFloat)xOffset
 {
-    _blockFirstTouch = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat limitedOffset = xOffset;
+  _blockFirstTouch = NO;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    CGFloat limitedOffset = xOffset;
 
-        // Ensure content size and visible size are non-negative
-        CGFloat contentWidth = MAX(self.scrollView.contentSize.width, 0.0);
-        CGFloat visibleWidth = MAX(self.scrollView.visibleSize.width, 0.0);
+    // Ensure content size and visible size are non-negative
+    CGFloat contentWidth = MAX(self.scrollView.contentSize.width, 0.0);
+    CGFloat visibleWidth = MAX(self.scrollView.visibleSize.width, 0.0);
 
-        // Compute the maximum offset, ensuring it's non-negative
-        CGFloat maxOffset = MAX(contentWidth - visibleWidth, 0.0);
+    // Compute the maximum offset, ensuring it's non-negative
+    CGFloat maxOffset = MAX(contentWidth - visibleWidth, 0.0);
 
-        // Clamp the offset within valid bounds
-        limitedOffset = MAX(limitedOffset, 0.0);
-        limitedOffset = MIN(limitedOffset, maxOffset);
+    // Clamp the offset within valid bounds
+    limitedOffset = MAX(limitedOffset, 0.0);
+    limitedOffset = MIN(limitedOffset, maxOffset);
 
-        const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
-        if (scrollProps.scrollAnimationEnabled) {
-            [UIView animateWithDuration:[self swipeDuration] animations:^{
-                self.scrollView.contentOffset =
-                CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
-            }];
-        } else {
-            self.scrollView.contentOffset =
-            CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
-        }
-    });
+    const auto &scrollProps = static_cast<const ScrollViewProps &>(*self->_props);
+    if (scrollProps.scrollAnimationEnabled) {
+      [UIView animateWithDuration:[self swipeDuration]
+                       animations:^{
+                         self.scrollView.contentOffset = CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
+                       }];
+    } else {
+      self.scrollView.contentOffset = CGPointMake(limitedOffset, self.scrollView.contentOffset.y);
+    }
+  });
 }
 
 - (void)swipedUp
 {
-    if (!self.scrollView.scrollEnabled) {
-        return;
-    }
+  if (!self.scrollView.scrollEnabled) {
+    return;
+  }
 
-    CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
-    // NSLog(@"Swiped up to %f", newOffset);
-    [self scrollToVerticalOffset:newOffset];
+  CGFloat newOffset = self.scrollView.contentOffset.y - [self swipeVerticalInterval];
+  // NSLog(@"Swiped up to %f", newOffset);
+  [self scrollToVerticalOffset:newOffset];
 }
 
 - (void)swipedDown
 {
-    if (!self.scrollView.scrollEnabled) {
-        return;
-    }
+  if (!self.scrollView.scrollEnabled) {
+    return;
+  }
 
-    CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
-    // NSLog(@"Swiped down to %f", newOffset);
-    [self scrollToVerticalOffset:newOffset];
+  CGFloat newOffset = self.scrollView.contentOffset.y + [self swipeVerticalInterval];
+  // NSLog(@"Swiped down to %f", newOffset);
+  [self scrollToVerticalOffset:newOffset];
 }
 
 - (void)swipedLeft
 {
-    if (!self.scrollView.scrollEnabled) {
-        return;
-    }
+  if (!self.scrollView.scrollEnabled) {
+    return;
+  }
 
-    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
-    NSInteger horizontalInterval = [self swipeHorizontalInterval];
-    CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? horizontalInterval : -horizontalInterval);
-    // NSLog(@"Swiped left to %f", newOffset);
-    [self scrollToHorizontalOffset:newOffset];
+  BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+  NSInteger horizontalInterval = [self swipeHorizontalInterval];
+  CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? horizontalInterval : -horizontalInterval);
+  // NSLog(@"Swiped left to %f", newOffset);
+  [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)swipedRight
 {
-    if (!self.scrollView.scrollEnabled) {
-        return;
-    }
+  if (!self.scrollView.scrollEnabled) {
+    return;
+  }
 
-    BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
-    NSInteger horizontalInterval = [self swipeHorizontalInterval];
-    CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? -horizontalInterval : horizontalInterval);
-    // NSLog(@"Swiped right to %f", newOffset);
-    [self scrollToHorizontalOffset:newOffset];
+  BOOL isRTL = [[RCTI18nUtil sharedInstance] isRTL];
+  NSInteger horizontalInterval = [self swipeHorizontalInterval];
+  CGFloat newOffset = self.scrollView.contentOffset.x + (isRTL ? -horizontalInterval : horizontalInterval);
+  // NSLog(@"Swiped right to %f", newOffset);
+  [self scrollToHorizontalOffset:newOffset];
 }
 
 - (void)addSwipeGestureRecognizers
 {
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp) direction:UISwipeGestureRecognizerDirectionUp name:RCTTVRemoteEventSwipeUp];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown) direction:UISwipeGestureRecognizerDirectionDown name:RCTTVRemoteEventSwipeDown];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft) direction:UISwipeGestureRecognizerDirectionLeft name:RCTTVRemoteEventSwipeLeft];
-    [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight) direction:UISwipeGestureRecognizerDirectionRight name:RCTTVRemoteEventSwipeRight];
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedUp)
+                                    direction:UISwipeGestureRecognizerDirectionUp
+                                         name:RCTTVRemoteEventSwipeUp];
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedDown)
+                                    direction:UISwipeGestureRecognizerDirectionDown
+                                         name:RCTTVRemoteEventSwipeDown];
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedLeft)
+                                    direction:UISwipeGestureRecognizerDirectionLeft
+                                         name:RCTTVRemoteEventSwipeLeft];
+  [self addSwipeGestureRecognizerWithSelector:@selector(swipedRight)
+                                    direction:UISwipeGestureRecognizerDirectionRight
+                                         name:RCTTVRemoteEventSwipeRight];
 }
 
 - (void)addSwipeGestureRecognizerWithSelector:(nonnull SEL)selector
                                     direction:(UISwipeGestureRecognizerDirection)direction
                                          name:(NSString *)name
 {
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
-    recognizer.direction = direction;
+  UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:selector];
+  recognizer.direction = direction;
 
-    _tvRemoteGestureRecognizers[name] = recognizer;
-    [self.scrollView addGestureRecognizer:recognizer];
+  _tvRemoteGestureRecognizers[name] = recognizer;
+  [self.scrollView addGestureRecognizer:recognizer];
 }
 
 - (void)removeSwipeGestureRecognizers
 {
-    NSArray *names = [self->_tvRemoteGestureRecognizers allKeys];
-    for (NSString *name in names) {
-        UIGestureRecognizer *r = self->_tvRemoteGestureRecognizers[name];
-        [self.scrollView removeGestureRecognizer:r];
-        [self->_tvRemoteGestureRecognizers removeObjectForKey:name];
-    }
+  NSArray *names = [self->_tvRemoteGestureRecognizers allKeys];
+  for (NSString *name in names) {
+    UIGestureRecognizer *r = self->_tvRemoteGestureRecognizers[name];
+    [self.scrollView removeGestureRecognizer:r];
+    [self->_tvRemoteGestureRecognizers removeObjectForKey:name];
+  }
 }
 #endif // TARGET_OS_TV
 

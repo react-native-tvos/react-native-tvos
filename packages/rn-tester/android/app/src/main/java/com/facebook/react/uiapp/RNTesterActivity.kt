@@ -122,8 +122,11 @@ internal open class RNTesterActivity : ReactActivity() {
     data.putString("keyCode", KeyEvent.keyCodeToString(keyCode))
 
     reactActivityDelegate.currentReactContext
-      ?.getJSModule(com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      ?.emit(::onDialogKeyUp.name + "Event", data)
+        ?.getJSModule(
+            com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class
+                .java
+        )
+        ?.emit(::onDialogKeyUp.name + "Event", data)
 
     return super.onDialogKeyUp(keyCode, event)
   }
@@ -133,8 +136,11 @@ internal open class RNTesterActivity : ReactActivity() {
     data.putString("keyCode", KeyEvent.keyCodeToString(keyCode))
 
     reactActivityDelegate.currentReactContext
-      ?.getJSModule(com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      ?.emit(::onDialogKeyDown.name + "Event", data)
+        ?.getJSModule(
+            com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter::class
+                .java
+        )
+        ?.emit(::onDialogKeyDown.name + "Event", data)
 
     return super.onDialogKeyDown(keyCode, event)
   }

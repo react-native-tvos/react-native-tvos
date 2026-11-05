@@ -28,10 +28,12 @@ NSString *const RCTTVDisableMenuKeyNotification = @"RCTTVDisableMenuKeyNotificat
 NSString *const RCTTVEnablePanGestureNotification = @"RCTTVEnablePanGestureNotification";
 NSString *const RCTTVDisablePanGestureNotification = @"RCTTVDisablePanGestureNotification";
 
-NSString *const RCTTVEnableGestureHandlersCancelTouchesNotification = @"RCTTVEnableGestureHandlersCancelTouchesNotification";
-NSString *const RCTTVDisableGestureHandlersCancelTouchesNotification = @"RCTTVDisableGestureHandlersCancelTouchesNotification";
+NSString *const RCTTVEnableGestureHandlersCancelTouchesNotification =
+    @"RCTTVEnableGestureHandlersCancelTouchesNotification";
+NSString *const RCTTVDisableGestureHandlersCancelTouchesNotification =
+    @"RCTTVDisableGestureHandlersCancelTouchesNotification";
 
-@interface RCTTVRemoteHandler()
+@interface RCTTVRemoteHandler ()
 
 @property (nonatomic, copy, readonly) NSDictionary<NSString *, UIGestureRecognizer *> *tvRemoteGestureRecognizers;
 @property (nonatomic, strong) UITapGestureRecognizer *tvMenuKeyRecognizer;
@@ -53,32 +55,32 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 
 + (BOOL)useMenuKey
 {
-    return __useMenuKey;
+  return __useMenuKey;
 }
 
 + (void)setUseMenuKey:(BOOL)useMenuKey
 {
-    __useMenuKey = useMenuKey;
+  __useMenuKey = useMenuKey;
 }
 
 + (BOOL)usePanGesture
 {
-    return __usePanGesture;
+  return __usePanGesture;
 }
 
 + (void)setUsePanGesture:(BOOL)usePanGesture
 {
-    __usePanGesture = usePanGesture;
+  __usePanGesture = usePanGesture;
 }
 
 + (BOOL)gestureHandlersCancelTouches
 {
-    return __gestureHandlersCancelTouches;
+  return __gestureHandlersCancelTouches;
 }
 
 + (void)setGestureHandlersCancelTouches:(BOOL)cancelTouches
 {
-    __gestureHandlersCancelTouches = cancelTouches;
+  __gestureHandlersCancelTouches = cancelTouches;
 }
 
 #pragma mark -
@@ -87,16 +89,16 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 - (instancetype)initWithView:(UIView *)view
 {
   if ((self = [super init])) {
-      _view = view;
-      [self setUpGestureRecognizers];
-      [self attachToView];
+    _view = view;
+    [self setUpGestureRecognizers];
+    [self attachToView];
   }
   return self;
 }
 
 - (void)dealloc
 {
-    [self detachFromView];
+  [self detachFromView];
 }
 
 #pragma mark -
@@ -104,12 +106,12 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 
 - (void)setUpGestureRecognizers
 {
-    _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
+  _tvRemoteGestureRecognizers = [NSMutableDictionary dictionary];
   // Recognizers for Apple TV remote buttons
 
   // Menu recognizer
   self.tvMenuKeyRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuPressed:)];
-  self.tvMenuKeyRecognizer.allowedPressTypes = @[@(UIPressTypeMenu)];
+  self.tvMenuKeyRecognizer.allowedPressTypes = @[ @(UIPressTypeMenu) ];
 
   // Pan gesture recognizer
   self.tvPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)];
@@ -122,19 +124,17 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 
   // Page Up/Down
   if (@available(tvOS 14.3, *)) {
-      [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
-                                      pressType:UIPressTypePageUp
-                                           name:RCTTVRemoteEventPageUp];
-        
-      [self addTapGestureRecognizerWithSelector:@selector(tappedPageDown:)
-                                      pressType:UIPressTypePageDown
-                                           name:RCTTVRemoteEventPageDown];
+    [self addTapGestureRecognizerWithSelector:@selector(tappedPageUp:)
+                                    pressType:UIPressTypePageUp
+                                         name:RCTTVRemoteEventPageUp];
+
+    [self addTapGestureRecognizerWithSelector:@selector(tappedPageDown:)
+                                    pressType:UIPressTypePageDown
+                                         name:RCTTVRemoteEventPageDown];
   }
 
   // Up
-  [self addTapGestureRecognizerWithSelector:@selector(tappedUp:)
-                                  pressType:UIPressTypeUpArrow
-                                       name:RCTTVRemoteEventUp];
+  [self addTapGestureRecognizerWithSelector:@selector(tappedUp:) pressType:UIPressTypeUpArrow name:RCTTVRemoteEventUp];
 
   // Down
   [self addTapGestureRecognizerWithSelector:@selector(tappedDown:)
@@ -199,26 +199,26 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
 
 - (void)attachToView
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(enableTVMenuKey)
-                                                 name:RCTTVEnableMenuKeyNotification
-                                               object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(enableTVMenuKey)
+                                               name:RCTTVEnableMenuKeyNotification
+                                             object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(disableTVMenuKey)
-                                                 name:RCTTVDisableMenuKeyNotification
-                                               object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(disableTVMenuKey)
+                                               name:RCTTVDisableMenuKeyNotification
+                                             object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(enableTVPanGesture)
-                                                 name:RCTTVEnablePanGestureNotification
-                                               object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(enableTVPanGesture)
+                                               name:RCTTVEnablePanGestureNotification
+                                             object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(disableTVPanGesture)
-                                                 name:RCTTVDisablePanGestureNotification
-                                               object:nil];
-  
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(disableTVPanGesture)
+                                               name:RCTTVDisablePanGestureNotification
+                                             object:nil];
+
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(enableGestureHandlersCancelTouches)
                                                name:RCTTVEnableGestureHandlersCancelTouchesNotification
@@ -229,85 +229,75 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
                                                name:RCTTVDisableGestureHandlersCancelTouchesNotification
                                              object:nil];
 
-
-    for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
-      [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
-    }
-    if ([RCTTVRemoteHandler useMenuKey]) {
-        [self enableTVMenuKey];
-    } else {
-        [self disableTVMenuKey];
-    }
-    if ([RCTTVRemoteHandler usePanGesture]) {
-        [self enableTVPanGesture];
-    } else {
-        [self disableTVPanGesture];
-    }
+  for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
+    [_view addGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
+  }
+  if ([RCTTVRemoteHandler useMenuKey]) {
+    [self enableTVMenuKey];
+  } else {
+    [self disableTVMenuKey];
+  }
+  if ([RCTTVRemoteHandler usePanGesture]) {
+    [self enableTVPanGesture];
+  } else {
+    [self disableTVPanGesture];
+  }
 }
 
 - (void)detachFromView
 {
-    if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-        [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
-    }
-    if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
-        [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
-    }
-    for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
-      [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
-    }
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVEnableMenuKeyNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVDisableMenuKeyNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVEnablePanGestureNotification
-                                                  object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:RCTTVDisablePanGestureNotification
-                                                  object:nil];
-
+  if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+    [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+  }
+  if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+    [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
+  }
+  for (NSString *key in [self.tvRemoteGestureRecognizers allKeys]) {
+    [_view removeGestureRecognizer:self.tvRemoteGestureRecognizers[key]];
+  }
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTTVEnableMenuKeyNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTTVDisableMenuKeyNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTTVEnablePanGestureNotification object:nil];
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTTVDisablePanGestureNotification object:nil];
 }
 
-# pragma mark -
-# pragma mark Notification handlers
+#pragma mark -
+#pragma mark Notification handlers
 
 - (void)enableTVMenuKey
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-            [self.view addGestureRecognizer:self.tvMenuKeyRecognizer];
-        }
-    });
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (![[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+      [self.view addGestureRecognizer:self.tvMenuKeyRecognizer];
+    }
+  });
 }
 
 - (void)disableTVMenuKey
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
-            [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
-        }
-    });
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([[self.view gestureRecognizers] containsObject:self.tvMenuKeyRecognizer]) {
+      [self.view removeGestureRecognizer:self.tvMenuKeyRecognizer];
+    }
+  });
 }
 
 - (void)enableTVPanGesture
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (![[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
-            [self.view addGestureRecognizer:self.tvPanGestureRecognizer];
-        }
-    });
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (![[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+      [self.view addGestureRecognizer:self.tvPanGestureRecognizer];
+    }
+  });
 }
 
 - (void)disableTVPanGesture
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
-            [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
-        }
-    });
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([[self.view gestureRecognizers] containsObject:self.tvPanGestureRecognizer]) {
+      [self.view removeGestureRecognizer:self.tvPanGestureRecognizer];
+    }
+  });
 }
 
 - (void)enableGestureHandlersCancelTouches
@@ -334,113 +324,153 @@ static __volatile BOOL __gestureHandlersCancelTouches = YES;
   });
 }
 
-# pragma mark -
-# pragma mark Gesture handlers
+#pragma mark -
+#pragma mark Gesture handlers
 
 - (void)playPausePressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPlayPause keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPlayPause
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)menuPressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventMenu keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventMenu
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)longPlayPausePressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongPlayPause keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongPlayPause
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 
 #if RCT_DEV
-    // If shake to show is enabled on device, use long play/pause event to show dev menu
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTShowDevMenuNotification" object:nil];
+  // If shake to show is enabled on device, use long play/pause event to show dev menu
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"RCTShowDevMenuNotification" object:nil];
 #endif
 }
 
 - (void)longUpPressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongUp keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongUp
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)longDownPressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongDown keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongDown
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)longLeftPressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongLeft keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongLeft
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)longRightPressed:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongRight keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongRight
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)swipedUp:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeUp body:r.eventState];
+  [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeUp body:r.eventState];
 }
 
 - (void)swipedDown:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeDown body:r.eventState];
+  [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeDown body:r.eventState];
 }
 
 - (void)swipedLeft:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeLeft body:r.eventState];
+  [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeLeft body:r.eventState];
 }
 
 - (void)swipedRight:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeRight body:r.eventState];
+  [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventSwipeRight body:r.eventState];
 }
 
 - (void)tappedUp:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventUp keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventUp
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)tappedDown:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventDown keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventDown
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)tappedPageUp:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPageUp keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPageUp
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)tappedPageDown:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPageDown keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventPageDown
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)tappedLeft:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLeft keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLeft
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
 - (void)tappedRight:(UIGestureRecognizer *)r
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventRight keyAction:r.eventKeyAction tag:nil target:nil];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventRight
+                                                               keyAction:r.eventKeyAction
+                                                                     tag:nil
+                                                                  target:nil];
 }
 
-- (void)panned:(UIPanGestureRecognizer *)gesture {
-    UIView *rootView = [self view];
-    NSMutableDictionary *eventBody= [gesture.eventState mutableCopy];
-    CGPoint translation = [gesture translationInView:rootView];
-    CGPoint velocity = [gesture velocityInView:rootView];
+- (void)panned:(UIPanGestureRecognizer *)gesture
+{
+  UIView *rootView = [self view];
+  NSMutableDictionary *eventBody = [gesture.eventState mutableCopy];
+  CGPoint translation = [gesture translationInView:rootView];
+  CGPoint velocity = [gesture velocityInView:rootView];
 
-    if (eventBody.count > 0) {
-        eventBody[@"x"] = [NSNumber numberWithInt:translation.x];
-        eventBody[@"y"] = [NSNumber numberWithInt:translation.y];
-        eventBody[@"velocityX"] = [NSNumber numberWithFloat:velocity.x];
-        eventBody[@"velocityY"] = [NSNumber numberWithFloat:velocity.y];
+  if (eventBody.count > 0) {
+    eventBody[@"x"] = [NSNumber numberWithInt:translation.x];
+    eventBody[@"y"] = [NSNumber numberWithInt:translation.y];
+    eventBody[@"velocityX"] = [NSNumber numberWithFloat:velocity.x];
+    eventBody[@"velocityY"] = [NSNumber numberWithFloat:velocity.y];
 
-        [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventPan body:[eventBody copy]];
-    }
+    [[NSNotificationCenter defaultCenter] postNavigationTouchEventWithType:RCTTVRemoteEventPan body:[eventBody copy]];
+  }
 }
 
 #pragma mark -

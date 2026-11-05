@@ -9,14 +9,12 @@ package com.facebook.react.modules.core;
 
 import android.view.KeyEvent;
 import android.view.View;
-
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.common.SystemClock;
 import com.facebook.react.config.ReactFeatureFlags;
-
 import java.util.Map;
 
 /** Responsible for dispatching events specific for hardware inputs. */
@@ -117,18 +115,18 @@ public class ReactAndroidHWInputDeviceHelper {
   public ReactAndroidHWInputDeviceHelper() {}
 
   private boolean isSelectEvent(int eventKeyCode) {
-    return eventKeyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
-      eventKeyCode == KeyEvent.KEYCODE_BUTTON_SELECT ||
-      eventKeyCode == KeyEvent.KEYCODE_NUMPAD_ENTER ||
-      eventKeyCode == KeyEvent.KEYCODE_ENTER;
+    return eventKeyCode == KeyEvent.KEYCODE_DPAD_CENTER
+        || eventKeyCode == KeyEvent.KEYCODE_BUTTON_SELECT
+        || eventKeyCode == KeyEvent.KEYCODE_NUMPAD_ENTER
+        || eventKeyCode == KeyEvent.KEYCODE_ENTER;
   }
 
   /** Only the up/right/down/left arrows. The dpad center button is not included */
   private boolean isDPadEvent(int eventKeyCode) {
-    return eventKeyCode == KeyEvent.KEYCODE_DPAD_UP ||
-      eventKeyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
-      eventKeyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
-      eventKeyCode == KeyEvent.KEYCODE_DPAD_LEFT;
+    return eventKeyCode == KeyEvent.KEYCODE_DPAD_UP
+        || eventKeyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+        || eventKeyCode == KeyEvent.KEYCODE_DPAD_DOWN
+        || eventKeyCode == KeyEvent.KEYCODE_DPAD_LEFT;
   }
 
   // True if we are in the long press state and we are more than
@@ -137,7 +135,10 @@ public class ReactAndroidHWInputDeviceHelper {
     return mLastKeyDownTime != 0 && time - mLastKeyDownTime > mLongPressedDelta;
   }
 
-  /** Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are handled. */
+  /**
+   * Called from {@link com.facebook.react.ReactRootView}. This is the main place the key events are
+   * handled.
+   */
   public void handleKeyEvent(KeyEvent ev, ReactContext context) {
     int eventKeyCode = ev.getKeyCode();
     int eventKeyAction = ev.getAction();
@@ -157,21 +158,22 @@ public class ReactAndroidHWInputDeviceHelper {
     }
 
     if (shouldDispatchEvent(eventKeyCode, eventKeyAction, time)) {
-      if(longPressEventActive) {
-        // For long presses, only send the first key down event (aligns with Apple TV gesture detection behavior)
-        if(!longPressEventStarted || eventKeyAction == KeyEvent.ACTION_UP) {
+      if (longPressEventActive) {
+        // For long presses, only send the first key down event (aligns with Apple TV gesture
+        // detection behavior)
+        if (!longPressEventStarted || eventKeyAction == KeyEvent.ACTION_UP) {
           dispatchEvent(
-            KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
-            mLastFocusedViewId,
-            eventKeyAction,
-            context
-          );
+              KEY_EVENTS_LONG_PRESS_ACTIONS.get(eventKeyCode),
+              mLastFocusedViewId,
+              eventKeyAction,
+              context);
           longPressEventStarted = true;
         }
         // Update the start time for detecting the next long press event
         mLastKeyDownTime = time;
       } else {
-        dispatchEvent(KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
+        dispatchEvent(
+            KEY_EVENTS_ACTIONS.get(eventKeyCode), mLastFocusedViewId, eventKeyAction, context);
       }
     }
 
@@ -181,23 +183,27 @@ public class ReactAndroidHWInputDeviceHelper {
       longPressEventActive = false;
       longPressEventStarted = false;
     }
-
   }
 
-  // Android TV: Only send key up actions, unless key down events are enabled or we need to send a long press event
+  // Android TV: Only send key up actions, unless key down events are enabled or we need to send a
+  // long press event
   private boolean shouldDispatchEvent(int eventKeyCode, int eventKeyAction, long time) {
-    return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode) && (
-      (eventKeyAction == KeyEvent.ACTION_UP) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && !longPressEventActive && ReactFeatureFlags.enableKeyDownEvents) ||
-      (eventKeyAction == KeyEvent.ACTION_DOWN && longPressEventActive && isLongPressEventTime(time))
-    );
+    return KEY_EVENTS_ACTIONS.containsKey(eventKeyCode)
+        && ((eventKeyAction == KeyEvent.ACTION_UP)
+            || (eventKeyAction == KeyEvent.ACTION_DOWN
+                && !longPressEventActive
+                && ReactFeatureFlags.enableKeyDownEvents)
+            || (eventKeyAction == KeyEvent.ACTION_DOWN
+                && longPressEventActive
+                && isLongPressEventTime(time)));
   }
 
   private void dispatchEvent(String eventType, int targetViewId, ReactContext context) {
     dispatchEvent(eventType, targetViewId, -1, context);
   }
 
-  private void dispatchEvent(String eventType, int targetViewId, int eventKeyAction, ReactContext context) {
+  private void dispatchEvent(
+      String eventType, int targetViewId, int eventKeyAction, ReactContext context) {
     WritableMap event = new WritableNativeMap();
     event.putString("eventType", eventType);
     event.putInt("eventKeyAction", eventKeyAction);
@@ -210,9 +216,9 @@ public class ReactAndroidHWInputDeviceHelper {
 
   public void emitNamedEvent(String eventName, WritableMap event, ReactContext context) {
     if (context != null) {
-      context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-        .emit(eventName, event);
+      context
+          .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+          .emit(eventName, event);
     }
   }
-
 }
