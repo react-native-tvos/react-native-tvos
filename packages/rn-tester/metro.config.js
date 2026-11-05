@@ -10,31 +10,10 @@
 
 'use strict';
 
+const {withTVOSPlatform} = require('../react-native/tvos-metro-config');
 const {getDefaultConfig} = require('@react-native/metro-config');
 const {mergeConfig} = require('metro-config');
 const path = require('node:path');
-
-const TVOS_PLATFORM_EXTENSIONS = ['tvos', 'ios', 'native'];
-
-/**
- * Resolves `tvos` requests with the `.tvos`, `.ios`, `.native` file extensions in that order,
- * because most React Native sources have an `.ios.js` file and no `.tvos.js` file.
- *
- * @type {NonNullable<import('metro-config').MetroConfig['resolver']>['resolveRequest']}
- */
-function resolveRequest(context, moduleName, platform) {
-  if (platform !== 'tvos') {
-    return context.resolveRequest(context, moduleName, platform);
-  }
-  const sourceExts = TVOS_PLATFORM_EXTENSIONS.flatMap(platformExtension =>
-    context.sourceExts.map(sourceExt => `${platformExtension}.${sourceExt}`),
-  ).concat(context.sourceExts);
-  return context.resolveRequest(
-    {...context, preferNativePlatform: false, sourceExts},
-    moduleName,
-    null,
-  );
-}
 
 /**
  * This cli config is needed for development purposes, e.g. for running
@@ -71,9 +50,9 @@ const config = {
         '../virtualized-lists',
       ),
     },
-    resolveRequest,
   },
-  transformerPath: require.resolve('./metro-tvos-transform-worker'),
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = withTVOSPlatform(
+  mergeConfig(getDefaultConfig(__dirname), config),
+);

@@ -11,24 +11,31 @@
 'use strict';
 
 /**
- * Metro transform worker that transforms `tvos` bundles as `ios`.
- *
- * Metro inlines `Platform.OS` and `Platform.select` with the bundle platform,
- * and React Native checks `Platform.OS === 'ios'` for behavior that tvOS shares
- * with iOS, such as the event props in the base view config and
- * `isTVSelectable`. Module resolution still uses `tvos` (see `metro.config.js`),
- * so `.tvos.js` files take precedence over `.ios.js` files.
+ * Metro transform worker that transforms `tvos` bundles as `ios`, and every
+ * other bundle as Metro's default worker does. See `withTVOSPlatform`.
  */
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const worker = require(
-  require.resolve('metro-transform-worker', {
-    paths: [path.dirname(require.resolve('metro/package.json'))],
-  }),
-);
+/**
+ * Metro's default worker, found through the `metro` package the way Metro
+ * finds it. Metro runs from the app, which is the working directory of Metro
+ * and its workers.
+ */
+function requireDefaultWorker() {
+  const metroPackageJson = require.resolve('metro/package.json', {
+    paths: [process.cwd(), __dirname],
+  });
+  return require(
+    require.resolve('metro-transform-worker', {
+      paths: [path.dirname(metroPackageJson)],
+    }),
+  );
+}
+
+const worker = requireDefaultWorker();
 
 const ownCacheKey = crypto
   .createHash('sha1')
