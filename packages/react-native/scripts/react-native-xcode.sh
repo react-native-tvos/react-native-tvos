@@ -134,7 +134,7 @@ case "$PLATFORM_NAME" in
     BUNDLE_PLATFORM="macos"
     ;;
   *)
-    BUNDLE_PLATFORM="tvos"
+    BUNDLE_PLATFORM="ios"
     ;;
 esac
 
