@@ -37,7 +37,16 @@ export interface PressableAndroidRippleConfig {
 export interface PressableProps
   extends
     AccessibilityProps,
-    Omit<ViewProps, 'children' | 'style' | 'hitSlop' | 'onFocus' | 'onBlur' | 'onPressIn' | 'onPressOut'> {
+    Omit<
+      ViewProps,
+      | 'children'
+      | 'style'
+      | 'hitSlop'
+      | 'onFocus'
+      | 'onBlur'
+      | 'onPressIn'
+      | 'onPressOut'
+    > {
   /**
    * Called when the hover is activated to provide visual feedback.
    */

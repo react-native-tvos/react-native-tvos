@@ -315,7 +315,10 @@ public class ReactModalHostView(context: ThemedReactContext) :
           override fun onKey(dialog: DialogInterface, keyCode: Int, event: KeyEvent): Boolean {
             // Modal needs to send the key event to its own TV event handler
             // https://github.com/react-native-tvos/react-native-tvos/issues/609
-            dialogRootViewGroup.androidHWInputDeviceHelper.handleKeyEvent(event, dialogRootViewGroup.reactContext)
+            dialogRootViewGroup.androidHWInputDeviceHelper.handleKeyEvent(
+                event,
+                dialogRootViewGroup.reactContext,
+            )
             if (event.action == KeyEvent.ACTION_UP) {
               // We need to stop the BACK button and ESCAPE key from closing the dialog by default
               // so we capture that event and instead inform JS so that it can make the decision as
@@ -329,7 +332,8 @@ public class ReactModalHostView(context: ThemedReactContext) :
                 // activity expects to receive those events and react to them, ie. in the case of
                 // the dev menu
                 val innerCurrentActivity =
-                    (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
+                    (this@ReactModalHostView.context as ReactContext).currentActivity
+                        as? ReactActivity
                 if (innerCurrentActivity != null) {
                   return innerCurrentActivity.onDialogKeyUp(keyCode, event)
                 }
@@ -348,7 +352,8 @@ public class ReactModalHostView(context: ThemedReactContext) :
 
               // Redirect all other key down events to the current activity.
               val innerCurrentActivity =
-                (this@ReactModalHostView.context as ReactContext).currentActivity as? ReactActivity
+                  (this@ReactModalHostView.context as ReactContext).currentActivity
+                      as? ReactActivity
               if (innerCurrentActivity != null) {
                 return innerCurrentActivity.onDialogKeyDown(keyCode, event)
               }

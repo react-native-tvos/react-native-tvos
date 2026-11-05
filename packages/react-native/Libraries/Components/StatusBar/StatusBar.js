@@ -289,7 +289,7 @@ class StatusBar extends React.Component<StatusBarProps> {
   static setHidden(hidden: boolean, animation?: StatusBarAnimation) {
     const resolvedAnimation = animation ?? 'none';
     StatusBar._defaultProps.hidden.value = hidden;
-    if (Platform.OS === 'ios' && !Platform.isTV ) {
+    if (Platform.OS === 'ios' && !Platform.isTV) {
       NativeStatusBarManagerIOS.setHidden(hidden, resolvedAnimation);
     } else if (Platform.OS === 'android') {
       NativeStatusBarManagerAndroid.setHidden(hidden);
@@ -434,7 +434,7 @@ class StatusBar extends React.Component<StatusBarProps> {
       );
 
       // Update the props that have changed using the merged values from the props stack.
-      if (Platform.OS === 'ios' && !Platform.isTV ) {
+      if (Platform.OS === 'ios' && !Platform.isTV) {
         if (
           !oldProps ||
           oldProps.barStyle?.value !== mergedProps.barStyle.value

@@ -7,17 +7,18 @@
 
 @implementation UIColor (RNTVSystemColors)
 
-+ (UIColor *)rntv_systemBackgroundColor {
- #if TARGET_OS_TV
-   UIColor *lightColor = [UIColor whiteColor];
-   UIColor *darkColor = [UIColor blackColor];
++ (UIColor *)rntv_systemBackgroundColor
+{
+#if TARGET_OS_TV
+  UIColor *lightColor = [UIColor whiteColor];
+  UIColor *darkColor = [UIColor blackColor];
 
-   return [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
-     return (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) ? darkColor : lightColor;
-   }];
- #else
-   return [UIColor systemBackgroundColor];
- #endif
+  return [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
+    return (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) ? darkColor : lightColor;
+  }];
+#else
+  return [UIColor systemBackgroundColor];
+#endif
 }
 
 @end

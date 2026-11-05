@@ -17,20 +17,21 @@ internal object UiModeUtils {
   private var isTVDeviceCached: Boolean? = null
 
   /**
-   * Determines whether the device is a TV (Android TV / Fire TV).
-   * The result is cached after the first call.
+   * Determines whether the device is a TV (Android TV / Fire TV). The result is cached after the
+   * first call.
    *
    * @param context The context to check the UI mode from
    * @return true if the device is running in television mode, false otherwise
    */
   @JvmStatic
   fun isTVDevice(context: Context): Boolean {
-    return isTVDeviceCached ?: run {
-      val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
-      val result = uiModeManager?.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
-      isTVDeviceCached = result
-      result
-    }
+    return isTVDeviceCached
+        ?: run {
+          val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
+          val result = uiModeManager?.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
+          isTVDeviceCached = result
+          result
+        }
   }
 
   /**

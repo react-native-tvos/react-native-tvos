@@ -32,13 +32,13 @@ class ScrollViewSimpleExample extends React.Component<{...}> {
       if (i % 6 === 0) {
         items[i] = (
           <TouchableOpacity disabled accessible={false} key={i} style={styles}>
-            <Text style={{ color: '#a52a2a' }}>{'Inaccessible ' + i}</Text>
+            <Text style={{color: '#a52a2a'}}>{'Inaccessible ' + i}</Text>
           </TouchableOpacity>
         );
       } else if (i % 3 === 0) {
         items[i] = (
           <TouchableOpacity disabled key={i} style={styles}>
-            <Text style={{ color: '#a52a2a' }}>{'Disabled ' + i}</Text>
+            <Text style={{color: '#a52a2a'}}>{'Disabled ' + i}</Text>
           </TouchableOpacity>
         );
       } else {

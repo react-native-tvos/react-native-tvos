@@ -35,6 +35,8 @@ jobs:
         run: |
           yarn --cwd packages/react-native featureflags-check
           yarn lint
+          git fetch --no-tags --depth=1 origin main
+          yarn format-check-changed FETCH_HEAD
           yarn --cwd packages/react-native-codegen build
           yarn --cwd packages/react-native-codegen-typescript-test build
           # yarn test-typescript-legacy
@@ -46,6 +48,6 @@ jobs:
           yarn test-generated-typescript
       - name: Run Jest tests
         id: test-jest
-        working_directory: ../..   
+        working_directory: ../..
         run: |
           npx jest packages/react-native

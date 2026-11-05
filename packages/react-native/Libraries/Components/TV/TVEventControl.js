@@ -12,27 +12,33 @@ import Platform from '../../Utilities/Platform';
 
 const TVEventControl = {
   enableTVMenuKey: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.enableTVMenuKey();
   },
   disableTVMenuKey: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.disableTVMenuKey();
   },
   enableTVPanGesture: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.enableTVPanGesture();
   },
   disableTVPanGesture: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.disableTVPanGesture();
   },
   enableGestureHandlersCancelTouches: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.enableGestureHandlersCancelTouches();
   },
   disableGestureHandlersCancelTouches: () => {
-    Platform.isTV && NativeTVNavigationEventEmitter &&
+    Platform.isTV &&
+      NativeTVNavigationEventEmitter &&
       NativeTVNavigationEventEmitter.disableGestureHandlersCancelTouches();
   },
 };

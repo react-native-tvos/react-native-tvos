@@ -274,7 +274,8 @@ BaseScrollViewProps::BaseScrollViewProps(
           rawProps,
           "isInvertedVirtualizedList",
           sourceProps.isInvertedVirtualizedList,
-          {})) {}
+          {})) {
+}
 
 void BaseScrollViewProps::setProp(
     const PropsParserContext& context,

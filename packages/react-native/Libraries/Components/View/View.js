@@ -144,69 +144,69 @@ component View(ref?: React.RefSetter<ViewInstance>, ...props: ViewProps) {
     };
   }
 
-    if (id !== undefined) {
-      resolvedProps.nativeID = id;
-    }
+  if (id !== undefined) {
+    resolvedProps.nativeID = id;
+  }
 
-    if (tabIndex !== undefined) {
-      resolvedProps.focusable = !tabIndex;
-    }
+  if (tabIndex !== undefined) {
+    resolvedProps.focusable = !tabIndex;
+  }
 
-    if (
-      accessibilityState != null ||
-      ariaBusy != null ||
-      ariaChecked != null ||
-      ariaDisabled != null ||
-      ariaExpanded != null ||
-      ariaSelected != null
-    ) {
-      resolvedProps.accessibilityState = {
-        busy: ariaBusy ?? accessibilityState?.busy,
-        checked: ariaChecked ?? accessibilityState?.checked,
-        disabled: ariaDisabled ?? accessibilityState?.disabled,
-        expanded: ariaExpanded ?? accessibilityState?.expanded,
-        selected: ariaSelected ?? accessibilityState?.selected,
-      };
-    }
+  if (
+    accessibilityState != null ||
+    ariaBusy != null ||
+    ariaChecked != null ||
+    ariaDisabled != null ||
+    ariaExpanded != null ||
+    ariaSelected != null
+  ) {
+    resolvedProps.accessibilityState = {
+      busy: ariaBusy ?? accessibilityState?.busy,
+      checked: ariaChecked ?? accessibilityState?.checked,
+      disabled: ariaDisabled ?? accessibilityState?.disabled,
+      expanded: ariaExpanded ?? accessibilityState?.expanded,
+      selected: ariaSelected ?? accessibilityState?.selected,
+    };
+  }
 
-    if (
-      accessibilityValue != null ||
-      ariaValueMax != null ||
-      ariaValueMin != null ||
-      ariaValueNow != null ||
-      ariaValueText != null
-    ) {
-      resolvedProps.accessibilityValue = {
-        max: ariaValueMax ?? accessibilityValue?.max,
-        min: ariaValueMin ?? accessibilityValue?.min,
-        now: ariaValueNow ?? accessibilityValue?.now,
-        text: ariaValueText ?? accessibilityValue?.text,
-      };
-    }
+  if (
+    accessibilityValue != null ||
+    ariaValueMax != null ||
+    ariaValueMin != null ||
+    ariaValueNow != null ||
+    ariaValueText != null
+  ) {
+    resolvedProps.accessibilityValue = {
+      max: ariaValueMax ?? accessibilityValue?.max,
+      min: ariaValueMin ?? accessibilityValue?.min,
+      now: ariaValueNow ?? accessibilityValue?.now,
+      text: ariaValueText ?? accessibilityValue?.text,
+    };
+  }
 
-    if (Platform.OS === 'ios') {
-      resolvedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
-      delete resolvedProps.focusable;
-    } else {
-      // `tvFocusable` and `focusable` both set the native isFocusable flag, and
-      // props are applied in ReadableNativeMap order, which is not stable. Sending
-      // `focusable: false` next to `tvFocusable: true` (what TVFocusGuideView
-      // does) lets whichever setter runs last win, so a guide can end up
-      // non-focusable and FocusFinder then ignores it as a nextFocus* target.
-      // Fall back to `tvFocusable` so both setters always agree.
-      resolvedProps.focusable = focusable ?? resolvedProps.tvFocusable ?? false;
-      delete resolvedProps.isTVSelectable;
-    }
+  if (Platform.OS === 'ios') {
+    resolvedProps.isTVSelectable = focusable ?? isTVSelectable ?? false;
+    delete resolvedProps.focusable;
+  } else {
+    // `tvFocusable` and `focusable` both set the native isFocusable flag, and
+    // props are applied in ReadableNativeMap order, which is not stable. Sending
+    // `focusable: false` next to `tvFocusable: true` (what TVFocusGuideView
+    // does) lets whichever setter runs last win, so a guide can end up
+    // non-focusable and FocusFinder then ignores it as a nextFocus* target.
+    // Fall back to `tvFocusable` so both setters always agree.
+    resolvedProps.focusable = focusable ?? resolvedProps.tvFocusable ?? false;
+    delete resolvedProps.isTVSelectable;
+  }
 
-    // Views with scrollSnapAlign or scrollSnapOffset must not be flattened by
-    // Fabric, otherwise the prop never reaches the native view and scroll
-    // snapping breaks.
-    if (
-      resolvedProps.scrollSnapAlign != null ||
-      resolvedProps.scrollSnapOffset != null
-    ) {
-      resolvedProps.collapsable = false;
-    }
+  // Views with scrollSnapAlign or scrollSnapOffset must not be flattened by
+  // Fabric, otherwise the prop never reaches the native view and scroll
+  // snapping breaks.
+  if (
+    resolvedProps.scrollSnapAlign != null ||
+    resolvedProps.scrollSnapOffset != null
+  ) {
+    resolvedProps.collapsable = false;
+  }
 
   if (__DEV__) {
     const onSafeAreaInsetsChange =

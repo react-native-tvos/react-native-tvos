@@ -9,19 +9,19 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * _Nonnull const RCTTVEnableMenuKeyNotification;
-extern NSString * _Nonnull const RCTTVDisableMenuKeyNotification;
+extern NSString *_Nonnull const RCTTVEnableMenuKeyNotification;
+extern NSString *_Nonnull const RCTTVDisableMenuKeyNotification;
 
-extern NSString * _Nonnull const RCTTVEnablePanGestureNotification;
-extern NSString * _Nonnull const RCTTVDisablePanGestureNotification;
+extern NSString *_Nonnull const RCTTVEnablePanGestureNotification;
+extern NSString *_Nonnull const RCTTVDisablePanGestureNotification;
 
-extern NSString * _Nonnull const RCTTVEnableGestureHandlersCancelTouchesNotification;
-extern NSString * _Nonnull const RCTTVDisableGestureHandlersCancelTouchesNotification;
+extern NSString *_Nonnull const RCTTVEnableGestureHandlersCancelTouchesNotification;
+extern NSString *_Nonnull const RCTTVDisableGestureHandlersCancelTouchesNotification;
 
 @interface RCTTVRemoteHandler : NSObject
 
-- (instancetype _Nonnull )initWithView:(UIView * _Nonnull)view;
-- (instancetype _Nonnull )init __attribute__((unavailable("init not available, use initWithView:")));
+- (instancetype _Nonnull)initWithView:(UIView *_Nonnull)view;
+- (instancetype _Nonnull)init __attribute__((unavailable("init not available, use initWithView:")));
 
 + (BOOL)useMenuKey;
 + (void)setUseMenuKey:(BOOL)useMenuKey;

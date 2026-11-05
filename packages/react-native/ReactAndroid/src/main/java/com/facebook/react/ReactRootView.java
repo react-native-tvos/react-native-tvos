@@ -53,6 +53,7 @@ import com.facebook.react.common.annotations.internal.LegacyArchitecture;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags;
 import com.facebook.react.modules.appregistry.AppRegistry;
+import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper;
 import com.facebook.react.modules.deviceinfo.DeviceInfoModule;
 import com.facebook.react.uimanager.DisplayMetricsHolder;
 import com.facebook.react.uimanager.IllegalViewOperationException;
@@ -69,7 +70,6 @@ import com.facebook.react.uimanager.RootViewUtil;
 import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.common.UIManagerType;
 import com.facebook.react.uimanager.events.EventDispatcher;
-import com.facebook.react.modules.core.ReactAndroidHWInputDeviceHelper;
 import com.facebook.systrace.Systrace;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -839,11 +839,7 @@ public class ReactRootView extends FrameLayout implements RootView, ReactRoot {
     if (hasActiveReactInstance()) {
       // getCurrentReactContext().emitDeviceEvent(eventName, params);
       // TODO: check the change below for RN 0.72
-      mAndroidHWInputDeviceHelper.emitNamedEvent(
-        eventName,
-        params,
-        getCurrentReactContext()
-      );
+      mAndroidHWInputDeviceHelper.emitNamedEvent(eventName, params, getCurrentReactContext());
     }
   }
 

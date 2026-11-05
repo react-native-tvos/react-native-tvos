@@ -335,10 +335,7 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
 
   override fun computeScroll() {
     val s = scroller
-    if (UiModeUtils.isTVDevice(context) &&
-        !scrollAnimationEnabled &&
-        s != null &&
-        !s.isFinished) {
+    if (UiModeUtils.isTVDevice(context) && !scrollAnimationEnabled && s != null && !s.isFinished) {
       // Jump instantly to the target position instead of animating.
       scrollTo(s.finalX, s.finalY)
       s.forceFinished(true)
@@ -571,7 +568,11 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     if (snapOffset != null) {
       val targetOffset =
           ReactScrollViewHelper.computeScrollSnapTargetForOffset(
-              rect.left, snapOffset, snapInterval, maxScrollX)
+              rect.left,
+              snapOffset,
+              snapInterval,
+              maxScrollX,
+          )
       reactSmoothScrollTo(targetOffset, scrollY)
       return true
     }
@@ -1317,9 +1318,11 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
     if (isEmpty()) return
 
     // pagingEnabled only allows snapping one interval at a time
-    if (snapInterval == 0 &&
-        snapOffsets == null &&
-        (snapToAlignment == SNAP_ALIGNMENT_DISABLED || snapToAlignment == SNAP_ALIGNMENT_ITEM)) {
+    if (
+        snapInterval == 0 &&
+            snapOffsets == null &&
+            (snapToAlignment == SNAP_ALIGNMENT_DISABLED || snapToAlignment == SNAP_ALIGNMENT_ITEM)
+    ) {
       smoothScrollAndSnap(velocityX)
       return
     }
@@ -1363,7 +1366,9 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
           }
         }
       }
-    } else if (snapToAlignment != SNAP_ALIGNMENT_DISABLED && snapToAlignment != SNAP_ALIGNMENT_ITEM) {
+    } else if (
+        snapToAlignment != SNAP_ALIGNMENT_DISABLED && snapToAlignment != SNAP_ALIGNMENT_ITEM
+    ) {
       if (snapInterval > 0) {
         val ratio = targetOffset.toDouble() / snapInterval
         smallerOffset =

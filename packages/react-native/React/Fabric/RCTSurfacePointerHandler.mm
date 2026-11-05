@@ -408,8 +408,7 @@ static void UpdateActivePointerWithUITouch(
   UIEventButtonMask nextButtonMask = 0;
   if (uiTouch.phase != UITouchPhaseEnded) {
     nextButtonMask = uiTouch.type == UITouchTypeIndirectPointer ? uiEvent.buttonMask : 1;
-  } else
-  {
+  } else {
     activePointer.button = ButtonMaskDiffToButton(activePointer.buttonMask, nextButtonMask);
     activePointer.buttonMask = nextButtonMask;
     activePointer.modifierFlags = uiEvent.modifierFlags;

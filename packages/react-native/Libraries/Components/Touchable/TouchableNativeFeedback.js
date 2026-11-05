@@ -310,8 +310,7 @@ class TouchableNativeFeedback extends React.Component<
         nextFocusRight: tagForComponentOrHandle(this.props.nextFocusRight),
         nextFocusUp: tagForComponentOrHandle(this.props.nextFocusUp),
         focusable:
-          this.props.focusable !== false &&
-          this.props.isTVSelectable !== false,
+          this.props.focusable !== false && this.props.isTVSelectable !== false,
         onLayout: this.props.onLayout,
         testID: this.props.testID,
       },

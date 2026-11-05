@@ -56,9 +56,6 @@ const config = {
   },
 };
 
-const mergedConfig /*: ConfigT */ = mergeConfig(
-  defaultConfig,
-  config,
-);
+const mergedConfig /*: ConfigT */ = mergeConfig(defaultConfig, config);
 
 module.exports = mergedConfig;
