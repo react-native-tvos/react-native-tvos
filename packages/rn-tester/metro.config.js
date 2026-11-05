@@ -73,6 +73,7 @@ const config = {
     },
     resolveRequest,
   },
+  transformerPath: require.resolve('./metro-tvos-transform-worker'),
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
