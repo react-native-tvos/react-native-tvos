@@ -3,8 +3,7 @@ package com.facebook.react.uimanager.events
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.WritableMap
 
-public class PressOutEvent(surfaceId: Int, viewId: Int) :
-  Event<PressOutEvent>(surfaceId, viewId) {
+public class PressOutEvent(surfaceId: Int, viewId: Int) : Event<PressOutEvent>(surfaceId, viewId) {
 
   override fun getEventName(): String = EVENT_NAME
 

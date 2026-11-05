@@ -25,8 +25,12 @@
 
 RCT_NOT_IMPLEMENTED(-(instancetype)initWithTarget : (id)target action : (SEL)action)
 
-- (void)attachToView:(UIView *)view {}
-- (void)detachFromView:(UIView *)view {}
+- (void)attachToView:(UIView *)view
+{
+}
+- (void)detachFromView:(UIView *)view
+{
+}
 
 @end
 #endif

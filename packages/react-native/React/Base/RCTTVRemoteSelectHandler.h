@@ -1,6 +1,6 @@
 #if TARGET_OS_TV
-#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -20,12 +20,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RCTTVRemoteSelectHandler : NSObject <UIGestureRecognizerDelegate>
 
-- (instancetype _Nonnull )initWithView:(UIView<RCTTVRemoteSelectHandlerDelegate> * _Nonnull)view;
-- (instancetype _Nonnull )init __attribute__((unavailable("init not available, use initWithView:")));
+- (instancetype _Nonnull)initWithView:(UIView<RCTTVRemoteSelectHandlerDelegate> *_Nonnull)view;
+- (instancetype _Nonnull)init __attribute__((unavailable("init not available, use initWithView:")));
 
 @end
 
-@interface RCTTVRemoteSelectGestureRecognizer: UILongPressGestureRecognizer
+@interface RCTTVRemoteSelectGestureRecognizer : UILongPressGestureRecognizer
 
 @end
 

@@ -835,20 +835,16 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
         baseEventTypeConstants == null ? new HashMap<String, Object>() : baseEventTypeConstants;
     eventTypeConstants.putAll(
         MapBuilder.<String, Object>builder()
-          .put(
-            "topAccessibilityAction",
-            Collections.<String, Object>singletonMap(
-              "registrationName", "onAccessibilityAction"))
-          .put(
-            SafeAreaInsetsChangeEvent.EVENT_NAME,
-            Collections.<String, Object>singletonMap(
-              "registrationName", ViewProps.ON_SAFE_AREA_INSETS_CHANGE))
-          .put(
-            "topPressIn",
-            MapBuilder.of("registrationName", "onPressIn"))
-          .put(
-            "topPressOut",
-            MapBuilder.of("registrationName", "onPressOut"))
+            .put(
+                "topAccessibilityAction",
+                Collections.<String, Object>singletonMap(
+                    "registrationName", "onAccessibilityAction"))
+            .put(
+                SafeAreaInsetsChangeEvent.EVENT_NAME,
+                Collections.<String, Object>singletonMap(
+                    "registrationName", ViewProps.ON_SAFE_AREA_INSETS_CHANGE))
+            .put("topPressIn", MapBuilder.of("registrationName", "onPressIn"))
+            .put("topPressOut", MapBuilder.of("registrationName", "onPressOut"))
             .build());
     return eventTypeConstants;
   }

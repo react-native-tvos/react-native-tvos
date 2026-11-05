@@ -403,20 +403,22 @@ BaseViewProps::BaseViewProps(
           sourceProps.removeClippedSubviews,
           false))
 #if TARGET_OS_TV
-      ,scrollSnapAlign(convertRawProp(
+      ,
+      scrollSnapAlign(convertRawProp(
           context,
           rawProps,
           "scrollSnapAlign",
           sourceProps.scrollSnapAlign,
-          {}))
-      ,scrollSnapOffset(convertRawProp(
+          {})),
+      scrollSnapOffset(convertRawProp(
           context,
           rawProps,
           "scrollSnapOffset",
           sourceProps.scrollSnapOffset,
           {}))
 #endif
-      {}
+{
+}
 
 #define VIEW_EVENT_CASE(eventType)                      \
   case CONSTEXPR_RAW_PROPS_KEY_HASH("on" #eventType): { \

@@ -677,13 +677,12 @@ public object ReactScrollViewHelper {
   }
 
   /**
-   * Walks up the view hierarchy from the focused view to find a ReactViewGroup with
-   * either scrollSnapAlign or scrollSnapOffset set. Returns a Triple of (snapTarget,
-   * alignment, offsetPx) or null if neither marker was found. Exactly one of
-   * alignment/offsetPx is non-null on return.
+   * Walks up the view hierarchy from the focused view to find a ReactViewGroup with either
+   * scrollSnapAlign or scrollSnapOffset set. Returns a Triple of (snapTarget, alignment, offsetPx)
+   * or null if neither marker was found. Exactly one of alignment/offsetPx is non-null on return.
    *
-   * Walk is inner→outer, latest marker wins. On a single view declaring both,
-   * scrollSnapOffset wins as the more specific config.
+   * Walk is inner→outer, latest marker wins. On a single view declaring both, scrollSnapOffset wins
+   * as the more specific config.
    *
    * Shared by [ReactScrollView] and [ReactHorizontalScrollView].
    */
@@ -711,12 +710,13 @@ public object ReactScrollViewHelper {
       view = if (parent is View) parent else null
     }
     return if (snapTarget != null && (alignment != null || offset != null))
-        Triple(snapTarget, alignment, offset) else null
+        Triple(snapTarget, alignment, offset)
+    else null
   }
 
   /**
-   * Computes the target scroll offset for the per-item scrollSnapOffset path:
-   * land the snap target's leading edge at `snapOffset` pixels from the viewport origin.
+   * Computes the target scroll offset for the per-item scrollSnapOffset path: land the snap
+   * target's leading edge at `snapOffset` pixels from the viewport origin.
    *
    * Returns the clamped target offset.
    *
@@ -768,12 +768,13 @@ public object ReactScrollViewHelper {
       maxScrollOffset: Int,
   ): Int? {
     val focusedCenter = (focusedStart + focusedEnd) / 2
-    var targetOffset = when (alignment) {
-      "start" -> focusedStart - snapToItemPadding
-      "center" -> focusedCenter - (viewportSize / 2) + (snapToItemPadding / 2)
-      "end" -> focusedEnd - viewportSize + snapToItemPadding
-      else -> return null
-    }
+    var targetOffset =
+        when (alignment) {
+          "start" -> focusedStart - snapToItemPadding
+          "center" -> focusedCenter - (viewportSize / 2) + (snapToItemPadding / 2)
+          "end" -> focusedEnd - viewportSize + snapToItemPadding
+          else -> return null
+        }
     if (snapInterval > 0) {
       targetOffset = (Math.floor(targetOffset.toDouble() / snapInterval) * snapInterval).toInt()
     }

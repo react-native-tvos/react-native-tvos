@@ -5,28 +5,28 @@
 
 #import "RCTTVRemoteHandlerConstants.h"
 
-RCTTVRemoteEvent const RCTTVRemoteEventMenu = @"menu";
-RCTTVRemoteEvent const RCTTVRemoteEventPlayPause = @"playPause";
-RCTTVRemoteEvent const RCTTVRemoteEventSelect = @"select";
+const RCTTVRemoteEvent RCTTVRemoteEventMenu = @"menu";
+const RCTTVRemoteEvent RCTTVRemoteEventPlayPause = @"playPause";
+const RCTTVRemoteEvent RCTTVRemoteEventSelect = @"select";
 
-RCTTVRemoteEvent const RCTTVRemoteEventLongPlayPause = @"longPlayPause";
-RCTTVRemoteEvent const RCTTVRemoteEventLongSelect = @"longSelect";
-RCTTVRemoteEvent const RCTTVRemoteEventLongUp = @"longUp";
-RCTTVRemoteEvent const RCTTVRemoteEventLongDown = @"longDown";
-RCTTVRemoteEvent const RCTTVRemoteEventLongLeft = @"longLeft";
-RCTTVRemoteEvent const RCTTVRemoteEventLongRight = @"longRight";
+const RCTTVRemoteEvent RCTTVRemoteEventLongPlayPause = @"longPlayPause";
+const RCTTVRemoteEvent RCTTVRemoteEventLongSelect = @"longSelect";
+const RCTTVRemoteEvent RCTTVRemoteEventLongUp = @"longUp";
+const RCTTVRemoteEvent RCTTVRemoteEventLongDown = @"longDown";
+const RCTTVRemoteEvent RCTTVRemoteEventLongLeft = @"longLeft";
+const RCTTVRemoteEvent RCTTVRemoteEventLongRight = @"longRight";
 
-RCTTVRemoteEvent const RCTTVRemoteEventLeft = @"left";
-RCTTVRemoteEvent const RCTTVRemoteEventRight = @"right";
-RCTTVRemoteEvent const RCTTVRemoteEventUp = @"up";
-RCTTVRemoteEvent const RCTTVRemoteEventDown = @"down";
+const RCTTVRemoteEvent RCTTVRemoteEventLeft = @"left";
+const RCTTVRemoteEvent RCTTVRemoteEventRight = @"right";
+const RCTTVRemoteEvent RCTTVRemoteEventUp = @"up";
+const RCTTVRemoteEvent RCTTVRemoteEventDown = @"down";
 
-RCTTVRemoteEvent const RCTTVRemoteEventPageUp = @"pageUp";
-RCTTVRemoteEvent const RCTTVRemoteEventPageDown = @"pageDown";
+const RCTTVRemoteEvent RCTTVRemoteEventPageUp = @"pageUp";
+const RCTTVRemoteEvent RCTTVRemoteEventPageDown = @"pageDown";
 
-RCTTVRemoteEvent const RCTTVRemoteEventSwipeLeft = @"swipeLeft";
-RCTTVRemoteEvent const RCTTVRemoteEventSwipeRight = @"swipeRight";
-RCTTVRemoteEvent const RCTTVRemoteEventSwipeUp = @"swipeUp";
-RCTTVRemoteEvent const RCTTVRemoteEventSwipeDown = @"swipeDown";
+const RCTTVRemoteEvent RCTTVRemoteEventSwipeLeft = @"swipeLeft";
+const RCTTVRemoteEvent RCTTVRemoteEventSwipeRight = @"swipeRight";
+const RCTTVRemoteEvent RCTTVRemoteEventSwipeUp = @"swipeUp";
+const RCTTVRemoteEvent RCTTVRemoteEventSwipeDown = @"swipeDown";
 
-RCTTVRemoteEvent const RCTTVRemoteEventPan = @"pan";
+const RCTTVRemoteEvent RCTTVRemoteEventPan = @"pan";

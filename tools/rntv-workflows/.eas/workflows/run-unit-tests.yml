@@ -35,6 +35,8 @@ jobs:
         run: |
           yarn --cwd packages/react-native featureflags-check
           yarn lint
+          git fetch --no-tags --depth=1 origin main
+          yarn format-check-changed FETCH_HEAD
           yarn --cwd packages/react-native-codegen build
           yarn --cwd packages/react-native-codegen-typescript-test build
           # yarn test-typescript-legacy

@@ -149,7 +149,8 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 }
 
 #if TARGET_OS_TV
-- (void)menuButtonPressed {
+- (void)menuButtonPressed
+{
   UIView *snapshot = _modalContentsSnapshot;
   [self.viewController.view addSubview:snapshot];
   [self dismissViewController:self.viewController
