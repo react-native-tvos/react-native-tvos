@@ -20,9 +20,19 @@
  *   const {withTVOSPlatform} = require('react-native/tvos-metro-config');
  *
  *   module.exports = withTVOSPlatform(mergeConfig(getDefaultConfig(__dirname), config));
+ *
+ * An app that installs `react-native-tvos` next to `react-native` requires
+ * `react-native-tvos/tvos-metro-config` instead.
  */
 
+const fs = require('node:fs');
+const path = require('node:path');
+
 const TVOS_PLATFORM_EXTENSIONS = ['tvos', 'ios', 'native'];
+
+const TVOS_HOST_PACKAGE = 'react-native-tvos';
+
+const REACT_NATIVE_REQUEST = /^react-native(\/.*)?$/;
 
 const DEFAULT_TRANSFORMER_PATH = 'metro-transform-worker';
 
@@ -36,6 +46,10 @@ const DEFAULT_TRANSFORMER_PATH = 'metro-transform-worker';
  * - Modules transform as `ios`, so that `Platform.OS` and `Platform.select`,
  *   which Metro inlines with the bundle platform, match iOS. React Native
  *   checks `Platform.OS === 'ios'` for behavior that tvOS shares with iOS.
+ * - When the app installs `react-native-tvos` next to `react-native`,
+ *   `react-native` and `react-native/...` requests resolve to
+ *   `react-native-tvos`. An app that aliases `react-native` to
+ *   `react-native-tvos` needs no redirect and gets none.
  *
  * Other platforms do not change.
  *
@@ -54,6 +68,7 @@ function withTVOSPlatform(config) {
   }
 
   const nextResolveRequest = config.resolver?.resolveRequest;
+  const redirectReactNative = hasSeparateTVOSHostPackage(config.projectRoot);
 
   /** @type {NonNullable<import('metro-config').ConfigT['resolver']['resolveRequest']>} */
   function resolveRequest(context, moduleName, platform) {
@@ -64,9 +79,12 @@ function withTVOSPlatform(config) {
     const sourceExts = TVOS_PLATFORM_EXTENSIONS.flatMap(platformExtension =>
       context.sourceExts.map(sourceExt => `${platformExtension}.${sourceExt}`),
     ).concat(context.sourceExts);
+    const match = redirectReactNative
+      ? REACT_NATIVE_REQUEST.exec(moduleName)
+      : null;
     return resolve(
       {...context, preferNativePlatform: false, sourceExts},
-      moduleName,
+      match ? `${TVOS_HOST_PACKAGE}${match[1] ?? ''}` : moduleName,
       null,
     );
   }
@@ -76,6 +94,46 @@ function withTVOSPlatform(config) {
     resolver: {...config.resolver, resolveRequest},
     transformerPath: require.resolve('./transform-worker'),
   };
+}
+
+/**
+ * Whether `react-native-tvos` resolves from `projectRoot` to a different
+ * package than `react-native` does.
+ *
+ * @param {string | void} projectRoot
+ * @returns {boolean}
+ */
+function hasSeparateTVOSHostPackage(projectRoot) {
+  if (projectRoot == null) {
+    return false;
+  }
+  const tvosRoot = resolvePackageRoot(TVOS_HOST_PACKAGE, projectRoot);
+  return (
+    tvosRoot != null &&
+    tvosRoot !== resolvePackageRoot('react-native', projectRoot)
+  );
+}
+
+/**
+ * @param {string} packageName
+ * @param {string} projectRoot
+ * @returns {string | null}
+ */
+function resolvePackageRoot(packageName, projectRoot) {
+  try {
+    const packageJson = require.resolve(`${packageName}/package.json`, {
+      paths: [projectRoot],
+    });
+    return fs.realpathSync(path.dirname(packageJson));
+  } catch (error) {
+    if (
+      error.code === 'MODULE_NOT_FOUND' ||
+      error.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+    ) {
+      return null;
+    }
+    throw error;
+  }
 }
 
 module.exports = {withTVOSPlatform};
