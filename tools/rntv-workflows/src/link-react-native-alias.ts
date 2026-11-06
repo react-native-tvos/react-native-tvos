@@ -11,7 +11,9 @@
  *   `node_modules/react-native-tvos` and the bare `react-native` specifier
  *   that upstream code uses internally stops resolving. Consumer apps get that
  *   name back from the `"react-native": "npm:react-native-tvos@..."` alias in
- *   their own package.json.
+ *   their own package.json. Off a release branch it is the other way round:
+ *   the `tvos` platform config names `react-native-tvos` as its package, so
+ *   the CLI loads `react-native-tvos/setup-env` for every Metro bundle.
  *
  * - `@react-native/virtualized-lists` is published as
  *   `@react-native-tvos/virtualized-lists`. The fork's checked-in Libraries/
@@ -34,6 +36,7 @@ const nodeModulesPath = path.join(repoRoot, 'node_modules');
 
 const ALIASES: ReadonlyArray<{moduleName: string; workspace: string}> = [
   {moduleName: 'react-native', workspace: 'react-native'},
+  {moduleName: 'react-native-tvos', workspace: 'react-native'},
   {
     moduleName: '@react-native/virtualized-lists',
     workspace: 'virtualized-lists',
