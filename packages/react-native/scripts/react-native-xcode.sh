@@ -133,6 +133,9 @@ case "$PLATFORM_NAME" in
   "macosx")
     BUNDLE_PLATFORM="macos"
     ;;
+  "appletvos" | "appletvsimulator")
+    BUNDLE_PLATFORM="tvos"
+    ;;
   *)
     BUNDLE_PLATFORM="ios"
     ;;
