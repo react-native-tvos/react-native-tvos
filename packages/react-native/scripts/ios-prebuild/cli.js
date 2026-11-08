@@ -24,13 +24,14 @@ const platforms /*: ReadonlyArray<Platform> */ = [
 
 // CI can't use commas in cache keys, so 'macOS,variant=Mac Catalyst' was creating troubles
 // This map that converts from platforms to valid Xcodebuild destinations.
-const platformToDestination /*: Readonly<{|[Platform]: Destination|}> */ = {
-  ios: 'iOS',
-  'ios-simulator': 'iOS Simulator',
-  tvos: 'tvOS',
-  'tvos-simulator': 'tvOS Simulator',
-  'mac-catalyst': 'macOS,variant=Mac Catalyst',
-};
+const platformToDestination /*: Readonly<{|[key: Platform]: Destination|}> */ =
+  {
+    ios: 'iOS',
+    'ios-simulator': 'iOS Simulator',
+    tvos: 'tvOS',
+    'tvos-simulator': 'tvOS Simulator',
+    'mac-catalyst': 'macOS,variant=Mac Catalyst',
+  };
 
 const cli = yargs
   .usage(

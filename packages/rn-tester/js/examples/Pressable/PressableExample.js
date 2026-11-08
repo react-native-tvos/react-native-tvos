@@ -368,6 +368,23 @@ function PressableDisabled() {
   );
 }
 
+function RoundedPressableExample() {
+  return (
+    <View>
+      <Pressable
+        android_ripple={{color: 'red', borderless: false}}
+        style={styles.roundedPressable}>
+        <Text style={{alignSelf: 'center'}}>Background Ripple</Text>
+      </Pressable>
+      <Pressable
+        android_ripple={{color: 'red', borderless: false, foreground: true}}
+        style={styles.roundedPressable}>
+        <Text style={{alignSelf: 'center'}}>Foreground Ripple</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   row: {
     justifyContent: 'center',
@@ -453,6 +470,12 @@ const styles = StyleSheet.create({
   image: {
     height: 100,
     width: 100,
+  },
+  roundedPressable: {
+    backgroundColor: '#eee',
+    borderRadius: 100,
+    padding: 16,
+    marginTop: 10,
   },
 });
 
@@ -787,6 +810,15 @@ const examples = [
           />
         </Pressable>
       );
+    },
+  },
+  {
+    title: 'Rounded Pressable with Ripple',
+    description:
+      'Ripple should clip to the border radius of the Pressable' as string,
+    platform: 'android',
+    render: function (): React.Node {
+      return <RoundedPressableExample />;
     },
   },
   ...PressableExampleFbInternal.examples,
