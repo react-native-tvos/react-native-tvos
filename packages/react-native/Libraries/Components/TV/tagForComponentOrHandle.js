@@ -4,8 +4,6 @@
  * @flow
  */
 
-// TODO: make this work for Fabric
-
 import * as React from 'react';
 
 const findNodeHandle = require('../../ReactNative/RendererProxy').findNodeHandle;
@@ -22,19 +20,18 @@ const tagForComponentOrHandle: TagForComponentOrHandleType = (
   if (component === null || component === undefined) {
     return undefined;
   }
-  return findNodeHandle(component, true); // suppress warning
-/*
   if (typeof component === 'number') {
     return component;
   }
-  if (typeof component?._nativeTag === 'number') {
-    return component?._nativeTag;
+  // Host component refs carry their tag. Reading it directly avoids
+  // findNodeHandle, which warns when a class component such as
+  // TouchableOpacity calls it during render.
+  // $FlowFixMe[prop-missing] __nativeTag is set on Fabric host instances.
+  const nativeTag = component.__nativeTag;
+  if (typeof nativeTag === 'number') {
+    return nativeTag;
   }
-  if (typeof component?.canonical?._nativeTag === 'number') {
-    return component?.canonical?._nativeTag;
-  }
-  return undefined;
- */
+  return findNodeHandle(component);
 };
 
 export default tagForComponentOrHandle;
