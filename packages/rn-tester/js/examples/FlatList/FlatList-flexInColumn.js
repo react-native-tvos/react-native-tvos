@@ -10,33 +10,42 @@
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
+import RNTesterText from '../../components/RNTesterText';
+import {useTheme} from '../../components/RNTesterTheme';
 import * as React from 'react';
 import {useState} from 'react';
-import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 
 const DATA: Array<string> = Array.from({length: 30}, (_, i) => `Item ${i}`);
 
 export component FlatList_flexInColumn() {
+  const theme = useTheme();
   const [listHeight, setListHeight] = useState<?number>(null);
 
   return (
     <View style={styles.column}>
-      <Text testID="flat_list_flex_in_column_height" style={styles.caption}>
+      <RNTesterText
+        testID="flat_list_flex_in_column_height"
+        style={styles.caption}>
         FlatList height: {listHeight ?? 'not measured'}
-      </Text>
+      </RNTesterText>
       <FlatList
         data={DATA}
         style={styles.list}
         onLayout={event => setListHeight(event.nativeEvent.layout.height)}
         renderItem={({item}) => (
-          <Pressable style={styles.row}>
-            <Text>{item}</Text>
+          <Pressable style={[styles.row, {borderColor: theme.SeparatorColor}]}>
+            <RNTesterText>{item}</RNTesterText>
           </Pressable>
         )}
       />
-      <Text style={styles.footer}>
+      <RNTesterText
+        style={[
+          styles.footer,
+          {backgroundColor: theme.TertiarySystemFillColor},
+        ]}>
         Footer: stays at the bottom of the column
-      </Text>
+      </RNTesterText>
     </View>
   );
 }
@@ -54,11 +63,9 @@ const styles = StyleSheet.create({
   row: {
     padding: 12,
     borderBottomWidth: 1,
-    borderColor: '#ccc',
   },
   footer: {
     padding: 8,
-    backgroundColor: '#ddd',
   },
 });
 
