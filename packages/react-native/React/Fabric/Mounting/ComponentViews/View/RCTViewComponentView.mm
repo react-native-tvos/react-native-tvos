@@ -601,6 +601,9 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 // side of the view where a nextFocus has been set. Set layout constraints to
 // make the guide 1 px thick, and set the destination to the nextFocus object.
 //
+// The guides are owned by the superview: tvOS (seen on 26.5 and later) ignores
+// a focus guide owned by the root view during directional focus movement.
+//
 // This is only done once the view is focused.
 //
 - (void)enableDirectionalFocusGuides
@@ -613,7 +616,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (self->_nextFocusUp != nil) {
     if (self.focusGuideUp == nil) {
       self.focusGuideUp = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideUp];
+      [self.superview addLayoutGuide:self.focusGuideUp];
 
       [self.focusGuideUp.bottomAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideUp.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
@@ -627,7 +630,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (self->_nextFocusDown != nil) {
     if (self.focusGuideDown == nil) {
       self.focusGuideDown = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideDown];
+      [self.superview addLayoutGuide:self.focusGuideDown];
 
       [self.focusGuideDown.topAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
       [self.focusGuideDown.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
@@ -641,7 +644,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (self->_nextFocusLeft != nil) {
     if (self.focusGuideLeft == nil) {
       self.focusGuideLeft = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideLeft];
+      [self.superview addLayoutGuide:self.focusGuideLeft];
 
       [self.focusGuideLeft.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideLeft.widthAnchor constraintEqualToConstant:1.0].active = YES;
@@ -655,7 +658,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   if (self->_nextFocusRight != nil) {
     if (self.focusGuideRight == nil) {
       self.focusGuideRight = [UIFocusGuide new];
-      [[self containingRootView] addLayoutGuide:self.focusGuideRight];
+      [self.superview addLayoutGuide:self.focusGuideRight];
 
       [self.focusGuideRight.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
       [self.focusGuideRight.widthAnchor constraintEqualToConstant:1.0].active = YES;
@@ -673,19 +676,19 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 - (void)disableDirectionalFocusGuides
 {
   if (self.focusGuideUp != nil) {
-    [[self containingRootView] removeLayoutGuide:self.focusGuideUp];
+    [self.focusGuideUp.owningView removeLayoutGuide:self.focusGuideUp];
     self.focusGuideUp = nil;
   }
   if (self.focusGuideDown != nil) {
-    [[self containingRootView] removeLayoutGuide:self.focusGuideDown];
+    [self.focusGuideDown.owningView removeLayoutGuide:self.focusGuideDown];
     self.focusGuideDown = nil;
   }
   if (self.focusGuideLeft != nil) {
-    [[self containingRootView] removeLayoutGuide:self.focusGuideLeft];
+    [self.focusGuideLeft.owningView removeLayoutGuide:self.focusGuideLeft];
     self.focusGuideLeft = nil;
   }
   if (self.focusGuideRight != nil) {
-    [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
+    [self.focusGuideRight.owningView removeLayoutGuide:self.focusGuideRight];
     self.focusGuideRight = nil;
   }
 }
@@ -1301,7 +1304,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideUp != nil) {
-        [[self containingRootView] removeLayoutGuide:self.focusGuideUp];
+        [self.focusGuideUp.owningView removeLayoutGuide:self.focusGuideUp];
       }
       _nextFocusUp = nil;
     }
@@ -1314,7 +1317,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideDown != nil) {
-        [[self containingRootView] removeLayoutGuide:self.focusGuideDown];
+        [self.focusGuideDown.owningView removeLayoutGuide:self.focusGuideDown];
       }
       _nextFocusDown = nil;
     }
@@ -1327,7 +1330,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideLeft != nil) {
-        [[self containingRootView] removeLayoutGuide:self.focusGuideLeft];
+        [self.focusGuideLeft.owningView removeLayoutGuide:self.focusGuideLeft];
       }
       _nextFocusLeft = nil;
     }
@@ -1340,7 +1343,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
       [self enableDirectionalFocusGuides];
     } else {
       if (self.focusGuideRight != nil) {
-        [[self containingRootView] removeLayoutGuide:self.focusGuideRight];
+        [self.focusGuideRight.owningView removeLayoutGuide:self.focusGuideRight];
       }
       _nextFocusRight = nil;
     }
