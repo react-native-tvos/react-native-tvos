@@ -13,6 +13,7 @@ import type {RNTesterModule} from '../../types/RNTesterTypes';
 import AdditionalRenderRegionsExample from './FlatList-additionalRenderRegions';
 import BasicExample from './FlatList-basic';
 import ContentInsetExample from './FlatList-contentInset';
+import FlexInColumnExample from './FlatList-flexInColumn';
 import InvertedExample from './FlatList-inverted';
 import MaintainVisibleContentPosition from './FlatList-maintainVisibleContentPosition';
 import MultiColumnExample from './FlatList-multiColumn';
@@ -55,5 +56,6 @@ export default {
     onViewableItemsChanged_offScreen,
     onViewableItemsChanged_horizontal_offScreen,
     AdditionalRenderRegionsExample,
+    FlexInColumnExample,
   ],
 } as RNTesterModule;
