@@ -11,6 +11,7 @@
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 import type {ListRenderItem} from 'react-native';
 
+import RNTesterText from '../../components/RNTesterText';
 import {useTheme} from '../../components/RNTesterTheme';
 import * as React from 'react';
 import {
@@ -18,8 +19,6 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Switch,
-  Text,
   TVFocusGuideView,
 } from 'react-native';
 
@@ -43,7 +42,7 @@ const MID_INDEX = Math.floor(data.length / 2);
 function Row({title, children}: {title: string, children: React.Node}) {
   return (
     <TVFocusGuideView autoFocus>
-      <Text style={styles.rowTitle}>{title}</Text>
+      <RNTesterText style={styles.rowTitle}>{title}</RNTesterText>
       {children}
     </TVFocusGuideView>
   );
@@ -75,18 +74,24 @@ export function FlatList_additionalRenderRegions(): React.Node {
         styles.pressableBaseStyle,
         state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
       ]}>
-      <Text style={styles.pressableText}>{index}</Text>
+      <RNTesterText style={styles.pressableText}>{index}</RNTesterText>
     </Pressable>
   );
 
   return (
     <TVFocusGuideView autoFocus trapFocusLeft trapFocusRight>
       <TVFocusGuideView style={styles.switchSection}>
-        <Text style={styles.switchText}>Enable `additionalRenderRegions`</Text>
-        <Switch
-          value={additionalRenderRegionsEnabled}
-          onValueChange={() => setAdditionalRenderRegionsEnabled(val => !val)}
-        />
+        <Pressable
+          onPress={() => setAdditionalRenderRegionsEnabled(val => !val)}
+          style={state => [
+            {backgroundColor: theme.TertiarySystemFillColor},
+            styles.toggle,
+            state.focused && {borderColor: theme.BorderColor, borderWidth: 4},
+          ]}>
+          <RNTesterText>
+            {`additionalRenderRegions: ${additionalRenderRegionsEnabled ? 'on' : 'off'}`}
+          </RNTesterText>
+        </Pressable>
       </TVFocusGuideView>
 
       <Row title="Initial Row">
@@ -131,7 +136,11 @@ const styles = StyleSheet.create({
     marginRight: ITEM_SPACING,
   },
   pressableText: {fontSize: 24 * scale},
-  rowTitle: {color: 'white', marginBottom: 5 * scale},
+  rowTitle: {marginBottom: 5 * scale},
   switchSection: {flexDirection: 'row', paddingTop: 10 * scale},
-  switchText: {color: 'white'},
+  toggle: {
+    borderRadius: 4,
+    paddingHorizontal: 20 * scale,
+    paddingVertical: 10 * scale,
+  },
 });

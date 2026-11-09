@@ -180,7 +180,11 @@ static constexpr CGFloat LegacyBottomInset = 65;
     return;
   }
   _tabBarController.selectedIndex = index;
+  [self moveContainerToSelectedTab];
+}
 
+- (void)moveContainerToSelectedTab
+{
   UIView *tabView = _tabBarController.selectedViewController.view;
   _containerView.frame = tabView.bounds;
   [tabView addSubview:_containerView];
@@ -192,13 +196,35 @@ static constexpr CGFloat LegacyBottomInset = 65;
     shouldSelectViewController:(UIViewController *)viewController
 {
   NSUInteger index = [tabBarController.viewControllers indexOfObject:viewController];
+#if TARGET_OS_TV
+  // tvOS selects a tab when it takes focus. Focus returning to the selected tab, such as after the
+  // menu button, is not a press, so it must not reset the open example.
+  if (index == tabBarController.selectedIndex) {
+    return NO;
+  }
+#endif
   if (index != NSNotFound && _eventEmitter != nullptr) {
     static_cast<const RNTesterTabsIOSEventEmitter &>(*_eventEmitter)
         .onTabPress({.key = RCTStringFromNSString(_tabKeys[index])});
   }
+#if TARGET_OS_TV
+  // Refusing the selection makes tvOS move the focus back until JS updates `selectedTab`, so the
+  // focus jumps between tabs. Select the tab at once; the `selectedTab` update that follows
+  // selects the same tab.
+  return YES;
+#else
   // JS selects the tab by updating `selectedTab`.
   return NO;
+#endif
 }
+
+#if TARGET_OS_TV
+- (void)tabBarController:(UITabBarController *)tabBarController
+    didSelectViewController:(UIViewController *)viewController
+{
+  [self moveContainerToSelectedTab];
+}
+#endif
 
 #pragma mark - Insets
 
