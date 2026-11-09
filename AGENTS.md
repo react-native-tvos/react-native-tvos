@@ -45,7 +45,7 @@ The formatting command uses pinned npm packages for Kotlin and Java and installs
 
 ## Gotchas
 
-- `yarn install` dirties the working tree: a `preinstall` hook (`scripts/try-set-hermes-compiler-prebuilt.js`) resolves the `hermes-compiler` placeholder in `packages/react-native/package.json` (`0.0.0` → a real version) and touches `yarn.lock`. Expected — do not commit it.
+- `yarn install` dirties the working tree: a `preinstall` hook (`scripts/try-set-hermes-compiler-prebuilt.js`) resolves the `hermes-compiler` placeholder in `packages/react-native/package.json` (`0.0.0` → a real version) and touches `yarn.lock`. Expected — never commit the `package.json` change on `main` or `fb-main`, since both keep the `0.0.0` placeholder. A `yarn.lock` regenerated on purpose, such as after merging `upstream/main`, is committed.
 - Metro cannot bundle until codegen is built once — `yarn --cwd packages/react-native-codegen build`. Without it, bundling fails with `Cannot find module '@react-native/codegen/lib/parsers/flow/parser'`. Every other package runs from source — `yarn build` is not needed for development (see [`scripts/build/README.md`](scripts/build/README.md)).
 
 ## Verification: Running RNTester
