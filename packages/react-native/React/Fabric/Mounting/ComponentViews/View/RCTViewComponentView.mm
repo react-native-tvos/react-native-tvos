@@ -1305,6 +1305,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideUp != nil) {
         [self.focusGuideUp.owningView removeLayoutGuide:self.focusGuideUp];
+        self.focusGuideUp = nil;
       }
       _nextFocusUp = nil;
     }
@@ -1318,6 +1319,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideDown != nil) {
         [self.focusGuideDown.owningView removeLayoutGuide:self.focusGuideDown];
+        self.focusGuideDown = nil;
       }
       _nextFocusDown = nil;
     }
@@ -1331,6 +1333,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideLeft != nil) {
         [self.focusGuideLeft.owningView removeLayoutGuide:self.focusGuideLeft];
+        self.focusGuideLeft = nil;
       }
       _nextFocusLeft = nil;
     }
@@ -1344,6 +1347,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     } else {
       if (self.focusGuideRight != nil) {
         [self.focusGuideRight.owningView removeLayoutGuide:self.focusGuideRight];
+        self.focusGuideRight = nil;
       }
       _nextFocusRight = nil;
     }
