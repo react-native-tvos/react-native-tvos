@@ -1,0 +1,18 @@
+context platform=android
+# Five down presses move focus to an ActivityIndicator row, with or without the "Recently Viewed" section.
+open com.facebook.react.uiapp --relaunch
+wait text "Components" 30000
+tv-remote down
+tv-remote down
+tv-remote down
+tv-remote down
+tv-remote down
+wait 'label="ActivityIndicator Animated loading indicators." focused=true' 5000
+# screenshot 01-list-focused
+tv-remote select
+wait text "Default (small, white)" 15000
+# screenshot 02-example
+tv-remote back
+wait text "Recently Viewed" 15000
+# screenshot 03-back-to-list
+close
