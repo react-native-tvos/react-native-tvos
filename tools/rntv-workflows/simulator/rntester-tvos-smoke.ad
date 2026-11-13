@@ -1,12 +1,19 @@
 context platform=ios
 # Needs a fresh RNTester install: the down presses assume no "Recently Viewed" section.
+# Focus starts on the tab bar; four down presses pass the filter chips, search field and first row.
 open com.meta.RNTester.localDevelopment --relaunch
 wait text "Components" 30000
+# Down presses sent before the launch settles are dropped.
+wait 2000
 tv-remote down
 tv-remote down
 tv-remote down
+tv-remote down
+is focused 'label="ActivityIndicator Animated loading indicators."'
 tv-remote select
 wait text "Default (small, white)" 15000
+# The first menu press moves focus to the tab bar; the second goes back to the list.
+tv-remote menu
 tv-remote menu
 wait text "Recently Viewed" 15000
 close
