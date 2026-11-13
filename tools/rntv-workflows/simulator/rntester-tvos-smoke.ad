@@ -1,0 +1,12 @@
+context platform=ios
+# Needs a fresh RNTester install: the down presses assume no "Recently Viewed" section.
+open com.meta.RNTester.localDevelopment --relaunch
+wait text "Components" 30000
+tv-remote down
+tv-remote down
+tv-remote down
+tv-remote select
+wait text "Default (small, white)" 15000
+tv-remote menu
+wait text "Recently Viewed" 15000
+close

@@ -1,0 +1,2 @@
+# Expo Simulators session config; it holds the session token
+.env.eas-simulator
