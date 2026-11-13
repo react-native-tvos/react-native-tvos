@@ -7,7 +7,7 @@ tv-remote down
 tv-remote down
 tv-remote down
 tv-remote down
-is focused 'label="ActivityIndicator Animated loading indicators."'
+wait 'label="ActivityIndicator Animated loading indicators." focused=true' 5000
 # screenshot 01-list-focused
 tv-remote select
 wait text "Default (small, white)" 15000
