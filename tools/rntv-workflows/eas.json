@@ -83,6 +83,26 @@
         "RNTV_RELEASE_BUILD": "1"
       }
     },
+    "rntester-tvos-smoke-test-main": {
+      "extends": "base",
+      "env": {
+        "RNTESTER_SMOKE_PLATFORM": "tvos"
+      },
+      "android": {
+        "resourceClass": "medium",
+        "config": "smoke-test-rntester-tv.yml"
+      }
+    },
+    "rntester-androidtv-smoke-test-main": {
+      "extends": "base",
+      "env": {
+        "RNTESTER_SMOKE_PLATFORM": "androidtv"
+      },
+      "android": {
+        "resourceClass": "medium",
+        "config": "smoke-test-rntester-tv.yml"
+      }
+    },
     "npm-images-main": {
       "extends": "base",
       "android": {

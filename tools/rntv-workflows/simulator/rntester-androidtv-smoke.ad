@@ -8,8 +8,11 @@ tv-remote down
 tv-remote down
 tv-remote down
 is focused 'label="ActivityIndicator Animated loading indicators."'
+# screenshot 01-list-focused
 tv-remote select
 wait text "Default (small, white)" 15000
+# screenshot 02-example
 tv-remote back
 wait text "Recently Viewed" 15000
+# screenshot 03-back-to-list
 close

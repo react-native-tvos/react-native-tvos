@@ -1,2 +1,4 @@
 # Expo Simulators session config; it holds the session token
 .env.eas-simulator
+# Smoke test screenshots and logs
+simulator/output/
