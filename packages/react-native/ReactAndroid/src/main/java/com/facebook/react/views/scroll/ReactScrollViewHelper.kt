@@ -623,13 +623,21 @@ public object ReactScrollViewHelper {
     return Point(scroller.finalX, scroller.finalY)
   }
 
+  /**
+   * Finds the next focusable view inside [host] when that view is clipped, and attaches it.
+   *
+   * The shadow tree search has no beam test and does not know about focus guides or focus traps, so
+   * its result is used only for what the native focus search cannot see: a view that clipping
+   * removed from the hierarchy, along the scroll axis of [host]. Otherwise this returns null, and
+   * the native focus search result stands.
+   */
   @JvmStatic
   public fun findNextFocusableView(
       host: ViewGroup,
       focused: View,
       @FocusDirection direction: Int,
   ): View? {
-    if (host !is ReactClippingViewGroup) {
+    if (host !is ReactClippingViewGroup || !isAlongScrollAxis(host, direction)) {
       return null
     }
 
@@ -640,6 +648,12 @@ public object ReactScrollViewHelper {
     val nextFocusableViewId =
         (uimanager as FabricUIManager).findNextFocusableElement(host.id, focused.id, direction)
             ?: return null
+
+    // An attached view was already a candidate for the native focus search, which chose another
+    // view, such as a focus guide outside the scroll view.
+    if (host.findViewById<View>(nextFocusableViewId) != null) {
+      return null
+    }
 
     val ancestorIdList =
         uimanager
@@ -652,6 +666,15 @@ public object ReactScrollViewHelper {
 
     return host.findViewById(nextFocusableViewId)
   }
+
+  private fun isAlongScrollAxis(host: ViewGroup, @FocusDirection direction: Int): Boolean =
+      when (direction) {
+        View.FOCUS_LEFT,
+        View.FOCUS_RIGHT -> host is ReactHorizontalScrollView
+        View.FOCUS_UP,
+        View.FOCUS_DOWN -> host !is ReactHorizontalScrollView
+        else -> true
+      }
 
   /**
    * Plays the system focus navigation sound for a D-pad move the scroll view handled itself.

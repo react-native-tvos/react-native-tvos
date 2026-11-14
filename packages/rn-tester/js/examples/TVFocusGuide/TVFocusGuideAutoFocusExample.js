@@ -172,6 +172,7 @@ const HList = React.forwardRef(
       slow?: boolean,
       onPress?: any,
       data?: any,
+      scrollEnabled?: boolean,
       initialNumToRender?: number,
       maxToRenderPerBatch?: number,
       windowSize?: number,
@@ -464,6 +465,42 @@ const SlowListFocusTest = () => {
   );
 };
 
+const ClippedItemFocusTest = () => {
+  const listRef = React.useRef<React.ElementRef<typeof FlatList> | null>(null);
+
+  /**
+   * The list keeps the focused item at its left edge, so the items to the
+   * left of it are clipped on Android. With `scrollEnabled={false}` the list
+   * does not handle D-pad keys itself, and focus search must still reach the
+   * clipped items. Left from the first item must go to the side menu.
+   */
+  const onItemFocused = (_e: FocusEvent, id: number) => {
+    listRef.current?.scrollToIndex({
+      index: id,
+      viewPosition: 0,
+      animated: false,
+    });
+  };
+
+  return (
+    <TVFocusGuide autoFocus style={styles.mb5}>
+      <Text
+        style={[
+          styles.rowTitle,
+          {marginLeft: 16 * scale, marginVertical: 16 * scale},
+        ]}>
+        Clipped Item Focus Test
+      </Text>
+      <HList
+        ref={listRef}
+        itemCount={10}
+        scrollEnabled={false}
+        onItemFocused={onItemFocused}
+      />
+    </TVFocusGuide>
+  );
+};
+
 type ContentAreaProps = Readonly<{|
   sideMenuRef: {current: any},
 |}>;
@@ -480,6 +517,7 @@ const ContentArea = React.forwardRef(
           <RestoreFocusOnSingleDeletionTestList />
           <RestoreFocusOnScrollToTopTestList />
           <SlowListFocusTest />
+          <ClippedItemFocusTest />
           <Row title="Category Example 1" />
           <Row title="Category Example 2" />
           <Row title="Disabled Focus Subviews Example" focusable={false} />

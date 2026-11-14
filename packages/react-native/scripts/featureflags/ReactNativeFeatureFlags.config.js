@@ -269,7 +269,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     enableCustomFocusSearchOnClippedElementsAndroid: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         description:
           'This enables the fabric implementation of focus search so that we can focus clipped elements',
