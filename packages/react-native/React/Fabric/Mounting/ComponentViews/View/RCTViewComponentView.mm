@@ -557,18 +557,6 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   return YES;
 }
 
-- (BOOL)canBecomeFocused
-{
-#if !TARGET_OS_TV
-  return RCTViewIsInteractiveAccessibilityElement(self) || _props->isTVSelectable;
-#else
-  if ([self isTVFocusGuide]) {
-    return NO;
-  }
-  return _props->isTVSelectable;
-#endif
-}
-
 // Directional focus destinations are looked up in the containing root view when
 // `updateProps` runs. A destination set while this view is not attached yet --
 // e.g. a nextFocus* value delivered together with the view's creation -- resolves
@@ -754,6 +742,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 }
 
 #endif
+
+- (BOOL)canBecomeFocused
+{
+#if !TARGET_OS_TV
+  return RCTViewIsInteractiveAccessibilityElement(self, *_props);
+#else
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
+  return _props->isTVSelectable;
+#endif
+}
 
 #pragma mark - Native Commands
 
