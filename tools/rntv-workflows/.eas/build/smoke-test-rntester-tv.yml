@@ -1,0 +1,52 @@
+build:
+  name: Smoke test RNTester on a TV device in Expo Simulators
+  steps:
+    - eas/checkout
+    - run:
+        name: Download RNTester release build
+        working_directory: .
+        command: |
+          case "$RNTESTER_SMOKE_PLATFORM" in
+            tvos)
+              ARCHIVE_PATTERN="rntester-*-appletv-release.tgz"
+              APP_NAME="RNTester.app"
+              ;;
+            androidtv)
+              ARCHIVE_PATTERN="rntester-*-androidtv-release.tgz"
+              APP_NAME="app-x86_64-release.apk"
+              ;;
+            *)
+              echo "RNTESTER_SMOKE_PLATFORM env variable must be either \"tvos\" or \"androidtv\""
+              exit 1
+              ;;
+          esac
+          echo "Build ID for RNTester artifacts = $ARTIFACTS_BUILD_ID"
+          RNTESTER_DIR=$PWD/rntester-build
+          mkdir -p $RNTESTER_DIR/app
+          npx --yes eas-cli@latest build:view $ARTIFACTS_BUILD_ID --json > $RNTESTER_DIR/build.json
+          curl --fail --location --output $RNTESTER_DIR/artifacts.tgz \
+            `node -e 'console.log(require(process.argv[1]).artifacts.buildArtifactsUrl)' $RNTESTER_DIR/build.json`
+          tar zxf $RNTESTER_DIR/artifacts.tgz -C $RNTESTER_DIR --wildcards "*/$ARCHIVE_PATTERN"
+          tar zxf $RNTESTER_DIR/*/$ARCHIVE_PATTERN -C $RNTESTER_DIR/app
+          set-env RNTESTER_APP_PATH $RNTESTER_DIR/app/$APP_NAME
+    - run:
+        name: Run smoke test
+        working_directory: .
+        command: |
+          ./scripts/run-rntester-tv-simulator.sh $RNTESTER_SMOKE_PLATFORM $RNTESTER_APP_PATH \
+            $PWD/smoke-test-output
+    - run:
+        name: Package screenshots and logs
+        if: ${ always() }
+        working_directory: .
+        command: |
+          mkdir -p smoke-test-output
+          # eas/upload_artifact resolves paths from the repository root.
+          tar zcf ../../rntester-$RNTESTER_SMOKE_PLATFORM-smoke-test.tgz -C smoke-test-output .
+    - eas/upload_artifact:
+        name: Upload screenshots and logs
+        if: ${ always() }
+        inputs:
+          type: build-artifact
+          path: |
+            rntester-*-smoke-test.tgz
