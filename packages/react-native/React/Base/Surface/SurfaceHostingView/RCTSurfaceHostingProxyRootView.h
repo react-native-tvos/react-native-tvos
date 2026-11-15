@@ -19,6 +19,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#if TARGET_OS_TV
+/**
+ * A view that the React views inside it use to move focus on tvOS, such as the root view or the
+ * view of a modal. Its `preferredFocusEnvironments` returns these properties when they are set.
+ */
+@protocol RCTTVFocusRoot <NSObject>
+
+@property (nonatomic, weak, nullable) UIView *reactPreferredFocusedView;
+@property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
+
+@end
+#endif
+
 /**
  * This is a RCTRootView-compatible implementation of RCTSurfaceHostingView.
  * Use this class to replace all usages of RCTRootView in the app for easier migration
@@ -27,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  * WARNING: In the future, RCTRootView will be deprecated in favor of RCTSurfaceHostingView.
  */
 #if TARGET_OS_TV
-@interface RCTSurfaceHostingProxyRootView : RCTSurfaceHostingView <RCTTVRemoteSelectHandlerDelegate>
+@interface RCTSurfaceHostingProxyRootView : RCTSurfaceHostingView <RCTTVRemoteSelectHandlerDelegate, RCTTVFocusRoot>
 #else
 @interface RCTSurfaceHostingProxyRootView : RCTSurfaceHostingView
 #endif
