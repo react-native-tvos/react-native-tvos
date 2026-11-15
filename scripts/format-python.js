@@ -91,7 +91,7 @@ function warnMissingMetaRuff() {
   );
 }
 
-function runRuff(command, prefixArguments, check) {
+function runRuff(command, prefixArguments, check, paths) {
   if (
     run(command, [...prefixArguments, '--version'], {quiet: true}).status !== 0
   ) {
@@ -101,15 +101,23 @@ function runRuff(command, prefixArguments, check) {
     ...prefixArguments,
     'format',
     ...(check ? ['--check'] : []),
-    '.',
+    ...paths,
   ]);
   process.exit(format.status);
 }
 
 function main() {
-  const check = process.argv[2] === '--check';
+  const arguments_ = process.argv.slice(2);
+  const check = arguments_.includes('--check');
+  const positionalArguments = arguments_.filter(
+    argument => argument !== '--check',
+  );
+  const paths =
+    positionalArguments.length > 0
+      ? ['--force-exclude', ...positionalArguments]
+      : ['.'];
   if (process.env.RUFF != null) {
-    if (!runRuff(process.env.RUFF, [], check)) {
+    if (!runRuff(process.env.RUFF, [], check, paths)) {
       if (IS_META_CHECKOUT) {
         warnMissingMetaRuff();
       } else {
@@ -124,7 +132,7 @@ function main() {
 
   const metaRuff = findMetaTool('tools', 'third-party', 'ruff', 'ruff');
   if (metaRuff != null) {
-    if (!runRuff(metaRuff.command, metaRuff.prefixArguments, check)) {
+    if (!runRuff(metaRuff.command, metaRuff.prefixArguments, check, paths)) {
       warnMissingMetaRuff();
     }
     return;
@@ -195,7 +203,7 @@ function main() {
       'ruff',
       'format',
       ...(check ? ['--check'] : []),
-      '.',
+      ...paths,
     ],
     {env: environment},
   );

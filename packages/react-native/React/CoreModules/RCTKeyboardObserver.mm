@@ -146,7 +146,6 @@ NS_INLINE NSDictionary *RCTRectDictionaryValue(CGRect rect)
   };
 }
 
-
 static NSString *RCTAnimationNameForCurve(UIViewAnimationCurve curve)
 {
   switch (curve) {

@@ -132,13 +132,13 @@ HostPlatformViewProps::HostPlatformViewProps(
           "nextFocusUp",
           sourceProps.nextFocusUp,
           {})),
-      scrollSnapAlign( convertRawProp(
+      scrollSnapAlign(convertRawProp(
           context,
           rawProps,
           "scrollSnapAlign",
           sourceProps.scrollSnapAlign,
           {})),
-      scrollSnapOffset( convertRawProp(
+      scrollSnapOffset(convertRawProp(
           context,
           rawProps,
           "scrollSnapOffset",

@@ -12,6 +12,8 @@
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
+import RNTesterText from '../../components/RNTesterText';
+
 const React = require('react');
 const {
   Dimensions,
@@ -62,7 +64,9 @@ exports.examples = [
           return (
             <View style={styles.container}>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.itemText}>Scroll duration:</Text>
+                <RNTesterText style={styles.itemText}>
+                  Scroll duration:
+                </RNTesterText>
                 {scrollDurations.map((s, i) => {
                   return (
                     <Button
@@ -79,9 +83,9 @@ exports.examples = [
                 })}
               </View>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.itemText}>
+                <RNTesterText style={styles.itemText}>
                   Page size (scroll distance per swipe):
-                </Text>
+                </RNTesterText>
                 {pageSizes.map((s, i) => {
                   return (
                     <Button
@@ -143,9 +147,9 @@ exports.examples = [
                 <Text style={{fontSize: 50}}>{ITEMS.join('\n')}</Text>
               </TVTextScrollView>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.rowLabel}>
+                <RNTesterText style={styles.rowLabel}>
                   Snap to start or end when leaving focus:
-                </Text>
+                </RNTesterText>
                 <Button
                   selected={this.state.snapToStart}
                   label="Snap to start"

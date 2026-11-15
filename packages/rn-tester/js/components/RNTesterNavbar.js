@@ -23,7 +23,7 @@ import {
   View,
 } from 'react-native';
 
-type NavBarOnPressHandler = ({screen: ScreenTypes}) => void;
+type NavBarOnPressHandler = (v: {screen: ScreenTypes}) => void;
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
  * LTI update could not be added via codemod */

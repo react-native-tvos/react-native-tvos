@@ -469,10 +469,8 @@ static inline CascadedRectangleEdges<T> convertRawProp(
 }
 
 #if TARGET_OS_TV
-inline void fromRawValue(
-    const PropsParserContext &,
-    const RawValue &value,
-    TVParallaxProperties &result) {
+inline void fromRawValue(const PropsParserContext &, const RawValue &value, TVParallaxProperties &result)
+{
   auto map = (std::unordered_map<std::string, RawValue>)value;
 
   auto enabled = map.find("enabled");
@@ -530,7 +528,6 @@ inline void fromRawValue(
       result.pressDelay = (float)pressDelay->second;
     }
   }
-
 }
 #endif
 

@@ -79,9 +79,12 @@ jobs:
   build_npm_packages:
     name: Create NPM packages
     type: build
-    needs: [build_rntester_android, build_rntester_apple_debug, build_rntester_apple_release]
+    needs:
+      [
+        build_rntester_android,
+        build_rntester_apple_debug,
+        build_rntester_apple_release,
+      ]
     params:
       platform: android
       profile: npm-images
-
-

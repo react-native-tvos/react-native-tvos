@@ -81,7 +81,7 @@ const IOS_TABS = [
 
 const NO_INSETS: ContentInsets = {top: 0, left: 0, bottom: 0, right: 0};
 
-type BackButton = ({onBack: () => void}) => React.Node;
+type BackButton = (v: {onBack: () => void}) => React.Node;
 
 const RNTesterApp = ({
   testList,
@@ -382,7 +382,9 @@ const RNTesterApp = ({
   return (
     <RNTesterThemeContext.Provider value={theme}>
       <View style={styles.outerContainer}>
-        {Platform.OS === 'android' ? <StatusBar barStyle="dark-content" /> : null}
+        {Platform.OS === 'android' ? (
+          <StatusBar barStyle="dark-content" />
+        ) : null}
         {!shouldHideChrome && Platform.isTV && (
           <View style={styles.bottomNavbar}>
             <RNTesterNavBar

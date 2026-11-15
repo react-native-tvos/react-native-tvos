@@ -75,7 +75,9 @@ async function prepareHermesArtifactsAsync(
     // to the 'latest-v1' dist-tag so those callers keep getting the latest dev
     // Hermes instead of a 404 on a `hermes-ios/nightly/...` tarball.
     if (resolvedVersion === 'nightly') {
-      hermesLog("HERMES_VERSION=nightly is no longer published; using 'latest-v1'");
+      hermesLog(
+        "HERMES_VERSION=nightly is no longer published; using 'latest-v1'",
+      );
       resolvedVersion = 'latest-v1';
     }
 
@@ -159,7 +161,9 @@ function getPinnedHermesVersionFromProperties() /*: string */ {
       .match(/^HERMES_VERSION_NAME=(.+)$/m);
     if (match) {
       const pinned = match[1].trim();
-      hermesLog(`Defaulting HERMES_VERSION to ${pinned} (from version.properties)`);
+      hermesLog(
+        `Defaulting HERMES_VERSION to ${pinned} (from version.properties)`,
+      );
       return pinned;
     }
   } catch (e) {

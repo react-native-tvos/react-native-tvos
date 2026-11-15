@@ -29,6 +29,13 @@ import org.assertj.core.api.Assertions.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.reset
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.doReturn
@@ -37,13 +44,6 @@ import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -85,7 +85,7 @@ class RootViewTest {
 
     val deviceEventEmitterMock = mock(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
     whenever(reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java))
-      .thenReturn(deviceEventEmitterMock)
+        .thenReturn(deviceEventEmitterMock)
 
     val rootView: ReactRootView =
         object : ReactRootView(activity) {

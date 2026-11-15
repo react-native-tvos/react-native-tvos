@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<ab899fca12e943cffc65968f177e319e>>
+ * @generated SignedSource<<a869421d14e5d16a73f890b3cf720f21>>
  * @flow strict
  * @noformat
  */
@@ -87,6 +87,7 @@ export type ReactNativeFeatureFlags = Readonly<{
   enableImmediateUpdateModeForContentOffsetChanges: Getter<boolean>,
   enableImperativeEvents: Getter<boolean>,
   enableImperativeFocus: Getter<boolean>,
+  enableInteractableResponderViews: Getter<boolean>,
   enableInteropViewManagerClassLookUpOptimizationIOS: Getter<boolean>,
   enableIntersectionObserverByDefault: Getter<boolean>,
   enableKeyEvents: Getter<boolean>,
@@ -374,6 +375,10 @@ export const enableImperativeEvents: Getter<boolean> = createNativeFlagGetter('e
  * Enable ref.focus() and ref.blur() for all views, not just TextInput.
  */
 export const enableImperativeFocus: Getter<boolean> = createNativeFlagGetter('enableImperativeFocus', false);
+/**
+ * Android views that declare a gesture-responder handler (e.g. PanResponder) register a no-op touch listener so they can be recognized as interactable.
+ */
+export const enableInteractableResponderViews: Getter<boolean> = createNativeFlagGetter('enableInteractableResponderViews', false);
 /**
  * This is to fix the issue with interop view manager where component descriptor lookup is causing ViewManager to preload.
  */

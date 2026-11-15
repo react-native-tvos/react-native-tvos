@@ -483,7 +483,9 @@ export type ScrollViewPropsAndroid = Readonly<{
 }>;
 
 type StickyHeaderComponentType = component(
-  ref?: React.RefSetter<Readonly<interface {setNextHeaderY: number => void}>>,
+  ref?: React.RefSetter<
+    Readonly<interface {setNextHeaderY: (v: number) => void}>,
+  >,
   ...ScrollViewStickyHeaderProps
 );
 
@@ -2039,8 +2041,8 @@ const styles = StyleSheet.create({
 
 type RefForwarder<TNativeInstance, TPublicInstance> = {
   getForwardingRef: (
-    ?React.RefSetter<TPublicInstance>,
-  ) => (TNativeInstance | null) => void,
+    v: ?React.RefSetter<TPublicInstance>,
+  ) => (v: TNativeInstance | null) => void,
   nativeInstance: TNativeInstance | null,
   publicInstance: TPublicInstance | null,
 };
@@ -2050,7 +2052,7 @@ type RefForwarder<TNativeInstance, TPublicInstance> = {
  * once `ScrollView` is reimplemented as a functional component.
  */
 function createRefForwarder<TNativeInstance, TPublicInstance>(
-  mutator: TNativeInstance => TPublicInstance,
+  mutator: (v: TNativeInstance) => TPublicInstance,
 ): RefForwarder<TNativeInstance, TPublicInstance> {
   const state: RefForwarder<TNativeInstance, TPublicInstance> = {
     getForwardingRef: memoize(forwardedRef => {

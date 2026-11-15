@@ -1405,6 +1405,7 @@ class VirtualizedList extends StateSafePureComponent<
         }}>
         {Platform.isTV ? (
           <TVFocusGuideView
+            style={tvFocusGuideStyle(this.props.style)}
             {...trapFocusHorizontal}
             trapFocusUp={
               !horizontalOrDefault(this.props.horizontal) &&
@@ -1514,7 +1515,7 @@ class VirtualizedList extends StateSafePureComponent<
     }
   }
 
-  _cellRefs: {[string]: null | CellRenderer<any>} = {};
+  _cellRefs: {[key: string]: null | CellRenderer<any>} = {};
   _fillRateHelper: FillRateHelper;
   _listMetrics: ListMetricsAggregator = new ListMetricsAggregator();
   _footerLength = 0;
@@ -1522,7 +1523,7 @@ class VirtualizedList extends StateSafePureComponent<
   _hasTriggeredInitialScrollToIndex = false;
   _hasInteracted = false;
   _hasMore = false;
-  _hasWarned: {[string]: boolean} = {};
+  _hasWarned: {[key: string]: boolean} = {};
   _headerLength = 0;
   _hiPriInProgress: boolean = false; // flag to prevent infinite hiPri cell limit update
   _hiPriUpdateId: number = 0;
@@ -2398,7 +2399,29 @@ class VirtualizedList extends StateSafePureComponent<
   }
 }
 
+// On TV the ScrollView sits inside a TVFocusGuideView, so the guide takes the
+// flex that the ScrollView would take in the list's parent: the ScrollView base
+// flex, then each flex key the list's style sets, as the flattened style has it.
+function tvFocusGuideStyle(
+  listStyle: StyleProp<ViewStyle>,
+): StyleProp<ViewStyle> {
+  const flatStyle = StyleSheet.flatten(listStyle) ?? {};
+  const {flex, flexGrow, flexShrink, flexBasis, alignSelf} = flatStyle;
+  return [
+    styles.tvFocusGuide,
+    'flex' in flatStyle ? {flex} : null,
+    'flexGrow' in flatStyle ? {flexGrow} : null,
+    'flexShrink' in flatStyle ? {flexShrink} : null,
+    'flexBasis' in flatStyle ? {flexBasis} : null,
+    'alignSelf' in flatStyle ? {alignSelf} : null,
+  ];
+}
+
 const styles = StyleSheet.create({
+  tvFocusGuide: {
+    flexGrow: 1,
+    flexShrink: 1,
+  },
   verticallyInverted:
     Platform.OS === 'android'
       ? {transform: [{scale: -1}]}

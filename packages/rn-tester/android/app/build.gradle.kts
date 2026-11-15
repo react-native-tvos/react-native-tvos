@@ -29,9 +29,7 @@ val reactNativeArtifactGroup: String =
     project.findProperty("reactNativeArtifactGroup")?.toString() ?: "io.github.react-native-tvos"
 
 if (useReactNativeArtifacts) {
-  repositories {
-    maven { url = uri(file(reactNativeMavenLocalPath!!)) }
-  }
+  repositories { maven { url = uri(file(reactNativeMavenLocalPath!!)) } }
 
   // Workspace native modules (e.g. react-native-popup-menu-android) declare a
   // project() dependency on :packages:react-native:ReactAndroid. When rn-tester
@@ -96,7 +94,8 @@ react {
   hermesCommand =
       if (
           useReactNativeArtifacts ||
-              project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolean() == true ||
+              project.findProperty("react.internal.useHermesStable")?.toString()?.toBoolean() ==
+                  true ||
               project.findProperty("react.internal.useHermesNightly")?.toString()?.toBoolean() ==
                   true
       )

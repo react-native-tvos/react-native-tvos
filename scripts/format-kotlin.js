@@ -43,16 +43,24 @@ function isGenerated(file) {
 }
 
 function main() {
-  const check = process.argv[2] === '--check';
+  const arguments_ = process.argv.slice(2);
+  const check = arguments_.includes('--check');
+  const positionalArguments = arguments_.filter(
+    argument => argument !== '--check',
+  );
   const java = findJava(MINIMUM_JAVA_VERSION);
   if (java == null) {
     warnMissingJava('Kotlin');
     return;
   }
-  const files = globSync('**/*.{kt,kts}', {
+  const discoveredFiles = globSync('**/*.{kt,kts}', {
     cwd: REPO_ROOT,
     ignore: IGNORE,
   }).filter(file => !isGenerated(file));
+  const files =
+    positionalArguments.length > 0
+      ? positionalArguments.filter(file => discoveredFiles.includes(file))
+      : discoveredFiles;
   for (let i = 0; i < files.length; i += MAX_FILES_PER_PROCESS) {
     const result = spawnSync(
       java,

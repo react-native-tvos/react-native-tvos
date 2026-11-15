@@ -152,8 +152,8 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
      * We keep a special state in the View class and run a comparison here to mitigate
      * that problem.
      */
-    if (view.hasTVPreferredFocus == hasTVPreferredFocus) return;
-    view.hasTVPreferredFocus = hasTVPreferredFocus;
+    if (view.hasTVPreferredFocus == hasTVPreferredFocus) return
+    view.hasTVPreferredFocus = hasTVPreferredFocus
 
     if (hasTVPreferredFocus) {
       view.isFocusable = true
@@ -499,9 +499,11 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       view.isClickable = false
       view.isFocusable = false
     }
-    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as LeanBack
+    // This is required to handle Android TV/ Fire TV Devices that are Touch Enabled as well as
+    // LeanBack
     // https://developer.android.com/reference/android/view/View#requestFocus(int,%20android.graphics.Rect)
-    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false), **
+    // ** A view will not actually take focus if it is not focusable (isFocusable() returns false),
+    // **
     // ** or if it is focusable and it is not focusable in touch mode (isFocusableInTouchMode()) **
     // ** while the device is in touch mode.  **
     if (hasTouchScreen(view.context)) {
@@ -538,9 +540,10 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
       ReactViewGroup(context)
 
   override fun getCommandsMap(): MutableMap<String, Int> =
-      mutableMapOf(HOTSPOT_UPDATE_KEY to CMD_HOTSPOT_UPDATE,
-        "setPressed" to CMD_SET_PRESSED,
-        "setDestinations" to CMD_SET_DESTINATIONS
+      mutableMapOf(
+          HOTSPOT_UPDATE_KEY to CMD_HOTSPOT_UPDATE,
+          "setPressed" to CMD_SET_PRESSED,
+          "setDestinations" to CMD_SET_DESTINATIONS,
       )
 
   @Deprecated(
@@ -597,7 +600,8 @@ public open class ReactViewManager : ReactClippingViewManager<ReactViewGroup>() 
   private fun handleSetDestinations(root: ReactViewGroup, args: ReadableArray?) {
     if (args == null || args.size() != 1) {
       throw JSApplicationIllegalArgumentException(
-        "Illegal number of arguments for 'setPressed' command")
+          "Illegal number of arguments for 'setPressed' command"
+      )
     }
 
     val destinations: ReadableArray? = args.getArray(0)

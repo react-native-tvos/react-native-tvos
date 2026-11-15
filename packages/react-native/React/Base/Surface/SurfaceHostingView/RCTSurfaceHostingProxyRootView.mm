@@ -69,7 +69,8 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   self.tvRemoteSelectHandler = nil;
 }
 
-- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments {
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
+{
   if (self.reactPreferredFocusEnvironments != nil) {
     NSArray<id<UIFocusEnvironment>> *tempReactPreferredFocusEnvironments = self.reactPreferredFocusEnvironments;
     self.reactPreferredFocusEnvironments = nil;
@@ -77,7 +78,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
   }
 
   if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
-    return @[self.reactPreferredFocusedView];
+    return @[ self.reactPreferredFocusedView ];
   }
   return [super preferredFocusEnvironments];
 }
@@ -85,34 +86,46 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark -
 #pragma mark RCTTVRemoteSelectHandlerDelegate methods
 
-- (void)animatePressIn {
+- (void)animatePressIn
+{
 }
 
-- (void)animatePressOut {
+- (void)animatePressOut
+{
 }
 
-- (void)emitPressInEvent {
+- (void)emitPressInEvent
+{
 }
 
-- (void)emitPressOutEvent {
+- (void)emitPressOutEvent
+{
 }
 
 - (void)sendSelectNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionUp
+                                                                     tag:self.reactTag
+                                                                  target:self.reactTag];
 }
 
 - (void)sendLongSelectBeganNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionDown tag:self.reactTag target:self.reactTag];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionDown
+                                                                     tag:self.reactTag
+                                                                  target:self.reactTag];
 }
 
 - (void)sendLongSelectEndedNotification
 {
-    [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect keyAction:RCTTVRemoteEventKeyActionUp tag:self.reactTag target:self.reactTag];
+  [[NSNotificationCenter defaultCenter] postNavigationPressEventWithType:RCTTVRemoteEventLongSelect
+                                                               keyAction:RCTTVRemoteEventKeyActionUp
+                                                                     tag:self.reactTag
+                                                                  target:self.reactTag];
 }
 #endif
-
 
 #pragma mark proxy methods to RCTSurfaceHostingView
 
@@ -180,10 +193,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma clang diagnostic pop
     dispatch_async(dispatch_get_main_queue(), ^{
 #if TARGET_OS_TV
-     self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:[self contentView]];
-     self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
-     [self setNeedsFocusUpdate];
-     [self updateFocusIfNeeded];
+      self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:[self contentView]];
+      self.tvRemoteSelectHandler = [[RCTTVRemoteSelectHandler alloc] initWithView:self];
+      [self setNeedsFocusUpdate];
+      [self updateFocusIfNeeded];
 #endif
     });
   }

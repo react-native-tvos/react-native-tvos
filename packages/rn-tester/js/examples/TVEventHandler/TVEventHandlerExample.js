@@ -12,6 +12,8 @@
 
 import type {RNTesterModuleExample} from '../../types/RNTesterTypes';
 
+import RNTesterText from '../../components/RNTesterText';
+import {useTheme} from '../../components/RNTesterTheme';
 import * as React from 'react';
 import {
   Platform,
@@ -195,7 +197,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#fff',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
   },
@@ -236,7 +237,6 @@ const styles = StyleSheet.create({
     fontSize: 12 * scale,
   },
   containerView: {
-    backgroundColor: '#eeeeee',
     width: 300 * scale,
     borderRadius: 5 * scale,
     justifyContent: 'center',
@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
 });
 
 const TVEventHandlerView: () => React.Node = () => {
+  const theme = useTheme();
   const [remoteEventLog, setRemoteEventLog] = React.useState<string[]>([]);
   const [pressableEventLog, setPressableEventLog] = React.useState<string[]>(
     [],
@@ -304,7 +305,7 @@ const TVEventHandlerView: () => React.Node = () => {
   if (!Platform.isTV) {
     return (
       <View>
-        <Text>This example is intended to be run on TV.</Text>
+        <RNTesterText>This example is intended to be run on TV.</RNTesterText>
       </View>
     );
   }
@@ -409,7 +410,11 @@ const TVEventHandlerView: () => React.Node = () => {
         <TVFocusGuideView
           style={[
             styles.containerView,
-            isContainerFocused ? {backgroundColor: '#cccccc'} : {},
+            {
+              backgroundColor: isContainerFocused
+                ? theme.SystemFillColor
+                : theme.SecondarySystemBackgroundColor,
+            },
           ]}
           onBlurCapture={(event: any) => {
             updatePressableLog(
@@ -433,9 +438,9 @@ const TVEventHandlerView: () => React.Node = () => {
             );
             setIsContainerFocused(true);
           }}>
-          <Text style={{fontSize: 12 * scale}}>
+          <RNTesterText style={{fontSize: 12 * scale}}>
             Container receives bubbled events
-          </Text>
+          </RNTesterText>
           <PressableButton
             title="Contained button 1"
             log={updatePressableLog}
@@ -447,7 +452,10 @@ const TVEventHandlerView: () => React.Node = () => {
           />
         </TVFocusGuideView>
         <View
-          style={styles.containerView}
+          style={[
+            styles.containerView,
+            {backgroundColor: theme.SecondarySystemBackgroundColor},
+          ]}
           onFocus={(event: $FlowFixMe) => {
             updatePressableLog(
               `Focus bubbled from ${event.nativeEvent.target}`,
@@ -456,9 +464,9 @@ const TVEventHandlerView: () => React.Node = () => {
           onBlur={(event: $FlowFixMe) => {
             updatePressableLog(`Blur bubbled from ${event.nativeEvent.target}`);
           }}>
-          <Text style={{fontSize: 12 * scale}}>
+          <RNTesterText style={{fontSize: 12 * scale}}>
             TextInput wrapped with TouchableOpacity
-          </Text>
+          </RNTesterText>
           <TouchableOpacity
             style={[
               styles.pressable,
@@ -498,7 +506,9 @@ const TVEventHandlerView: () => React.Node = () => {
               />
             </View>
           </TouchableOpacity>
-          <Text style={{fontSize: 12 * scale}}>Unwrapped TextInput</Text>
+          <RNTesterText style={{fontSize: 12 * scale}}>
+            Unwrapped TextInput
+          </RNTesterText>
           <TextInput
             ref={textInputRef}
             onFocus={(event: $FlowFixMe) =>
@@ -528,12 +538,20 @@ const TVEventHandlerView: () => React.Node = () => {
 
       <View style={styles.logContainer}>
         <View style={{width: 400 * scale}}>
-          <Text style={{fontSize: 16 * scale}}>Native events</Text>
-          <Text style={styles.logText}>{pressableEventLog.join('\n')}</Text>
+          <RNTesterText style={{fontSize: 16 * scale}}>
+            Native events
+          </RNTesterText>
+          <RNTesterText style={styles.logText}>
+            {pressableEventLog.join('\n')}
+          </RNTesterText>
         </View>
         <View style={{width: 200 * scale}}>
-          <Text style={{fontSize: 16 * scale}}>TV event handler events</Text>
-          <Text style={styles.logText}>{remoteEventLog.join('\n')}</Text>
+          <RNTesterText style={{fontSize: 16 * scale}}>
+            TV event handler events
+          </RNTesterText>
+          <RNTesterText style={styles.logText}>
+            {remoteEventLog.join('\n')}
+          </RNTesterText>
         </View>
       </View>
     </View>

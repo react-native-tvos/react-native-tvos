@@ -289,6 +289,7 @@ class TouchableNativeFeedback extends React.Component<
         accessibilityLanguage: this.props.accessibilityLanguage,
         accessibilityLabel: accessibilityLabel,
         accessibilityRole: this.props.accessibilityRole,
+        role: this.props.role,
         accessibilityState: _accessibilityState,
         accessibilityActions: this.props.accessibilityActions,
         onAccessibilityAction: this.props.onAccessibilityAction,
@@ -310,8 +311,7 @@ class TouchableNativeFeedback extends React.Component<
         nextFocusRight: tagForComponentOrHandle(this.props.nextFocusRight),
         nextFocusUp: tagForComponentOrHandle(this.props.nextFocusUp),
         focusable:
-          this.props.focusable !== false &&
-          this.props.isTVSelectable !== false,
+          this.props.focusable !== false && this.props.isTVSelectable !== false,
         onLayout: this.props.onLayout,
         testID: this.props.testID,
       },

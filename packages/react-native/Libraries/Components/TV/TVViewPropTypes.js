@@ -151,5 +151,4 @@ export type TVViewProps = Readonly<{|
    * View, `scrollSnapOffset` takes precedence.
    */
   scrollSnapOffset?: ?number,
-
 |}>;

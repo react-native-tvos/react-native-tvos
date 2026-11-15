@@ -7,8 +7,8 @@
 
 #import "RCTTVNavigationEventEmitter.h"
 #if TARGET_OS_TV
-#import "RCTTVNavigationEventNotificationConstants.h"
 #import <React/RCTTVRemoteHandler.h>
+#import "RCTTVNavigationEventNotificationConstants.h"
 #endif
 
 #import <FBReactNativeSpec/FBReactNativeSpec.h>
@@ -48,10 +48,11 @@ RCT_EXPORT_MODULE()
 
 - (void)handleTVNavigationEventNotification:(NSNotification *)notif
 {
-    [self sendEventWithName:TVNavigationEventName body:notif.object];
+  [self sendEventWithName:TVNavigationEventName body:notif.object];
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
 {
   return std::make_shared<facebook::react::NativeTVNavigationEventEmitterSpecJSI>(params);
 }
@@ -63,36 +64,40 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(enableTVMenuKey)
 {
-    [RCTTVRemoteHandler setUseMenuKey:YES];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableMenuKeyNotification object:nil];
+  [RCTTVRemoteHandler setUseMenuKey:YES];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableMenuKeyNotification object:nil];
 }
 
 RCT_EXPORT_METHOD(disableTVMenuKey)
 {
-    [RCTTVRemoteHandler setUseMenuKey:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableMenuKeyNotification object:nil];
+  [RCTTVRemoteHandler setUseMenuKey:NO];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableMenuKeyNotification object:nil];
 }
 
 RCT_EXPORT_METHOD(enableTVPanGesture)
 {
-    [RCTTVRemoteHandler setUsePanGesture:YES];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnablePanGestureNotification object:nil];
+  [RCTTVRemoteHandler setUsePanGesture:YES];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnablePanGestureNotification object:nil];
 }
 
 RCT_EXPORT_METHOD(disableTVPanGesture)
 {
-    [RCTTVRemoteHandler setUsePanGesture:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisablePanGestureNotification object:nil];
+  [RCTTVRemoteHandler setUsePanGesture:NO];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisablePanGestureNotification object:nil];
 }
 
-RCT_EXPORT_METHOD(enableGestureHandlersCancelTouches) {
+RCT_EXPORT_METHOD(enableGestureHandlersCancelTouches)
+{
   [RCTTVRemoteHandler setGestureHandlersCancelTouches:YES];
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableGestureHandlersCancelTouchesNotification object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVEnableGestureHandlersCancelTouchesNotification
+                                                      object:nil];
 }
 
-RCT_EXPORT_METHOD(disableGestureHandlersCancelTouches) {
+RCT_EXPORT_METHOD(disableGestureHandlersCancelTouches)
+{
   [RCTTVRemoteHandler setGestureHandlersCancelTouches:NO];
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableGestureHandlersCancelTouchesNotification object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTTVDisableGestureHandlersCancelTouchesNotification
+                                                      object:nil];
 }
 #endif
 @end

@@ -1004,7 +1004,12 @@ module.exports = [
   {
     title: 'fontFamily, fontWeight and fontStyle',
     render: function (): React.Node {
-      const fontFamilyA = Platform.OS === 'ios' ? (Platform.isTVOS ? 'Helvetica' : 'Cochin') : 'sans-serif';
+      const fontFamilyA =
+        Platform.OS === 'ios'
+          ? Platform.isTVOS
+            ? 'Helvetica'
+            : 'Cochin'
+          : 'sans-serif';
       const fontFamilyB = Platform.OS === 'ios' ? 'Courier' : 'serif';
 
       return (
@@ -1188,6 +1193,20 @@ module.exports = [
             </Text>
             generic generic generic
           </AutogrowingTextInputExample>
+        </View>
+      );
+    },
+  },
+  {
+    title: 'Auto-expanding (uncontrolled)',
+    render: function (): React.Node {
+      return (
+        <View>
+          <ExampleTextInput
+            placeholder="height should grow up to 10 lines"
+            multiline={true}
+            numberOfLines={10}
+          />
         </View>
       );
     },

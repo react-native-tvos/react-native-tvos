@@ -195,6 +195,7 @@ class TouchableOpacity extends React.Component<
         accessibilityHint={this.props.accessibilityHint}
         accessibilityLanguage={this.props.accessibilityLanguage}
         accessibilityRole={this.props.accessibilityRole}
+        role={this.props.role}
         accessibilityState={_accessibilityState}
         accessibilityActions={this.props.accessibilityActions}
         onAccessibilityAction={this.props.onAccessibilityAction}
@@ -223,8 +224,7 @@ class TouchableOpacity extends React.Component<
         nextFocusUp={tagForComponentOrHandle(this.props.nextFocusUp)}
         hasTVPreferredFocus={this.props.hasTVPreferredFocus === true}
         focusable={
-          this.props.focusable !== false &&
-          this.props.isTVSelectable !== false
+          this.props.focusable !== false && this.props.isTVSelectable !== false
         }
         tvParallaxProperties={this.props.tvParallaxProperties}
         hitSlop={this.props.hitSlop}

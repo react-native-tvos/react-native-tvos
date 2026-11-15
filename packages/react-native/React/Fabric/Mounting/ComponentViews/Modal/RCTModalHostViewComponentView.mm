@@ -21,6 +21,12 @@
 #import <React/RCTTVRemoteHandler.h>
 #endif
 
+#if !TARGET_OS_TV
+@interface RCTFabricModalHostViewController ()
+- (void)captureStatusBarAppearance;
+@end
+#endif
+
 using namespace facebook::react;
 
 #if !TARGET_OS_TV
@@ -149,7 +155,8 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
 }
 
 #if TARGET_OS_TV
-- (void)menuButtonPressed {
+- (void)menuButtonPressed
+{
   UIView *snapshot = _modalContentsSnapshot;
   [self.viewController.view addSubview:snapshot];
   [self dismissViewController:self.viewController
@@ -219,6 +226,9 @@ static ModalHostViewEventEmitter::OnOrientationChange onOrientationChangeStruct(
     [self saveAccessibilityFocusedView];
     self.viewController.presentationController.delegate = self;
     self.viewController.modalInPresentation = _modalInPresentation;
+#if !TARGET_OS_TV
+    [self.viewController captureStatusBarAppearance];
+#endif
 
     _isPresented = YES;
     [self presentViewController:self.viewController

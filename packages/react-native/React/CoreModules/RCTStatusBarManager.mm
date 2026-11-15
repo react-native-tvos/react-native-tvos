@@ -11,6 +11,7 @@
 #import <React/RCTEventDispatcherProtocol.h>
 #import <React/RCTInitializing.h>
 #import <React/RCTLog.h>
+#import <React/RCTStatusBarAppearance.h>
 #import <React/RCTUtils.h>
 
 #if !TARGET_OS_TV
@@ -74,6 +75,28 @@ static BOOL RCTViewControllerBasedStatusBarAppearance()
   });
 
   return value;
+}
+
+// UIKit makes the app-level setters no-ops only for apps built with the iOS 27 SDK.
+static BOOL RCTAppLevelStatusBarIsNoOp()
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 270000
+  if (@available(iOS 27.0, *)) {
+    return YES;
+  }
+#endif
+  return NO;
+}
+
+static void RCTWarnAppLevelStatusBarUnavailable()
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    RCTLogWarn(
+        @"StatusBar has no effect because UIViewControllerBasedStatusBarAppearance is NO in Info.plist. "
+        @"Apps built with the iOS 27 SDK cannot use the app-level status bar API that this setting uses. "
+        @"Set UIViewControllerBasedStatusBarAppearance to YES to control the status bar from JavaScript.");
+  });
 }
 
 RCT_EXPORT_MODULE()
@@ -172,15 +195,16 @@ RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     UIStatusBarStyle statusBarStyle = [RCTConvert UIStatusBarStyle:style];
-    if (RCTViewControllerBasedStatusBarAppearance()) {
-      RCTLogWarn(@"RCTStatusBarManager is a no-op when \
-                UIViewControllerBasedStatusBarAppearance is YES; set the status bar from your view controller instead");
-    } else {
+    [RCTStatusBarAppearance setStyle:statusBarStyle animated:animated];
+    if (!RCTViewControllerBasedStatusBarAppearance()) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
       [RCTSharedApplication() setStatusBarStyle:statusBarStyle animated:animated];
-    }
 #pragma clang diagnostic pop
+      if (RCTAppLevelStatusBarIsNoOp()) {
+        RCTWarnAppLevelStatusBarUnavailable();
+      }
+    }
   });
 }
 
@@ -188,14 +212,15 @@ RCT_EXPORT_METHOD(getHeight : (RCTResponseSenderBlock)callback)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     UIStatusBarAnimation animation = [RCTConvert UIStatusBarAnimation:withAnimation];
-    if (RCTViewControllerBasedStatusBarAppearance()) {
-      RCTLogWarn(@"RCTStatusBarManager is a no-op when \
-                UIViewControllerBasedStatusBarAppearance is YES; set the status bar from your view controller instead");
-    } else {
+    [RCTStatusBarAppearance setHidden:hidden withAnimation:animation];
+    if (!RCTViewControllerBasedStatusBarAppearance()) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
       [RCTSharedApplication() setStatusBarHidden:hidden withAnimation:animation];
 #pragma clang diagnostic pop
+      if (RCTAppLevelStatusBarIsNoOp()) {
+        RCTWarnAppLevelStatusBarUnavailable();
+      }
     }
   });
 }

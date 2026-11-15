@@ -244,8 +244,8 @@
   animated = animated && _scrollAnimationEnabled;
 #endif
   [super setContentOffset:CGPointMake(
-      RCTSanitizeNaNValue(contentOffset.x, @"scrollView.contentOffset.x"),
-      RCTSanitizeNaNValue(contentOffset.y, @"scrollView.contentOffset.y"))
+                              RCTSanitizeNaNValue(contentOffset.x, @"scrollView.contentOffset.x"),
+                              RCTSanitizeNaNValue(contentOffset.y, @"scrollView.contentOffset.y"))
                  animated:animated];
 }
 

@@ -962,17 +962,11 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
     // We have already set a font size on the EditText itself. We can safely remove sizing spans
     // which are the same as the set font size, and not otherwise overlapped.
     val effectiveFontSize: Int = textAttributes.effectiveFontSize
-    val spans = sb.getSpans(
-      0, sb.length,
-      ReactAbsoluteSizeSpan::class.java
-    )
+    val spans = sb.getSpans(0, sb.length, ReactAbsoluteSizeSpan::class.java)
 
     outerLoop@ for (span in spans) {
       val overlappingSpans =
-        sb.getSpans(
-          sb.getSpanStart(span), sb.getSpanEnd(span),
-          ReactAbsoluteSizeSpan::class.java
-        )
+          sb.getSpans(sb.getSpanStart(span), sb.getSpanEnd(span), ReactAbsoluteSizeSpan::class.java)
 
       for (overlappingSpan in overlappingSpans) {
         if (span.size !== effectiveFontSize) {
@@ -983,6 +977,7 @@ public open class ReactEditText public constructor(context: Context) : AppCompat
       sb.removeSpan(span)
     }
   }
+
   /**
    * Copy styles represented as attributes to the underlying span, for later measurement or other
    * usage outside the ReactEditText.

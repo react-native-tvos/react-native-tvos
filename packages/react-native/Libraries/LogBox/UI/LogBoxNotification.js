@@ -70,7 +70,9 @@ export default function LogBoxNotification(props: Props): React.Node {
             pressed: LogBoxStyle.getBackgroundColor(0.9),
           }}>
           <View style={styles.tvDismissContainer}>
-            <LogBoxNotificationMessage message={{content: 'Dismiss', substitutions: []}} />
+            <LogBoxNotificationMessage
+              message={{content: 'Dismiss', substitutions: []}}
+            />
           </View>
         </LogBoxButton>
       ) : null}

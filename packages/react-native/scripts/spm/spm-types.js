@@ -26,13 +26,19 @@ export type SetupArgs = {
   // `add` target selection: which app target (when several) and which project.
   productName: string | null,
   xcodeprojPath: string | null,
-  // `add`: run `pod deintegrate` + strip RN from the Podfile before injecting.
-  // Also implied on the zero-arg path when resolveAction's safe-gate detects a
-  // freshly-scaffolded CocoaPods project (see setup-apple-spm.js).
+  // `add`: run `pod deintegrate` before injecting. The Podfile is kept.
   deintegrate: boolean,
   // Skip the single remaining confirmation (the add/update dirty-pbxproj
   // warning). Non-TTY auto-proceeds regardless (git is the safety net).
   yes: boolean,
+};
+
+// What `spm add` wrote to the app's .gitignore, kept in the injection marker
+// so `spm deinit` removes exactly that: whether it created the file, and every
+// line it appended (header included), in order, across all `add` runs.
+export type GitignoreRecord = {
+  created: boolean,
+  lines: Array<string>,
 };
 
 export type DownloadArgs = {
@@ -132,7 +138,7 @@ export type AutolinkingDepJson = {
   ...
 };
 export type RawAutolinkingJson = {
-  dependencies?: ?{[string]: AutolinkingDepJson},
+  dependencies?: ?{[key: string]: AutolinkingDepJson},
   ...
 };
 // Validated/normalized dep — name and ios platform are guaranteed present.
@@ -306,7 +312,7 @@ export type PluginContext = {
   appRoot: string,
   projectRoot: string,
   reactNativeRoot: string,
-  autolinking: {readonly [string]: unknown},
+  autolinking: {readonly [key: string]: unknown},
   outputDir: string,
   // How to depend on React (package ref + product set); null only when there is
   // no resolvable React dependency at all.

@@ -8,7 +8,8 @@
 NSString *const RCTTVNavigationEventNotificationName = @"RCTTVNavigationEventNotification";
 
 RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyEventType = @"eventType";
-RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyEventKeyAction = @"eventKeyAction";
+RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyEventKeyAction =
+    @"eventKeyAction";
 RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyTag = @"tag";
 RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyTarget = @"target";
 RCTTVNavigationEventNotificationKey _Nonnull const RCTTVNavigationEventNotificationKeyBody = @"body";

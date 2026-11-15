@@ -2,10 +2,10 @@
 #import "RCTTVRemoteSelectHandler.h"
 #import "RCTTVRemoteHandler.h"
 
-@interface RCTTVRemoteSelectHandler()
+@interface RCTTVRemoteSelectHandler ()
 
-@property (nonatomic, strong) RCTTVRemoteSelectGestureRecognizer * pressRecognizer;
-@property (nonatomic, strong) RCTTVRemoteSelectGestureRecognizer * longPressRecognizer;
+@property (nonatomic, strong) RCTTVRemoteSelectGestureRecognizer *pressRecognizer;
+@property (nonatomic, strong) RCTTVRemoteSelectGestureRecognizer *longPressRecognizer;
 
 @property (nonatomic, weak) UIView<RCTTVRemoteSelectHandlerDelegate> *view;
 
@@ -18,11 +18,11 @@
 #pragma mark -
 #pragma mark Public methods
 
-- (instancetype)initWithView:(UIView <RCTTVRemoteSelectHandlerDelegate> *)view
+- (instancetype)initWithView:(UIView<RCTTVRemoteSelectHandlerDelegate> *)view
 {
   if ((self = [super init])) {
-      _view = view;
-      [self attachToView];
+    _view = view;
+    [self attachToView];
   }
   return self;
 }
@@ -37,7 +37,9 @@
 #pragma UIGestureRecognizerDelegate method
 
 // Press recognizer should allow long press recognizer to work (but not the reverse)
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
   // We need to allow other external select gesture recognizers to run, but not
   // the select recognizers for pressable subviews of the root view.
 
@@ -51,8 +53,10 @@
 #pragma mark -
 #pragma mark Private methods
 
-- (void)attachToView {
-  RCTTVRemoteSelectGestureRecognizer *pressRecognizer = [[RCTTVRemoteSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
+- (void)attachToView
+{
+  RCTTVRemoteSelectGestureRecognizer *pressRecognizer =
+      [[RCTTVRemoteSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handlePress:)];
   pressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
   pressRecognizer.minimumPressDuration = 0.0;
   pressRecognizer.delegate = self; // Press recognizer allows other recognizers to run
@@ -60,7 +64,8 @@
   [self.view addGestureRecognizer:pressRecognizer];
   self.pressRecognizer = pressRecognizer;
 
-  RCTTVRemoteSelectGestureRecognizer *longPressRecognizer = [[RCTTVRemoteSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+  RCTTVRemoteSelectGestureRecognizer *longPressRecognizer =
+      [[RCTTVRemoteSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
   longPressRecognizer.allowedPressTypes = @[ @(UIPressTypeSelect) ];
   longPressRecognizer.minimumPressDuration = 0.5;
   longPressRecognizer.delegate = self;
@@ -69,7 +74,8 @@
   self.longPressRecognizer = longPressRecognizer;
 }
 
-- (void)detachFromView {
+- (void)detachFromView
+{
   if (_pressRecognizer) {
     [self.view removeGestureRecognizer:_pressRecognizer];
     self.pressRecognizer = nil;
