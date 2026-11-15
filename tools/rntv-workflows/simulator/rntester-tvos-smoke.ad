@@ -1,0 +1,22 @@
+context platform=ios
+# Needs a fresh RNTester install: the down presses assume no "Recently Viewed" section.
+open com.meta.RNTester.localDevelopment --relaunch
+# Focus starts on the Components tab. Down presses sent before it has focus are dropped.
+wait 'role=button label="Components" focused=true' 30000
+# Four down presses pass the filter chips, the search field and the first row.
+tv-remote down
+tv-remote down
+tv-remote down
+tv-remote down
+wait 'label="ActivityIndicator Animated loading indicators." focused=true' 5000
+# screenshot 01-list-focused
+tv-remote select
+wait text "Default (small, white)" 15000
+# screenshot 02-example
+# The first menu press moves focus to the tab bar; the second goes back to the list.
+tv-remote menu
+wait 'role=button label="Components" focused=true' 5000
+tv-remote menu
+wait text "Recently Viewed" 15000
+# screenshot 03-back-to-list
+close
