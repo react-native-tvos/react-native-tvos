@@ -820,12 +820,13 @@ constructor(context: Context, private val fpsListener: FpsListener? = null) :
             ReactScrollViewHelper.playFocusNavigationSoundEffect(this, direction)
           }
           handled = true
-        } else {
+        } else if (canScrollHorizontally(if (direction == View.FOCUS_LEFT) -1 else 1)) {
           if (snapToAlignment != SNAP_ALIGNMENT_ITEM) {
             smoothScrollToNextPage(direction)
           }
           handled = true
         }
+        // At either end, leave the key unhandled so the focus search can move focus out.
       }
 
       pagedArrowScrolling = false

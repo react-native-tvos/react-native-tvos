@@ -101,29 +101,38 @@ exports.examples = [
                   );
                 })}
               </View>
-              <TVTextScrollView
-                scrollDuration={scrollDurations[this.state.scrollDurationIndex]}
-                pageSize={pageSizes[this.state.pageSizeIndex]}
-                horizontal={true}
-                snapToStart={this.state.snapToStart}
-                snapToEnd={this.state.snapToEnd}
-                onFocus={() => {
-                  this.setState({
-                    horizontalScrollerFocused: true,
-                  });
-                }}
-                onBlur={() => {
-                  this.setState({
-                    horizontalScrollerFocused: false,
-                  });
-                }}
-                style={
-                  this.state.horizontalScrollerFocused
-                    ? styles.bigScrollViewFocused
-                    : styles.bigScrollView
-                }>
-                {ITEMCOMPONENTS}
-              </TVTextScrollView>
+              {/* At either end of the horizontal scroller, D-pad left and
+                  right must move focus to the buttons beside it. */}
+              <View style={styles.horizontalRow}>
+                <Button label="Left" />
+                <TVTextScrollView
+                  scrollDuration={
+                    scrollDurations[this.state.scrollDurationIndex]
+                  }
+                  pageSize={pageSizes[this.state.pageSizeIndex]}
+                  horizontal={true}
+                  snapToStart={this.state.snapToStart}
+                  snapToEnd={this.state.snapToEnd}
+                  onFocus={() => {
+                    this.setState({
+                      horizontalScrollerFocused: true,
+                    });
+                  }}
+                  onBlur={() => {
+                    this.setState({
+                      horizontalScrollerFocused: false,
+                    });
+                  }}
+                  style={[
+                    this.state.horizontalScrollerFocused
+                      ? styles.bigScrollViewFocused
+                      : styles.bigScrollView,
+                    styles.horizontalScroller,
+                  ]}>
+                  {ITEMCOMPONENTS}
+                </TVTextScrollView>
+                <Button label="Right" />
+              </View>
               <TVTextScrollView
                 scrollDuration={scrollDurations[this.state.scrollDurationIndex]}
                 pageSize={pageSizes[this.state.pageSizeIndex]}
@@ -257,6 +266,13 @@ const styles = StyleSheet.create({
   },
   horizontalScrollView: {
     height: 106 * scale,
+  },
+  horizontalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  horizontalScroller: {
+    flex: 1,
   },
   text: {
     fontSize: 16 * scale,
