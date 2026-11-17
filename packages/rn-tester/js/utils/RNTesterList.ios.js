@@ -212,6 +212,18 @@ const APIs: Array<RNTesterModuleInfo> = (
       supportsTVOS: true,
     },
     {
+      key: 'TVPreferredFocusRecycleExample',
+      category: 'TV',
+      module: require('../examples/TVPreferredFocus/TVPreferredFocusRecycleExample'),
+      supportsTVOS: true,
+    },
+    {
+      key: 'TVModalFocusExample',
+      category: 'TV',
+      module: require('../examples/TVModalFocus/TVModalFocusExample'),
+      supportsTVOS: true,
+    },
+    {
       key: 'TVFocusEnterLeaveExample',
       category: 'TV',
       module: require('../examples/FocusEventsExample/FocusEnterLeaveExample'),

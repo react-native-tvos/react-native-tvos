@@ -261,22 +261,21 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 #pragma mark - Apple TV methods
 
-- (RCTSurfaceHostingProxyRootView *)containingRootView
+/// The nearest view, starting at `self`, that holds the preferred focus of the views inside it: the
+/// root view, or the view of the modal that contains `self`.
+- (UIView<RCTTVFocusRoot> *)containingRootView
 {
   UIView *rootview = self;
-  if ([rootview class] == [RCTSurfaceHostingProxyRootView class]) {
-    return (RCTSurfaceHostingProxyRootView *)rootview;
-  }
-  do {
+  while (rootview != nil && ![rootview conformsToProtocol:@protocol(RCTTVFocusRoot)]) {
     rootview = [rootview superview];
-  } while (([rootview class] != [RCTSurfaceHostingProxyRootView class]) && rootview != nil);
-  return (RCTSurfaceHostingProxyRootView *)rootview;
+  }
+  return (UIView<RCTTVFocusRoot> *)rootview;
 }
 
 /// Handles self-focusing logic. Shouldn't be used directly, use `requestFocusSelf` method instead.
 - (bool)focusSelf
 {
-  RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];
+  UIView<RCTTVFocusRoot> *rootview = [self containingRootView];
   if (rootview == nil)
     return false;
 
@@ -557,18 +556,6 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
   return YES;
 }
 
-- (BOOL)canBecomeFocused
-{
-#if !TARGET_OS_TV
-  return RCTViewIsInteractiveAccessibilityElement(self) || _props->isTVSelectable;
-#else
-  if ([self isTVFocusGuide]) {
-    return NO;
-  }
-  return _props->isTVSelectable;
-#endif
-}
-
 // Directional focus destinations are looked up in the containing root view when
 // `updateProps` runs. A destination set while this view is not attached yet --
 // e.g. a nextFocus* value delivered together with the view's creation -- resolves
@@ -755,6 +742,18 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 #endif
 
+- (BOOL)canBecomeFocused
+{
+#if !TARGET_OS_TV
+  return RCTViewIsInteractiveAccessibilityElement(self, *_props);
+#else
+  if ([self isTVFocusGuide]) {
+    return NO;
+  }
+  return _props->isTVSelectable;
+#endif
+}
+
 #pragma mark - Native Commands
 
 // tvOS only method called from handleCommand()
@@ -772,7 +771,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     }
     NSArray *destinationTags = (NSArray<NSNumber *> *)args[0];
     NSMutableArray *destinations = [NSMutableArray new];
-    RCTSurfaceHostingProxyRootView *rootView = [self containingRootView];
+    UIView<RCTTVFocusRoot> *rootView = [self containingRootView];
     for (NSNumber *tag in destinationTags) {
       UIView *view = [rootView viewWithTag:[tag intValue]];
       if (view != nil) {
@@ -1290,7 +1289,9 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
     _tvParallaxProperties.pressDelay = [self getFloat:newViewProps.tvParallaxProperties.pressDelay orDefault:0.0];
   }
   // `hasTVPreferredFocus
-  if (oldViewProps.hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
+  // Compare against the current state, not `_props`: `prepareForRecycle` resets
+  // `_hasTVPreferredFocus` but keeps `_props`.
+  if (_hasTVPreferredFocus != newViewProps.hasTVPreferredFocus) {
     _hasTVPreferredFocus = newViewProps.hasTVPreferredFocus;
     if (_hasTVPreferredFocus) {
       [self requestFocusSelf];
@@ -1439,7 +1440,7 @@ static BOOL RCTLayerTransformCollapsesAxis(CALayer *layer)
 
 #if TARGET_OS_TV
   if (_hasTVPreferredFocus) {
-    RCTSurfaceHostingProxyRootView *rootview = [self containingRootView];
+    UIView<RCTTVFocusRoot> *rootview = [self containingRootView];
     if (rootview != nil && rootview.reactPreferredFocusedView != self) {
       [self requestFocusSelf];
     }
@@ -1579,6 +1580,8 @@ static BOOL RCTEdgeInsetsEqualWithThreshold(UIEdgeInsets lhs, UIEdgeInsets rhs, 
 
 #if TARGET_OS_TV
   [self removeFocusGuide];
+  _hasTVPreferredFocus = NO;
+  _shouldFocusOnMount = false;
 #endif
 
   // Clean up box shadow layers to prevent cross-component contamination
@@ -2672,7 +2675,7 @@ static NSString *RCTRecursiveAccessibilityLabel(UIView *view)
   UIView *viewToFocus = [self viewToFocus];
 
 #if TARGET_OS_TV
-  RCTSurfaceHostingProxyRootView *rootView = [self containingRootView];
+  UIView<RCTTVFocusRoot> *rootView = [self containingRootView];
   if (rootView == nil) {
     return;
   }
