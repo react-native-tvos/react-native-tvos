@@ -269,6 +269,10 @@ public open class ReactViewGroup public constructor(context: Context?) :
 
     // In case a focus was attempted but the view never attached, reset to false
     focusOnAttach = false
+
+    // `setTVPreferredFocus` skips unchanged values, so a recycled view that kept `true` would
+    // never request focus again
+    hasTVPreferredFocus = false
   }
 
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
