@@ -206,6 +206,11 @@ const APIs: Array<RNTesterModuleInfo> = (
       module: require('../examples/TVFocusGuide/TVFocusGuideAutoFocusExample'),
     },
     {
+      key: 'TVPreferredFocusRecycleExample',
+      category: 'TV',
+      module: require('../examples/TVPreferredFocus/TVPreferredFocusRecycleExample'),
+    },
+    {
       key: 'TVModalFocusExample',
       category: 'TV',
       module: require('../examples/TVModalFocus/TVModalFocusExample'),
