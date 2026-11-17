@@ -11,6 +11,37 @@
 #import <React/RCTStatusBarAppearance.h>
 #import <React/RCTSurfaceTouchHandler.h>
 
+#if TARGET_OS_TV
+#import <React/RCTSurfaceHostingProxyRootView.h>
+
+/// The view that holds the content of a modal. It is outside the root view, so the views in a
+/// modal move focus through it.
+@interface RCTFabricModalHostView : UIView <RCTTVFocusRoot>
+
+@property (nonatomic, weak, nullable) UIView *reactPreferredFocusedView;
+@property (nonatomic, copy, nullable) NSArray<id<UIFocusEnvironment>> *reactPreferredFocusEnvironments;
+
+@end
+
+@implementation RCTFabricModalHostView
+
+- (NSArray<id<UIFocusEnvironment>> *)preferredFocusEnvironments
+{
+  if (self.reactPreferredFocusEnvironments != nil) {
+    NSArray<id<UIFocusEnvironment>> *environments = self.reactPreferredFocusEnvironments;
+    self.reactPreferredFocusEnvironments = nil;
+    return environments;
+  }
+
+  if (self.reactPreferredFocusedView && self.reactPreferredFocusedView.window != nil) {
+    return @[ self.reactPreferredFocusedView ];
+  }
+  return [super preferredFocusEnvironments];
+}
+
+@end
+#endif
+
 @implementation RCTFabricModalHostViewController {
   CGRect _lastViewBounds;
 #if !TARGET_OS_TV
@@ -46,8 +77,10 @@
 
 - (void)loadView
 {
+#if TARGET_OS_TV
+  self.view = [RCTFabricModalHostView new];
+#else
   self.view = [UIView new];
-#if !TARGET_OS_TV
   [_touchHandler attachToView:self.view];
 #endif
 }
