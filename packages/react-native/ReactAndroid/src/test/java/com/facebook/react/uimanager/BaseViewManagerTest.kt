@@ -9,6 +9,8 @@
 
 package com.facebook.react.uimanager
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.View.OnFocusChangeListener
@@ -23,6 +25,7 @@ import com.facebook.react.internal.featureflags.ReactNativeFeatureFlags
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsDefaults
 import com.facebook.react.internal.featureflags.ReactNativeFeatureFlagsForTests
 import com.facebook.react.touch.JSResponderHandler
+import com.facebook.react.views.common.UiModeUtils
 import com.facebook.react.views.scroll.ReactHorizontalScrollViewManager
 import com.facebook.react.views.scroll.ReactNestedScrollViewManager
 import com.facebook.react.views.scroll.ReactScrollViewAccessibilityDelegate
@@ -41,6 +44,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @Config(shadows = [ShadowArguments::class])
@@ -63,10 +67,12 @@ class BaseViewManagerTest {
     val context = BridgeReactContext(RuntimeEnvironment.getApplication())
     themedReactContext = ThemedReactContext(context, context, null, -1)
     view = ReactViewGroup(themedReactContext)
+    setTvMode(false)
   }
 
   @After
   fun tearDown() {
+    setTvMode(false)
     DisplayMetricsHolder.setScreenDisplayMetrics(null)
     ReactNativeFeatureFlags.dangerouslyReset()
   }
@@ -116,6 +122,15 @@ class BaseViewManagerTest {
     viewManager.setViewState(view, JavaOnlyMap.of("disabled", true))
     viewManager.setViewState(view, JavaOnlyMap.of("disabled", null))
     Assertions.assertThat(view.isEnabled).isTrue()
+  }
+
+  @Test
+  fun testAccessibilityStateDisabledKeepsViewEnabledOnTv() {
+    setTvMode(true)
+    val accessibilityState = JavaOnlyMap.of("disabled", true)
+    viewManager.setViewState(view, accessibilityState)
+    Assertions.assertThat(view.isEnabled).isTrue()
+    Assertions.assertThat(view.getTag(R.id.accessibility_state)).isEqualTo(accessibilityState)
   }
 
   @Test
@@ -447,4 +462,18 @@ class BaseViewManagerTest {
           null,
           JSResponderHandler(),
       )
+
+  private fun setTvMode(isTV: Boolean) {
+    val uiModeManager =
+        RuntimeEnvironment.getApplication().getSystemService(UiModeManager::class.java)
+    shadowOf(uiModeManager)
+        .setCurrentModeType(
+            if (isTV) Configuration.UI_MODE_TYPE_TELEVISION else Configuration.UI_MODE_TYPE_NORMAL
+        )
+    // UiModeUtils caches the first result, so clear it for each mode change.
+    UiModeUtils::class.java.getDeclaredField("isTVDeviceCached").apply {
+      isAccessible = true
+      set(null, null)
+    }
+  }
 }

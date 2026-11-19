@@ -44,6 +44,7 @@ import com.facebook.react.uimanager.events.SafeAreaInsetsChangeEvent;
 import com.facebook.react.uimanager.internal.SafeAreaInsetsObserver;
 import com.facebook.react.uimanager.style.OutlineStyle;
 import com.facebook.react.uimanager.util.ReactFindViewUtil;
+import com.facebook.react.views.common.UiModeUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -420,7 +421,12 @@ public abstract class BaseViewManager<T extends View, C extends LayoutShadowNode
       view.setSelected(false);
     }
     view.setTag(R.id.accessibility_state, accessibilityState);
-    if (accessibilityState.hasKey("disabled") && !accessibilityState.isNull("disabled")) {
+    // On TV, a view that is not enabled cannot take D-pad focus, and focusability follows the
+    // focusable prop. Pressability blocks presses on a disabled view, and accessibility reads
+    // the disabled state from the accessibility_state tag.
+    if (accessibilityState.hasKey("disabled")
+        && !accessibilityState.isNull("disabled")
+        && !UiModeUtils.isTVDevice(view.getContext())) {
       boolean disabled = accessibilityState.getBoolean("disabled");
       view.setEnabled(!disabled);
       view.setTag(R.id.accessibility_state_disabled, disabled);
