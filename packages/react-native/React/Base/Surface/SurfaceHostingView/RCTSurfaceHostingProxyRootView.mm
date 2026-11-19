@@ -174,7 +174,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 {
   [super surface:surface didChangeStage:stage];
   if (RCTSurfaceStageIsRunning(stage)) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [_bridge.performanceLogger markStopForTag:RCTPLTTI];
+#pragma clang diagnostic pop
     dispatch_async(dispatch_get_main_queue(), ^{
 #if TARGET_OS_TV
      self.tvRemoteHandler = [[RCTTVRemoteHandler alloc] initWithView:[self contentView]];

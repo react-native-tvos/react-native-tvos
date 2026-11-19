@@ -8,12 +8,18 @@
 #import "RCTFabricModalHostViewController.h"
 
 #import <React/RCTLog.h>
+#import <React/RCTStatusBarAppearance.h>
 #import <React/RCTSurfaceTouchHandler.h>
 
 @implementation RCTFabricModalHostViewController {
   CGRect _lastViewBounds;
 #if !TARGET_OS_TV
   RCTSurfaceTouchHandler *_touchHandler;
+  BOOL _hasCapturedStatusBar;
+  UIStatusBarStyle _capturedStatusBarStyle;
+  BOOL _capturedStatusBarHidden;
+  UIStatusBarStyle _jsStatusBarStyleAtCapture;
+  BOOL _jsStatusBarHiddenAtCapture;
 #endif
 }
 
@@ -63,14 +69,36 @@
   [self.delegate disableEventHandlers];
 }
 #else
+- (void)captureStatusBarAppearance
+{
+  UIStatusBarManager *statusBarManager = RCTUIStatusBarManager();
+  _hasCapturedStatusBar = YES;
+  _capturedStatusBarStyle = statusBarManager.statusBarStyle;
+  _capturedStatusBarHidden = statusBarManager.isStatusBarHidden;
+  _jsStatusBarStyleAtCapture = RCTStatusBarAppearance.style;
+  _jsStatusBarHiddenAtCapture = RCTStatusBarAppearance.hidden;
+}
+
+// Keep the status bar from before the modal until JS changes it.
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-  return [RCTUIStatusBarManager() statusBarStyle];
+  if (_hasCapturedStatusBar && RCTStatusBarAppearance.style == _jsStatusBarStyleAtCapture) {
+    return _capturedStatusBarStyle;
+  }
+  return RCTStatusBarAppearance.style;
 }
 
 - (BOOL)prefersStatusBarHidden
 {
-  return [RCTUIStatusBarManager() isStatusBarHidden];
+  if (_hasCapturedStatusBar && RCTStatusBarAppearance.hidden == _jsStatusBarHiddenAtCapture) {
+    return _capturedStatusBarHidden;
+  }
+  return RCTStatusBarAppearance.hidden;
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
+{
+  return RCTStatusBarAppearance.updateAnimation;
 }
 
 #if RCT_DEV && TARGET_OS_IOS

@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f308cce94b6675fb99b66792ba49347a>>
+ * @generated SignedSource<<a89ede36c4631b7a7709899858a7f9c9>>
  */
 
 /**
@@ -209,12 +209,6 @@ public object ReactNativeFeatureFlags {
    */
   @JvmStatic
   public fun enableFollowUpMountItemDispatchAndroid(): Boolean = accessor.enableFollowUpMountItemDispatchAndroid()
-
-  /**
-   * Enables font scale changes updating layout for measurable nodes.
-   */
-  @JvmStatic
-  public fun enableFontScaleChangesUpdatingLayout(): Boolean = accessor.enableFontScaleChangesUpdatingLayout()
 
   /**
    * Adjusts iOS Text drawing frames for compressed explicit line heights.

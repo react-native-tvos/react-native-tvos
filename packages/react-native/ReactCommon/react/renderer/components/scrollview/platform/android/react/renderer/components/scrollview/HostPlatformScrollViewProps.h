@@ -38,6 +38,7 @@ class HostPlatformScrollViewProps : public BaseScrollViewProps {
   folly::dynamic fadingEdgeLength{};
   std::string overScrollMode{"auto"};
   SharedColor endFillColor{clearColor()};
+  bool scrollsChildToFocus{true};
 
   Float snapToItemPadding{0};
 

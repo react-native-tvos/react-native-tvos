@@ -72,7 +72,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     cxxNativeAnimatedEnabled: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2025-03-14',
         description:
@@ -80,7 +80,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'canary',
+      ossReleaseStage: 'stable',
     },
     defaultTextToOverflowHidden: {
       defaultValue: true,
@@ -369,17 +369,6 @@ const definitions: FeatureFlagDefinitions = {
         dateAdded: '2026-09-29',
         description:
           'When mount items are queued while MountItemDispatcher is already dispatching on Android (e.g. from a synchronous state update), dispatch them in the same frame instead of deferring them to the next one.',
-        expectedReleaseValue: true,
-        purpose: 'experimentation',
-      },
-      ossReleaseStage: 'none',
-    },
-    enableFontScaleChangesUpdatingLayout: {
-      defaultValue: true,
-      metadata: {
-        dateAdded: '2025-04-07',
-        description:
-          'Enables font scale changes updating layout for measurable nodes.',
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
@@ -761,7 +750,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'none',
     },
     fuseboxFrameRecordingEnabled: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2026-03-05',
         description:
@@ -769,7 +758,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'canary',
+      ossReleaseStage: 'stable',
     },
     fuseboxScreenshotCaptureEnabled: {
       defaultValue: true,
@@ -783,7 +772,7 @@ const definitions: FeatureFlagDefinitions = {
       ossReleaseStage: 'stable',
     },
     fuseboxWebSocketEventsEnabled: {
-      defaultValue: false,
+      defaultValue: true,
       metadata: {
         dateAdded: '2026-07-11',
         description:
@@ -791,7 +780,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'canary',
+      ossReleaseStage: 'stable',
     },
     keepTimersRunningWhileHostPausedAndroid: {
       defaultValue: false,
@@ -813,7 +802,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'none',
+      ossReleaseStage: 'canary',
     },
     overrideBySynchronousMountPropsAtMountingAndroid: {
       defaultValue: true,
@@ -1026,7 +1015,7 @@ const definitions: FeatureFlagDefinitions = {
         expectedReleaseValue: true,
         purpose: 'experimentation',
       },
-      ossReleaseStage: 'experimental',
+      ossReleaseStage: 'canary',
     },
     useTraitHiddenOnAndroid: {
       defaultValue: false,
