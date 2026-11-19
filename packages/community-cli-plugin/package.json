@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@react-native/asset-utils": "0.89.0-rc.2",
-    "@react-native/dev-middleware": "0.89.0-rc.2",
+    "@react-native/dev-middleware": "0.89.0-0rc2",
     "commander": "^12.0.0",
     "debug": "^4.4.0",
     "invariant": "^2.2.4",
