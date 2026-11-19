@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<2bd2f1df6942b3bbd2b10072b630c4e0>>
+ * @generated SignedSource<<315f4c81a906a815e7abc3cd985afff1>>
  */
 
 /**
@@ -38,7 +38,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool cxxNativeAnimatedEnabled() override {
-    return false;
+    return true;
   }
 
   bool defaultTextToOverflowHidden() override {
@@ -86,10 +86,6 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableAccumulatedUpdatesInRawPropsAndroid() override {
-    return false;
-  }
-
-  bool enableAndroidAutoOffscreenCompositingForElevation() override {
     return false;
   }
 
@@ -170,6 +166,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
+    return false;
+  }
+
+  bool enableImmediateUpdateModeForScrollContentView() override {
     return false;
   }
 
@@ -277,6 +277,10 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
     return false;
   }
 
+  bool fixTextInlineViewLineHeight() override {
+    return false;
+  }
+
   bool fixTextLayoutOnPixelDensityChange() override {
     return false;
   }
@@ -294,7 +298,7 @@ class ReactNativeFeatureFlagsDefaults : public ReactNativeFeatureFlagsProvider {
   }
 
   bool fuseboxFrameRecordingEnabled() override {
-    return false;
+    return true;
   }
 
   bool fuseboxScreenshotCaptureEnabled() override {

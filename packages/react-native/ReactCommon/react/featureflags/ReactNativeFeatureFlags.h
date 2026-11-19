@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<dc12cb4c1ebd82d842a8e7698fc6c746>>
+ * @generated SignedSource<<c012669db7d678ea9eb9807e7af401a4>>
  */
 
 /**
@@ -117,11 +117,6 @@ class ReactNativeFeatureFlags {
   RN_EXPORT static bool enableAccumulatedUpdatesInRawPropsAndroid();
 
   /**
-   * When enabled, a View with reduced opacity that contains an elevated descendant is composited offscreen so the elevation shadow fades uniformly instead of rendering as banded per-primitive alpha.
-   */
-  RN_EXPORT static bool enableAndroidAutoOffscreenCompositingForElevation();
-
-  /**
    * Enables various optimizations throughout the path of measuring text on Android.
    */
   RN_EXPORT static bool enableAndroidTextMeasurementOptimizations();
@@ -220,6 +215,11 @@ class ReactNativeFeatureFlags {
    * Dispatches state updates for content offset changes synchronously on the main thread.
    */
   RN_EXPORT static bool enableImmediateUpdateModeForContentOffsetChanges();
+
+  /**
+   * Apply ScrollContentView state updates synchronously on the main thread.
+   */
+  RN_EXPORT static bool enableImmediateUpdateModeForScrollContentView();
 
   /**
    * When enabled, ReactNativeElement and ReadOnlyText expose the public EventTarget API (addEventListener, removeEventListener, dispatchEvent). When disabled, those methods are removed from those final classes.
@@ -350,6 +350,11 @@ class ReactNativeFeatureFlags {
    * Uses the default event priority instead of the discreet event priority by default when dispatching events from Fabric to React.
    */
   RN_EXPORT static bool fixMappingOfEventPrioritiesBetweenFabricAndReact();
+
+  /**
+   * Grows lines of text with `lineHeight` to fit taller inline views instead of letting them overflow, keeps lines after an inline view at `lineHeight` on Android, and aligns inline views with the text baseline on iOS.
+   */
+  RN_EXPORT static bool fixTextInlineViewLineHeight();
 
   /**
    * Re-measures text and re-sends padding and overflow insets to mounted views when the pixel density changes, so text and padded views do not keep sizes from the old density.

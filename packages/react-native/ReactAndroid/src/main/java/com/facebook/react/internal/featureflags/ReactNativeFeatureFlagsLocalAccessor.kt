@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<17a4a2a29b0480e06ed3e8ed71fd908f>>
+ * @generated SignedSource<<4d0de8e6c65d709e98e638afb976a665>>
  */
 
 /**
@@ -39,7 +39,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var disableViewPreallocationAndroidCache: Boolean? = null
   private var enableAccessibilityOrderCache: Boolean? = null
   private var enableAccumulatedUpdatesInRawPropsAndroidCache: Boolean? = null
-  private var enableAndroidAutoOffscreenCompositingForElevationCache: Boolean? = null
   private var enableAndroidTextMeasurementOptimizationsCache: Boolean? = null
   private var enableAsyncDiskCacheCheckInMultiSourceImageAndroidCache: Boolean? = null
   private var enableBridgelessArchitectureCache: Boolean? = null
@@ -60,6 +59,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableImagePrefetchingAndroidCache: Boolean? = null
   private var enableImageTransparentTintColorCache: Boolean? = null
   private var enableImmediateUpdateModeForContentOffsetChangesCache: Boolean? = null
+  private var enableImmediateUpdateModeForScrollContentViewCache: Boolean? = null
   private var enableImperativeEventsCache: Boolean? = null
   private var enableImperativeFocusCache: Boolean? = null
   private var enableInteractableResponderViewsCache: Boolean? = null
@@ -86,6 +86,7 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
   private var enableVirtualViewContainerStateExperimentalCache: Boolean? = null
   private var fixBorderlessRippleAndroidCache: Boolean? = null
   private var fixMappingOfEventPrioritiesBetweenFabricAndReactCache: Boolean? = null
+  private var fixTextInlineViewLineHeightCache: Boolean? = null
   private var fixTextLayoutOnPixelDensityChangeCache: Boolean? = null
   private var fixYogaFlexBasisFitContentInMainAxisCache: Boolean? = null
   private var fuseboxAssertSingleHostStateCache: Boolean? = null
@@ -269,16 +270,6 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableAccumulatedUpdatesInRawPropsAndroid()
       accessedFeatureFlags.add("enableAccumulatedUpdatesInRawPropsAndroid")
       enableAccumulatedUpdatesInRawPropsAndroidCache = cached
-    }
-    return cached
-  }
-
-  override fun enableAndroidAutoOffscreenCompositingForElevation(): Boolean {
-    var cached = enableAndroidAutoOffscreenCompositingForElevationCache
-    if (cached == null) {
-      cached = currentProvider.enableAndroidAutoOffscreenCompositingForElevation()
-      accessedFeatureFlags.add("enableAndroidAutoOffscreenCompositingForElevation")
-      enableAndroidAutoOffscreenCompositingForElevationCache = cached
     }
     return cached
   }
@@ -479,6 +470,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.enableImmediateUpdateModeForContentOffsetChanges()
       accessedFeatureFlags.add("enableImmediateUpdateModeForContentOffsetChanges")
       enableImmediateUpdateModeForContentOffsetChangesCache = cached
+    }
+    return cached
+  }
+
+  override fun enableImmediateUpdateModeForScrollContentView(): Boolean {
+    var cached = enableImmediateUpdateModeForScrollContentViewCache
+    if (cached == null) {
+      cached = currentProvider.enableImmediateUpdateModeForScrollContentView()
+      accessedFeatureFlags.add("enableImmediateUpdateModeForScrollContentView")
+      enableImmediateUpdateModeForScrollContentViewCache = cached
     }
     return cached
   }
@@ -739,6 +740,16 @@ internal class ReactNativeFeatureFlagsLocalAccessor : ReactNativeFeatureFlagsAcc
       cached = currentProvider.fixMappingOfEventPrioritiesBetweenFabricAndReact()
       accessedFeatureFlags.add("fixMappingOfEventPrioritiesBetweenFabricAndReact")
       fixMappingOfEventPrioritiesBetweenFabricAndReactCache = cached
+    }
+    return cached
+  }
+
+  override fun fixTextInlineViewLineHeight(): Boolean {
+    var cached = fixTextInlineViewLineHeightCache
+    if (cached == null) {
+      cached = currentProvider.fixTextInlineViewLineHeight()
+      accessedFeatureFlags.add("fixTextInlineViewLineHeight")
+      fixTextInlineViewLineHeightCache = cached
     }
     return cached
   }

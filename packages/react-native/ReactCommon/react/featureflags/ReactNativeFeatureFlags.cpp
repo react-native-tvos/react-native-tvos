@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<e9243c6d351c49208f0cdac358527d43>>
+ * @generated SignedSource<<8fd30d0d29edead0c8d39d9f2107972e>>
  */
 
 /**
@@ -86,10 +86,6 @@ bool ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid() {
   return getAccessor().enableAccumulatedUpdatesInRawPropsAndroid();
 }
 
-bool ReactNativeFeatureFlags::enableAndroidAutoOffscreenCompositingForElevation() {
-  return getAccessor().enableAndroidAutoOffscreenCompositingForElevation();
-}
-
 bool ReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations() {
   return getAccessor().enableAndroidTextMeasurementOptimizations();
 }
@@ -168,6 +164,10 @@ bool ReactNativeFeatureFlags::enableImageTransparentTintColor() {
 
 bool ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges() {
   return getAccessor().enableImmediateUpdateModeForContentOffsetChanges();
+}
+
+bool ReactNativeFeatureFlags::enableImmediateUpdateModeForScrollContentView() {
+  return getAccessor().enableImmediateUpdateModeForScrollContentView();
 }
 
 bool ReactNativeFeatureFlags::enableImperativeEvents() {
@@ -272,6 +272,10 @@ bool ReactNativeFeatureFlags::fixBorderlessRippleAndroid() {
 
 bool ReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact() {
   return getAccessor().fixMappingOfEventPrioritiesBetweenFabricAndReact();
+}
+
+bool ReactNativeFeatureFlags::fixTextInlineViewLineHeight() {
+  return getAccessor().fixTextInlineViewLineHeight();
 }
 
 bool ReactNativeFeatureFlags::fixTextLayoutOnPixelDensityChange() {

@@ -27,6 +27,7 @@ Class<RCTComponentViewProtocol> RCTFabricComponentsProvider(const char *name) {
 #endif
     {"Paragraph", RCTParagraphCls},
     {"SafeAreaView", RCTSafeAreaViewCls},
+    {"ScrollContentView", RCTScrollContentViewCls},
     {"ScrollView", RCTScrollViewCls},
     {"TextInput", RCTTextInputCls},
     {"UnimplementedNativeView", RCTUnimplementedNativeViewCls},

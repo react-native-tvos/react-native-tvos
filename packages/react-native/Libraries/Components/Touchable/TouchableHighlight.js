@@ -30,7 +30,7 @@ export type TouchableHighlightInstance = HostInstance;
 
 type TouchableHighlightBaseProps = Readonly<{
   /**
-   * Opacity of the wrapped view when touch is active. Requires `underlayColor` to be set.
+   * Opacity of the wrapped view when touch is active.
    *
    * @default `0.85`
    */
@@ -228,9 +228,8 @@ class TouchableHighlightImpl extends React.Component<
       'aria-selected': ariaSelected,
     } = this.props;
 
-    let _accessibilityState: ?AccessibilityState;
+    let _accessibilityState: ?AccessibilityState = accessibilityState;
     if (
-      accessibilityState != null ||
       ariaBusy != null ||
       ariaChecked != null ||
       ariaDisabled != null ||

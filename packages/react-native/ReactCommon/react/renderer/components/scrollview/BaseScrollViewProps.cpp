@@ -191,12 +191,6 @@ BaseScrollViewProps::BaseScrollViewProps(
           "horizontal",
           sourceProps.horizontal,
           true)),
-      padsContentForSafeArea(convertRawProp(
-          context,
-          rawProps,
-          "padsContentForSafeArea",
-          sourceProps.padsContentForSafeArea,
-          false)),
       scrollEventThrottle(convertRawProp(
           context,
           rawProps,
@@ -326,7 +320,6 @@ void BaseScrollViewProps::setProp(
     RAW_SET_PROP_SWITCH_CASE_BASIC(showsVerticalScrollIndicator);
     RAW_SET_PROP_SWITCH_CASE_BASIC(persistentScrollbar);
     RAW_SET_PROP_SWITCH_CASE_BASIC(horizontal);
-    RAW_SET_PROP_SWITCH_CASE_BASIC(padsContentForSafeArea);
     RAW_SET_PROP_SWITCH_CASE_BASIC(scrollEventThrottle);
     RAW_SET_PROP_SWITCH_CASE_BASIC(zoomScale);
     RAW_SET_PROP_SWITCH_CASE_BASIC(contentInset);
@@ -444,10 +437,6 @@ SharedDebugStringConvertibleList BaseScrollViewProps::getDebugProps() const {
               defaultScrollViewProps.persistentScrollbar),
           debugStringConvertibleItem(
               "horizontal", horizontal, defaultScrollViewProps.horizontal),
-          debugStringConvertibleItem(
-              "padsContentForSafeArea",
-              padsContentForSafeArea,
-              defaultScrollViewProps.padsContentForSafeArea),
           debugStringConvertibleItem(
               "scrollEventThrottle",
               scrollEventThrottle,

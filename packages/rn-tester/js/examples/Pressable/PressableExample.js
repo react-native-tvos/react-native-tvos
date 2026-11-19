@@ -10,6 +10,7 @@
 
 import type {RNTesterModule} from '../../types/RNTesterTypes';
 
+import RNTesterText from '../../components/RNTesterText';
 import * as PressableExampleFbInternal from './PressableExampleFbInternal';
 import * as React from 'react';
 import {
@@ -347,7 +348,12 @@ function PressableDisabled() {
               styles.disabledOption,
               disabled === option.value && styles.disabledOptionSelected,
             ]}>
-            <Text>{option.label}</Text>
+            <RNTesterText
+              style={
+                disabled === option.value && styles.disabledOptionSelectedText
+              }>
+              {option.label}
+            </RNTesterText>
           </Pressable>
         ))}
       </View>
@@ -417,6 +423,9 @@ const styles = StyleSheet.create({
   },
   disabledOptionSelected: {
     backgroundColor: '#cce4ff',
+  },
+  disabledOptionSelectedText: {
+    color: 'black',
   },
   disabledToggleTarget: {
     padding: 20,
@@ -658,7 +667,7 @@ const examples = [
                 style={styles.image}
               />
             </Pressable>
-            <Text>use foreground</Text>
+            <RNTesterText>use foreground</RNTesterText>
           </View>
         </View>
       );

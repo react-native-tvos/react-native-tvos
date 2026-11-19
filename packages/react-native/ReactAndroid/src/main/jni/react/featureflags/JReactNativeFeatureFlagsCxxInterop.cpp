@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<f9c238d577cf696d9baed365741d3d5a>>
+ * @generated SignedSource<<9ef15f2ab900b3afa8d01fcdbf9de178>>
  */
 
 /**
@@ -129,12 +129,6 @@ class ReactNativeFeatureFlagsJavaProvider
     return method(javaProvider_);
   }
 
-  bool enableAndroidAutoOffscreenCompositingForElevation() override {
-    static const auto method =
-        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableAndroidAutoOffscreenCompositingForElevation");
-    return method(javaProvider_);
-  }
-
   bool enableAndroidTextMeasurementOptimizations() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableAndroidTextMeasurementOptimizations");
@@ -252,6 +246,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool enableImmediateUpdateModeForContentOffsetChanges() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImmediateUpdateModeForContentOffsetChanges");
+    return method(javaProvider_);
+  }
+
+  bool enableImmediateUpdateModeForScrollContentView() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("enableImmediateUpdateModeForScrollContentView");
     return method(javaProvider_);
   }
 
@@ -408,6 +408,12 @@ class ReactNativeFeatureFlagsJavaProvider
   bool fixMappingOfEventPrioritiesBetweenFabricAndReact() override {
     static const auto method =
         getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixMappingOfEventPrioritiesBetweenFabricAndReact");
+    return method(javaProvider_);
+  }
+
+  bool fixTextInlineViewLineHeight() override {
+    static const auto method =
+        getReactNativeFeatureFlagsProviderJavaClass()->getMethod<jboolean()>("fixTextInlineViewLineHeight");
     return method(javaProvider_);
   }
 
@@ -706,11 +712,6 @@ bool JReactNativeFeatureFlagsCxxInterop::enableAccumulatedUpdatesInRawPropsAndro
   return ReactNativeFeatureFlags::enableAccumulatedUpdatesInRawPropsAndroid();
 }
 
-bool JReactNativeFeatureFlagsCxxInterop::enableAndroidAutoOffscreenCompositingForElevation(
-    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
-  return ReactNativeFeatureFlags::enableAndroidAutoOffscreenCompositingForElevation();
-}
-
 bool JReactNativeFeatureFlagsCxxInterop::enableAndroidTextMeasurementOptimizations(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableAndroidTextMeasurementOptimizations();
@@ -809,6 +810,11 @@ bool JReactNativeFeatureFlagsCxxInterop::enableImageTransparentTintColor(
 bool JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::enableImmediateUpdateModeForContentOffsetChanges();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForScrollContentView(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::enableImmediateUpdateModeForScrollContentView();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::enableImperativeEvents(
@@ -939,6 +945,11 @@ bool JReactNativeFeatureFlagsCxxInterop::fixBorderlessRippleAndroid(
 bool JReactNativeFeatureFlagsCxxInterop::fixMappingOfEventPrioritiesBetweenFabricAndReact(
     facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
   return ReactNativeFeatureFlags::fixMappingOfEventPrioritiesBetweenFabricAndReact();
+}
+
+bool JReactNativeFeatureFlagsCxxInterop::fixTextInlineViewLineHeight(
+    facebook::jni::alias_ref<JReactNativeFeatureFlagsCxxInterop> /*unused*/) {
+  return ReactNativeFeatureFlags::fixTextInlineViewLineHeight();
 }
 
 bool JReactNativeFeatureFlagsCxxInterop::fixTextLayoutOnPixelDensityChange(
@@ -1198,9 +1209,6 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
         "enableAccumulatedUpdatesInRawPropsAndroid",
         JReactNativeFeatureFlagsCxxInterop::enableAccumulatedUpdatesInRawPropsAndroid),
       makeNativeMethod(
-        "enableAndroidAutoOffscreenCompositingForElevation",
-        JReactNativeFeatureFlagsCxxInterop::enableAndroidAutoOffscreenCompositingForElevation),
-      makeNativeMethod(
         "enableAndroidTextMeasurementOptimizations",
         JReactNativeFeatureFlagsCxxInterop::enableAndroidTextMeasurementOptimizations),
       makeNativeMethod(
@@ -1260,6 +1268,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "enableImmediateUpdateModeForContentOffsetChanges",
         JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForContentOffsetChanges),
+      makeNativeMethod(
+        "enableImmediateUpdateModeForScrollContentView",
+        JReactNativeFeatureFlagsCxxInterop::enableImmediateUpdateModeForScrollContentView),
       makeNativeMethod(
         "enableImperativeEvents",
         JReactNativeFeatureFlagsCxxInterop::enableImperativeEvents),
@@ -1338,6 +1349,9 @@ void JReactNativeFeatureFlagsCxxInterop::registerNatives() {
       makeNativeMethod(
         "fixMappingOfEventPrioritiesBetweenFabricAndReact",
         JReactNativeFeatureFlagsCxxInterop::fixMappingOfEventPrioritiesBetweenFabricAndReact),
+      makeNativeMethod(
+        "fixTextInlineViewLineHeight",
+        JReactNativeFeatureFlagsCxxInterop::fixTextInlineViewLineHeight),
       makeNativeMethod(
         "fixTextLayoutOnPixelDensityChange",
         JReactNativeFeatureFlagsCxxInterop::fixTextLayoutOnPixelDensityChange),
