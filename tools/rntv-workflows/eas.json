@@ -93,6 +93,12 @@
         "config": "smoke-test-rntester-tv.yml"
       }
     },
+    "rntester-tvos-smoke-test": {
+      "extends": "rntester-tvos-smoke-test-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
+      }
+    },
     "rntester-androidtv-smoke-test-main": {
       "extends": "base",
       "env": {
@@ -101,6 +107,12 @@
       "android": {
         "resourceClass": "medium",
         "config": "smoke-test-rntester-tv.yml"
+      }
+    },
+    "rntester-androidtv-smoke-test": {
+      "extends": "rntester-androidtv-smoke-test-main",
+      "env": {
+        "RNTV_RELEASE_BUILD": "1"
       }
     },
     "npm-images-main": {
