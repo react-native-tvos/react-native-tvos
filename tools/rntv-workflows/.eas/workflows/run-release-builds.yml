@@ -76,6 +76,24 @@ jobs:
     params:
       platform: android
       profile: rntester-android
+  smoke_test_rntester_tvos:
+    name: Smoke test RNTester on Apple TV
+    type: build
+    needs: [build_rntester_apple_release]
+    env:
+      ARTIFACTS_BUILD_ID: ${{ needs.build_rntester_apple_release.outputs.build_id }}
+    params:
+      platform: android
+      profile: rntester-tvos-smoke-test
+  smoke_test_rntester_androidtv:
+    name: Smoke test RNTester on Android TV
+    type: build
+    needs: [build_rntester_android]
+    env:
+      ARTIFACTS_BUILD_ID: ${{ needs.build_rntester_android.outputs.build_id }}
+    params:
+      platform: android
+      profile: rntester-androidtv-smoke-test
   build_npm_packages:
     name: Create NPM packages
     type: build
@@ -84,6 +102,8 @@ jobs:
         build_rntester_android,
         build_rntester_apple_debug,
         build_rntester_apple_release,
+        smoke_test_rntester_tvos,
+        smoke_test_rntester_androidtv,
       ]
     params:
       platform: android
