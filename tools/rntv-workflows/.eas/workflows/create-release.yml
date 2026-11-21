@@ -1,0 +1,67 @@
+name: Create RNTV release
+run_name: Create RNTV release from ${{ inputs.run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        type: string
+        required: true
+        description: ID of a successful run-release-builds.yml run
+      npm_tag:
+        type: string
+        required: false
+        description: npm dist-tag (default next for a prerelease, <major>.<minor>-stable otherwise)
+      latest:
+        type: boolean
+        default: false
+        description: Mark the GitHub release as Latest (stable versions only)
+      draft:
+        type: boolean
+        default: false
+        description: Create the GitHub release as a draft
+      dry_run:
+        type: boolean
+        default: false
+        description: Stage and create nothing; show what would happen
+
+defaults:
+  tools:
+    node: 22.14.0
+
+jobs:
+  create_release:
+    name: Stage npm packages and create GitHub release
+    runs_on: linux-medium
+    image: latest
+    env:
+      RUN_ID: ${{ inputs.run_id }}
+      NPM_TAG: ${{ inputs.npm_tag || '' }}
+      LATEST: ${{ toJSON(inputs.latest) }}
+      DRAFT: ${{ toJSON(inputs.draft) }}
+      DRY_RUN: ${{ toJSON(inputs.dry_run) }}
+    steps:
+      - uses: eas/checkout
+      - uses: eas/install_node_modules
+      - name: Install npm, EAS CLI and GitHub CLI
+        run: |
+          set -euo pipefail
+          npm install -g npm@11.21.2 eas-cli@27.10.0
+          gh_version=2.103.3
+          gh_archive=gh_${gh_version}_linux_amd64.tar.gz
+          cd "$(mktemp -d)"
+          curl -fsSLO "https://github.com/cli/cli/releases/download/v${gh_version}/${gh_archive}"
+          echo "4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d  ${gh_archive}" | sha256sum --check
+          tar -xzf "$gh_archive"
+          mkdir -p "$HOME/.local/bin"
+          mv "gh_${gh_version}_linux_amd64/bin/gh" "$HOME/.local/bin/gh"
+      - name: Stage npm packages and create GitHub release
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          args=("$RUN_ID")
+          [ -n "$NPM_TAG" ] && args+=(--npm-tag "$NPM_TAG")
+          [ "$LATEST" = "true" ] && args+=(--latest)
+          [ "$DRAFT" = "true" ] && args+=(--draft)
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          npx tsx ./src/release-workflow-run.ts "${args[@]}"
