@@ -36,10 +36,10 @@ jobs:
     image: latest
     env:
       RUN_ID: ${{ inputs.run_id }}
-      NPM_TAG: ${{ inputs.npm_tag }}
-      LATEST: ${{ inputs.latest }}
-      DRAFT: ${{ inputs.draft }}
-      DRY_RUN: ${{ inputs.dry_run }}
+      NPM_TAG: ${{ inputs.npm_tag || '' }}
+      LATEST: ${{ toJSON(inputs.latest) }}
+      DRAFT: ${{ toJSON(inputs.draft) }}
+      DRY_RUN: ${{ toJSON(inputs.dry_run) }}
     steps:
       - uses: eas/checkout
       - uses: eas/install_node_modules
