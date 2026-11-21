@@ -14,10 +14,11 @@
  * on disk in `outDir`.
  *
  * Usage (run from the top of the repository):
- *   tools/rntv-workflows/src/download-workflow-artifacts.ts [<runId>] [--include npm,rntester|all] [--out <dir>] [--release]
+ *   tools/rntv-workflows/src/download-workflow-artifacts.ts [<runId>] [--include npm,rntester|all] [--out <dir>] [--release] [--non-interactive]
  *
  * If <runId> is omitted the script lists recent successful runs of the build
- * workflows via `eas workflow:runs` and prompts for one. By default the inner
+ * workflows via `eas workflow:runs` and prompts for one. With
+ * `--non-interactive` it never prompts, so <runId> is required. By default the inner
  * tarballs are written to the current working directory (the repository root
  * in the documented invocation).
  *
@@ -95,6 +96,7 @@ type ParsedArgs = {
   categories: Set<CategoryKey>;
   /** Only release builds: the picker lists them alone, and a given run must be one. */
   release: boolean;
+  nonInteractive: boolean;
 };
 
 function workflowFilesFor(args: ParsedArgs): string[] {
@@ -118,6 +120,7 @@ Options:
   --release                Only release builds: the picker lists only
                            ${RELEASE_BUILDS_WORKFLOW_FILE} runs, and a given
                            <runId> must be one
+  --non-interactive        Never prompt: <runId> is required
   --help, -h               Show this help`);
 }
 
@@ -125,6 +128,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   let runId: string | undefined;
   let outDir: string | undefined;
   let release = false;
+  let nonInteractive = false;
   const categories = new Set<CategoryKey>();
 
   for (let i = 0; i < argv.length; i++) {
@@ -144,6 +148,9 @@ function parseArgs(argv: string[]): ParsedArgs {
         break;
       case '--release':
         release = true;
+        break;
+      case '--non-interactive':
+        nonInteractive = true;
         break;
       case '--include': {
         const value = argv[++i];
@@ -179,7 +186,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     categories.add('rntester');
   }
 
-  return { runId, outDir, categories, release };
+  return { runId, outDir, categories, release, nonInteractive };
 }
 
 function getArtifactUrl(job: WorkflowJob): string | null {
@@ -353,6 +360,11 @@ async function executeScriptAsync(): Promise<void> {
   const scriptDir = path.dirname(fileURLToPath(import.meta.url));
   const easProjectDir = path.resolve(scriptDir, '..');
 
+  if (!args.runId && args.nonInteractive) {
+    throw new Error(
+      'No run ID given, and --non-interactive turns the run picker off. Pass a run ID.',
+    );
+  }
   const runId =
     args.runId ?? (await resolveRunIdAsync(easProjectDir, workflowFilesFor(args)));
 

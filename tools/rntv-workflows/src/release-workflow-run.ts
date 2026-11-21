@@ -212,6 +212,7 @@ async function downloadRunArtifactsAsync(
       include,
       '--out',
       artifactsDir,
+      '--non-interactive',
     ],
     { cwd: easProjectDir, stdio: 'inherit' },
   );
@@ -233,7 +234,9 @@ async function createGithubReleaseAsync(
     [
       'tsx',
       path.join(scriptDir, 'create-release.ts'),
+      '--out',
       artifactsDir,
+      '--non-interactive',
       '--version',
       args.version,
       '--target',
