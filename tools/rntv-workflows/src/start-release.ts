@@ -13,6 +13,10 @@
  *     confirm, the workflow stages the packages from the release's assets.
  *   - Both: there is nothing to do.
  *
+ * With --non-interactive, the script never asks: a missing run ID is an
+ * error, and so is the case that stages from the GitHub release, which needs
+ * a person to confirm it.
+ *
  * Usage (from tools/rntv-workflows):
  *   npx tsx src/start-release.ts [<runId>] [options]
  *
@@ -48,6 +52,7 @@ type ParsedArgs = {
   latest: boolean;
   draft: boolean;
   dryRun: boolean;
+  nonInteractive: boolean;
 };
 
 const easProjectDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -70,11 +75,19 @@ Options:
   --draft            Create the GitHub release as a draft
   --dry-run          Stage and create nothing; show what would happen
   --ref <ref>        Git ref whose create-release.yml runs (default: main)
+  --non-interactive  Never ask: <runId> is required, and staging from an
+                     existing GitHub release is an error
   --help, -h         Show this help`);
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-  const args: ParsedArgs = { ref: 'main', latest: false, draft: false, dryRun: false };
+  const args: ParsedArgs = {
+    ref: 'main',
+    latest: false,
+    draft: false,
+    dryRun: false,
+    nonInteractive: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     switch (arg) {
@@ -104,6 +117,9 @@ function parseArgs(argv: string[]): ParsedArgs {
         break;
       case '--dry-run':
         args.dryRun = true;
+        break;
+      case '--non-interactive':
+        args.nonInteractive = true;
         break;
       default:
         if (arg.startsWith('-')) {
@@ -137,6 +153,12 @@ async function confirmAsync(question: string): Promise<boolean> {
 async function resolveRunIdAsync(args: ParsedArgs): Promise<string | null> {
   if (args.runId) {
     return args.runId;
+  }
+  if (args.nonInteractive) {
+    throw new Error(
+      'No run ID given, and --non-interactive does not ask to use the most recent run. ' +
+        'Pass the ID of a successful run-release-builds.yml run.',
+    );
   }
   const runId = await findLatestReleaseRunIdAsync(easProjectDir);
   return (await confirmAsync(`Release the most recent successful run, ${runId}?`))
@@ -187,6 +209,13 @@ async function executeScriptAsync(): Promise<void> {
   if (plan === 'stage-from-github-release') {
     if (args.draft) {
       throw new Error('The GitHub release exists, so --draft does not apply.');
+    }
+    if (args.nonInteractive) {
+      throw new Error(
+        `GitHub release v${version} exists, but the npm packages are not all published. ` +
+          'Staging them from the release assets needs a confirmation; run without ' +
+          '--non-interactive to give it.',
+      );
     }
     if (!(await confirmAsync('Stage the npm packages from the GitHub release assets?'))) {
       log('Nothing started.');
