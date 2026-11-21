@@ -2,3 +2,5 @@
 .env.eas-simulator
 # Smoke test screenshots and logs
 simulator/output/
+# ESLint cache from `expo lint`
+.expo/

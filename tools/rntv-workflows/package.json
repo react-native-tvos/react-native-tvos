@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "lint": "expo lint"
+    "lint": "expo lint --max-warnings 0",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "expo": "^53.0.9"
