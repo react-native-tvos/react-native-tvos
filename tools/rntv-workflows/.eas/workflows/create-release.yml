@@ -21,7 +21,7 @@ on:
       latest:
         type: boolean
         default: false
-        description: Mark the GitHub release as Latest (stable versions only)
+        description: Mark the GitHub release as Latest, and list the npm latest tag as a step after approval (stable versions only)
       draft:
         type: boolean
         default: false
@@ -79,6 +79,7 @@ jobs:
       RUN_ID: ${{ inputs.run_id }}
       VERSION: ${{ inputs.version }}
       NPM_TAG: ${{ inputs.npm_tag || '' }}
+      LATEST: ${{ toJSON(inputs.latest) }}
       DRY_RUN: ${{ toJSON(inputs.dry_run) }}
       FROM_GITHUB_RELEASE: ${{ toJSON(inputs.stage_from_github_release) }}
     steps:
@@ -96,5 +97,6 @@ jobs:
           args=(npm-stage "$RUN_ID" --version "$VERSION")
           [ -n "$NPM_TAG" ] && args+=(--npm-tag "$NPM_TAG")
           [ "$FROM_GITHUB_RELEASE" = "true" ] && args+=(--from-github-release)
+          [ "$LATEST" = "true" ] && args+=(--latest)
           [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
           npx tsx ./src/release-workflow-run.ts "${args[@]}"

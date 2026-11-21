@@ -83,7 +83,6 @@ Arguments:
   --version <version>      The version the run built, such as 0.89.0-0rc2
 
 Options for github-release:
-  --latest                 Mark the GitHub release as "Latest" (stable versions only)
   --draft                  Create the GitHub release as a draft
 
 Options for npm-stage:
@@ -92,6 +91,9 @@ Options for npm-stage:
   --from-github-release    Stage the tarballs of the GitHub release, not the run's
 
 Options:
+  --latest                 Mark the GitHub release as "Latest", and list the
+                           npm "latest" tag as a step after approval (stable
+                           versions only)
   --dry-run                Stage and create nothing; show what would happen
   --help, -h               Show this help`);
 }
@@ -155,8 +157,8 @@ function parseArgs(argv: string[]): ParsedArgs {
   if (step === 'github-release' && (npmTag !== undefined || fromGithubRelease)) {
     throw new Error('--npm-tag and --from-github-release are options of npm-stage.');
   }
-  if (step === 'npm-stage' && (latest || draft)) {
-    throw new Error('--latest and --draft are options of github-release.');
+  if (step === 'npm-stage' && draft) {
+    throw new Error('--draft is an option of github-release.');
   }
   return {
     step: step as Step,
@@ -224,9 +226,6 @@ async function createGithubReleaseAsync(
   await readTarballsAsync(artifactsDir, args.version);
 
   const prerelease = isPrerelease(args.version);
-  if (args.latest && prerelease) {
-    throw new Error(`${args.version} is a prerelease, so it cannot be the "Latest" release.`);
-  }
 
   log(`\nCreating the GitHub release for ${args.version}...`);
   await spawnAsync(
@@ -335,15 +334,27 @@ async function stageNpmPackagesAsync(
   }
 
   log(
-    `\n${args.dryRun ? 'Dry run done' : 'Done'}. Approve the staged versions with 2FA:\n` +
-      `  npm stage list react-native-tvos\n` +
-      `  npm stage list @react-native-tvos/virtualized-lists\n` +
-      `  npm stage approve <stage-id>   (or approve on npmjs.com)`,
+    `\n${args.dryRun ? 'Dry run done' : 'Done'}. To finish the release:\n` +
+      `  1. Approve the staged npm versions with 2FA:\n` +
+      `       npm stage list react-native-tvos\n` +
+      `       npm stage list @react-native-tvos/virtualized-lists\n` +
+      `       npm stage approve <stage-id>   (or approve on npmjs.com)\n` +
+      `  2. Sign in to Sonatype and publish the Maven artifacts that\n` +
+      `     run-release-builds.yml staged for ${args.version}.` +
+      (args.latest
+        ? `\n  3. After you approve, make this version the npm "latest":\n` +
+          packages
+            .map(({ name }) => `       npm dist-tag add ${name}@${args.version} latest`)
+            .join('\n')
+        : ''),
   );
 }
 
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
+  if (args.latest && isPrerelease(args.version)) {
+    throw new Error(`${args.version} is a prerelease, so it cannot be the latest release.`);
+  }
   const commit = await checkRunAsync(args);
 
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'rntv-release-'));

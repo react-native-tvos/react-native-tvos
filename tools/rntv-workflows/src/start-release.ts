@@ -31,6 +31,7 @@ import {
   isNpmPublishedAsync,
 } from './common/releaseCommands';
 import {
+  isPrerelease,
   NPM_PACKAGE_NAMES,
   planRelease,
   validateReleaseRun,
@@ -64,7 +65,8 @@ Arguments:
 Options:
   --npm-tag <tag>    npm dist-tag to stage with (default: next for a
                      prerelease, <major>.<minor>-stable otherwise)
-  --latest           Mark the GitHub release as "Latest" (stable versions only)
+  --latest           Mark the GitHub release as "Latest", and list the npm
+                     "latest" tag as a step after approval (stable versions only)
   --draft            Create the GitHub release as a draft
   --dry-run          Stage and create nothing; show what would happen
   --ref <ref>        Git ref whose create-release.yml runs (default: main)
@@ -164,6 +166,9 @@ async function executeScriptAsync(): Promise<void> {
   const { branch } = validateReleaseRun(run);
   const version = versionFromBranch(branch);
   log(`Run ${runId} built ${branch}.`);
+  if (args.latest && isPrerelease(version)) {
+    throw new Error(`${version} is a prerelease, so it cannot be the latest release.`);
+  }
 
   const githubReleaseExists = await githubReleaseExistsAsync(version);
   const published = await Promise.all(
@@ -180,8 +185,8 @@ async function executeScriptAsync(): Promise<void> {
     return;
   }
   if (plan === 'stage-from-github-release') {
-    if (args.latest || args.draft) {
-      throw new Error('The GitHub release exists, so --latest and --draft do not apply.');
+    if (args.draft) {
+      throw new Error('The GitHub release exists, so --draft does not apply.');
     }
     if (!(await confirmAsync('Stage the npm packages from the GitHub release assets?'))) {
       log('Nothing started.');
