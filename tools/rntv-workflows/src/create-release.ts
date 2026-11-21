@@ -7,6 +7,9 @@
  *
  * Defaults:
  *   - Reads `.tgz` artifacts from the supplied directory (default: cwd).
+ *     When there are none and stdin is a terminal, it first runs
+ *     `download-workflow-artifacts.ts --include all --release` into that
+ *     directory, which shows a picker of recent release build runs.
  *   - Auto-detects the release version from `react-native-<version>.tgz`
  *     (or `react-native-tvos-<version>.tgz`) in that directory.
  *   - Tags the release `v<version>`, names it `<version>`.
@@ -44,6 +47,7 @@
 
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import spawnAsync from '@expo/spawn-async';
 
 import { RELEASE_REPO } from './common/releaseUtils';
@@ -80,7 +84,9 @@ Run from the top of the repository.
 
 Arguments:
   <artifactsDir>           Directory containing the .tgz artifacts to upload.
-                           Defaults to the current working directory.
+                           Defaults to the current working directory. When it
+                           has none, the script downloads them first, after
+                           you pick a release build run (needs a terminal).
 
 Options:
   --version <v>            Version to release (default: auto-detected from
@@ -233,18 +239,66 @@ function detectVersionFromAssets(assets: string[]): string {
   );
 }
 
+/** How to get the artifacts of a run-release-builds.yml run into `dir`. */
+function downloadHint(dir: string): string {
+  const relativeDir = path.relative(process.cwd(), dir);
+  const outDir = relativeDir.startsWith('..') ? dir : relativeDir || '.';
+  return (
+    'Download the artifacts of a successful run-release-builds.yml run first ' +
+    '(from the top of the repository):\n' +
+    `  tools/rntv-workflows/src/download-workflow-artifacts.ts <runId> --include all --release --out ${outDir}\n` +
+    'Omit <runId> to pick from recent release build runs. To create the release and stage the npm ' +
+    'packages on EAS instead, run `npx tsx src/start-release.ts` from tools/rntv-workflows.'
+  );
+}
+
+async function findArtifactsIfDirExists(dir: string): Promise<string[]> {
+  const stat = await fs.stat(dir).catch(() => null);
+  return stat?.isDirectory() ? findArtifacts(dir) : [];
+}
+
+/**
+ * Find the artifacts in `dir`. When there are none and stdin is a terminal,
+ * download them first with `download-workflow-artifacts.ts`, which shows a
+ * picker of recent runs.
+ */
+async function findOrDownloadArtifactsAsync(dir: string): Promise<string[]> {
+  const assets = await findArtifactsIfDirExists(dir);
+  if (assets.length > 0) {
+    return assets;
+  }
+  if (!process.stdin.isTTY) {
+    throw new Error(`No .tgz / .tar.gz files found in ${dir}\n${downloadHint(dir)}`);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(`No .tgz / .tar.gz files found in ${dir}. Downloading the artifacts of a run...`);
+  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+  await spawnAsync(
+    'npx',
+    [
+      'tsx',
+      path.join(scriptDir, 'download-workflow-artifacts.ts'),
+      '--include',
+      'all',
+      '--release',
+      '--out',
+      dir,
+    ],
+    { cwd: path.resolve(scriptDir, '..'), stdio: 'inherit' },
+  );
+
+  const downloaded = await findArtifactsIfDirExists(dir);
+  if (downloaded.length === 0) {
+    throw new Error(`The download put no .tgz / .tar.gz files in ${dir}.`);
+  }
+  return downloaded;
+}
+
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
-  const stat = await fs.stat(args.artifactsDir).catch(() => null);
-  if (!stat || !stat.isDirectory()) {
-    throw new Error(`Artifacts directory not found: ${args.artifactsDir}`);
-  }
-
-  const assets = await findArtifacts(args.artifactsDir);
-  if (assets.length === 0) {
-    throw new Error(`No .tgz / .tar.gz files found in ${args.artifactsDir}`);
-  }
+  const assets = await findOrDownloadArtifactsAsync(args.artifactsDir);
 
   const version = args.version ?? detectVersionFromAssets(assets);
   const tag = `v${version}`;
