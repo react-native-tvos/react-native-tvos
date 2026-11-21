@@ -2,27 +2,30 @@
 'use strict';
 
 /**
- * Release the artifacts of a successful `run-release-builds.yml` run:
+ * The two jobs of `create-release.yml`. `start-release.ts` starts that
+ * workflow; run this script by hand only to repeat one job.
  *
- *   1. Check that the run succeeded and built a `release-*` branch.
- *   2. Download its npm and RNTester tarballs with
- *      `download-workflow-artifacts.ts`.
- *   3. Stage `@react-native-tvos/virtualized-lists` and `react-native-tvos`
- *      on npm with `npm stage publish`. A maintainer approves each staged
- *      version with 2FA before it goes live.
- *   4. Create the tag and GitHub release with `create-release.ts`, on the
- *      commit the run built, with every tarball as an asset.
+ *   github-release  Download the tarballs of a successful
+ *                   `run-release-builds.yml` run and create the tag and
+ *                   GitHub release with `create-release.ts`, on the commit
+ *                   the run built.
+ *   npm-stage       Stage `@react-native-tvos/virtualized-lists` and
+ *                   `react-native-tvos` on npm with `npm stage publish`,
+ *                   from the run or, with --from-github-release, from the
+ *                   assets of the GitHub release. A package version that is
+ *                   already published is skipped. A maintainer approves each
+ *                   staged version with 2FA before it goes live.
  *
- * Staging comes first, so a failure there stops the run before anything
- * public is created.
+ * Both steps first check that the run succeeded and built
+ * `release-<version>`, and that its tarballs have that version.
  *
  * Usage (from tools/rntv-workflows):
- *   npx tsx src/release-workflow-run.ts <runId> [options]
+ *   npx tsx src/release-workflow-run.ts <step> <runId> --version <version> [options]
  *
- * Requires: `eas` with access to the run, npm 11.15.0 or later, `gh`
- * with write access to the repo (`GITHUB_TOKEN`), and `NPM_TOKEN`, a
- * stage-only npm token for both packages. With `--dry-run`, `gh` and
- * `NPM_TOKEN` are not needed.
+ * Requires: `eas` with access to the run, and `gh` with write access to the
+ * repo (`GITHUB_TOKEN`). npm-stage also requires npm 11.15.0 or later and
+ * `NPM_TOKEN`, a stage-only npm token for both packages. With --dry-run,
+ * `NPM_TOKEN` is not needed and nothing is staged or created.
  */
 
 import path from 'node:path';
@@ -32,47 +35,79 @@ import { fileURLToPath } from 'node:url';
 import spawnAsync from '@expo/spawn-async';
 
 import {
+  fetchRunAsync,
+  isNpmPublishedAsync,
+  NPM_REGISTRY,
+} from './common/releaseCommands';
+import type { NpmTarballs } from './common/releaseUtils';
+import {
   defaultNpmTag,
   findNpmTarballs,
   isPrerelease,
   isVersionAtLeast,
-  ReleaseWorkflowRun,
+  RELEASE_REPO,
   validateReleaseRun,
   validateRunId,
 } from './common/releaseUtils';
 
-const NPM_REGISTRY = 'https://registry.npmjs.org/';
 const MINIMUM_NPM_VERSION = '11.15.0';
+const STEPS = ['github-release', 'npm-stage'] as const;
+type Step = (typeof STEPS)[number];
 
 type ParsedArgs = {
+  step: Step;
   runId: string;
+  version: string;
   npmTag?: string;
+  fromGithubRelease: boolean;
   latest: boolean;
   draft: boolean;
   dryRun: boolean;
 };
 
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const easProjectDir = path.resolve(scriptDir, '..');
+
 function printUsage(): void {
   // eslint-disable-next-line no-console
-  console.log(`Usage: npx tsx src/release-workflow-run.ts <runId> [options]
+  console.log(`Usage: npx tsx src/release-workflow-run.ts <step> <runId> --version <version> [options]
 
-Run from tools/rntv-workflows.
+Run from tools/rntv-workflows. start-release.ts starts both steps on EAS.
+
+Steps:
+  github-release           Create the tag and GitHub release
+  npm-stage                Stage the npm packages
 
 Arguments:
-  <runId>            ID of a successful run-release-builds.yml run
+  <runId>                  ID of a successful run-release-builds.yml run
+  --version <version>      The version the run built, such as 0.89.0-0rc2
+
+Options for github-release:
+  --latest                 Mark the GitHub release as "Latest" (stable versions only)
+  --draft                  Create the GitHub release as a draft
+
+Options for npm-stage:
+  --npm-tag <tag>          npm dist-tag to stage with (default: next for a
+                           prerelease, <major>.<minor>-stable otherwise)
+  --from-github-release    Stage the tarballs of the GitHub release, not the run's
 
 Options:
-  --npm-tag <tag>    npm dist-tag to stage with (default: next for a
-                     prerelease, <major>.<minor>-stable otherwise)
-  --latest           Mark the GitHub release as "Latest" (stable versions only)
-  --draft            Create the GitHub release as a draft
-  --dry-run          Stage and create nothing; show what would happen
-  --help, -h         Show this help`);
+  --dry-run                Stage and create nothing; show what would happen
+  --help, -h               Show this help`);
+}
+
+function requireValue(option: string, value: string | undefined): string {
+  if (!value) {
+    throw new Error(`${option} requires an argument`);
+  }
+  return value;
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
-  let runId: string | undefined;
+  const positionals: string[] = [];
+  let version: string | undefined;
   let npmTag: string | undefined;
+  let fromGithubRelease = false;
   let latest = false;
   let draft = false;
   let dryRun = false;
@@ -85,11 +120,14 @@ function parseArgs(argv: string[]): ParsedArgs {
         printUsage();
         process.exit(0);
         break;
+      case '--version':
+        version = requireValue(arg, argv[++i]);
+        break;
       case '--npm-tag':
-        npmTag = argv[++i];
-        if (!npmTag) {
-          throw new Error('--npm-tag requires an argument');
-        }
+        npmTag = requireValue(arg, argv[++i]);
+        break;
+      case '--from-github-release':
+        fromGithubRelease = true;
         break;
       case '--latest':
         latest = true;
@@ -104,19 +142,32 @@ function parseArgs(argv: string[]): ParsedArgs {
         if (arg.startsWith('-')) {
           throw new Error(`Unrecognized option: ${arg}`);
         }
-        if (runId !== undefined) {
-          throw new Error(`Unexpected positional argument: ${arg}`);
-        }
-        runId = arg;
+        positionals.push(arg);
     }
   }
 
-  if (!runId) {
+  const [step, runId, ...rest] = positionals;
+  if (!STEPS.includes(step as Step) || !runId || rest.length > 0 || !version) {
     printUsage();
-    throw new Error('A run ID is required.');
+    throw new Error('A step, a run ID and --version are required.');
   }
   validateRunId(runId);
-  return { runId, npmTag, latest, draft, dryRun };
+  if (step === 'github-release' && (npmTag !== undefined || fromGithubRelease)) {
+    throw new Error('--npm-tag and --from-github-release are options of npm-stage.');
+  }
+  if (step === 'npm-stage' && (latest || draft)) {
+    throw new Error('--latest and --draft are options of github-release.');
+  }
+  return {
+    step: step as Step,
+    runId,
+    version,
+    npmTag,
+    fromGithubRelease,
+    latest,
+    draft,
+    dryRun,
+  };
 }
 
 function log(message: string): void {
@@ -124,22 +175,77 @@ function log(message: string): void {
   console.log(message);
 }
 
-async function fetchRunAsync(
-  runId: string,
-  easProjectDir: string,
-): Promise<ReleaseWorkflowRun> {
-  const result = await spawnAsync(
-    'eas',
-    ['workflow:view', runId, '--json', '--non-interactive'],
-    { cwd: easProjectDir, stdio: ['ignore', 'pipe', 'inherit'] },
-  );
-  try {
-    return JSON.parse(result.stdout) as ReleaseWorkflowRun;
-  } catch (err) {
-    throw new Error(
-      `Failed to parse 'eas workflow:view ${runId}' output as JSON: ${(err as Error).message}`,
-    );
+/** Check the run, and return the commit it built. */
+async function checkRunAsync(args: ParsedArgs): Promise<string> {
+  log(`Fetching workflow run ${args.runId}...`);
+  const run = await fetchRunAsync(args.runId, easProjectDir);
+  const { commit, branch } = validateReleaseRun(run);
+  if (branch !== `release-${args.version}`) {
+    throw new Error(`Run ${run.id} built ${branch}, not release-${args.version}.`);
   }
+  log(`Run ${run.id} built ${branch} at ${commit}.`);
+  return commit;
+}
+
+async function readTarballsAsync(artifactsDir: string, version: string): Promise<NpmTarballs> {
+  const tarballs = findNpmTarballs(await fs.readdir(artifactsDir));
+  if (tarballs.version !== version) {
+    throw new Error(`The npm tarballs have version ${tarballs.version}, not ${version}.`);
+  }
+  return tarballs;
+}
+
+async function downloadRunArtifactsAsync(
+  args: ParsedArgs,
+  artifactsDir: string,
+  include: string,
+): Promise<void> {
+  await spawnAsync(
+    'npx',
+    [
+      'tsx',
+      path.join(scriptDir, 'download-workflow-artifacts.ts'),
+      args.runId,
+      '--include',
+      include,
+      '--out',
+      artifactsDir,
+    ],
+    { cwd: easProjectDir, stdio: 'inherit' },
+  );
+}
+
+async function createGithubReleaseAsync(
+  args: ParsedArgs,
+  commit: string,
+  artifactsDir: string,
+): Promise<void> {
+  await downloadRunArtifactsAsync(args, artifactsDir, 'all');
+  await readTarballsAsync(artifactsDir, args.version);
+
+  const prerelease = isPrerelease(args.version);
+  if (args.latest && prerelease) {
+    throw new Error(`${args.version} is a prerelease, so it cannot be the "Latest" release.`);
+  }
+
+  log(`\nCreating the GitHub release for ${args.version}...`);
+  await spawnAsync(
+    'npx',
+    [
+      'tsx',
+      path.join(scriptDir, 'create-release.ts'),
+      artifactsDir,
+      '--version',
+      args.version,
+      '--target',
+      commit,
+      ...(prerelease ? ['--prerelease'] : []),
+      ...(args.latest ? ['--latest'] : []),
+      ...(args.draft ? ['--draft'] : []),
+      ...(args.dryRun ? ['--dry-run'] : []),
+    ],
+    { cwd: easProjectDir, stdio: 'inherit' },
+  );
 }
 
 async function checkNpmVersionAsync(): Promise<void> {
@@ -157,10 +263,7 @@ async function checkNpmVersionAsync(): Promise<void> {
  * when there is one. EAS images set a cache as the default registry, and
  * staging must not go there.
  */
-async function writeNpmConfigAsync(
-  dir: string,
-  dryRun: boolean,
-): Promise<string> {
+async function writeNpmConfigAsync(dir: string, dryRun: boolean): Promise<string> {
   const token = process.env.NPM_TOKEN;
   if (!token && !dryRun) {
     throw new Error(
@@ -177,94 +280,81 @@ async function writeNpmConfigAsync(
   return configPath;
 }
 
+async function stageNpmPackagesAsync(
+  args: ParsedArgs,
+  workDir: string,
+  artifactsDir: string,
+): Promise<void> {
+  await checkNpmVersionAsync();
+  if (args.fromGithubRelease) {
+    log(`Downloading the npm tarballs of GitHub release v${args.version}...`);
+    await spawnAsync(
+      'gh',
+      [
+        'release',
+        'download',
+        `v${args.version}`,
+        '--repo',
+        RELEASE_REPO,
+        '--pattern',
+        'react-native-tvos-*.tgz',
+        '--dir',
+        artifactsDir,
+      ],
+      { stdio: 'inherit' },
+    );
+  } else {
+    await downloadRunArtifactsAsync(args, artifactsDir, 'npm');
+  }
+  const { packages } = await readTarballsAsync(artifactsDir, args.version);
+  const npmTag = args.npmTag ?? defaultNpmTag(args.version);
+  const npmConfig = await writeNpmConfigAsync(workDir, args.dryRun);
+
+  for (const { name, fileName } of packages) {
+    if (await isNpmPublishedAsync(name, args.version)) {
+      log(`\n${name}@${args.version} is already published; skipping it.`);
+      continue;
+    }
+    log(`\nStaging ${name}@${args.version} with tag ${npmTag}...`);
+    await spawnAsync(
+      'npm',
+      [
+        'stage',
+        'publish',
+        path.join(artifactsDir, fileName),
+        '--tag',
+        npmTag,
+        '--access',
+        'public',
+        '--userconfig',
+        npmConfig,
+        ...(args.dryRun ? ['--dry-run'] : []),
+      ],
+      { stdio: 'inherit' },
+    );
+  }
+
+  log(
+    `\n${args.dryRun ? 'Dry run done' : 'Done'}. Approve the staged versions with 2FA:\n` +
+      `  npm stage list react-native-tvos\n` +
+      `  npm stage list @react-native-tvos/virtualized-lists\n` +
+      `  npm stage approve <stage-id>   (or approve on npmjs.com)`,
+  );
+}
+
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-
-  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-  const easProjectDir = path.resolve(scriptDir, '..');
-
-  log(`Fetching workflow run ${args.runId}...`);
-  const run = await fetchRunAsync(args.runId, easProjectDir);
-  const { commit, branch } = validateReleaseRun(run);
-  log(`Run ${run.id} built ${branch} at ${commit}.`);
-
-  await checkNpmVersionAsync();
+  const commit = await checkRunAsync(args);
 
   const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'rntv-release-'));
   try {
     const artifactsDir = path.join(workDir, 'artifacts');
-    await spawnAsync(
-      'npx',
-      [
-        'tsx',
-        path.join(scriptDir, 'download-workflow-artifacts.ts'),
-        args.runId,
-        '--out',
-        artifactsDir,
-      ],
-      { cwd: easProjectDir, stdio: 'inherit' },
-    );
-
-    const tarballs = findNpmTarballs(await fs.readdir(artifactsDir));
-    const { version } = tarballs;
-    if (branch !== `release-${version}`) {
-      throw new Error(
-        `The run built ${branch}, but the npm tarballs have version ${version}.`,
-      );
+    await fs.mkdir(artifactsDir);
+    if (args.step === 'github-release') {
+      await createGithubReleaseAsync(args, commit, artifactsDir);
+    } else {
+      await stageNpmPackagesAsync(args, workDir, artifactsDir);
     }
-
-    const prerelease = isPrerelease(version);
-    if (args.latest && prerelease) {
-      throw new Error(`${version} is a prerelease, so it cannot be the "Latest" release.`);
-    }
-    const npmTag = args.npmTag ?? defaultNpmTag(version);
-
-    const npmConfig = await writeNpmConfigAsync(workDir, args.dryRun);
-    for (const fileName of tarballs.fileNames) {
-      log(`\nStaging ${fileName} with tag ${npmTag}...`);
-      await spawnAsync(
-        'npm',
-        [
-          'stage',
-          'publish',
-          path.join(artifactsDir, fileName),
-          '--tag',
-          npmTag,
-          '--access',
-          'public',
-          '--userconfig',
-          npmConfig,
-          ...(args.dryRun ? ['--dry-run'] : []),
-        ],
-        { stdio: 'inherit' },
-      );
-    }
-
-    log(`\nCreating the GitHub release for ${version}...`);
-    await spawnAsync(
-      'npx',
-      [
-        'tsx',
-        path.join(scriptDir, 'create-release.ts'),
-        artifactsDir,
-        '--version',
-        version,
-        '--target',
-        commit,
-        ...(prerelease ? ['--prerelease'] : []),
-        ...(args.latest ? ['--latest'] : []),
-        ...(args.draft ? ['--draft'] : []),
-        ...(args.dryRun ? ['--dry-run'] : []),
-      ],
-      { cwd: easProjectDir, stdio: 'inherit' },
-    );
-
-    log(
-      `\n${args.dryRun ? 'Dry run done' : 'Done'}. Approve the staged versions with 2FA:\n` +
-        `  npm stage list react-native-tvos\n` +
-        `  npm stage list @react-native-tvos/virtualized-lists\n` +
-        `  npm stage approve <stage-id>   (or approve on npmjs.com)`,
-    );
   } finally {
     await fs.rm(workDir, { recursive: true, force: true });
   }

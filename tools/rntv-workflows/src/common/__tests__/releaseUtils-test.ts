@@ -3,9 +3,11 @@ import {
   findNpmTarballs,
   isPrerelease,
   isVersionAtLeast,
+  planRelease,
   ReleaseWorkflowRun,
   validateReleaseRun,
   validateRunId,
+  versionFromBranch,
 } from '../releaseUtils';
 
 const successfulRun: ReleaseWorkflowRun = {
@@ -73,9 +75,12 @@ describe('findNpmTarballs', () => {
   test('finds both tarballs, dependency first', () => {
     expect(findNpmTarballs(assets)).toEqual({
       version: '0.89.0-0rc2',
-      fileNames: [
-        'react-native-tvos-virtualized-lists-0.89.0-0rc2.tgz',
-        'react-native-tvos-0.89.0-0rc2.tgz',
+      packages: [
+        {
+          name: '@react-native-tvos/virtualized-lists',
+          fileName: 'react-native-tvos-virtualized-lists-0.89.0-0rc2.tgz',
+        },
+        { name: 'react-native-tvos', fileName: 'react-native-tvos-0.89.0-0rc2.tgz' },
       ],
     });
   });
@@ -121,5 +126,37 @@ describe('isVersionAtLeast', () => {
   });
   test('rejects output that is not a version', () => {
     expect(isVersionAtLeast('not-a-version', '11.15.0')).toBe(false);
+  });
+});
+
+describe('versionFromBranch', () => {
+  test('returns the version of a release branch', () => {
+    expect(versionFromBranch('release-0.89.0-0rc2')).toBe('0.89.0-0rc2');
+    expect(versionFromBranch('release-0.88.1-0')).toBe('0.88.1-0');
+  });
+  test('rejects other branches', () => {
+    expect(() => versionFromBranch('main')).toThrow('is not a release-<version> branch');
+    expect(() => versionFromBranch('release-0.89.0')).toThrow(
+      'is not a react-native-tvos version',
+    );
+  });
+});
+
+describe('planRelease', () => {
+  test('runs both jobs when nothing exists', () => {
+    expect(planRelease({ githubReleaseExists: false, npmPublished: false })).toBe('full');
+  });
+  test('stages from the GitHub release when only the release exists', () => {
+    expect(planRelease({ githubReleaseExists: true, npmPublished: false })).toBe(
+      'stage-from-github-release',
+    );
+  });
+  test('does nothing when both exist', () => {
+    expect(planRelease({ githubReleaseExists: true, npmPublished: true })).toBe('done');
+  });
+  test('rejects published packages with no GitHub release', () => {
+    expect(() => planRelease({ githubReleaseExists: false, npmPublished: true })).toThrow(
+      'there is no GitHub release',
+    );
   });
 });

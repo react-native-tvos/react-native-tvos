@@ -46,7 +46,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import spawnAsync from '@expo/spawn-async';
 
-const DEFAULT_REPO = 'react-native-tvos/react-native-tvos';
+import { RELEASE_REPO } from './common/releaseUtils';
 
 // Matches react-native-<v>.tgz and react-native-tvos-<v>.tgz, but not
 // react-native-virtualized-lists-<v>.tgz (which doesn't start its version
@@ -87,7 +87,7 @@ Options:
                            react-native-<version>.tgz)
   --target <ref>           Git ref/commit for the tag
                            (default: release-<version>)
-  --repo <owner/name>      GitHub repo (default: ${DEFAULT_REPO})
+  --repo <owner/name>      GitHub repo (default: ${RELEASE_REPO})
   --notes-file <path>      Read release notes from a file
   --generate-notes         Auto-generate notes from PRs since the last release
   --notes-start-tag <tag>  With --generate-notes, anchor the changelog at this
@@ -107,7 +107,7 @@ function parseArgs(argv: string[]): ParsedArgs {
   let artifactsDir: string | undefined;
   let version: string | undefined;
   let target: string | undefined;
-  let repo: string = DEFAULT_REPO;
+  let repo: string = RELEASE_REPO;
   let notesFile: string | undefined;
   let generateNotes = false;
   let notesStartTag: string | undefined;

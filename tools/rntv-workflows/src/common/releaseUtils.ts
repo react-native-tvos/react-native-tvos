@@ -3,6 +3,11 @@
  */
 
 export const RELEASE_BUILDS_WORKFLOW_FILE = 'run-release-builds.yml';
+export const RELEASE_REPO = 'react-native-tvos/react-native-tvos';
+const VIRTUALIZED_LISTS_PACKAGE = '@react-native-tvos/virtualized-lists';
+const REACT_NATIVE_PACKAGE = 'react-native-tvos';
+/** The npm packages of a release, in the order they are staged: dependencies first. */
+export const NPM_PACKAGE_NAMES = [VIRTUALIZED_LISTS_PACKAGE, REACT_NATIVE_PACKAGE];
 
 /** The fields of `eas workflow:view --json` that a release needs. */
 export type ReleaseWorkflowRun = {
@@ -13,11 +18,19 @@ export type ReleaseWorkflowRun = {
   workflow: { fileName: string };
 };
 
+export type NpmPackage = { name: string; fileName: string };
+
 export type NpmTarballs = {
   version: string;
-  /** File names, in the order they are staged: dependencies first. */
-  fileNames: string[];
+  /** The packages, in the order they are staged: dependencies first. */
+  packages: NpmPackage[];
 };
+
+/** What `start-release.ts` does for a version, from what already exists. */
+export type ReleasePlan =
+  | 'full'
+  | 'stage-from-github-release'
+  | 'done';
 
 const STABLE_VERSION_REGEX = /^(\d+)\.(\d+)\.\d+-\d+$/;
 const ANY_VERSION_REGEX = /^(\d+)\.(\d+)\.\d+-\S+$/;
@@ -95,8 +108,43 @@ export function findNpmTarballs(fileNames: string[]): NpmTarballs {
 
   return {
     version,
-    fileNames: [virtualizedLists[0][0], reactNative[0][0]],
+    packages: [
+      { name: VIRTUALIZED_LISTS_PACKAGE, fileName: virtualizedLists[0][0] },
+      { name: REACT_NATIVE_PACKAGE, fileName: reactNative[0][0] },
+    ],
   };
+}
+
+/**
+ * The version a `release-<version>` branch is for.
+ */
+export function versionFromBranch(branch: string): string {
+  const version = branch.replace(/^release-/, '');
+  if (version === branch) {
+    throw new Error(`${branch} is not a release-<version> branch.`);
+  }
+  isPrerelease(version);
+  return version;
+}
+
+/**
+ * Decide what a release run must do, from whether the GitHub release exists
+ * and whether every npm package is published.
+ */
+export function planRelease(state: {
+  githubReleaseExists: boolean;
+  npmPublished: boolean;
+}): ReleasePlan {
+  if (state.githubReleaseExists) {
+    return state.npmPublished ? 'done' : 'stage-from-github-release';
+  }
+  if (state.npmPublished) {
+    throw new Error(
+      'The npm packages are published, but there is no GitHub release. ' +
+        'Create the release with create-release.ts.',
+    );
+  }
+  return 'full';
 }
 
 /**

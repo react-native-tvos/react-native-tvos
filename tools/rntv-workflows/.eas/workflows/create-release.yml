@@ -1,5 +1,7 @@
+# Start this workflow with src/start-release.ts, which sets the version and
+# checks what already exists on GitHub and npm.
 name: Create RNTV release
-run_name: Create RNTV release from ${{ inputs.run_id }}
+run_name: "${{ inputs.dry_run ? 'Dry run' : 'Create' }} RNTV release ${{ inputs.version }}"
 
 on:
   workflow_dispatch:
@@ -8,6 +10,10 @@ on:
         type: string
         required: true
         description: ID of a successful run-release-builds.yml run
+      version:
+        type: string
+        required: true
+        description: The version the run built, such as 0.89.0-0rc2
       npm_tag:
         type: string
         required: false
@@ -24,22 +30,57 @@ on:
         type: boolean
         default: false
         description: Stage and create nothing; show what would happen
+      stage_from_github_release:
+        type: boolean
+        default: false
+        description: Skip the GitHub release, and stage the npm packages from its assets
 
 defaults:
   tools:
     node: 22.14.0
 
 jobs:
-  create_release:
-    name: Stage npm packages and create GitHub release
+  github_release:
+    name: Create GitHub release
+    if: ${{ !inputs.stage_from_github_release }}
     runs_on: linux-medium
     image: latest
     env:
       RUN_ID: ${{ inputs.run_id }}
-      NPM_TAG: ${{ inputs.npm_tag || '' }}
+      VERSION: ${{ inputs.version }}
       LATEST: ${{ toJSON(inputs.latest) }}
       DRAFT: ${{ toJSON(inputs.draft) }}
       DRY_RUN: ${{ toJSON(inputs.dry_run) }}
+    steps:
+      - uses: eas/checkout
+      - uses: eas/install_node_modules
+      - name: Install EAS CLI and GitHub CLI
+        run: |
+          set -euo pipefail
+          npm install -g eas-cli@27.10.0
+          ./scripts/install-gh.sh
+      - name: Create GitHub release
+        run: |
+          set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          args=(github-release "$RUN_ID" --version "$VERSION")
+          [ "$LATEST" = "true" ] && args+=(--latest)
+          [ "$DRAFT" = "true" ] && args+=(--draft)
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          npx tsx ./src/release-workflow-run.ts "${args[@]}"
+
+  npm_stage:
+    name: Stage npm packages
+    after: [github_release]
+    if: ${{ after.github_release.status == 'success' || inputs.stage_from_github_release }}
+    runs_on: linux-medium
+    image: latest
+    env:
+      RUN_ID: ${{ inputs.run_id }}
+      VERSION: ${{ inputs.version }}
+      NPM_TAG: ${{ inputs.npm_tag || '' }}
+      DRY_RUN: ${{ toJSON(inputs.dry_run) }}
+      FROM_GITHUB_RELEASE: ${{ toJSON(inputs.stage_from_github_release) }}
     steps:
       - uses: eas/checkout
       - uses: eas/install_node_modules
@@ -47,21 +88,13 @@ jobs:
         run: |
           set -euo pipefail
           npm install -g npm@11.21.2 eas-cli@27.10.0
-          gh_version=2.103.3
-          gh_archive=gh_${gh_version}_linux_amd64.tar.gz
-          cd "$(mktemp -d)"
-          curl -fsSLO "https://github.com/cli/cli/releases/download/v${gh_version}/${gh_archive}"
-          echo "4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d  ${gh_archive}" | sha256sum --check
-          tar -xzf "$gh_archive"
-          mkdir -p "$HOME/.local/bin"
-          mv "gh_${gh_version}_linux_amd64/bin/gh" "$HOME/.local/bin/gh"
-      - name: Stage npm packages and create GitHub release
+          ./scripts/install-gh.sh
+      - name: Stage npm packages
         run: |
           set -euo pipefail
           export PATH="$HOME/.local/bin:$PATH"
-          args=("$RUN_ID")
+          args=(npm-stage "$RUN_ID" --version "$VERSION")
           [ -n "$NPM_TAG" ] && args+=(--npm-tag "$NPM_TAG")
-          [ "$LATEST" = "true" ] && args+=(--latest)
-          [ "$DRAFT" = "true" ] && args+=(--draft)
+          [ "$FROM_GITHUB_RELEASE" = "true" ] && args+=(--from-github-release)
           [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
           npx tsx ./src/release-workflow-run.ts "${args[@]}"
