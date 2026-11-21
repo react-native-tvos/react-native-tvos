@@ -2,6 +2,8 @@
 
 A framework for building native applications using React.
 
+This is react-native-tvos, a fork with Apple TV and Android TV support: read [`AGENTS.tv.md`](AGENTS.tv.md) for its CI, builds, releases and TV testing.
+
 ## Repo structure
 
 React Native is a monorepo: the `react-native` package, the packages published alongside it, and the apps and tooling used to develop them.
