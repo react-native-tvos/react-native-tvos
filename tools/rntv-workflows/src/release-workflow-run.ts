@@ -43,6 +43,7 @@ import type { NpmTarballs } from './common/releaseUtils';
 import {
   defaultNpmTag,
   findNpmTarballs,
+  formatCommand,
   isPrerelease,
   isVersionAtLeast,
   RELEASE_REPO,
@@ -318,22 +319,22 @@ async function stageNpmPackagesAsync(
       continue;
     }
     log(`\nStaging ${name}@${args.version} with tag ${npmTag}...`);
-    await spawnAsync(
-      'npm',
-      [
-        'stage',
-        'publish',
-        path.join(artifactsDir, fileName),
-        '--tag',
-        npmTag,
-        '--access',
-        'public',
-        '--userconfig',
-        npmConfig,
-        ...(args.dryRun ? ['--dry-run'] : []),
-      ],
-      { stdio: 'inherit' },
-    );
+    const npmArgs = [
+      'stage',
+      'publish',
+      path.join(artifactsDir, fileName),
+      '--tag',
+      npmTag,
+      '--access',
+      'public',
+      '--userconfig',
+      npmConfig,
+    ];
+    if (args.dryRun) {
+      log(`--dry-run: would run:\n  ${formatCommand('npm', npmArgs)}`);
+      npmArgs.push('--dry-run');
+    }
+    await spawnAsync('npm', npmArgs, { stdio: 'inherit' });
   }
 
   log(

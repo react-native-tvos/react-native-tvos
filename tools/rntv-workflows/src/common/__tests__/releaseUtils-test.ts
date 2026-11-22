@@ -1,6 +1,7 @@
 import {
   defaultNpmTag,
   findNpmTarballs,
+  formatCommand,
   isPrerelease,
   isVersionAtLeast,
   planRelease,
@@ -157,6 +158,19 @@ describe('planRelease', () => {
   test('rejects published packages with no GitHub release', () => {
     expect(() => planRelease({ githubReleaseExists: false, npmPublished: true })).toThrow(
       'there is no GitHub release',
+    );
+  });
+});
+
+describe('formatCommand', () => {
+  test('joins plain arguments with spaces', () => {
+    expect(formatCommand('npm', ['stage', 'publish', '--tag', 'next'])).toBe(
+      'npm stage publish --tag next',
+    );
+  });
+  test('quotes arguments with spaces or quotes, and empty arguments', () => {
+    expect(formatCommand('gh', ['release', '--title', 'v1 rc', '--notes', '', 'it\'s'])).toBe(
+      'gh release --title "v1 rc" --notes "" "it\'s"',
     );
   });
 });

@@ -54,7 +54,7 @@ import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import spawnAsync from '@expo/spawn-async';
 
-import { RELEASE_REPO, validateRunId } from './common/releaseUtils';
+import { formatCommand, RELEASE_REPO, validateRunId } from './common/releaseUtils';
 
 // Matches react-native-<v>.tgz and react-native-tvos-<v>.tgz, but not
 // react-native-virtualized-lists-<v>.tgz (which doesn't start its version
@@ -390,13 +390,8 @@ async function executeScriptAsync(): Promise<void> {
   ghArgs.push(...assets);
 
   if (args.dryRun) {
-    const quoted = ghArgs.map((a) => {
-      if (a === '') return '""';
-      if (/[\s"']/.test(a)) return JSON.stringify(a);
-      return a;
-    });
     // eslint-disable-next-line no-console
-    console.log(`\n--dry-run: would invoke:\n  gh ${quoted.join(' ')}`);
+    console.log(`\n--dry-run: would invoke:\n  ${formatCommand('gh', ghArgs)}`);
     return;
   }
 

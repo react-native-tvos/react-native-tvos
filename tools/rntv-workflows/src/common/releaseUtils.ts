@@ -188,3 +188,17 @@ export function isVersionAtLeast(version: string, minimum: string): boolean {
   }
   return true;
 }
+
+/**
+ * A command line as a shell prints it, with each argument that holds a space
+ * or a quote in double quotes, for dry run output.
+ */
+export function formatCommand(command: string, args: string[]): string {
+  const quoted = args.map((arg) => {
+    if (arg === '') {
+      return '""';
+    }
+    return /[\s"']/.test(arg) ? JSON.stringify(arg) : arg;
+  });
+  return [command, ...quoted].join(' ');
+}
