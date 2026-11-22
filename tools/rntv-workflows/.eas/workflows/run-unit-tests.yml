@@ -15,7 +15,7 @@ on:
 
 defaults:
   tools:
-    node: 22.14.0
+    node: 24.13.0
 
 jobs:
   run-unit-tests:
