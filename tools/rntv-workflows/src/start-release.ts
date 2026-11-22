@@ -169,11 +169,18 @@ async function resolveRunIdAsync(args: ParsedArgs): Promise<string | null> {
 async function startWorkflowAsync(inputs: Record<string, string>, ref: string): Promise<void> {
   const inputArgs = Object.entries(inputs).flatMap(([key, value]) => ['-F', `${key}=${value}`]);
   // `eas workflow:run` reads inputs from stdin when stdin is open.
-  await spawnAsync(
-    'eas',
-    ['workflow:run', WORKFLOW_FILE, '--ref', ref, '--non-interactive', ...inputArgs],
-    { cwd: easProjectDir, stdio: ['ignore', 'inherit', 'inherit'] },
-  );
+  try {
+    await spawnAsync(
+      'eas',
+      ['workflow:run', WORKFLOW_FILE, '--ref', ref, '--non-interactive', ...inputArgs],
+      { cwd: easProjectDir, stdio: ['ignore', 'inherit', 'inherit'] },
+    );
+  } catch {
+    throw new Error(
+      `eas workflow:run failed; see the error above. EAS reads ${path.basename(WORKFLOW_FILE)} ` +
+        `from ${ref}. If ${ref} does not have it, pass --ref with a branch that does.`,
+    );
+  }
 }
 
 async function executeScriptAsync(): Promise<void> {
