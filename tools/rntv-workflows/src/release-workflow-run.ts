@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * The two jobs of `create-release.yml`. `start-release.ts` starts that
- * workflow; run this script by hand only to repeat one job.
+ * The two release steps of `create-release.yml`. `start-release.ts` starts that
+ * workflow; run this script by hand only to repeat one step.
  *
  *   github-release  Download the tarballs of a successful
  *                   `run-release-builds.yml` run and create the tag and
