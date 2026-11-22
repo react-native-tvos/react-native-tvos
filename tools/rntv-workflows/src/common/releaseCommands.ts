@@ -6,7 +6,7 @@
 import spawnAsync from '@expo/spawn-async';
 
 import type { ReleaseWorkflowRun } from './releaseUtils';
-import { RELEASE_BUILDS_WORKFLOW_FILE, RELEASE_REPO } from './releaseUtils';
+import { RELEASE_REPO } from './releaseUtils';
 
 export const NPM_REGISTRY = 'https://registry.npmjs.org/';
 
@@ -30,29 +30,6 @@ export async function fetchRunAsync(
       `Failed to parse 'eas workflow:view ${runId}' output as JSON: ${(err as Error).message}`,
     );
   }
-}
-
-/** The ID of the most recent successful run of `run-release-builds.yml`. */
-export async function findLatestReleaseRunIdAsync(easProjectDir: string): Promise<string> {
-  const result = await spawnAsync(
-    'eas',
-    [
-      'workflow:runs',
-      '--workflow',
-      RELEASE_BUILDS_WORKFLOW_FILE,
-      '--status',
-      'SUCCESS',
-      '--limit',
-      '1',
-      '--json',
-    ],
-    { cwd: easProjectDir, stdio: ['ignore', 'pipe', 'inherit'] },
-  );
-  const runs = JSON.parse(result.stdout) as { id: string }[];
-  if (runs.length === 0) {
-    throw new Error(`No successful run of ${RELEASE_BUILDS_WORKFLOW_FILE} found.`);
-  }
-  return runs[0].id;
 }
 
 export async function githubReleaseExistsAsync(version: string): Promise<boolean> {

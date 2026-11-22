@@ -30,7 +30,6 @@ import spawnAsync from '@expo/spawn-async';
 
 import {
   fetchRunAsync,
-  findLatestReleaseRunIdAsync,
   githubReleaseExistsAsync,
   isNpmPublishedAsync,
 } from './common/releaseCommands';
@@ -38,10 +37,12 @@ import {
   isPrerelease,
   NPM_PACKAGE_NAMES,
   planRelease,
+  RELEASE_BUILDS_WORKFLOW_FILE,
   validateReleaseRun,
   validateRunId,
   versionFromBranch,
 } from './common/releaseUtils';
+import { pickRunIdAsync } from './common/runPicker';
 
 const WORKFLOW_FILE = '.eas/workflows/create-release.yml';
 
@@ -65,7 +66,7 @@ Run from tools/rntv-workflows.
 
 Arguments:
   <runId>            ID of a successful run-release-builds.yml run
-                     (default: the most recent one, after you confirm it)
+                     (default: pick one from a list of recent runs)
 
 Options:
   --npm-tag <tag>    npm dist-tag to stage with (default: next for a
@@ -150,20 +151,17 @@ async function confirmAsync(question: string): Promise<boolean> {
   }
 }
 
-async function resolveRunIdAsync(args: ParsedArgs): Promise<string | null> {
+async function resolveRunIdAsync(args: ParsedArgs): Promise<string> {
   if (args.runId) {
     return args.runId;
   }
   if (args.nonInteractive) {
     throw new Error(
-      'No run ID given, and --non-interactive does not ask to use the most recent run. ' +
+      'No run ID given, and --non-interactive turns the run picker off. ' +
         'Pass the ID of a successful run-release-builds.yml run.',
     );
   }
-  const runId = await findLatestReleaseRunIdAsync(easProjectDir);
-  return (await confirmAsync(`Release the most recent successful run, ${runId}?`))
-    ? runId
-    : null;
+  return pickRunIdAsync(easProjectDir, [RELEASE_BUILDS_WORKFLOW_FILE]);
 }
 
 async function startWorkflowAsync(inputs: Record<string, string>, ref: string): Promise<void> {
@@ -186,10 +184,6 @@ async function startWorkflowAsync(inputs: Record<string, string>, ref: string): 
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const runId = await resolveRunIdAsync(args);
-  if (!runId) {
-    log('Nothing started.');
-    return;
-  }
 
   const run = await fetchRunAsync(runId, easProjectDir);
   const { branch } = validateReleaseRun(run);
