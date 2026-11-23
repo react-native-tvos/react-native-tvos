@@ -6,7 +6,13 @@
  * `download-workflow-artifacts.ts`.
  *
  * Defaults:
- *   - Reads `.tgz` artifacts from the supplied directory (default: cwd).
+ *   - Takes <runId> and `--out` like `download-workflow-artifacts.ts`.
+ *   - Reads `.tgz` artifacts from the `--out` directory (default:
+ *     `build/eas-artifacts/<runId>` with a <runId>, else cwd). When there are
+ *     none, it first runs `download-workflow-artifacts.ts --include all
+ *     --release` into that directory: for <runId>, or else for a run picked
+ *     from recent release build runs. `--non-interactive` turns the picker
+ *     off, so a missing <runId> is an error.
  *   - Auto-detects the release version from `react-native-<version>.tgz`
  *     (or `react-native-tvos-<version>.tgz`) in that directory.
  *   - Tags the release `v<version>`, names it `<version>`.
@@ -30,11 +36,12 @@
  *     attached, so `--draft` implicitly disables this.
  *
  * Usage (run from the top of the repository):
- *   tools/rntv-workflows/src/create-release.ts [<artifactsDir>] [options]
+ *   tools/rntv-workflows/src/create-release.ts [<runId>] [options]
  *
  * Examples:
- *   tools/rntv-workflows/src/create-release.ts
- *   tools/rntv-workflows/src/create-release.ts ./build/eas-artifacts/<runId>
+ *   tools/rntv-workflows/src/create-release.ts                # interactive picker
+ *   tools/rntv-workflows/src/create-release.ts <runId> --non-interactive --dry-run
+ *   tools/rntv-workflows/src/create-release.ts --out ./build/eas-artifacts/<runId>
  *   tools/rntv-workflows/src/create-release.ts --version 0.85.3-0 --target abc1234
  *   tools/rntv-workflows/src/create-release.ts --notes-file CHANGELOG.md
  *   tools/rntv-workflows/src/create-release.ts --dry-run
@@ -44,9 +51,10 @@
 
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import spawnAsync from '@expo/spawn-async';
 
-const DEFAULT_REPO = 'react-native-tvos/react-native-tvos';
+import { formatCommand, RELEASE_REPO, validateRunId } from './common/releaseUtils';
 
 // Matches react-native-<v>.tgz and react-native-tvos-<v>.tgz, but not
 // react-native-virtualized-lists-<v>.tgz (which doesn't start its version
@@ -57,6 +65,9 @@ const DEFAULT_DISCUSSION_CATEGORY = 'Announcements';
 
 type ParsedArgs = {
   artifactsDir: string;
+  // run-release-builds.yml run to download when artifactsDir has no artifacts.
+  runId?: string;
+  nonInteractive: boolean;
   version?: string;
   target?: string;
   repo: string;
@@ -74,20 +85,26 @@ type ParsedArgs = {
 
 function printUsage(): void {
   // eslint-disable-next-line no-console
-  console.log(`Usage: tools/rntv-workflows/src/create-release.ts [<artifactsDir>] [options]
+  console.log(`Usage: tools/rntv-workflows/src/create-release.ts [<runId>] [options]
 
 Run from the top of the repository.
 
 Arguments:
-  <artifactsDir>           Directory containing the .tgz artifacts to upload.
-                           Defaults to the current working directory.
+  <runId>                  ID of a successful run-release-builds.yml run. When
+                           the --out directory has no .tgz artifacts, the
+                           script downloads them from this run, or from a
+                           release build run you pick when it is omitted.
 
 Options:
+  --out, -o <dir>          Directory with the .tgz artifacts to upload
+                           (default: build/eas-artifacts/<runId> with a
+                           <runId>, else the current working directory)
+  --non-interactive        Never prompt: without artifacts, <runId> is required
   --version <v>            Version to release (default: auto-detected from
                            react-native-<version>.tgz)
   --target <ref>           Git ref/commit for the tag
                            (default: release-<version>)
-  --repo <owner/name>      GitHub repo (default: ${DEFAULT_REPO})
+  --repo <owner/name>      GitHub repo (default: ${RELEASE_REPO})
   --notes-file <path>      Read release notes from a file
   --generate-notes         Auto-generate notes from PRs since the last release
   --notes-start-tag <tag>  With --generate-notes, anchor the changelog at this
@@ -105,9 +122,11 @@ Options:
 
 function parseArgs(argv: string[]): ParsedArgs {
   let artifactsDir: string | undefined;
+  let runId: string | undefined;
+  let nonInteractive = false;
   let version: string | undefined;
   let target: string | undefined;
-  let repo: string = DEFAULT_REPO;
+  let repo: string = RELEASE_REPO;
   let notesFile: string | undefined;
   let generateNotes = false;
   let notesStartTag: string | undefined;
@@ -131,6 +150,13 @@ function parseArgs(argv: string[]): ParsedArgs {
       case '--help':
         printUsage();
         process.exit(0);
+        break;
+      case '--out':
+      case '-o':
+        artifactsDir = requireValue(arg, argv[++i]);
+        break;
+      case '--non-interactive':
+        nonInteractive = true;
         break;
       case '--version':
         version = requireValue(arg, argv[++i]);
@@ -169,10 +195,11 @@ function parseArgs(argv: string[]): ParsedArgs {
         if (arg.startsWith('-')) {
           throw new Error(`Unrecognized option: ${arg}`);
         }
-        if (artifactsDir !== undefined) {
+        if (runId !== undefined) {
           throw new Error(`Unexpected positional argument: ${arg}`);
         }
-        artifactsDir = arg;
+        validateRunId(arg);
+        runId = arg;
     }
   }
 
@@ -199,7 +226,11 @@ function parseArgs(argv: string[]): ParsedArgs {
   const discussionCategory = draft || isNoneSentinel ? null : discussionCategoryRaw;
 
   return {
-    artifactsDir: path.resolve(artifactsDir ?? process.cwd()),
+    artifactsDir: path.resolve(
+      artifactsDir ?? (runId ? path.join('build', 'eas-artifacts', runId) : process.cwd()),
+    ),
+    runId,
+    nonInteractive,
     version,
     target,
     repo,
@@ -233,18 +264,76 @@ function detectVersionFromAssets(assets: string[]): string {
   );
 }
 
+/** How to get the artifacts of a run-release-builds.yml run into `dir`. */
+function downloadHint(dir: string): string {
+  const relativeDir = path.relative(process.cwd(), dir);
+  const outDir = relativeDir.startsWith('..') ? dir : relativeDir || '.';
+  return (
+    'Pass the ID of a successful run-release-builds.yml run as <runId> to download ' +
+    'its artifacts, or download them first (from the top of the repository):\n' +
+    `  tools/rntv-workflows/src/download-workflow-artifacts.ts <runId> --include all --release --out ${outDir}\n` +
+    'To create the release and stage the npm packages on EAS instead, run ' +
+    '`npx tsx src/start-release.ts` from tools/rntv-workflows.'
+  );
+}
+
+async function findArtifactsIfDirExists(dir: string): Promise<string[]> {
+  const stat = await fs.stat(dir).catch(() => null);
+  return stat?.isDirectory() ? findArtifacts(dir) : [];
+}
+
+/**
+ * Find the artifacts in `args.artifactsDir`. When there are none, download
+ * them first with `download-workflow-artifacts.ts`: from `args.runId`, or
+ * from a run picked in its picker when prompting is allowed.
+ */
+async function findOrDownloadArtifactsAsync(args: ParsedArgs): Promise<string[]> {
+  const dir = args.artifactsDir;
+  const assets = await findArtifactsIfDirExists(dir);
+  if (assets.length > 0) {
+    if (args.runId) {
+      // eslint-disable-next-line no-console
+      console.log(`Using the artifacts already in ${dir}; run ${args.runId} is not downloaded.`);
+    }
+    return assets;
+  }
+  const canPrompt = !args.nonInteractive && process.stdin.isTTY === true;
+  if (!args.runId && !canPrompt) {
+    throw new Error(`No .tgz / .tar.gz files found in ${dir}\n${downloadHint(dir)}`);
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(`No .tgz / .tar.gz files found in ${dir}. Downloading the artifacts of a run...`);
+  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+  await spawnAsync(
+    'npx',
+    [
+      'tsx',
+      path.join(scriptDir, 'download-workflow-artifacts.ts'),
+      ...(args.runId ? [args.runId] : []),
+      '--include',
+      'all',
+      '--release',
+      '--out',
+      dir,
+      ...(args.nonInteractive ? ['--non-interactive'] : []),
+    ],
+    { cwd: path.resolve(scriptDir, '..'), stdio: 'inherit' },
+  ).catch(() => {
+    throw new Error('The artifact download failed; see the error above.');
+  });
+
+  const downloaded = await findArtifactsIfDirExists(dir);
+  if (downloaded.length === 0) {
+    throw new Error(`The download put no .tgz / .tar.gz files in ${dir}.`);
+  }
+  return downloaded;
+}
+
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
-  const stat = await fs.stat(args.artifactsDir).catch(() => null);
-  if (!stat || !stat.isDirectory()) {
-    throw new Error(`Artifacts directory not found: ${args.artifactsDir}`);
-  }
-
-  const assets = await findArtifacts(args.artifactsDir);
-  if (assets.length === 0) {
-    throw new Error(`No .tgz / .tar.gz files found in ${args.artifactsDir}`);
-  }
+  const assets = await findOrDownloadArtifactsAsync(args);
 
   const version = args.version ?? detectVersionFromAssets(assets);
   const tag = `v${version}`;
@@ -301,13 +390,8 @@ async function executeScriptAsync(): Promise<void> {
   ghArgs.push(...assets);
 
   if (args.dryRun) {
-    const quoted = ghArgs.map((a) => {
-      if (a === '') return '""';
-      if (/[\s"']/.test(a)) return JSON.stringify(a);
-      return a;
-    });
     // eslint-disable-next-line no-console
-    console.log(`\n--dry-run: would invoke:\n  gh ${quoted.join(' ')}`);
+    console.log(`\n--dry-run: would invoke:\n  ${formatCommand('gh', ghArgs)}`);
     return;
   }
 

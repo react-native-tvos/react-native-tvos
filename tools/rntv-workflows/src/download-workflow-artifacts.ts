@@ -14,15 +14,17 @@
  * on disk in `outDir`.
  *
  * Usage (run from the top of the repository):
- *   tools/rntv-workflows/src/download-workflow-artifacts.ts [<runId>] [--include npm,rntester|all] [--out <dir>]
+ *   tools/rntv-workflows/src/download-workflow-artifacts.ts [<runId>] [--include npm,rntester|all] [--out <dir>] [--release] [--non-interactive]
  *
  * If <runId> is omitted the script lists recent successful runs of the build
- * workflows via `eas workflow:runs` and prompts for one. By default the inner
+ * workflows via `eas workflow:runs` and prompts for one. With
+ * `--non-interactive` it never prompts, so <runId> is required. By default the inner
  * tarballs are written to the current working directory (the repository root
  * in the documented invocation).
  *
  * Examples (from the repository root):
  *   tools/rntv-workflows/src/download-workflow-artifacts.ts             # interactive picker
+ *   tools/rntv-workflows/src/download-workflow-artifacts.ts --release   # picker of release builds only
  *   tools/rntv-workflows/src/download-workflow-artifacts.ts 019dfe87-23b9-765a-8906-3217f3269151
  *   tools/rntv-workflows/src/download-workflow-artifacts.ts <runId> --include rntester
  *   tools/rntv-workflows/src/download-workflow-artifacts.ts <runId> --out /tmp/wf-artifacts
@@ -36,21 +38,19 @@
 
 import path from 'node:path';
 import os from 'node:os';
-import readline from 'node:readline/promises';
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import spawnAsync from '@expo/spawn-async';
 
 import { downloadFileAsync, unpackTarArchiveAsync } from './common';
+import { RELEASE_BUILDS_WORKFLOW_FILE } from './common/releaseUtils';
+import { pickRunIdAsync } from './common/runPicker';
 
 /**
  * Only these workflows produce the artifacts this script downloads, so the
- * run picker is restricted to them.
+ * run picker is restricted to them. `run-builds.yml` builds main and PRs.
  */
-const BUILD_WORKFLOW_FILES = ['run-builds.yml', 'run-release-builds.yml'];
-
-/** Runs fetched per workflow before the results are merged. */
-const RUNS_PER_WORKFLOW = 10;
+const BUILD_WORKFLOW_FILES = ['run-builds.yml', RELEASE_BUILDS_WORKFLOW_FILE];
 
 type WorkflowJob = {
   id: string;
@@ -64,19 +64,8 @@ type WorkflowJob = {
 
 type WorkflowRun = {
   id: string;
+  workflow: { fileName: string };
   jobs: WorkflowJob[];
-};
-
-/** A single entry of `eas workflow:runs --json`. */
-type WorkflowRunSummary = {
-  id: string;
-  status: string;
-  gitCommitMessage: string;
-  gitCommitHash: string;
-  startedAt: string;
-  finishedAt: string | null;
-  trigger: string;
-  workflowFileName: string;
 };
 
 type CategoryKey = 'npm' | 'rntester';
@@ -90,7 +79,14 @@ type ParsedArgs = {
   runId?: string;
   outDir?: string;
   categories: Set<CategoryKey>;
+  /** Only release builds: the picker lists them alone, and a given run must be one. */
+  release: boolean;
+  nonInteractive: boolean;
 };
+
+function workflowFilesFor(args: ParsedArgs): string[] {
+  return args.release ? [RELEASE_BUILDS_WORKFLOW_FILE] : BUILD_WORKFLOW_FILES;
+}
 
 function printUsage(): void {
   // eslint-disable-next-line no-console
@@ -106,12 +102,18 @@ Arguments:
 Options:
   --out, -o <dir>          Output directory (default: current working directory)
   --include <categories>   Comma-separated subset of: npm,rntester,all (default: all)
+  --release                Only release builds: the picker lists only
+                           ${RELEASE_BUILDS_WORKFLOW_FILE} runs, and a given
+                           <runId> must be one
+  --non-interactive        Never prompt: <runId> is required
   --help, -h               Show this help`);
 }
 
 function parseArgs(argv: string[]): ParsedArgs {
   let runId: string | undefined;
   let outDir: string | undefined;
+  let release = false;
+  let nonInteractive = false;
   const categories = new Set<CategoryKey>();
 
   for (let i = 0; i < argv.length; i++) {
@@ -128,6 +130,12 @@ function parseArgs(argv: string[]): ParsedArgs {
         if (!outDir) {
           throw new Error('--out/-o requires a directory argument');
         }
+        break;
+      case '--release':
+        release = true;
+        break;
+      case '--non-interactive':
+        nonInteractive = true;
         break;
       case '--include': {
         const value = argv[++i];
@@ -163,7 +171,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     categories.add('rntester');
   }
 
-  return { runId, outDir, categories };
+  return { runId, outDir, categories, release, nonInteractive };
 }
 
 function getArtifactUrl(job: WorkflowJob): string | null {
@@ -202,130 +210,6 @@ async function fetchWorkflowRun(
   }
 }
 
-/**
- * Fetch recent successful runs of the build workflows, newest first. Each
- * workflow is queried separately because `--workflow` takes a single file name.
- */
-async function listSuccessfulBuildRunsAsync(
-  easProjectDir: string,
-): Promise<WorkflowRunSummary[]> {
-  const perWorkflow = await Promise.all(
-    BUILD_WORKFLOW_FILES.map(async (workflowFileName) => {
-      const result = await spawnAsync(
-        'eas',
-        [
-          'workflow:runs',
-          '--workflow',
-          workflowFileName,
-          '--status',
-          'SUCCESS',
-          '--limit',
-          String(RUNS_PER_WORKFLOW),
-          '--json',
-        ],
-        { cwd: easProjectDir, stdio: ['ignore', 'pipe', 'pipe'] },
-      );
-      try {
-        return JSON.parse(result.stdout) as WorkflowRunSummary[];
-      } catch (err) {
-        throw new Error(
-          `Failed to parse 'eas workflow:runs --workflow ${workflowFileName}' output as JSON: ${(err as Error).message}`,
-        );
-      }
-    }),
-  );
-
-  return perWorkflow
-    .flat()
-    .sort((a, b) =>
-      (b.finishedAt ?? b.startedAt).localeCompare(a.finishedAt ?? a.startedAt),
-    );
-}
-
-function formatTimestamp(timestamp: string | null): string {
-  if (timestamp === null) {
-    return ' '.repeat(16);
-  }
-  // 'YYYY-MM-DD HH:MM' in UTC, fixed width so the list stays aligned.
-  return timestamp.slice(0, 16).replace('T', ' ');
-}
-
-function truncate(value: string, maxLength: number): string {
-  return value.length > maxLength
-    ? `${value.slice(0, maxLength - 1)}…`
-    : value;
-}
-
-function formatRunChoice(run: WorkflowRunSummary): string {
-  // 'refs/heads/main@49bf37377a75' -> 'main'
-  const ref = run.trigger.replace(/^refs\/heads\//, '').replace(/@[^@]*$/, '');
-  return [
-    run.workflowFileName.padEnd(22),
-    formatTimestamp(run.finishedAt),
-    truncate(ref, 24).padEnd(24),
-    run.gitCommitHash.slice(0, 8),
-    truncate(run.gitCommitMessage.split('\n')[0], 60),
-  ].join('  ');
-}
-
-async function promptForRunIdAsync(
-  runs: WorkflowRunSummary[],
-): Promise<string> {
-  const indexWidth = String(runs.length).length;
-
-  // eslint-disable-next-line no-console
-  console.log(
-    `\nRecent successful runs of ${BUILD_WORKFLOW_FILES.join(' and ')}:\n`,
-  );
-  runs.forEach((run, index) => {
-    // eslint-disable-next-line no-console
-    console.log(
-      `  ${String(index + 1).padStart(indexWidth)}) ${formatRunChoice(run)}`,
-    );
-  });
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  try {
-    const answer = (
-      await rl.question(`\nSelect a run [1-${runs.length}] (default 1): `)
-    ).trim();
-    const selection = answer === '' ? 1 : Number(answer);
-
-    if (!Number.isInteger(selection) || selection < 1 || selection > runs.length) {
-      throw new Error(`Invalid selection: "${answer}"`);
-    }
-
-    return runs[selection - 1].id;
-  } finally {
-    rl.close();
-  }
-}
-
-async function resolveRunIdAsync(
-  easProjectDir: string,
-): Promise<string> {
-  if (!process.stdin.isTTY) {
-    throw new Error(
-      'No run ID given and stdin is not a TTY, so the picker cannot be shown. Pass a run ID explicitly.',
-    );
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('Fetching recent successful build workflow runs...');
-  const runs = await listSuccessfulBuildRunsAsync(easProjectDir);
-
-  if (runs.length === 0) {
-    throw new Error(
-      `No successful runs found for ${BUILD_WORKFLOW_FILES.join(' or ')}.`,
-    );
-  }
-
-  return promptForRunIdAsync(runs);
-}
-
 async function executeScriptAsync(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
 
@@ -334,7 +218,13 @@ async function executeScriptAsync(): Promise<void> {
   const scriptDir = path.dirname(fileURLToPath(import.meta.url));
   const easProjectDir = path.resolve(scriptDir, '..');
 
-  const runId = args.runId ?? (await resolveRunIdAsync(easProjectDir));
+  if (!args.runId && args.nonInteractive) {
+    throw new Error(
+      'No run ID given, and --non-interactive turns the run picker off. Pass a run ID.',
+    );
+  }
+  const runId =
+    args.runId ?? (await pickRunIdAsync(easProjectDir, workflowFilesFor(args)));
 
   // When the picker was used, surface the selected ID so the user has it for
   // re-runs / sharing.
@@ -344,6 +234,12 @@ async function executeScriptAsync(): Promise<void> {
   }
 
   const workflow = await fetchWorkflowRun(runId, easProjectDir);
+  if (args.release && workflow.workflow.fileName !== RELEASE_BUILDS_WORKFLOW_FILE) {
+    throw new Error(
+      `Run ${workflow.id} is a run of ${workflow.workflow.fileName}, not ${RELEASE_BUILDS_WORKFLOW_FILE}. ` +
+        'Omit --release to download it.',
+    );
+  }
 
   const matched = workflow.jobs.filter(
     (job) =>

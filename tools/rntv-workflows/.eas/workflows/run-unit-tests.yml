@@ -15,7 +15,7 @@ on:
 
 defaults:
   tools:
-    node: 22.14.0
+    node: 24.13.0
 
 jobs:
   run-unit-tests:
@@ -51,3 +51,15 @@ jobs:
         working_directory: ../..
         run: |
           npx jest packages/react-native
+
+  run_tools_unit_tests:
+    name: Run rntv-workflows unit tests
+    runs_on: linux-medium
+    image: latest
+    steps:
+      - uses: eas/checkout
+      - uses: eas/install_node_modules
+      - name: Run Jest tests
+        run: yarn test
+      - name: Type-check
+        run: yarn typecheck
