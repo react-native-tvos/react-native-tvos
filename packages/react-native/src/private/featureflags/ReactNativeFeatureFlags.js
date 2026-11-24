@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @generated SignedSource<<adcaf51ef43705d4c6cd1ebc074cb9b1>>
+ * @generated SignedSource<<705049f8ca1f9561e4fa3ee993023e85>>
  * @flow strict
  * @noformat
  */
@@ -297,7 +297,7 @@ export const enableCppPropsIteratorSetter: Getter<boolean> = createNativeFlagGet
 /**
  * This enables the fabric implementation of focus search so that we can focus clipped elements
  */
-export const enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean> = createNativeFlagGetter('enableCustomFocusSearchOnClippedElementsAndroid', false);
+export const enableCustomFocusSearchOnClippedElementsAndroid: Getter<boolean> = createNativeFlagGetter('enableCustomFocusSearchOnClippedElementsAndroid', true);
 /**
  * Enables destructor calls for ShadowTreeRevision in the background to reduce UI thread work.
  */
