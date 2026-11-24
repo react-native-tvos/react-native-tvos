@@ -143,6 +143,7 @@
   ],
   "scripts": {
     "prepack": "node ./scripts/prepack.js; cp ../../README.md ./README.md; cp ../../README-core.md ./README-core.md",
+    "featureflags": "node ./scripts/featureflags/index.js",
     "featureflags-check": "node ./scripts/featureflags/index.js --verify-unchanged"
   },
   "peerDependencies": {
